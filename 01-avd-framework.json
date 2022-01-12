@@ -1,0 +1,2232 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.4.1124.51302",
+      "templateHash": "3081082153350943017"
+    }
+  },
+  "parameters": {
+    "avdResourceGroup": {
+      "type": "string",
+      "defaultValue": "rg-prod-eus-avdresources",
+      "metadata": {
+        "description": "Name of resource group to hold Templates, HostPools, Application Groups, and Workspaces"
+      }
+    },
+    "managedIdentityName": {
+      "type": "string",
+      "defaultValue": "uai-prod-eus-imagebuilder",
+      "metadata": {
+        "description": "Name for managed identity used for Azure Image Builder"
+      }
+    },
+    "keyVaultName": {
+      "type": "string",
+      "defaultValue": "kv-prod-eus-avd",
+      "maxLength": 18,
+      "metadata": {
+        "description": "Name of Key Vault used for AVD deployment secrets"
+      }
+    },
+    "objectId": {
+      "type": "string",
+      "metadata": {
+        "description": "AAD object ID of security principal to grant Key Vault access"
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "defaultValue": "poc"
+    },
+    "hostPoolName": {
+      "type": "string",
+      "defaultValue": "poc"
+    },
+    "hostPoolType": {
+      "type": "string",
+      "defaultValue": "Pooled",
+      "allowedValues": [
+        "Personal",
+        "Pooled"
+      ]
+    },
+    "computeGalleryName": {
+      "type": "string",
+      "defaultValue": "acg_prod_eus_avd",
+      "metadata": {
+        "description": "Name for Azure Compute Gallery"
+      }
+    },
+    "imageRegionReplicas": {
+      "type": "array",
+      "defaultValue": [
+        "EastUs"
+      ]
+    },
+    "createVmRole": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Create custom Start VM on Connect Role"
+      }
+    },
+    "createAibRole": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Create custom Azure Image Builder Role"
+      }
+    },
+    "time": {
+      "type": "string",
+      "defaultValue": "[utcNow()]",
+      "metadata": {
+        "description": "Do not modify, used to set unique value for resource deployment"
+      }
+    }
+  },
+  "variables": {
+    "defaultImage": "[json('{\r\n    \"name\": \"Windows10_20H2\",\r\n    \"osType\": \"Windows\",\r\n    \"osState\": \"Generalized\",\r\n    \"offer\": \"Windows-10\",\r\n    \"publisher\": \"MicrosoftWindowsDesktop\",\r\n    \"sku\": \"20h2-evd\"\r\n}')]",
+    "startVmRoleDef": "[json('{\r\n    \"Name\": \"Start VM on connect (Custom)\",\r\n    \"IsCustom\": true,\r\n    \"Description\": \"Start VM on connect with AVD (Custom)\",\r\n    \"Actions\": [\r\n      \"Microsoft.Compute/virtualMachines/start/action\",\r\n      \"Microsoft.Compute/virtualMachines/*/read\"\r\n    ],\r\n    \"NotActions\": [],\r\n    \"DataActions\": [],\r\n    \"NotDataActions\": [],\r\n    \"AssignableScopes\": [\r\n      \r\n    ]\r\n  }')]",
+    "aibRoleDef": "[json('{\r\n    \"Name\": \"Azure Image Builder\",\r\n    \"IsCustom\": true,\r\n    \"Description\": \"Azure Image Builder\",\r\n    \"Actions\": [\r\n      \"Microsoft.Compute/images/write\",\r\n      \"Microsoft.Compute/images/read\",\r\n      \"Microsoft.Compute/images/delete\",\r\n      \"Microsoft.Compute/galleries/read\",\r\n      \"Microsoft.Compute/galleries/images/read\",\r\n      \"Microsoft.Compute/galleries/images/versions/read\",\r\n      \"Microsoft.Compute/galleries/images/versions/write\",\r\n      \"Microsoft.Storage/storageAccounts/blobServices/containers/read\",\r\n      \"Microsoft.Storage/storageAccounts/blobServices/containers/write\",\r\n      \"Microsoft.Storage/storageAccounts/blobServices/read\",\r\n      \"Microsoft.ContainerInstance/containerGroups/read\",\r\n      \"Microsoft.ContainerInstance/containerGroups/write\",\r\n      \"Microsoft.ContainerInstance/containerGroups/start/action\",\r\n      \"Microsoft.ManagedIdentity/userAssignedIdentities/*/read\",\r\n      \"Microsoft.ManagedIdentity/userAssignedIdentities/*/assign/action\",\r\n      \"Microsoft.Authorization/*/read\",\r\n      \"Microsoft.Resources/deployments/read\",\r\n      \"Microsoft.Resources/deploymentScripts/read\",\r\n      \"Microsoft.Resources/deploymentScripts/write\",\r\n      \"Microsoft.VirtualMachineImages/imageTemplates/run/action\",\r\n      \"Microsoft.Network/virtualNetworks/read\",\r\n      \"Microsoft.Network/virtualNetworks/subnets/join/action\"\r\n    ],\r\n    \"NotActions\": [],\r\n    \"DataActions\": [],\r\n    \"NotDataActions\": [],\r\n    \"AssignableScopes\": [\r\n      \r\n    ]\r\n  }')]",
+    "storageName": "[format('aibscripts{0}', take(guid(subscription().subscriptionId), 8))]",
+    "vdiImages": [
+      "[json('{\r\n    \"name\": \"Windows10_20H2_Office\",\r\n    \"osType\": \"Windows\",\r\n    \"osState\": \"Generalized\",\r\n    \"offer\": \"office-365\",\r\n    \"publisher\": \"MicrosoftWindowsDesktop\",\r\n    \"sku\": \"20h2-evd-o365pp\"\r\n}')]",
+      "[json('{\r\n    \"name\": \"Windows10_20H2\",\r\n    \"osType\": \"Windows\",\r\n    \"osState\": \"Generalized\",\r\n    \"offer\": \"Windows-10\",\r\n    \"publisher\": \"MicrosoftWindowsDesktop\",\r\n    \"sku\": \"20h2-evd\"\r\n}')]"
+    ]
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2021-04-01",
+      "name": "[parameters('avdResourceGroup')]",
+      "location": "[deployment().location]"
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('avdkv-{0}', parameters('time'))]",
+      "resourceGroup": "[parameters('avdResourceGroup')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyVaultName": {
+            "value": "[parameters('keyVaultName')]"
+          },
+          "objectId": {
+            "value": "[parameters('objectId')]"
+          },
+          "enabledForDiskEncryption": {
+            "value": true
+          },
+          "enabledForTemplateDeployment": {
+            "value": true
+          },
+          "principalType": {
+            "value": "User"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.4.1124.51302",
+              "templateHash": "1775922976908427952"
+            }
+          },
+          "parameters": {
+            "keyVaultName": {
+              "type": "string",
+              "maxLength": 18,
+              "metadata": {
+                "description": "Specifies the name of the key vault."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Specifies the Azure location where the key vault should be created."
+              }
+            },
+            "skuName": {
+              "type": "string",
+              "defaultValue": "standard",
+              "allowedValues": [
+                "standard",
+                "premium"
+              ],
+              "metadata": {
+                "description": "Specifies whether the key vault is a standard vault or a premium vault."
+              }
+            },
+            "enabledForDeployment": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Specifies whether Azure Virtual Machines are permitted to retrieve certificates stored as secrets from the key vault."
+              }
+            },
+            "enabledForDiskEncryption": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Specifies whether Azure Disk Encryption is permitted to retrieve secrets from the vault and unwrap keys."
+              }
+            },
+            "enabledForTemplateDeployment": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Specifies whether Azure Resource Manager is permitted to retrieve secrets from the key vault."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "defaultValue": "[subscription().tenantId]",
+              "metadata": {
+                "description": "Specifies the Azure Active Directory tenant ID that should be used for authenticating requests to the key vault. Get it by using Get-AzSubscription cmdlet."
+              }
+            },
+            "objectId": {
+              "type": "string",
+              "metadata": {
+                "description": "Specifies the object ID of a user, service principal or security group in the Azure Active Directory tenant for the vault. The object ID must be unique for the list of access policies. Get it by using Get-AzADUser or Get-AzADServicePrincipal cmdlets."
+              }
+            },
+            "roleName": {
+              "type": "string",
+              "defaultValue": "Key Vault Administrator",
+              "allowedValues": [
+                "Key Vault Administrator",
+                "Key Vault Certificates Officer",
+                "Key Vault Crypto Officer",
+                "Key Vault Crypto Service Encryption User",
+                "Key Vault Crypto User",
+                "Key Vault Reader",
+                "Key Vault Secrets Officer",
+                "Key Vault Secrets User"
+              ],
+              "metadata": {
+                "description": "Specifies the role the user will get with the secret in the vault. Valid values are: Key Vault Administrator, Key Vault Certificates Officer, Key Vault Crypto Officer, Key Vault Crypto Service Encryption User, Key Vault Crypto User, Key Vault Reader, Key Vault Secrets Officer, Key Vault Secrets User."
+              }
+            },
+            "principalType": {
+              "type": "string",
+              "metadata": {
+                "description": "Type of security principal for access to Key Vault"
+              },
+              "allowedValues": [
+                "Group",
+                "ServicePrincipal",
+                "User"
+              ]
+            }
+          },
+          "variables": {
+            "roleIdMapping": {
+              "Key Vault Administrator": "00482a5a-887f-4fb3-b363-3b7fe8e74483",
+              "Key Vault Certificates Officer": "a4417e6f-fecd-4de8-b567-7b0420556985",
+              "Key Vault Crypto Officer": "14b46e9e-c2b7-41b4-b07b-48a6ebf60603",
+              "Key Vault Crypto Service Encryption User": "e147488a-f6f5-4113-8e2d-b22465e65bf6",
+              "Key Vault Crypto User": "12338af0-0e69-4776-bea7-57ae8d297424",
+              "Key Vault Reader": "21090545-7ca7-4776-b22c-e363652d74d2",
+              "Key Vault Secrets Officer": "b86a8fe4-44ce-4948-aee5-eccb2c155cd7",
+              "Key Vault Secrets User": "4633458b-17de-408a-b874-0445c86b69e6"
+            },
+            "kvUniqueLength": "[sub(24, length(parameters('keyVaultName')))]",
+            "kvUniqueName": "[format('{0}{1}', parameters('keyVaultName'), take(uniqueString(parameters('keyVaultName'), resourceGroup().id), variables('kvUniqueLength')))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.KeyVault/vaults",
+              "apiVersion": "2021-04-01-preview",
+              "name": "[variables('kvUniqueName')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "enabledForDeployment": "[parameters('enabledForDeployment')]",
+                "enabledForDiskEncryption": "[parameters('enabledForDiskEncryption')]",
+                "enabledForTemplateDeployment": "[parameters('enabledForTemplateDeployment')]",
+                "enableRbacAuthorization": true,
+                "tenantId": "[parameters('tenantId')]",
+                "sku": {
+                  "name": "[parameters('skuName')]",
+                  "family": "A"
+                },
+                "networkAcls": {
+                  "defaultAction": "Deny",
+                  "bypass": "AzureServices"
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2020-04-01-preview",
+              "scope": "[format('Microsoft.KeyVault/vaults/{0}', variables('kvUniqueName'))]",
+              "name": "[guid(variables('roleIdMapping')[parameters('roleName')], parameters('objectId'), resourceId('Microsoft.KeyVault/vaults', variables('kvUniqueName')))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleIdMapping')[parameters('roleName')])]",
+                "principalId": "[parameters('objectId')]",
+                "principalType": "[parameters('principalType')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', variables('kvUniqueName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "keyVaultResourceId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.KeyVault/vaults', variables('kvUniqueName'))]"
+            },
+            "keyVaultName": {
+              "type": "string",
+              "value": "[variables('kvUniqueName')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('avdResourceGroup'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('ws{0}-{1}', parameters('workspaceName'), parameters('time'))]",
+      "resourceGroup": "[parameters('avdResourceGroup')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('workspace-{0}', parameters('workspaceName'))]"
+          },
+          "appGroupResourceIds": {
+            "value": [
+              "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('app-{0}-{1}', parameters('hostPoolName'), parameters('time'))), '2020-10-01').outputs.appGroupResourceId.value]"
+            ]
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.4.1124.51302",
+              "templateHash": "17872823548586454313"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the workspace to be attach to new Application Group."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "appGroupResourceIds": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Required. Resource IDs fo the existing Application groups this workspace will group together."
+              }
+            },
+            "workspaceFriendlyName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The friendly name of the Workspace to be created."
+              }
+            },
+            "workspaceDescription": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The description of the Workspace to be created."
+              }
+            },
+            "diagnosticLogsRetentionInDays": {
+              "type": "int",
+              "defaultValue": 365,
+              "maxValue": 365,
+              "minValue": 0,
+              "metadata": {
+                "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
+              }
+            },
+            "diagnosticStorageAccountId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Resource identifier of the Diagnostic Storage Account."
+              }
+            },
+            "workspaceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Resource identifier of Log Analytics."
+              }
+            },
+            "eventHubAuthorizationRuleId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Resource ID of the event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+              }
+            },
+            "eventHubName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Name of the event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category."
+              }
+            },
+            "lock": {
+              "type": "string",
+              "defaultValue": "NotSpecified",
+              "metadata": {
+                "description": "Optional. Specify the type of lock."
+              },
+              "allowedValues": [
+                "CanNotDelete",
+                "NotSpecified",
+                "ReadOnly"
+              ]
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            },
+            "logsToEnable": {
+              "type": "array",
+              "defaultValue": [
+                "Checkpoint",
+                "Error",
+                "Management",
+                "Feed"
+              ],
+              "allowedValues": [
+                "Checkpoint",
+                "Error",
+                "Management",
+                "Feed"
+              ],
+              "metadata": {
+                "description": "Optional. The name of logs that will be streamed."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "diagnosticsLogs",
+                "count": "[length(parameters('logsToEnable'))]",
+                "input": {
+                  "category": "[parameters('logsToEnable')[copyIndex('diagnosticsLogs')]]",
+                  "enabled": true,
+                  "retentionPolicy": {
+                    "enabled": true,
+                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
+                  }
+                }
+              }
+            ]
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DesktopVirtualization/workspaces",
+              "apiVersion": "2021-07-12",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "applicationGroupReferences": "[parameters('appGroupResourceIds')]",
+                "description": "[parameters('workspaceDescription')]",
+                "friendlyName": "[parameters('workspaceFriendlyName')]"
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('lock'), 'NotSpecified'))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2016-09-01",
+              "scope": "[format('Microsoft.DesktopVirtualization/workspaces/{0}', parameters('name'))]",
+              "name": "[format('{0}-{1}-lock', parameters('name'), parameters('lock'))]",
+              "properties": {
+                "level": "[parameters('lock')]",
+                "notes": "[if(equals(parameters('lock'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DesktopVirtualization/workspaces', parameters('name'))]"
+              ]
+            },
+            {
+              "condition": "[or(or(or(not(empty(parameters('diagnosticStorageAccountId'))), not(empty(parameters('workspaceId')))), not(empty(parameters('eventHubAuthorizationRuleId')))), not(empty(parameters('eventHubName'))))]",
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2017-05-01-preview",
+              "scope": "[format('Microsoft.DesktopVirtualization/workspaces/{0}', parameters('name'))]",
+              "name": "[format('{0}-diagnosticsetting', parameters('name'))]",
+              "properties": {
+                "storageAccountId": "[if(empty(parameters('diagnosticStorageAccountId')), json('null'), parameters('diagnosticStorageAccountId'))]",
+                "workspaceId": "[if(empty(parameters('workspaceId')), json('null'), parameters('workspaceId'))]",
+                "eventHubAuthorizationRuleId": "[if(empty(parameters('eventHubAuthorizationRuleId')), json('null'), parameters('eventHubAuthorizationRuleId'))]",
+                "eventHubName": "[if(empty(parameters('eventHubName')), json('null'), parameters('eventHubName'))]",
+                "logs": "[if(and(and(and(empty(parameters('diagnosticStorageAccountId')), empty(parameters('workspaceId'))), empty(parameters('eventHubAuthorizationRuleId'))), empty(parameters('eventHubName'))), json('null'), variables('diagnosticsLogs'))]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DesktopVirtualization/workspaces', parameters('name'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "workspaceResourceId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.DesktopVirtualization/workspaces', parameters('name'))]"
+            },
+            "workspaceResourceGroup": {
+              "type": "string",
+              "value": "[resourceGroup().name]"
+            },
+            "workspaceName": {
+              "type": "string",
+              "value": "[parameters('name')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('app-{0}-{1}', parameters('hostPoolName'), parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('avdResourceGroup'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('hp{0}-{1}', parameters('hostPoolName'), parameters('time'))]",
+      "resourceGroup": "[parameters('avdResourceGroup')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('hostpool-{0}', parameters('hostPoolName'))]"
+          },
+          "hostpoolType": {
+            "value": "[parameters('hostPoolType')]"
+          },
+          "startVMOnConnect": {
+            "value": true
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.4.1124.51302",
+              "templateHash": "15896872646396638860"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "metadata": {
+                "description": "Required. Name of the Host Pool"
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "hostpoolFriendlyName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The friendly name of the Host Pool to be created."
+              }
+            },
+            "hostpoolDescription": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The description of the Host Pool to be created."
+              }
+            },
+            "hostpoolType": {
+              "type": "string",
+              "defaultValue": "Pooled",
+              "allowedValues": [
+                "Personal",
+                "Pooled"
+              ],
+              "metadata": {
+                "description": "Optional. Set this parameter to Personal if you would like to enable Persistent Desktop experience. Defaults to Pooled."
+              }
+            },
+            "personalDesktopAssignmentType": {
+              "type": "string",
+              "defaultValue": "",
+              "allowedValues": [
+                "Automatic",
+                "Direct",
+                ""
+              ],
+              "metadata": {
+                "description": "Optional. Set the type of assignment for a Personal Host Pool type"
+              }
+            },
+            "loadBalancerType": {
+              "type": "string",
+              "defaultValue": "BreadthFirst",
+              "allowedValues": [
+                "BreadthFirst",
+                "DepthFirst",
+                "Persistent"
+              ],
+              "metadata": {
+                "description": "Optional. Type of load balancer algorithm."
+              }
+            },
+            "maxSessionLimit": {
+              "type": "int",
+              "defaultValue": 99999,
+              "metadata": {
+                "description": "Optional. Maximum number of sessions."
+              }
+            },
+            "customRdpProperty": {
+              "type": "string",
+              "defaultValue": "audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2;",
+              "metadata": {
+                "description": "Optional. Host Pool RDP properties"
+              }
+            },
+            "validationEnviroment": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Whether to use validation enviroment. When set to true, the Host Pool will be deployed in a validation 'ring' (environment) that receives all the new features (might be less stable). Ddefaults to false that stands for the stable, production-ready environment."
+              }
+            },
+            "vmTemplate": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. The necessary information for adding more VMs to this Host Pool."
+              }
+            },
+            "tokenValidityLength": {
+              "type": "string",
+              "defaultValue": "PT8H",
+              "metadata": {
+                "description": "Optional. Host Pool token validity length. Usage: 'PT8H' - valid for 8 hours; 'P5D' - valid for 5 days; 'P1Y' - valid for 1 year. When not provided, the token will be valid for 8 hours."
+              }
+            },
+            "baseTime": {
+              "type": "string",
+              "defaultValue": "[utcNow('u')]",
+              "metadata": {
+                "description": "Generated. Do not provide a value! This date value is used to generate a registration token."
+              }
+            },
+            "diagnosticLogsRetentionInDays": {
+              "type": "int",
+              "defaultValue": 365,
+              "maxValue": 365,
+              "minValue": 0,
+              "metadata": {
+                "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
+              }
+            },
+            "diagnosticStorageAccountId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Resource ID of the diagnostic storage account."
+              }
+            },
+            "workspaceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Resource ID of log analytics."
+              }
+            },
+            "eventHubAuthorizationRuleId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Resource ID of the event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+              }
+            },
+            "eventHubName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Name of the event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category."
+              }
+            },
+            "lock": {
+              "type": "string",
+              "defaultValue": "NotSpecified",
+              "metadata": {
+                "description": "Optional. Specify the type of lock."
+              },
+              "allowedValues": [
+                "CanNotDelete",
+                "NotSpecified",
+                "ReadOnly"
+              ]
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            },
+            "preferredAppGroupType": {
+              "type": "string",
+              "defaultValue": "Desktop",
+              "allowedValues": [
+                "Desktop",
+                "None",
+                "RailApplications"
+              ],
+              "metadata": {
+                "description": "Optional. The type of preferred application group type, default to Desktop Application Group"
+              }
+            },
+            "startVMOnConnect": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enable Start VM on connect to allow users to start the virtual machine from a deallocated state. Important: Custom RBAC role required to power manage VMs."
+              }
+            },
+            "validationEnvironment": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Validation host pool allows you to test service changes before they are deployed to production."
+              }
+            },
+            "logsToEnable": {
+              "type": "array",
+              "defaultValue": [
+                "Checkpoint",
+                "Error",
+                "Management",
+                "Connection",
+                "HostRegistration",
+                "AgentHealthStatus"
+              ],
+              "allowedValues": [
+                "Checkpoint",
+                "Error",
+                "Management",
+                "Connection",
+                "HostRegistration",
+                "AgentHealthStatus"
+              ],
+              "metadata": {
+                "description": "Optional. The name of logs that will be streamed."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "diagnosticsLogs",
+                "count": "[length(parameters('logsToEnable'))]",
+                "input": {
+                  "category": "[parameters('logsToEnable')[copyIndex('diagnosticsLogs')]]",
+                  "enabled": true,
+                  "retentionPolicy": {
+                    "enabled": true,
+                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
+                  }
+                }
+              }
+            ],
+            "tokenExpirationTime": "[dateTimeAdd(parameters('baseTime'), parameters('tokenValidityLength'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DesktopVirtualization/hostPools",
+              "apiVersion": "2021-07-12",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "friendlyName": "[parameters('hostpoolFriendlyName')]",
+                "description": "[parameters('hostpoolDescription')]",
+                "hostPoolType": "[parameters('hostpoolType')]",
+                "customRdpProperty": "[parameters('customRdpProperty')]",
+                "personalDesktopAssignmentType": "[parameters('personalDesktopAssignmentType')]",
+                "preferredAppGroupType": "[parameters('preferredAppGroupType')]",
+                "maxSessionLimit": "[parameters('maxSessionLimit')]",
+                "loadBalancerType": "[parameters('loadBalancerType')]",
+                "validationEnviroment": "[parameters('validationEnviroment')]",
+                "startVMOnConnect": "[parameters('startVMOnConnect')]",
+                "validationEnvironment": "[parameters('validationEnvironment')]",
+                "registrationInfo": {
+                  "expirationTime": "[variables('tokenExpirationTime')]",
+                  "token": null,
+                  "registrationTokenOperation": "Update"
+                },
+                "vmTemplate": "[if(not(empty(parameters('vmTemplate'))), null(), string(parameters('vmTemplate')))]"
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('lock'), 'NotSpecified'))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2016-09-01",
+              "scope": "[format('Microsoft.DesktopVirtualization/hostPools/{0}', parameters('name'))]",
+              "name": "[format('{0}-{1}-lock', parameters('name'), parameters('lock'))]",
+              "properties": {
+                "level": "[parameters('lock')]",
+                "notes": "[if(equals(parameters('lock'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DesktopVirtualization/hostPools', parameters('name'))]"
+              ]
+            },
+            {
+              "condition": "[or(or(or(not(empty(parameters('diagnosticStorageAccountId'))), not(empty(parameters('workspaceId')))), not(empty(parameters('eventHubAuthorizationRuleId')))), not(empty(parameters('eventHubName'))))]",
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.DesktopVirtualization/hostPools/{0}', parameters('name'))]",
+              "name": "[format('{0}-diagnosticsetting', parameters('name'))]",
+              "properties": {
+                "storageAccountId": "[if(not(empty(parameters('diagnosticStorageAccountId'))), parameters('diagnosticStorageAccountId'), null())]",
+                "workspaceId": "[if(not(empty(parameters('workspaceId'))), parameters('workspaceId'), null())]",
+                "eventHubAuthorizationRuleId": "[if(not(empty(parameters('eventHubAuthorizationRuleId'))), parameters('eventHubAuthorizationRuleId'), null())]",
+                "eventHubName": "[if(not(empty(parameters('eventHubName'))), parameters('eventHubName'), null())]",
+                "logs": "[variables('diagnosticsLogs')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DesktopVirtualization/hostPools', parameters('name'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "hostPoolResourceId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.DesktopVirtualization/hostPools', parameters('name'))]",
+              "metadata": {
+                "description": "The resource ID of the AVD host pool"
+              }
+            },
+            "hostPoolResourceGroup": {
+              "type": "string",
+              "value": "[resourceGroup().name]",
+              "metadata": {
+                "description": "The resource group the AVD host pool was deployed into"
+              }
+            },
+            "hostPoolName": {
+              "type": "string",
+              "value": "[parameters('name')]",
+              "metadata": {
+                "description": "The name of the AVD host pool"
+              }
+            },
+            "tokenExpirationTime": {
+              "type": "string",
+              "value": "[dateTimeAdd(parameters('baseTime'), parameters('tokenValidityLength'))]",
+              "metadata": {
+                "description": "The expiration time for the registration token"
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('avdResourceGroup'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('app-{0}-{1}', parameters('hostPoolName'), parameters('time'))]",
+      "resourceGroup": "[parameters('avdResourceGroup')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "appGroupType": {
+            "value": "Desktop"
+          },
+          "hostpoolName": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('hp{0}-{1}', parameters('hostPoolName'), parameters('time'))), '2020-10-01').outputs.hostPoolName.value]"
+          },
+          "name": {
+            "value": "[format('app-{0}', parameters('hostPoolName'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.4.1124.51302",
+              "templateHash": "8141398975087875123"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "metadata": {
+                "description": "Required. Name of the Application Group to create this application in."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "appGroupType": {
+              "type": "string",
+              "allowedValues": [
+                "RemoteApp",
+                "Desktop"
+              ],
+              "metadata": {
+                "description": "Required. The type of the Application Group to be created. Allowed values: RemoteApp or Desktop"
+              }
+            },
+            "hostpoolName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Host Pool to be linked to this Application Group."
+              }
+            },
+            "appGroupFriendlyName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The friendly name of the Application Group to be created."
+              }
+            },
+            "appGroupDescription": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The description of the Application Group to be created."
+              }
+            },
+            "diagnosticLogsRetentionInDays": {
+              "type": "int",
+              "defaultValue": 365,
+              "maxValue": 365,
+              "minValue": 0,
+              "metadata": {
+                "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
+              }
+            },
+            "diagnosticStorageAccountId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Resource identifier of the Diagnostic Storage Account."
+              }
+            },
+            "workspaceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Resource identifier of Log Analytics."
+              }
+            },
+            "eventHubAuthorizationRuleId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Resource ID of the event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+              }
+            },
+            "eventHubName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Name of the event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category."
+              }
+            },
+            "lock": {
+              "type": "string",
+              "defaultValue": "NotSpecified",
+              "metadata": {
+                "description": "Optional. Specify the type of lock."
+              },
+              "allowedValues": [
+                "CanNotDelete",
+                "NotSpecified",
+                "ReadOnly"
+              ]
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            },
+            "logsToEnable": {
+              "type": "array",
+              "defaultValue": [
+                "Checkpoint",
+                "Error",
+                "Management"
+              ],
+              "allowedValues": [
+                "Checkpoint",
+                "Error",
+                "Management"
+              ],
+              "metadata": {
+                "description": "Optional. The name of logs that will be streamed."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "diagnosticsLogs",
+                "count": "[length(parameters('logsToEnable'))]",
+                "input": {
+                  "category": "[parameters('logsToEnable')[copyIndex('diagnosticsLogs')]]",
+                  "enabled": true,
+                  "retentionPolicy": {
+                    "enabled": true,
+                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
+                  }
+                }
+              }
+            ]
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DesktopVirtualization/applicationGroups",
+              "apiVersion": "2021-07-12",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "hostPoolArmPath": "[resourceId('Microsoft.DesktopVirtualization/hostPools', parameters('hostpoolName'))]",
+                "friendlyName": "[parameters('appGroupFriendlyName')]",
+                "description": "[parameters('appGroupDescription')]",
+                "applicationGroupType": "[parameters('appGroupType')]"
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('lock'), 'NotSpecified'))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2016-09-01",
+              "scope": "[format('Microsoft.DesktopVirtualization/applicationGroups/{0}', parameters('name'))]",
+              "name": "[format('{0}-{1}-lock', parameters('name'), parameters('lock'))]",
+              "properties": {
+                "level": "[parameters('lock')]",
+                "notes": "[if(equals(parameters('lock'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DesktopVirtualization/applicationGroups', parameters('name'))]"
+              ]
+            },
+            {
+              "condition": "[or(or(or(not(empty(parameters('diagnosticStorageAccountId'))), not(empty(parameters('workspaceId')))), not(empty(parameters('eventHubAuthorizationRuleId')))), not(empty(parameters('eventHubName'))))]",
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2017-05-01-preview",
+              "scope": "[format('Microsoft.DesktopVirtualization/applicationGroups/{0}', parameters('name'))]",
+              "name": "[format('{0}-diagnosticSettings', parameters('name'))]",
+              "properties": {
+                "storageAccountId": "[if(empty(parameters('diagnosticStorageAccountId')), json('null'), parameters('diagnosticStorageAccountId'))]",
+                "workspaceId": "[if(empty(parameters('workspaceId')), json('null'), parameters('workspaceId'))]",
+                "eventHubAuthorizationRuleId": "[if(empty(parameters('eventHubAuthorizationRuleId')), json('null'), parameters('eventHubAuthorizationRuleId'))]",
+                "eventHubName": "[if(empty(parameters('eventHubName')), json('null'), parameters('eventHubName'))]",
+                "logs": "[if(and(and(and(empty(parameters('diagnosticStorageAccountId')), empty(parameters('workspaceId'))), empty(parameters('eventHubAuthorizationRuleId'))), empty(parameters('eventHubName'))), json('null'), variables('diagnosticsLogs'))]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DesktopVirtualization/applicationGroups', parameters('name'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "appGroupResourceId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.DesktopVirtualization/applicationGroups', parameters('name'))]"
+            },
+            "appGroupResourceGroup": {
+              "type": "string",
+              "value": "[resourceGroup().name]"
+            },
+            "appGroupName": {
+              "type": "string",
+              "value": "[parameters('name')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('avdResourceGroup'))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('hp{0}-{1}', parameters('hostPoolName'), parameters('time')))]"
+      ]
+    },
+    {
+      "condition": "[parameters('createVmRole')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('startVmRole-{0}', parameters('time'))]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "roleDefinition": {
+            "value": "[variables('startVmRoleDef')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.4.1124.51302",
+              "templateHash": "12305908223100244772"
+            }
+          },
+          "parameters": {
+            "roleDefinition": {
+              "type": "object"
+            }
+          },
+          "variables": {
+            "roleId": "[guid(parameters('roleDefinition').Name, subscription().id)]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleDefinitions",
+              "apiVersion": "2018-01-01-preview",
+              "name": "[variables('roleId')]",
+              "properties": {
+                "permissions": [
+                  {
+                    "actions": "[parameters('roleDefinition').Actions]"
+                  }
+                ],
+                "assignableScopes": [
+                  "[subscription().id]"
+                ],
+                "roleName": "[format('{0}-{1}', parameters('roleDefinition').Name, subscription().displayName)]",
+                "description": "[parameters('roleDefinition').Description]"
+              }
+            }
+          ],
+          "outputs": {
+            "roleId": {
+              "type": "string",
+              "value": "[split(subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleId')), '/')[6]]"
+            },
+            "resourceId": {
+              "type": "string",
+              "value": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleId'))]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "[parameters('createAibRole')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('aibRole-{0}', parameters('time'))]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "roleDefinition": {
+            "value": "[variables('aibRoleDef')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.4.1124.51302",
+              "templateHash": "12305908223100244772"
+            }
+          },
+          "parameters": {
+            "roleDefinition": {
+              "type": "object"
+            }
+          },
+          "variables": {
+            "roleId": "[guid(parameters('roleDefinition').Name, subscription().id)]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleDefinitions",
+              "apiVersion": "2018-01-01-preview",
+              "name": "[variables('roleId')]",
+              "properties": {
+                "permissions": [
+                  {
+                    "actions": "[parameters('roleDefinition').Actions]"
+                  }
+                ],
+                "assignableScopes": [
+                  "[subscription().id]"
+                ],
+                "roleName": "[format('{0}-{1}', parameters('roleDefinition').Name, subscription().displayName)]",
+                "description": "[parameters('roleDefinition').Description]"
+              }
+            }
+          ],
+          "outputs": {
+            "roleId": {
+              "type": "string",
+              "value": "[split(subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleId')), '/')[6]]"
+            },
+            "resourceId": {
+              "type": "string",
+              "value": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleId'))]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "[parameters('createAibRole')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('aibRoleAssign-{0}', parameters('time'))]",
+      "resourceGroup": "[parameters('avdResourceGroup')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "roleDefinitionId": {
+            "value": "[if(parameters('createAibRole'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('aibRole-{0}', parameters('time'))), '2020-10-01').outputs.roleId.value, '')]"
+          },
+          "principalId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('identity-{0}', parameters('time'))), '2020-10-01').outputs.identityPrincipalId.value]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.4.1124.51302",
+              "templateHash": "15940873198468136225"
+            }
+          },
+          "parameters": {
+            "principalId": {
+              "type": "string"
+            },
+            "roleDefinitionId": {
+              "type": "string"
+            },
+            "principalType": {
+              "type": "string",
+              "defaultValue": "ServicePrincipal",
+              "allowedValues": [
+                "User",
+                "ServicePrincipal",
+                "Group",
+                "MSI"
+              ]
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().name]"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2020-08-01-preview",
+              "name": "[guid(parameters('principalId'), parameters('roleDefinitionId'), parameters('resourceGroupName'))]",
+              "properties": {
+                "principalId": "[parameters('principalId')]",
+                "roleDefinitionId": "[format('/providers/Microsoft.Authorization/roleDefinitions/{0}', parameters('roleDefinitionId'))]",
+                "principalType": "[parameters('principalType')]"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('aibRole-{0}', parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('avdResourceGroup'))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('identity-{0}', parameters('time')))]"
+      ]
+    },
+    {
+      "condition": "[not(parameters('createAibRole'))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('aibRoleAssignExt-{0}', parameters('time'))]",
+      "resourceGroup": "[parameters('avdResourceGroup')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "roleDefinitionId": {
+            "value": "[guid(variables('aibRoleDef').Name, subscription().id)]"
+          },
+          "principalId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('identity-{0}', parameters('time'))), '2020-10-01').outputs.identityPrincipalId.value]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.4.1124.51302",
+              "templateHash": "15940873198468136225"
+            }
+          },
+          "parameters": {
+            "principalId": {
+              "type": "string"
+            },
+            "roleDefinitionId": {
+              "type": "string"
+            },
+            "principalType": {
+              "type": "string",
+              "defaultValue": "ServicePrincipal",
+              "allowedValues": [
+                "User",
+                "ServicePrincipal",
+                "Group",
+                "MSI"
+              ]
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().name]"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2020-08-01-preview",
+              "name": "[guid(parameters('principalId'), parameters('roleDefinitionId'), parameters('resourceGroupName'))]",
+              "properties": {
+                "principalId": "[parameters('principalId')]",
+                "roleDefinitionId": "[format('/providers/Microsoft.Authorization/roleDefinitions/{0}', parameters('roleDefinitionId'))]",
+                "principalType": "[parameters('principalType')]"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('avdResourceGroup'))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('identity-{0}', parameters('time')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('identity-{0}', parameters('time'))]",
+      "resourceGroup": "[parameters('avdResourceGroup')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "identityName": {
+            "value": "[parameters('managedIdentityName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.4.1124.51302",
+              "templateHash": "3750546418274993426"
+            }
+          },
+          "parameters": {
+            "identityName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]"
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {}
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+              "apiVersion": "2018-11-30",
+              "name": "[parameters('identityName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]"
+            }
+          ],
+          "outputs": {
+            "identityResourceId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('identityName'))]"
+            },
+            "identityPrincipalId": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('identityName'))).principalId]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('avdResourceGroup'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('imageSpec-{0}', parameters('time'))]",
+      "resourceGroup": "[parameters('avdResourceGroup')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "templateSpecDisplayName": {
+            "value": "Image Builder Definition"
+          },
+          "templateSpecName": {
+            "value": "Image-Definition"
+          },
+          "buildDefinition": {
+            "value": "[variables('defaultImage')]"
+          },
+          "imageId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('image{0}-{1}', range(0, length(variables('vdiImages')))[1], parameters('time'))), '2020-10-01').outputs.imageId.value]"
+          },
+          "imageRegions": {
+            "value": "[parameters('imageRegionReplicas')]"
+          },
+          "managedIdentityId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('identity-{0}', parameters('time'))), '2020-10-01').outputs.identityResourceId.value]"
+          },
+          "scriptUri": {
+            "value": ""
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.4.1124.51302",
+              "templateHash": "13790101269121449893"
+            }
+          },
+          "parameters": {
+            "templateSpecName": {
+              "type": "string"
+            },
+            "templateSpecDisplayName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]"
+            },
+            "templateSpecVersion": {
+              "type": "string",
+              "defaultValue": "1.0"
+            },
+            "managedIdentityId": {
+              "type": "string"
+            },
+            "scriptUri": {
+              "type": "secureString",
+              "defaultValue": ""
+            },
+            "imageId": {
+              "type": "string"
+            },
+            "buildDefinition": {
+              "type": "object"
+            },
+            "imageRegions": {
+              "type": "array"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Resources/templateSpecs",
+              "apiVersion": "2021-05-01",
+              "name": "[parameters('templateSpecName')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "displayName": "[parameters('templateSpecDisplayName')]"
+              },
+              "tags": {}
+            },
+            {
+              "type": "Microsoft.Resources/templateSpecs/versions",
+              "apiVersion": "2021-05-01",
+              "name": "[format('{0}/{1}', parameters('templateSpecName'), parameters('templateSpecVersion'))]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "mainTemplate": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "parameters": {
+                    "scriptUri": {
+                      "type": "secureString"
+                    },
+                    "imageRegions": {
+                      "type": "array",
+                      "defaultValue": "[parameters('imageRegions')]"
+                    },
+                    "imageId": {
+                      "type": "string",
+                      "defaultValue": "[parameters('imageId')]"
+                    },
+                    "managedIdentityId": {
+                      "type": "string",
+                      "defaultValue": "[parameters('managedIdentityId')]"
+                    },
+                    "buildDefinition": {
+                      "type": "object",
+                      "defaultValue": "[parameters('buildDefinition')]"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.VirtualMachineImages/imageTemplates",
+                      "apiVersion": "2020-02-14",
+                      "name": "[[parameters('buildDefinition').name]",
+                      "location": "[[resourceGroup().location]",
+                      "identity": {
+                        "type": "UserAssigned",
+                        "userAssignedIdentities": {
+                          "[[parameters('managedIdentityId')]": {}
+                        }
+                      },
+                      "properties": {
+                        "buildTimeoutInMinutes": 120,
+                        "source": {
+                          "type": "PlatformImage",
+                          "publisher": "[[parameters('buildDefinition').publisher]",
+                          "offer": "[[parameters('buildDefinition').offer]",
+                          "sku": "[[parameters('buildDefinition').sku]",
+                          "version": "latest"
+                        },
+                        "customize": [
+                          {
+                            "type": "PowerShell",
+                            "name": "Install and Configure",
+                            "scriptUri": "[[parameters('scriptUri')]"
+                          },
+                          {
+                            "type": "WindowsUpdate",
+                            "searchCriteria": "IsInstalled=0",
+                            "filters": [
+                              "exclude:$_.Title -like '*Preview*'",
+                              "include:$true"
+                            ],
+                            "updateLimit": 45
+                          }
+                        ],
+                        "vmProfile": {
+                          "osDiskSizeGB": 128,
+                          "vmSize": "Standard_D2s_v4"
+                        },
+                        "distribute": [
+                          {
+                            "type": "SharedImage",
+                            "runOutputName": "myimage",
+                            "replicationRegions": "[[parameters('imageRegions')]",
+                            "galleryImageId": "[[parameters('imageId')]"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              "tags": {},
+              "dependsOn": [
+                "[resourceId('Microsoft.Resources/templateSpecs', parameters('templateSpecName'))]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('avdResourceGroup'))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('identity-{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('image{0}-{1}', range(0, length(variables('vdiImages')))[1], parameters('time')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('gallery-{0}', parameters('time'))]",
+      "resourceGroup": "[parameters('avdResourceGroup')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "galleryName": {
+            "value": "[parameters('computeGalleryName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.4.1124.51302",
+              "templateHash": "18204121135288503673"
+            }
+          },
+          "parameters": {
+            "galleryName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Compute/galleries",
+              "apiVersion": "2021-07-01",
+              "name": "[parameters('galleryName')]",
+              "location": "[parameters('location')]"
+            }
+          ],
+          "outputs": {
+            "galleryId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Compute/galleries', parameters('galleryName'))]"
+            },
+            "galleryName": {
+              "type": "string",
+              "value": "[parameters('galleryName')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('avdResourceGroup'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('vdiscript-{0}', parameters('time'))]",
+      "resourceGroup": "[parameters('avdResourceGroup')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "principalId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('identity-{0}', parameters('time'))), '2020-10-01').outputs.identityPrincipalId.value]"
+          },
+          "storageAccountName": {
+            "value": "[variables('storageName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.4.1124.51302",
+              "templateHash": "17196537892082727355"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "defaultValue": "uploadVdiOptimizerScript"
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]"
+            },
+            "storageAccountName": {
+              "type": "string"
+            },
+            "scriptUri": {
+              "type": "string",
+              "defaultValue": "https://raw.githubusercontent.com/edm-ms/poc/main/avd/Bicep/Parameters/script-vdi-optimize.ps1"
+            },
+            "principalType": {
+              "type": "string",
+              "defaultValue": "ServicePrincipal"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().name]"
+            },
+            "principalId": {
+              "type": "string"
+            },
+            "roleDefinitionId": {
+              "type": "string",
+              "defaultValue": "2a2b9908-6ea1-4ae2-8e65-a410df84e7d1"
+            },
+            "time": {
+              "type": "string",
+              "defaultValue": "[utcNow('yyyy-MM-ddTHH:mm:ssZ')]"
+            }
+          },
+          "variables": {
+            "oneHour": "[dateTimeAdd(parameters('time'), 'PT1H')]",
+            "sasWriteProperties": {
+              "canonicalizedResource": "[format('/blob/{0}/aibscripts', parameters('storageAccountName'))]",
+              "signedProtocol": "https",
+              "signedServices": "b",
+              "signedPermission": "lwr",
+              "signedExpiry": "[variables('oneHour')]",
+              "signedResourceTypes": "co"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2021-06-01",
+              "name": "[parameters('storageAccountName')]",
+              "location": "[parameters('location')]",
+              "sku": {
+                "name": "Standard_GRS"
+              },
+              "kind": "StorageV2",
+              "properties": {
+                "allowBlobPublicAccess": false,
+                "minimumTlsVersion": "TLS1_2"
+              }
+            },
+            {
+              "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+              "apiVersion": "2021-06-01",
+              "name": "[format('{0}/default/aibscripts', parameters('storageAccountName'))]",
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2020-08-01-preview",
+              "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
+              "name": "[guid(parameters('principalId'), parameters('roleDefinitionId'), parameters('resourceGroupName'))]",
+              "properties": {
+                "principalId": "[parameters('principalId')]",
+                "roleDefinitionId": "[format('/providers/Microsoft.Authorization/roleDefinitions/{0}', parameters('roleDefinitionId'))]",
+                "principalType": "[parameters('principalType')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Resources/deploymentScripts",
+              "apiVersion": "2020-10-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "kind": "AzurePowerShell",
+              "properties": {
+                "azPowerShellVersion": "6.0",
+                "retentionInterval": "P1D",
+                "forceUpdateTag": "[parameters('time')]",
+                "timeout": "PT15M",
+                "arguments": "[format('-storageName ''{0}'' -sasToken ''{1}'' -scriptUri ''{2}''', parameters('storageAccountName'), listAccountSas(parameters('storageAccountName'), '2021-06-01', variables('sasWriteProperties')).accountSasToken, parameters('scriptUri'))]",
+                "scriptContent": "      param(\r\n        [string] [Parameter(Mandatory=$true)] $storageName,\r\n        [string] [Parameter(Mandatory=$true)] $sasToken,\r\n        [string] [Parameter(Mandatory=$true)] $scriptUri\r\n        )\r\n      \r\n      $uri            = \"https://$storageName.blob.core.windows.net/aibscripts/script-vdi-optimize.ps1?$sasToken\"\r\n      $file           = Invoke-RestMethod -Uri $scriptUri -Method Get\r\n\r\n      $headers = @{\r\n        'x-ms-blob-type' = 'BlockBlob'\r\n      }\r\n      \r\n      Invoke-RestMethod -Uri $uri -Method Put -Headers $headers -Body $file\r\n    "
+              }
+            }
+          ],
+          "outputs": {
+            "scriptId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Resources/deploymentScripts', parameters('name'))]"
+            },
+            "scriptUri": {
+              "type": "string",
+              "value": "[format('https://{0}.blob.core.windows.net/aibscripts/script-vdi-optimize.ps1', parameters('storageAccountName'))]"
+            },
+            "storageId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+            },
+            "storageName": {
+              "type": "string",
+              "value": "[parameters('storageAccountName')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('avdResourceGroup'))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('identity-{0}', parameters('time')))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "imageDefinitions",
+        "count": "[length(range(0, length(variables('vdiImages'))))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('image{0}-{1}', range(0, length(variables('vdiImages')))[copyIndex()], parameters('time'))]",
+      "resourceGroup": "[parameters('avdResourceGroup')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "sku": {
+            "value": "[variables('vdiImages')[range(0, length(variables('vdiImages')))[copyIndex()]].sku]"
+          },
+          "osType": {
+            "value": "[variables('vdiImages')[range(0, length(variables('vdiImages')))[copyIndex()]].osType]"
+          },
+          "osState": {
+            "value": "[variables('vdiImages')[range(0, length(variables('vdiImages')))[copyIndex()]].osState]"
+          },
+          "imageGalleryName": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('gallery-{0}', parameters('time'))), '2020-10-01').outputs.galleryName.value]"
+          },
+          "imageName": {
+            "value": "[variables('vdiImages')[range(0, length(variables('vdiImages')))[copyIndex()]].name]"
+          },
+          "offer": {
+            "value": "[variables('vdiImages')[range(0, length(variables('vdiImages')))[copyIndex()]].offer]"
+          },
+          "publisher": {
+            "value": "[variables('vdiImages')[range(0, length(variables('vdiImages')))[copyIndex()]].publisher]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.4.1124.51302",
+              "templateHash": "3258233961787286422"
+            }
+          },
+          "parameters": {
+            "imageName": {
+              "type": "string"
+            },
+            "imageGalleryName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]"
+            },
+            "osType": {
+              "type": "string"
+            },
+            "osState": {
+              "type": "string"
+            },
+            "offer": {
+              "type": "string"
+            },
+            "publisher": {
+              "type": "string"
+            },
+            "sku": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Compute/galleries/images",
+              "apiVersion": "2021-07-01",
+              "name": "[format('{0}/{1}', parameters('imageGalleryName'), parameters('imageName'))]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "osType": "[parameters('osType')]",
+                "osState": "[parameters('osState')]",
+                "identifier": {
+                  "offer": "[parameters('offer')]",
+                  "publisher": "[parameters('publisher')]",
+                  "sku": "[parameters('sku')]"
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "imageId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Compute/galleries/images', parameters('imageGalleryName'), parameters('imageName'))]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('avdResourceGroup'))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('gallery-{0}', parameters('time')))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "imageBuildDefinitions",
+        "count": "[length(range(0, length(variables('vdiImages'))))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('aib{0}-{1}', range(0, length(variables('vdiImages')))[copyIndex()], parameters('time'))]",
+      "resourceGroup": "[parameters('avdResourceGroup')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "buildDefinition": {
+            "value": "[variables('vdiImages')[range(0, length(variables('vdiImages')))[copyIndex()]]]"
+          },
+          "imageId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('image{0}-{1}', range(0, length(variables('vdiImages')))[range(0, length(variables('vdiImages')))[copyIndex()]], parameters('time'))), '2020-10-01').outputs.imageId.value]"
+          },
+          "imageRegions": {
+            "value": "[parameters('imageRegionReplicas')]"
+          },
+          "managedIdentityId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('identity-{0}', parameters('time'))), '2020-10-01').outputs.identityResourceId.value]"
+          },
+          "scriptUri": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('vdiscript-{0}', parameters('time'))), '2020-10-01').outputs.scriptUri.value]"
+          },
+          "keyVaultName": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('avdkv-{0}', parameters('time'))), '2020-10-01').outputs.keyVaultName.value]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.4.1124.51302",
+              "templateHash": "3823956536738616931"
+            }
+          },
+          "parameters": {
+            "scriptUri": {
+              "type": "secureString"
+            },
+            "imageRegions": {
+              "type": "array"
+            },
+            "imageId": {
+              "type": "string"
+            },
+            "managedIdentityId": {
+              "type": "string"
+            },
+            "subnetId": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "keyVaultName": {
+              "type": "string"
+            },
+            "certificateName": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "buildDefinition": {
+              "type": "object"
+            },
+            "vnetInject": {
+              "type": "bool",
+              "defaultValue": false
+            },
+            "installSslCertificate": {
+              "type": "bool",
+              "defaultValue": false
+            }
+          },
+          "variables": {
+            "vnetInjectTrue": {
+              "osDiskSizeGB": 128,
+              "vmSize": "Standard_D2s_v4",
+              "vnetConfig": {
+                "subnetId": "[parameters('subnetId')]"
+              },
+              "userAssignedIdentities": [
+                "[parameters('managedIdentityId')]"
+              ]
+            },
+            "vnetInjectFalse": {
+              "osDiskSizeGB": 128,
+              "vmSize": "Standard_D2s_v4",
+              "userAssignedIdentities": [
+                "[parameters('managedIdentityId')]"
+              ]
+            },
+            "installSSLcert": [
+              "[format('$vaultUrl = \"https://{0}.vault.azure.net\"', parameters('keyVaultName'))]",
+              "[format('$certName = \"{0}\"', parameters('certificateName'))]",
+              "$localPath = \"C:\\temp\"",
+              "$Response = Invoke-RestMethod -Uri 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fvault.azure.net' -Method GET -Headers @{Metadata=\"true\"}",
+              "$KeyVaultToken = $Response.access_token",
+              "if ((Test-Path -Path $localPath) -eq $false) { New-Item -ItemType Directory -Path $localPath }",
+              "$uri = $vaultUrl + \"/certificates/\" + $certName + \"?api-version=2016-10-01\"",
+              "$cert = Invoke-RestMethod -Uri $uri -Method GET -Headers @{Authorization=\"Bearer $KeyVaultToken\"}",
+              "$cert.cer | New-Item -Type File -Name $certName.cer -Path $localPath",
+              "Import-Certificate -FilePath $localPath\\$certName.cer -CertStoreLocation Cert:\\LocalMachine\\Root\\"
+            ],
+            "doNothing": [
+              "Write-Host \"Nothing to install\""
+            ]
+          },
+          "resources": [
+            {
+              "type": "Microsoft.VirtualMachineImages/imageTemplates",
+              "apiVersion": "2021-10-01",
+              "name": "[parameters('buildDefinition').name]",
+              "location": "[resourceGroup().location]",
+              "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                  "[format('{0}', parameters('managedIdentityId'))]": {}
+                }
+              },
+              "properties": {
+                "buildTimeoutInMinutes": 120,
+                "source": {
+                  "type": "PlatformImage",
+                  "publisher": "[parameters('buildDefinition').publisher]",
+                  "offer": "[parameters('buildDefinition').offer]",
+                  "sku": "[parameters('buildDefinition').sku]",
+                  "version": "latest"
+                },
+                "customize": [
+                  {
+                    "type": "PowerShell",
+                    "name": "Install SSL certificate",
+                    "runAsSystem": true,
+                    "runElevated": true,
+                    "inline": "[if(parameters('installSslCertificate'), variables('installSSLcert'), variables('doNothing'))]"
+                  },
+                  {
+                    "type": "PowerShell",
+                    "name": "Install and Configure",
+                    "runElevated": true,
+                    "runAsSystem": true,
+                    "scriptUri": "[parameters('scriptUri')]"
+                  },
+                  {
+                    "type": "WindowsRestart",
+                    "restartCheckCommand": "write-host 'Restarting after tuning script'",
+                    "restartTimeout": "5m"
+                  },
+                  {
+                    "type": "PowerShell",
+                    "runElevated": true,
+                    "runAsSystem": true,
+                    "name": "DeprovisioningScript",
+                    "inline": [
+                      "((Get-Content -path C:\\DeprovisioningScript.ps1 -Raw) -replace 'Sysprep.exe /oobe /generalize /quiet /quit','Sysprep.exe /oobe /generalize /quit /mode:vm') | Set-Content -Path C:\\DeprovisioningScript.ps1"
+                    ]
+                  },
+                  {
+                    "type": "WindowsUpdate",
+                    "searchCriteria": "IsInstalled=0",
+                    "filters": [
+                      "exclude:$_.Title -like \"*Preview*\"",
+                      "include:$true"
+                    ],
+                    "updateLimit": 45
+                  }
+                ],
+                "vmProfile": "[if(parameters('vnetInject'), variables('vnetInjectTrue'), variables('vnetInjectFalse'))]",
+                "distribute": [
+                  {
+                    "type": "SharedImage",
+                    "runOutputName": "myimage",
+                    "replicationRegions": "[parameters('imageRegions')]",
+                    "galleryImageId": "[parameters('imageId')]"
+                  }
+                ]
+              }
+            }
+          ],
+          "outputs": {
+            "aibImageId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.VirtualMachineImages/imageTemplates', parameters('buildDefinition').name)]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('avdResourceGroup'))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('identity-{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('image{0}-{1}', range(0, length(variables('vdiImages')))[range(0, length(variables('vdiImages')))[copyIndex()]], parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('avdkv-{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('vdiscript-{0}', parameters('time')))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "buildImages",
+        "count": "[length(range(0, length(variables('vdiImages'))))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('buildImage{0}-{1}', range(0, length(variables('vdiImages')))[copyIndex()], parameters('time'))]",
+      "resourceGroup": "[parameters('avdResourceGroup')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('build-{0}', variables('vdiImages')[range(0, length(variables('vdiImages')))[copyIndex()]].name)]"
+          },
+          "imageId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('aib{0}-{1}', range(0, length(variables('vdiImages')))[range(0, length(variables('vdiImages')))[copyIndex()]], parameters('time'))), '2020-10-01').outputs.aibImageId.value]"
+          },
+          "identityId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('identity-{0}', parameters('time'))), '2020-10-01').outputs.identityResourceId.value]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.4.1124.51302",
+              "templateHash": "1641031511299986115"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]"
+            },
+            "imageId": {
+              "type": "string"
+            },
+            "time": {
+              "type": "string",
+              "defaultValue": "[utcNow('yyyy-MM-ddTHH:mm:ssZ')]"
+            },
+            "identityId": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Resources/deploymentScripts",
+              "apiVersion": "2020-10-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "kind": "AzurePowerShell",
+              "identity": {
+                "userAssignedIdentities": {
+                  "[format('{0}', parameters('identityId'))]": {}
+                },
+                "type": "UserAssigned"
+              },
+              "properties": {
+                "azPowerShellVersion": "6.0",
+                "retentionInterval": "P1D",
+                "forceUpdateTag": "[parameters('time')]",
+                "timeout": "PT15M",
+                "arguments": "[format('-imageId {0}', parameters('imageId'))]",
+                "scriptContent": "      param(\r\n        [string] [Parameter(Mandatory=$true)] $imageId\r\n        )\r\n\r\n      Invoke-AzResourceAction -ResourceId $imageId -ApiVersion \"2021-10-01\" -Action Run -Force\r\n      \r\n    "
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('avdResourceGroup'))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('aib{0}-{1}', range(0, length(variables('vdiImages')))[range(0, length(variables('vdiImages')))[copyIndex()]], parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('avdResourceGroup')), 'Microsoft.Resources/deployments', format('identity-{0}', parameters('time')))]"
+      ]
+    }
+  ]
+}
