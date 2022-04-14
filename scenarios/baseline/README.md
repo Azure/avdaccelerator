@@ -15,7 +15,30 @@ Prior to deploying, you need to ensure you have met the following prerequisites:
 - The account used for the deployment and Domain Join cannot have MFA
 - Users are synced to AAD already
 - A new subscription has been created for Azure Virtual Desktop
-- You have the appropriate [licenses](https://docs.microsoft.com/en-us/azure/virtual-desktop/remote-app-streaming/licensing)
-- If using existing Virtual Networks, the deployment will fail if Private Endpoint policies are enabled. See the following article on disabling them: [Disable private endpoint network policy](https://docs.microsoft.com/en-us/azure/private-link/disable-private-endpoint-network-policy )
+- You have the appropriate [licenses](https://docs.microsoft.com/azure/virtual-desktop/remote-app-streaming/licensing)
+- If using existing Virtual Networks, the deployment will fail if Private Endpoint policies are enabled. See the following article on disabling them: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy )
 
 ## What will be deployed
+
+This reference implementation scenario will deploy an AVD workload and necessary components to allow for feature add-ins, connectivity and monitoring as per operational best practices. The intention is to deploy this into the two new subscriptions preferable considered in the AVD landing zone, adhering to the Azure Landing Zone guidance. However, this can also be deployed to existing subscriptions if required.
+Below is a representation of the Azure Resources and Organization that can be deployed with this reference implementation.
+
+![Image coming soon](/image.png "the image")
+
+The following components will be deployed:
+
+Resource Name | Resource Type | Notes
+---------|----------|---------
+ rg-{Azure Region}-avd-{Prefix}-network | Resource Group |
+ nsg-{Azure Region}-avd-{Prefix} | Network Security Group |
+ rt-{Azure Region}-avd-{Prefix}- | Route Table |
+ vnet-{Azure Region}-avd-{Prefix} | Virtual Network |
+ rg-{AzureRegion}-avd-{Prefix}-pool-compute | Resource Group |
+ rg-{AzureRegion}-avd-{Prefix}-service-objects | Resource Group |
+ rg-{AzureRegion}-avd-{Prefix}-pool-compute-storage | Resource Group |
+
+:page_with_curl: **Note:** The deployment will ask for a "Prefix" which will be included in all the deployed resources. The naming of resources is hard coded in the templates; however, this can be modified as required prior to deployment.
+
+## Next Steps
+
+Continue to [Deploy Azure Virtual Desktop Landing Zone Accelerator](/deploy-avd-lza.md)
