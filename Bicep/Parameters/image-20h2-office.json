@@ -1,8 +1,0 @@
-{
-    "name": "Windows10_20H2_Office",
-    "osType": "Windows",
-    "osState": "Generalized",
-    "offer": "office-365",
-    "publisher": "MicrosoftWindowsDesktop",
-    "sku": "20h2-evd-o365pp"
-}
