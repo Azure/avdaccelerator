@@ -6,7 +6,7 @@
 
 ### Step 1: AVD Accelerator Baseline
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdanycontre%2FResourceModules%2Fmain%2Fworkload%2FPortal_UI%2Fdeploy-main.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Fdanycontre%2FResourceModules%2Fmain%2Fworkload%2FPortal_UI%2Fportal-ui-main.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json)
 
 ## Contributing
 
