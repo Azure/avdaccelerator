@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "4022981543332712268"
+      "templateHash": "2207791226249043849"
     }
   },
   "parameters": {
@@ -164,7 +164,7 @@
         "hyperVGeneration": "V2"
       }
     },
-    "baseScriptUri": "https://raw.githubusercontent.com/nataliakon/ResourceModules/AVD-Accelerator/workload/",
+    "baseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/tree/main/workload/",
     "avdSharedSResourcesStorageName": "[format('avd{0}shared', uniqueString(variables('deploymentPrefixLowercase'), variables('avdSharedServicesLocationLowercase')))]",
     "avdSharedSResourcesAibContainerName": "[format('aib-{0}', variables('deploymentPrefixLowercase'))]",
     "avdSharedSResourcesScriptsContainerName": "[format('scripts-{0}', variables('deploymentPrefixLowercase'))]",
@@ -3562,7 +3562,7 @@
                 "name": "OptimizeOS",
                 "runElevated": true,
                 "runAsSystem": true,
-                "scriptUri": "[format('{0}Scripts/Optimize_OS_for_AVD.ps1', variables('baseScriptUri'))]"
+                "scriptUri": "[format('{0}scripts/Optimize_OS_for_AVD.ps1', variables('baseScriptUri'))]"
               },
               {
                 "type": "WindowsRestart",
