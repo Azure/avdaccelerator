@@ -1,0 +1,51 @@
+name: 'Security - AzureSecurityCenter'
+
+parameters:
+  - name: removeDeployment
+    displayName: Remove deployed module
+    type: boolean
+    default: false # Needs custom removals script
+  - name: prerelease
+    displayName: Publish prerelease module
+    type: boolean
+    default: false
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - '/.azuredevops/modulePipelines/ms.security.azuresecuritycenter.yml'
+      - '/.azuredevops/pipelineTemplates/module.*.yml'
+      - '/arm/Microsoft.Security/azureSecurityCenter/*'
+    exclude:
+      - '/**/*.md'
+
+variables:
+  - template: '/.azuredevops/pipelineVariables/global.variables.yml'
+  - group: 'PLATFORM_VARIABLES'
+  - name: modulePath
+    value: '/arm/Microsoft.Security/azureSecurityCenter'
+
+stages:
+  - stage: Validation
+    displayName: Pester tests
+    jobs:
+      - template: /.azuredevops/pipelineTemplates/jobs.validateModulePester.yml
+
+  - stage: Deployment
+    displayName: Deployment tests
+    jobs:
+      - template: /.azuredevops/pipelineTemplates/jobs.validateModuleDeployment.yml
+        parameters:
+          removeDeployment: '${{ parameters.removeDeployment }}'
+          deploymentBlocks:
+            - path: $(modulePath)/.parameters/parameters.json
+
+  - stage: Publishing
+    displayName: Publish module
+    condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq('${{ parameters.prerelease }}', 'true')))
+    jobs:
+      - template: /.azuredevops/pipelineTemplates/jobs.publishModule.yml
