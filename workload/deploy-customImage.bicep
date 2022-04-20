@@ -116,7 +116,7 @@ var avdOsImageDefinitions = {
         hyperVGeneration: 'V2'
     }
 }
-var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/tree/main/workload/'
+var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var avdSharedSResourcesStorageName = 'avd${uniqueString(deploymentPrefixLowercase, avdSharedServicesLocationLowercase)}shared'
 var avdSharedSResourcesAibContainerName = 'aib-${deploymentPrefixLowercase}'
 var avdSharedSResourcesScriptsContainerName = 'scripts-${deploymentPrefixLowercase}'
