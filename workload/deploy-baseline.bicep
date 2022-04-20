@@ -213,8 +213,8 @@ var marketPlaceGalleryWindows = {
     }
 }
 
-var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/tree/main/workload/'
-var fslogixScriptUri = '${baseScriptUri}Scripts/Set-FSLogixRegKeys.ps1'
+var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
+var fslogixScriptUri = '${baseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
 var fsLogixScript = './Set-FSLogixRegKeys.ps1'
 var fslogixSharePath = '\\\\${avdFslogixStorageName}.file.${environment().suffixes.storage}\\${avdFslogixFileShareName}'
 var FsLogixScriptArguments = '-volumeshare ${fslogixSharePath}'
@@ -226,7 +226,7 @@ var storageAccountContributorRoleId='b24988ac-6180-42a0-ab88-20f7382dd24c'
 var readerRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 var tempStorageVmName='tempstgvm'
 var dscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCDomainJoinStorageScripts.zip'
-var addStorageToDomainScriptUri='${baseScriptUri}Scripts/Manual-DSC-JoinStorage-to-ADDS.ps1'
+var addStorageToDomainScriptUri='${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-ADDS.ps1'
 var addStorageToDomainScript='./Manual-DSC-JoinStorage-to-ADDS.ps1'
 var addStorageToDomainScriptArgs='-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${storageOUName} -CreateNewOU ${createOUforStorage} -ShareName ${avdFslogixFileShareName} -Verbose'
 
