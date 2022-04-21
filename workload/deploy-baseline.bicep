@@ -234,12 +234,14 @@ var avdWrklKvName = 'avd-${uniqueString(deploymentPrefixLowercase, avdSessionHos
 var avdSessionHostNamePrefix = 'avdsh-${deploymentPrefix}'
 var avdAvailabilitySetName = 'avdas-${deploymentPrefix}'
 var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
+/*
 var splitExistVnetResId=split(existingVnetSubnetResourceId,'/')
 var existingSubnetName = splitExistVnetResId[10]
 var existVnetSubsId = splitExistVnetResId[2]
 var existingVnetRgName = splitExistVnetResId[4]
 var existingVnetName = splitExistVnetResId[8]
 var createOUforStorageString = string(createOUforStorage)
+*/
 
 // =========== //
 // Deployments //

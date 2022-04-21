@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "9678507538760975742"
+      "templateHash": "5893485309599586275"
     }
   },
   "parameters": {
@@ -397,13 +397,7 @@
     "avdWrklKvName": "[format('avd-{0}-{1}', uniqueString(variables('deploymentPrefixLowercase'), variables('avdSessionHostLocationLowercase')), variables('deploymentPrefixLowercase'))]",
     "avdSessionHostNamePrefix": "[format('avdsh-{0}', parameters('deploymentPrefix'))]",
     "avdAvailabilitySetName": "[format('avdas-{0}', parameters('deploymentPrefix'))]",
-    "allAvailabilityZones": "[pickZones('Microsoft.Compute', 'virtualMachines', parameters('avdSessionHostLocation'), 3)]",
-    "splitExistVnetResId": "[split(parameters('existingVnetSubnetResourceId'), '/')]",
-    "existingSubnetName": "[variables('splitExistVnetResId')[10]]",
-    "existVnetSubsId": "[variables('splitExistVnetResId')[2]]",
-    "existingVnetRgName": "[variables('splitExistVnetResId')[4]]",
-    "existingVnetName": "[variables('splitExistVnetResId')[8]]",
-    "createOUforStorageString": "[string(parameters('createOUforStorage'))]"
+    "allAvailabilityZones": "[pickZones('Microsoft.Compute', 'virtualMachines', parameters('avdSessionHostLocation'), 3)]"
   },
   "resources": [
     {
