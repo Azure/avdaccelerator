@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "2207791226249043849"
+      "templateHash": "17675749531147320691"
     }
   },
   "parameters": {
@@ -164,7 +164,7 @@
         "hyperVGeneration": "V2"
       }
     },
-    "baseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/tree/main/workload/",
+    "baseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
     "avdSharedSResourcesStorageName": "[format('avd{0}shared', uniqueString(variables('deploymentPrefixLowercase'), variables('avdSharedServicesLocationLowercase')))]",
     "avdSharedSResourcesAibContainerName": "[format('aib-{0}', variables('deploymentPrefixLowercase'))]",
     "avdSharedSResourcesScriptsContainerName": "[format('scripts-{0}', variables('deploymentPrefixLowercase'))]",
