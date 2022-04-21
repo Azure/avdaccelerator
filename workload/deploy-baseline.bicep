@@ -228,8 +228,8 @@ var tempStorageVmName='tempstgvm'
 var dscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCDomainJoinStorageScripts.zip'
 var addStorageToDomainScriptUri='${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-ADDS.ps1'
 var addStorageToDomainScript='./Manual-DSC-JoinStorage-to-ADDS.ps1'
-var addStorageToDomainScriptArgs='-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${storageOUName} -CreateNewOU ${createOUforStorage} -ShareName ${avdFslogixFileShareName} -Verbose'
-
+var addStorageToDomainScriptArgs='-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${OuStgName} -CreateNewOU ${createOUforStorage} -ShareName ${avdFslogixFileShareName} -Verbose'
+var OuStgName = !empty(storageOUName)? storageOUName : 'Computers'
 var avdWrklKvName = 'avd-${uniqueString(deploymentPrefixLowercase, avdSessionHostLocationLowercase)}-${deploymentPrefixLowercase}' // max length limit 24 characters
 var avdSessionHostNamePrefix = 'avdsh-${deploymentPrefix}'
 var avdAvailabilitySetName = 'avdas-${deploymentPrefix}'
