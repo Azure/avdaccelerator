@@ -1,25 +1,36 @@
-# TODO: The maintainer of this repo has not yet edited this file
-
-**REPO OWNER**: Do you want Customer Service & Support (CSS) support for this product/project?
-
-- **No CSS support:** Fill out this template with information about how to file issues and get help.
-- **Yes CSS support:** Fill out an intake form at [aka.ms/spot](https://aka.ms/spot). CSS will work with/help you to determine next steps. More details also available at [aka.ms/onboardsupport](https://aka.ms/onboardsupport).
-- **Not sure?** Fill out a SPOT intake as though the answer were "Yes". CSS will help you decide.
-
-*Then remove this first heading from this SUPPORT.MD file before publishing your repo.*
-
 # Support
 
-## How to file issues and get help  
+## Microsoft Support Policy
 
-This project uses GitHub Issues to track bugs and feature requests. Please search the existing 
-issues before filing new issues to avoid duplicates.  For new issues, file your bug or 
-feature request as a new Issue.
+If issues are encountered when deploying these Bicep modules users will be able to engage Microsoft support via their usual channels. Please provide corelation IDs where possible when contacting support to be able to investigate the issue effectively and in a timely fashion. For instructions on how to get deployments and correlation ID, please follow this link [here](https://docs.microsoft.com/en-us/azure/azure-resource-manager/templates/deployment-history?tabs=azure-portal#get-deployments-and-correlation-id).
 
-For help and questions about using this project, please **REPO MAINTAINER: INSERT INSTRUCTIONS HERE 
-FOR HOW TO ENGAGE REPO OWNERS OR COMMUNITY FOR HELP. COULD BE A STACK OVERFLOW TAG OR OTHER
-CHANNEL. WHERE WILL YOU HELP PEOPLE?**.
+Following list of issues are within the scope of Microsoft support:
 
-## Microsoft Support Policy  
+- Underlying Resource or Resource Provider issues when deploying modules (e.g. Management Groups, Policies, Log Analytics Workspace, Virtual WAN, Virtual Network) for any deployment failure
+- Module specific issues (e.g. template errors, internal server errors, etc.)
+- Template specific issues (e.g. template publishing, resource removal, etc.)
 
-Support for this **PROJECT or PRODUCT** is limited to the resources listed above.
+Any issues that are deemed outside of the above list by Microsoft support and/or requires bugfix in the module or code in the repo, Microsoft support will redirect user to file the issue on GitHub.
+
+Project maintainers and community aim to get issues resolved in timely fashion as per community support policy of this repo.
+
+## Community Support Policy
+
+Project maintainers will aim to respond to new issues on a best effort basis.
+
+## How to file issues and get help
+
+This project uses GitHub Issues to track bugs and feature requests. Please search the existing issues before filing new issues to avoid duplicates.  For new issues, file your bug or feature request as a new Issue.
+
+For help and questions about using this project, please submit a Github issue with corresponding [Issue Labels found here](https://github.com/Azure/ResourceModules/labels).
+
+
+<!-- Local -->
+[ProjectSetup]: <https://docs.github.com/en/communities/>
+[GitHubDocs]: <https://docs.github.com/>
+[AzureDevOpsDocs]: <https://docs.microsoft.com/en-us/azure/devops/?view=azure-devops>
+[GitHubIssues]: <https://github.com/Azure/Modules/issues>
+[Contributing]: CONTRIBUTING.md
+[AzureIcon]: docs/media/MicrosoftAzure-32px.png
+[PowershellIcon]: docs/media/MicrosoftPowerShellCore-32px.png
+[BashIcon]: docs/media/Bash_Logo_black_and_white_icon_only-32px.svg.png
