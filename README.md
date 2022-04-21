@@ -23,7 +23,7 @@ As of today, we have a first reference implementation scenario that is one of th
 
 ## Next Steps
 
-Head over to [Getting Started](/scenarios/baseline/getting-started.md) to review prerequisites and deployment options.
+Head over to [Getting Started Wiki](/wiki/Getting-Started) to review prerequisites and deployment options.
 
 ## Contributing
 
