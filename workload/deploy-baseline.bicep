@@ -550,13 +550,18 @@ module avdWrklKeyVault '../carml/1.0.0/Microsoft.KeyVault/vaults/deploy.bicep' =
             virtualNetworkRules: []
             ipRules: []
         }
-        privateEndpoints: [
+        privateEndpoints: avdVnetPrivateDnsZone ? [
             {
                 subnetResourceId: createAvdVnet ? '${avdVirtualNetwork.outputs.resourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
                 service: 'vault'
                 privateDnsZoneResourceIds: [
-                    avdVnetPrivateDnsZone ? avdVnetPrivateDnsZoneKeyvaultId : ''
+                    avdVnetPrivateDnsZoneKeyvaultId
                 ]
+            }
+        ] :[
+            {
+                subnetResourceId: createAvdVnet ? '${avdVirtualNetwork.outputs.resourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
+                service: 'vault'
             }
         ]
         secrets: {
@@ -681,13 +686,18 @@ module fslogixStorage '../carml/1.0.0/Microsoft.Storage/storageAccounts/deploy.b
                 }
             ]
         }
-        privateEndpoints: [
+        privateEndpoints: avdVnetPrivateDnsZone ? [
             {
                 subnetResourceId: createAvdVnet ? '${avdVirtualNetwork.outputs.resourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
                 service: 'file'
                 privateDnsZoneResourceIds: [
-                    avdVnetPrivateDnsZone ? avdVnetPrivateDnsZoneFilesId : ''
+                    avdVnetPrivateDnsZoneFilesId
                 ]
+            }
+        ] :[
+            {
+                subnetResourceId: createAvdVnet ? '${avdVirtualNetwork.outputs.resourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
+                service: 'file'
             }
         ]
     }
