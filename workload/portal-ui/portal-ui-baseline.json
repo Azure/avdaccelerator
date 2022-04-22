@@ -753,22 +753,18 @@
                                 },
                                 {
                                     "name": "avdIdentityDomainJoinUserPassword",
-                                    "type": "Microsoft.Compute.CredentialsCombo",
+                                    "type": "Microsoft.Common.PasswordBox",
                                     "visible": true,
                                     "label": {
-                                        "password": "Password",
-                                        "confirmPassword": "Confirm password"
+                                        "password": "Password"
                                     },
-                                    "toolTip": {
-                                        "password": ""
-                                    },
+                                    "toolTip": "Provide password for domain join account.",
                                     "constraints": {
-                                        "required": true
+                                      "required": true
                                     },
                                     "options": {
-                                        "hideConfirmation": true
-                                    },
-                                    "osPlatform": "Windows"
+                                      "hideConfirmation": true
+                                    }
                                 }
                             ]
                         },
@@ -1058,7 +1054,7 @@
                 "avdIdentityDomainName": "[steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainName]",
                 "avdOuPath": "[steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPath]",
                 "avdDomainJoinUserName": "[steps('avdIdentity').avdIdentityDomainCredentials.avdIdentityDomainJoinUserName]",
-                "avdDomainJoinUserPassword": "[steps('avdIdentity').avdIdentityDomainCredentials.avdIdentityDomainJoinUserPassword.password]",
+                "avdDomainJoinUserPassword": "[steps('avdIdentity').avdIdentityDomainCredentials.avdIdentityDomainJoinUserPassword]",
                 "avdVmLocalUserName": "[steps('avdIdentity').avdIdentityLocalCredentials.avdIdentityLocalUserName]",
                 "avdVmLocalUserPassword": "[steps('avdIdentity').avdIdentityLocalCredentials.avdIdentityLocalUserPassword.password]",
                 "createAvdVnet": "[steps('avdNetwork').createAvdVnet]",
