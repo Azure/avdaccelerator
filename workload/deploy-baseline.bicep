@@ -173,16 +173,17 @@ var avdNetworkObjectsRgName = 'rg-${avdSessionHostLocationLowercase}-avd-${deplo
 var avdComputeObjectsRgName = 'rg-${avdSessionHostLocationLowercase}-avd-${deploymentPrefixLowercase}-pool-compute' // max length limit 90 characters
 var avdStorageObjectsRgName = 'rg-${avdSessionHostLocationLowercase}-avd-${deploymentPrefixLowercase}-storage' // max length limit 90 characters
 var avdSharedResourcesRgName = 'rg-${avdSessionHostLocationLowercase}-avd-shared-resources'
-var avdVnetworkName = 'vnet-${avdSessionHostLocationLowercase}-avd-${deploymentPrefixLowercase}'
+
+var avdVnetworkName = 'avdvnet-${avdSessionHostLocationLowercase}-${deploymentPrefixLowercase}'
 var avdVnetworkSubnetName = 'avd-${deploymentPrefixLowercase}'
-var avdNetworksecurityGroupName = 'nsg-${avdSessionHostLocationLowercase}-avd-${deploymentPrefixLowercase}'
-var avdRouteTableName = 'udr-${avdSessionHostLocationLowercase}-avd-${deploymentPrefixLowercase}'
-var avdApplicationsecurityGroupName = 'asg-${avdSessionHostLocationLowercase}-avd-${deploymentPrefixLowercase}'
+var avdNetworksecurityGroupName = 'avdnsg-${avdSessionHostLocationLowercase}-${deploymentPrefixLowercase}'
+var avdRouteTableName = 'avdudr-${avdSessionHostLocationLowercase}-${deploymentPrefixLowercase}'
+var avdApplicationsecurityGroupName = 'avdasg-${avdSessionHostLocationLowercase}-${deploymentPrefixLowercase}'
 var avdVNetworkPeeringName = '${uniqueString(deploymentPrefixLowercase, avdSessionHostLocation)}-peering-avd-${deploymentPrefixLowercase}'
 var avdWorkSpaceName = 'avdws-${deploymentPrefixLowercase}'
 var avdHostPoolName = 'avdhp-${deploymentPrefixLowercase}'
-var avdApplicationGroupNameDesktop = 'avd-dag-${deploymentPrefixLowercase}'
-var avdApplicationGroupNameRApp = 'avd-raag-${deploymentPrefixLowercase}'
+var avdApplicationGroupNameDesktop = 'avddag-${deploymentPrefixLowercase}'
+var avdApplicationGroupNameRApp = 'avdraag-${deploymentPrefixLowercase}'
 var marketPlaceGalleryWindows = {
     'win10_21h2_office': {
         publisher: 'MicrosoftWindowsDesktop'
