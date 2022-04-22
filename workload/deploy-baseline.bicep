@@ -85,7 +85,7 @@ param existingVnetSubnetResourceId string = ''
 param existingHubVnetResourceId string = ''
 
 @description('AVD virtual network address prefixes')
-param avdVnetworkAddressPrefixes string = ''
+param avdVnetworkAddressPrefixes string
 
 @description('AVD virtual network subnet address prefix')
 param avdVnetworkSubnetAddressPrefix string = ''
@@ -131,8 +131,8 @@ param fsLogixstorageSku string = ''
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool
 
-@description('Session host VM size (Defualt: Standard_D2s_v4) ')
-param avdSessionHostsSize string = 'Standard_D2s_v4'
+@description('Session host VM size (Defualt: Standard_D2s_v3) ')
+param avdSessionHostsSize string = 'Standard_D2s_v3'
 
 @description('OS disk type for session host (Defualt: Standard_LRS) ')
 param avdSessionHostDiskType string = 'Standard_LRS'
