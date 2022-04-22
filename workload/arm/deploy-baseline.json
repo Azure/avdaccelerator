@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "5893485309599586275"
+      "templateHash": "9752681534479927222"
     }
   },
   "parameters": {
@@ -169,7 +169,6 @@
     },
     "avdVnetworkAddressPrefixes": {
       "type": "string",
-      "defaultValue": "",
       "metadata": {
         "description": "AVD virtual network address prefixes"
       }
@@ -272,9 +271,9 @@
     },
     "avdSessionHostsSize": {
       "type": "string",
-      "defaultValue": "Standard_D2s_v4",
+      "defaultValue": "Standard_D2s_v3",
       "metadata": {
-        "description": "Session host VM size (Defualt: Standard_D2s_v4) "
+        "description": "Session host VM size (Defualt: Standard_D2s_v3) "
       }
     },
     "avdSessionHostDiskType": {
