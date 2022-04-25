@@ -25,6 +25,10 @@ As of today, we have a first reference implementation scenario that is one of th
 
 Head over to [Getting Started Wiki](https://github.com/Azure/avdaccelerator/wiki/Getting-Started#Getting-Started) to review prerequisites and deployment options.
 
+## Baseline Architectural Diagram
+
+![AVD accelerator diagram](./workload/docs/diagrams/avd-accelerator-baseline.png)
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
