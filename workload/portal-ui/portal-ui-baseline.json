@@ -1084,7 +1084,7 @@
                 "avdVnetPrivateDnsZoneKeyvaultId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneKeyvaultSelector.id, '')]"
 
             },
-            "kind": "Tenant",
+            "kind": "Subscription",
             "location": "[steps('basics').avdDeploymentScope.location.name]"
         }
     }
