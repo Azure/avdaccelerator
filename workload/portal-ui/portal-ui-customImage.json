@@ -312,6 +312,7 @@
                 "aiblocation": "[steps('avdCustomImageAib').avdCustomImageLocation]",
                 "avdOsImage": "[steps('avdCustomImage').avdCustomImageOsSelection.avdCustomImageOsImage]"
             },
+            "kind": "Tenant",
             "location": "[steps('basics').avdDeploymentScope.location.name]"
         }
     }
