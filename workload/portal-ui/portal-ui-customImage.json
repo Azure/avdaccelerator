@@ -9,7 +9,7 @@
                     "name": "basics",
                     "label": "Azure core setup",
                     "subLabel": "",
-                    "bladeTitle": "basics",
+                    "bladeTitle": "avdBasics",
                     "elements": [
                         {
                             "name": "avdSharedServices",
