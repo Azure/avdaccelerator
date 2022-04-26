@@ -32,7 +32,10 @@
                         },
                         {
                             "name": "avdDeploymentScope",
-                            "type": "Microsoft.Common.ResourceScope"
+                            "type": "Microsoft.Common.ResourceScope",
+                            "location": {
+                                "resourceTypes": []
+                            }
                         },
                         {
                             "name": "avdWorkloadSubscription",
@@ -1083,8 +1086,9 @@
                 "avdVnetPrivateDnsZoneFilesId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneFilesSelector.id, '')]",
                 "avdVnetPrivateDnsZoneKeyvaultId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneKeyvaultSelector.id, '')]"
             },
-            "kind": "Tenant",
-            "location": "[steps('basics').avdDeploymentScope.location.name]"
+            "kind": "Subscription",
+            "location": "[steps('basics').avdDeploymentScope.location.name]",
+            "subscriptionId": "[steps('basics').avdDeploymentScope.subscription.id]"
         }
     }
 }
