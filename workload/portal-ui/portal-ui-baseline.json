@@ -663,7 +663,7 @@
                             "visible": true,
                             "options": {
                                 "text": "AVD landing zone accelerator deployment expects identity service to be already available in the current Azure estate.",
-                                "uri": "https://docs.microsoft.com/en-us/azure/virtual-desktop/authentication#identities",
+                                "uri": "https://docs.microsoft.com/azure/virtual-desktop/authentication#identities",
                                 "style": "Info"
                             }
                         },
@@ -688,7 +688,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Session hosts OU path (Optional)",
                                     "toolTip": "Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU.",
-                                    "placeholder": "Example: OU:avd,DC:contoso,DC:com",
+                                    "placeholder": "Example: OU=avd,DC=contoso,DC=com",
                                     "constraints": {}
                                 },
                                 {
@@ -760,10 +760,10 @@
                                     },
                                     "toolTip": "Provide password for domain join account.",
                                     "constraints": {
-                                      "required": true
+                                        "required": true
                                     },
                                     "options": {
-                                      "hideConfirmation": true
+                                        "hideConfirmation": true
                                     }
                                 }
                             ]
@@ -822,7 +822,7 @@
                             "visible": true,
                             "options": {
                                 "text": "AVD landing zone accelerator requires connectivity to identity services (ADDS or AADDS).",
-                                "uri": "https://docs.microsoft.com/en-us/azure/virtual-desktop/authentication",
+                                "uri": "https://docs.microsoft.com/azure/virtual-desktop/authentication",
                                 "style": "info"
                             }
                         },
@@ -932,7 +932,7 @@
                             "visible": "[equals(steps('avdNetwork').createAvdVnet, true)]",
                             "options": {
                                 "text": "vNet peering will be created to existing vNet hub with access to identity and DNS services .",
-                                "uri": "https://docs.microsoft.com/en-us/azure/virtual-desktop/network-connectivity",
+                                "uri": "https://docs.microsoft.com/azure/architecture/example-scenario/wvd/windows-virtual-desktop?context=/azure/virtual-desktop/context/context",
                                 "style": "info"
                             }
                         },
@@ -980,7 +980,7 @@
                             "visible": "[equals(steps('avdNetwork').createAvdVnet, false)]",
                             "options": {
                                 "text": "Existing network must has connectivity to identity and DNS services.",
-                                "uri": "https://docs.microsoft.com/en-us/azure/virtual-desktop/network-connectivity",
+                                "uri": "https://docs.microsoft.com/azure/architecture/example-scenario/wvd/windows-virtual-desktop?context=/azure/virtual-desktop/context/context",
                                 "style": "info"
                             }
                         },
@@ -1031,7 +1031,7 @@
                             "visible": "[equals(steps('avdNetwork').createAvdVnet, false)]",
                             "options": {
                                 "text": "Private endpoint network policy needs to be disabled on the existing subnet before deploying AVD accelerator.",
-                                "uri": "https://docs.microsoft.com/en-us/azure/private-link/disable-private-endpoint-network-policy?msclkid=6d5bc1f2bcf111ec8bf389f2e1ac2f8f",
+                                "uri": "https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy",
                                 "style": "Warning"
                             }
                         }
@@ -1082,7 +1082,6 @@
                 "avdVnetPrivateDnsZone": "[steps('avdNetwork').avdVnetPrivateDnsZone]",
                 "avdVnetPrivateDnsZoneFilesId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneFilesSelector.id, '')]",
                 "avdVnetPrivateDnsZoneKeyvaultId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneKeyvaultSelector.id, '')]"
-
             },
             "kind": "Tenant",
             "location": "[steps('basics').avdDeploymentScope.location.name]"
