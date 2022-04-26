@@ -12,7 +12,7 @@
                         "preValidation": "Provide deployment prefix for the resource groups and resources that will be created.",
                         "postValidation": "Done"
                     },
-                    "bladeTitle": "Deployment prefix",
+                    "bladeTitle": "avdBasics",
                     "elements": [
                         {
                             "name": "avdSharedServices",
