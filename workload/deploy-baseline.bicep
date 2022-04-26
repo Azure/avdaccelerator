@@ -112,7 +112,7 @@ param avdFslogixFileShareQuotaSize int = 512
 param avdDeploySessionHosts bool
 
 @minValue(1)
-@maxValue(500)
+@maxValue(49)
 @description('Cuantity of session hosts to deploy')
 param avdDeploySessionHostsCount int
 

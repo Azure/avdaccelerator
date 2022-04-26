@@ -516,12 +516,12 @@
                                     "name": "avdSessionHostsCount",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "VM count",
-                                    "toolTip": "Provide the number of session hosts to deploy (1-499).",
+                                    "toolTip": "Provide the number of session hosts to deploy (1-49).",
                                     "defaultValue": 1,
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^([1-9]|[1-9][0-9]|[1-4][0-9][0-9])$",
-                                        "validationMessage": "The count must be between 1-499 session hosts."
+                                        "regex": "^([1-9]|[1-4][0-9])$",
+                                        "validationMessage": "The count must be between 1-49 session hosts."
                                     }
                                 },
                                 {
