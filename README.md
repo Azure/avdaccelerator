@@ -2,9 +2,13 @@
 
 ## Optional: Custom Image Build
 
+Creates a new image from the Azure marketplace in an Azure compute gallery, optimized, patched and ready to be used
+
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-customImage.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-customImage.json)
 
 ## AVD Accelerator Baseline
+
+Creates the necessary AVD resources, metadata (aka Service Objects) and compute resources.
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json)
 
@@ -29,6 +33,7 @@ Head over to [Getting Started Wiki](https://github.com/Azure/avdaccelerator/wiki
 
 ![AVD accelerator diagram](./workload/docs/diagrams/avd-accelerator-baseline.png)
 
+_Download a [Visio file](./workload/docs/diagrams/avd-accelerator-baseline-architecture.vsdx) of this architecture._
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
