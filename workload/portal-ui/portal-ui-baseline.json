@@ -766,7 +766,7 @@
                                         "required": true
                                     },
                                     "options": {
-                                        "hideConfirmation": true
+                                        "hideConfirmation": false
                                     }
                                 }
                             ]
