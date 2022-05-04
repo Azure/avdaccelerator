@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.6.1.6515",
-      "templateHash": "17212211488294361077"
+      "templateHash": "13174148806332750673"
     }
   },
   "parameters": {
@@ -391,12 +391,13 @@
     "dscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCDomainJoinStorageScripts.zip",
     "addStorageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-JoinStorage-to-ADDS.ps1', variables('baseScriptUri'))]",
     "addStorageToDomainScript": "./Manual-DSC-JoinStorage-to-ADDS.ps1",
-    "addStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -DomainName {3} -AzureCloudEnvironment AzureCloud -DomainAdminUserName {4} -DomainAdminUserPassword {5} -OUName {6} -CreateNewOU {7} -ShareName {8} -Verbose', variables('dscAgentPackageLocation'), variables('avdFslogixStorageName'), variables('avdStorageObjectsRgName'), parameters('avdIdentityDomainName'), parameters('avdDomainJoinUserName'), parameters('avdDomainJoinUserPassword'), variables('OuStgName'), parameters('createOUforStorage'), variables('avdFslogixFileShareName'))]",
+    "addStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -DomainName {3} -AzureCloudEnvironment AzureCloud -DomainAdminUserName {4} -DomainAdminUserPassword {5} -OUName {6} -CreateNewOU {7} -ShareName {8} -Verbose', variables('dscAgentPackageLocation'), variables('avdFslogixStorageName'), variables('avdStorageObjectsRgName'), parameters('avdIdentityDomainName'), parameters('avdDomainJoinUserName'), parameters('avdDomainJoinUserPassword'), variables('OuStgName'), variables('createOUforStorageString'), variables('avdFslogixFileShareName'))]",
     "OuStgName": "[if(not(empty(parameters('storageOUName'))), parameters('storageOUName'), 'Computers')]",
     "avdWrklKvName": "[format('avd-{0}-{1}', uniqueString(variables('deploymentPrefixLowercase'), variables('avdSessionHostLocationLowercase')), variables('deploymentPrefixLowercase'))]",
     "avdSessionHostNamePrefix": "[format('avdsh-{0}', parameters('deploymentPrefix'))]",
     "avdAvailabilitySetName": "[format('avdas-{0}', parameters('deploymentPrefix'))]",
-    "allAvailabilityZones": "[pickZones('Microsoft.Compute', 'virtualMachines', parameters('avdSessionHostLocation'), 3)]"
+    "allAvailabilityZones": "[pickZones('Microsoft.Compute', 'virtualMachines', parameters('avdSessionHostLocation'), 3)]",
+    "createOUforStorageString": "[string(parameters('createOUforStorage'))]"
   },
   "resources": [
     {
