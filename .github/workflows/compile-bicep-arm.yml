@@ -25,10 +25,16 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      # Runs ARM build from the bicep. Used for portal UI. 
+      # Runs ARM build from the bicep. Used for portal UI. Compile AVD baseline. 
       - name: bicep-build-output
         uses: Azure/bicep-build-action@v1.0.0
         with:
           bicepFilePath: ./workload/deploy-baseline.bicep
           outputFilePath: ./workload/arm/deploy-baseline.json
 
+      # Runs ARM build from the bicep. Used for portal UI. Compile AVD Custom image. 
+      - name: bicep-build-output
+        uses: Azure/bicep-build-action@v1.0.0
+        with:
+          bicepFilePath: ./workload/deploy-customImage.bicep
+          outputFilePath: ./workload/arm/deploy-customImage.json
