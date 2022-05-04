@@ -31,6 +31,17 @@ jobs:
         with:
           bicepFilePath: ./workload/deploy-baseline.bicep
           outputFilePath: ./workload/arm/deploy-baseline.json
+          
+      - name: Validate the AVD baseline output
+        shell: bash
+        run: |
+          FILE="./workload/arm/deploy-baseline.json"
+          if test -f "$FILE"; then
+            echo "$FILE created successfully"
+          else
+            echo "$FILE not found."
+            exit 1
+          fi
 
       # Runs ARM build from the bicep. Used for portal UI. Compile AVD Custom image. 
       - name: bicep-build-output
@@ -38,3 +49,14 @@ jobs:
         with:
           bicepFilePath: ./workload/deploy-customImage.bicep
           outputFilePath: ./workload/arm/deploy-customImage.json
+
+      - name: Validate the AVD custom image output
+        shell: bash
+        run: |
+          FILE="./workload/arm/deploy-customImage.json"
+          if test -f "$FILE"; then
+            echo "$FILE created successfully"
+          else
+            echo "$FILE not found."
+            exit 1
+          fi
