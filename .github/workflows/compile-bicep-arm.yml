@@ -60,3 +60,12 @@ jobs:
             echo "$FILE not found."
             exit 1
           fi
+          
+      # Publish the compiled ARM templates to Github
+      - name: publish
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with: 
+          commit_message: Automated update for ARM templates
+          
+
+
