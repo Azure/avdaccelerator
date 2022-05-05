@@ -5,7 +5,7 @@ targetScope = 'subscription'
 // ========== //
 @minLength(2)
 @maxLength(4)
-@description('Required. The name of the 23 resource group to deploy')
+@description('Required. The name of the resource group to deploy')
 param deploymentPrefix string = ''
 
 @description('Required. Location where to deploy compute services')
