@@ -312,7 +312,6 @@ module avdHostPoolandAppGroups 'avd-modules/avd-hostpool-app-groups.bicep' = {
         avdServiceObjectsRgName: avdServiceObjectsRgName
         avdStartVMOnConnect: avdStartVMOnConnect
         avdWorkloadSubsId: avdWorkloadSubsId
-        avdWorkSpaceName: avdWorkSpaceName
     }
     dependsOn: [
         avdBaselineResourceGroups
