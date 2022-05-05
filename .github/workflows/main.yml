@@ -1,0 +1,55 @@
+# This is a basic workflow to help you get started with Actions
+
+name: 'CI - ARM template build'
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ action-test ]
+    paths: [./workload/*.bicep]
+  pull_request:
+    branches: [ action-test ]
+    paths: [./workload/*.bicep]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Runs ARM build from the bicep. Used for portal UI. Compile AVD baseline. 
+      - name: bicep-build-output
+        uses: Azure/bicep-build-action@v1.0.0
+        with:
+          bicepFilePath: ./workload/deploy-baseline.bicep
+          outputFilePath: ./workload/arm/deploy-baseline.json
+          
+      - name: Validate the AVD baseline output
+        shell: bash
+        run: |
+          FILE="./workload/arm/deploy-baseline.json"
+          if test -f "$FILE"; then
+            echo "$FILE created successfully"
+          else
+            echo "$FILE not found."
+            exit 1
+          fi
+          
+      # Publish the compiled ARM templates to Github
+      - name: publish
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with: 
+          commit_message: Automated update for ARM templates
+          
+
+
