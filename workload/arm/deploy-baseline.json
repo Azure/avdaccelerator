@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.6.1.6515",
-      "templateHash": "934374458700109976"
+      "templateHash": "13174148806332750673"
     }
   },
   "parameters": {
@@ -13,7 +13,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Required. The name of the 23 resource group to deploy"
+        "description": "Required. The name of the resource group to deploy"
       },
       "maxLength": 4,
       "minLength": 2
