@@ -237,6 +237,22 @@ var avdAvailabilitySetName = 'avdas-${deploymentPrefix}'
 var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
 var createOUforStorageString = string(createOUforStorage)
 
+var resourceGroups = [
+    {
+        name: avdServiceObjectsRgName
+        location: avdManagementPlaneLocation
+    }
+    {
+        name: avdComputeObjectsRgName
+        location: avdSessionHostLocation
+    }
+    {
+        name: avdStorageObjectsRgName
+        location: avdSessionHostLocation
+    }
+]
+
+
 
 // =========== //
 // Deployments //
@@ -244,153 +260,42 @@ var createOUforStorageString = string(createOUforStorage)
 
 // Resource groups
 // AVD Workload subscription RGs
-module avdServiceObjectsRg '../carml/1.0.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
-    scope: subscription(avdWorkloadSubsId)
-    name: 'AVD-RG-ServiceObjects-${time}'
-    params: {
-        name: avdServiceObjectsRgName
-        location: avdManagementPlaneLocation
-    }
-}
 
-module avdNetworkObjectsRg '../carml/1.0.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdVnet) {
-    scope: subscription(avdWorkloadSubsId)
-    name: 'AVD-RG-Network-${time}'
-    params: {
-        name: avdNetworkObjectsRgName
-        location: avdSessionHostLocation
-    }
-}
 
-module avdComputeObjectsRg '../carml/1.0.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
+module baselineResourceGroups '../carml/0.5.0/Microsoft.Resources/resourceGroups/deploy.bicep' = [ for (resourceGroup, i) in resourceGroups: {
     scope: subscription(avdWorkloadSubsId)
-    name: 'AVD-RG-Compute-${time}'
+    name: 'AVD-Baseline-Resource-Group-${i}-${time}'
     params: {
-        name: avdComputeObjectsRgName
-        location: avdSessionHostLocation
+        name: resourceGroup.name
+        location: resourceGroup.location
+        enableDefaultTelemetry: false
     }
-}
+}]
 
-module avdStorageObjectsRg '../carml/1.0.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
-    scope: subscription(avdWorkloadSubsId)
-    name: 'AVD-RG-Storage-${time}'
-    params: {
-        name: avdStorageObjectsRgName
-        location: avdSessionHostLocation
-    }
-}
 //
 
 // Networking
-module avdNetworksecurityGroup '../carml/1.0.0/Microsoft.Network/networkSecurityGroups/deploy.bicep' = if (createAvdVnet) {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdNetworkObjectsRgName}')
-    name: 'AVD-NSG-${time}'
+
+module avdNetworking 'avd-modules/avd-networking.bicep' = {
+    name: 'Deploy-AVD-Networking-${time}'
     params: {
-        name: avdNetworksecurityGroupName
-        location: avdSessionHostLocation
-    }
-    dependsOn: [
-        avdNetworkObjectsRg
-    ]
-}
-
-module avdApplicationSecurityGroup '../carml/1.0.0/Microsoft.Network/applicationSecurityGroups/deploy.bicep' = if (createAvdVnet) {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-    name: 'AVD-ASG-${time}'
-    params: {
-        name: avdApplicationsecurityGroupName
-        location: avdSessionHostLocation
-    }
-    dependsOn: [
-        avdComputeObjectsRg
-    ]
-}
-
-module avdRouteTable '../carml/1.0.0/Microsoft.Network/routeTables/deploy.bicep' = if (createAvdVnet) {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdNetworkObjectsRgName}')
-    name: 'AVD-UDR-${time}'
-    params: {
-        name: avdRouteTableName
-        location: avdSessionHostLocation
-    }
-    dependsOn: [
-        avdNetworkObjectsRg
-    ]
-}
-
-module avdVirtualNetwork '../carml/1.0.0/Microsoft.Network/virtualNetworks/deploy.bicep' = if (createAvdVnet) {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdNetworkObjectsRgName}')
-    name: 'AVD-vNet-${time}'
-    params: {
-        name: avdVnetworkName
-        location: avdSessionHostLocation
-        addressPrefixes: array(avdVnetworkAddressPrefixes)
-        dnsServers: !empty(customDnsIps) ? array(customDnsIps) : []
-        virtualNetworkPeerings: [
-            {
-                remoteVirtualNetworkId: existingHubVnetResourceId
-                name: avdVNetworkPeeringName
-                allowForwardedTraffic: true
-                allowGatewayTransit: false
-                allowVirtualNetworkAccess: true
-                doNotVerifyRemoteGateways: true
-                useRemoteGateways: vNetworkGatewayOnHub ? true : false
-                remotePeeringEnabled: true
-                remotePeeringName: avdVNetworkPeeringName
-                remotePeeringAllowForwardedTraffic: true
-                remotePeeringAllowGatewayTransit: vNetworkGatewayOnHub ? true : false
-                remotePeeringAllowVirtualNetworkAccess: true
-                remotePeeringDoNotVerifyRemoteGateways: true
-                remotePeeringUseRemoteGateways: false
-            }
-        ]
-        subnets: [
-            {
-                name: avdVnetworkSubnetName
-                addressPrefix: avdVnetworkSubnetAddressPrefix
-                privateEndpointNetworkPolicies: 'Disabled'
-                privateLinkServiceNetworkPolicies: 'Enabled'
-                networkSecurityGroupName: avdNetworksecurityGroupName
-                routeTableName: avdRouteTableName
-            }
-        ]
-    }
-    dependsOn: [
-        avdNetworkObjectsRg
-        avdNetworksecurityGroup
-        avdApplicationSecurityGroup
-        avdRouteTable
-    ]
-}
-
-// Update the existing subnet to disable network policies
-/*
-resource existingVnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = if (!empty(existingVnetSubnetResourceId))  {
-    name: existingVnetName
-    scope: resourceGroup('${existVnetSubsId}', '${existingVnetRgName}')
-}
-
-resource existingSubnet 'Microsoft.Network/virtualNetworks/subnets@2021-05-01' existing = if (!empty(existingVnetSubnetResourceId)) {
-    name: existingSubnetName
-    parent: existingVnet
-}
-
-module updateExistingSubnet '../carml/1.0.0/Microsoft.Network/virtualNetworks/subnets/deploy.bicep' = if (!empty(existingVnetSubnetResourceId))  {
-scope: resourceGroup('${existVnetSubsId}', '${existingVnetRgName}')
-name: 'Disable-NetworkPolicy-on-${existingSubnetName}-${time}'
-params:{
-    name: '${existingSubnetName}'
-    virtualNetworkName: existingVnetName
-    addressPrefix: existingSubnet.properties.addressPrefix
-    networkSecurityGroupName: !(empty(existingSubnet.properties.networkSecurityGroup.id)) ? split(string(existingSubnet.properties.networkSecurityGroup.id), '/')[8] : ''
-    networkSecurityGroupNameResourceGroupName: !(empty(existingSubnet.properties.networkSecurityGroup.id)) ? split(string(existingSubnet.properties.networkSecurityGroup.id), '/')[4] : ''
-    routeTableName: !(empty(existingSubnet.properties.routeTable.id)) ? split(string(existingSubnet.properties.routeTable.id), '/')[8] : ''
-    routeTableResourceGroupName: !(empty(existingSubnet.properties.routeTable.id)) ? split(string(existingSubnet.properties.routeTable.id), '/')[4] : ''
-    //serviceEndpointPolicies: existingSubnet.properties.serviceEndpointPolicies
-    privateEndpointNetworkPolicies: 'Disabled'
+        avdApplicationsecurityGroupName: avdApplicationsecurityGroupName
+        avdComputeObjectsRgName: avdComputeObjectsRgName
+        avdNetworkObjectsRgName: avdNetworkObjectsRgName
+        avdNetworksecurityGroupName: avdNetworksecurityGroupName
+        avdRouteTableName: avdRouteTableName
+        avdVnetworkAddressPrefixes: avdVnetworkAddressPrefixes
+        avdVnetworkName: avdVnetworkName
+        avdVNetworkPeeringName: avdVNetworkPeeringName
+        avdVnetworkSubnetName: avdVnetworkSubnetName
+        createAvdVnet: createAvdVnet
+        vNetworkGatewayOnHub: vNetworkGatewayOnHub
+        avdSessionHostLocation: avdSessionHostLocation
+        avdVnetworkSubnetAddressPrefix: avdVnetworkSubnetAddressPrefix
+        avdWorkloadSubsId:avdWorkloadSubsId
+        customDnsIps: customDnsIps
     }
 }
-*/
 //
 
 // AVD management plane
