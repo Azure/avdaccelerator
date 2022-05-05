@@ -8,13 +8,13 @@ on:
   push:
     branches: [ main ]
     paths:
-      - "./workload/deploy-baseline.bicep"
-      - "./workload/deploy-customImage.bicep"
+      - "./carml/1.0.0/**"
+      - "./workload/*.bicep"
   pull_request:
     branches: [ main ]
     paths:
-      - "./workload/deploy-baseline.bicep"
-      - "./workload/deploy-customImage.bicep"
+      - "./carml/1.0.0/**"
+      - "./workload/*.bicep"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
