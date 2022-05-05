@@ -262,9 +262,9 @@ var resourceGroups = [
 // AVD Workload subscription RGs
 
 
-module baselineResourceGroups '../carml/0.5.0/Microsoft.Resources/resourceGroups/deploy.bicep' = [ for (resourceGroup, i) in resourceGroups: {
+module avdBaselineResourceGroups '../carml/0.5.0/Microsoft.Resources/resourceGroups/deploy.bicep' = [ for resourceGroup in resourceGroups: {
     scope: subscription(avdWorkloadSubsId)
-    name: 'AVD-Baseline-Resource-Group-${i}-${time}'
+    name: 'Deploy-${resourceGroup.name}-${time}'
     params: {
         name: resourceGroup.name
         location: resourceGroup.location
@@ -274,7 +274,7 @@ module baselineResourceGroups '../carml/0.5.0/Microsoft.Resources/resourceGroups
 
 //
 
-// Networking
+// Optional. Networking
 
 module avdNetworking 'avd-modules/avd-networking.bicep' = {
     name: 'Deploy-AVD-Networking-${time}'
@@ -290,6 +290,7 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = {
         avdVnetworkSubnetName: avdVnetworkSubnetName
         createAvdVnet: createAvdVnet
         vNetworkGatewayOnHub: vNetworkGatewayOnHub
+        existingHubVnetResourceId: existingHubVnetResourceId
         avdSessionHostLocation: avdSessionHostLocation
         avdVnetworkSubnetAddressPrefix: avdVnetworkSubnetAddressPrefix
         avdWorkloadSubsId:avdWorkloadSubsId
@@ -299,71 +300,39 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = {
 //
 
 // AVD management plane
-module avdWorkSpace '../carml/1.0.0/Microsoft.DesktopVirtualization/workspaces/deploy.bicep' = {
+module avdHostPoolandAppGroups 'avd-modules/avd-hostpool-app-groups.bicep' = {
+    name: 'Deploy-AVD-HostPool-AppGroups-${time}'
+    params: {
+        avdApplicationGroupNameDesktop: avdApplicationGroupNameDesktop
+        avdApplicationGroupNameRApp: avdApplicationGroupNameRApp
+        avdDeployRAppGroup: avdDeployRAppGroup
+        avdHostPoolName: avdHostPoolName
+        avdHostPoolRdpProperty: avdHostPoolRdpProperty
+        avdManagementPlaneLocation: avdManagementPlaneLocation
+        avdServiceObjectsRgName: avdServiceObjectsRgName
+        avdStartVMOnConnect: avdStartVMOnConnect
+        avdWorkloadSubsId: avdWorkloadSubsId
+        avdWorkSpaceName: avdWorkSpaceName
+    }
+    dependsOn: [
+        avdBaselineResourceGroups
+    ]
+}
+
+module avdWorkSpace '../carml/0.5.0/Microsoft.DesktopVirtualization/workspaces/deploy.bicep' = {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
     name: 'AVD-WorkSpace-${time}'
     params: {
         name: avdWorkSpaceName
         location: avdManagementPlaneLocation
-        appGroupResourceIds: [
-            avdApplicationGroupDesktop.outputs.resourceId
-            avdDeployRAppGroup ? avdApplicationGroupRApp.outputs.resourceId : ''
-        ]
+        appGroupResourceIds: avdHostPoolandAppGroups.outputs.avdAppGroupsArray
     }
     dependsOn: [
-        avdServiceObjectsRg
-        avdApplicationGroupDesktop
-        avdApplicationGroupRApp
+        avdBaselineResourceGroups
+        avdHostPoolandAppGroups
     ]
 }
 
-module avdHostPool '../carml/1.0.0/Microsoft.DesktopVirtualization/hostpools/deploy.bicep' = {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
-    name: 'AVD-HostPool-${time}'
-    params: {
-        name: avdHostPoolName
-        location: avdManagementPlaneLocation
-        hostpoolType: avdHostPoolType
-        startVMOnConnect: avdStartVMOnConnect
-        customRdpProperty: avdHostPoolRdpProperty
-        loadBalancerType: avdHostPoolloadBalancerType
-        maxSessionLimit: avhHostPoolMaxSessions
-        personalDesktopAssignmentType: avdPersonalAssignType
-    }
-    dependsOn: [
-        avdServiceObjectsRg
-    ]
-}
-
-module avdApplicationGroupDesktop '../carml/1.0.0/Microsoft.DesktopVirtualization/applicationgroups/deploy.bicep' = {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
-    name: 'AVD-AppGroup-Desktop-${time}'
-    params: {
-        name: avdApplicationGroupNameDesktop
-        location: avdManagementPlaneLocation
-        applicationGroupType: 'Desktop'
-        hostpoolName: avdHostPool.outputs.name
-    }
-    dependsOn: [
-        avdServiceObjectsRg
-        avdHostPool
-    ]
-}
-
-module avdApplicationGroupRApp '../carml/1.0.0/Microsoft.DesktopVirtualization/applicationgroups/deploy.bicep' = if (avdDeployRAppGroup) {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
-    name: 'AVD-AppGroup-RApp-${time}'
-    params: {
-        name: avdApplicationGroupNameRApp
-        location: avdManagementPlaneLocation
-        applicationGroupType: 'RemoteApp'
-        hostpoolName: avdHostPool.outputs.name
-    }
-    dependsOn: [
-        avdServiceObjectsRg
-        avdHostPool
-    ]
-}
 // Identity 
 
 module fslogixManagedIdentity '../carml/1.0.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = if (avdDeploySessionHosts) {

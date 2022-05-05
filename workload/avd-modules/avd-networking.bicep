@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 @description('Optional. AVD workload subscription ID, multiple subscriptions scenario')
-param avdWorkloadSubsId string = ''
+param avdWorkloadSubsId string
 
 @description('Resource Group Name for the AVD session hosts')
 param avdComputeObjectsRgName string
@@ -29,7 +29,7 @@ param avdRouteTableName string
 param vNetworkGatewayOnHub bool
 
 @description('Existing hub virtual network for perring')
-param existingHubVnetResourceId string = ''
+param existingHubVnetResourceId string
 
 @description('VNet peering name for AVD VNEt to vHub.  ')
 param avdVNetworkPeeringName string
@@ -41,10 +41,10 @@ param avdVnetworkAddressPrefixes string
 param avdVnetworkSubnetName string
 
 @description('AVD virtual network subnet address prefix')
-param avdVnetworkSubnetAddressPrefix string = ''
+param avdVnetworkSubnetAddressPrefix string
 
 @description('custom DNS servers IPs')
-param customDnsIps string = ''
+param customDnsIps string
 //
 
 @description('Required. Location where to deploy compute services')
