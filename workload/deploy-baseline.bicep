@@ -623,6 +623,14 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
 }
 
+
+
+////
+
+
+
+
+
 module avdSessionHosts '../carml/1.0.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(0, avdDeploySessionHostsCount): if (avdDeploySessionHosts) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
     name: 'AVD-Session-Host-${i}-${time}'
