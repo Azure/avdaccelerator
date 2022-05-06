@@ -251,15 +251,11 @@ var resourceGroups = [
         location: avdSessionHostLocation
     }
 ]
-
-
-
 // =========== //
 // Deployments //
 // =========== //
 
 // Resource groups
-// AVD Workload subscription RGs
 module avdBaselineResourceGroups '../carml/0.5.0/Microsoft.Resources/resourceGroups/deploy.bicep' = [ for resourceGroup in resourceGroups: {
     scope: subscription(avdWorkloadSubsId)
     name: 'Deploy-${resourceGroup.name}-${time}'
@@ -269,7 +265,6 @@ module avdBaselineResourceGroups '../carml/0.5.0/Microsoft.Resources/resourceGro
         enableDefaultTelemetry: false
     }
 }]
-//
 
 // Optional. Networking
 module avdNetworking 'avd-modules/avd-networking.bicep' = {
@@ -293,7 +288,6 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = {
         customDnsIps: customDnsIps
     }
 }
-//
 
 // AVD management plane
 module avdHostPoolandAppGroups 'avd-modules/avd-hostpool-app-groups.bicep' = {
@@ -304,6 +298,10 @@ module avdHostPoolandAppGroups 'avd-modules/avd-hostpool-app-groups.bicep' = {
         avdDeployRAppGroup: avdDeployRAppGroup
         avdHostPoolName: avdHostPoolName
         avdHostPoolRdpProperty: avdHostPoolRdpProperty
+        avdHostPoolloadBalancerType: avdHostPoolloadBalancerType
+        avdHostPoolType: avdHostPoolType
+        avhHostPoolMaxSessions:avhHostPoolMaxSessions
+        avdPersonalAssignType: avdPersonalAssignType
         avdManagementPlaneLocation: avdManagementPlaneLocation
         avdServiceObjectsRgName: avdServiceObjectsRgName
         avdStartVMOnConnect: avdStartVMOnConnect
@@ -316,7 +314,7 @@ module avdHostPoolandAppGroups 'avd-modules/avd-hostpool-app-groups.bicep' = {
 
 module avdWorkSpace '../carml/0.5.0/Microsoft.DesktopVirtualization/workspaces/deploy.bicep' = {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
-    name: 'AVD-WorkSpace-${time}'
+    name: 'Deploy-AVD-WorkSpace-${time}'
     params: {
         name: avdWorkSpaceName
         location: avdManagementPlaneLocation
@@ -329,80 +327,29 @@ module avdWorkSpace '../carml/0.5.0/Microsoft.DesktopVirtualization/workspaces/d
 }
 //
 
-// Identity 
-module fslogixManagedIdentity '../carml/1.0.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = if (avdDeploySessionHosts) {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
-    name: 'fslogix-Managed-Identity-${time}'
+// Identity: managed identities and role assignments 
+module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
+    name: 'Create-ManagedIdentities-RoleAssign'
     params: {
-        name: fslogixManagedIdentityName
-        location: avdManagementPlaneLocation
+        avdComputeObjectsRgName: avdComputeObjectsRgName
+        avdDeploySessionHosts: avdDeploySessionHosts
+        avdEnterpriseAppObjectId: avdEnterpriseAppObjectId
+        avdManagementPlaneLocation: avdManagementPlaneLocation
+        avdServiceObjectsRgName: avdServiceObjectsRgName
+        avdStorageObjectsRgName: avdStorageObjectsRgName
+        avdWorkloadSubsId: avdWorkloadSubsId
+        createStartVmOnConnectCustomRole: createStartVmOnConnectCustomRole
+        fslogixManagedIdentityName: fslogixManagedIdentityName
+        readerRoleId: readerRoleId
+        storageAccountContributorRoleId: storageAccountContributorRoleId
     }
-    dependsOn: [
-        avdServiceObjectsRg
+    dependsOn:[
+        avdBaselineResourceGroups
     ]
 }
 
-// RBAC Roles
-module startVMonConnectRole '../carml/1.0.0/Microsoft.Authorization/roleDefinitions/subscription/deploy.bicep' = if (createStartVmOnConnectCustomRole) {
-    scope: subscription(avdWorkloadSubsId)
-    name: 'Start-VM-on-Connect-Role-${time}'
-    params: {
-        subscriptionId: avdWorkloadSubsId
-        description: 'Start VM on connect AVD'
-        roleName: 'StartVMonConnect-AVD'
-        actions: [
-            'Microsoft.Compute/virtualMachines/start/action'
-            'Microsoft.Compute/virtualMachines/*/read'
-        ]
-        assignableScopes: [
-            '/subscriptions/${avdWorkloadSubsId}'
-        ]
-    }
-}
-
-//
-
-// RBAC role Assignments
-
-module startVMonConnectRoleAssign '../carml/1.0.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (createStartVmOnConnectCustomRole) {
-    name: 'Start-VM-OnConnect-RoleAssign-${time}'
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-    params: {
-        roleDefinitionIdOrName: createStartVmOnConnectCustomRole ? startVMonConnectRole.outputs.resourceId : ''
-        principalId: avdEnterpriseAppObjectId
-    }
-    dependsOn: [
-        avdServiceObjectsRg
-        startVMonConnectRole
-    ]
-}
-
-module fslogixConnectRoleAssign '../carml/1.0.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (avdDeploySessionHosts) {
-    name: 'fslogix-UserAIdentity-RoleAssign-${time}'
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
-    params: {
-        roleDefinitionIdOrName: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${storageAccountContributorRoleId}'
-        principalId: fslogixManagedIdentity.outputs.principalId
-    }
-    dependsOn: [
-        fslogixManagedIdentity
-    ]
-}
-
-module fslogixConnectReaderRoleAssign '../carml/1.0.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (avdDeploySessionHosts) {
-    name: 'fslogix-UserAIdentity-ReaderRoleAssign-${time}'
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
-    params: {
-        roleDefinitionIdOrName: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${readerRoleId}'
-        principalId: fslogixManagedIdentity.outputs.principalId
-    }
-    dependsOn: [
-        fslogixManagedIdentity
-    ]
-}
-
-// Key vaults
-module avdWrklKeyVault '../carml/1.0.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
+// Key vault
+module avdWrklKeyVault '../carml/1.0.0/Microsoft.KeyVault/vaults/deploy.bicep' = if (avdDeploySessionHosts) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
     name: 'AVD-Workload-KeyVault-${time}'
     params: {
@@ -462,148 +409,56 @@ module avdWrklKeyVault '../carml/1.0.0/Microsoft.KeyVault/vaults/deploy.bicep' =
 }
 //
 
-// Storage
-
-// Provision temporary domain and add it to domain 
-
-module storageVM '../carml/1.0.0/Microsoft.Compute/virtualMachines/deploy.bicep' =  if (avdDeploySessionHosts) {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-    name: 'Deploy-temporary-VM-FsLogixStorageToDomain-${time}'
-    params: {
-        name: tempStorageVmName
-        location: avdSessionHostLocation
-        userAssignedIdentities: {
-            '${fslogixManagedIdentity.outputs.resourceId}' : {} 
-        }
-        encryptionAtHost: encryptionAtHost
-        osType: 'Windows'
-        licenseType: 'Windows_Client'
-        vmSize: avdSessionHostsSize
-        imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplataDefinitionId}\'}') : marketPlaceGalleryWindows['win10_21h2']
-        osDisk: {
-            createOption: 'fromImage'
-            deleteOption: 'Delete'
-            diskSizeGB: 128
-            managedDisk: {
-                storageAccountType: avdSessionHostDiskType
-            }
-        }
-        adminUsername: avdVmLocalUserName
-        adminPassword: avdVmLocalUserPassword //avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword') //avdVmLocalUserPassword // need to update to get value from KV
-        nicConfigurations: [
-            {
-                nicSuffix: '-nic-01'
-                deleteOption: 'Delete'
-                asgId: createAvdVnet ? '${avdApplicationSecurityGroup.outputs.resourceId}' : null
-                enableAcceleratedNetworking: false
-                ipConfigurations: [
-                    {
-                        name: 'ipconfig01'
-                        subnetId: createAvdVnet ? '${avdVirtualNetwork.outputs.resourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
-                    }
-                ]
-            }
-        ]
-        // Join domain
-        allowExtensionOperations: true
-        extensionDomainJoinPassword: avdDomainJoinUserPassword //avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
-        extensionDomainJoinConfig: {
-            enabled: true
-            settings: {
-                name: avdIdentityDomainName
-                ouPath: !empty(avdOuPath) ? avdOuPath : null
-                user: avdDomainJoinUserName
-                restart: 'true'
-                options: '3'
-            }
-        }
-    }
-    dependsOn: [
-        avdComputeObjectsRg
-        avdWrklKeyVault
-        avdWrklKeyVaultget
-    ]
-}
-
-
-
-// Provision the storage account and Azure Files
-module fslogixStorage '../carml/1.0.0/Microsoft.Storage/storageAccounts/deploy.bicep' = if (avdDeploySessionHosts) {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
-    name: 'AVD-Fslogix-Storage-${time}'
-    params: {
-        name: avdFslogixStorageName
-        location: avdSessionHostLocation
-        storageAccountSku: fsLogixstorageSku
-        allowBlobPublicAccess: false
-        storageAccountKind:  ((fsLogixstorageSku =~ 'Premium_LRS') || (fsLogixstorageSku =~ 'Premium_ZRS')) ? 'FileStorage': 'StorageV2'
-        storageAccountAccessTier: 'Hot'
-        networkAcls: {
-            bypass: 'AzureServices'
-            defaultAction: 'Deny'
-            virtualNetworkRules: []
-            ipRules: []
-        }
-        fileServices: {
-            shares: [
-                {
-                    name: avdFslogixFileShareName
-                    shareQuota: avdFslogixFileShareQuotaSize * 100 //Portal UI steps scale
-                }
-            ]
-        }
-        privateEndpoints: avdVnetPrivateDnsZone ? [
-            {
-                subnetResourceId: createAvdVnet ? '${avdVirtualNetwork.outputs.resourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
-                service: 'file'
-                privateDnsZoneResourceIds: [
-                    avdVnetPrivateDnsZoneFilesId
-                ]
-            }
-        ] :[
-            {
-                subnetResourceId: createAvdVnet ? '${avdVirtualNetwork.outputs.resourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
-                service: 'file'
-            }
-        ]
-    }
-    dependsOn: [
-        avdStorageObjectsRg
-        //updateExistingSubnet
-    ]
-}
-
-// Custom Extension call in on the DSC script to join Azure storage to domain. 
-
-module addFslogixShareToADDSSript '../carml/1.0.0/Microsoft.Compute/virtualMachines/extensions/add-azure-files-to-adds-script.bicep' =  if (avdDeploySessionHosts) {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-    name: 'Add-FslogixStorage-toADDS-${time}'
-    params: {
-        location: avdSessionHostLocation
-        name: storageVM.outputs.name
-        file: addStorageToDomainScript
-        ScriptArguments: addStorageToDomainScriptArgs
-        baseScriptUri: addStorageToDomainScriptUri
-    }
-    dependsOn: [
-        fslogixStorage
-        storageVM
-    ]
-}
-
-
-    // Run deployment script to remove the VM --> 0.2 release. 
-    // needs user managed identity --> Virtual machine contributor role assignment. Deployment script to assume the identity to delete VM. Include NIC and disks (force)
-
-//
-
-// Session hosts
 // Call on the KV.
 resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = if (avdDeploySessionHosts) {
     name: avdWrklKvName
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
 }
-module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' = {
+
+// Storage
+module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (avdDeploySessionHosts) {
+    name: 'Deploy-AVD-Storage-AzureFiles-${time}'
+    params: {
+        addStorageToDomainScript: addStorageToDomainScript
+        addStorageToDomainScriptArgs: addStorageToDomainScriptArgs
+        addStorageToDomainScriptUri: addStorageToDomainScriptUri
+        avdApplicationSecurityGroupResourceId: createAvdVnet ? '${avdNetworking.outputs.avdApplicationSecurityGroupResourceId}' : ''
+        avdComputeObjectsRgName: avdComputeObjectsRgName
+        avdDomainJoinUserName: avdDomainJoinUserName
+        avdDomainJoinUserPassword: avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
+        avdFslogixFileShareName: avdFslogixFileShareName
+        avdFslogixFileShareQuotaSize: avdFslogixFileShareQuotaSize
+        avdFslogixStorageName: avdFslogixStorageName
+        avdIdentityDomainName: avdIdentityDomainName
+        avdImageTemplataDefinitionId: avdImageTemplataDefinitionId
+        avdOuPath: avdOuPath
+        avdSessionHostDiskType: avdSessionHostDiskType
+        avdSessionHostLocation: avdSessionHostLocation
+        avdSessionHostsSize: avdSessionHostsSize
+        avdStorageObjectsRgName: avdStorageObjectsRgName
+        avdSubnetId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
+        avdVmLocalUserName: avdVmLocalUserName
+        avdVmLocalUserPassword: avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
+        avdVnetPrivateDnsZone: avdVnetPrivateDnsZone
+        avdVnetPrivateDnsZoneFilesId: avdVnetPrivateDnsZoneFilesId
+        avdWorkloadSubsId: avdWorkloadSubsId
+        encryptionAtHost: encryptionAtHost
+        fslogixManagedIdentityResourceId: deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId
+        fsLogixstorageSku: fsLogixstorageSku
+        marketPlaceGalleryWindows: marketPlaceGalleryWindows['win10_21h2']
+        subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
+        tempStorageVmName: tempStorageVmName
+        useSharedImage: useSharedImage
+    }
+    dependsOn:[
+        avdBaselineResourceGroups
+        avdNetworking
+        avdWrklKeyVaultget
+    ]
+}
+
+// Session hosts
+module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' = if (avdDeploySessionHosts) {
     name: 'Deploy-and-Configure-AVD-SessionHosts-${time}'
     params: {
         avdAgentPackageLocation: avdAgentPackageLocation
@@ -629,7 +484,7 @@ module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' =
         avdVmLocalUserPassword: avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
         avdWorkloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
-        fslogixManagedIdentityresourceId: fslogixManagedIdentity.outputs.resourceId
+        fslogixManagedIdentityresourceId: deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId
         fsLogixScript: fsLogixScript
         FsLogixScriptArguments: FsLogixScriptArguments
         fslogixScriptUri: fslogixScriptUri
@@ -640,5 +495,6 @@ module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' =
     dependsOn: [
         avdBaselineResourceGroups
         avdNetworking
+        avdWrklKeyVaultget
     ]
 }

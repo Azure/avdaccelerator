@@ -40,7 +40,7 @@ param avdSessionHostsSize string
 param avdSessionHostDiskType string 
 
 @description('Market Place OS image')
-param marketPlaceGalleryWindows string
+param marketPlaceGalleryWindows object
 
 @description('Set to deploy image from Azure Compute Gallery')
 param useSharedImage bool

@@ -29,24 +29,24 @@ param avdHostPoolRdpProperty string
   'Pooled'
 ])
 @description('Optional. AVD host pool type (Default: Pooled)')
-param avdHostPoolType string = 'Pooled'
+param avdHostPoolType string
 
 @allowed([
   'Automatic'
   'Direct'
 ])
 @description('Optional. AVD host pool type (Default: Automatic)')
-param avdPersonalAssignType string = 'Automatic'
+param avdPersonalAssignType string
 
 @allowed([
   'BreadthFirst'
   'DepthFirst'
 ])
 @description('Required. AVD host pool load balacing type (Default: BreadthFirst)')
-param avdHostPoolloadBalancerType string = 'BreadthFirst'
+param avdHostPoolloadBalancerType string
 
 @description('Optional. AVD host pool maximum number of user sessions per session host')
-param avhHostPoolMaxSessions int = 15
+param avhHostPoolMaxSessions int
 
 @description('Optional. AVD host pool start VM on Connect')
 param avdStartVMOnConnect bool
