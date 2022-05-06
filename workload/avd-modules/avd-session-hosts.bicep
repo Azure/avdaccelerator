@@ -78,7 +78,17 @@ param hostPoolToken string
 @description('AVD Host Pool name')
 param avdHostPoolName string
 
+@description('Location for the AVD agent installation package. ')
 param avdAgentPackageLocation string
+
+@description('FSlogix configuration script file name. ')
+param fsLogixScript string
+
+@description('Configuration arguments for FSlogix')
+param FsLogixScriptArguments string
+
+@description('URI for FSlogix configuration script')
+param fslogixScriptUri string
 
 @description('Do not modify, used to set unique value for resource deployment')
 param time string = utcNow()
@@ -128,7 +138,7 @@ module avdSessionHosts '../../carml/0.5.0/Microsoft.Compute/virtualMachines/depl
           {
               nicSuffix: '-nic-01'
               deleteOption: 'Delete'
-              asgId: avdApplicationSecurityGroupResourceId
+              asgId: !empty(avdApplicationSecurityGroupResourceId) ? avdApplicationSecurityGroupResourceId : null
               enableAcceleratedNetworking: false
               ipConfigurations: [
                   {

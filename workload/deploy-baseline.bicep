@@ -260,8 +260,6 @@ var resourceGroups = [
 
 // Resource groups
 // AVD Workload subscription RGs
-
-
 module avdBaselineResourceGroups '../carml/0.5.0/Microsoft.Resources/resourceGroups/deploy.bicep' = [ for resourceGroup in resourceGroups: {
     scope: subscription(avdWorkloadSubsId)
     name: 'Deploy-${resourceGroup.name}-${time}'
@@ -271,11 +269,9 @@ module avdBaselineResourceGroups '../carml/0.5.0/Microsoft.Resources/resourceGro
         enableDefaultTelemetry: false
     }
 }]
-
 //
 
 // Optional. Networking
-
 module avdNetworking 'avd-modules/avd-networking.bicep' = {
     name: 'Deploy-AVD-Networking-${time}'
     params: {
@@ -331,9 +327,9 @@ module avdWorkSpace '../carml/0.5.0/Microsoft.DesktopVirtualization/workspaces/d
         avdHostPoolandAppGroups
     ]
 }
+//
 
 // Identity 
-
 module fslogixManagedIdentity '../carml/1.0.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = if (avdDeploySessionHosts) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
     name: 'fslogix-Managed-Identity-${time}'
@@ -422,7 +418,7 @@ module avdWrklKeyVault '../carml/1.0.0/Microsoft.KeyVault/vaults/deploy.bicep' =
         }
         privateEndpoints: avdVnetPrivateDnsZone ? [
             {
-                subnetResourceId: createAvdVnet ? '${avdVirtualNetwork.outputs.resourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
+                subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
                 service: 'vault'
                 privateDnsZoneResourceIds: [
                     avdVnetPrivateDnsZoneKeyvaultId
@@ -430,7 +426,7 @@ module avdWrklKeyVault '../carml/1.0.0/Microsoft.KeyVault/vaults/deploy.bicep' =
             }
         ] :[
             {
-                subnetResourceId: createAvdVnet ? '${avdVirtualNetwork.outputs.resourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
+                subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
                 service: 'vault'
             }
         ]
@@ -460,7 +456,7 @@ module avdWrklKeyVault '../carml/1.0.0/Microsoft.KeyVault/vaults/deploy.bicep' =
         }
     }
     dependsOn: [
-        avdComputeObjectsRg
+        avdBaselineResourceGroups
         //updateExistingSubnet
     ]
 }
@@ -601,145 +597,48 @@ module addFslogixShareToADDSSript '../carml/1.0.0/Microsoft.Compute/virtualMachi
 
 //
 
-// Availability set
-module avdAvailabilitySet '../carml/1.0.0/Microsoft.Compute/availabilitySets/deploy.bicep' = if (!avdUseAvailabilityZones && avdDeploySessionHosts) {
-    name: 'AVD-Availability-Set-${time}'
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-    params: {
-        name: avdAvailabilitySetName
-        location: avdSessionHostLocation
-        availabilitySetFaultDomain: avdAsFaultDomainCount
-        availabilitySetUpdateDomain: avdAsUpdateDomainCount
-    }
-    dependsOn: [
-        avdComputeObjectsRg
-    ]
-}
-
 // Session hosts
 // Call on the KV.
 resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = if (avdDeploySessionHosts) {
     name: avdWrklKvName
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
 }
-
-
-
-////
-
-
-
-
-
-module avdSessionHosts '../carml/1.0.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(0, avdDeploySessionHostsCount): if (avdDeploySessionHosts) {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-    name: 'AVD-Session-Host-${i}-${time}'
+module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' = {
+    name: 'Deploy-and-Configure-AVD-SessionHosts-${time}'
     params: {
-        name: '${avdSessionHostNamePrefix}-${i}'
-        location: avdSessionHostLocation
-        userAssignedIdentities: {
-            '${fslogixManagedIdentity.outputs.resourceId}' : {} 
-        }
-        availabilityZone: avdUseAvailabilityZones ? take(skip(allAvailabilityZones, i % length(allAvailabilityZones)), 1) : []
-        encryptionAtHost: encryptionAtHost
-        availabilitySetName: !avdUseAvailabilityZones ? (avdDeploySessionHosts ? avdAvailabilitySet.outputs.name : '') : ''
-        osType: 'Windows'
-        licenseType: 'Windows_Client'
-        vmSize: avdSessionHostsSize
-        imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplataDefinitionId}\'}') : marketPlaceGalleryWindows[avdOsImage]
-        osDisk: {
-            createOption: 'fromImage'
-            deleteOption: 'Delete'
-            diskSizeGB: 128
-            managedDisk: {
-                storageAccountType: avdSessionHostDiskType
-            }
-        }
-        adminUsername: avdVmLocalUserName
-        adminPassword: avdVmLocalUserPassword //avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword') //avdVmLocalUserPassword // need to update to get value from KV
-        nicConfigurations: [
-            {
-                nicSuffix: '-nic-01'
-                deleteOption: 'Delete'
-                asgId: createAvdVnet ? '${avdApplicationSecurityGroup.outputs.resourceId}' : null
-                enableAcceleratedNetworking: false
-                ipConfigurations: [
-                    {
-                        name: 'ipconfig01'
-                        subnetId: createAvdVnet ? '${avdVirtualNetwork.outputs.resourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
-                    }
-                ]
-            }
-        ]
-        // Join domain
-        allowExtensionOperations: true
-        extensionDomainJoinPassword: avdDomainJoinUserPassword //avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
-        extensionDomainJoinConfig: {
-            enabled: true
-            settings: {
-                name: avdIdentityDomainName
-                ouPath: !empty(avdOuPath) ? avdOuPath : null
-                user: avdDomainJoinUserName
-                restart: 'true'
-                options: '3'
-            }
-        }
-        // Enable and Configure Microsoft Malware
-        extensionAntiMalwareConfig: {
-            enabled: true
-            settings: {
-                AntimalwareEnabled: true
-                RealtimeProtectionEnabled: 'true'
-                ScheduledScanSettings: {
-                    isEnabled: 'true'
-                    day: '7' // Day of the week for scheduled scan (1-Sunday, 2-Monday, ..., 7-Saturday)
-                    time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
-                    scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
-                }
-                Exclusions: {
-                    Extensions: '*.vhd;*.vhdx'
-                    Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;\\\\server\\share\\*\\*.VHD;\\\\server\\share\\*\\*.VHDX'
-                    Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
-                }
-            }
-        }
-    }
-    dependsOn: [
-        avdComputeObjectsRg
-        avdWrklKeyVault
-        avdWrklKeyVaultget
-    ]
-}]
-// Add session hosts to AVD Host pool.
-module addAvdHostsToHostPool '../carml/1.0.0/Microsoft.Compute/virtualMachines/extensions/add-avd-session-hosts.bicep' = [for i in range(0, avdDeploySessionHostsCount): if (avdDeploySessionHosts) {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-    name: 'Add-AVD-Session-Host-${i}-to-HostPool-${time}'
-    params: {
-        location: avdSessionHostLocation
-        hostPoolToken: '${avdHostPool.outputs.hostPoolRestrationInfo.token}'
-        name: '${avdSessionHostNamePrefix}-${i}'
-        hostPoolName: avdHostPoolName
         avdAgentPackageLocation: avdAgentPackageLocation
-    }
-    dependsOn: [
-        avdSessionHosts
-        avdHostPool
-    ]
-}]
-
-// Add the registry keys for Fslogix. Alternatively can be enforced via GPOs
-module configureFsLogixForAvdHosts '../carml/1.0.0/Microsoft.Compute/virtualMachines/extensions/configure-fslogix-session-hosts.bicep' = [for i in range(0, avdDeploySessionHostsCount): if (avdDeploySessionHosts) {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-    name: 'Configure-FsLogix-for-${avdSessionHostNamePrefix}-${i}-${time}'
-    params: {
-        location: avdSessionHostLocation
-        name: '${avdSessionHostNamePrefix}-${i}'
-        file: fsLogixScript
+        avdApplicationSecurityGroupResourceId: createAvdVnet ? '${avdNetworking.outputs.avdApplicationSecurityGroupResourceId}' : ''
+        avdAsFaultDomainCount: avdAsFaultDomainCount
+        avdAsUpdateDomainCount: avdAsUpdateDomainCount
+        avdAvailabilitySetName: avdAvailabilitySetName
+        avdComputeObjectsRgName: avdComputeObjectsRgName
+        avdDeploySessionHostsCount: avdDeploySessionHostsCount
+        avdDomainJoinUserName: avdDomainJoinUserName
+        avdDomainJoinUserPassword: avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
+        avdHostPoolName: avdHostPoolName
+        avdIdentityDomainName: avdIdentityDomainName
+        avdImageTemplataDefinitionId: avdImageTemplataDefinitionId
+        avdOuPath: avdOuPath
+        avdSessionHostDiskType: avdSessionHostDiskType
+        avdSessionHostLocation: avdSessionHostLocation
+        avdSessionHostNamePrefix: avdSessionHostNamePrefix
+        avdSessionHostsSize: avdSessionHostsSize
+        avdSubnetId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
+        avdUseAvailabilityZones: avdUseAvailabilityZones
+        avdVmLocalUserName: avdVmLocalUserName
+        avdVmLocalUserPassword: avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
+        avdWorkloadSubsId: avdWorkloadSubsId
+        encryptionAtHost: encryptionAtHost
+        fslogixManagedIdentityresourceId: fslogixManagedIdentity.outputs.resourceId
+        fsLogixScript: fsLogixScript
         FsLogixScriptArguments: FsLogixScriptArguments
-        baseScriptUri: fslogixScriptUri
+        fslogixScriptUri: fslogixScriptUri
+        hostPoolToken: avdHostPoolandAppGroups.outputs.hostPooltoken
+        marketPlaceGalleryWindows: marketPlaceGalleryWindows[avdOsImage]
+        useSharedImage: useSharedImage
     }
     dependsOn: [
-        avdSessionHosts
+        avdBaselineResourceGroups
+        avdNetworking
     ]
-}]
-//
+}

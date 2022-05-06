@@ -144,6 +144,10 @@ module avdVirtualNetwork '../../carml/0.5.0/Microsoft.Network/virtualNetworks/de
 
 // Need TO ADD outputs here 
 
+output avdApplicationSecurityGroupResourceId string = avdApplicationSecurityGroup.outputs.resourceId
+output avdVirtualNetworkResourceId string = avdVirtualNetwork.outputs.resourceId
+
+
 // Update the existing subnet to disable network policies
 /*
 resource existingVnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = if (!empty(existingVnetSubnetResourceId))  {
