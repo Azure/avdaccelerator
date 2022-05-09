@@ -258,7 +258,7 @@ var resourceGroups = [
 // Resource groups
 module avdBaselineResourceGroups '../carml/0.5.0/Microsoft.Resources/resourceGroups/deploy.bicep' = [ for resourceGroup in resourceGroups: {
     scope: subscription(avdWorkloadSubsId)
-    name: 'Deploy-AVD-BaselineRGs-${time}'
+    name: 'Deploy-${substring(resourceGroup.name,10)}-${time}'
     params: {
         name: resourceGroup.name
         location: resourceGroup.location
