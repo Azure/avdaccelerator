@@ -287,6 +287,9 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = {
         avdWorkloadSubsId:avdWorkloadSubsId
         customDnsIps: customDnsIps
     }
+    dependsOn: [
+        avdBaselineResourceGroups
+    ]
 }
 
 // AVD management plane
