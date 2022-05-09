@@ -50,13 +50,13 @@ stages:
   - stage: Deploy_AVD_Accelerator
     displayName: Deploy AVD Accelerator
     jobs:
-      # Deploy template deploy.bicep for AVD Accelerator
+      # Deploy template deploy-baseline.bicep for AVD Accelerator
       - template: deploy-template-sub.yml
         parameters:
           jobName: Deploy_AVD_Accelerator
           location: $(deploymentRegion)
           workingDir: $(System.DefaultWorkingDirectory)/workload
-          templateFile: deploy-main.bicep
+          templateFile: deploy-baseline.bicep
           parameterArray:
             - deploymentPrefix 'app1'
             - avdDeploySessionHostsCount 1
