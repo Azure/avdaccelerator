@@ -101,8 +101,5 @@ dependsOn: [
 ]
 }]
 
-output avdAppGroupsArray array = [for (resourceId,i) in finalApplicationGroups : {
-  resourceId: avdApplicationGroups[i].outputs.resourceId
-}]
-
+output avdAppGroupsArray array = [for (resourceId,i) in finalApplicationGroups : avdApplicationGroups[i].outputs.resourceId] 
 output hostPooltoken string = avdHostPool.outputs.hostPoolRestrationInfo.token
