@@ -181,7 +181,9 @@ module avdSessionHosts '../../carml/0.5.0/Microsoft.Compute/virtualMachines/depl
           }
       }
   }
-
+  dependsOn: [
+    avdAvailabilitySet
+  ]
 }]
 // Add session hosts to AVD Host pool.
 module addAvdHostsToHostPool '../avd-customextensions/add-avd-session-hosts.bicep' = [for i in range(0, avdDeploySessionHostsCount): {
@@ -194,6 +196,9 @@ module addAvdHostsToHostPool '../avd-customextensions/add-avd-session-hosts.bice
       hostPoolName: avdHostPoolName
       avdAgentPackageLocation: avdAgentPackageLocation
   }
+  dependsOn: [
+    avdSessionHosts
+]
 }]
 
 
