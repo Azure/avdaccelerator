@@ -267,7 +267,7 @@ module avdBaselineResourceGroups '../carml/0.5.0/Microsoft.Resources/resourceGro
 }]
 
 // Optional. Networking
-module avdNetworking 'avd-modules/avd-networking.bicep' = {
+module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
     name: 'Deploy-AVD-Networking-${time}'
     params: {
         avdApplicationsecurityGroupName: avdApplicationsecurityGroupName
@@ -324,7 +324,6 @@ module avdWorkSpace '../carml/0.5.0/Microsoft.DesktopVirtualization/workspaces/d
         appGroupResourceIds: avdHostPoolandAppGroups.outputs.avdAppGroupsArray
     }
     dependsOn: [
-        avdBaselineResourceGroups
         avdHostPoolandAppGroups
     ]
 }
