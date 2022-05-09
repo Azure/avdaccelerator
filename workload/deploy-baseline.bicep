@@ -459,7 +459,7 @@ module avdApplicationGroupRApp '../carml/1.0.0/Microsoft.DesktopVirtualization/a
         avdHostPool
     ]
 }
-// Identity 
+// Identity
 
 module fslogixManagedIdentity '../carml/1.0.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = if (avdDeploySessionHosts) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
@@ -470,6 +470,21 @@ module fslogixManagedIdentity '../carml/1.0.0/Microsoft.ManagedIdentity/userAssi
     }
     dependsOn: [
         avdServiceObjectsRg
+    ]
+}
+
+module fslogixManagedIdentitySleep '../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (avdDeploySessionHosts) {
+    scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
+    name: 'fslogix-Managed-Identity-Sleep-${time}'
+    params: {
+        name: '${fslogixManagedIdentityName}-WaitSection'
+        location: avdManagementPlaneLocation
+        kind: 'AzurePowerShell'
+        scriptContent: 'start-sleep -Seconds 180'
+        retentionInterval: 'PT1H'
+    }
+    dependsOn: [
+        fslogixManagedIdentity
     ]
 }
 
@@ -516,7 +531,7 @@ module fslogixConnectRoleAssign '../carml/1.0.0/Microsoft.Authorization/roleAssi
         principalId: fslogixManagedIdentity.outputs.principalId
     }
     dependsOn: [
-        fslogixManagedIdentity
+        fslogixManagedIdentitySleep
     ]
 }
 
@@ -528,7 +543,7 @@ module fslogixConnectReaderRoleAssign '../carml/1.0.0/Microsoft.Authorization/ro
         principalId: fslogixManagedIdentity.outputs.principalId
     }
     dependsOn: [
-        fslogixManagedIdentity
+        fslogixManagedIdentitySleep
     ]
 }
 
@@ -595,7 +610,7 @@ module avdWrklKeyVault '../carml/1.0.0/Microsoft.KeyVault/vaults/deploy.bicep' =
 
 // Storage
 
-// Provision temporary domain and add it to domain 
+// Provision temporary domain and add it to domain
 
 module storageVM '../carml/1.0.0/Microsoft.Compute/virtualMachines/deploy.bicep' =  if (avdDeploySessionHosts) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
@@ -604,7 +619,7 @@ module storageVM '../carml/1.0.0/Microsoft.Compute/virtualMachines/deploy.bicep'
         name: tempStorageVmName
         location: avdSessionHostLocation
         userAssignedIdentities: {
-            '${fslogixManagedIdentity.outputs.resourceId}' : {} 
+            '${fslogixManagedIdentity.outputs.resourceId}' : {}
         }
         encryptionAtHost: encryptionAtHost
         osType: 'Windows'
@@ -704,7 +719,7 @@ module fslogixStorage '../carml/1.0.0/Microsoft.Storage/storageAccounts/deploy.b
     ]
 }
 
-// Custom Extension call in on the DSC script to join Azure storage to domain. 
+// Custom Extension call in on the DSC script to join Azure storage to domain.
 
 module addFslogixShareToADDSSript '../carml/1.0.0/Microsoft.Compute/virtualMachines/extensions/add-azure-files-to-adds-script.bicep' =  if (avdDeploySessionHosts) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
@@ -723,7 +738,7 @@ module addFslogixShareToADDSSript '../carml/1.0.0/Microsoft.Compute/virtualMachi
 }
 
 
-    // Run deployment script to remove the VM --> 0.2 release. 
+    // Run deployment script to remove the VM --> 0.2 release.
     // needs user managed identity --> Virtual machine contributor role assignment. Deployment script to assume the identity to delete VM. Include NIC and disks (force)
 
 //
@@ -757,7 +772,7 @@ module avdSessionHosts '../carml/1.0.0/Microsoft.Compute/virtualMachines/deploy.
         name: '${avdSessionHostNamePrefix}-${i}'
         location: avdSessionHostLocation
         userAssignedIdentities: {
-            '${fslogixManagedIdentity.outputs.resourceId}' : {} 
+            '${fslogixManagedIdentity.outputs.resourceId}' : {}
         }
         availabilityZone: avdUseAvailabilityZones ? take(skip(allAvailabilityZones, i % length(allAvailabilityZones)), 1) : []
         encryptionAtHost: encryptionAtHost
