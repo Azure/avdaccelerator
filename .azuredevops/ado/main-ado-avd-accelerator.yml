@@ -1,0 +1,89 @@
+trigger:
+  - none
+
+pr:
+  - none
+
+variables:
+  - name: deploymentRegion
+    value: eastus2
+  - name: deploymentPrefix
+    value: app4
+  - name: serviceConnection
+    value: AzureLabCACN-MSDN
+  - name: vmWinImage
+    value: windows-latest
+  - name: vmImage
+    value: ubuntu-latest
+  - name: deployOperation
+    value: create
+  - name: var-bashPostInjectScript
+    value: ':'
+  - name: var-bashPreInjectScript
+    value: 'set -E; function catch { echo "##vso[task.logissue type=error]Caller: $(caller), LineNo: $LINENO, Command: $BASH_COMMAND" ; exit 1 ; } ; echo ; echo "Current working directory: $(pwd)" ; echo ; trap catch ERR'
+  - name: avdShrdlSubsId
+    value: 4f6c98e1-04a4-49f0-abce-6240b1726c3f
+  - name: avdWrklSubsId
+    value: 4f6c98e1-04a4-49f0-abce-6240b1726c3f
+  - name: avdWrklSecretAccess
+    value: 8e23a491-5178-4c69-9fce-1377e52a29c6
+  - name: createAvdVnet
+    value: false
+  - name: useSharedImage
+    value: true
+  - name: avdOsImage
+    #value: win11_21h2_office
+    #value: win10_21h2
+    value: win10_21h2_office
+  - name: existingHubVnetSubscriptionId
+    value: a127444e-1844-4c1e-a359-c9ba98cf5160
+  - name: existingHubVnetRgName
+    value: azureminilab-vnet
+  - name: existingHubVnetName
+    value: azureminilab-cac-vnet1
+  - name: existingVnetSubscriptionId
+    value: 4f6c98e1-04a4-49f0-abce-6240b1726c3f
+  - name: existingVnetRgName
+    value: AzurelabCACN-VNET
+  - name: existingVnetName
+    value: azureminlab-eastus2-avd-vnet
+  - name: existingVnetSubnetName
+    value: vms
+  - name: avdDomainJoinUserName
+    value: 'azadmin@azureminilab.com'
+  - name: avdDomainJoinUserPassword
+    value: '!V0ipc@123'
+  - name: avdVmLocalUserName
+    value: azadmin
+  - name: avdVmLocalUserPassword
+    value: '!R37fallacy1505'
+
+
+stages:
+  - stage: Deploy_AVD_Accelerator
+    displayName: Deploy AVD Accelerator
+    jobs:
+      # Deploy template deploy.bicep for AVD Accelerator
+      - template: deploy-template-sub.yml
+        parameters:
+          jobName: Deploy_AVD_Accelerator
+          location: $(deploymentRegion)
+          workingDir: $(System.DefaultWorkingDirectory)/workload
+          templateFile: deploy.bicep
+          parameterArray:
+            - deploymentPrefix 'app4'
+            - avdWrklSubsId $(avdWrklSubsId)
+            - avdSingleSubsId $(avdWrklSubsId)
+            - avdSubOrgsOption 'Single'
+            - avdManagementPlaneLocation $(deploymentRegion)
+            - avdSessionHostLocation $(deploymentRegion)
+        #    - avdWrklSecretAccess $(avdWrklSecretAccess)
+            - existingVnetSubnetResourceId '/subscriptions/4f6c98e1-04a4-49f0-abce-6240b1726c3f/resourceGroups/AzurelabCACN-VNET/providers/Microsoft.Network/virtualNetworks/azureminlab-eastus2-avd-vnet/subnets/vms'
+            - useSharedImage $(useSharedImage)
+            - avdOsImage $(avdOsImage)
+            - createAvdVnet $(createAvdVnet)
+            - avdDomainJoinUserName $(avdDomainJoinUserName)
+            - avdDomainJoinUserPassword $(avdDomainJoinUserPassword)
+            - avdVmLocalUserName $(avdVmLocalUserName)
+            - avdVmLocalUserPassword $(avdVmLocalUserPassword)
+
