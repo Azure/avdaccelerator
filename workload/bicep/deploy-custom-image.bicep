@@ -120,7 +120,7 @@ var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main
 var avdSharedSResourcesStorageName = 'avd${uniqueString(deploymentPrefixLowercase, avdSharedServicesLocationLowercase)}shared'
 var avdSharedSResourcesAibContainerName = 'aib-${deploymentPrefixLowercase}'
 var avdSharedSResourcesScriptsContainerName = 'scripts-${deploymentPrefixLowercase}'
-var avdSharedServicesKvName = 'avd-${uniqueString(deploymentPrefixLowercase, avdSharedServicesLocationLowercase)}-shared' // max length limit 24 characters
+var avdSharedServicesKvName = 'avd-${uniqueString(deploymentPrefixLowercase, avdSharedServicesLocationLowercase, avdSharedServicesSubId)}-shared' // max length limit 24 characters
 
 // =========== //
 // Deployments //
@@ -229,7 +229,6 @@ module userManagedIdentityDelay '../../carml/1.0.0/Microsoft.Resources/deploymen
 
 // Enterprise applications.
 // RBAC role Assignments.
-// Call on the KV.
 resource azureImageBuilderExistingRole 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = if (!createAibCustomRole) {
     name: 'AzureImageBuilder-AVD'
     scope: subscription(avdSharedServicesSubId)
