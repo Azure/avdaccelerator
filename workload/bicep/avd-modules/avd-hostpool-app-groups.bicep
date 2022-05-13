@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+// ========== //
+// Parameters //
+// ========== //
 @description('Required. Location where to deploy AVD management plane')
 param avdManagementPlaneLocation string
 
@@ -10,13 +13,13 @@ param avdWorkloadSubsId string
 param avdServiceObjectsRgName string
 
 @description('Optional. AVD Application Group Name for the applications.')
-param avdApplicationGroupNameRApp string
+param avdApplicationGroupNameRapp string
 
 @description('AVD Application group for the session hosts. Desktop type.')
 param avdApplicationGroupNameDesktop string
 
 @description('Optional. AVD deploy remote app application group')
-param avdDeployRAppGroup bool
+param avdDeployRappGroup bool
 
 @description('AVD Host Pool Name')
 param avdHostPoolName string
@@ -49,12 +52,14 @@ param avdHostPoolloadBalancerType string
 param avhHostPoolMaxSessions int
 
 @description('Optional. AVD host pool start VM on Connect')
-param avdStartVMOnConnect bool
+param avdStartVmOnConnect bool
 
 @description('Do not modify, used to set unique value for resource deployment')
 param time string = utcNow()
 
-//* Variables
+// =========== //
+// Variable declaration //
+// =========== //
 var desktopApplicaitonGroups = [
   {
   name: avdApplicationGroupNameDesktop
@@ -65,29 +70,36 @@ var desktopApplicaitonGroups = [
 
 var applicationApplicationGroups = [
   { 
-  name: avdApplicationGroupNameRApp
+  name: avdApplicationGroupNameRapp
   location: avdManagementPlaneLocation
   applicationGroupType: 'RemoteApp'
   }
 ]
 
-var finalApplicationGroups = avdDeployRAppGroup ? concat(desktopApplicaitonGroups,applicationApplicationGroups): desktopApplicaitonGroups
+var finalApplicationGroups = avdDeployRappGroup ? concat(desktopApplicaitonGroups,applicationApplicationGroups): desktopApplicaitonGroups
 
-module avdHostPool '../../carml/0.5.0/Microsoft.DesktopVirtualization/hostpools/deploy.bicep' =  {
+// =========== //
+// Deployments //
+// =========== //
+
+// Hostpool.
+module avdHostPool '../../../carml/1.2.0/Microsoft.DesktopVirtualization/hostpools/deploy.bicep' =  {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
     name: 'AVD-HostPool-${time}'
     params: {
         name: avdHostPoolName
         location: avdManagementPlaneLocation
         hostpoolType: avdHostPoolType
-        startVMOnConnect: avdStartVMOnConnect
+        startVMOnConnect: avdStartVmOnConnect
         customRdpProperty: avdHostPoolRdpProperty
         loadBalancerType: avdHostPoolloadBalancerType
         maxSessionLimit: avhHostPoolMaxSessions
         personalDesktopAssignmentType: avdPersonalAssignType
     }
 }
-module avdApplicationGroups '../../carml/0.5.0/Microsoft.DesktopVirtualization/applicationgroups/deploy.bicep' = [for applicationGroup in finalApplicationGroups:  {
+
+// Application groups.
+module avdApplicationGroups '../../../carml/1.2.0/Microsoft.DesktopVirtualization/applicationgroups/deploy.bicep' = [for applicationGroup in finalApplicationGroups:  {
 scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
 name: 'Deploy-AppGroup-${applicationGroup.name}-${time}'
 params: {
@@ -101,5 +113,8 @@ dependsOn: [
 ]
 }]
 
+// =========== //
+// Outputs //
+// =========== //
 output avdAppGroupsArray array = [for (resourceId,i) in finalApplicationGroups : avdApplicationGroups[i].outputs.resourceId] 
 output hostPooltoken string = avdHostPool.outputs.hostPoolRestrationInfo.token

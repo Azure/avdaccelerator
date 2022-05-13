@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+// ========== //
+// Parameters //
+// ========== //
 @description('AVD subnet ID')
 param avdSubnetId string
 
@@ -49,7 +52,7 @@ param useSharedImage bool
 param avdImageTemplataDefinitionId string
 
 @description('Fslogix Managed Identity Resource ID ')
-param fslogixManagedIdentityresourceId string
+param fslogixManagedIdentityResourceId string
 
 @description('Local administrator username')
 param avdVmLocalUserName string
@@ -93,11 +96,17 @@ param fslogixScriptUri string
 @description('Do not modify, used to set unique value for resource deployment')
 param time string = utcNow()
 
-// Variables
+// =========== //
+// Variable declaration //
+// =========== //
 var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
 
-// Availability set
-module avdAvailabilitySet '../../carml/0.5.0/Microsoft.Compute/availabilitySets/deploy.bicep' = if (!avdUseAvailabilityZones) {
+// =========== //
+// Deployments //
+// =========== //
+
+// Availability set.
+module avdAvailabilitySet '../../../carml/1.2.0/Microsoft.Compute/availabilitySets/deploy.bicep' = if (!avdUseAvailabilityZones) {
   name: 'AVD-Availability-Set-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
   params: {
@@ -108,14 +117,15 @@ module avdAvailabilitySet '../../carml/0.5.0/Microsoft.Compute/availabilitySets/
   }
 }
 
-module avdSessionHosts '../../carml/0.5.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(0, avdDeploySessionHostsCount):  {
+// Session hosts.
+module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(0, avdDeploySessionHostsCount):  {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
   name: 'AVD-Session-Host-${i}-${time}'
   params: {
       name: '${avdSessionHostNamePrefix}-${i}'
       location: avdSessionHostLocation
       userAssignedIdentities: {
-          '${fslogixManagedIdentityresourceId}' : {} 
+          '${fslogixManagedIdentityResourceId}' : {} 
       }
       availabilityZone: avdUseAvailabilityZones ? take(skip(allAvailabilityZones, i % length(allAvailabilityZones)), 1) : []
       encryptionAtHost: encryptionAtHost
@@ -148,7 +158,7 @@ module avdSessionHosts '../../carml/0.5.0/Microsoft.Compute/virtualMachines/depl
               ]
           }
       ]
-      // Join domain
+      // Join domain.
       allowExtensionOperations: true
       extensionDomainJoinPassword: avdDomainJoinUserPassword //avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
       extensionDomainJoinConfig: {
@@ -161,7 +171,7 @@ module avdSessionHosts '../../carml/0.5.0/Microsoft.Compute/virtualMachines/depl
               options: '3'
           }
       }
-      // Enable and Configure Microsoft Malware
+      // Enable and Configure Microsoft Malware.
       extensionAntiMalwareConfig: {
           enabled: true
           settings: {
@@ -180,13 +190,12 @@ module avdSessionHosts '../../carml/0.5.0/Microsoft.Compute/virtualMachines/depl
               }
           }
       }
-  }
-  dependsOn: [
-    avdAvailabilitySet
-  ]
-}]
+    }
+    dependsOn: []
+    }]
+
 // Add session hosts to AVD Host pool.
-module addAvdHostsToHostPool '../avd-customextensions/add-avd-session-hosts.bicep' = [for i in range(0, avdDeploySessionHostsCount): {
+module addAvdHostsToHostPool '../../vm-custom-extensions/add-avd-session-hosts.bicep' = [for i in range(0, avdDeploySessionHostsCount): {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
   name: 'Add-AVD-Session-Host-${i}-to-HostPool-${time}'
   params: {
@@ -202,8 +211,8 @@ module addAvdHostsToHostPool '../avd-customextensions/add-avd-session-hosts.bice
 }]
 
 
-// Add the registry keys for Fslogix. Alternatively can be enforced via GPOs
-module configureFsLogixForAvdHosts '../avd-customextensions/configure-fslogix-session-hosts.bicep' = [for i in range(0, avdDeploySessionHostsCount): {
+// Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
+module configureFsLogixForAvdHosts '../../vm-custom-extensions/configure-fslogix-session-hosts.bicep' = [for i in range(0, avdDeploySessionHostsCount): {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
   name: 'Configure-FsLogix-for-${avdSessionHostNamePrefix}-${i}-${time}'
   params: {
@@ -217,4 +226,3 @@ module configureFsLogixForAvdHosts '../avd-customextensions/configure-fslogix-se
       avdSessionHosts
   ]
 }]
-//

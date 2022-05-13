@@ -64,13 +64,13 @@ param avdHostPoolloadBalancerType string = 'BreadthFirst'
 param avhHostPoolMaxSessions int = 15
 
 @description('Optional. AVD host pool start VM on Connect')
-param avdStartVMOnConnect bool
+param avdStartVmOnConnect bool
 
 @description('Create custom Start VM on connect role')
 param createStartVmOnConnectCustomRole bool
 
 @description('Optional. AVD deploy remote app application group')
-param avdDeployRAppGroup bool
+param avdDeployRappGroup bool
 
 @description('Optional. AVD host pool Custom RDP properties')
 param avdHostPoolRdpProperty string = 'audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2'
@@ -179,11 +179,11 @@ var avdVnetworkSubnetName = 'avd-${deploymentPrefixLowercase}'
 var avdNetworksecurityGroupName = 'avdnsg-${avdSessionHostLocationLowercase}-${deploymentPrefixLowercase}'
 var avdRouteTableName = 'avdudr-${avdSessionHostLocationLowercase}-${deploymentPrefixLowercase}'
 var avdApplicationsecurityGroupName = 'avdasg-${avdSessionHostLocationLowercase}-${deploymentPrefixLowercase}'
-var avdVNetworkPeeringName = '${uniqueString(deploymentPrefixLowercase, avdSessionHostLocation)}-peering-avd-${deploymentPrefixLowercase}'
+var avdVnetworkPeeringName = '${uniqueString(deploymentPrefixLowercase, avdSessionHostLocation)}-peering-avd-${deploymentPrefixLowercase}'
 var avdWorkSpaceName = 'avdws-${deploymentPrefixLowercase}'
 var avdHostPoolName = 'avdhp-${deploymentPrefixLowercase}'
 var avdApplicationGroupNameDesktop = 'avddag-${deploymentPrefixLowercase}'
-var avdApplicationGroupNameRApp = 'avdraag-${deploymentPrefixLowercase}'
+var avdApplicationGroupNameRapp = 'avdraag-${deploymentPrefixLowercase}'
 var marketPlaceGalleryWindows = {
     'win10_21h2_office': {
         publisher: 'MicrosoftWindowsDesktop'
@@ -277,7 +277,7 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
         avdRouteTableName: avdRouteTableName
         avdVnetworkAddressPrefixes: avdVnetworkAddressPrefixes
         avdVnetworkName: avdVnetworkName
-        avdVNetworkPeeringName: avdVNetworkPeeringName
+        avdVnetworkPeeringName: avdVnetworkPeeringName
         avdVnetworkSubnetName: avdVnetworkSubnetName
         createAvdVnet: createAvdVnet
         vNetworkGatewayOnHub: vNetworkGatewayOnHub
@@ -297,8 +297,8 @@ module avdHostPoolandAppGroups 'avd-modules/avd-hostpool-app-groups.bicep' = {
     name: 'Deploy-AVD-HostPool-AppGroups-${time}'
     params: {
         avdApplicationGroupNameDesktop: avdApplicationGroupNameDesktop
-        avdApplicationGroupNameRApp: avdApplicationGroupNameRApp
-        avdDeployRAppGroup: avdDeployRAppGroup
+        avdApplicationGroupNameRapp: avdApplicationGroupNameRapp
+        avdDeployRappGroup: avdDeployRappGroup
         avdHostPoolName: avdHostPoolName
         avdHostPoolRdpProperty: avdHostPoolRdpProperty
         avdHostPoolloadBalancerType: avdHostPoolloadBalancerType
@@ -307,7 +307,7 @@ module avdHostPoolandAppGroups 'avd-modules/avd-hostpool-app-groups.bicep' = {
         avdPersonalAssignType: avdPersonalAssignType
         avdManagementPlaneLocation: avdManagementPlaneLocation
         avdServiceObjectsRgName: avdServiceObjectsRgName
-        avdStartVMOnConnect: avdStartVMOnConnect
+        avdStartVmOnConnect: avdStartVmOnConnect
         avdWorkloadSubsId: avdWorkloadSubsId
     }
     dependsOn: [
@@ -486,7 +486,7 @@ module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' =
         avdVmLocalUserPassword: avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
         avdWorkloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
-        fslogixManagedIdentityresourceId: deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId
+        fslogixManagedIdentityResourceId: deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId
         fsLogixScript: fsLogixScript
         FsLogixScriptArguments: FsLogixScriptArguments
         fslogixScriptUri: fslogixScriptUri

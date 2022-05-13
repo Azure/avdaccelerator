@@ -1,12 +1,15 @@
 targetScope = 'subscription'
 
+// ========== //
+// Parameters //
+// ========== //
 @description('Optional. AVD workload subscription ID, multiple subscriptions scenario')
 param avdWorkloadSubsId string
 
 @description('Resource Group Name for the AVD session hosts')
 param avdComputeObjectsRgName string
 
-// Optional parameters for the AVD session hosts virtual network
+// Optional parameters for the AVD session hosts virtual network.
 @description('Create new virtual network')
 param createAvdVnet bool
 
@@ -32,7 +35,7 @@ param vNetworkGatewayOnHub bool
 param existingHubVnetResourceId string
 
 @description('VNet peering name for AVD VNEt to vHub.  ')
-param avdVNetworkPeeringName string
+param avdVnetworkPeeringName string
 
 @description('AVD virtual network address prefixes')
 param avdVnetworkAddressPrefixes string
@@ -45,7 +48,6 @@ param avdVnetworkSubnetAddressPrefix string
 
 @description('custom DNS servers IPs')
 param customDnsIps string
-//
 
 @description('Required. Location where to deploy compute services')
 param avdSessionHostLocation string = deployment().location
@@ -53,7 +55,12 @@ param avdSessionHostLocation string = deployment().location
 @description('Do not modify, used to set unique value for resource deployment')
 param time string = utcNow()
 
-module avdNetworkObjectsRg '../../carml/0.5.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdVnet) {
+// =========== //
+// Deployments //
+// =========== //
+
+// Resource group.
+module avdNetworkObjectsRg '../../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdVnet) {
     scope: subscription(avdWorkloadSubsId)
     name: 'AVD-RG-Network-${time}'
     params: {
@@ -62,7 +69,8 @@ module avdNetworkObjectsRg '../../carml/0.5.0/Microsoft.Resources/resourceGroups
     }
 }
 
-module avdNetworksecurityGroup '../../carml/0.5.0/Microsoft.Network/networkSecurityGroups/deploy.bicep' = if (createAvdVnet) {
+// Network security group.
+module avdNetworksecurityGroup '../../../carml/1.2.0/Microsoft.Network/networkSecurityGroups/deploy.bicep' = if (createAvdVnet) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdNetworkObjectsRgName}')
     name: 'AVD-NSG-${time}'
     params: {
@@ -74,7 +82,8 @@ module avdNetworksecurityGroup '../../carml/0.5.0/Microsoft.Network/networkSecur
     ]
 }
 
-module avdApplicationSecurityGroup '../../carml/0.5.0/Microsoft.Network/applicationSecurityGroups/deploy.bicep' = if (createAvdVnet) {
+// Application security group.
+module avdApplicationSecurityGroup '../../../carml/1.2.0/Microsoft.Network/applicationSecurityGroups/deploy.bicep' = if (createAvdVnet) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
     name: 'AVD-ASG-${time}'
     params: {
@@ -84,7 +93,8 @@ module avdApplicationSecurityGroup '../../carml/0.5.0/Microsoft.Network/applicat
     dependsOn: []
 }
 
-module avdRouteTable '../../carml/0.5.0/Microsoft.Network/routeTables/deploy.bicep' = if (createAvdVnet) {
+// Route table.
+module avdRouteTable '../../../carml/1.2.0/Microsoft.Network/routeTables/deploy.bicep' = if (createAvdVnet) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdNetworkObjectsRgName}')
     name: 'AVD-UDR-${time}'
     params: {
@@ -96,7 +106,8 @@ module avdRouteTable '../../carml/0.5.0/Microsoft.Network/routeTables/deploy.bic
     ]
 }
 
-module avdVirtualNetwork '../../carml/0.5.0/Microsoft.Network/virtualNetworks/deploy.bicep' = if (createAvdVnet) {
+// Virtual network.
+module avdVirtualNetwork '../../../carml/1.2.0/Microsoft.Network/virtualNetworks/deploy.bicep' = if (createAvdVnet) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdNetworkObjectsRgName}')
     name: 'AVD-vNet-${time}'
     params: {
@@ -107,14 +118,14 @@ module avdVirtualNetwork '../../carml/0.5.0/Microsoft.Network/virtualNetworks/de
         virtualNetworkPeerings: [
             {
                 remoteVirtualNetworkId: existingHubVnetResourceId
-                name: avdVNetworkPeeringName
+                name: avdVnetworkPeeringName
                 allowForwardedTraffic: true
                 allowGatewayTransit: false
                 allowVirtualNetworkAccess: true
                 doNotVerifyRemoteGateways: true
                 useRemoteGateways: vNetworkGatewayOnHub ? true : false
                 remotePeeringEnabled: true
-                remotePeeringName: avdVNetworkPeeringName
+                remotePeeringName: avdVnetworkPeeringName
                 remotePeeringAllowForwardedTraffic: true
                 remotePeeringAllowGatewayTransit: vNetworkGatewayOnHub ? true : false
                 remotePeeringAllowVirtualNetworkAccess: true
@@ -141,14 +152,7 @@ module avdVirtualNetwork '../../carml/0.5.0/Microsoft.Network/virtualNetworks/de
     ]
 }
 
-
-// Need TO ADD outputs here 
-
-output avdApplicationSecurityGroupResourceId string = avdApplicationSecurityGroup.outputs.resourceId
-output avdVirtualNetworkResourceId string = avdVirtualNetwork.outputs.resourceId
-
-
-// Update the existing subnet to disable network policies
+// Update existing virtual network subnet (disable privete endpoint network policies).
 /*
 resource existingVnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = if (!empty(existingVnetSubnetResourceId))  {
     name: existingVnetName
@@ -176,4 +180,12 @@ params:{
     }
 }
 */
-//
+
+
+// =========== //
+// Outputs //
+// =========== //
+output avdApplicationSecurityGroupResourceId string = avdApplicationSecurityGroup.outputs.resourceId
+output avdVirtualNetworkResourceId string = avdVirtualNetwork.outputs.resourceId
+
+
