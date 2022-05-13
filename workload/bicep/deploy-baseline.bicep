@@ -173,7 +173,6 @@ var avdNetworkObjectsRgName = 'rg-${avdSessionHostLocationLowercase}-avd-${deplo
 var avdComputeObjectsRgName = 'rg-${avdSessionHostLocationLowercase}-avd-${deploymentPrefixLowercase}-pool-compute' // max length limit 90 characters
 var avdStorageObjectsRgName = 'rg-${avdSessionHostLocationLowercase}-avd-${deploymentPrefixLowercase}-storage' // max length limit 90 characters
 var avdSharedResourcesRgName = 'rg-${avdSessionHostLocationLowercase}-avd-shared-resources'
-
 var avdVnetworkName = 'avdvnet-${avdSessionHostLocationLowercase}-${deploymentPrefixLowercase}'
 var avdVnetworkSubnetName = 'avd-${deploymentPrefixLowercase}'
 var avdNetworksecurityGroupName = 'avdnsg-${avdSessionHostLocationLowercase}-${deploymentPrefixLowercase}'
