@@ -25,7 +25,7 @@ param avdDeployRappGroup bool
 param avdHostPoolName string
 
 @description('Optional. AVD host pool Custom RDP properties')
-param avdHostPoolRdpProperty string 
+param avdHostPoolRdpProperties string 
 
 @allowed([
   'Personal'
@@ -46,7 +46,7 @@ param avdPersonalAssignType string
   'DepthFirst'
 ])
 @description('Required. AVD host pool load balacing type (Default: BreadthFirst)')
-param avdHostPoolloadBalancerType string
+param avdHostPoolLoadBalancerType string
 
 @description('Optional. AVD host pool maximum number of user sessions per session host')
 param avhHostPoolMaxSessions int
@@ -91,8 +91,8 @@ module avdHostPool '../../../carml/1.2.0/Microsoft.DesktopVirtualization/hostpoo
         location: avdManagementPlaneLocation
         hostpoolType: avdHostPoolType
         startVMOnConnect: avdStartVmOnConnect
-        customRdpProperty: avdHostPoolRdpProperty
-        loadBalancerType: avdHostPoolloadBalancerType
+        customRdpProperty: avdHostPoolRdpProperties
+        loadBalancerType: avdHostPoolLoadBalancerType
         maxSessionLimit: avhHostPoolMaxSessions
         personalDesktopAssignmentType: avdPersonalAssignType
     }

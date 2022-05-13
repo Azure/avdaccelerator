@@ -71,7 +71,7 @@ param avdFslogixStorageName string
 param avdFslogixFileShareName string
 
 @description('Azure Files storage account SKU')
-param fsLogixstorageSku string
+param fsLogixStorageSku string
 
 @description('Azure File share quota')
 param avdFslogixFileShareQuotaSize int
@@ -108,9 +108,9 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
   params: {
       name: avdFslogixStorageName
       location: avdSessionHostLocation
-      storageAccountSku: fsLogixstorageSku
+      storageAccountSku: fsLogixStorageSku
       allowBlobPublicAccess: false
-      storageAccountKind:  ((fsLogixstorageSku =~ 'Premium_LRS') || (fsLogixstorageSku =~ 'Premium_ZRS')) ? 'FileStorage': 'StorageV2'
+      storageAccountKind:  ((fsLogixStorageSku =~ 'Premium_LRS') || (fsLogixStorageSku =~ 'Premium_ZRS')) ? 'FileStorage': 'StorageV2'
       storageAccountAccessTier: 'Hot'
       networkAcls: {
           bypass: 'AzureServices'

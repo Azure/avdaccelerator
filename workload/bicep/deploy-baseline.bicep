@@ -58,7 +58,7 @@ param avdPersonalAssignType string = 'Automatic'
     'DepthFirst'
 ])
 @description('Required. AVD host pool load balacing type (Default: BreadthFirst)')
-param avdHostPoolloadBalancerType string = 'BreadthFirst'
+param avdHostPoolLoadBalancerType string = 'BreadthFirst'
 
 @description('Optional. AVD host pool maximum number of user sessions per session host')
 param avhHostPoolMaxSessions int = 15
@@ -73,7 +73,7 @@ param createStartVmOnConnectCustomRole bool
 param avdDeployRappGroup bool
 
 @description('Optional. AVD host pool Custom RDP properties')
-param avdHostPoolRdpProperty string = 'audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2'
+param avdHostPoolRdpProperties string = 'audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2'
 
 @description('Create new virtual network')
 param createAvdVnet bool
@@ -120,13 +120,13 @@ param avdDeploySessionHostsCount int
 param avdUseAvailabilityZones bool = true
 
 @description('Optional. Sets the number of fault domains for the availability set. (Defualt: 3)')
-param avdAsFaultDomainCount int = 3
+param avdAsFaultDomainCount int = 2
 
 @description('Optional. Sets the number of update domains for the availability set. (Defualt: 5)')
 param avdAsUpdateDomainCount int = 5
 
 @description('Storage account SKU for FSLogix storage. Recommended tier is Premium LRS or Premium ZRS (where available)')
-param fsLogixstorageSku string = ''
+param fsLogixStorageSku string = ''
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool = false 
@@ -154,10 +154,10 @@ param useSharedImage bool
 param avdImageTemplataDefinitionId string = ''
 
 @description('OU name for Azure Storage Account. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly. ')
-param storageOUName string = ''
+param storageOuName string = ''
 
 @description('If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain')
-param createOUforStorage bool = false
+param createOuforStorage bool = false
 
 @description('Do not modify, used to set unique value for resource deployment')
 param time string = utcNow()
@@ -229,13 +229,13 @@ var tempStorageVmName='tempstgvm'
 var dscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCDomainJoinStorageScripts.zip'
 var addStorageToDomainScriptUri='${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-ADDS.ps1'
 var addStorageToDomainScript='./Manual-DSC-JoinStorage-to-ADDS.ps1'
-var addStorageToDomainScriptArgs='-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${OuStgName} -CreateNewOU ${createOUforStorageString} -ShareName ${avdFslogixFileShareName} -Verbose'
-var OuStgName = !empty(storageOUName)? storageOUName : 'Computers'
+var addStorageToDomainScriptArgs='-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${OuStgName} -CreateNewOU ${createOuforStorageString} -ShareName ${avdFslogixFileShareName} -Verbose'
+var OuStgName = !empty(storageOuName)? storageOuName : 'Computers'
 var avdWrklKvName = 'avd-${uniqueString(deploymentPrefixLowercase, avdSessionHostLocationLowercase)}-${deploymentPrefixLowercase}' // max length limit 24 characters
 var avdSessionHostNamePrefix = 'avdsh-${deploymentPrefix}'
 var avdAvailabilitySetName = 'avdas-${deploymentPrefix}'
 var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
-var createOUforStorageString = string(createOUforStorage)
+var createOuforStorageString = string(createOuforStorage)
 
 var resourceGroups = [
     {
@@ -255,8 +255,8 @@ var resourceGroups = [
 // Deployments //
 // =========== //
 
-// Resource groups
-module avdBaselineResourceGroups '../carml/0.5.0/Microsoft.Resources/resourceGroups/deploy.bicep' = [ for resourceGroup in resourceGroups: {
+// Resource groups.
+module avdBaselineResourceGroups '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = [ for resourceGroup in resourceGroups: {
     scope: subscription(avdWorkloadSubsId)
     name: 'Deploy-${substring(resourceGroup.name,10)}-${time}'
     params: {
@@ -266,7 +266,7 @@ module avdBaselineResourceGroups '../carml/0.5.0/Microsoft.Resources/resourceGro
     }
 }]
 
-// Optional. Networking
+// Optional. Networking.
 module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
     name: 'Deploy-AVD-Networking-${time}'
     params: {
@@ -292,7 +292,7 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
     ]
 }
 
-// AVD management plane
+// AVD management plane.
 module avdHostPoolandAppGroups 'avd-modules/avd-hostpool-app-groups.bicep' = {
     name: 'Deploy-AVD-HostPool-AppGroups-${time}'
     params: {
@@ -300,8 +300,8 @@ module avdHostPoolandAppGroups 'avd-modules/avd-hostpool-app-groups.bicep' = {
         avdApplicationGroupNameRapp: avdApplicationGroupNameRapp
         avdDeployRappGroup: avdDeployRappGroup
         avdHostPoolName: avdHostPoolName
-        avdHostPoolRdpProperty: avdHostPoolRdpProperty
-        avdHostPoolloadBalancerType: avdHostPoolloadBalancerType
+        avdHostPoolRdpProperties: avdHostPoolRdpProperties
+        avdHostPoolLoadBalancerType: avdHostPoolLoadBalancerType
         avdHostPoolType: avdHostPoolType
         avhHostPoolMaxSessions:avhHostPoolMaxSessions
         avdPersonalAssignType: avdPersonalAssignType
@@ -315,7 +315,7 @@ module avdHostPoolandAppGroups 'avd-modules/avd-hostpool-app-groups.bicep' = {
     ]
 }
 
-module avdWorkSpace '../carml/0.5.0/Microsoft.DesktopVirtualization/workspaces/deploy.bicep' = {
+module avdWorkSpace '../../carml/1.2.0/Microsoft.DesktopVirtualization/workspaces/deploy.bicep' = {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
     name: 'Deploy-AVD-WorkSpace-${time}'
     params: {
@@ -329,7 +329,7 @@ module avdWorkSpace '../carml/0.5.0/Microsoft.DesktopVirtualization/workspaces/d
 }
 //
 
-// Identity: managed identities and role assignments 
+// Identity: managed identities and role assignments.
 module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
     name: 'Create-ManagedIdentities-RoleAssign'
     params: {
@@ -350,8 +350,8 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
     ]
 }
 
-// Key vault
-module avdWrklKeyVault '../carml/1.0.0/Microsoft.KeyVault/vaults/deploy.bicep' = if (avdDeploySessionHosts) {
+// Key vault.
+module avdWrklKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = if (avdDeploySessionHosts) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
     name: 'AVD-Workload-KeyVault-${time}'
     params: {
@@ -417,7 +417,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
 }
 
-// Storage
+// Storage.
 module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (avdDeploySessionHosts) {
     name: 'Deploy-AVD-Storage-AzureFiles-${time}'
     params: {
@@ -446,7 +446,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         avdWorkloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
         fslogixManagedIdentityResourceId: deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId
-        fsLogixstorageSku: fsLogixstorageSku
+        fsLogixStorageSku: fsLogixStorageSku
         marketPlaceGalleryWindows: marketPlaceGalleryWindows['win10_21h2']
         subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
         tempStorageVmName: tempStorageVmName
@@ -459,7 +459,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
     ]
 }
 
-// Session hosts
+// Session hosts.
 module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' = if (avdDeploySessionHosts) {
     name: 'Deploy-and-Configure-AVD-SessionHosts-${time}'
     params: {
