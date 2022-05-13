@@ -312,7 +312,7 @@
                 "existingAibManagedIdentityId": "[if(equals(steps('avdCustomImageAib').avdCustomImageIdentityAibCreateManagedIdentity, false), steps('avdCustomImageAib').avdCustomImageIdentityAibSelectManagedIdentity.id, 'none')]",
                 "existingAibManagedIdentityName": "[if(equals(steps('avdCustomImageAib').avdCustomImageIdentityAibCreateManagedIdentity, false), steps('avdCustomImageAib').avdCustomImageIdentityAibSelectManagedIdentity.name, 'none')]",
                 "createAibCustomRole": "[steps('avdCustomImageAib').avdCustomImageIdentityAibCreateRole]",
-                "aiblocation": "[steps('avdCustomImageAib').avdCustomImageLocation]",
+                "aibLocation": "[steps('avdCustomImageAib').avdCustomImageLocation]",
                 "avdOsImage": "[steps('avdCustomImage').avdCustomImageOsSelection.avdCustomImageOsImage]"
             },
             "kind": "Subscription",
