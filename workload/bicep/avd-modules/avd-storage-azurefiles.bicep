@@ -145,7 +145,7 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
 
 // Provision temporary VM and add it to domain.
 module storageVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.bicep' =  {
-  scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
+  scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
   name: 'Deploy-temporary-VM-FsLogixStorageToDomain-${time}'
   params: {
       name: tempStorageVmName
@@ -204,8 +204,8 @@ module storageVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.
 
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
 module addFslogixShareToADDSSript '../../vm-custom-extensions/add-azure-files-to-adds-script.bicep' = {
-  scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-  name: 'Add-FslogixStorage-toADDS-${time}'
+  scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
+  name: 'Add-FslogixStorage-to-ADDS-${time}'
   params: {
       location: avdSessionHostLocation
       name: storageVM.outputs.name

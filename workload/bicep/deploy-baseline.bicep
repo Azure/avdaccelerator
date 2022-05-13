@@ -426,7 +426,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         avdApplicationSecurityGroupResourceId: createAvdVnet ? '${avdNetworking.outputs.avdApplicationSecurityGroupResourceId}' : ''
         avdComputeObjectsRgName: avdComputeObjectsRgName
         avdDomainJoinUserName: avdDomainJoinUserName
-        avdDomainJoinUserPassword: avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
+        avdDomainJoinUserPassword: avdDomainJoinUserPassword // avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
         avdFslogixFileShareName: avdFslogixFileShareName
         avdFslogixFileShareQuotaSize: avdFslogixFileShareQuotaSize
         avdFslogixStorageName: avdFslogixStorageName
@@ -439,7 +439,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         avdStorageObjectsRgName: avdStorageObjectsRgName
         avdSubnetId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
         avdVmLocalUserName: avdVmLocalUserName
-        avdVmLocalUserPassword: avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
+        avdVmLocalUserPassword: avdVmLocalUserPassword //avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
         avdVnetPrivateDnsZone: avdVnetPrivateDnsZone
         avdVnetPrivateDnsZoneFilesId: avdVnetPrivateDnsZoneFilesId
         avdWorkloadSubsId: avdWorkloadSubsId
@@ -470,7 +470,7 @@ module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' =
         avdComputeObjectsRgName: avdComputeObjectsRgName
         avdDeploySessionHostsCount: avdDeploySessionHostsCount
         avdDomainJoinUserName: avdDomainJoinUserName
-        avdDomainJoinUserPassword: avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
+        avdDomainJoinUserPassword: avdDomainJoinUserPassword //avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
         avdHostPoolName: avdHostPoolName
         avdIdentityDomainName: avdIdentityDomainName
         avdImageTemplataDefinitionId: avdImageTemplataDefinitionId
@@ -482,7 +482,7 @@ module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' =
         avdSubnetId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
         avdUseAvailabilityZones: avdUseAvailabilityZones
         avdVmLocalUserName: avdVmLocalUserName
-        avdVmLocalUserPassword: avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
+        avdVmLocalUserPassword: avdVmLocalUserPassword //avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
         avdWorkloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
         fslogixManagedIdentityResourceId: deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId
