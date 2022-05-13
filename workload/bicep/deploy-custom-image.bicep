@@ -235,7 +235,7 @@ resource azureImageBuilderExistingRole 'Microsoft.Authorization/roleDefinitions@
     scope: subscription(avdSharedServicesSubId)
   }
 
-module azureImageBuilderRoleAssign '../../carml/1.0.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = {
+module azureImageBuilderRoleAssign '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = {
     name: 'Azure-Image-Builder-RoleAssign-${time}'
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
     params: {
@@ -247,7 +247,7 @@ module azureImageBuilderRoleAssign '../../carml/1.0.0/Microsoft.Authorization/ro
     ]
 }
 
-module deployScriptRoleAssign '../../carml/1.0.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = {
+module deployScriptRoleAssign '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = {
     name: 'deploy-script-RoleAssign-${time}'
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
     params: {
@@ -261,7 +261,7 @@ module deployScriptRoleAssign '../../carml/1.0.0/Microsoft.Authorization/roleAss
 
 // Custom images: Azure Image Builder deployment. Azure Compute Gallery --> Image Template Definition --> Image Template --> Build and Publish Template --> Create VMs.
 // Azure Compute Gallery.
-module azureComputeGallery '../../carml/1.0.0/Microsoft.Compute/galleries/deploy.bicep' = {
+module azureComputeGallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy.bicep' = {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
     name: 'Deploy-Azure-Compute-Gallery-${time}'
     params: {
@@ -275,7 +275,7 @@ module azureComputeGallery '../../carml/1.0.0/Microsoft.Compute/galleries/deploy
 }
 
 // Image Template Definition.
-module avdImageTemplataDefinition '../../carml/1.0.0/Microsoft.Compute/galleries/images/deploy.bicep' = {
+module avdImageTemplataDefinition '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep' = {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
     name: 'Deploy-AVD-Image-Template-Definition-${time}'
     params: {
@@ -297,7 +297,7 @@ module avdImageTemplataDefinition '../../carml/1.0.0/Microsoft.Compute/galleries
 //
 
 // Create Image Template.
-module imageTemplate '../../carml/1.0.0/Microsoft.VirtualMachineImages/imageTemplates/deploy.bicep' = {
+module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemplates/deploy.bicep' = {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
     name: 'AVD-Deploy-Image-Template-${time}'
     params: {
@@ -380,7 +380,7 @@ module imageTemplate '../../carml/1.0.0/Microsoft.VirtualMachineImages/imageTemp
 }
 
 // Build Image Template.
-module imageTemplateBuild '../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
+module imageTemplateBuild '../../carml/1.2.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
     name: 'AVD-Build-Image-Template-${time}'
     params: {
@@ -455,7 +455,7 @@ module imageTemplateBuild '../../carml/1.0.0/Microsoft.Resources/deploymentScrip
 }
 
 // Key vaults.
-module avdSharedServicesKeyVault '../../carml/1.0.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
+module avdSharedServicesKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
     name: 'AVD-Shared-Services-KeyVault-${time}'
     params: {
@@ -476,7 +476,7 @@ module avdSharedServicesKeyVault '../../carml/1.0.0/Microsoft.KeyVault/vaults/de
 }
 
 // Storage.
-module avdSharedServicesStorage '../../carml/1.0.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
+module avdSharedServicesStorage '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
     name: 'AVD-Shared-Services-Storage-${time}'
     params: {
