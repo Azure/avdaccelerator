@@ -1080,7 +1080,7 @@
                 "encryptionAtHost": "[steps('avdSessionHosts').avdSessionHostsSettingsSection.avdSessionHostEncryptionAtHost]",
                 "avdSessionHostsSize": "[if(equals(steps('avdSessionHosts').avdDeploySessionHosts, true), steps('avdSessionHosts').avdSessionHostsSettingsSection.element1, 'Standard_D2s_v4')]",
                 "avdFslogixFileShareQuotaSize": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdSessionHostsFslogixFileShareQuota]",
-                "createOuforStorage": "[steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathBool]",
+                "createOuForStorage": "[steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathBool]",
                 "storageOuName": "[if(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathBool, true), steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathStorage, steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathStorageExisting)]",
                 "avdVnetPrivateDnsZone": "[steps('avdNetwork').avdVnetPrivateDnsZone]",
                 "avdVnetPrivateDnsZoneFilesId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneFilesSelector.id, '')]",

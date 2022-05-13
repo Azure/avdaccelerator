@@ -157,7 +157,7 @@ param avdImageTemplataDefinitionId string = ''
 param storageOuName string = ''
 
 @description('If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain')
-param createOuforStorage bool = false
+param createOuForStorage bool = false
 
 @description('Do not modify, used to set unique value for resource deployment')
 param time string = utcNow()
@@ -229,13 +229,13 @@ var tempStorageVmName='tempstgvm'
 var dscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCDomainJoinStorageScripts.zip'
 var addStorageToDomainScriptUri='${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-ADDS.ps1'
 var addStorageToDomainScript='./Manual-DSC-JoinStorage-to-ADDS.ps1'
-var addStorageToDomainScriptArgs='-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${OuStgName} -CreateNewOU ${createOuforStorageString} -ShareName ${avdFslogixFileShareName} -Verbose'
+var addStorageToDomainScriptArgs='-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${OuStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixFileShareName} -Verbose'
 var OuStgName = !empty(storageOuName)? storageOuName : 'Computers'
 var avdWrklKvName = 'avd-${uniqueString(deploymentPrefixLowercase, avdSessionHostLocationLowercase)}-${deploymentPrefixLowercase}' // max length limit 24 characters
 var avdSessionHostNamePrefix = 'avdsh-${deploymentPrefix}'
 var avdAvailabilitySetName = 'avdas-${deploymentPrefix}'
 var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
-var createOuforStorageString = string(createOuforStorage)
+var createOuForStorageString = string(createOuForStorage)
 
 var resourceGroups = [
     {
