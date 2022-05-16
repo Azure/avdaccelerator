@@ -1068,7 +1068,7 @@
                 "vNetworkGatewayOnHub": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdHubVnetPeering.avdHubVnetGateway, false)]",
                 "existingVnetSubnetResourceId": "[if(equals(steps('avdNetwork').createAvdVnet, false), steps('avdNetwork').avdVnetSubnetSelectorName, 'none')]",
                 "avdDeploySessionHosts": "[steps('avdSessionHosts').avdDeploySessionHosts]",
-                "avdStartVMOnConnect": "[steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.startVmOnConnect]",
+                "avdStartVmOnConnect": "[steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.startVmOnConnect]",
                 "createStartVmOnConnectCustomRole": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.startVmOnConnect, true), steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.createVmRole, false)]",
                 "avdEnterpriseAppObjectId": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.createVmRole, true), steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.avdEnterApplication.objectId, 'none')]",
                 "avdUseAvailabilityZones": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdSessionHostsAvailabilitySettings]",
