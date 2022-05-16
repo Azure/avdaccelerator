@@ -357,6 +357,7 @@ module avdWrklKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep
         name: avdWrklKvName
         location: avdSessionHostLocation
         enableRbacAuthorization: false
+        enablePurgeProtection: true
         softDeleteRetentionInDays: 7
         networkAcls: {
             bypass: 'AzureServices'

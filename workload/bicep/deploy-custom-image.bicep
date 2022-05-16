@@ -461,6 +461,7 @@ module avdSharedServicesKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/de
         name: avdSharedServicesKvName
         location: avdSharedServicesLocation
         enableRbacAuthorization: false
+        enablePurgeProtection: true
         softDeleteRetentionInDays: 7
         networkAcls: {
             bypass: 'AzureServices'

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "4872333337676953122"
+      "templateHash": "4932952556543007150"
     }
   },
   "parameters": {
@@ -4612,6 +4612,9 @@
           },
           "enableRbacAuthorization": {
             "value": false
+          },
+          "enablePurgeProtection": {
+            "value": true
           },
           "softDeleteRetentionInDays": {
             "value": 7
