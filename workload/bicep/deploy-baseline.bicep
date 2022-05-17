@@ -506,3 +506,4 @@ module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' =
         avdWrklKeyVault
     ]
 }
+ 
