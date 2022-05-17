@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "16732891116251791488"
+      "templateHash": "13759182114065901342"
     }
   },
   "parameters": {
@@ -9454,7 +9454,12 @@
             "value": "[parameters('avdDomainJoinUserName')]"
           },
           "avdDomainJoinUserPassword": {
-            "value": "[parameters('avdDomainJoinUserPassword')]"
+            "reference": {
+              "keyVault": {
+                "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('avdServiceObjectsRgName'))), 'Microsoft.KeyVault/vaults', variables('avdWrklKvName'))]"
+              },
+              "secretName": "avdDomainJoinUserPassword"
+            }
           },
           "avdFslogixFileShareName": {
             "value": "[variables('avdFslogixFileShareName')]"
@@ -9493,7 +9498,12 @@
             "value": "[parameters('avdVmLocalUserName')]"
           },
           "avdVmLocalUserPassword": {
-            "value": "[parameters('avdVmLocalUserPassword')]"
+            "reference": {
+              "keyVault": {
+                "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('avdServiceObjectsRgName'))), 'Microsoft.KeyVault/vaults', variables('avdWrklKvName'))]"
+              },
+              "secretName": "avdVmLocalUserPassword"
+            }
           },
           "avdVnetPrivateDnsZone": {
             "value": "[parameters('avdVnetPrivateDnsZone')]"
@@ -16472,7 +16482,12 @@
             "value": "[parameters('avdDomainJoinUserName')]"
           },
           "avdDomainJoinUserPassword": {
-            "value": "[parameters('avdDomainJoinUserPassword')]"
+            "reference": {
+              "keyVault": {
+                "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('avdServiceObjectsRgName'))), 'Microsoft.KeyVault/vaults', variables('avdWrklKvName'))]"
+              },
+              "secretName": "avdDomainJoinUserPassword"
+            }
           },
           "avdHostPoolName": {
             "value": "[variables('avdHostPoolName')]"
@@ -16508,7 +16523,12 @@
             "value": "[parameters('avdVmLocalUserName')]"
           },
           "avdVmLocalUserPassword": {
-            "value": "[parameters('avdVmLocalUserPassword')]"
+            "reference": {
+              "keyVault": {
+                "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('avdServiceObjectsRgName'))), 'Microsoft.KeyVault/vaults', variables('avdWrklKvName'))]"
+              },
+              "secretName": "avdVmLocalUserPassword"
+            }
           },
           "avdWorkloadSubsId": {
             "value": "[parameters('avdWorkloadSubsId')]"
