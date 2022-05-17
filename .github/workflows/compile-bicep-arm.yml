@@ -29,7 +29,7 @@ jobs:
       - name: bicep-build-output
         uses: Azure/bicep-build-action@v1.0.0
         with:
-          bicepFilePath: ./workload/deploy-baseline.bicep
+          bicepFilePath: ./workload/bicep/deploy-baseline.bicep
           outputFilePath: ./workload/arm/deploy-baseline.json
           
       - name: Validate the AVD baseline output
@@ -47,13 +47,13 @@ jobs:
       - name: bicep-build-output
         uses: Azure/bicep-build-action@v1.0.0
         with:
-          bicepFilePath: ./workload/deploy-customImage.bicep
-          outputFilePath: ./workload/arm/deploy-customImage.json
+          bicepFilePath: ./workload/bicep/deploy-custom-image.bicep
+          outputFilePath: ./workload/arm/deploy-custom-image.json
 
       - name: Validate the AVD custom image output
         shell: bash
         run: |
-          FILE="./workload/arm/deploy-customImage.json"
+          FILE="./workload/arm/deploy-custom-image.json"
           if test -f "$FILE"; then
             echo "$FILE created successfully"
           else
