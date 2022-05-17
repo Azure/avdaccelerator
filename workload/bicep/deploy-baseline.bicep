@@ -458,6 +458,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         avdBaselineResourceGroups
         avdNetworking
         avdWrklKeyVaultget
+        avdWrklKeyVault
     ]
 }
 
@@ -502,5 +503,6 @@ module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' =
         avdBaselineResourceGroups
         avdNetworking
         avdWrklKeyVaultget
+        avdWrklKeyVault
     ]
 }
