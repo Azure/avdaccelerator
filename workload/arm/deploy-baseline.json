@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "13827207234965734546"
+      "templateHash": "16732891116251791488"
     }
   },
   "parameters": {
@@ -9454,12 +9454,7 @@
             "value": "[parameters('avdDomainJoinUserName')]"
           },
           "avdDomainJoinUserPassword": {
-            "reference": {
-              "keyVault": {
-                "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('avdServiceObjectsRgName'))), 'Microsoft.KeyVault/vaults', variables('avdWrklKvName'))]"
-              },
-              "secretName": "avdDomainJoinUserPassword"
-            }
+            "value": "[parameters('avdDomainJoinUserPassword')]"
           },
           "avdFslogixFileShareName": {
             "value": "[variables('avdFslogixFileShareName')]"
@@ -9498,12 +9493,7 @@
             "value": "[parameters('avdVmLocalUserName')]"
           },
           "avdVmLocalUserPassword": {
-            "reference": {
-              "keyVault": {
-                "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('avdServiceObjectsRgName'))), 'Microsoft.KeyVault/vaults', variables('avdWrklKvName'))]"
-              },
-              "secretName": "avdVmLocalUserPassword"
-            }
+            "value": "[parameters('avdVmLocalUserPassword')]"
           },
           "avdVnetPrivateDnsZone": {
             "value": "[parameters('avdVnetPrivateDnsZone')]"
@@ -16441,6 +16431,7 @@
       "dependsOn": [
         "avdBaselineResourceGroups",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('avdServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-Workload-KeyVault-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', 'Create-ManagedIdentities-RoleAssign')]"
       ]
     },
@@ -16481,12 +16472,7 @@
             "value": "[parameters('avdDomainJoinUserName')]"
           },
           "avdDomainJoinUserPassword": {
-            "reference": {
-              "keyVault": {
-                "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('avdServiceObjectsRgName'))), 'Microsoft.KeyVault/vaults', variables('avdWrklKvName'))]"
-              },
-              "secretName": "avdDomainJoinUserPassword"
-            }
+            "value": "[parameters('avdDomainJoinUserPassword')]"
           },
           "avdHostPoolName": {
             "value": "[variables('avdHostPoolName')]"
@@ -16522,12 +16508,7 @@
             "value": "[parameters('avdVmLocalUserName')]"
           },
           "avdVmLocalUserPassword": {
-            "reference": {
-              "keyVault": {
-                "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('avdServiceObjectsRgName'))), 'Microsoft.KeyVault/vaults', variables('avdWrklKvName'))]"
-              },
-              "secretName": "avdVmLocalUserPassword"
-            }
+            "value": "[parameters('avdVmLocalUserPassword')]"
           },
           "avdWorkloadSubsId": {
             "value": "[parameters('avdWorkloadSubsId')]"
@@ -20803,6 +20784,7 @@
         "avdBaselineResourceGroups",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-HostPool-AppGroups-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('avdServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-Workload-KeyVault-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', 'Create-ManagedIdentities-RoleAssign')]"
       ]
     }
