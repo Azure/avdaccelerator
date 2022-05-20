@@ -212,7 +212,6 @@ var marketPlaceGalleryWindows = {
         version: 'latest'
     }
 }
-
 var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var fslogixScriptUri = '${baseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
 var fsLogixScript = './Set-FSLogixRegKeys.ps1'
