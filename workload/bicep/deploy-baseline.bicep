@@ -105,6 +105,9 @@ param avdVnetPrivateDnsZoneKeyvaultId string = ''
 @description('Does the hub contains a virtual network gateway')
 param vNetworkGatewayOnHub bool
 
+@description('Deploy Fslogix setup')
+param createAvdFslogixDeployment bool
+
 @description('Optional. Fslogix file share size (Default: 5TB)')
 param avdFslogixFileShareQuotaSize int = 512
 
@@ -328,7 +331,7 @@ module avdWorkSpace '../../carml/1.2.0/Microsoft.DesktopVirtualization/workspace
 //
 
 // Identity: managed identities and role assignments.
-module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
+module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = if (createAvdFslogixDeployment) {
     name: 'Create-ManagedIdentities-RoleAssign'
     params: {
         avdComputeObjectsRgName: avdComputeObjectsRgName
@@ -417,7 +420,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 }
 
 // Storage.
-module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (avdDeploySessionHosts) {
+module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (avdDeploySessionHosts && createAvdFslogixDeployment) {
     name: 'Deploy-AVD-Storage-AzureFiles-${time}'
     params: {
         addStorageToDomainScript: addStorageToDomainScript
@@ -426,8 +429,8 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         avdApplicationSecurityGroupResourceId: createAvdVnet ? '${avdNetworking.outputs.avdApplicationSecurityGroupResourceId}' : ''
         avdComputeObjectsRgName: avdComputeObjectsRgName
         avdDomainJoinUserName: avdDomainJoinUserName
-        //avdDomainJoinUserPassword: avdDomainJoinUserPassword
         avdDomainJoinUserPassword: avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
+        createAvdFslogixDeployment: createAvdFslogixDeployment
         avdFslogixFileShareName: avdFslogixFileShareName
         avdFslogixFileShareQuotaSize: avdFslogixFileShareQuotaSize
         avdFslogixStorageName: avdFslogixStorageName
@@ -440,13 +443,12 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         avdStorageObjectsRgName: avdStorageObjectsRgName
         avdSubnetId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
         avdVmLocalUserName: avdVmLocalUserName
-        //avdVmLocalUserPassword: avdVmLocalUserPassword
         avdVmLocalUserPassword: avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
         avdVnetPrivateDnsZone: avdVnetPrivateDnsZone
         avdVnetPrivateDnsZoneFilesId: avdVnetPrivateDnsZoneFilesId
         avdWorkloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
-        fslogixManagedIdentityResourceId: deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId
+        fslogixManagedIdentityResourceId: createAvdFslogixDeployment ? deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId : ''
         fsLogixStorageSku: fsLogixStorageSku
         marketPlaceGalleryWindows: marketPlaceGalleryWindows['win10_21h2']
         subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
@@ -473,7 +475,6 @@ module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' =
         avdComputeObjectsRgName: avdComputeObjectsRgName
         avdDeploySessionHostsCount: avdDeploySessionHostsCount
         avdDomainJoinUserName: avdDomainJoinUserName
-        //avdDomainJoinUserPassword: avdDomainJoinUserPassword
         avdDomainJoinUserPassword: avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
         avdHostPoolName: avdHostPoolName
         avdIdentityDomainName: avdIdentityDomainName
@@ -486,11 +487,10 @@ module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' =
         avdSubnetId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
         avdUseAvailabilityZones: avdUseAvailabilityZones
         avdVmLocalUserName: avdVmLocalUserName
-        //avdVmLocalUserPassword: avdVmLocalUserPassword
         avdVmLocalUserPassword: avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
         avdWorkloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
-        fslogixManagedIdentityResourceId: deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId
+        fslogixManagedIdentityResourceId: createAvdFslogixDeployment ? deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId : ''
         fsLogixScript: fsLogixScript
         FsLogixScriptArguments: FsLogixScriptArguments
         fslogixScriptUri: fslogixScriptUri
