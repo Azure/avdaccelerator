@@ -84,6 +84,9 @@ param avdHostPoolName string
 @description('Location for the AVD agent installation package. ')
 param avdAgentPackageLocation string
 
+@description('Deploy Fslogix setup')
+param createAvdFslogixDeployment bool
+
 @description('FSlogix configuration script file name. ')
 param fsLogixScript string
 
@@ -183,11 +186,11 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
                   time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
                   scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
               }
-              Exclusions: {
+              Exclusions: createAvdFslogixDeployment ? {
                   Extensions: '*.vhd;*.vhdx'
                   Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;\\\\server\\share\\*\\*.VHD;\\\\server\\share\\*\\*.VHDX'
                   Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
-              }
+              } : {}
           }
       }
     }
