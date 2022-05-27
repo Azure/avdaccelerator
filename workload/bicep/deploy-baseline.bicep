@@ -247,10 +247,12 @@ var resourceGroups = [
         name: avdComputeObjectsRgName
         location: avdSessionHostLocation
     }
+    /*
     {
         name: avdStorageObjectsRgName
         location: avdSessionHostLocation
     }
+    */
 ]
 // =========== //
 // Deployments //
@@ -266,6 +268,17 @@ module avdBaselineResourceGroups '../../carml/1.2.0/Microsoft.Resources/resource
         enableDefaultTelemetry: false
     }
 }]
+
+// Resource groups.
+module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdFslogixDeployment) {
+    scope: subscription(avdWorkloadSubsId)
+    name: 'Deploy-${avdStorageObjectsRgName}-${time}'
+    params: {
+        name: avdStorageObjectsRgName
+        location: avdSessionHostLocation
+        enableDefaultTelemetry: false
+    }
+}
 
 // Optional. Networking.
 module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
@@ -420,7 +433,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 }
 
 // Storage.
-module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (avdDeploySessionHosts && createAvdFslogixDeployment) {
+module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (createAvdFslogixDeployment) {
     name: 'Deploy-AVD-Storage-AzureFiles-${time}'
     params: {
         addStorageToDomainScript: addStorageToDomainScript
@@ -461,48 +474,3 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         avdWrklKeyVault
     ]
 }
-
-// Session hosts.
-module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' = if (avdDeploySessionHosts) {
-    name: 'Deploy-and-Configure-AVD-SessionHosts-${time}'
-    params: {
-        avdAgentPackageLocation: avdAgentPackageLocation
-        avdApplicationSecurityGroupResourceId: createAvdVnet ? '${avdNetworking.outputs.avdApplicationSecurityGroupResourceId}' : ''
-        avdAsFaultDomainCount: avdAsFaultDomainCount
-        avdAsUpdateDomainCount: avdAsUpdateDomainCount
-        avdAvailabilitySetName: avdAvailabilitySetName
-        avdComputeObjectsRgName: avdComputeObjectsRgName
-        avdDeploySessionHostsCount: avdDeploySessionHostsCount
-        avdDomainJoinUserName: avdDomainJoinUserName
-        avdDomainJoinUserPassword: avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
-        avdHostPoolName: avdHostPoolName
-        avdIdentityDomainName: avdIdentityDomainName
-        avdImageTemplataDefinitionId: avdImageTemplataDefinitionId
-        avdOuPath: avdOuPath
-        avdSessionHostDiskType: avdSessionHostDiskType
-        avdSessionHostLocation: avdSessionHostLocation
-        avdSessionHostNamePrefix: avdSessionHostNamePrefix
-        avdSessionHostsSize: avdSessionHostsSize
-        avdSubnetId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
-        avdUseAvailabilityZones: avdUseAvailabilityZones
-        avdVmLocalUserName: avdVmLocalUserName
-        avdVmLocalUserPassword: avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
-        avdWorkloadSubsId: avdWorkloadSubsId
-        encryptionAtHost: encryptionAtHost
-        createAvdFslogixDeployment: createAvdFslogixDeployment
-        fslogixManagedIdentityResourceId: createAvdFslogixDeployment ? deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId : ''
-        fsLogixScript: fsLogixScript
-        FsLogixScriptArguments: FsLogixScriptArguments
-        fslogixScriptUri: fslogixScriptUri
-        hostPoolToken: avdHostPoolandAppGroups.outputs.hostPooltoken
-        marketPlaceGalleryWindows: marketPlaceGalleryWindows[avdOsImage]
-        useSharedImage: useSharedImage
-    }
-    dependsOn: [
-        avdBaselineResourceGroups
-        avdNetworking
-        avdWrklKeyVaultget
-        avdWrklKeyVault
-    ]
-}
- 
