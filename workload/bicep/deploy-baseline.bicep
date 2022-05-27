@@ -430,7 +430,6 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         avdComputeObjectsRgName: avdComputeObjectsRgName
         avdDomainJoinUserName: avdDomainJoinUserName
         avdDomainJoinUserPassword: avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
-        createAvdFslogixDeployment: createAvdFslogixDeployment
         avdFslogixFileShareName: avdFslogixFileShareName
         avdFslogixFileShareQuotaSize: avdFslogixFileShareQuotaSize
         avdFslogixStorageName: avdFslogixStorageName
@@ -490,6 +489,7 @@ module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' =
         avdVmLocalUserPassword: avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
         avdWorkloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
+        createAvdFslogixDeployment: createAvdFslogixDeployment
         fslogixManagedIdentityResourceId: createAvdFslogixDeployment ? deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId : ''
         fsLogixScript: fsLogixScript
         FsLogixScriptArguments: FsLogixScriptArguments
