@@ -27,19 +27,19 @@ param avdUseAvailabilityZones bool
 @description('Optional. Availablity Set name')
 param avdAvailabilitySetName string
 
-@description('Optional. Sets the number of fault domains for the availability set. (Defualt: 3)')
+@description('Optional. Sets the number of fault domains for the availability set.')
 param avdAsFaultDomainCount int
 
-@description('Optional. Sets the number of update domains for the availability set. (Defualt: 5)')
+@description('Optional. Sets the number of update domains for the availability set.')
 param avdAsUpdateDomainCount int
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool
 
-@description('Session host VM size (Defualt: Standard_D2s_v3) ')
+@description('Session host VM size')
 param avdSessionHostsSize string 
 
-@description('OS disk type for session host (Defualt: Standard_LRS) ')
+@description('OS disk type for session host')
 param avdSessionHostDiskType string 
 
 @description('Market Place OS image')
@@ -127,9 +127,9 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
   params: {
       name: '${avdSessionHostNamePrefix}-${i}'
       location: avdSessionHostLocation
-      userAssignedIdentities: {
+      userAssignedIdentities: createAvdFslogixDeployment ? {
           '${fslogixManagedIdentityResourceId}' : {} 
-      }
+      }: {}
       availabilityZone: avdUseAvailabilityZones ? take(skip(allAvailabilityZones, i % length(allAvailabilityZones)), 1) : []
       encryptionAtHost: encryptionAtHost
       availabilitySetName: !avdUseAvailabilityZones ?  avdAvailabilitySet.outputs.name : ''
@@ -215,7 +215,7 @@ module addAvdHostsToHostPool '../../vm-custom-extensions/add-avd-session-hosts.b
 
 
 // Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
-module configureFsLogixForAvdHosts '../../vm-custom-extensions/configure-fslogix-session-hosts.bicep' = [for i in range(0, avdDeploySessionHostsCount): {
+module configureFsLogixForAvdHosts '../../vm-custom-extensions/configure-fslogix-session-hosts.bicep' = [for i in range(0, avdDeploySessionHostsCount): if (createAvdFslogixDeployment) {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
   name: 'Configure-FsLogix-for-${avdSessionHostNamePrefix}-${i}-${time}'
   params: {
