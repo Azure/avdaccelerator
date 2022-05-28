@@ -1105,7 +1105,7 @@
                 "avdVnetPrivateDnsZone": "[steps('avdNetwork').avdVnetPrivateDnsZone]",
                 "avdVnetPrivateDnsZoneFilesId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneFilesSelector.id, '')]",
                 "avdVnetPrivateDnsZoneKeyvaultId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneKeyvaultSelector.id, '')]",
-                "createAvdFslogixDeployment": "[steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathBool]",
+                "createAvdFslogixDeployment": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment]",
                 "fsLogixStorageSku": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdStorageAccountSku, 'Standard_LRS')]",
                 "avdFslogixFileShareQuotaSize": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdStorageAccountSku, 1 )]"
 
