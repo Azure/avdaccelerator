@@ -55,7 +55,7 @@ stages:
         parameters:
           jobName: Deploy_AVD_Accelerator
           location: $(deploymentRegion)
-          workingDir: $(System.DefaultWorkingDirectory)/workload
+          workingDir: $(System.DefaultWorkingDirectory)/workload/bicep
           templateFile: deploy-baseline.bicep
           parameterArray:
             - deploymentPrefix 'app1'
