@@ -1149,8 +1149,13 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
+                      "version": "0.6.18.56646",
+                      "templateHash": "12049945212359661061"
+                    }
+                  },
                   "resources": []
                 }
+              }
             },
             {
               "copy": {
@@ -3639,8 +3644,6 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.1.6515",
-                      "templateHash": "5829896798084043001"
                       "version": "0.6.18.56646",
                       "templateHash": "14881217771299798421"
                     }
