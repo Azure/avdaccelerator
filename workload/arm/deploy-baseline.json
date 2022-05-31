@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.6.18.56646",
-      "templateHash": "7683359576023506234"
+      "templateHash": "3760177948522285490"
     }
   },
   "parameters": {
@@ -263,7 +263,7 @@
         "description": "Optional. Sets the number of update domains for the availability set. (Defualt: 5)"
       }
     },
-    "fsLogixStorageSku": {
+    "fslogixStorageSku": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -10022,8 +10022,8 @@
           "fslogixManagedIdentityResourceId": {
             "value": "[if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', 'Create-ManagedIdentities-RoleAssign'), '2020-10-01').outputs.fslogixManagedIdentityResourceId.value, '')]"
           },
-          "fsLogixStorageSku": {
-            "value": "[parameters('fsLogixStorageSku')]"
+          "fslogixStorageSku": {
+            "value": "[parameters('fslogixStorageSku')]"
           },
           "marketPlaceGalleryWindows": {
             "value": "[variables('marketPlaceGalleryWindows').win10_21h2]"
@@ -10178,7 +10178,7 @@
                 "description": "Azure Files share name"
               }
             },
-            "fsLogixStorageSku": {
+            "fslogixStorageSku": {
               "type": "string",
               "metadata": {
                 "description": "Azure Files storage account SKU"
@@ -10254,13 +10254,13 @@
                     "value": "[parameters('avdSessionHostLocation')]"
                   },
                   "storageAccountSku": {
-                    "value": "[parameters('fsLogixStorageSku')]"
+                    "value": "[parameters('fslogixStorageSku')]"
                   },
                   "allowBlobPublicAccess": {
                     "value": false
                   },
                   "storageAccountKind": {
-                    "value": "[if(or(equals(toLower(parameters('fsLogixStorageSku')), toLower('Premium_LRS')), equals(toLower(parameters('fsLogixStorageSku')), toLower('Premium_ZRS'))), 'FileStorage', 'StorageV2')]"
+                    "value": "[if(or(equals(toLower(parameters('fslogixStorageSku')), toLower('Premium_LRS')), equals(toLower(parameters('fslogixStorageSku')), toLower('Premium_ZRS'))), 'FileStorage', 'StorageV2')]"
                   },
                   "storageAccountAccessTier": {
                     "value": "Hot"
@@ -17070,7 +17070,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.6.18.56646",
-              "templateHash": "17814710920229191955"
+              "templateHash": "2081240445629317830"
             }
           },
           "parameters": {
@@ -17302,7 +17302,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.6.18.56646",
-                      "templateHash": "13694769377323464023"
+                      "templateHash": "17038009722019820851"
                     }
                   },
                   "parameters": {
@@ -17330,7 +17330,7 @@
                       "type": "string",
                       "defaultValue": "Aligned",
                       "metadata": {
-                        "description": "Optional. SKU of the availability set.\n- Use \\'Aligned\\' for virtual machines with managed disks\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\n"
+                        "description": "Optional. SKU of the availability set.\r\n- Use \\'Aligned\\' for virtual machines with managed disks\r\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\r\n"
                       }
                     },
                     "proximityPlacementGroupId": {
