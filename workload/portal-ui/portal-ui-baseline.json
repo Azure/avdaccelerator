@@ -436,8 +436,29 @@
                                     }
                                 },
                                 {
+                                    "name": "avdFslogixDeployment",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "label": "Use FSLogix profile management",
+                                    "defaultValue": "Yes",
+                                    "toolTip": "Deploys FSLogix containers and session host setup for user's profiles.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes",
+                                                "value": true
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": false
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
                                     "name": "avdStorageAccountSku",
                                     "type": "Microsoft.Common.DropDown",
+                                    "visible": "[equals (steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true)]",
                                     "label": "File share sku",
                                     "filter": true,
                                     "defaultValue": "Premium_LRS",
@@ -471,7 +492,8 @@
                                 {
                                     "name": "avdSessionHostsFslogixFileShareQuota",
                                     "type": "Microsoft.Common.Slider",
-                                    "label": "Fslogix file share size",
+                                    "visible": "[equals (steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true)]",
+                                    "label": "File share size",
                                     "subLabel": "x 100GB",
                                     "toolTip": "Size of Premium File share storage in 10GB increments",
                                     "min": 1,
@@ -1046,7 +1068,6 @@
             "parameters": {
                 "deploymentPrefix": "[steps('basics').avdDeploymentPrefix]",
                 "avdSessionHostLocation": "[steps('basics').avdDeploymentScope.location.name]",
-                "fsLogixStorageSku": "[if(equals(steps('avdSessionHosts').avdDeploySessionHosts, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdStorageAccountSku, 'none')]",
                 "avdManagementPlaneLocation": "[steps('avdManagementPlane').avdManagementPlanelocation.avdManagementPlaneLocation]",
                 "avdWorkloadSubsId": "[steps('basics').avdDeploymentScope.subscription.subscriptionId]",
                 "avdHostPoolType": "[steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType]",
@@ -1079,12 +1100,15 @@
                 "avdSessionHostDiskType": "[steps('avdSessionHosts').avdSessionHostsSettingsSection.avdSessionHostDiskType]",
                 "encryptionAtHost": "[steps('avdSessionHosts').avdSessionHostsSettingsSection.avdSessionHostEncryptionAtHost]",
                 "avdSessionHostsSize": "[if(equals(steps('avdSessionHosts').avdDeploySessionHosts, true), steps('avdSessionHosts').avdSessionHostsSettingsSection.element1, 'Standard_D2s_v4')]",
-                "avdFslogixFileShareQuotaSize": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdSessionHostsFslogixFileShareQuota]",
                 "createOuForStorage": "[steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathBool]",
                 "storageOuName": "[if(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathBool, true), steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathStorage, steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathStorageExisting)]",
                 "avdVnetPrivateDnsZone": "[steps('avdNetwork').avdVnetPrivateDnsZone]",
                 "avdVnetPrivateDnsZoneFilesId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneFilesSelector.id, '')]",
-                "avdVnetPrivateDnsZoneKeyvaultId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneKeyvaultSelector.id, '')]"
+                "avdVnetPrivateDnsZoneKeyvaultId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneKeyvaultSelector.id, '')]",
+                "createAvdFslogixDeployment": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment]",
+                "fsLogixStorageSku": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdStorageAccountSku, 'Standard_LRS')]",
+                "avdFslogixFileShareQuotaSize": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdSessionHostsFslogixFileShareQuota, 1 )]"
+
             },
             "kind": "Subscription",
             "location": "[steps('basics').avdDeploymentScope.location.name]",

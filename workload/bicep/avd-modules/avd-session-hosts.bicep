@@ -27,19 +27,19 @@ param avdUseAvailabilityZones bool
 @description('Optional. Availablity Set name')
 param avdAvailabilitySetName string
 
-@description('Optional. Sets the number of fault domains for the availability set. (Defualt: 3)')
+@description('Optional. Sets the number of fault domains for the availability set.')
 param avdAsFaultDomainCount int
 
-@description('Optional. Sets the number of update domains for the availability set. (Defualt: 5)')
+@description('Optional. Sets the number of update domains for the availability set.')
 param avdAsUpdateDomainCount int
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool
 
-@description('Session host VM size (Defualt: Standard_D2s_v3) ')
+@description('Session host VM size')
 param avdSessionHostsSize string 
 
-@description('OS disk type for session host (Defualt: Standard_LRS) ')
+@description('OS disk type for session host')
 param avdSessionHostDiskType string 
 
 @description('Market Place OS image')
@@ -84,6 +84,9 @@ param avdHostPoolName string
 @description('Location for the AVD agent installation package. ')
 param avdAgentPackageLocation string
 
+@description('Deploy Fslogix setup')
+param createAvdFslogixDeployment bool
+
 @description('FSlogix configuration script file name. ')
 param fsLogixScript string
 
@@ -124,9 +127,9 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
   params: {
       name: '${avdSessionHostNamePrefix}-${i}'
       location: avdSessionHostLocation
-      userAssignedIdentities: {
+      userAssignedIdentities: createAvdFslogixDeployment ? {
           '${fslogixManagedIdentityResourceId}' : {} 
-      }
+      }: {}
       availabilityZone: avdUseAvailabilityZones ? take(skip(allAvailabilityZones, i % length(allAvailabilityZones)), 1) : []
       encryptionAtHost: encryptionAtHost
       availabilitySetName: !avdUseAvailabilityZones ?  avdAvailabilitySet.outputs.name : ''
@@ -183,11 +186,11 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
                   time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
                   scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
               }
-              Exclusions: {
+              Exclusions: createAvdFslogixDeployment ? {
                   Extensions: '*.vhd;*.vhdx'
                   Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;\\\\server\\share\\*\\*.VHD;\\\\server\\share\\*\\*.VHDX'
                   Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
-              }
+              } : {}
           }
       }
     }
@@ -212,7 +215,7 @@ module addAvdHostsToHostPool '../../vm-custom-extensions/add-avd-session-hosts.b
 
 
 // Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
-module configureFsLogixForAvdHosts '../../vm-custom-extensions/configure-fslogix-session-hosts.bicep' = [for i in range(0, avdDeploySessionHostsCount): {
+module configureFsLogixForAvdHosts '../../vm-custom-extensions/configure-fslogix-session-hosts.bicep' = [for i in range(0, avdDeploySessionHostsCount): if (createAvdFslogixDeployment) {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
   name: 'Configure-FsLogix-for-${avdSessionHostNamePrefix}-${i}-${time}'
   params: {
