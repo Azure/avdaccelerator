@@ -1,0 +1,323 @@
+{
+    "$schema": "<relative path to createFormUI.schema.json>",
+    "view": {
+        "kind": "Form",
+        "properties": {
+            "title": "AVD landing zone accelerator - Custom image build",
+            "steps": [
+                {
+                    "name": "basics",
+                    "label": "Azure core setup",
+                    "subLabel": "",
+                    "bladeTitle": "avdBasics",
+                    "elements": [
+                        {
+                            "name": "avdSharedServices",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "Shared services baseline deployment",
+                            "elements": [
+                                {
+                                    "name": "info",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "options": {
+                                        "text": "Subscription and location selected in this step, will be used to deploy AVD Shared Services Landing Zone resources (compute gallery, key vaults, storage, AIB etc.).",
+                                        "style": "Info"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "avdDeploymentScope",
+                            "type": "Microsoft.Common.ResourceScope",
+                            "location": {
+                                "resourceTypes": []
+                            }
+                        },
+                        {
+                            "name": "avdDeploymentPrefix",
+                            "type": "Microsoft.Common.TextBox",
+                            "visible": true,
+                            "label": "Deployment prefix",
+                            "toolTip": "Provide a prefix (max 4 characters) for the resource groups and resources created as part of AVD landing zones.",
+                            "placeholder": "Example: App1",
+                            "constraints": {
+                                "required": true,
+                                "regex": "^[a-z0-9A-Z-]{1,4}$",
+                                "validationMessage": "The prefix must be 1-4 characters."
+                            }
+                        },
+                        {
+                            "name": "roleinfo",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                                "text": "Azure AVD Landing Zones ARM deployment requires owner access at the subscription scope. Visit this link to get more information on RBAC permissions and scopes.",
+                                "uri": "https://docs.microsoft.com/en-us/azure/role-based-access-control/scope-overview",
+                                "style": "Warning"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "avdCustomImage",
+                    "label": "Image management",
+                    "subLabel": {
+                        "preValidation": "",
+                        "postValidation": ""
+                    },
+                    "bladeTitle": "avdCustomImage",
+                    "elements": [
+                        {
+                            "name": "avdCustomImageInfo",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                                "text": "Custom image automation will deploy a compute gallery, images, storage, identity and run an Azure image Builder job.",
+                                "style": "Info"
+                            }
+                        },
+                        {
+                            "name": "avdCustomImageStorageSelection",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "Storage",
+                            "elements": [
+                                {
+                                    "name": "avdCustomImageStorageAvailability",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "label": "Use availability zones",
+                                    "defaultValue": "No",
+                                    "toolTip": "Distribute storage resources across availability zones.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes (When available)",
+                                                "value": true
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": false
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "avdCustomImageOsSelection",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "OS",
+                            "elements": [
+                                {
+                                    "name": "avdCustomImageOsImage",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "Version",
+                                    "filter": true,
+                                    "defaultValue": "Windows 11",
+                                    "toolTip": "Select OS version to be used as source for the image.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Windows 10",
+                                                "value": "win10_21h2"
+                                            },
+                                            {
+                                                "label": "Windows 10 - Office 365",
+                                                "value": "win10_21h2_office"
+                                            },
+                                            {
+                                                "label": "Windows 11",
+                                                "value": "win11_21h2"
+                                            },
+                                            {
+                                                "label": "Windows 11 - Office 365",
+                                                "value": "win11_21h2_office"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "avdCustomImageAib",
+                    "label": "Azure Image Builder (AIB)",
+                    "subLabel": {
+                        "preValidation": "",
+                        "postValidation": ""
+                    },
+                    "bladeTitle": "avdCustomImageAibInfo",
+                    "elements": [
+                        {
+                            "name": "avdCustomImageInfo",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                                "text": "Azure Image Builder is not available on all locations.",
+                                "uri": "https://docs.microsoft.com/en-us/azure/virtual-machines/image-builder-overview?msclkid=06a023c8ac4c11ecb3c259d74812c2c6",
+                                "style": "Info"
+                            }
+                        },
+                        {
+                            "name": "avdCustomImageLocation",
+                            "type": "Microsoft.Common.DropDown",
+                            "visible": true,
+                            "label": "Deployment location",
+                            "defaultValue": "equals(steps('basics').avdDeploymentScope.location.displayName)",
+                            "toolTip": "Select the location where Azure Image Builder will run to create the image.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "East US",
+                                        "value": "eastus"
+                                    },
+                                    {
+                                        "label": "East US 2",
+                                        "value": "eastus2"
+                                    },
+                                    {
+                                        "label": "West Central US",
+                                        "value": "westcentralus"
+                                    },
+                                    {
+                                        "label": "West US",
+                                        "value": "westus"
+                                    },
+                                    {
+                                        "label": "West US 2",
+                                        "value": "westus2"
+                                    },
+                                    {
+                                        "label": "West US 3",
+                                        "value": "westus3"
+                                    },
+                                    {
+                                        "label": "South Central US",
+                                        "value": "southcentralus"
+                                    },
+                                    {
+                                        "label": "North Europe",
+                                        "value": "northeurope"
+                                    },
+                                    {
+                                        "label": "West Europe",
+                                        "value": "westeurope"
+                                    },
+                                    {
+                                        "label": "UK South",
+                                        "value": "uksouth"
+                                    },
+                                    {
+                                        "label": "UK West",
+                                        "value": "ukwest"
+                                    },
+                                    {
+                                        "label": "South East Asia",
+                                        "value": "southeastasia"
+                                    },
+                                    {
+                                        "label": "Australia South East",
+                                        "value": "australiasoutheast"
+                                    },
+                                    {
+                                        "label": "Australia East",
+                                        "value": "australiaeast"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "avdCustomImageIdentityAibCreateManagedIdentity",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": true,
+                            "label": "Create AIB managed identity",
+                            "defaultValue": "Yes",
+                            "toolTip": "Create managed identity for Azure Image Builder custom role.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "Yes",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "No",
+                                        "value": false
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "avdCustomImageIdentityAibSelectManagedIdentity",
+                            "type": "Microsoft.Solutions.ResourceSelector",
+                            "visible": "[equals(steps('avdCustomImageAib').avdCustomImageIdentityAibCreateManagedIdentity, false)]",
+                            "label": "Existing managed identity",
+                            "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities",
+                            "constraints": {
+                                "required": true
+                            },
+                            "options": {
+                                "filter": {
+                                    "subscription": "onBasics"
+                                }
+                            }
+                        },
+                        {
+                            "name": "avdCustomImageIdentityAibCreateRole",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": true,
+                            "label": "Create AIB role",
+                            "defaultValue": "Yes",
+                            "toolTip": "Create Azure Image Builder custom role.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "Yes",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "No",
+                                        "value": false
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "roleinfo",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[equals(steps('avdCustomImageAib').avdCustomImageIdentityAibCreateRole, false)]",
+                            "options": {
+                                "text": "A role with the name AzureImageBuilder-AVD must already exist.",
+                                "style": "Warning"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "outputs": {
+            "parameters": {
+                "deploymentPrefix": "[steps('basics').avdDeploymentPrefix]",
+                "avdSharedServicesLocation": "[steps('basics').avdDeploymentScope.location.name]",
+                "avdSharedServicesSubId": "[steps('basics').avdDeploymentScope.subscription.subscriptionId]",
+                "avdUseAvailabilityZones": "[steps('avdCustomImage').avdCustomImageStorageSelection.avdCustomImageStorageAvailability]",
+                "createAibManagedIdentity": "[steps('avdCustomImageAib').avdCustomImageIdentityAibCreateManagedIdentity]",
+                "existingAibManagedIdentityId": "[if(equals(steps('avdCustomImageAib').avdCustomImageIdentityAibCreateManagedIdentity, false), steps('avdCustomImageAib').avdCustomImageIdentityAibSelectManagedIdentity.id, 'none')]",
+                "existingAibManagedIdentityName": "[if(equals(steps('avdCustomImageAib').avdCustomImageIdentityAibCreateManagedIdentity, false), steps('avdCustomImageAib').avdCustomImageIdentityAibSelectManagedIdentity.name, 'none')]",
+                "createAibCustomRole": "[steps('avdCustomImageAib').avdCustomImageIdentityAibCreateRole]",
+                "aibLocation": "[steps('avdCustomImageAib').avdCustomImageLocation]",
+                "avdOsImage": "[steps('avdCustomImage').avdCustomImageOsSelection.avdCustomImageOsImage]"
+            },
+            "kind": "Subscription",
+            "location": "[steps('basics').avdDeploymentScope.location.name]",
+            "subscriptionId": "[steps('basics').avdDeploymentScope.subscription.id]"
+        }
+    }
+}
