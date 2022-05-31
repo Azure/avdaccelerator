@@ -4,13 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-<<<<<<< HEAD
-      "version": "0.6.1.6515",
-      "templateHash": "11353746304971413024"
-=======
       "version": "0.6.18.56646",
       "templateHash": "7683359576023506234"
->>>>>>> 2bcb6c6bb4de802ddee3c2aec1f83e347de80969
     }
   },
   "parameters": {
@@ -404,20 +399,12 @@
     "dscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCDomainJoinStorageScripts.zip",
     "addStorageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-JoinStorage-to-ADDS.ps1', variables('baseScriptUri'))]",
     "addStorageToDomainScript": "./Manual-DSC-JoinStorage-to-ADDS.ps1",
-<<<<<<< HEAD
-    "addStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -DomainName {3} -AzureCloudEnvironment AzureCloud -DomainAdminUserName {4} -DomainAdminUserPassword {5} -OUName {6} -CreateNewOU {7} -ShareName {8} -Verbose', variables('dscAgentPackageLocation'), variables('avdFslogixStorageName'), variables('avdStorageObjectsRgName'), parameters('avdIdentityDomainName'), parameters('avdDomainJoinUserName'), parameters('avdDomainJoinUserPassword'), variables('OuStgName'), variables('createOUforStorageString'), variables('avdFslogixFileShareName'))]",
-    "OuStgName": "[if(not(empty(parameters('storageOUName'))), parameters('storageOUName'), 'Computers')]",
-=======
     "addStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -DomainName {3} -AzureCloudEnvironment AzureCloud -DomainAdminUserName {4} -DomainAdminUserPassword {5} -OUName {6} -CreateNewOU {7} -ShareName {8} -Verbose', variables('dscAgentPackageLocation'), variables('avdFslogixStorageName'), variables('avdStorageObjectsRgName'), parameters('avdIdentityDomainName'), parameters('avdDomainJoinUserName'), parameters('avdDomainJoinUserPassword'), variables('OuStgName'), variables('createOuForStorageString'), variables('avdFslogixFileShareName'))]",
     "OuStgName": "[if(not(empty(parameters('storageOuName'))), parameters('storageOuName'), 'Computers')]",
->>>>>>> 2bcb6c6bb4de802ddee3c2aec1f83e347de80969
     "avdWrklKvName": "[format('avd-{0}-{1}', uniqueString(variables('deploymentPrefixLowercase'), variables('avdSessionHostLocationLowercase')), variables('deploymentPrefixLowercase'))]",
     "avdSessionHostNamePrefix": "[format('avdsh-{0}', parameters('deploymentPrefix'))]",
     "avdAvailabilitySetName": "[format('avdas-{0}', parameters('deploymentPrefix'))]",
     "allAvailabilityZones": "[pickZones('Microsoft.Compute', 'virtualMachines', parameters('avdSessionHostLocation'), 3)]",
-<<<<<<< HEAD
-    "createOUforStorageString": "[string(parameters('createOUforStorage'))]"
-=======
     "createOuForStorageString": "[string(parameters('createOuForStorage'))]",
     "resourceGroups": [
       {
@@ -429,7 +416,6 @@
         "location": "[parameters('avdSessionHostLocation')]"
       }
     ]
->>>>>>> 2bcb6c6bb4de802ddee3c2aec1f83e347de80969
   },
   "resources": [
     {
