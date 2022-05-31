@@ -79,7 +79,7 @@ stages:
             - avdVmLocalUserPassword $(avdVmLocalUserPassword)
             - avdDeployRappGroup true
             - avdDeploySessionHosts true
-            - avdStartVMOnConnect true
+            - avdStartVmOnConnect true
             - createStartVmOnConnectCustomRole true
             - vNetworkGatewayOnHub false
             - createOUforStorage true
