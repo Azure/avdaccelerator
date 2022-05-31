@@ -65,6 +65,7 @@ stages:
             - avdManagementPlaneLocation $(deploymentRegion)
             - avdSessionHostLocation $(deploymentRegion)
             - fsLogixstorageSku 'Standard_LRS'
+            - createAvdFslogixDeployment true 
         #    - avdWrklSecretAccess $(avdWrklSecretAccess)
             - existingVnetSubnetResourceId '/subscriptions/a165ed8a-0e83-46f1-9994-b216229c2da7/resourceGroups/azurelab-avd-networking/providers/Microsoft.Network/virtualNetworks/vnet-avd-canadacentral/subnets/subnet1'
             - existingHubVnetResourceId '/subscriptions/4f6c98e1-04a4-49f0-abce-6240b1726c3f/resourceGroups/pubsec-hub-networking-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet'
