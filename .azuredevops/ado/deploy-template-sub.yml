@@ -1,0 +1,83 @@
+parameters:
+  - name: location
+  - name: templateFile
+  - name: workingDir
+    type: string
+  - name: deployOperation
+    type: string
+    default: 'create'
+  - name: parameterArray
+    type: object
+    default: []
+  - name: jobName
+    default: Deploy_Bicep_Main_Module_Sub_level
+  - name: preDeploySteps
+    type: stepList
+    default: []
+  - name: postDeploySteps
+    type: stepList
+    default: []
+  - name: variableOverrides
+    type: object
+    default: {}
+
+jobs:
+  - job: ${{ parameters.jobName }}
+    displayName: Deploy ${{ parameters.templateFile }}
+    variables:
+      ${{ insert }}: ${{ parameters.variableOverrides }}
+
+    steps:
+      - ${{ parameters.preDeploySteps }}
+
+      - task: PowerShell@2
+        displayName: Converting parameters array
+        inputs:
+          targetType: 'inline'
+          script: |
+            $myArray = ConvertFrom-Json $Env:PARAMETER_ARRAY
+            # Need to add depth for embedded json arrays.
+            $jsonmyArray = $myArray | ConvertTo-Json -Compress -Depth 100
+            Write-Host "json_my_Array is: $jsonmyArray"
+             # Converting into json into hash array to extract the string array
+            $hasharray=@{}
+              $jsonObjmyArray= ConvertFrom-Json $jsonmyArray
+              foreach ( $property in $jsonObjmyArray.PSObject.Properties ) {
+                $hasharray[$property.Name]=$property.Value
+              }
+              # Getting values from the hash array into string array
+            $stringmyArray=@()
+              foreach ($parameter in $hasharray.SyncRoot) {
+                $stringmyArray += $parameter
+              }
+              Write-Host "Here is our string array: $stringmyArray"
+              # Formatting for the bicep deployment
+            $stringparameterArray=@()
+             foreach ( $string in $stringmyArray) {
+               $string1 = $string -replace ' ', '='
+               $stringparameterArray += $string1
+             }
+              Write-Host "Here is final format of parameters for deployment with Bicep"
+              $stringparameterArray
+              $stringparameters=[string]::Join(" ", $stringparameterArray)
+              $stringparameters
+              Write-Host "##vso[task.setvariable variable=bicep_parameters]$stringparameters"
+        env:
+          PARAMETER_ARRAY: ${{convertToJson(parameters.parameterArray)}}
+
+      - task: AzureCLI@2
+        displayName: Resource deployment at subscription scope
+        inputs:
+          azureSubscription: $(serviceConnection)
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          inlineScript: |
+            $(var-bashPreInjectScript)
+            ls
+            echo "Deploying ${{ parameters.templateFile }} using ${{ parameters.deployOperation}} operation..."
+            az deployment sub ${{ parameters.deployOperation }} \
+             --location ${{ parameters.location }} \
+             --name $(Build.BuildNumber) \
+             --template-file ${{ parameters.templateFile}} \
+             --parameters $(bicep_parameters)
+          workingDirectory: ${{ parameters.workingDir }}
