@@ -77,7 +77,7 @@ stages:
             - avdDomainJoinUserPassword $(avdDomainJoinUserPassword)
             - avdVmLocalUserName $(avdVmLocalUserName)
             - avdVmLocalUserPassword $(avdVmLocalUserPassword)
-            - avdDeployRAppGroup true
+            - avdDeployRappGroup true
             - avdDeploySessionHosts true
             - avdStartVMOnConnect true
             - createStartVmOnConnectCustomRole true
