@@ -82,5 +82,5 @@ stages:
             - avdStartVmOnConnect true
             - createStartVmOnConnectCustomRole true
             - vNetworkGatewayOnHub false
-            - createOuforStorage true
+            - createOuForStorage true
             - storageOuName 'FsLogix User Profiles'
