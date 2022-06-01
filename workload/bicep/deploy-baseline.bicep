@@ -131,7 +131,7 @@ param avdAsUpdateDomainCount int = 5
 @description('Storage account SKU for FSLogix storage. Recommended tier is Premium LRS or Premium ZRS (where available)')
 param fsLogixStorageSku string = ''
 
-@description('Fslogix SMB file share multichannel enablement ')
+@description('Fslogix file share SMB multichannel ')
 param avdFslogixFileShareMultichannel bool = true
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
