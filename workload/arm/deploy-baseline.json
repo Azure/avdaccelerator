@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.6.18.56646",
-      "templateHash": "7683359576023506234"
+      "templateHash": "8344792025083697935"
     }
   },
   "parameters": {
@@ -268,6 +268,13 @@
       "defaultValue": "",
       "metadata": {
         "description": "Storage account SKU for FSLogix storage. Recommended tier is Premium LRS or Premium ZRS (where available)"
+      }
+    },
+    "avdFslogixFileShareMultichannel": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Fslogix SMB file share multichannel enablement "
       }
     },
     "encryptionAtHost": {
@@ -10025,6 +10032,9 @@
           "fsLogixStorageSku": {
             "value": "[parameters('fsLogixStorageSku')]"
           },
+          "avdFslogixFileShareMultichannel": {
+            "value": "[parameters('avdFslogixFileShareMultichannel')]"
+          },
           "marketPlaceGalleryWindows": {
             "value": "[variables('marketPlaceGalleryWindows').win10_21h2]"
           },
@@ -10045,7 +10055,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.6.18.56646",
-              "templateHash": "6894436654635330926"
+              "templateHash": "14882151225726569132"
             }
           },
           "parameters": {
@@ -10119,6 +10129,12 @@
               "type": "string",
               "metadata": {
                 "description": "Fslogix Managed Identity Resource ID "
+              }
+            },
+            "avdFslogixFileShareMultichannel": {
+              "type": "bool",
+              "metadata": {
+                "description": "Fslogix SMB file share multichannel enablement "
               }
             },
             "subnetResourceId": {
@@ -10279,6 +10295,11 @@
                         {
                           "name": "[parameters('avdFslogixFileShareName')]",
                           "shareQuota": "[mul(parameters('avdFslogixFileShareQuotaSize'), 100)]"
+                        }
+                      ],
+                      "protocolSettings": [
+                        {
+                          "multichannel": "[parameters('avdFslogixFileShareMultichannel')]"
                         }
                       ]
                     }
@@ -17070,7 +17091,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.6.18.56646",
-              "templateHash": "17814710920229191955"
+              "templateHash": "2081240445629317830"
             }
           },
           "parameters": {
@@ -17302,7 +17323,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.6.18.56646",
-                      "templateHash": "13694769377323464023"
+                      "templateHash": "17038009722019820851"
                     }
                   },
                   "parameters": {
@@ -17330,7 +17351,7 @@
                       "type": "string",
                       "defaultValue": "Aligned",
                       "metadata": {
-                        "description": "Optional. SKU of the availability set.\n- Use \\'Aligned\\' for virtual machines with managed disks\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\n"
+                        "description": "Optional. SKU of the availability set.\r\n- Use \\'Aligned\\' for virtual machines with managed disks\r\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\r\n"
                       }
                     },
                     "proximityPlacementGroupId": {
