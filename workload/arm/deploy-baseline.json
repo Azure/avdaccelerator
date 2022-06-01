@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.6.18.56646",
-      "templateHash": "8344792025083697935"
+      "templateHash": "5512749836343956433"
     }
   },
   "parameters": {
@@ -10055,7 +10055,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.6.18.56646",
-              "templateHash": "14882151225726569132"
+              "templateHash": "14010342150885679216"
             }
           },
           "parameters": {
@@ -10297,11 +10297,9 @@
                           "shareQuota": "[mul(parameters('avdFslogixFileShareQuotaSize'), 100)]"
                         }
                       ],
-                      "protocolSettings": [
-                        {
-                          "multichannel": "[parameters('avdFslogixFileShareMultichannel')]"
-                        }
-                      ]
+                      "protocolSettings": {
+                        "avdFslogixFileShareMultichannel": "[parameters('avdFslogixFileShareMultichannel')]"
+                      }
                     }
                   },
                   "privateEndpoints": {
