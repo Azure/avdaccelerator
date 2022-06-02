@@ -133,8 +133,8 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
                 multichannel: {
                     enabled: avdFslogixFileShareMultichannel
                 }
-            } : {}
-        }
+            } 
+        }: {}
       }
       privateEndpoints: avdVnetPrivateDnsZone ? [
           {
