@@ -263,7 +263,7 @@
         "description": "Optional. Sets the number of update domains for the availability set. (Defualt: 5)"
       }
     },
-    "fsLogixStorageSku": {
+    "fslogixStorageSku": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -10022,8 +10022,8 @@
           "fslogixManagedIdentityResourceId": {
             "value": "[if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', 'Create-ManagedIdentities-RoleAssign'), '2020-10-01').outputs.fslogixManagedIdentityResourceId.value, '')]"
           },
-          "fsLogixStorageSku": {
-            "value": "[parameters('fsLogixStorageSku')]"
+          "fslogixStorageSku": {
+            "value": "[parameters('fslogixStorageSku')]"
           },
           "marketPlaceGalleryWindows": {
             "value": "[variables('marketPlaceGalleryWindows').win10_21h2]"
@@ -10178,7 +10178,7 @@
                 "description": "Azure Files share name"
               }
             },
-            "fsLogixStorageSku": {
+            "fslogixStorageSku": {
               "type": "string",
               "metadata": {
                 "description": "Azure Files storage account SKU"
@@ -10254,13 +10254,13 @@
                     "value": "[parameters('avdSessionHostLocation')]"
                   },
                   "storageAccountSku": {
-                    "value": "[parameters('fsLogixStorageSku')]"
+                    "value": "[parameters('fslogixStorageSku')]"
                   },
                   "allowBlobPublicAccess": {
                     "value": false
                   },
                   "storageAccountKind": {
-                    "value": "[if(or(equals(toLower(parameters('fsLogixStorageSku')), toLower('Premium_LRS')), equals(toLower(parameters('fsLogixStorageSku')), toLower('Premium_ZRS'))), 'FileStorage', 'StorageV2')]"
+                    "value": "[if(or(equals(toLower(parameters('fslogixStorageSku')), toLower('Premium_LRS')), equals(toLower(parameters('fslogixStorageSku')), toLower('Premium_ZRS'))), 'FileStorage', 'StorageV2')]"
                   },
                   "storageAccountAccessTier": {
                     "value": "Hot"
