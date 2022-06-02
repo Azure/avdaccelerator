@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.6.18.56646",
-      "templateHash": "5512749836343956433"
+      "templateHash": "16936890761196863373"
     }
   },
   "parameters": {
@@ -274,7 +274,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Fslogix SMB file share multichannel enablement "
+        "description": "Fslogix file share SMB multichannel "
       }
     },
     "encryptionAtHost": {
@@ -10055,7 +10055,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.6.18.56646",
-              "templateHash": "14010342150885679216"
+              "templateHash": "2587166505027943245"
             }
           },
           "parameters": {
@@ -10134,7 +10134,7 @@
             "avdFslogixFileShareMultichannel": {
               "type": "bool",
               "metadata": {
-                "description": "Fslogix SMB file share multichannel enablement "
+                "description": "Fslogix file share SMB multichannel "
               }
             },
             "subnetResourceId": {
@@ -10313,7 +10313,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.6.18.56646",
-                      "templateHash": "17269261409012179931"
+                      "templateHash": "6692850844699732716"
                     }
                   },
                   "parameters": {
@@ -11842,7 +11842,7 @@
                             "value": "[if(contains(parameters('fileServices'), 'diagnosticMetricsToEnable'), parameters('fileServices').diagnosticMetricsToEnable, createArray())]"
                           },
                           "protocolSettings": {
-                            "value": "[if(contains(parameters('fileServices'), 'protocolSettings'), parameters('fileServices').protocolSettings, createObject())]"
+                            "value": "[parameters('fileServices').protocolSettings]"
                           },
                           "shareDeleteRetentionPolicy": {
                             "value": "[if(contains(parameters('fileServices'), 'shareDeleteRetentionPolicy'), parameters('fileServices').shareDeleteRetentionPolicy, createObject('enabled', true(), 'days', 7))]"
