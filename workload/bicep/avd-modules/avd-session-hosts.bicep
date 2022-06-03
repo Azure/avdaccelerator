@@ -217,7 +217,7 @@ module addAvdHostsToHostPool '../../vm-custom-extensions/add-avd-session-hosts.b
 // Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
 module configureFsLogixForAvdHosts '../../vm-custom-extensions/configure-fslogix-session-hosts.bicep' = [for i in range(0, avdDeploySessionHostsCount): if (createAvdFslogixDeployment) {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-  name: 'Configure-FsLogix-for-${avdSessionHostNamePrefix}-${i}-${time}'
+  name: 'Configure-FsLogix-for-${i}-${time}'
   params: {
       location: avdSessionHostLocation
       name: '${avdSessionHostNamePrefix}-${i}'
