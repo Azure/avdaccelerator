@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.6.18.56646",
-      "templateHash": "14775065394127120348"
+      "templateHash": "17018053796988196094"
     }
   },
   "parameters": {
@@ -10022,11 +10022,11 @@
           "fslogixManagedIdentityResourceId": {
             "value": "[if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.fslogixManagedIdentityResourceId.value, '')]"
           },
+          "avdFslogixFileShareMultichannel": {
+            "value": "[if(or(contains(parameters('fslogixStorageSku'), 'Premium_LRS'), contains(parameters('fslogixStorageSku'), 'Premium_ZRS')), true(), false())]"
+          },
           "fslogixStorageSku": {
             "value": "[parameters('fslogixStorageSku')]"
-          },
-          "avdFslogixFileShareMultichannel": {
-            "value": "[if(or(contains(parameters('fsLogixStorageSku'), 'Premium_LRS'), contains(parameters('fsLogixStorageSku'), 'Premium_ZRS')), true(), false())]"
           },
           "marketPlaceGalleryWindows": {
             "value": "[variables('marketPlaceGalleryWindows').win10_21h2]"
@@ -17080,7 +17080,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.6.18.56646",
-              "templateHash": "10123334908957475238"
+              "templateHash": "8930482303829083784"
             }
           },
           "parameters": {
@@ -17312,7 +17312,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.6.18.56646",
-                      "templateHash": "17038009722019820851"
+                      "templateHash": "13694769377323464023"
                     }
                   },
                   "parameters": {
@@ -17340,7 +17340,7 @@
                       "type": "string",
                       "defaultValue": "Aligned",
                       "metadata": {
-                        "description": "Optional. SKU of the availability set.\r\n- Use \\'Aligned\\' for virtual machines with managed disks\r\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\r\n"
+                        "description": "Optional. SKU of the availability set.\n- Use \\'Aligned\\' for virtual machines with managed disks\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\n"
                       }
                     },
                     "proximityPlacementGroupId": {
