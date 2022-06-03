@@ -345,7 +345,7 @@ module avdWorkSpace '../../carml/1.2.0/Microsoft.DesktopVirtualization/workspace
 
 // Identity: managed identities and role assignments.
 module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = if (createAvdFslogixDeployment) {
-    name: 'Create-ManagedIdentities-RoleAssign'
+    name: 'Create-Managed-ID-RoleAssign-${time}'
     params: {
         avdComputeObjectsRgName: avdComputeObjectsRgName
         avdDeploySessionHosts: avdDeploySessionHosts
