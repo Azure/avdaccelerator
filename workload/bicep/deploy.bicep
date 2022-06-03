@@ -148,7 +148,7 @@ param avdDeploySessionHostsCount int
 param avdUseAvailabilityZones bool = true
 
 @description('Storage account SKU for FSLogix storage. Recommended tier is Premium LRS or Premium ZRS (where available)')
-param fsLogixstorageSku string = ''
+param fslogixstorageSku string = ''
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool = true
@@ -1061,10 +1061,10 @@ module fslogixStorage '../carml/1.0.0/Microsoft.Storage/storageAccounts/deploy.b
     params: {
         name: avdFslogixStorageName
         location: avdSessionHostLocation
-        storageAccountSku: fsLogixstorageSku
+        storageAccountSku: fslogixstorageSku
         allowBlobPublicAccess: false
         //azureFilesIdentityBasedAuthentication:
-        storageAccountKind:  ((fsLogixstorageSku =~ 'Premium_LRS') || (fsLogixstorageSku =~ 'Premium_ZRS')) ? 'FileStorage': 'StorageV2'
+        storageAccountKind:  ((fslogixstorageSku =~ 'Premium_LRS') || (fslogixstorageSku =~ 'Premium_ZRS')) ? 'FileStorage': 'StorageV2'
         storageAccountAccessTier: 'Hot'
         networkAcls: {
             bypass: 'AzureServices'

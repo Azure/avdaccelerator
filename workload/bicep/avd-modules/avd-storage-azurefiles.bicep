@@ -39,6 +39,9 @@ param avdImageTemplataDefinitionId string
 @description('Fslogix Managed Identity Resource ID ')
 param fslogixManagedIdentityResourceId string
 
+@description('Fslogix file share SMB multichannel ')
+param avdFslogixFileShareMultichannel bool
+
 @description('Subnet resource ID for the Azure Files private endpoint')
 param subnetResourceId string
 
@@ -119,12 +122,19 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
           ipRules: []
       }
       fileServices: {
-          shares: [
-              {
-                  name: avdFslogixFileShareName
-                  shareQuota: avdFslogixFileShareQuotaSize * 100 //Portal UI steps scale
-              }
-          ]
+        shares: [
+            {
+                name: avdFslogixFileShareName
+                shareQuota: avdFslogixFileShareQuotaSize * 100 //Portal UI steps scale
+            }
+        ]
+        protocolSettings: avdFslogixFileShareMultichannel ? {
+            smb: {
+                multichannel: {
+                    enabled: avdFslogixFileShareMultichannel
+                }
+            } 
+        }: {}
       }
       privateEndpoints: avdVnetPrivateDnsZone ? [
           {
