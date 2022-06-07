@@ -5,35 +5,137 @@
         "deploymentPrefix": {
             "value": "<<deploymentPrefix>>"
         },
-        "avdSharedServicesLocation": {
+        "avdSessionHostLocation": {
             "value": "eastus2"
         },
-        "c": {
+        "avdManagementPlaneLocation": {
+            "value": "eastus2"
+        },
+        "avdWorkloadSubsId": {
             "value": "<<subscriptionId>>"
         },
-        "avdUseAvailabilityZones": {
+        "avdEnterpriseAppObjectId": {
             "value": false
         },
-        "aibLocation": {
-            "value": "eastus2"
+        "avdVmLocalUserName": {
+            "value": "<<localUserName>>"
         },
-        "createAibCustomRole": {
+        "avdVmLocalUserPassword": {
+            "value": "<<localUserPassword>>"
+        },
+        "avdIdentityDomainName": {
+            "value": "<<domainName>>"
+        },
+        "avdDomainJoinUserName": {
+            "value": "<<domainJoinUserName>>"
+        },
+        "avdDomainJoinUserPassword": {
+            "value": "<<domainJoinUserPassword>>"
+        },
+        "avdOuPath": {
+            "value": ""
+        },
+        "avdHostPoolType": {
+            "value": "Pooled"
+        },
+        "avdPersonalAssignType": {
+            "value": "Automatic"
+        },
+        "avdHostPoolLoadBalancerType": {
+            "value": "BreadthFirst"
+        },
+        "avhHostPoolMaxSessions": {
+            "value": 15
+        },
+        "avdStartVmOnConnect": {
             "value": true
+        },
+        "createStartVmOnConnectCustomRole": {
+            "value": true
+        },
+        "avdDeployRappGroup": {
+            "value": false
+        },
+        "avdHostPoolRdpProperties": {
+            "value": "audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2"
+        },
+        "createAvdVnet": {
+            "value": true
+        },
+        "existingVnetSubnetResourceId": {
+            "value": ""
+        },      
+        "existingHubVnetResourceId": {
+            "value": ""
+        },      
+        "avdVnetworkAddressPrefixes": {
+            "value": "10.10.0.0/23"
+        },     
+        "avdVnetworkSubnetAddressPrefix": {
+            "value": "10.10.0.0/23"
+        },  
+        "customDnsIps": {
+            "value": ""
+        },  
+        "avdVnetPrivateDnsZone": {
+            "value": false
+        },  
+        "avdVnetPrivateDnsZoneFilesId": {
+            "value": ""
+        },  
+        "avdVnetPrivateDnsZoneKeyvaultId": {
+            "value": ""
+        },  
+        "vNetworkGatewayOnHub": {
+            "value": false
+        },  
+        "createAvdFslogixDeployment": {
+            "value": true
+        },  
+        "avdFslogixFileShareQuotaSize": {
+            "value": 512
+        }, 
+        "avdDeploySessionHosts": {
+            "value": true
+        }, 
+        "avdDeploySessionHostsCount": {
+            "value": 1
+        }, 
+        "avdUseAvailabilityZones": {
+            "value": true
+        }, 
+        "avdAsFaultDomainCount": {
+            "value": 2
+        }, 
+        "avdAsUpdateDomainCount": {
+            "value": 5
+        }, 
+        "fslogixStorageSku": {
+            "value": "Premium_LRS"
+        }, 
+        "encryptionAtHost": {
+            "value": false
+        }, 
+        "avdSessionHostsSize": {
+            "value": "Standard_D2s_v3"
+        }, 
+        "avdSessionHostDiskType": {
+            "value": "Standard_LRS"
         }, 
         "avdOsImage": {
             "value": "win10_21h2"
-        },
+        }, 
         "useSharedImage": {
-            "value": true
-        },
-        "createAibManagedIdentity": {
-            "value": true
-        },
-        "existingAibManagedIdentityId": {
-            "value": "<<managedIdentityId>>"
-        },
-        "existingAibManagedIdentityName": {
-            "value": "<<managedIdentityName>>"
+            "value": false
+        }, 
+        "avdImageTemplataDefinitionId": {
+            "value": ""
+        }, 
+        "storageOuName": {
+            "value": ""
+        }, 
+        "createOuForStorage": {
+            "value": false
         }
     }
 }

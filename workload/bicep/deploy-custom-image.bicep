@@ -8,10 +8,10 @@ targetScope = 'subscription'
 @description('Required. The name of the resource group to deploy')
 param deploymentPrefix string = ''
 
-@description('Required. Location where to deploy compute services (Default: eastus2)')
+@description('Optional. Location where to deploy compute services (Default: eastus2)')
 param avdSharedServicesLocation string = 'eastus2'
 
-@description('Optional. AVD shared services subscription ID, multiple subscriptions scenario')
+@description('Required. AVD shared services subscription ID, multiple subscriptions scenario')
 param avdSharedServicesSubId string = ''
 
 @description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set (Default: false)')
@@ -33,10 +33,10 @@ param avdUseAvailabilityZones bool = false
     'uksouth'
     'ukwest'
 ])
-@description('Azure image builder location (Default: eastus2)')
+@description('Optional. Azure image builder location (Default: eastus2)')
 param aibLocation string = 'eastus2'
 
-@description('Create custom azure image builder role (Default: true)')
+@description('Optional. Create custom azure image builder role (Default: true)')
 param createAibCustomRole bool = true
 
 @allowed([
@@ -45,19 +45,19 @@ param createAibCustomRole bool = true
     'win11_21h2_office'
     'win11_21h2'
 ])
-@description('Required. AVD OS image source (Default: win10-21h2)')
+@description('Optional. Required. AVD OS image source (Default: win10-21h2)')
 param avdOsImage string = 'win10_21h2'
 
-@description('Set to deploy image from Azure Compute Gallery')
+@description('Optional. Set to deploy image from Azure Compute Gallery (Default: true)')
 param useSharedImage bool = true
 
-@description('Create azure image Builder managed identity')
+@description('Optional. Create azure image Builder managed identity (Default: true)')
 param createAibManagedIdentity bool = true
 
-@description('Select existing azure image Builder managed identity')
+@description('Optional. Select existing azure image Builder managed identity (Default: "")')
 param existingAibManagedIdentityId string = ''
 
-@description('Select existing azure image Builder managed identity')
+@description('Optional. Select existing azure image Builder managed identity (Default: "")')
 param existingAibManagedIdentityName string = ''
 
 @description('Do not modify, used to set unique value for resource deployment')
