@@ -8,16 +8,16 @@ targetScope = 'subscription'
 @description('Required. The name of the resource group to deploy')
 param deploymentPrefix string = ''
 
-@description('Required. Location where to deploy compute services')
-param avdSessionHostLocation string = ''
+@description('Optional. Location where to deploy compute services (Default: eastus2)')
+param avdSessionHostLocation string = 'eastus2'
 
-@description('Required. Location where to deploy AVD management plane')
-param avdManagementPlaneLocation string = ''
+@description('Optional. Location where to deploy AVD management plane (Default: eastus2)')
+param avdManagementPlaneLocation string = 'eastus2'
 
-@description('Optional. AVD workload subscription ID, multiple subscriptions scenario')
+@description('Required. AVD workload subscription ID, multiple subscriptions scenario')
 param avdWorkloadSubsId string = ''
 
-@description('Azure Virtual Desktop Enterprise Application object ID. ')
+@description('Required. Azure Virtual Desktop Enterprise Application object ID. ')
 param avdEnterpriseAppObjectId string = ''
 
 @description('Required. AVD session host local credentials')
@@ -33,7 +33,7 @@ param avdDomainJoinUserName string = ''
 @secure()
 param avdDomainJoinUserPassword string = ''
 
-@description('Optional. OU path to join AVd VMs')
+@description('Optional. OU path to join AVd VMs (Default: "")')
 param avdOuPath string = ''
 /*
 @description('Optional. Id to grant access to on AVD workload key vault secrets')
@@ -57,67 +57,67 @@ param avdPersonalAssignType string = 'Automatic'
     'BreadthFirst'
     'DepthFirst'
 ])
-@description('Required. AVD host pool load balacing type (Default: BreadthFirst)')
+@description('Optional. AVD host pool load balacing type (Default: BreadthFirst)')
 param avdHostPoolLoadBalancerType string = 'BreadthFirst'
 
-@description('Optional. AVD host pool maximum number of user sessions per session host')
+@description('Optional. AVD host pool maximum number of user sessions per session host (Default: 15)')
 param avhHostPoolMaxSessions int = 15
 
-@description('Optional. AVD host pool start VM on Connect')
-param avdStartVmOnConnect bool
+@description('Optional. AVD host pool start VM on Connect (Default: true)')
+param avdStartVmOnConnect bool = true
 
-@description('Create custom Start VM on connect role')
-param createStartVmOnConnectCustomRole bool
+@description('Optional. Create custom Start VM on connect role (Default: true)')
+param createStartVmOnConnectCustomRole bool = true
 
-@description('Optional. AVD deploy remote app application group')
-param avdDeployRappGroup bool
+@description('Optional. AVD deploy remote app application group (Default: false)')
+param avdDeployRappGroup bool = false
 
-@description('Optional. AVD host pool Custom RDP properties')
+@description('Optional. AVD host pool Custom RDP properties (Default: audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2)')
 param avdHostPoolRdpProperties string = 'audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2'
 
-@description('Create new virtual network')
-param createAvdVnet bool
+@description('Optional. Create new virtual network (Default: true)')
+param createAvdVnet bool = true
 
-@description('Existing virtual network subnet')
+@description('Optional. Existing virtual network subnet (Default: "")')
 param existingVnetSubnetResourceId string = ''
 
-@description('Existing hub virtual network for perring')
+@description('Required. Existing hub virtual network for perring')
 param existingHubVnetResourceId string = ''
 
-@description('AVD virtual network address prefixes')
-param avdVnetworkAddressPrefixes string = ''
+@description('Optional. AVD virtual network address prefixes (Default: 10.10.0.0/23)')
+param avdVnetworkAddressPrefixes string = '10.10.0.0/23'
 
-@description('AVD virtual network subnet address prefix')
-param avdVnetworkSubnetAddressPrefix string = ''
+@description('Optional. AVD virtual network subnet address prefix (Default: 10.10.0.0/23)')
+param avdVnetworkSubnetAddressPrefix string = '10.10.0.0/23'
 
-@description('custom DNS servers IPs')
+@description('Required. custom DNS servers IPs')
 param customDnsIps string = ''
 
-@description('Use Azure private DNS zones for private endpoints (Default: false)')
+@description('Optional. Use Azure private DNS zones for private endpoints (Default: false)')
 param avdVnetPrivateDnsZone bool = false
 
-@description('Use Azure private DNS zones for private endpoints (Default: false)')
+@description('Optional. Use Azure private DNS zones for private endpoints (Default: false)')
 param avdVnetPrivateDnsZoneFilesId string = ''
 
-@description('Use Azure private DNS zones for private endpoints (Default: false)')
+@description('Optional. Use Azure private DNS zones for private endpoints (Default: false)')
 param avdVnetPrivateDnsZoneKeyvaultId string = ''
 
-@description('Does the hub contains a virtual network gateway')
-param vNetworkGatewayOnHub bool
+@description('Optional. Does the hub contains a virtual network gateway (Default: false)')
+param vNetworkGatewayOnHub bool = false
 
-@description('Deploy Fslogix setup')
-param createAvdFslogixDeployment bool
+@description('Optional. Deploy Fslogix setup  (Default: true)')
+param createAvdFslogixDeployment bool = true
 
 @description('Optional. Fslogix file share size (Default: 5TB)')
 param avdFslogixFileShareQuotaSize int = 512
 
-@description('Deploy new session hosts')
-param avdDeploySessionHosts bool
+@description('Optional. Deploy new session hosts (Default: true)')
+param avdDeploySessionHosts bool = true
 
 @minValue(1)
 @maxValue(49)
-@description('Cuantity of session hosts to deploy')
-param avdDeploySessionHostsCount int
+@description('Optional. Cuantity of session hosts to deploy (Default: 1)')
+param avdDeploySessionHostsCount int = 1
 
 @description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Defualt: true)')
 param avdUseAvailabilityZones bool = true
@@ -128,16 +128,16 @@ param avdAsFaultDomainCount int = 2
 @description('Optional. Sets the number of update domains for the availability set. (Defualt: 5)')
 param avdAsUpdateDomainCount int = 5
 
-@description('Storage account SKU for FSLogix storage. Recommended tier is Premium LRS or Premium ZRS (where available)')
-param fslogixStorageSku string = ''
+@description('Optional. Storage account SKU for FSLogix storage. Recommended tier is Premium LRS or Premium ZRS (where available) (Defualt: Premium_LRS)')
+param fslogixStorageSku string = 'Premium_LRS'
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool = false 
 
-@description('Session host VM size (Defualt: Standard_D2s_v3) ')
+@description('Optional. Session host VM size (Defualt: Standard_D2s_v3)')
 param avdSessionHostsSize string = 'Standard_D2s_v3'
 
-@description('OS disk type for session host (Defualt: Standard_LRS) ')
+@description('Optional. OS disk type for session host (Defualt: Standard_LRS)')
 param avdSessionHostDiskType string = 'Standard_LRS'
 
 
@@ -147,19 +147,19 @@ param avdSessionHostDiskType string = 'Standard_LRS'
     'win11_21h2_office'
     'win11_21h2'
 ])
-@description('Required. AVD OS image source (Default: win10-21h2)')
+@description('Optional. AVD OS image source (Default: win10-21h2)')
 param avdOsImage string = 'win10_21h2'
 
-@description('Set to deploy image from Azure Compute Gallery')
-param useSharedImage bool
+@description('Optional. Set to deploy image from Azure Compute Gallery (Default: false)')
+param useSharedImage bool = false
 
-@description('Source custom image ID')
+@description('Optional. Source custom image ID (Default: "")')
 param avdImageTemplataDefinitionId string = ''
 
-@description('OU name for Azure Storage Account. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly. ')
+@description('Optional. OU name for Azure Storage Account. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.  (Default: "")')
 param storageOuName string = ''
 
-@description('If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain')
+@description('Optional. If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain (Default: "")')
 param createOuForStorage bool = false
 
 @description('Do not modify, used to set unique value for resource deployment')
