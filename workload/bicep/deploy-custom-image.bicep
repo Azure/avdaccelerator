@@ -8,14 +8,14 @@ targetScope = 'subscription'
 @description('Required. The name of the resource group to deploy')
 param deploymentPrefix string = ''
 
-@description('Required. Location where to deploy compute services')
-param avdSharedServicesLocation string = ''
+@description('Required. Location where to deploy compute services (Default: eastus2)')
+param avdSharedServicesLocation string = 'eastus2'
 
 @description('Optional. AVD shared services subscription ID, multiple subscriptions scenario')
 param avdSharedServicesSubId string = ''
 
-@description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Defualt: true)')
-param avdUseAvailabilityZones bool
+@description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set (Default: false)')
+param avdUseAvailabilityZones bool = false
 
 @allowed([
     'eastus'
@@ -33,11 +33,11 @@ param avdUseAvailabilityZones bool
     'uksouth'
     'ukwest'
 ])
-@description('Azure image builder location (Defualt: eastus2)')
+@description('Azure image builder location (Default: eastus2)')
 param aibLocation string = 'eastus2'
 
-@description('Create custom azure image builder role')
-param createAibCustomRole bool
+@description('Create custom azure image builder role (Default: true)')
+param createAibCustomRole bool = true
 
 @allowed([
     'win10_21h2_office'
@@ -52,13 +52,13 @@ param avdOsImage string = 'win10_21h2'
 param useSharedImage bool = true
 
 @description('Create azure image Builder managed identity')
-param createAibManagedIdentity bool
+param createAibManagedIdentity bool = true
 
 @description('Select existing azure image Builder managed identity')
-param existingAibManagedIdentityId string
+param existingAibManagedIdentityId string = ''
 
 @description('Select existing azure image Builder managed identity')
-param existingAibManagedIdentityName string
+param existingAibManagedIdentityName string = ''
 
 @description('Do not modify, used to set unique value for resource deployment')
 param time string = utcNow()
