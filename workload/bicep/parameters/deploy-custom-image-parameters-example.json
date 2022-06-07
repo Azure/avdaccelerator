@@ -8,7 +8,7 @@
         "avdSharedServicesLocation": {
             "value": "eastus2"
         },
-        "c": {
+        "avdSharedServicesSubId": {
             "value": "<<subscriptionId>>"
         },
         "avdUseAvailabilityZones": {
