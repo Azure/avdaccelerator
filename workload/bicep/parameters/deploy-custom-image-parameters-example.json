@@ -1,0 +1,39 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "deploymentPrefix": {
+            "value": "<<deploymentPrefix>>"
+        },
+        "avdSharedServicesLocation": {
+            "value": "eastus2"
+        },
+        "c": {
+            "value": "<<subscriptionId>>"
+        },
+        "avdUseAvailabilityZones": {
+            "value": false
+        },
+        "aibLocation": {
+            "value": "eastus2"
+        },
+        "createAibCustomRole": {
+            "value": true
+        }, 
+        "avdOsImage": {
+            "value": "win10_21h2"
+        },
+        "useSharedImage": {
+            "value": true
+        },
+        "createAibManagedIdentity": {
+            "value": true
+        },
+        "existingAibManagedIdentityId": {
+            "value": "<<managedIdentityId>>"
+        },
+        "existingAibManagedIdentityName": {
+            "value": "<<managedIdentityName>>"
+        }
+    }
+}
