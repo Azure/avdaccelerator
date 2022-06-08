@@ -5,10 +5,7 @@
 ### Azure CLI
 
 ```bash
-az deployment tenant create \
-  --template-file infra-as-code/bicep/modules/managementGroups/managementGroups.bicep \
-  --parameters @infra-as-code/bicep/modules/managementGroups/managementGroups.parameters.example.json \
-  --location eastus2
+
 ```
 
 ### PowerShell
@@ -37,10 +34,7 @@ New-AzSubscriptionDeployment `
 ### Azure CLI
 
 ```bash
-az deployment tenant create \
-  --template-file infra-as-code/bicep/modules/managementGroups/managementGroups.bicep \
-  --parameters @infra-as-code/bicep/modules/managementGroups/managementGroups.parameters.example.json \
-  --location eastus2
+
 ```
 
 ### PowerShell
