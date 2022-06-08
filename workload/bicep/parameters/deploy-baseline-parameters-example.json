@@ -66,7 +66,7 @@
             "value": ""
         },      
         "existingHubVnetResourceId": {
-            "value": ""
+            "value": "<<hubVnetResourceId>>"
         },      
         "avdVnetworkAddressPrefixes": {
             "value": "10.10.0.0/23"
@@ -75,7 +75,7 @@
             "value": "10.10.0.0/23"
         },  
         "customDnsIps": {
-            "value": ""
+            "value": "<<customDnsIps>>"
         },  
         "avdVnetPrivateDnsZone": {
             "value": false
