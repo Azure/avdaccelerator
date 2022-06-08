@@ -1,4 +1,4 @@
-# Welcome to the Azure Virtual Desktop (AVD) Landing Zone Accelerator
+# PowerShell and Azure CLI deployments
 
 ## Optional: Custom Image Build deployment
 
