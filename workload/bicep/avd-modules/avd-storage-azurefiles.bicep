@@ -39,6 +39,9 @@ param avdImageTemplataDefinitionId string
 @description('Fslogix Managed Identity Resource ID ')
 param fslogixManagedIdentityResourceId string
 
+@description('Fslogix file share SMB multichannel ')
+param avdFslogixFileShareMultichannel bool
+
 @description('Subnet resource ID for the Azure Files private endpoint')
 param subnetResourceId string
 
@@ -71,7 +74,7 @@ param avdFslogixStorageName string
 param avdFslogixFileShareName string
 
 @description('Azure Files storage account SKU')
-param fsLogixStorageSku string
+param fslogixStorageSku string
 
 @description('Azure File share quota')
 param avdFslogixFileShareQuotaSize int
@@ -108,9 +111,9 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
   params: {
       name: avdFslogixStorageName
       location: avdSessionHostLocation
-      storageAccountSku: fsLogixStorageSku
+      storageAccountSku: fslogixStorageSku
       allowBlobPublicAccess: false
-      storageAccountKind:  ((fsLogixStorageSku =~ 'Premium_LRS') || (fsLogixStorageSku =~ 'Premium_ZRS')) ? 'FileStorage': 'StorageV2'
+      storageAccountKind:  ((fslogixStorageSku =~ 'Premium_LRS') || (fslogixStorageSku =~ 'Premium_ZRS')) ? 'FileStorage': 'StorageV2'
       storageAccountAccessTier: 'Hot'
       networkAcls: {
           bypass: 'AzureServices'
@@ -119,12 +122,19 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
           ipRules: []
       }
       fileServices: {
-          shares: [
-              {
-                  name: avdFslogixFileShareName
-                  shareQuota: avdFslogixFileShareQuotaSize * 100 //Portal UI steps scale
-              }
-          ]
+        shares: [
+            {
+                name: avdFslogixFileShareName
+                shareQuota: avdFslogixFileShareQuotaSize * 100 //Portal UI steps scale
+            }
+        ]
+        protocolSettings: avdFslogixFileShareMultichannel ? {
+            smb: {
+                multichannel: {
+                    enabled: avdFslogixFileShareMultichannel
+                }
+            } 
+        }: {}
       }
       privateEndpoints: avdVnetPrivateDnsZone ? [
           {

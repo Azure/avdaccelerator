@@ -992,7 +992,7 @@
             "parameters": {
                 "deploymentPrefix": "[steps('avdLzSettings').avdDeploymentPrefix]",
                 "avdSessionHostLocation": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdSessionHostLocation]",
-                "fsLogixstorageSku": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdStorageAccountSku]",
+                "fslogixstorageSku": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdStorageAccountSku]",
                 "avdManagementPlaneLocation": "[steps('avdManagementPlane').avdManagementPlaneLocation]",
                 "avdSubOrgsOption": "[steps('avdLzSettings').avdSubOrgsOption]",
                 "avdSingleSubsId": "[steps('avdLzSettings').avdSingleSubSection.avdSingleSub.subscriptionId]",
