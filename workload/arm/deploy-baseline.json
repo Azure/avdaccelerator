@@ -5,11 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.6.18.56646",
-      "templateHash": "7887161629372262327"
-    }
-  },
   "parameters": {
-    "deploymentPrefix": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -263,7 +259,7 @@
         "description": "Optional. Sets the number of update domains for the availability set. (Defualt: 5)"
       }
     },
-    "fsLogixStorageSku": {
+    "fslogixStorageSku": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -6404,7 +6400,7 @@
       "condition": "[parameters('createAvdFslogixDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "Create-ManagedIdentities-RoleAssign",
+      "name": "[format('Create-Managed-ID-RoleAssign-{0}', parameters('time'))]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -10020,10 +10016,13 @@
             "value": "[parameters('encryptionAtHost')]"
           },
           "fslogixManagedIdentityResourceId": {
-            "value": "[if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', 'Create-ManagedIdentities-RoleAssign'), '2020-10-01').outputs.fslogixManagedIdentityResourceId.value, '')]"
+            "value": "[if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.fslogixManagedIdentityResourceId.value, '')]"
           },
-          "fsLogixStorageSku": {
-            "value": "[parameters('fsLogixStorageSku')]"
+          "avdFslogixFileShareMultichannel": {
+            "value": "[if(or(contains(parameters('fslogixStorageSku'), 'Premium_LRS'), contains(parameters('fslogixStorageSku'), 'Premium_ZRS')), true(), false())]"
+          },
+          "fslogixStorageSku": {
+            "value": "[parameters('fslogixStorageSku')]"
           },
           "marketPlaceGalleryWindows": {
             "value": "[variables('marketPlaceGalleryWindows').win10_21h2]"
@@ -10045,7 +10044,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.6.18.56646",
+<<<<<<< HEAD
               "templateHash": "17716317597215862655"
+=======
+              "templateHash": "902051786492419141"
+>>>>>>> 1b6de7420bf54b39d12be5f2d0591c9be259afb2
             }
           },
           "parameters": {
@@ -10121,6 +10124,12 @@
                 "description": "Fslogix Managed Identity Resource ID "
               }
             },
+            "avdFslogixFileShareMultichannel": {
+              "type": "bool",
+              "metadata": {
+                "description": "Fslogix file share SMB multichannel "
+              }
+            },
             "subnetResourceId": {
               "type": "string",
               "metadata": {
@@ -10178,7 +10187,7 @@
                 "description": "Azure Files share name"
               }
             },
-            "fsLogixStorageSku": {
+            "fslogixStorageSku": {
               "type": "string",
               "metadata": {
                 "description": "Azure Files storage account SKU"
@@ -10254,13 +10263,13 @@
                     "value": "[parameters('avdSessionHostLocation')]"
                   },
                   "storageAccountSku": {
-                    "value": "[parameters('fsLogixStorageSku')]"
+                    "value": "[parameters('fslogixStorageSku')]"
                   },
                   "allowBlobPublicAccess": {
                     "value": false
                   },
                   "storageAccountKind": {
-                    "value": "[if(or(equals(toLower(parameters('fsLogixStorageSku')), toLower('Premium_LRS')), equals(toLower(parameters('fsLogixStorageSku')), toLower('Premium_ZRS'))), 'FileStorage', 'StorageV2')]"
+                    "value": "[if(or(equals(toLower(parameters('fslogixStorageSku')), toLower('Premium_LRS')), equals(toLower(parameters('fslogixStorageSku')), toLower('Premium_ZRS'))), 'FileStorage', 'StorageV2')]"
                   },
                   "storageAccountAccessTier": {
                     "value": "Hot"
@@ -10280,7 +10289,8 @@
                           "name": "[parameters('avdFslogixFileShareName')]",
                           "shareQuota": "[mul(parameters('avdFslogixFileShareQuotaSize'), 100)]"
                         }
-                      ]
+                      ],
+                      "protocolSettings": "[if(parameters('avdFslogixFileShareMultichannel'), createObject('smb', createObject('multichannel', createObject('enabled', parameters('avdFslogixFileShareMultichannel')))), createObject())]"
                     }
                   },
                   "privateEndpoints": {
@@ -16944,7 +16954,7 @@
         "avdBaselineResourceGroups",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('avdServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-Workload-KeyVault-{0}', parameters('time')))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', 'Create-ManagedIdentities-RoleAssign')]"
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))]"
       ]
     },
     {
@@ -17042,7 +17052,7 @@
             "value": "[parameters('createAvdFslogixDeployment')]"
           },
           "fslogixManagedIdentityResourceId": {
-            "value": "[if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', 'Create-ManagedIdentities-RoleAssign'), '2020-10-01').outputs.fslogixManagedIdentityResourceId.value, 'none')]"
+            "value": "[if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.fslogixManagedIdentityResourceId.value, 'none')]"
           },
           "fsLogixScript": {
             "value": "[variables('fsLogixScript')]"
@@ -17070,7 +17080,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.6.18.56646",
-              "templateHash": "17814710920229191955"
+              "templateHash": "8930482303829083784"
             }
           },
           "parameters": {
@@ -21226,7 +21236,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
-              "name": "[format('Configure-FsLogix-for-{0}-{1}-{2}', parameters('avdSessionHostNamePrefix'), range(0, parameters('avdDeploySessionHostsCount'))[copyIndex()], parameters('time'))]",
+              "name": "[format('Configure-FsLogix-for-{0}-{1}', range(0, parameters('avdDeploySessionHostsCount'))[copyIndex()], parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('avdWorkloadSubsId'))]",
               "resourceGroup": "[format('{0}', parameters('avdComputeObjectsRgName'))]",
               "properties": {
@@ -21311,7 +21321,7 @@
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-HostPool-AppGroups-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('avdServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-Workload-KeyVault-{0}', parameters('time')))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', 'Create-ManagedIdentities-RoleAssign')]"
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))]"
       ]
     }
   ]
