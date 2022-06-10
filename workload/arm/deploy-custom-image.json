@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.6.18.56646",
-      "templateHash": "14275297080884757570"
+      "templateHash": "10323255371667453061"
     }
   },
   "parameters": {
@@ -20,29 +20,30 @@
     },
     "avdSharedServicesLocation": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "eastus2",
       "metadata": {
-        "description": "Required. Location where to deploy compute services"
+        "description": "Optional. Location where to deploy compute services (Default: eastus2)"
       }
     },
     "avdSharedServicesSubId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. AVD shared services subscription ID, multiple subscriptions scenario"
+        "description": "Required. AVD shared services subscription ID, multiple subscriptions scenario"
       }
     },
     "avdUseAvailabilityZones": {
       "type": "bool",
+      "defaultValue": false,
       "metadata": {
-        "description": "Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Defualt: true)"
+        "description": "Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set (Default: false)"
       }
     },
     "aibLocation": {
       "type": "string",
       "defaultValue": "eastus2",
       "metadata": {
-        "description": "Azure image builder location (Defualt: eastus2)"
+        "description": "Optional. Azure image builder location (Default: eastus2)"
       },
       "allowedValues": [
         "eastus",
@@ -63,15 +64,16 @@
     },
     "createAibCustomRole": {
       "type": "bool",
+      "defaultValue": true,
       "metadata": {
-        "description": "Create custom azure image builder role"
+        "description": "Optional. Create custom azure image builder role (Default: true)"
       }
     },
     "avdOsImage": {
       "type": "string",
       "defaultValue": "win10_21h2",
       "metadata": {
-        "description": "Required. AVD OS image source (Default: win10-21h2)"
+        "description": "Optional. Required. AVD OS image source (Default: win10-21h2)"
       },
       "allowedValues": [
         "win10_21h2_office",
@@ -84,25 +86,28 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Set to deploy image from Azure Compute Gallery"
+        "description": "Optional. Set to deploy image from Azure Compute Gallery (Default: true)"
       }
     },
     "createAibManagedIdentity": {
       "type": "bool",
+      "defaultValue": true,
       "metadata": {
-        "description": "Create azure image Builder managed identity"
+        "description": "Optional. Create azure image Builder managed identity (Default: true)"
       }
     },
     "existingAibManagedIdentityId": {
       "type": "string",
+      "defaultValue": "",
       "metadata": {
-        "description": "Select existing azure image Builder managed identity"
+        "description": "Optional. Select existing azure image Builder managed identity (Default: \"\")"
       }
     },
     "existingAibManagedIdentityName": {
       "type": "string",
+      "defaultValue": "",
       "metadata": {
-        "description": "Select existing azure image Builder managed identity"
+        "description": "Optional. Select existing azure image Builder managed identity (Default: \"\")"
       }
     },
     "time": {
