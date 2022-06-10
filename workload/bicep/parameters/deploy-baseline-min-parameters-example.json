@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "deploymentPrefix": {
+            "value": "<<deploymentPrefix>>"
+        },
+        "avdWorkloadSubsId": {
+            "value": "<<subscriptionId>>"
+        },
+        "avdVmLocalUserName": {
+            "value": "<<localUserName>>"
+        },
+        "avdVmLocalUserPassword": {
+            "value": "<<localUserPassword>>"
+        },
+        "avdIdentityDomainName": {
+            "value": "<<domainName>>"
+        },
+        "avdDomainJoinUserName": {
+            "value": "<<domainJoinUserName>>"
+        },
+        "avdDomainJoinUserPassword": {
+            "value": "<<domainJoinUserPassword>>"
+        },
+        "customDnsIps": {
+            "value": ""
+        }
+    }
+}

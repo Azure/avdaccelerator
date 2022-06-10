@@ -1,0 +1,141 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "deploymentPrefix": {
+            "value": "<<deploymentPrefix>>"
+        },
+        "avdSessionHostLocation": {
+            "value": "eastus2"
+        },
+        "avdManagementPlaneLocation": {
+            "value": "eastus2"
+        },
+        "avdWorkloadSubsId": {
+            "value": "<<subscriptionId>>"
+        },
+        "avdEnterpriseAppObjectId": {
+            "value": false
+        },
+        "avdVmLocalUserName": {
+            "value": "<<localUserName>>"
+        },
+        "avdVmLocalUserPassword": {
+            "value": "<<localUserPassword>>"
+        },
+        "avdIdentityDomainName": {
+            "value": "<<domainName>>"
+        },
+        "avdDomainJoinUserName": {
+            "value": "<<domainJoinUserName>>"
+        },
+        "avdDomainJoinUserPassword": {
+            "value": "<<domainJoinUserPassword>>"
+        },
+        "avdOuPath": {
+            "value": ""
+        },
+        "avdHostPoolType": {
+            "value": "Pooled"
+        },
+        "avdPersonalAssignType": {
+            "value": "Automatic"
+        },
+        "avdHostPoolLoadBalancerType": {
+            "value": "BreadthFirst"
+        },
+        "avhHostPoolMaxSessions": {
+            "value": 15
+        },
+        "avdStartVmOnConnect": {
+            "value": true
+        },
+        "createStartVmOnConnectCustomRole": {
+            "value": true
+        },
+        "avdDeployRappGroup": {
+            "value": false
+        },
+        "avdHostPoolRdpProperties": {
+            "value": "audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2"
+        },
+        "createAvdVnet": {
+            "value": true
+        },
+        "existingVnetSubnetResourceId": {
+            "value": ""
+        },      
+        "existingHubVnetResourceId": {
+            "value": "<<hubVnetResourceId>>"
+        },      
+        "avdVnetworkAddressPrefixes": {
+            "value": "10.10.0.0/23"
+        },     
+        "avdVnetworkSubnetAddressPrefix": {
+            "value": "10.10.0.0/23"
+        },  
+        "customDnsIps": {
+            "value": "<<customDnsIps>>"
+        },  
+        "avdVnetPrivateDnsZone": {
+            "value": false
+        },  
+        "avdVnetPrivateDnsZoneFilesId": {
+            "value": ""
+        },  
+        "avdVnetPrivateDnsZoneKeyvaultId": {
+            "value": ""
+        },  
+        "vNetworkGatewayOnHub": {
+            "value": false
+        },  
+        "createAvdFslogixDeployment": {
+            "value": true
+        },  
+        "avdFslogixFileShareQuotaSize": {
+            "value": 512
+        }, 
+        "avdDeploySessionHosts": {
+            "value": true
+        }, 
+        "avdDeploySessionHostsCount": {
+            "value": 1
+        }, 
+        "avdUseAvailabilityZones": {
+            "value": true
+        }, 
+        "avdAsFaultDomainCount": {
+            "value": 2
+        }, 
+        "avdAsUpdateDomainCount": {
+            "value": 5
+        }, 
+        "fslogixStorageSku": {
+            "value": "Premium_LRS"
+        }, 
+        "encryptionAtHost": {
+            "value": false
+        }, 
+        "avdSessionHostsSize": {
+            "value": "Standard_D2s_v3"
+        }, 
+        "avdSessionHostDiskType": {
+            "value": "Standard_LRS"
+        }, 
+        "avdOsImage": {
+            "value": "win10_21h2"
+        }, 
+        "useSharedImage": {
+            "value": false
+        }, 
+        "avdImageTemplataDefinitionId": {
+            "value": ""
+        }, 
+        "storageOuName": {
+            "value": ""
+        }, 
+        "createOuForStorage": {
+            "value": false
+        }
+    }
+}
