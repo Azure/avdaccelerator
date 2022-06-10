@@ -5,7 +5,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.6.18.56646",
+      "templateHash": "5749443076210500963"
+    }
+  },
   "parameters": {
+    "deploymentPrefix": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -16,30 +20,30 @@
     },
     "avdSessionHostLocation": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "eastus2",
       "metadata": {
-        "description": "Required. Location where to deploy compute services"
+        "description": "Optional. Location where to deploy compute services (Default: eastus2)"
       }
     },
     "avdManagementPlaneLocation": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "eastus2",
       "metadata": {
-        "description": "Required. Location where to deploy AVD management plane"
+        "description": "Optional. Location where to deploy AVD management plane (Default: eastus2)"
       }
     },
     "avdWorkloadSubsId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. AVD workload subscription ID, multiple subscriptions scenario"
+        "description": "Required. AVD workload subscription ID, multiple subscriptions scenario"
       }
     },
     "avdEnterpriseAppObjectId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Azure Virtual Desktop Enterprise Application object ID. "
+        "description": "Required. Azure Virtual Desktop Enterprise Application object ID. "
       }
     },
     "avdVmLocalUserName": {
@@ -75,7 +79,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. OU path to join AVd VMs"
+        "description": "Optional. OU path to join AVd VMs (Default: \"\")"
       }
     },
     "avdHostPoolType": {
@@ -104,7 +108,7 @@
       "type": "string",
       "defaultValue": "BreadthFirst",
       "metadata": {
-        "description": "Required. AVD host pool load balacing type (Default: BreadthFirst)"
+        "description": "Optional. AVD host pool load balacing type (Default: BreadthFirst)"
       },
       "allowedValues": [
         "BreadthFirst",
@@ -115,106 +119,112 @@
       "type": "int",
       "defaultValue": 15,
       "metadata": {
-        "description": "Optional. AVD host pool maximum number of user sessions per session host"
+        "description": "Optional. AVD host pool maximum number of user sessions per session host (Default: 15)"
       }
     },
     "avdStartVmOnConnect": {
       "type": "bool",
+      "defaultValue": true,
       "metadata": {
-        "description": "Optional. AVD host pool start VM on Connect"
+        "description": "Optional. AVD host pool start VM on Connect (Default: true)"
       }
     },
     "createStartVmOnConnectCustomRole": {
       "type": "bool",
+      "defaultValue": true,
       "metadata": {
-        "description": "Create custom Start VM on connect role"
+        "description": "Optional. Create custom Start VM on connect role (Default: true)"
       }
     },
     "avdDeployRappGroup": {
       "type": "bool",
+      "defaultValue": false,
       "metadata": {
-        "description": "Optional. AVD deploy remote app application group"
+        "description": "Optional. AVD deploy remote app application group (Default: false)"
       }
     },
     "avdHostPoolRdpProperties": {
       "type": "string",
       "defaultValue": "audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2",
       "metadata": {
-        "description": "Optional. AVD host pool Custom RDP properties"
+        "description": "Optional. AVD host pool Custom RDP properties (Default: audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2)"
       }
     },
     "createAvdVnet": {
       "type": "bool",
+      "defaultValue": true,
       "metadata": {
-        "description": "Create new virtual network"
+        "description": "Optional. Create new virtual network (Default: true)"
       }
     },
     "existingVnetSubnetResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Existing virtual network subnet"
+        "description": "Optional. Existing virtual network subnet (Default: \"\")"
       }
     },
     "existingHubVnetResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Existing hub virtual network for perring"
+        "description": "Required. Existing hub virtual network for perring"
       }
     },
     "avdVnetworkAddressPrefixes": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "10.10.0.0/23",
       "metadata": {
-        "description": "AVD virtual network address prefixes"
+        "description": "Optional. AVD virtual network address prefixes (Default: 10.10.0.0/23)"
       }
     },
     "avdVnetworkSubnetAddressPrefix": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "10.10.0.0/23",
       "metadata": {
-        "description": "AVD virtual network subnet address prefix"
+        "description": "Optional. AVD virtual network subnet address prefix (Default: 10.10.0.0/23)"
       }
     },
     "customDnsIps": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "custom DNS servers IPs"
+        "description": "Required. custom DNS servers IPs"
       }
     },
     "avdVnetPrivateDnsZone": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Use Azure private DNS zones for private endpoints (Default: false)"
+        "description": "Optional. Use Azure private DNS zones for private endpoints (Default: false)"
       }
     },
     "avdVnetPrivateDnsZoneFilesId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Use Azure private DNS zones for private endpoints (Default: false)"
+        "description": "Optional. Use Azure private DNS zones for private endpoints (Default: false)"
       }
     },
     "avdVnetPrivateDnsZoneKeyvaultId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Use Azure private DNS zones for private endpoints (Default: false)"
+        "description": "Optional. Use Azure private DNS zones for private endpoints (Default: false)"
       }
     },
     "vNetworkGatewayOnHub": {
       "type": "bool",
+      "defaultValue": false,
       "metadata": {
-        "description": "Does the hub contains a virtual network gateway"
+        "description": "Optional. Does the hub contains a virtual network gateway (Default: false)"
       }
     },
     "createAvdFslogixDeployment": {
       "type": "bool",
+      "defaultValue": true,
       "metadata": {
-        "description": "Deploy Fslogix setup"
+        "description": "Optional. Deploy Fslogix setup  (Default: true)"
       }
     },
     "avdFslogixFileShareQuotaSize": {
@@ -226,14 +236,16 @@
     },
     "avdDeploySessionHosts": {
       "type": "bool",
+      "defaultValue": true,
       "metadata": {
-        "description": "Deploy new session hosts"
+        "description": "Optional. Deploy new session hosts (Default: true)"
       }
     },
     "avdDeploySessionHostsCount": {
       "type": "int",
+      "defaultValue": 1,
       "metadata": {
-        "description": "Cuantity of session hosts to deploy"
+        "description": "Optional. Cuantity of session hosts to deploy (Default: 1)"
       },
       "maxValue": 49,
       "minValue": 1
@@ -261,9 +273,9 @@
     },
     "fslogixStorageSku": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "Premium_LRS",
       "metadata": {
-        "description": "Storage account SKU for FSLogix storage. Recommended tier is Premium LRS or Premium ZRS (where available)"
+        "description": "Optional. Storage account SKU for FSLogix storage. Recommended tier is Premium LRS or Premium ZRS (where available) (Defualt: Premium_LRS)"
       }
     },
     "encryptionAtHost": {
@@ -277,21 +289,21 @@
       "type": "string",
       "defaultValue": "Standard_D2s_v3",
       "metadata": {
-        "description": "Session host VM size (Defualt: Standard_D2s_v3) "
+        "description": "Optional. Session host VM size (Defualt: Standard_D2s_v3)"
       }
     },
     "avdSessionHostDiskType": {
       "type": "string",
       "defaultValue": "Standard_LRS",
       "metadata": {
-        "description": "OS disk type for session host (Defualt: Standard_LRS) "
+        "description": "Optional. OS disk type for session host (Defualt: Standard_LRS)"
       }
     },
     "avdOsImage": {
       "type": "string",
       "defaultValue": "win10_21h2",
       "metadata": {
-        "description": "Required. AVD OS image source (Default: win10-21h2)"
+        "description": "Optional. AVD OS image source (Default: win10-21h2)"
       },
       "allowedValues": [
         "win10_21h2_office",
@@ -302,29 +314,30 @@
     },
     "useSharedImage": {
       "type": "bool",
+      "defaultValue": false,
       "metadata": {
-        "description": "Set to deploy image from Azure Compute Gallery"
+        "description": "Optional. Set to deploy image from Azure Compute Gallery (Default: false)"
       }
     },
     "avdImageTemplataDefinitionId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Source custom image ID"
+        "description": "Optional. Source custom image ID (Default: \"\")"
       }
     },
     "storageOuName": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "OU name for Azure Storage Account. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly. "
+        "description": "Optional. OU name for Azure Storage Account. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.  (Default: \"\")"
       }
     },
     "createOuForStorage": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain"
+        "description": "Optional. If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain (Default: \"\")"
       }
     },
     "time": {
@@ -10044,11 +10057,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.6.18.56646",
-<<<<<<< HEAD
-              "templateHash": "17716317597215862655"
-=======
-              "templateHash": "902051786492419141"
->>>>>>> 1b6de7420bf54b39d12be5f2d0591c9be259afb2
+              "templateHash": "14843803826899823591"
             }
           },
           "parameters": {
