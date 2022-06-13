@@ -15,7 +15,7 @@ param(
 	[string] $StorageAccountRG,
 
       [Parameter(Mandatory = $true)]
-      ValidateNotNullOrEmpty()]
+      [ValidateNotNullOrEmpty()]
       [string] $SubscriptionId,
 
 	[Parameter(Mandatory = $true)]
