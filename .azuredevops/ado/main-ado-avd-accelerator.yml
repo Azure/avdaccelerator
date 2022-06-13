@@ -64,7 +64,7 @@ stages:
             - avdEnterpriseAppObjectId '82205950-fef1-4f88-8801-86e60c2e9318'
             - avdManagementPlaneLocation $(deploymentRegion)
             - avdSessionHostLocation $(deploymentRegion)
-            - fsLogixStorageSku 'Standard_LRS'
+            - fslogixStorageSku 'Standard_LRS'
             - createAvdFslogixDeployment true 
         #    - avdWrklSecretAccess $(avdWrklSecretAccess)
             - existingVnetSubnetResourceId '/subscriptions/f013bc3f-1407-4b68-a977-9f22ef438677/resourceGroups/rg-avd-networking/providers/Microsoft.Network/virtualNetworks/avd-cacn-vnet/subnets/subnet1'
