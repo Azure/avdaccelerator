@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.7.4.23292",
-      "templateHash": "32893021007902599"
+      "templateHash": "7681997615820080708"
     }
   },
   "parameters": {
@@ -10057,7 +10057,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.7.4.23292",
-              "templateHash": "2940229099288493078"
+              "templateHash": "12057449644427321307"
             }
           },
           "parameters": {
@@ -13371,6 +13371,9 @@
                   },
                   "location": {
                     "value": "[parameters('avdSessionHostLocation')]"
+                  },
+                  "systemAssignedIdentity": {
+                    "value": false
                   },
                   "userAssignedIdentities": {
                     "value": {
