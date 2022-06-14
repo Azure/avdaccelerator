@@ -93,7 +93,7 @@ Write-Log "Domain joining storage account $StorageAccountName in Resource group 
 Add-AzAccount -Environment $AzureCloudEnvironment -identity
 
 Write-Log "Setting Azure subscription to $SubscriptionId"
-Set-AzContext -Subscription $SubscriptionId
+Select-AzSubscription -SubscriptionId $SubscriptionId
 
 Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitName $OUName -OverwriteExistingADObject
 Write-Log -Message "Successfully domain joined the storage account $StorageAccountName"
