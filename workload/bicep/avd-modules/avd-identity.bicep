@@ -36,6 +36,9 @@ param readerRoleId string
 @description('GUID for built in role ID of Storage Account Contributor')
 param storageAccountContributorRoleId string
 
+@description('Optional. Deploy Fslogix setup  (Default: true)')
+param createAvdFslogixDeployment bool
+
 @description('Do not modify, used to set unique value for resource deployment')
 param time string = utcNow()
 
@@ -44,7 +47,7 @@ param time string = utcNow()
 // =========== //
 
 // FSLogix managed identity.
-module fslogixManagedIdentity '../../../carml/1.2.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = if (avdDeploySessionHosts) {
+module fslogixManagedIdentity '../../../carml/1.2.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = if (createAvdFslogixDeployment) {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
   name: 'fslogix-Managed-Identity-${time}'
   params: {
