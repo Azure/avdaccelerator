@@ -14,9 +14,13 @@ param(
 	[ValidateNotNullOrEmpty()]
 	[string] $StorageAccountRG,
 
-      [Parameter(Mandatory = $true)]
-      [ValidateNotNullOrEmpty()]
-      [string] $SubscriptionId,
+	[Parameter(Mandatory = $true)]
+	[ValidateNotNullOrEmpty()]
+	[string] $ClientId,
+
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $SubscriptionId,
 
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
@@ -90,7 +94,8 @@ if (-not $OrganizationalUnit) {
 	}
 
 Write-Log "Domain joining storage account $StorageAccountName in Resource group $StorageAccountRG"
-Add-AzAccount -Environment $AzureCloudEnvironment -identity
+# Add-AzAccount -Environment $AzureCloudEnvironment -identity
+Connect-AzAccount -Identity -AccountId $ClientId
 
 Write-Log "Setting Azure subscription to $SubscriptionId"
 Select-AzSubscription -SubscriptionId $SubscriptionId
