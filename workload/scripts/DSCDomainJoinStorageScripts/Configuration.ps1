@@ -34,6 +34,10 @@
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
+        [string] $ClientId,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
         [string] $OUName,
 
         [Parameter(Mandatory = $true)]
@@ -77,6 +81,10 @@ Configuration DomainJoinFileShare
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $SubscriptionId,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $ClientId,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -124,7 +132,7 @@ $DomainAdminCred = New-Object System.Management.Automation.PSCredential ($Domain
                 . (Join-Path $using:ScriptPath "Logger.ps1")
                 try {
                         Write-Log "DSC DomainJoinStorage SetScript Domain joining storage account $Using:StorageAccountName"
-                        & "$using:ScriptPath\Script-DomainJoinStorage.ps1" -StorageAccountName $Using:StorageAccountName -StorageAccountRG $Using:StorageAccountRG -SubscriptionId $Using:SubscriptionId -ShareName $Using:ShareName -DomainName $Using:DomainName -AzureCloudEnvironment $Using:AzureCloudEnvironment -OUName $Using:OUName -CreateNewOU $Using:CreateNewOU
+                        & "$using:ScriptPath\Script-DomainJoinStorage.ps1" -StorageAccountName $Using:StorageAccountName -StorageAccountRG $Using:StorageAccountRG -SubscriptionId $Using:SubscriptionId -ClientId $Using:ClientId -ShareName $Using:ShareName -DomainName $Using:DomainName -AzureCloudEnvironment $Using:AzureCloudEnvironment -OUName $Using:OUName -CreateNewOU $Using:CreateNewOU
 
                         Write-Log "Successfully domain joined Storage account"
                 }
@@ -178,4 +186,4 @@ $config = @{
     )
 }
 
-DomainJoinFileShare -ConfigurationData $config -StorageAccountName $StorageAccountName -StorageAccountRG $StorageAccountRG -SubscriptionId $SubscriptionId -ShareName $ShareName -DomainName $DomainName -AzureCloudEnvironment $AzureCloudEnvironment -OUName $OUName -CreateNewOU $CreateNewOU -DomainAdminUserName $DomainAdminUserName -DomainAdminUserPassword $DomainAdminUserPassword -Verbose; 
+DomainJoinFileShare -ConfigurationData $config -StorageAccountName $StorageAccountName -StorageAccountRG $StorageAccountRG -SubscriptionId $SubscriptionId -ShareName $ShareName -DomainName $DomainName -AzureCloudEnvironment $AzureCloudEnvironment -OUName $OUName -CreateNewOU $CreateNewOU -DomainAdminUserName $DomainAdminUserName -DomainAdminUserPassword $DomainAdminUserPassword -ClientId $ClientId -Verbose; 
