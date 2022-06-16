@@ -358,6 +358,7 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = i
         fslogixManagedIdentityName: fslogixManagedIdentityName
         readerRoleId: readerRoleId
         storageAccountContributorRoleId: storageAccountContributorRoleId
+        createAvdFslogixDeployment: createAvdFslogixDeployment
     }
     dependsOn:[
         avdBaselineResourceGroups
