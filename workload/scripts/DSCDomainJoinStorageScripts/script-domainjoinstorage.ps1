@@ -119,7 +119,7 @@ $FileShareLocation = '\\'+ $StorageAccountName + 'file.core.windows.net\\'+$Shar
 Try {
     Write-Log "Mounting Profile storage $StorageAccountName as a drive $DriveLetter"
     if (-not (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue)) {
-        $UserStorage = "/user:Azure\$StorageAccountName"
+        $UserStorage = "/user:localhost\$StorageAccountName"
         
         $StorageKey = (Get-AzStorageAccountKey -ResourceGroupName $StorageAccountRG -AccountName $StorageAccountName) | Where-Object {$_.KeyName -eq "key1"}
         net use ${DriveLetter}: $FileShareLocation $UserStorage $StorageKey.Value
