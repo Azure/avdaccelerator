@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.7.4.23292",
-      "templateHash": "7681997615820080708"
+      "templateHash": "8598409638921341235"
     }
   },
   "parameters": {
@@ -6462,7 +6462,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.7.4.23292",
-              "templateHash": "1292948640915573969"
+              "templateHash": "6649559702076236381"
             }
           },
           "parameters": {
@@ -6568,7 +6568,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.7.4.23292",
-                      "templateHash": "4196857566415273622"
+                      "templateHash": "12254380217872673861"
                     }
                   },
                   "parameters": {
@@ -6802,6 +6802,13 @@
                       "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))).principalId]",
                       "metadata": {
                         "description": "The principal ID of the user assigned identity"
+                      }
+                    },
+                    "clientId": {
+                      "type": "string",
+                      "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))).clientId]",
+                      "metadata": {
+                        "description": "The resource ID of the user assigned identity"
                       }
                     },
                     "resourceGroupName": {
@@ -8389,6 +8396,10 @@
             "fslogixManagedIdentityResourceId": {
               "type": "string",
               "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value]"
+            },
+            "fslogixManagedIdentityClientId": {
+              "type": "string",
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.clientId.value]"
             }
           }
         }
