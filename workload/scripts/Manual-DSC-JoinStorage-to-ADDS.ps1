@@ -14,7 +14,11 @@ param (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $SubscriptionId,
-	
+
+	[Parameter(Mandatory = $true)]
+	[ValidateNotNullOrEmpty()]
+	[string] $ClientId,
+        
 	[Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $ShareName,
@@ -62,7 +66,7 @@ Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 Install-Module 'PSDscResources' -Force
 
 
-$DscCompileCommand="./Configuration.ps1 -StorageAccountName " + $StorageAccountName +  " -StorageAccountRG " + $StorageAccountRG + " -ShareName " + $ShareName + " -SubscriptionId " + $SubscriptionId + " -DomainName " + $DomainName + " -AzureCloudEnvironment " + $AzureCloudEnvironment + " -OUName " + $OUName + " -CreateNewOU " + $CreateNewOU + " -DomainAdminUserName " + $DomainAdminUserName + " -DomainAdminUserPassword " + $DomainAdminUserPassword + " -Verbose"
+$DscCompileCommand="./Configuration.ps1 -StorageAccountName " + $StorageAccountName +  " -StorageAccountRG " + $StorageAccountRG + " -ShareName " + $ShareName + " -SubscriptionId " + $SubscriptionId + " -ClientId " + $ClientId +" -DomainName " + $DomainName + " -AzureCloudEnvironment " + $AzureCloudEnvironment + " -OUName " + $OUName + " -CreateNewOU " + $CreateNewOU + " -DomainAdminUserName " + $DomainAdminUserName + " -DomainAdminUserPassword " + $DomainAdminUserPassword + " -Verbose"
 
 Write-Host "Executing the commmand $DscCompileCommand" 
 Invoke-Expression -Command $DscCompileCommand
