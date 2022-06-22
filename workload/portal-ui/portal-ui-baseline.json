@@ -970,7 +970,7 @@
                                 {
                                     "name": "avdHubVnetSelector",
                                     "type": "Microsoft.Solutions.ResourceSelector",
-                                    "label": "Virtual Network",
+                                    "label": "Virtual Network (Required)",
                                     "resourceType": "Microsoft.Network/virtualNetworks",
                                     "constraints": {
                                         "required": true
