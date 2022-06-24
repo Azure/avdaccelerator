@@ -2,8 +2,8 @@
     "$schema": "<relative path to createFormUI.schema.json>",
     "view": {
         "kind": "Form",
-        "isWizard": true,
         "properties": {
+            "isWizard": true,
             "title": "AVD landing zone accelerator - Baseline",
             "steps": [
                 {
