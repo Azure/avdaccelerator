@@ -63,6 +63,9 @@ param existingAibManagedIdentityName string = ''
 @description('Do not modify, used to set unique value for resource deployment')
 param time string = utcNow()
 
+@description('Enable usage and telemetry feedback to Microsoft.')
+param enableTelemetry bool = true
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -121,10 +124,27 @@ var avdSharedSResourcesStorageName = 'avd${uniqueString(deploymentPrefixLowercas
 var avdSharedSResourcesAibContainerName = 'aib-${deploymentPrefixLowercase}'
 var avdSharedSResourcesScriptsContainerName = 'scripts-${deploymentPrefixLowercase}'
 var avdSharedServicesKvName = 'avd-${uniqueString(deploymentPrefixLowercase, avdSharedServicesLocationLowercase, avdSharedServicesSubId)}-shared' // max length limit 24 characters
+var telemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${location}'
 
 // =========== //
 // Deployments //
 // =========== //
+
+//  Telemetry Deployment
+resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
+  name: telemetryId
+  location: location
+  scope: tenant()
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#'
+      'contentVersion': '1.0.0.0'
+      'parameters': {}
+      'resources': {}
+    }
+  }
+}
 
 // Resource groups (AVD shared services subscription RG).
 module avdSharedResourcesRg '../../carml/1.0.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
