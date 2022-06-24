@@ -2,6 +2,7 @@
     "$schema": "<relative path to createFormUI.schema.json>",
     "view": {
         "kind": "Form",
+        "isWizard": true,
         "properties": {
             "title": "AVD landing zone accelerator - Baseline",
             "steps": [
@@ -968,11 +969,50 @@
                             "label": "Existing hub vNet peering information",
                             "elements": [
                                 {
-                                    "name": "avdHubVnetSelector",
-                                    "type": "Microsoft.Solutions.ResourceSelector",
-                                    "label": "Virtual Network (Required)",
-                                    "resourceType": "Microsoft.Network/virtualNetworks",
+                                    "name": "avdHubVnetSubs",
+                                    "type": "Microsoft.Solutions.ArmApiControl",
+                                    "request": {
+                                        "method": "GET",
+                                        "path": "subscriptions?api-version=2020-01-01"
+                                    }
+                                },
+                                {
+                                    "name": "avdHubVnetSub",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "Hub vNet Subscription",
+                                    "toolTip": "",
+                                    "multiselect": false,
+                                    "selectAll": true,
+                                    "filter": true,
+                                    "filterPlaceholder": "Filter items ...",
+                                    "multiLine": true,
+                                    "visible": true,
                                     "constraints": {
+                                        "allowedValues": "[map(steps('avdNetwork').avdHubVnetPeering.avdHubVnetSubs.value, (sub) => parse(concat('{\"label\":\"', sub.displayName, '\",\"description\":\"', sub.subscriptionId, '\",\"value\":\"', toLower(sub.subscriptionId), '\"}')) )]",
+                                        "required": true
+                                    }
+                                },
+                                {
+                                    "name": "avdExistingHubVnets",
+                                    "type": "Microsoft.Solutions.ArmApiControl",
+                                    "request": {
+                                        "method": "GET",
+                                        "path": "[concat('subscriptions/', steps('avdNetwork').avdHubVnetPeering.avdHubVnetSub, '/providers/Microsoft.Network/virtualNetworks?api-version=2021-08-01')]"
+                                    }
+                                },
+                                {
+                                    "name": "avdExistingHubVnet",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "Hub vNet",
+                                    "toolTip": "",
+                                    "multiselect": false,
+                                    "selectAll": true,
+                                    "filter": true,
+                                    "filterPlaceholder": "Filter items ...",
+                                    "multiLine": true,
+                                    "visible": true,
+                                    "constraints": {
+                                        "allowedValues": "[map(steps('avdNetwork').avdHubVnetPeering.avdExistingHubVnets.value, (vnet) => parse(concat('{\"label\":\"', vnet.name, '\",\"description\":\"', vnet.location, '\",\"value\":\"', toLower(vnet.id), '\"}')) )]",
                                         "required": true
                                     }
                                 },
@@ -1085,7 +1125,7 @@
                 "avdVnetworkAddressPrefixes": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdVnetSize, '10.10.0.0/23')]",
                 "avdVnetworkSubnetAddressPrefix": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdVnetSubnetSize, '10.10.0.0/23')]",
                 "customDnsIps": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdVnetDns, '')]",
-                "existingHubVnetResourceId": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdHubVnetPeering.avdHubVnetSelector.id, 'none')]",
+                "existingHubVnetResourceId": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdHubVnetPeering.avdExistingHubVnets, 'none')]",
                 "vNetworkGatewayOnHub": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdHubVnetPeering.avdHubVnetGateway, false)]",
                 "existingVnetSubnetResourceId": "[if(equals(steps('avdNetwork').createAvdVnet, false), steps('avdNetwork').avdVnetSubnetSelectorName, 'none')]",
                 "avdDeploySessionHosts": "[steps('avdSessionHosts').avdDeploySessionHosts]",
@@ -1108,7 +1148,6 @@
                 "createAvdFslogixDeployment": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment]",
                 "fslogixStorageSku": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdStorageAccountSku, 'Standard_LRS')]",
                 "avdFslogixFileShareQuotaSize": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdSessionHostsFslogixFileShareQuota, 1 )]"
-
             },
             "kind": "Subscription",
             "location": "[steps('basics').avdDeploymentScope.location.name]",
