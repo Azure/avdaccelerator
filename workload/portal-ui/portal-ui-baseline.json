@@ -360,7 +360,7 @@
                                     "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.startVmOnConnect, true)]",
                                     "label": "AVD enterprise application ObjectID",
                                     "defaultValue": "",
-                                    "toolTip": "Provide the ObjectID of the enterprise application Windows Virtual Desktop (ApplicationID: 9cdead84-a844-4324-93f2-b2e6bb768d07).",
+                                    "toolTip": "Provide the ObjectID of the enterprise application Azure Virtual Desktop (ApplicationID: 9cdead84-a844-4324-93f2-b2e6bb768d07).",
                                     "constraints": {
                                         "required": true
                                     }
