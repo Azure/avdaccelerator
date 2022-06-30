@@ -120,10 +120,10 @@ Try {
     Write-Log "Mounting Profile storage $StorageAccountName as a drive $DriveLetter"
     if (-not (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue)) {
         $UserStorage = "/user:localhost\$StorageAccountName"
-        
         $StorageKey = (Get-AzStorageAccountKey -ResourceGroupName $StorageAccountRG -AccountName $StorageAccountName) | Where-Object {$_.KeyName -eq "key1"}
-        net use ${DriveLetter}: $FileShareLocation $UserStorage $StorageKey.Value
-    }
+		#net use ${DriveLetter}: $FileShareLocation $UserStorage $StorageKey.Value
+		New-PSDrive -Name $DriveLetter -PSProvider FileSystem -Root $FileShareLocation -Persist
+	}
     else {
         Write-Log "Drive $DriveLetter already mounted."
     }
