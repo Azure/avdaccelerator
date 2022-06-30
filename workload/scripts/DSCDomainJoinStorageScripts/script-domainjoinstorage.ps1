@@ -47,6 +47,9 @@ $ErrorActionPreference = "Stop"
 
 . (Join-Path $ScriptPath "Logger.ps1")
 
+Write-Log "Turning off Windows firewall. "
+Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+
 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 Install-Module -Name PowershellGet -MinimumVersion 2.2.4.1 -Force
 Install-Module -Name Az.Accounts -Force
@@ -115,14 +118,19 @@ $account.AzureFilesIdentityBasedAuth
 
 $DriveLetter = "Y"
 $FileShareLocation = '\\'+ $StorageAccountName + 'file.core.windows.net\\'+$ShareName
-
+$connectTestResult = Test-NetConnection -ComputerName $StorageAccountName.file.core.windows.net -Port 445
+Write-Log "Test connection access to port 445 for $StorageAccountName was $connectTestResult "
 Try {
     Write-Log "Mounting Profile storage $StorageAccountName as a drive $DriveLetter"
     if (-not (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue)) {
-        $UserStorage = "/user:localhost\$StorageAccountName"
+		
+        $UserStorage = "/user:Azure\$StorageAccountName"
+		Write-Log "User storage: $UserStorage"
         $StorageKey = (Get-AzStorageAccountKey -ResourceGroupName $StorageAccountRG -AccountName $StorageAccountName) | Where-Object {$_.KeyName -eq "key1"}
-		#net use ${DriveLetter}: $FileShareLocation $UserStorage $StorageKey.Value
-		New-PSDrive -Name $DriveLetter -PSProvider FileSystem -Root $FileShareLocation -Persist
+		Write-Log "Storage key: $StorageKey"
+		Write-Log "File Share location: $FileShareLocation"
+		net use ${DriveLetter}: $FileShareLocation $UserStorage $StorageKey.Value
+		#New-PSDrive -Name $DriveLetter -PSProvider FileSystem -Root $FileShareLocation -Persist
 	}
     else {
         Write-Log "Drive $DriveLetter already mounted."
