@@ -39,7 +39,7 @@ variables:
   - name: avdDomainJoinUserName
     value: 'azadmin@azurelab.ca'
   - name: avdDomainJoinUserPassword
-    value: '!R37fallacy1505'
+    value: '!V0ipc@123'
   - name: avdVmLocalUserName
     value: azadmin
   - name: avdVmLocalUserPassword
