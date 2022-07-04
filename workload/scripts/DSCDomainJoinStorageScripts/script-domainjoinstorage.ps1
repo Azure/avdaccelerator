@@ -117,7 +117,7 @@ $account.AzureFilesIdentityBasedAuth
 # Remove Administrators from full control 
 
 $DriveLetter = "Y"
-$FileShareLocation = '\\'+ $StorageAccountName + '.file.core.windows.net\\'+$ShareName
+$FileShareLocation = '\\'+ $StorageAccountName + '.file.core.windows.net\'+$ShareName
 $StorageAccountNameFull = $StorageAccountName + '.file.core.windows.net'
 $connectTestResult = Test-NetConnection -ComputerName $StorageAccountNameFull -Port 445
 Write-Log "Test connection access to port 445 for $StorageAccountNameFull was $connectTestResult"
