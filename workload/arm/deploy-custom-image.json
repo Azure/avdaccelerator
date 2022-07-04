@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.2.30886",
-      "templateHash": "7593830357348010900"
+      "templateHash": "8066916721639854342"
     }
   },
   "parameters": {
@@ -116,6 +116,13 @@
       "metadata": {
         "description": "Do not modify, used to set unique value for resource deployment"
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable usage and telemetry feedback to Microsoft."
+      }
     }
   },
   "variables": {
@@ -173,9 +180,26 @@
     "avdSharedSResourcesStorageName": "[format('avd{0}shared', uniqueString(variables('deploymentPrefixLowercase'), variables('avdSharedServicesLocationLowercase')))]",
     "avdSharedSResourcesAibContainerName": "[format('aib-{0}', variables('deploymentPrefixLowercase'))]",
     "avdSharedSResourcesScriptsContainerName": "[format('scripts-{0}', variables('deploymentPrefixLowercase'))]",
-    "avdSharedServicesKvName": "[format('avd-{0}-shared', uniqueString(variables('deploymentPrefixLowercase'), variables('avdSharedServicesLocationLowercase'), parameters('avdSharedServicesSubId')))]"
+    "avdSharedServicesKvName": "[format('avd-{0}-shared', uniqueString(variables('deploymentPrefixLowercase'), variables('avdSharedServicesLocationLowercase'), parameters('avdSharedServicesSubId')))]",
+    "telemetryId": "[format('pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-{0}', parameters('avdSharedServicesLocation'))]"
   },
   "resources": [
+    {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "scope": "/",
+      "name": "[variables('telemetryId')]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "resources": {}
+        }
+      }
+    },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
