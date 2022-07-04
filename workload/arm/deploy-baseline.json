@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.2.30886",
-      "templateHash": "18222884540316675436"
+      "templateHash": "12508740471631269784"
     }
   },
   "parameters": {
@@ -346,6 +346,13 @@
       "metadata": {
         "description": "Do not modify, used to set unique value for resource deployment"
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable usage and telemetry feedback to Microsoft."
+      }
     }
   },
   "variables": {
@@ -423,9 +430,27 @@
         "name": "[variables('avdComputeObjectsRgName')]",
         "location": "[parameters('avdSessionHostLocation')]"
       }
-    ]
+    ],
+    "telemetryId": "[format('pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-{0}', parameters('avdManagementPlaneLocation'))]"
   },
   "resources": [
+    {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "scope": "/",
+      "name": "[variables('telemetryId')]",
+      "location": "[parameters('avdManagementPlaneLocation')]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+          "contentVersion": "1.0.0.0",
+          "parameters": {},
+          "resources": {}
+        }
+      }
+    },
     {
       "copy": {
         "name": "avdBaselineResourceGroups",
@@ -6452,6 +6477,9 @@
           },
           "storageAccountContributorRoleId": {
             "value": "[variables('storageAccountContributorRoleId')]"
+          },
+          "createAvdFslogixDeployment": {
+            "value": "[parameters('createAvdFslogixDeployment')]"
           }
         },
         "template": {
@@ -6461,7 +6489,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.8.2.30886",
-              "templateHash": "13549815163886514654"
+              "templateHash": "15360624504980401521"
             }
           },
           "parameters": {
@@ -6531,6 +6559,12 @@
                 "description": "GUID for built in role ID of Storage Account Contributor"
               }
             },
+            "createAvdFslogixDeployment": {
+              "type": "bool",
+              "metadata": {
+                "description": "Optional. Deploy Fslogix setup  (Default: true)"
+              }
+            },
             "time": {
               "type": "string",
               "defaultValue": "[utcNow()]",
@@ -6541,7 +6575,7 @@
           },
           "resources": [
             {
-              "condition": "[parameters('avdDeploySessionHosts')]",
+              "condition": "[parameters('createAvdFslogixDeployment')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
               "name": "[format('fslogix-Managed-Identity-{0}', parameters('time'))]",
