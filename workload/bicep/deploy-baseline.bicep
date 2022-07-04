@@ -165,6 +165,9 @@ param createOuForStorage bool = false
 @description('Do not modify, used to set unique value for resource deployment')
 param time string = utcNow()
 
+@description('Enable usage and telemetry feedback to Microsoft.')
+param enableTelemetry bool = true
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -254,9 +257,28 @@ var resourceGroups = [
     }
     */
 ]
+
+var telemetryId = 'pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-${location}'
+
 // =========== //
 // Deployments //
 // =========== //
+
+//  Telemetry Deployment
+resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
+  name: telemetryId
+  location: location
+  scope: tenant()
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#'
+      'contentVersion': '1.0.0.0'
+      'parameters': {}
+      'resources': {}
+    }
+  }
+}
 
 // Resource groups.
 module avdBaselineResourceGroups '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = [ for resourceGroup in resourceGroups: {
@@ -358,6 +380,7 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = i
         fslogixManagedIdentityName: fslogixManagedIdentityName
         readerRoleId: readerRoleId
         storageAccountContributorRoleId: storageAccountContributorRoleId
+        createAvdFslogixDeployment: createAvdFslogixDeployment
     }
     dependsOn:[
         avdBaselineResourceGroups

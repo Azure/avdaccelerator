@@ -5,7 +5,20 @@
 ### Azure CLI
 
 ```bash
-
+az deployment tenant create \
+  --template-file workload/bicep/deploy-baseline.bicep \
+  --parameters @workload/bicep/parameters/deploy-baseline-parameters-example.json \
+  --avdWorkloadSubsId <subscriptionId> \
+  --deploymentPrefix <deploymentPrefix> \
+  --avdVmLocalUserName <localUserName> \
+  --avdVmLocalUserPassword $avdVmLocalUserPassword \
+  --avdIdentityDomainName <domainJoinUserName> \
+  --avdDomainJoinUserPassword $avdDomainJoinUserPassword \
+  --avdDomainJoinUserName <domainName>  \
+  --existingHubVnetResourceId <hubVnetResourceId>  \
+  --customDnsIps <customDNSservers>  \
+  --avdEnterpriseAppObjectId <wvdAppObjectId> \
+  --location eastus
 ```
 
 ### PowerShell
@@ -19,11 +32,11 @@ New-AzSubscriptionDeployment `
   -avdWorkloadSubsId <subscriptionId> `
   -deploymentPrefix <deploymentPrefix> `
   -avdVmLocalUserName <localUserName> `
-  -avdVmLocalUserPassword $localUserPassword `
+  -avdVmLocalUserPassword $avdVmLocalUserPassword `
   -avdIdentityDomainName <domainJoinUserName> `
-  -avdDomainJoinUserPassword $domainJoinUserPassword `
-  -avdDomainJoinUserName <domainName>  `
-  -existingHubVnetResourceId <hubVnet ResourceId>  `
+  -avdDomainJoinUserPassword $avdDomainJoinUserPassword `
+  -avdDomainJoinUserName <domainJoinUserName>  `
+  -existingHubVnetResourceId <hubVnetResourceId>  `
   -customDnsIps <customDNSservers>  `
   -avdEnterpriseAppObjectId <wvdAppObjectId> `
   -Location eastus2
@@ -34,7 +47,12 @@ New-AzSubscriptionDeployment `
 ### Azure CLI
 
 ```bash
-
+az deployment tenant create \
+  --template-file workload/bicep/deploy-custom-image.bicep \
+  --parameters @workload/bicep/parameters/deploy-custom-image-parameters-example.json \
+  --avdSharedServicesSubId <subscriptionId> \
+  --deploymentPrefix <deploymentPrefix> \
+  --Location eastus2
 ```
 
 ### PowerShell
