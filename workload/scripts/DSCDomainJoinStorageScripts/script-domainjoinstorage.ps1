@@ -118,8 +118,9 @@ $account.AzureFilesIdentityBasedAuth
 
 $DriveLetter = "Y"
 $FileShareLocation = '\\'+ $StorageAccountName + 'file.core.windows.net\\'+$ShareName
-$connectTestResult = Test-NetConnection -ComputerName $StorageAccountName.file.core.windows.net -Port 445
-Write-Log "Test connection access to port 445 for $StorageAccountName was $connectTestResult "
+$StorageAccountNameFull = $StorageAccountName + 'file.core.windows.net'
+$connectTestResult = Test-NetConnection -ComputerName $StorageAccountNameFull -Port 445
+Write-Log "Test connection access to port 445 for $StorageAccountNameFull was $connectTestResult "
 Try {
     Write-Log "Mounting Profile storage $StorageAccountName as a drive $DriveLetter"
     if (-not (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue)) {
