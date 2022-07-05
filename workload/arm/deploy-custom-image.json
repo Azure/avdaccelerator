@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.2.30886",
-      "templateHash": "8066916721639854342"
+      "templateHash": "11095232796894484588"
     }
   },
   "parameters": {
@@ -188,15 +188,14 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2021-04-01",
-      "scope": "/",
       "name": "[variables('telemetryId')]",
+      "location": "[parameters('avdSharedServicesLocation')]",
       "properties": {
         "mode": "Incremental",
         "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
-          "parameters": {},
-          "resources": {}
+          "resources": []
         }
       }
     },
