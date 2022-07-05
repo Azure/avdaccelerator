@@ -133,14 +133,13 @@ var telemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${avdSharedServicesL
 //  Telemetry Deployment
 resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
   name: telemetryId
-  scope: tenant()
+  location: avdSharedServicesLocation
   properties: {
     mode: 'Incremental'
     template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#'
-      'contentVersion': '1.0.0.0'
-      'parameters': {}
-      'resources': {}
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
     }
   }
 }
