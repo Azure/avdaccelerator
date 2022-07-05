@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.2.30886",
-      "templateHash": "5823061812827106818"
+      "templateHash": "14464071820839913511"
     }
   },
   "parameters": {
@@ -439,6 +439,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2021-04-01",
       "name": "[variables('telemetryId')]",
+      "location": "[parameters('avdManagementPlaneLocation')]",
       "properties": {
         "mode": "Incremental",
         "template": {
