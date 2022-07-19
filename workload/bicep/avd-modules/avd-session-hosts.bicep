@@ -1,4 +1,4 @@
-targetScope = 'subscription'
+//targetScope = 'subscription'
 
 // ========== //
 // Parameters //
@@ -12,26 +12,35 @@ param avdSessionHostLocation string
 @description('AVD Session Host prefix')
 param avdSessionHostNamePrefix string
 
-@description('Resource Group name for the session hosts')
-param avdComputeObjectsRgName string
+@description('Optional. Availablity Set name.')
+param avdAvailabilitySetNamePrefix string
 
-@description('Optional. AVD workload subscription ID, multiple subscriptions scenario')
-param avdWorkloadSubsId string 
-
-@description('Quantity of session hosts to deploy')
-param avdDeploySessionHostsCount int
-
-@description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Defualt: true)')
-param avdUseAvailabilityZones bool
-
-@description('Optional. Availablity Set name')
-param avdAvailabilitySetName string
+@description('Optional. Availablity Set count.')
+param availabilitySetCount int
 
 @description('Optional. Sets the number of fault domains for the availability set.')
 param avdAsFaultDomainCount int
 
 @description('Optional. Sets the number of update domains for the availability set.')
 param avdAsUpdateDomainCount int
+
+@description('Resource Group name for the session hosts')
+param avdComputeObjectsRgName string
+
+@description('Resource Group name for the session hosts')
+param avdServiceObjectsRgName string
+
+@description('Optional. AVD workload subscription ID, multiple subscriptions scenario')
+param avdWorkloadSubsId string 
+
+@description('Quantity of session hosts to deploy')
+param avdSessionHostsCount int
+
+@description('The session host number to begin with for the deployment.')
+param avdSessionHostCountIndex int
+
+@description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Defualt: true)')
+param avdUseAvailabilityZones bool
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool
@@ -57,17 +66,14 @@ param fslogixManagedIdentityResourceId string
 @description('Local administrator username')
 param avdVmLocalUserName string
 
-@description('Local administrator password')
-@secure()
-param avdVmLocalUserPassword string
-
 @description('Required. AD domain name')
 param avdIdentityDomainName string
 
 @description('Required. AVD session host domain join credentials')
 param avdDomainJoinUserName string
-@secure()
-param avdDomainJoinUserPassword string
+
+@description('Required. Name of keyvault that contains credentials.')
+param avdWrklKvName string 
 
 @description('Optional. OU path to join AVd VMs')
 param avdOuPath string
@@ -120,12 +126,18 @@ module avdAvailabilitySet '../../../carml/1.2.0/Microsoft.Compute/availabilitySe
   }
 }
 
+// Call on the KV.
+resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+    name: avdWrklKvName
+    scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
+}
+
 // Session hosts.
-module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(0, avdDeploySessionHostsCount):  {
+module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(0, avdSessionHostsCount):  {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-  name: 'AVD-Session-Host-${i}-${time}'
+  name: 'AVD-Session-Host-${padLeft((i + avdSessionHostCountIndex), 3, '0')}-${time}'
   params: {
-      name: '${avdSessionHostNamePrefix}-${i}'
+      name: '${avdSessionHostNamePrefix}-${padLeft((i + avdSessionHostCountIndex), 3, '0')}'
       location: avdSessionHostLocation
       userAssignedIdentities: createAvdFslogixDeployment ? {
           '${fslogixManagedIdentityResourceId}' : {} 
@@ -146,7 +158,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
           }
       }
       adminUsername: avdVmLocalUserName
-      adminPassword: avdVmLocalUserPassword //avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword') //avdVmLocalUserPassword // need to update to get value from KV
+      adminPassword: avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
       nicConfigurations: [
           {
               nicSuffix: '-nic-01'
@@ -163,7 +175,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
       ]
       // Join domain.
       allowExtensionOperations: true
-      extensionDomainJoinPassword: avdDomainJoinUserPassword //avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
+      extensionDomainJoinPassword: avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
       extensionDomainJoinConfig: {
           enabled: true
           settings: {
@@ -198,13 +210,13 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
     }]
 
 // Add session hosts to AVD Host pool.
-module addAvdHostsToHostPool '../../vm-custom-extensions/add-avd-session-hosts.bicep' = [for i in range(0, avdDeploySessionHostsCount): {
+module addAvdHostsToHostPool '../../vm-custom-extensions/add-avd-session-hosts.bicep' = [for i in range(0, avdSessionHostsCount): {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-  name: 'Add-AVD-Session-Host-${i}-to-HostPool-${time}'
+  name: 'Add-AVD-SH-${padLeft((i + avdSessionHostCountIndex), 3, '0')}-to-HP-${time}'
   params: {
       location: avdSessionHostLocation
       hostPoolToken: hostPoolToken
-      name: '${avdSessionHostNamePrefix}-${i}'
+      name: '${avdSessionHostNamePrefix}-${padLeft((i + avdSessionHostCountIndex), 3, '0')}'
       hostPoolName: avdHostPoolName
       avdAgentPackageLocation: avdAgentPackageLocation
   }
@@ -213,14 +225,13 @@ module addAvdHostsToHostPool '../../vm-custom-extensions/add-avd-session-hosts.b
 ]
 }]
 
-
 // Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
-module configureFsLogixForAvdHosts '../../vm-custom-extensions/configure-fslogix-session-hosts.bicep' = [for i in range(0, avdDeploySessionHostsCount): if (createAvdFslogixDeployment) {
+module configureFsLogixForAvdHosts '../../vm-custom-extensions/configure-fslogix-session-hosts.bicep' = [for i in range(0, avdSessionHostsCount): if (createAvdFslogixDeployment) {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-  name: 'Configure-FsLogix-for-${i}-${time}'
+  name: 'Configure-FsLogix-for-${padLeft((i + avdSessionHostCountIndex), 3, '0')}-${time}'
   params: {
       location: avdSessionHostLocation
-      name: '${avdSessionHostNamePrefix}-${i}'
+      name: '${avdSessionHostNamePrefix}-${padLeft((i + avdSessionHostCountIndex), 3, '0')}'
       file: fsLogixScript
       FsLogixScriptArguments: FsLogixScriptArguments
       baseScriptUri: fslogixScriptUri
