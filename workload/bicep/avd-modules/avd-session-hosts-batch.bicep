@@ -108,13 +108,13 @@ param time string = utcNow()
 
 // Batching baseline logic for session hosts and availability sets provided by @jamasten (Jason Masten))
 //var avdMaxResourcesPerTemplateDeployment = 50 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
-var avdMaxResourcesPerTemplateDeployment = 2
-var divisionValue = avdDeploySessionHostsCount / avdMaxResourcesPerTemplateDeployment // This determines if any full batches are required.
-var divisionRemainderValue = avdDeploySessionHostsCount % avdMaxResourcesPerTemplateDeployment // This determines if any partial batches are required.
+var avdMaxSessionHostsPerTemplateDeployment = 1
+var divisionValue = avdDeploySessionHostsCount / avdMaxSessionHostsPerTemplateDeployment // This determines if any full batches are required.
+var divisionRemainderValue = avdDeploySessionHostsCount % avdMaxSessionHostsPerTemplateDeployment // This determines if any partial batches are required.
 var avdSessionHostBatchCount = divisionRemainderValue > 0 ? divisionValue + 1 : divisionValue // This determines the total number of batches needed, whether full and / or partial.
 
 //var maxAvailabilitySetMembersCount = 200 // This is the max number of session hosts that can be deployed in an availability set.
-var maxAvailabilitySetMembersCount = 2
+var maxAvailabilitySetMembersCount = 1
 var divisionAvSetValue = avdDeploySessionHostsCount / maxAvailabilitySetMembersCount // This determines if any full availability sets are required.
 var divisionAvSetRemainderValue = avdDeploySessionHostsCount % maxAvailabilitySetMembersCount // This determines if any partial availability sets are required.
 var availabilitySetCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue + 1 : divisionAvSetValue // This determines the total number of availability sets needed, whether full and / or partial.
@@ -124,18 +124,34 @@ var availabilitySetCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue 
 // Deployments //
 // =========== //
 
+// Availability set.
+module avdAvailabilitySet './avd-availability-sets.bicep' = if (!avdUseAvailabilityZones) {
+  name: 'AVD-Availability-Set-${time}'
+  scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
+  params: {
+      avdWorkloadSubsId: avdWorkloadSubsId
+      avdComputeObjectsRgName: avdComputeObjectsRgName
+      avdAvailabilitySetNamePrefix: avdAvailabilitySetNamePrefix
+      avdSessionHostLocation: avdSessionHostLocation
+      availabilitySetCount: availabilitySetCount
+      avdAsFaultDomainCount: avdAsFaultDomainCount
+      avdAsUpdateDomainCount: avdAsUpdateDomainCount
+  }
+}
+
 // Session hosts.
-@batchSize(1)
+@batchSize(2)
 module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, avdSessionHostBatchCount): {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-  name: 'AVD-SH-Batch-${i - 1}-${time}'
+  name: 'AVD-SH-Batch-${i-1}-${time}'
   params: {
     avdAgentPackageLocation: avdAgentPackageLocation
     avdApplicationSecurityGroupResourceId: avdApplicationSecurityGroupResourceId
-    avdAvailabilitySetNamePrefix: avdAvailabilitySetNamePrefix
-    availabilitySetCount: availabilitySetCount
-    avdAsFaultDomainCount: avdAsFaultDomainCount
-    avdAsUpdateDomainCount: avdAsUpdateDomainCount
+    //avdAvailabilitySetNamePrefix: avdAvailabilitySetNamePrefix
+    //availabilitySetCount: availabilitySetCount
+    //avdAsFaultDomainCount: avdAsFaultDomainCount
+    //avdAsUpdateDomainCount: avdAsUpdateDomainCount
+    availabilitySetName: '${avdAvailabilitySetNamePrefix}-${i-1}'
     avdComputeObjectsRgName: avdComputeObjectsRgName
     avdDomainJoinUserName: avdDomainJoinUserName
     avdWrklKvName: avdWrklKvName
@@ -144,8 +160,8 @@ module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, avdSessi
     avdIdentityDomainName: avdIdentityDomainName
     avdImageTemplataDefinitionId: avdImageTemplataDefinitionId
     avdOuPath: avdOuPath
-    avdSessionHostsCount: i == avdSessionHostBatchCount && divisionRemainderValue > 0 ? divisionRemainderValue : avdMaxResourcesPerTemplateDeployment
-    avdSessionHostCountIndex: i == 1 ? avdSessionHostCountIndex : ((i - 1) * avdMaxResourcesPerTemplateDeployment) + avdSessionHostCountIndex
+    avdSessionHostsCount: i == avdSessionHostBatchCount && divisionRemainderValue > 0 ? divisionRemainderValue : avdMaxSessionHostsPerTemplateDeployment
+    avdSessionHostCountIndex: i == 1 ? avdSessionHostCountIndex : ((i - 1) * avdMaxSessionHostsPerTemplateDeployment) + avdSessionHostCountIndex
     avdSessionHostDiskType: avdSessionHostDiskType
     avdSessionHostLocation: avdSessionHostLocation
     avdSessionHostNamePrefix: avdSessionHostNamePrefix
@@ -164,4 +180,6 @@ module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, avdSessi
     marketPlaceGalleryWindows: marketPlaceGalleryWindows
     useSharedImage: useSharedImage
   }
+  dependsOn: [
+  ]
 }]
