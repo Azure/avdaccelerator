@@ -116,3 +116,5 @@ module fslogixConnectReaderRoleAssign '../../../carml/1.2.0/Microsoft.Authorizat
 // Outputs //
 // =========== //
 output fslogixManagedIdentityResourceId string = fslogixManagedIdentity.outputs.resourceId
+
+output fslogixManagedIdentityClientId string = fslogixManagedIdentity.outputs.clientId
