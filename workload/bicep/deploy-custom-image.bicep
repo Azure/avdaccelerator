@@ -5,16 +5,16 @@ targetScope = 'subscription'
 // ========== //
 @minLength(2)
 @maxLength(4)
-@description('Required. The name of the resource group to deploy')
+@description('Required. The name of the resource group to deploy.')
 param deploymentPrefix string = ''
 
-@description('Optional. Location where to deploy compute services (Default: eastus2)')
+@description('Optional. Location where to deploy compute services. (Default: eastus2)')
 param avdSharedServicesLocation string = 'eastus2'
 
-@description('Required. AVD shared services subscription ID, multiple subscriptions scenario')
+@description('Required. AVD shared services subscription ID, multiple subscriptions scenario.')
 param avdSharedServicesSubId string = ''
 
-@description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set (Default: false)')
+@description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Default: false)')
 param avdUseAvailabilityZones bool = false
 
 @allowed([
@@ -33,10 +33,10 @@ param avdUseAvailabilityZones bool = false
     'uksouth'
     'ukwest'
 ])
-@description('Optional. Azure image builder location (Default: eastus2)')
+@description('Optional. Azure image builder location. (Default: eastus2)')
 param aibLocation string = 'eastus2'
 
-@description('Optional. Create custom azure image builder role (Default: true)')
+@description('Optional. Create custom azure image builder role. (Default: true)')
 param createAibCustomRole bool = true
 
 @allowed([
@@ -45,22 +45,22 @@ param createAibCustomRole bool = true
     'win11_21h2_office'
     'win11_21h2'
 ])
-@description('Optional. Required. AVD OS image source (Default: win10-21h2)')
+@description('Optional. Required. AVD OS image source. (Default: win10-21h2)')
 param avdOsImage string = 'win10_21h2'
 
-@description('Optional. Set to deploy image from Azure Compute Gallery (Default: true)')
+@description('Optional. Set to deploy image from Azure Compute Gallery. (Default: true)')
 param useSharedImage bool = true
 
-@description('Optional. Create azure image Builder managed identity (Default: true)')
+@description('Optional. Create azure image Builder managed identity. (Default: true)')
 param createAibManagedIdentity bool = true
 
-@description('Optional. Select existing azure image Builder managed identity (Default: "")')
+@description('Optional. Select existing azure image Builder managed identity. (Default: "")')
 param existingAibManagedIdentityId string = ''
 
-@description('Optional. Select existing azure image Builder managed identity (Default: "")')
+@description('Optional. Select existing azure image Builder managed identity. (Default: "")')
 param existingAibManagedIdentityName string = ''
 
-@description('Do not modify, used to set unique value for resource deployment')
+@description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
 @description('Enable usage and telemetry feedback to Microsoft.')
@@ -78,7 +78,7 @@ var deployScriptManagedIdentityName = 'avd-uai-deployScript'
 var imageDefinitionsTemSpecName = 'AVDImageDefinition_${avdOsImage}'
 var imageVmSize = 'Standard_D4s_v3'
 var avdOsImageDefinitions = {
-    'win10_21h2_office': {
+    win10_21h2_office: {
         name: 'Windows10_21H2_Office'
         osType: 'Windows'
         osState: 'Generalized'
@@ -88,7 +88,7 @@ var avdOsImageDefinitions = {
         osAccountType: 'Standard_LRS'
         hyperVGeneration: 'V1'
     }
-    'win10_21h2': {
+    win10_21h2: {
         name: 'Windows10_21H2'
         osType: 'Windows'
         osState: 'Generalized'
@@ -98,7 +98,7 @@ var avdOsImageDefinitions = {
         osAccountType: 'Standard_LRS'
         hyperVGeneration: 'V1'
     }
-    'win11_21h2_office': {
+    win11_21h2_office: {
         name: 'Windows11_21H2'
         osType: 'Windows'
         osState: 'Generalized'
@@ -108,7 +108,7 @@ var avdOsImageDefinitions = {
         osAccountType: 'Standard_LRS'
         hyperVGeneration: 'V2'
     }
-    'win11_21h2': {
+    win11_21h2: {
         name: 'Windows11_21H2'
         osType: 'Windows'
         osState: 'Generalized'
@@ -132,16 +132,16 @@ var telemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${avdSharedServicesL
 
 //  Telemetry Deployment
 resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
-  name: telemetryId
-  location: avdSharedServicesLocation
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
+    name: telemetryId
+    location: avdSharedServicesLocation
+    properties: {
+        mode: 'Incremental'
+        template: {
+            '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+            contentVersion: '1.0.0.0'
+            resources: []
+        }
     }
-  }
 }
 
 // Resource groups (AVD shared services subscription RG).
@@ -194,9 +194,9 @@ module azureImageBuilderRole '../../carml/1.0.0/Microsoft.Authorization/roleDefi
         ]
     }
 }
-//
 
 // Managed identities.
+// Image builder.
 module imageBuilderManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = if (createAibManagedIdentity) {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
     name: 'image-Builder-Managed-Identity-${time}'
@@ -209,6 +209,7 @@ module imageBuilderManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/
     ]
 }
 
+// Script deployment.
 module deployScriptManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
     name: 'deployment-Script-Managed-Identity-${time}'
@@ -220,6 +221,7 @@ module deployScriptManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/
         avdSharedResourcesRg
     ]
 }
+//
 
 // Introduce delay for User Managed Assigned Identity to propagate through the system.
 module userManagedIdentityDelay '../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (createAibManagedIdentity) {
@@ -246,12 +248,13 @@ module userManagedIdentityDelay '../../carml/1.0.0/Microsoft.Resources/deploymen
 }
 
 // Enterprise applications.
-// RBAC role Assignments.
+// RBAC role Assignments image builder.
 resource azureImageBuilderExistingRole 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = if (!createAibCustomRole) {
     name: 'AzureImageBuilder-AVD'
     scope: subscription(avdSharedServicesSubId)
-  }
+}
 
+// RBAC role Assignments image builder.
 module azureImageBuilderRoleAssign '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = {
     name: 'Azure-Image-Builder-RoleAssign-${time}'
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
@@ -264,6 +267,7 @@ module azureImageBuilderRoleAssign '../../carml/1.2.0/Microsoft.Authorization/ro
     ]
 }
 
+// RBAC role Assignments deployment script.
 module deployScriptRoleAssign '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = {
     name: 'deploy-script-RoleAssign-${time}'
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
@@ -275,6 +279,7 @@ module deployScriptRoleAssign '../../carml/1.2.0/Microsoft.Authorization/roleAss
         userManagedIdentityDelay
     ]
 }
+//
 
 // Custom images: Azure Image Builder deployment. Azure Compute Gallery --> Image Template Definition --> Image Template --> Build and Publish Template --> Create VMs.
 // Azure Compute Gallery.
@@ -311,7 +316,6 @@ module avdImageTemplataDefinition '../../carml/1.2.0/Microsoft.Compute/galleries
         avdSharedResourcesRg
     ]
 }
-//
 
 // Create Image Template.
 module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemplates/deploy.bicep' = {
@@ -470,6 +474,7 @@ module imageTemplateBuild '../../carml/1.2.0/Microsoft.Resources/deploymentScrip
         avdSharedServicesKeyVault
     ]
 }
+//
 
 // Key vaults.
 module avdSharedServicesKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = {

@@ -16,10 +16,10 @@ param avdSessionHostNamePrefix string
 param avdComputeObjectsRgName string
 
 @description('Required. Name of AVD service objects RG.')
-param avdServiceObjectsRgName string 
+param avdServiceObjectsRgName string
 
 @description('Optional. AVD workload subscription ID, multiple subscriptions scenario.')
-param avdWorkloadSubsId string 
+param avdWorkloadSubsId string
 
 @description('Quantity of session hosts to deploy.')
 param avdDeploySessionHostsCount int
@@ -43,10 +43,10 @@ param avdAsUpdateDomainCount int
 param encryptionAtHost bool
 
 @description('Session host VM size.')
-param avdSessionHostsSize string 
+param avdSessionHostsSize string
 
 @description('OS disk type for session host.')
-param avdSessionHostDiskType string 
+param avdSessionHostDiskType string
 
 @description('Market Place OS image.')
 param marketPlaceGalleryWindows object
@@ -63,22 +63,14 @@ param fslogixManagedIdentityResourceId string
 @description('Local administrator username.')
 param avdVmLocalUserName string
 
-//@description('Local administrator password.')
-//@secure()
-//param avdVmLocalUserPassword string
-
 @description('Required. Name of keyvault that contains credentials.')
-param avdWrklKvName string 
+param avdWrklKvName string
 
 @description('Required. AD domain name.')
 param avdIdentityDomainName string
 
 @description('Required. AVD session host domain join credentials.')
 param avdDomainJoinUserName string
-
-//@description('Domain join password.')
-//@secure()
-//param avdDomainJoinUserPassword string
 
 @description('Optional. OU path to join AVd VMs.')
 param avdOuPath string
@@ -115,12 +107,14 @@ param time string = utcNow()
 // =========== //
 
 // Batching baseline logic for session hosts and availability sets provided by @jamasten (Jason Masten))
-var avdMaxResourcesPerTemplateDeployment = 50 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
+//var avdMaxResourcesPerTemplateDeployment = 50 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
+var avdMaxResourcesPerTemplateDeployment = 2
 var divisionValue = avdDeploySessionHostsCount / avdMaxResourcesPerTemplateDeployment // This determines if any full batches are required.
 var divisionRemainderValue = avdDeploySessionHostsCount % avdMaxResourcesPerTemplateDeployment // This determines if any partial batches are required.
 var avdSessionHostBatchCount = divisionRemainderValue > 0 ? divisionValue + 1 : divisionValue // This determines the total number of batches needed, whether full and / or partial.
 
-var maxAvailabilitySetMembersCount = 200 // This is the max number of session hosts that can be deployed in an availability set.
+//var maxAvailabilitySetMembersCount = 200 // This is the max number of session hosts that can be deployed in an availability set.
+var maxAvailabilitySetMembersCount = 2
 var divisionAvSetValue = avdDeploySessionHostsCount / maxAvailabilitySetMembersCount // This determines if any full availability sets are required.
 var divisionAvSetRemainderValue = avdDeploySessionHostsCount % maxAvailabilitySetMembersCount // This determines if any partial availability sets are required.
 var availabilitySetCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue + 1 : divisionAvSetValue // This determines the total number of availability sets needed, whether full and / or partial.
@@ -132,9 +126,9 @@ var availabilitySetCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue 
 
 // Session hosts.
 @batchSize(1)
-module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, avdSessionHostBatchCount):  {
+module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, avdSessionHostBatchCount): {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-  name: 'AVD-SH-Batch-${i-1}-${time}'
+  name: 'AVD-SH-Batch-${i - 1}-${time}'
   params: {
     avdAgentPackageLocation: avdAgentPackageLocation
     avdApplicationSecurityGroupResourceId: avdApplicationSecurityGroupResourceId
@@ -169,5 +163,5 @@ module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, avdSessi
     hostPoolToken: hostPoolToken
     marketPlaceGalleryWindows: marketPlaceGalleryWindows
     useSharedImage: useSharedImage
-}
+  }
 }]

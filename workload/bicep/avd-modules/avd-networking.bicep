@@ -181,11 +181,8 @@ params:{
 }
 */
 
-
 // =========== //
 // Outputs //
 // =========== //
 output avdApplicationSecurityGroupResourceId string = avdApplicationSecurityGroup.outputs.resourceId
 output avdVirtualNetworkResourceId string = avdVirtualNetwork.outputs.resourceId
-
-
