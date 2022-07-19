@@ -96,54 +96,6 @@ var VmUserAssignedIdentityProperty = {
 var VmIdentity = ((!empty(UserAssignedIdentity)) ? union(VmIdentityTypeProperty, VmUserAssignedIdentityProperty) : VmIdentityTypeProperty)
 
 
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2021-03-01' = if (RdpShortPath) {
-  name: NetworkSecurityGroupName // Fix name
-  location: Location
-  properties: {
-    securityRules: [
-      {
-        name: 'AllowRdpShortPath'
-        properties: {
-          access: 'Allow'
-          destinationAddressPrefix: '*'
-          destinationPortRange: '3390'
-          direction: 'Inbound'
-          priority: 3390
-          protocol: 'Udp'
-          sourceAddressPrefix: 'VirtualNetwork'
-          sourcePortRange: '*'
-        }
-      }
-    ]
-  }
-}
-
-resource networkInterface 'Microsoft.Network/networkInterfaces@2020-05-01' = [for i in range(0, SessionHostCount): {
-  name: 'nic-${NamingStandard}-${padLeft((i + SessionHostIndex), 3, '0')}'
-  location: Location
-  tags: Tags
-  properties: {
-    ipConfigurations: [
-      {
-        name: 'ipconfig'
-        properties: {
-          privateIPAllocationMethod: 'Dynamic'
-          subnet: {
-            id: resourceId(subscription().subscriptionId, VirtualNetworkResourceGroup, 'Microsoft.Network/virtualNetworks/subnets', VirtualNetwork, Subnet)
-          }
-          primary: true
-          privateIPAddressVersion: 'IPv4'
-        }
-      }
-    ]
-    enableAcceleratedNetworking: AcceleratedNetworking == 'True' ? true : false
-    enableIPForwarding: false
-    networkSecurityGroup: RdpShortPath ? {
-      id: networkSecurityGroup.id
-    } : null
-  }
-}]
-
 resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-03-01' = [for i in range(0, SessionHostCount): {
   name: '${VmName}${padLeft((i + SessionHostIndex), 3, '0')}'
   location: Location
