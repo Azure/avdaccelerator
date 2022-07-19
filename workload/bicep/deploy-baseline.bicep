@@ -5,119 +5,122 @@ targetScope = 'subscription'
 // ========== //
 @minLength(2)
 @maxLength(4)
-@description('Required. The name of the resource group to deploy')
+@description('Required. The name of the resource group to deploy.')
 param deploymentPrefix string = ''
 
-@description('Optional. Location where to deploy compute services (Default: eastus2)')
+@description('Optional. Location where to deploy compute services. (Default: eastus2)')
 param avdSessionHostLocation string = 'eastus2'
 
-@description('Optional. Location where to deploy AVD management plane (Default: eastus2)')
+@description('Optional. Location where to deploy AVD management plane. (Default: eastus2)')
 param avdManagementPlaneLocation string = 'eastus2'
 
-@description('Required. AVD workload subscription ID, multiple subscriptions scenario')
+@description('Required. AVD workload subscription ID, multiple subscriptions scenario.')
 param avdWorkloadSubsId string = ''
 
 @description('Required. Azure Virtual Desktop Enterprise Application object ID. ')
 param avdEnterpriseAppObjectId string = ''
 
-@description('Required. AVD session host local credentials')
+@description('Required. AVD session host local credentials.')
 param avdVmLocalUserName string = ''
 @secure()
 param avdVmLocalUserPassword string = ''
 
-@description('Required. AD domain name')
+@description('Required. AD domain name.')
 param avdIdentityDomainName string = ''
 
-@description('Required. AVD session host domain join credentials')
+@description('Required. AVD session host domain join credentials.')
 param avdDomainJoinUserName string = ''
 @secure()
 param avdDomainJoinUserPassword string = ''
 
-@description('Optional. OU path to join AVd VMs (Default: "")')
+@description('Optional. OU path to join AVd VMs. (Default: "")')
 param avdOuPath string = ''
 /*
-@description('Optional. Id to grant access to on AVD workload key vault secrets')
+@description('Optional. Id to grant access to on AVD workload key vault secrets.')
 param avdWrklSecretAccess string = ''
 */
 @allowed([
     'Personal'
     'Pooled'
 ])
-@description('Optional. AVD host pool type (Default: Pooled)')
+@description('Optional. AVD host pool type. (Default: Pooled)')
 param avdHostPoolType string = 'Pooled'
 
 @allowed([
     'Automatic'
     'Direct'
 ])
-@description('Optional. AVD host pool type (Default: Automatic)')
+@description('Optional. AVD host pool type. (Default: Automatic)')
 param avdPersonalAssignType string = 'Automatic'
 
 @allowed([
     'BreadthFirst'
     'DepthFirst'
 ])
-@description('Optional. AVD host pool load balacing type (Default: BreadthFirst)')
+@description('Optional. AVD host pool load balacing type. (Default: BreadthFirst)')
 param avdHostPoolLoadBalancerType string = 'BreadthFirst'
 
-@description('Optional. AVD host pool maximum number of user sessions per session host (Default: 15)')
+@description('Optional. AVD host pool maximum number of user sessions per session host. (Default: 15)')
 param avhHostPoolMaxSessions int = 15
 
-@description('Optional. AVD host pool start VM on Connect (Default: true)')
+@description('Optional. AVD host pool start VM on Connect. (Default: true)')
 param avdStartVmOnConnect bool = true
 
-@description('Optional. Create custom Start VM on connect role (Default: true)')
+@description('Optional. Create custom Start VM on connect role. (Default: true)')
 param createStartVmOnConnectCustomRole bool = true
 
-@description('Optional. AVD deploy remote app application group (Default: false)')
+@description('Optional. AVD deploy remote app application group. (Default: false)')
 param avdDeployRappGroup bool = false
 
-@description('Optional. AVD host pool Custom RDP properties (Default: audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2)')
+@description('Optional. AVD host pool Custom RDP properties. (Default: audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2)')
 param avdHostPoolRdpProperties string = 'audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2'
 
-@description('Optional. Create new virtual network (Default: true)')
+@description('Optional. Create new virtual network. (Default: true)')
 param createAvdVnet bool = true
 
-@description('Optional. Existing virtual network subnet (Default: "")')
+@description('Optional. Existing virtual network subnet. (Default: "")')
 param existingVnetSubnetResourceId string = ''
 
-@description('Required. Existing hub virtual network for perring')
+@description('Required. Existing hub virtual network for perring.')
 param existingHubVnetResourceId string = ''
 
-@description('Optional. AVD virtual network address prefixes (Default: 10.10.0.0/23)')
+@description('Optional. AVD virtual network address prefixes. (Default: 10.10.0.0/23)')
 param avdVnetworkAddressPrefixes string = '10.10.0.0/23'
 
-@description('Optional. AVD virtual network subnet address prefix (Default: 10.10.0.0/23)')
+@description('Optional. AVD virtual network subnet address prefix. (Default: 10.10.0.0/23)')
 param avdVnetworkSubnetAddressPrefix string = '10.10.0.0/23'
 
-@description('Required. custom DNS servers IPs')
+@description('Required. custom DNS servers IPs.')
 param customDnsIps string = ''
 
-@description('Optional. Use Azure private DNS zones for private endpoints (Default: false)')
+@description('Optional. Use Azure private DNS zones for private endpoints. (Default: false)')
 param avdVnetPrivateDnsZone bool = false
 
-@description('Optional. Use Azure private DNS zones for private endpoints (Default: false)')
+@description('Optional. Use Azure private DNS zones for private endpoints. (Default: false)')
 param avdVnetPrivateDnsZoneFilesId string = ''
 
-@description('Optional. Use Azure private DNS zones for private endpoints (Default: false)')
+@description('Optional. Use Azure private DNS zones for private endpoints. (Default: false)')
 param avdVnetPrivateDnsZoneKeyvaultId string = ''
 
-@description('Optional. Does the hub contains a virtual network gateway (Default: false)')
+@description('Optional. Does the hub contains a virtual network gateway. (Default: false)')
 param vNetworkGatewayOnHub bool = false
 
-@description('Optional. Deploy Fslogix setup  (Default: true)')
+@description('Optional. Deploy Fslogix setup. (Default: true)')
 param createAvdFslogixDeployment bool = true
 
-@description('Optional. Fslogix file share size (Default: 5TB)')
+@description('Optional. Fslogix file share size. (Default: 5TB)')
 param avdFslogixFileShareQuotaSize int = 512
 
-@description('Optional. Deploy new session hosts (Default: true)')
+@description('Optional. Deploy new session hosts. (Default: true)')
 param avdDeploySessionHosts bool = true
 
 @minValue(1)
-@maxValue(49)
-@description('Optional. Cuantity of session hosts to deploy (Default: 1)')
+@maxValue(1000)
+@description('Optional. Cuantity of session hosts to deploy. (Default: 1)')
 param avdDeploySessionHostsCount int = 1
+
+@description('Optional. The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 0)')
+param avdSessionHostCountIndex int = 0
 
 @description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Defualt: true)')
 param avdUseAvailabilityZones bool = true
@@ -128,16 +131,16 @@ param avdAsFaultDomainCount int = 2
 @description('Optional. Sets the number of update domains for the availability set. (Defualt: 5)')
 param avdAsUpdateDomainCount int = 5
 
-@description('Optional. Storage account SKU for FSLogix storage. Recommended tier is Premium LRS or Premium ZRS (where available) (Defualt: Premium_LRS)')
+@description('Optional. Storage account SKU for FSLogix storage. Recommended tier is Premium LRS or Premium ZRS. (when available) (Defualt: Premium_LRS)')
 param fslogixStorageSku string = 'Premium_LRS'
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool = false 
 
-@description('Optional. Session host VM size (Defualt: Standard_D2s_v3)')
+@description('Optional. Session host VM size. (Defualt: Standard_D2s_v3)')
 param avdSessionHostsSize string = 'Standard_D2s_v3'
 
-@description('Optional. OS disk type for session host (Defualt: Standard_LRS)')
+@description('Optional. OS disk type for session host. (Defualt: Standard_LRS)')
 param avdSessionHostDiskType string = 'Standard_LRS'
 
 
@@ -147,22 +150,22 @@ param avdSessionHostDiskType string = 'Standard_LRS'
     'win11_21h2_office'
     'win11_21h2'
 ])
-@description('Optional. AVD OS image source (Default: win10-21h2)')
+@description('Optional. AVD OS image source. (Default: win10-21h2)')
 param avdOsImage string = 'win10_21h2'
 
-@description('Optional. Set to deploy image from Azure Compute Gallery (Default: false)')
+@description('Optional. Set to deploy image from Azure Compute Gallery. (Default: false)')
 param useSharedImage bool = false
 
-@description('Optional. Source custom image ID (Default: "")')
+@description('Optional. Source custom image ID. (Default: "")')
 param avdImageTemplataDefinitionId string = ''
 
 @description('Optional. OU name for Azure Storage Account. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.  (Default: "")')
 param storageOuName string = ''
 
-@description('Optional. If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain (Default: "")')
+@description('Optional. If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: "")')
 param createOuForStorage bool = false
 
-@description('Do not modify, used to set unique value for resource deployment')
+@description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
 @description('Enable usage and telemetry feedback to Microsoft.')
@@ -174,6 +177,7 @@ param enableTelemetry bool = true
 var deploymentPrefixLowercase = toLower(deploymentPrefix)
 var avdSessionHostLocationLowercase = toLower(avdSessionHostLocation)
 var avdManagementPlaneLocationLowercase = toLower(avdManagementPlaneLocation)
+
 var avdServiceObjectsRgName = 'rg-${avdManagementPlaneLocationLowercase}-avd-${deploymentPrefixLowercase}-service-objects' // max length limit 90 characters
 var avdNetworkObjectsRgName = 'rg-${avdSessionHostLocationLowercase}-avd-${deploymentPrefixLowercase}-network' // max length limit 90 characters
 var avdComputeObjectsRgName = 'rg-${avdSessionHostLocationLowercase}-avd-${deploymentPrefixLowercase}-pool-compute' // max length limit 90 characters
@@ -189,6 +193,10 @@ var avdWorkSpaceName = 'avdws-${deploymentPrefixLowercase}'
 var avdHostPoolName = 'avdhp-${deploymentPrefixLowercase}'
 var avdApplicationGroupNameDesktop = 'avddag-${deploymentPrefixLowercase}'
 var avdApplicationGroupNameRapp = 'avdraag-${deploymentPrefixLowercase}'
+var avdWrklKvName = 'avd-${uniqueString(deploymentPrefixLowercase, avdSessionHostLocationLowercase)}-${deploymentPrefixLowercase}' // max length limit 24 characters
+var avdSessionHostNamePrefix = 'avdsh-${deploymentPrefix}'
+var avdAvailabilitySetName = 'avdas-${deploymentPrefix}'
+
 var marketPlaceGalleryWindows = {
     'win10_21h2_office': {
         publisher: 'MicrosoftWindowsDesktop'
@@ -218,6 +226,7 @@ var marketPlaceGalleryWindows = {
         version: 'latest'
     }
 }
+
 var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var fslogixScriptUri = '${baseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
 var fsLogixScript = './Set-FSLogixRegKeys.ps1'
@@ -235,11 +244,20 @@ var addStorageToDomainScriptUri='${baseScriptUri}scripts/Manual-DSC-JoinStorage-
 var addStorageToDomainScript='./Manual-DSC-JoinStorage-to-ADDS.ps1'
 var addStorageToDomainScriptArgs='-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${OuStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixFileShareName} -Verbose'
 var OuStgName = !empty(storageOuName)? storageOuName : 'Computers'
-var avdWrklKvName = 'avd-${uniqueString(deploymentPrefixLowercase, avdSessionHostLocationLowercase)}-${deploymentPrefixLowercase}' // max length limit 24 characters
-var avdSessionHostNamePrefix = 'avdsh-${deploymentPrefix}'
-var avdAvailabilitySetName = 'avdas-${deploymentPrefix}'
 var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
 var createOuForStorageString = string(createOuForStorage)
+
+// Batching baseline logic for session hosts and availability sets provided by @jamasten (Jason Masten))
+var avdMaxResourcesPerTemplateDeployment = 50 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
+var divisionValue = avdDeploySessionHostsCount / avdMaxResourcesPerTemplateDeployment // This determines if any full batches are required.
+var divisionRemainderValue = avdDeploySessionHostsCount % avdMaxResourcesPerTemplateDeployment // This determines if any partial batches are required.
+var avdSessionHostBatchCount = divisionRemainderValue > 0 ? divisionValue + 1 : divisionValue // This determines the total number of batches needed, whether full and / or partial.
+
+var maxAvailabilitySetMembersCount = 200 // This is the max number of session hosts that can be deployed in an availability set.
+var divisionAvSetValue = avdDeploySessionHostsCount / maxAvailabilitySetMembersCount // This determines if any full availability sets are required.
+var divisionAvSetRemainderValue = avdDeploySessionHostsCount % maxAvailabilitySetMembersCount // This determines if any partial availability sets are required.
+var availabilitySetMembersCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue + 1 : divisionAvSetValue // This determines the total number of availability sets needed, whether full and / or partial.
+//
 
 var resourceGroups = [
     {
@@ -500,7 +518,8 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
 }
 
 // Session hosts.
-module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' = if (avdDeploySessionHosts) {
+@batchSize(1)
+module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' = /*if (avdDeploySessionHosts)*/  [for i in range(1, avdDeploySessionHostsCount):{
     name: 'Deploy-and-Configure-AVD-SessionHosts-${time}'
     params: {
         avdAgentPackageLocation: avdAgentPackageLocation
@@ -509,7 +528,12 @@ module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' =
         avdAsUpdateDomainCount: avdAsUpdateDomainCount
         avdAvailabilitySetName: avdAvailabilitySetName
         avdComputeObjectsRgName: avdComputeObjectsRgName
-        avdDeploySessionHostsCount: avdDeploySessionHostsCount
+
+        //avdDeploySessionHostsCount: avdDeploySessionHostsCount
+        avdSessionHostBatchCount: avdSessionHostBatchCount
+        avdSessionHostCountIndex: avdSessionHostCountIndex
+        avdMaxResourcesPerTemplateDeployment: avdMaxResourcesPerTemplateDeployment
+
         avdDomainJoinUserName: avdDomainJoinUserName
         avdDomainJoinUserPassword: avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
         avdHostPoolName: avdHostPoolName
@@ -541,5 +565,5 @@ module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' =
         avdWrklKeyVaultget
         avdWrklKeyVault
     ]
-}
+}]
  
