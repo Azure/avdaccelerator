@@ -247,18 +247,6 @@ var OuStgName = !empty(storageOuName)? storageOuName : 'Computers'
 var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
 var createOuForStorageString = string(createOuForStorage)
 
-// Batching baseline logic for session hosts and availability sets provided by @jamasten (Jason Masten))
-var avdMaxResourcesPerTemplateDeployment = 50 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
-var divisionValue = avdDeploySessionHostsCount / avdMaxResourcesPerTemplateDeployment // This determines if any full batches are required.
-var divisionRemainderValue = avdDeploySessionHostsCount % avdMaxResourcesPerTemplateDeployment // This determines if any partial batches are required.
-var avdSessionHostBatchCount = divisionRemainderValue > 0 ? divisionValue + 1 : divisionValue // This determines the total number of batches needed, whether full and / or partial.
-
-var maxAvailabilitySetMembersCount = 200 // This is the max number of session hosts that can be deployed in an availability set.
-var divisionAvSetValue = avdDeploySessionHostsCount / maxAvailabilitySetMembersCount // This determines if any full availability sets are required.
-var divisionAvSetRemainderValue = avdDeploySessionHostsCount % maxAvailabilitySetMembersCount // This determines if any partial availability sets are required.
-var availabilitySetMembersCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue + 1 : divisionAvSetValue // This determines the total number of availability sets needed, whether full and / or partial.
-//
-
 var resourceGroups = [
     {
         name: avdServiceObjectsRgName
@@ -518,8 +506,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
 }
 
 // Session hosts.
-@batchSize(1)
-module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' = /*if (avdDeploySessionHosts)*/  [for i in range(1, avdDeploySessionHostsCount):{
+module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts-batches.bicep' = if (avdDeploySessionHosts)  {
     name: 'Deploy-and-Configure-AVD-SessionHosts-${time}'
     params: {
         avdAgentPackageLocation: avdAgentPackageLocation
@@ -528,12 +515,8 @@ module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' =
         avdAsUpdateDomainCount: avdAsUpdateDomainCount
         avdAvailabilitySetName: avdAvailabilitySetName
         avdComputeObjectsRgName: avdComputeObjectsRgName
-
-        //avdDeploySessionHostsCount: avdDeploySessionHostsCount
-        avdSessionHostBatchCount: avdSessionHostBatchCount
+        avdDeploySessionHostsCount: avdDeploySessionHostsCount
         avdSessionHostCountIndex: avdSessionHostCountIndex
-        avdMaxResourcesPerTemplateDeployment: avdMaxResourcesPerTemplateDeployment
-
         avdDomainJoinUserName: avdDomainJoinUserName
         avdDomainJoinUserPassword: avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
         avdHostPoolName: avdHostPoolName
