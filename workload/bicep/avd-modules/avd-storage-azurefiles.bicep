@@ -160,6 +160,7 @@ module storageVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.
   params: {
       name: tempStorageVmName
       location: avdSessionHostLocation
+      systemAssignedIdentity:false
       userAssignedIdentities: {
           '${fslogixManagedIdentityResourceId}' : {} 
       }
