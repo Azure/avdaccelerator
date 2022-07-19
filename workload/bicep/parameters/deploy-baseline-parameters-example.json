@@ -101,6 +101,9 @@
         "avdDeploySessionHostsCount": {
             "value": 1
         },
+        "avdSessionHostCountIndex": {
+            "value": 0
+        },
         "avdUseAvailabilityZones": {
             "value": true
         },
