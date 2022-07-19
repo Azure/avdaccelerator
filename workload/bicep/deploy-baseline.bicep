@@ -115,7 +115,7 @@ param avdFslogixFileShareQuotaSize int = 512
 param avdDeploySessionHosts bool = true
 
 @minValue(1)
-@maxValue(1000)
+@maxValue(999)
 @description('Optional. Cuantity of session hosts to deploy. (Default: 1)')
 param avdDeploySessionHostsCount int = 1
 
@@ -194,8 +194,8 @@ var avdHostPoolName = 'avdhp-${deploymentPrefixLowercase}'
 var avdApplicationGroupNameDesktop = 'avddag-${deploymentPrefixLowercase}'
 var avdApplicationGroupNameRapp = 'avdraag-${deploymentPrefixLowercase}'
 var avdWrklKvName = 'avd-${uniqueString(deploymentPrefixLowercase, avdSessionHostLocationLowercase)}-${deploymentPrefixLowercase}' // max length limit 24 characters
-var avdSessionHostNamePrefix = 'avdsh-${deploymentPrefix}'
-var avdAvailabilitySetName = 'avdas-${deploymentPrefix}'
+var avdSessionHostNamePrefix = 'sh-${deploymentPrefix}'
+var avdAvailabilitySetNamePrefix = 'as-${deploymentPrefix}'
 
 var marketPlaceGalleryWindows = {
     'win10_21h2_office': {
@@ -512,12 +512,13 @@ module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts-batches.
         avdApplicationSecurityGroupResourceId: createAvdVnet ? '${avdNetworking.outputs.avdApplicationSecurityGroupResourceId}' : ''
         avdAsFaultDomainCount: avdAsFaultDomainCount
         avdAsUpdateDomainCount: avdAsUpdateDomainCount
-        avdAvailabilitySetName: avdAvailabilitySetName
+        avdAvailabilitySetNamePrefix: avdAvailabilitySetNamePrefix
         avdComputeObjectsRgName: avdComputeObjectsRgName
         avdDeploySessionHostsCount: avdDeploySessionHostsCount
         avdSessionHostCountIndex: avdSessionHostCountIndex
         avdDomainJoinUserName: avdDomainJoinUserName
-        avdDomainJoinUserPassword: avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
+        avdWrklKvName: avdWrklKvName
+        avdServiceObjectsRgName: avdServiceObjectsRgName
         avdHostPoolName: avdHostPoolName
         avdIdentityDomainName: avdIdentityDomainName
         avdImageTemplataDefinitionId: avdImageTemplataDefinitionId
@@ -529,7 +530,6 @@ module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts-batches.
         avdSubnetId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
         avdUseAvailabilityZones: avdUseAvailabilityZones
         avdVmLocalUserName: avdVmLocalUserName
-        avdVmLocalUserPassword: avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
         avdWorkloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
         createAvdFslogixDeployment: createAvdFslogixDeployment

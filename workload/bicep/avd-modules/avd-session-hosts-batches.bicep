@@ -15,6 +15,9 @@ param avdSessionHostNamePrefix string
 @description('Resource Group name for the session hosts.')
 param avdComputeObjectsRgName string
 
+@description('Required. Name of AVD service objects RG.')
+param avdServiceObjectsRgName string 
+
 @description('Optional. AVD workload subscription ID, multiple subscriptions scenario.')
 param avdWorkloadSubsId string 
 
@@ -28,7 +31,7 @@ param avdSessionHostCountIndex int
 param avdUseAvailabilityZones bool
 
 @description('Optional. Availablity Set name.')
-param avdAvailabilitySetName string
+param avdAvailabilitySetNamePrefix string
 
 @description('Optional. Sets the number of fault domains for the availability set.')
 param avdAsFaultDomainCount int
@@ -60,17 +63,22 @@ param fslogixManagedIdentityResourceId string
 @description('Local administrator username.')
 param avdVmLocalUserName string
 
-@description('Local administrator password.')
-@secure()
-param avdVmLocalUserPassword string
+//@description('Local administrator password.')
+//@secure()
+//param avdVmLocalUserPassword string
+
+@description('Required. Name of keyvault that contains credentials.')
+param avdWrklKvName string 
 
 @description('Required. AD domain name.')
 param avdIdentityDomainName string
 
 @description('Required. AVD session host domain join credentials.')
 param avdDomainJoinUserName string
-@secure()
-param avdDomainJoinUserPassword string
+
+//@description('Domain join password.')
+//@secure()
+//param avdDomainJoinUserPassword string
 
 @description('Optional. OU path to join AVd VMs.')
 param avdOuPath string
@@ -105,7 +113,6 @@ param time string = utcNow()
 // =========== //
 // Variable declaration //
 // =========== //
-var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
 
 // Batching baseline logic for session hosts and availability sets provided by @jamasten (Jason Masten))
 var avdMaxResourcesPerTemplateDeployment = 50 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
@@ -116,35 +123,51 @@ var avdSessionHostBatchCount = divisionRemainderValue > 0 ? divisionValue + 1 : 
 var maxAvailabilitySetMembersCount = 200 // This is the max number of session hosts that can be deployed in an availability set.
 var divisionAvSetValue = avdDeploySessionHostsCount / maxAvailabilitySetMembersCount // This determines if any full availability sets are required.
 var divisionAvSetRemainderValue = avdDeploySessionHostsCount % maxAvailabilitySetMembersCount // This determines if any partial availability sets are required.
-var availabilitySetMembersCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue + 1 : divisionAvSetValue // This determines the total number of availability sets needed, whether full and / or partial.
+var availabilitySetCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue + 1 : divisionAvSetValue // This determines the total number of availability sets needed, whether full and / or partial.
 //
 
 // =========== //
 // Deployments //
 // =========== //
 
-// Availability set.
-module avdAvailabilitySet '../../../carml/1.2.0/Microsoft.Compute/availabilitySets/deploy.bicep' = if (!avdUseAvailabilityZones) {
-  name: 'AVD-Availability-Set-${time}'
-  scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-  params: {
-      name: avdAvailabilitySetName
-      location: avdSessionHostLocation
-      availabilitySetFaultDomain: avdAsFaultDomainCount
-      availabilitySetUpdateDomain: avdAsUpdateDomainCount
-  }
-}
-
 // Session hosts.
 @batchSize(1)
-module avdSessionHosts 'avd-modules/avd-session-hosts.bicep' = [for i in range(1, avdSessionHostBatchCount):  {
+module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, avdSessionHostBatchCount):  {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
   name: 'AVD-SH-Batch-${i-1}-${time}'
   params: {
-      name: '${avdSessionHostNamePrefix}-${i-1}'
-      location: avdSessionHostLocation
-      userAssignedIdentities: createAvdFslogixDeployment ? {
-    }
-    
-  }
+    avdAgentPackageLocation: avdAgentPackageLocation
+    avdApplicationSecurityGroupResourceId: avdApplicationSecurityGroupResourceId
+    avdAvailabilitySetNamePrefix: avdAvailabilitySetNamePrefix
+    availabilitySetCount: availabilitySetCount
+    avdAsFaultDomainCount: avdAsFaultDomainCount
+    avdAsUpdateDomainCount: avdAsUpdateDomainCount
+    avdComputeObjectsRgName: avdComputeObjectsRgName
+    avdDomainJoinUserName: avdDomainJoinUserName
+    avdWrklKvName: avdWrklKvName
+    avdServiceObjectsRgName: avdServiceObjectsRgName
+    avdHostPoolName: avdHostPoolName
+    avdIdentityDomainName: avdIdentityDomainName
+    avdImageTemplataDefinitionId: avdImageTemplataDefinitionId
+    avdOuPath: avdOuPath
+    avdSessionHostsCount: i == avdSessionHostBatchCount && divisionRemainderValue > 0 ? divisionRemainderValue : avdMaxResourcesPerTemplateDeployment
+    avdSessionHostCountIndex: i == 1 ? avdSessionHostCountIndex : ((i - 1) * avdMaxResourcesPerTemplateDeployment) + avdSessionHostCountIndex
+    avdSessionHostDiskType: avdSessionHostDiskType
+    avdSessionHostLocation: avdSessionHostLocation
+    avdSessionHostNamePrefix: avdSessionHostNamePrefix
+    avdSessionHostsSize: avdSessionHostsSize
+    avdSubnetId: avdSubnetId
+    avdUseAvailabilityZones: avdUseAvailabilityZones
+    avdVmLocalUserName: avdVmLocalUserName
+    avdWorkloadSubsId: avdWorkloadSubsId
+    encryptionAtHost: encryptionAtHost
+    createAvdFslogixDeployment: createAvdFslogixDeployment
+    fslogixManagedIdentityResourceId: fslogixManagedIdentityResourceId
+    fsLogixScript: fsLogixScript
+    FsLogixScriptArguments: FsLogixScriptArguments
+    fslogixScriptUri: fslogixScriptUri
+    hostPoolToken: hostPoolToken
+    marketPlaceGalleryWindows: marketPlaceGalleryWindows
+    useSharedImage: useSharedImage
+}
 }]
