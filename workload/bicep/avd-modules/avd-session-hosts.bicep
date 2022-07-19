@@ -12,17 +12,20 @@ param avdSessionHostLocation string
 @description('AVD Session Host prefix.')
 param avdSessionHostNamePrefix string
 
+//@description('Optional. Availablity Set name.')
+//param avdAvailabilitySetNamePrefix string
+
 @description('Optional. Availablity Set name.')
-param avdAvailabilitySetNamePrefix string
+param availabilitySetName string
 
-@description('Optional. Availablity Set count.')
-param availabilitySetCount int
+//@description('Optional. Availablity Set count.')
+//param availabilitySetCount int
 
-@description('Optional. Sets the number of fault domains for the availability set.')
-param avdAsFaultDomainCount int
+//@description('Optional. Sets the number of fault domains for the availability set.')
+//param avdAsFaultDomainCount int
 
-@description('Optional. Sets the number of update domains for the availability set.')
-param avdAsUpdateDomainCount int
+//@description('Optional. Sets the number of update domains for the availability set.')
+//param avdAsUpdateDomainCount int
 
 @description('Resource Group name for the session hosts')
 param avdComputeObjectsRgName string
@@ -113,7 +116,7 @@ var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avd
 // =========== //
 // Deployments //
 // =========== //
-
+/*
 // Availability set.
 module avdAvailabilitySet './avd-availability-sets.bicep' = if (!avdUseAvailabilityZones) {
     name: 'AVD-Availability-Set-${time}'
@@ -128,7 +131,7 @@ module avdAvailabilitySet './avd-availability-sets.bicep' = if (!avdUseAvailabil
         avdAsUpdateDomainCount: avdAsUpdateDomainCount
     }
 }
-
+*/
 // Call on the KV.
 resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
     name: avdWrklKvName
@@ -149,7 +152,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
         encryptionAtHost: encryptionAtHost
 
         //availabilitySetName: !avdUseAvailabilityZones ? avdAvailabilitySet.outputs.outputs.name : ''
-        availabilitySetName: '${avdAvailabilitySetNamePrefix}-${i}'
+        availabilitySetName: availabilitySetName
 
         osType: 'Windows'
         licenseType: 'Windows_Client'

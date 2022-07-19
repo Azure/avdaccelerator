@@ -40,7 +40,7 @@ module avdAvailabilitySet '../../../carml/1.2.0/Microsoft.Compute/availabilitySe
     name: 'AVD-AvSet--${i}-${time}'
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
     params: {
-        name: '${avdAvailabilitySetNamePrefix}-${i}'
+        name: '${avdAvailabilitySetNamePrefix}-${padLeft(i, 3, '0')}'
         location: avdSessionHostLocation
         availabilitySetFaultDomain: avdAsFaultDomainCount
         availabilitySetUpdateDomain: avdAsUpdateDomainCount
