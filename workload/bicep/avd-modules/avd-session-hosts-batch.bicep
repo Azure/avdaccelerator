@@ -107,7 +107,7 @@ param time string = utcNow()
 // =========== //
 
 // Batching baseline logic for session hosts and availability sets provided by @jamasten (Jason Masten))
-var avdMaxSessionHostsPerTemplateDeployment = 50 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
+var avdMaxSessionHostsPerTemplateDeployment = 30 //50 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
 var divisionValue = avdDeploySessionHostsCount / avdMaxSessionHostsPerTemplateDeployment // This determines if any full batches are required.
 var divisionRemainderValue = avdDeploySessionHostsCount % avdMaxSessionHostsPerTemplateDeployment // This determines if any partial batches are required.
 var avdSessionHostBatchCount = divisionRemainderValue > 0 ? divisionValue + 1 : divisionValue // This determines the total number of batches needed, whether full and / or partial.
@@ -138,20 +138,15 @@ module avdAvailabilitySet './avd-availability-sets.bicep' = if (!avdUseAvailabil
 }
 
 // Session hosts.
-@batchSize(2)
+@batchSize(1)
 module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, avdSessionHostBatchCount): {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
   name: 'AVD-SH-Batch-${i-1}-${time}'
   params: {
     avdAgentPackageLocation: avdAgentPackageLocation
     avdApplicationSecurityGroupResourceId: avdApplicationSecurityGroupResourceId
-    //avdAvailabilitySetNamePrefix: avdAvailabilitySetNamePrefix
-    //availabilitySetCount: availabilitySetCount
-    //avdAsFaultDomainCount: avdAsFaultDomainCount
-    //avdAsUpdateDomainCount: avdAsUpdateDomainCount
     avdAvailabilitySetNamePrefix: avdAvailabilitySetNamePrefix
     maxAvailabilitySetMembersCount: maxAvailabilitySetMembersCount
-    //availabilitySetName: '${avdAvailabilitySetNamePrefix}-${(i + SessionHostIndex) / 200}'
     avdComputeObjectsRgName: avdComputeObjectsRgName
     avdDomainJoinUserName: avdDomainJoinUserName
     avdWrklKvName: avdWrklKvName

@@ -154,7 +154,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
         availabilityZone: avdUseAvailabilityZones ? take(skip(allAvailabilityZones, i % length(allAvailabilityZones)), 1) : []
         encryptionAtHost: encryptionAtHost
         //availabilitySetName: !avdUseAvailabilityZones ? avdAvailabilitySet.outputs.outputs.name : ''
-        availabilitySetName: '${avdAvailabilitySetNamePrefix}-${padLeft(((i + avdSessionHostCountIndex) / maxAvailabilitySetMembersCount), 3, '0')}'
+        availabilitySetName: !avdUseAvailabilityZones ? '${avdAvailabilitySetNamePrefix}-${padLeft(((i + avdSessionHostCountIndex) / maxAvailabilitySetMembersCount), 3, '0')}': ''
         osType: 'Windows'
         licenseType: 'Windows_Client'
         vmSize: avdSessionHostsSize
