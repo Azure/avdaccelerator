@@ -174,28 +174,83 @@ param enableTelemetry bool = true
 // =========== //
 // Variable declaration //
 // =========== //
+// Resource naming
 var deploymentPrefixLowercase = toLower(deploymentPrefix)
 var avdSessionHostLocationLowercase = toLower(avdSessionHostLocation)
 var avdManagementPlaneLocationLowercase = toLower(avdManagementPlaneLocation)
-
-var avdServiceObjectsRgName = 'rg-${avdManagementPlaneLocationLowercase}-avd-${deploymentPrefixLowercase}-service-objects' // max length limit 90 characters
-var avdNetworkObjectsRgName = 'rg-${avdSessionHostLocationLowercase}-avd-${deploymentPrefixLowercase}-network' // max length limit 90 characters
-var avdComputeObjectsRgName = 'rg-${avdSessionHostLocationLowercase}-avd-${deploymentPrefixLowercase}-pool-compute' // max length limit 90 characters
-var avdStorageObjectsRgName = 'rg-${avdSessionHostLocationLowercase}-avd-${deploymentPrefixLowercase}-storage' // max length limit 90 characters
-var avdSharedResourcesRgName = 'rg-${avdSessionHostLocationLowercase}-avd-shared-resources'
-var avdVnetworkName = 'avdvnet-${avdSessionHostLocationLowercase}-${deploymentPrefixLowercase}'
-var avdVnetworkSubnetName = 'avd-${deploymentPrefixLowercase}'
-var avdNetworksecurityGroupName = 'avdnsg-${avdSessionHostLocationLowercase}-${deploymentPrefixLowercase}'
-var avdRouteTableName = 'avdudr-${avdSessionHostLocationLowercase}-${deploymentPrefixLowercase}'
-var avdApplicationsecurityGroupName = 'avdasg-${avdSessionHostLocationLowercase}-${deploymentPrefixLowercase}'
-var avdVnetworkPeeringName = '${uniqueString(deploymentPrefixLowercase, avdSessionHostLocation)}-peering-avd-${deploymentPrefixLowercase}'
-var avdWorkSpaceName = 'avdws-${deploymentPrefixLowercase}'
-var avdHostPoolName = 'avdhp-${deploymentPrefixLowercase}'
-var avdApplicationGroupNameDesktop = 'avddag-${deploymentPrefixLowercase}'
-var avdApplicationGroupNameRapp = 'avdraag-${deploymentPrefixLowercase}'
-var avdWrklKvName = 'avd-${uniqueString(deploymentPrefixLowercase, avdSessionHostLocationLowercase)}-${deploymentPrefixLowercase}' // max length limit 24 characters
-var avdSessionHostNamePrefix = 'sh-${deploymentPrefix}'
-var avdAvailabilitySetNamePrefix = 'as-${deploymentPrefix}'
+var avdSessionHostLocationAcronym = locationAcronyms[avdSessionHostLocationLowercase]
+var avdManagementPlaneLocationAcronym = locationAcronyms[avdManagementPlaneLocation]
+var locationAcronyms = {
+  eastasia: 'eas'
+  southeastasia: 'seas'
+  centralus: 'cus'
+  eastus: 'eus'  
+  eastus2: 'eus2'
+  westus: 'wus'
+  northcentralus: 'ncus'
+  southcentralus: 'scus'
+  northeurope: 'neu'
+  westeurope: 'weu'
+  japanwest: 'jpw'
+  japaneast: 'jpe'
+  brazilsouth: 'drs'
+  australiaeast: 'aue'
+  australiasoutheast: 'ause'
+  southindia: 'sin'
+  centralindia: 'cin'
+  westindia: 'win'
+  canadacentral: 'cac'
+  canadaeast: 'cae'  
+  uksouth: 'uks'
+  ukwest: 'ukw'
+  westcentralus: 'wcus'
+  westus2: 'wus2'
+  koreacentral: 'krc'
+  koreasouth: 'krs'
+  francecentral: 'frc'
+  francesouth: 'frs'
+  australiacentral: 'auc'
+  australiacentral2: 'auc2'
+  uaecentral: 'aec'
+  uaenorth: 'aen'
+  southafricanorth: 'zan'
+  southafricawest: 'zaw'
+  switzerlandnorth: 'chn'
+  switzerlandwest: 'chw'
+  germanynorth: 'den'
+  germanywestcentral: 'dewc'
+  norwaywest: 'now'
+  norwayeast: 'noe'
+  brazilsoutheast: 'brse'
+  westus3: 'wus3'
+  swedencentral: 'sec'
+}
+var avdNamingUniqueStringSixChar = take('${uniqueString(avdWorkloadSubsId, deploymentPrefixLowercase, time)}', 6)
+var avdServiceObjectsRgName = 'rg-${avdManagementPlaneLocationAcronym}-avd-${deploymentPrefixLowercase}-service-objects' // max length limit 90 characters
+var avdNetworkObjectsRgName = 'rg-${avdSessionHostLocationAcronym}-avd-${deploymentPrefixLowercase}-network' // max length limit 90 characters
+var avdComputeObjectsRgName = 'rg-${avdSessionHostLocationAcronym}-avd-${deploymentPrefixLowercase}-pool-compute' // max length limit 90 characters
+var avdStorageObjectsRgName = 'rg-${avdSessionHostLocationAcronym}-avd-${deploymentPrefixLowercase}-storage' // max length limit 90 characters
+//var avdSharedResourcesRgName = 'rg-${avdSessionHostLocationAcronym}-avd-shared-resources'
+var avdVnetworkName = 'vnet-avd-${avdSessionHostLocationAcronym}-${deploymentPrefixLowercase}-001'
+var avdVnetworkSubnetName = 'snet-avd-${avdSessionHostLocationAcronym}-${deploymentPrefixLowercase}-001'
+var avdNetworksecurityGroupName = 'nsg-avd-${avdSessionHostLocationAcronym}-${deploymentPrefixLowercase}-001'
+var avdRouteTableName = 'route-avd-${avdSessionHostLocationAcronym}-${deploymentPrefixLowercase}-001'
+var avdApplicationsecurityGroupName = 'asg-avd-${avdSessionHostLocationAcronym}-${deploymentPrefixLowercase}-001'
+var avdVnetworkPeeringName = 'peering-avd-${avdSessionHostLocationAcronym}-${deploymentPrefixLowercase}-${avdNamingUniqueStringSixChar}'
+var avdWorkSpaceName = 'vdws-${avdSessionHostLocationAcronym}-${deploymentPrefixLowercase}-001'
+var avdHostPoolName = 'vdpool-${avdSessionHostLocationAcronym}-${deploymentPrefixLowercase}-001'
+var avdApplicationGroupNameDesktop = 'vdag-desktop-${avdSessionHostLocationAcronym}-${deploymentPrefixLowercase}-001'
+var avdApplicationGroupNameRapp = 'vdag-rapp-${avdSessionHostLocationAcronym}-${deploymentPrefixLowercase}-001'
+var avdWrklKvName = 'kv-avd-${avdSessionHostLocationAcronym}-${deploymentPrefixLowercase}-${avdNamingUniqueStringSixChar}' // max length limit 24 characters
+var avdSessionHostNamePrefix = 'vm-avd-${deploymentPrefix}'
+var avdAvailabilitySetNamePrefix = 'avail-avd-${avdSessionHostLocationAcronym}-${deploymentPrefix}'
+var fslogixManagedIdentityName = 'id-avd-fslogix-${avdSessionHostLocationAcronym}-${deploymentPrefix}'
+var avdFslogixProfileContainerFileShareName = 'fslogix-pc-${deploymentPrefixLowercase}-001'
+//var avdFslogixOfficeContainerFileShareName = 'fslogix-oc-${deploymentPrefixLowercase}-001'
+var avdFslogixStorageName = 'stavd${avdSessionHostLocationAcronym}${deploymentPrefix}${avdNamingUniqueStringSixChar}'
+var tempStorageDomainJoinVmName = 'vm-fs-dj-${deploymentPrefix}'
+var OuStgName = !empty(storageOuName) ? storageOuName : 'Computers'
+//
 
 var marketPlaceGalleryWindows = {
     win10_21h2_office: {
@@ -230,21 +285,16 @@ var marketPlaceGalleryWindows = {
 var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var fslogixScriptUri = '${baseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
 var fsLogixScript = './Set-FSLogixRegKeys.ps1'
-var fslogixSharePath = '\\\\${avdFslogixStorageName}.file.${environment().suffixes.storage}\\${avdFslogixFileShareName}'
+var fslogixSharePath = '\\\\${avdFslogixStorageName}.file.${environment().suffixes.storage}\\${avdFslogixProfileContainerFileShareName}'
 var FsLogixScriptArguments = '-volumeshare ${fslogixSharePath}'
-var fslogixManagedIdentityName = 'avd-uai-fslogix'
 var avdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_01-20-2022.zip'
-var avdFslogixStorageName = take('fslogix${uniqueString(deploymentPrefixLowercase, avdSessionHostLocationLowercase)}${deploymentPrefixLowercase}', 15)
-var avdFslogixFileShareName = 'fslogix-${deploymentPrefixLowercase}'
 var storageAccountContributorRoleId = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
 var readerRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-var tempStorageVmName = 'tempstgvm'
 var dscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCDomainJoinStorageScripts.zip'
 var addStorageToDomainScriptUri = '${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-ADDS.ps1'
 var addStorageToDomainScript = './Manual-DSC-JoinStorage-to-ADDS.ps1'
-var addStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${OuStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
-var OuStgName = !empty(storageOuName) ? storageOuName : 'Computers'
-var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
+var addStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${OuStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
+//var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
 var createOuForStorageString = string(createOuForStorage)
 
 var resourceGroups = [
@@ -474,7 +524,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         avdDomainJoinUserName: avdDomainJoinUserName
         avdWrklKvName: avdWrklKvName
         avdServiceObjectsRgName: avdServiceObjectsRgName
-        avdFslogixFileShareName: avdFslogixFileShareName
+        avdFslogixProfileContainerFileShareName: avdFslogixProfileContainerFileShareName
         avdFslogixFileShareQuotaSize: avdFslogixFileShareQuotaSize
         avdFslogixStorageName: avdFslogixStorageName
         avdIdentityDomainName: avdIdentityDomainName
@@ -495,7 +545,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         fslogixStorageSku: fslogixStorageSku
         marketPlaceGalleryWindows: marketPlaceGalleryWindows['win10_21h2']
         subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
-        tempStorageVmName: tempStorageVmName
+        tempStorageDomainJoinVmName: tempStorageDomainJoinVmName
         useSharedImage: useSharedImage
     }
     dependsOn: [

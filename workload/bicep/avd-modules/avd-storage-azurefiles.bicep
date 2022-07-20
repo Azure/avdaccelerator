@@ -70,7 +70,7 @@ param avdApplicationSecurityGroupResourceId string
 param avdFslogixStorageName string
 
 @description('Azure Files share name.')
-param avdFslogixFileShareName string
+param avdFslogixProfileContainerFileShareName string
 
 @description('Azure Files storage account SKU.')
 param fslogixStorageSku string
@@ -85,7 +85,7 @@ param avdVnetPrivateDnsZone bool
 param avdVnetPrivateDnsZoneFilesId string
 
 @description('Name for temporary virtual machine. Used to join Azure Files to domain.')
-param tempStorageVmName string
+param tempStorageDomainJoinVmName string
 
 @description('Script name for adding storage account to Active Directory.')
 param addStorageToDomainScript string
@@ -129,7 +129,7 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
         fileServices: {
             shares: [
                 {
-                    name: avdFslogixFileShareName
+                    name: avdFslogixProfileContainerFileShareName
                     shareQuota: avdFslogixFileShareQuotaSize * 100 //Portal UI steps scale
                 }
             ]
@@ -163,7 +163,7 @@ module storageVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
     name: 'Deploy-temporary-VM-FsLogixStorageToDomain-${time}'
     params: {
-        name: tempStorageVmName
+        name: tempStorageDomainJoinVmName
         location: avdSessionHostLocation
         systemAssignedIdentity: false
         userAssignedIdentities: {
