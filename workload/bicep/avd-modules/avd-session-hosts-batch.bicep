@@ -107,14 +107,12 @@ param time string = utcNow()
 // =========== //
 
 // Batching baseline logic for session hosts and availability sets provided by @jamasten (Jason Masten))
-//var avdMaxResourcesPerTemplateDeployment = 50 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
-var avdMaxSessionHostsPerTemplateDeployment = 1
+var avdMaxSessionHostsPerTemplateDeployment = 50 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
 var divisionValue = avdDeploySessionHostsCount / avdMaxSessionHostsPerTemplateDeployment // This determines if any full batches are required.
 var divisionRemainderValue = avdDeploySessionHostsCount % avdMaxSessionHostsPerTemplateDeployment // This determines if any partial batches are required.
 var avdSessionHostBatchCount = divisionRemainderValue > 0 ? divisionValue + 1 : divisionValue // This determines the total number of batches needed, whether full and / or partial.
 
-//var maxAvailabilitySetMembersCount = 200 // This is the max number of session hosts that can be deployed in an availability set.
-var maxAvailabilitySetMembersCount = 1
+var maxAvailabilitySetMembersCount = 200 // This is the max number of session hosts that can be deployed in an availability set.
 var divisionAvSetValue = avdDeploySessionHostsCount / maxAvailabilitySetMembersCount // This determines if any full availability sets are required.
 var divisionAvSetRemainderValue = avdDeploySessionHostsCount % maxAvailabilitySetMembersCount // This determines if any partial availability sets are required.
 var availabilitySetCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue + 1 : divisionAvSetValue // This determines the total number of availability sets needed, whether full and / or partial.
@@ -151,7 +149,9 @@ module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, avdSessi
     //availabilitySetCount: availabilitySetCount
     //avdAsFaultDomainCount: avdAsFaultDomainCount
     //avdAsUpdateDomainCount: avdAsUpdateDomainCount
-    availabilitySetName: '${avdAvailabilitySetNamePrefix}-${i-1}'
+    avdAvailabilitySetNamePrefix: avdAvailabilitySetNamePrefix
+    maxAvailabilitySetMembersCount: maxAvailabilitySetMembersCount
+    //availabilitySetName: '${avdAvailabilitySetNamePrefix}-${(i + SessionHostIndex) / 200}'
     avdComputeObjectsRgName: avdComputeObjectsRgName
     avdDomainJoinUserName: avdDomainJoinUserName
     avdWrklKvName: avdWrklKvName
