@@ -19,6 +19,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' = {
   location: privateEndpointVnetLocation
   tags: tags
   properties: {
+    customNetworkInterfaceName:  'nic-01-${privateEndpoint_var.name}'
     privateLinkServiceConnections: [
       {
         name: privateEndpoint_var.name
