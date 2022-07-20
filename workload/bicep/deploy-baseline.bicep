@@ -242,12 +242,18 @@ var avdHostPoolName = 'vdpool-${avdSessionHostLocationAcronym}-${deploymentPrefi
 var avdApplicationGroupNameDesktop = 'vdag-desktop-${avdSessionHostLocationAcronym}-${deploymentPrefixLowercase}-001'
 var avdApplicationGroupNameRapp = 'vdag-rapp-${avdSessionHostLocationAcronym}-${deploymentPrefixLowercase}-001'
 var avdWrklKvName = 'kv-avd-${avdSessionHostLocationAcronym}-${deploymentPrefixLowercase}-${avdNamingUniqueStringSixChar}' // max length limit 24 characters
+var avdWrklKvPrivateEndpointName = 'pe-kv-avd-${deploymentPrefixLowercase}-${avdNamingUniqueStringSixChar}-vault'
+
+
+
 var avdSessionHostNamePrefix = 'vm-avd-${deploymentPrefix}'
 var avdAvailabilitySetNamePrefix = 'avail-avd-${avdSessionHostLocationAcronym}-${deploymentPrefix}'
 var fslogixManagedIdentityName = 'id-avd-fslogix-${avdSessionHostLocationAcronym}-${deploymentPrefix}'
 var avdFslogixProfileContainerFileShareName = 'fslogix-pc-${deploymentPrefixLowercase}-001'
 //var avdFslogixOfficeContainerFileShareName = 'fslogix-oc-${deploymentPrefixLowercase}-001'
 var avdFslogixStorageName = 'stavd${avdSessionHostLocationAcronym}${deploymentPrefix}${avdNamingUniqueStringSixChar}'
+var avdWrklStoragePrivateEndpointName = 'pe-st-avd-${deploymentPrefixLowercase}-${avdNamingUniqueStringSixChar}-files'
+
 var tempStorageDomainJoinVmName = 'vm-fs-dj-${deploymentPrefix}'
 var OuStgName = !empty(storageOuName) ? storageOuName : 'Computers'
 //
@@ -463,6 +469,7 @@ module avdWrklKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep
         }
         privateEndpoints: avdVnetPrivateDnsZone ? [
             {
+                name: avdWrklKvPrivateEndpointName
                 subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
                 service: 'vault'
                 privateDnsZoneResourceIds: [
@@ -471,6 +478,7 @@ module avdWrklKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep
             }
         ] : [
             {
+                name: avdWrklKvPrivateEndpointName
                 subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
                 service: 'vault'
             }
@@ -519,6 +527,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         addStorageToDomainScript: addStorageToDomainScript
         addStorageToDomainScriptArgs: addStorageToDomainScriptArgs
         addStorageToDomainScriptUri: addStorageToDomainScriptUri
+        avdWrklStoragePrivateEndpointName: avdWrklStoragePrivateEndpointName
         avdApplicationSecurityGroupResourceId: createAvdVnet ? '${avdNetworking.outputs.avdApplicationSecurityGroupResourceId}' : ''
         avdComputeObjectsRgName: avdComputeObjectsRgName
         avdDomainJoinUserName: avdDomainJoinUserName
