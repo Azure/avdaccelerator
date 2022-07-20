@@ -15,6 +15,9 @@ param avdStorageObjectsRgName string
 @description('Resource Group Name for Azure Files.')
 param avdServiceObjectsRgName string
 
+@description('Storage account files priovate endpoint name.')
+param avdWrklStoragePrivateEndpointName string
+
 @description('AVD subnet ID.')
 param avdSubnetId string
 
@@ -143,6 +146,7 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
         }
         privateEndpoints: avdVnetPrivateDnsZone ? [
             {
+                name: avdWrklStoragePrivateEndpointName
                 subnetResourceId: subnetResourceId
                 service: 'file'
                 privateDnsZoneResourceIds: [
@@ -151,6 +155,7 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
             }
         ] : [
             {
+                name: avdWrklStoragePrivateEndpointName
                 subnetResourceId: subnetResourceId
                 service: 'file'
             }
