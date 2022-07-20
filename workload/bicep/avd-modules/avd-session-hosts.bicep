@@ -219,7 +219,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
 }]
 
 // Add session hosts to AVD Host pool.
-module addAvdHostsToHostPool '../../vm-custom-extensions/add-avd-session-hosts.bicep' = [for i in range(0, avdSessionHostsCount): {
+module addAvdHostsToHostPool '../../vm-custom-extensions/add-avd-session-hosts.bicep' = [for i in range(1, avdSessionHostsCount): {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
     name: 'Add-AVD-SH-${padLeft((i + avdSessionHostCountIndex), 3, '0')}-to-HP-${time}'
     params: {
@@ -235,7 +235,7 @@ module addAvdHostsToHostPool '../../vm-custom-extensions/add-avd-session-hosts.b
 }]
 
 // Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
-module configureFsLogixForAvdHosts '../../vm-custom-extensions/configure-fslogix-session-hosts.bicep' = [for i in range(0, avdSessionHostsCount): if (createAvdFslogixDeployment) {
+module configureFsLogixForAvdHosts '../../vm-custom-extensions/configure-fslogix-session-hosts.bicep' = [for i in range(1, avdSessionHostsCount): if (createAvdFslogixDeployment) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
     name: 'Configure-FsLogix-for-${padLeft((i + avdSessionHostCountIndex), 3, '0')}-${time}'
     params: {
