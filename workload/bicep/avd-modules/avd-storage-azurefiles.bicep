@@ -192,7 +192,7 @@ module storageVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.
         adminPassword: avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
         nicConfigurations: [
             {
-                nicSuffix: '-nic-01'
+                nicSuffix: 'nic-001-'
                 deleteOption: 'Delete'
                 asgId: !empty(avdApplicationSecurityGroupResourceId) ? avdApplicationSecurityGroupResourceId : null
                 enableAcceleratedNetworking: false

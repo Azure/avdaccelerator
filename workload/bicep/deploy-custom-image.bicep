@@ -69,13 +69,68 @@ param enableTelemetry bool = true
 // =========== //
 // Variable declaration //
 // =========== //
+// Resouce Naming.
 var deploymentPrefixLowercase = toLower(deploymentPrefix)
+var avdNamingUniqueStringSixChar = take('${uniqueString(avdSharedServicesSubId, deploymentPrefixLowercase, time)}', 6)
+var avdSharedResourcesNamingStandard = '${avdSharedServicesLocationAcronym}-shared'
 var avdSharedServicesLocationLowercase = toLower(avdSharedServicesLocation)
-var avdSharedResourcesRgName = 'rg-${avdSharedServicesLocationLowercase}-avd-shared-resources'
-var imageGalleryName = 'avdgallery${avdSharedServicesLocationLowercase}'
-var aibManagedIdentityName = 'avd-uai-aib'
-var deployScriptManagedIdentityName = 'avd-uai-deployScript'
-var imageDefinitionsTemSpecName = 'AVDImageDefinition_${avdOsImage}'
+var avdSharedResourcesRgName = 'rg-avd-${avdSharedResourcesNamingStandard}-resources' // max length limit 90 characters
+var imageGalleryName = 'gal_avd_${avdSharedServicesLocationAcronym}_001'
+var aibManagedIdentityName = 'id-avd-imagebuilder-${avdSharedServicesLocationAcronym}'
+var deployScriptManagedIdentityName = 'id-avd-deployscript-${avdSharedServicesLocationAcronym}'
+var imageDefinitionsTemSpecName = 'avd_image_definition_${avdOsImage}'
+var avdSharedSResourcesStorageName = 'stavdshar${avdNamingUniqueStringSixChar}'
+var avdSharedSResourcesAibContainerName = 'avd-imagebuilder-${deploymentPrefixLowercase}'
+var avdSharedSResourcesScriptsContainerName = 'avd-scripts-${deploymentPrefixLowercase}'
+var avdSharedServicesKvName = 'kv-avd-${avdSharedResourcesNamingStandard}-${avdNamingUniqueStringSixChar}' // max length limit 24 characters
+var avdSharedServicesLocationAcronym = locationAcronyms[avdSharedServicesLocationLowercase]
+var locationAcronyms = {
+    eastasia: 'eas'
+    southeastasia: 'seas'
+    centralus: 'cus'
+    eastus: 'eus'
+    eastus2: 'eus2'
+    westus: 'wus'
+    northcentralus: 'ncus'
+    southcentralus: 'scus'
+    northeurope: 'neu'
+    westeurope: 'weu'
+    japanwest: 'jpw'
+    japaneast: 'jpe'
+    brazilsouth: 'drs'
+    australiaeast: 'aue'
+    australiasoutheast: 'ause'
+    southindia: 'sin'
+    centralindia: 'cin'
+    westindia: 'win'
+    canadacentral: 'cac'
+    canadaeast: 'cae'
+    uksouth: 'uks'
+    ukwest: 'ukw'
+    westcentralus: 'wcus'
+    westus2: 'wus2'
+    koreacentral: 'krc'
+    koreasouth: 'krs'
+    francecentral: 'frc'
+    francesouth: 'frs'
+    australiacentral: 'auc'
+    australiacentral2: 'auc2'
+    uaecentral: 'aec'
+    uaenorth: 'aen'
+    southafricanorth: 'zan'
+    southafricawest: 'zaw'
+    switzerlandnorth: 'chn'
+    switzerlandwest: 'chw'
+    germanynorth: 'den'
+    germanywestcentral: 'dewc'
+    norwaywest: 'now'
+    norwayeast: 'noe'
+    brazilsoutheast: 'brse'
+    westus3: 'wus3'
+    swedencentral: 'sec'
+}
+//
+
 var imageVmSize = 'Standard_D4s_v3'
 var avdOsImageDefinitions = {
     win10_21h2_office: {
@@ -120,17 +175,13 @@ var avdOsImageDefinitions = {
     }
 }
 var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
-var avdSharedSResourcesStorageName = 'avd${uniqueString(deploymentPrefixLowercase, avdSharedServicesLocationLowercase)}shared'
-var avdSharedSResourcesAibContainerName = 'aib-${deploymentPrefixLowercase}'
-var avdSharedSResourcesScriptsContainerName = 'scripts-${deploymentPrefixLowercase}'
-var avdSharedServicesKvName = 'avd-${uniqueString(deploymentPrefixLowercase, avdSharedServicesLocationLowercase, avdSharedServicesSubId)}-shared' // max length limit 24 characters
 var telemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${avdSharedServicesLocation}'
 
 // =========== //
 // Deployments //
 // =========== //
 
-//  Telemetry Deployment
+//  Telemetry Deployment.
 resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
     name: telemetryId
     location: avdSharedServicesLocation
