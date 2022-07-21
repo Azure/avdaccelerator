@@ -249,7 +249,7 @@ var fslogixManagedIdentityName = 'id-avd-fslogix-${avdSessionHostLocationAcronym
 var avdFslogixProfileContainerFileShareName = 'fslogix-pc-${deploymentPrefixLowercase}-001'
 //var avdFslogixOfficeContainerFileShareName = 'fslogix-oc-${deploymentPrefixLowercase}-001'
 var avdFslogixStorageName = 'stavd${avdSessionHostLocationAcronym}${deploymentPrefix}${avdNamingUniqueStringSixChar}'
-var avdWrklStoragePrivateEndpointName = 'pe-stavd${deploymentPrefixLowercase}${avdNamingUniqueStringSixChar}-files'
+var avdWrklStoragePrivateEndpointName = 'pe-stavd${deploymentPrefixLowercase}${avdNamingUniqueStringSixChar}-file'
 var tempStorageDomainJoinVmName = 'vm-fs-dj-${deploymentPrefix}'
 var OuStgName = !empty(storageOuName) ? storageOuName : 'Computers'
 //
