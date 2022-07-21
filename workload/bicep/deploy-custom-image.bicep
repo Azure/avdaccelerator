@@ -72,9 +72,9 @@ param enableTelemetry bool = true
 // Resouce Naming.
 var deploymentPrefixLowercase = toLower(deploymentPrefix)
 var avdNamingUniqueStringSixChar = take('${uniqueString(avdSharedServicesSubId, deploymentPrefixLowercase, time)}', 6)
-var avdSharedResourcesNamingStandard = '${avdSharedServicesLocationAcronym}-shared'
+var avdSharedResourcesNamingStandard = '${avdSharedServicesLocationAcronym}'
 var avdSharedServicesLocationLowercase = toLower(avdSharedServicesLocation)
-var avdSharedResourcesRgName = 'rg-avd-${avdSharedResourcesNamingStandard}-resources' // max length limit 90 characters
+var avdSharedResourcesRgName = 'rg-avd-${avdSharedResourcesNamingStandard}-shared-services' // max length limit 90 characters
 var imageGalleryName = 'gal_avd_${avdSharedServicesLocationAcronym}_001'
 var aibManagedIdentityName = 'id-avd-imagebuilder-${avdSharedServicesLocationAcronym}'
 var deployScriptManagedIdentityName = 'id-avd-deployscript-${avdSharedServicesLocationAcronym}'
@@ -83,6 +83,9 @@ var avdSharedSResourcesStorageName = 'stavdshar${avdNamingUniqueStringSixChar}'
 var avdSharedSResourcesAibContainerName = 'avd-imagebuilder-${deploymentPrefixLowercase}'
 var avdSharedSResourcesScriptsContainerName = 'avd-scripts-${deploymentPrefixLowercase}'
 var avdSharedServicesKvName = 'kv-avd-${avdSharedResourcesNamingStandard}-${avdNamingUniqueStringSixChar}' // max length limit 24 characters
+
+
+
 var avdSharedServicesLocationAcronym = locationAcronyms[avdSharedServicesLocationLowercase]
 var locationAcronyms = {
     eastasia: 'eas'
