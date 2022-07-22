@@ -27,6 +27,14 @@ param avdVmLocalUserName string = ''
 @secure()
 param avdVmLocalUserPassword string = ''
 
+@allowed([
+    'ADDS' // Active Directory Domain Services
+    'AADDS' // Azure Active Directory Domain Services
+    //'AAD' // Azure AD Join
+])
+@description('Required, The service providing domain services for Azure Virtual Desktop.')
+param avdIdentityServiceProvider string = 'ADDS'
+
 @description('Required. AD domain name.')
 param avdIdentityDomainName string = ''
 
@@ -406,6 +414,7 @@ module avdHostPoolandAppGroups 'avd-modules/avd-hostpool-app-groups.bicep' = {
         avdServiceObjectsRgName: avdServiceObjectsRgName
         avdStartVmOnConnect: avdStartVmOnConnect
         avdWorkloadSubsId: avdWorkloadSubsId
+        avdIdentityServiceProvider: avdIdentityServiceProvider
     }
     dependsOn: [
         avdBaselineResourceGroups
@@ -522,6 +531,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (createAvdFslogixDeployment) {
     name: 'Deploy-AVD-Storage-AzureFiles-${time}'
     params: {
+        avdIdentityServiceProvider: avdIdentityServiceProvider
         addStorageToDomainScript: addStorageToDomainScript
         addStorageToDomainScriptArgs: addStorageToDomainScriptArgs
         addStorageToDomainScriptUri: addStorageToDomainScriptUri
