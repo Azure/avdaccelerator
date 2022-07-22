@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "5548453002557189920"
+      "templateHash": "6247051109289980725"
     }
   },
   "parameters": {
@@ -13,7 +13,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Required. The name of the resource group to deploy"
+        "description": "Required. The name of the resource group to deploy."
       },
       "maxLength": 4,
       "minLength": 2
@@ -22,28 +22,28 @@
       "type": "string",
       "defaultValue": "eastus2",
       "metadata": {
-        "description": "Optional. Location where to deploy compute services (Default: eastus2)"
+        "description": "Optional. Location where to deploy compute services. (Default: eastus2)"
       }
     },
     "avdSharedServicesSubId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Required. AVD shared services subscription ID, multiple subscriptions scenario"
+        "description": "Required. AVD shared services subscription ID, multiple subscriptions scenario."
       }
     },
     "avdUseAvailabilityZones": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set (Default: false)"
+        "description": "Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Default: false)"
       }
     },
     "aibLocation": {
       "type": "string",
       "defaultValue": "eastus2",
       "metadata": {
-        "description": "Optional. Azure image builder location (Default: eastus2)"
+        "description": "Optional. Azure image builder location. (Default: eastus2)"
       },
       "allowedValues": [
         "eastus",
@@ -66,14 +66,14 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Create custom azure image builder role (Default: true)"
+        "description": "Optional. Create custom azure image builder role. (Default: true)"
       }
     },
     "avdOsImage": {
       "type": "string",
       "defaultValue": "win10_21h2",
       "metadata": {
-        "description": "Optional. Required. AVD OS image source (Default: win10-21h2)"
+        "description": "Optional. Required. AVD OS image source. (Default: win10-21h2)"
       },
       "allowedValues": [
         "win10_21h2_office",
@@ -86,35 +86,35 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Set to deploy image from Azure Compute Gallery (Default: true)"
+        "description": "Optional. Set to deploy image from Azure Compute Gallery. (Default: true)"
       }
     },
     "createAibManagedIdentity": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Create azure image Builder managed identity (Default: true)"
+        "description": "Optional. Create azure image Builder managed identity. (Default: true)"
       }
     },
     "existingAibManagedIdentityId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Select existing azure image Builder managed identity (Default: \"\")"
+        "description": "Optional. Select existing azure image Builder managed identity. (Default: \"\")"
       }
     },
     "existingAibManagedIdentityName": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Select existing azure image Builder managed identity (Default: \"\")"
+        "description": "Optional. Select existing azure image Builder managed identity. (Default: \"\")"
       }
     },
     "time": {
       "type": "string",
       "defaultValue": "[utcNow()]",
       "metadata": {
-        "description": "Do not modify, used to set unique value for resource deployment"
+        "description": "Do not modify, used to set unique value for resource deployment."
       }
     },
     "enableTelemetry": {
@@ -127,12 +127,64 @@
   },
   "variables": {
     "deploymentPrefixLowercase": "[toLower(parameters('deploymentPrefix'))]",
+    "avdNamingUniqueStringSixChar": "[take(format('{0}', uniqueString(parameters('avdSharedServicesSubId'), variables('deploymentPrefixLowercase'), parameters('time'))), 6)]",
+    "avdSharedResourcesNamingStandard": "[format('{0}', variables('avdSharedServicesLocationAcronym'))]",
     "avdSharedServicesLocationLowercase": "[toLower(parameters('avdSharedServicesLocation'))]",
-    "avdSharedResourcesRgName": "[format('rg-{0}-avd-shared-resources', variables('avdSharedServicesLocationLowercase'))]",
-    "imageGalleryName": "[format('avdgallery{0}', variables('avdSharedServicesLocationLowercase'))]",
-    "aibManagedIdentityName": "avd-uai-aib",
-    "deployScriptManagedIdentityName": "avd-uai-deployScript",
-    "imageDefinitionsTemSpecName": "[format('AVDImageDefinition_{0}', parameters('avdOsImage'))]",
+    "avdSharedResourcesRgName": "[format('rg-avd-{0}-shared-services', variables('avdSharedResourcesNamingStandard'))]",
+    "imageGalleryName": "[format('gal_avd_{0}_001', variables('avdSharedServicesLocationAcronym'))]",
+    "aibManagedIdentityName": "[format('id-avd-imagebuilder-{0}', variables('avdSharedServicesLocationAcronym'))]",
+    "deployScriptManagedIdentityName": "[format('id-avd-deployscript-{0}', variables('avdSharedServicesLocationAcronym'))]",
+    "imageDefinitionsTemSpecName": "[format('avd_image_definition_{0}', parameters('avdOsImage'))]",
+    "avdSharedSResourcesStorageName": "[format('stavdshar{0}', variables('avdNamingUniqueStringSixChar'))]",
+    "avdSharedSResourcesAibContainerName": "[format('avd-imagebuilder-{0}', variables('deploymentPrefixLowercase'))]",
+    "avdSharedSResourcesScriptsContainerName": "[format('avd-scripts-{0}', variables('deploymentPrefixLowercase'))]",
+    "avdSharedServicesKvName": "[format('kv-avd-{0}-{1}', variables('avdSharedResourcesNamingStandard'), variables('avdNamingUniqueStringSixChar'))]",
+    "avdSharedServicesLocationAcronym": "[variables('locationAcronyms')[variables('avdSharedServicesLocationLowercase')]]",
+    "locationAcronyms": {
+      "eastasia": "eas",
+      "southeastasia": "seas",
+      "centralus": "cus",
+      "eastus": "eus",
+      "eastus2": "eus2",
+      "westus": "wus",
+      "northcentralus": "ncus",
+      "southcentralus": "scus",
+      "northeurope": "neu",
+      "westeurope": "weu",
+      "japanwest": "jpw",
+      "japaneast": "jpe",
+      "brazilsouth": "drs",
+      "australiaeast": "aue",
+      "australiasoutheast": "ause",
+      "southindia": "sin",
+      "centralindia": "cin",
+      "westindia": "win",
+      "canadacentral": "cac",
+      "canadaeast": "cae",
+      "uksouth": "uks",
+      "ukwest": "ukw",
+      "westcentralus": "wcus",
+      "westus2": "wus2",
+      "koreacentral": "krc",
+      "koreasouth": "krs",
+      "francecentral": "frc",
+      "francesouth": "frs",
+      "australiacentral": "auc",
+      "australiacentral2": "auc2",
+      "uaecentral": "aec",
+      "uaenorth": "aen",
+      "southafricanorth": "zan",
+      "southafricawest": "zaw",
+      "switzerlandnorth": "chn",
+      "switzerlandwest": "chw",
+      "germanynorth": "den",
+      "germanywestcentral": "dewc",
+      "norwaywest": "now",
+      "norwayeast": "noe",
+      "brazilsoutheast": "brse",
+      "westus3": "wus3",
+      "swedencentral": "sec"
+    },
     "imageVmSize": "Standard_D4s_v3",
     "avdOsImageDefinitions": {
       "win10_21h2_office": {
@@ -177,10 +229,6 @@
       }
     },
     "baseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
-    "avdSharedSResourcesStorageName": "[format('avd{0}shared', uniqueString(variables('deploymentPrefixLowercase'), variables('avdSharedServicesLocationLowercase')))]",
-    "avdSharedSResourcesAibContainerName": "[format('aib-{0}', variables('deploymentPrefixLowercase'))]",
-    "avdSharedSResourcesScriptsContainerName": "[format('scripts-{0}', variables('deploymentPrefixLowercase'))]",
-    "avdSharedServicesKvName": "[format('avd-{0}-shared', uniqueString(variables('deploymentPrefixLowercase'), variables('avdSharedServicesLocationLowercase'), parameters('avdSharedServicesSubId')))]",
     "telemetryId": "[format('pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-{0}', parameters('avdSharedServicesLocation'))]"
   },
   "resources": [
@@ -4663,7 +4711,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.8.9.13224",
-              "templateHash": "1396227771015393559"
+              "templateHash": "3410303183196739644"
             }
           },
           "parameters": {
@@ -5874,7 +5922,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.8.9.13224",
-                      "templateHash": "9152130336741868013"
+                      "templateHash": "12518510822279332143"
                     }
                   },
                   "parameters": {
@@ -5911,6 +5959,7 @@
                       "location": "[parameters('privateEndpointVnetLocation')]",
                       "tags": "[parameters('tags')]",
                       "properties": {
+                        "customNetworkInterfaceName": "[format('nic-01-{0}', variables('privateEndpoint_var').name)]",
                         "privateLinkServiceConnections": [
                           {
                             "name": "[variables('privateEndpoint_var').name]",
@@ -6172,7 +6221,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.8.9.13224",
-              "templateHash": "1203412988233161117"
+              "templateHash": "11822167295661332533"
             }
           },
           "parameters": {
@@ -6736,7 +6785,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.8.9.13224",
-                      "templateHash": "13272703389292141110"
+                      "templateHash": "9969565956816294707"
                     }
                   },
                   "parameters": {
@@ -6795,6 +6844,7 @@
                       "location": "[parameters('privateEndpointVnetLocation')]",
                       "tags": "[parameters('tags')]",
                       "properties": {
+                        "customNetworkInterfaceName": "[format('nic-01-{0}', variables('privateEndpoint_var').name)]",
                         "privateLinkServiceConnections": [
                           {
                             "name": "[variables('privateEndpoint_var').name]",
