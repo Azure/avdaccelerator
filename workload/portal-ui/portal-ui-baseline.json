@@ -3,7 +3,7 @@
     "view": {
         "kind": "Form",
         "properties": {
-            "isWizard": true,
+            "isWizard": false,
             "title": "AVD landing zone accelerator - Baseline",
             "steps": [
                 {
@@ -700,9 +700,30 @@
                             "label": "Domain information",
                             "elements": [
                                 {
+                                    "name": "avdIdentityServiceProvider",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "visible": true,
+                                    "label": "Identity service provider",
+                                    "defaultValue": "Active Directory (AD DS)",
+                                    "toolTip": "The service providing domain services for Azure Virtual Desktop.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Active Directory (AD DS)",
+                                                "value": "ADDS"
+                                            },
+                                            {
+                                                "label": "Azure AD Domain Services (AAD DS)",
+                                                "value": "AADDS"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
                                     "name": "avdIdentityDomainName",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Domain",
+                                    "label": "Domain name",
                                     "toolTip": "Provide username with permissions to join session host to the domain.",
                                     "placeholder": "Example: contoso.com",
                                     "constraints": {
@@ -1115,6 +1136,7 @@
                 "avhHostPoolMaxSessions": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.maxSessions, 1)]",
                 "avdPersonalAssignType": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.assignmentType, 'Automatic')]",
                 "avdDeployRappGroup": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('avdManagementPlane').avdManagementPlaneAppGroupOptions.avdDeployRappGroup, 'none')]",
+                "avdIdentityServiceProvider": "[steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider]",
                 "avdIdentityDomainName": "[steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainName]",
                 "avdOuPath": "[steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPath]",
                 "avdDomainJoinUserName": "[steps('avdIdentity').avdIdentityDomainCredentials.avdIdentityDomainJoinUserName]",
