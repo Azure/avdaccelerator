@@ -438,13 +438,13 @@ module avdWorkSpace '../../carml/1.2.0/Microsoft.DesktopVirtualization/workspace
 //
 
 // Identity: managed identities and role assignments.
-module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = if (createAvdFslogixDeployment) {
+module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
     name: 'Create-Managed-ID-RoleAssign-${time}'
     params: {
         avdComputeObjectsRgName: avdComputeObjectsRgName
         avdDeploySessionHosts: avdDeploySessionHosts
         avdEnterpriseAppObjectId: avdEnterpriseAppObjectId
-        avdManagementPlaneLocation: avdSessionHostLocation
+        avdSessionHostLocation: avdSessionHostLocation
         avdServiceObjectsRgName: avdServiceObjectsRgName
         avdStorageObjectsRgName: avdStorageObjectsRgName
         avdWorkloadSubsId: avdWorkloadSubsId
@@ -452,7 +452,7 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = i
         fslogixManagedIdentityName: fslogixManagedIdentityName
         readerRoleId: readerRoleId
         storageAccountContributorRoleId: storageAccountContributorRoleId
-        createAvdFslogixDeployment: createAvdFslogixDeployment
+        createAvdFslogixDeployment: createAvdFslogixDeployment ? true: false
     }
     dependsOn: [
         avdBaselineResourceGroups
