@@ -106,7 +106,6 @@ param time string = utcNow()
 // Variable declaration //
 // =========== //
 
-// Batching baseline logic for session hosts and availability sets provided by @jamasten (Jason Masten))
 var avdMaxSessionHostsPerTemplateDeployment = 30 //50 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
 var divisionValue = avdDeploySessionHostsCount / avdMaxSessionHostsPerTemplateDeployment // This determines if any full batches are required.
 var divisionRemainderValue = avdDeploySessionHostsCount % avdMaxSessionHostsPerTemplateDeployment // This determines if any partial batches are required.
@@ -116,7 +115,7 @@ var maxAvailabilitySetMembersCount = 20 //200 // This is the max number of sessi
 var divisionAvSetValue = avdDeploySessionHostsCount / maxAvailabilitySetMembersCount // This determines if any full availability sets are required.
 var divisionAvSetRemainderValue = avdDeploySessionHostsCount % maxAvailabilitySetMembersCount // This determines if any partial availability sets are required.
 var availabilitySetCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue + 1 : divisionAvSetValue // This determines the total number of availability sets needed, whether full and / or partial.
-//
+
 
 // =========== //
 // Deployments //
