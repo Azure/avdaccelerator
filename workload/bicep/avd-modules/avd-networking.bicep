@@ -47,7 +47,7 @@ param avdVnetworkSubnetName string
 param avdVnetworkSubnetAddressPrefix string
 
 @description('custom DNS servers IPs')
-param customDnsIps string
+param dnsServers array
 
 @description('Required. Location where to deploy compute services')
 param avdSessionHostLocation string = deployment().location
@@ -114,7 +114,7 @@ module avdVirtualNetwork '../../../carml/1.2.0/Microsoft.Network/virtualNetworks
         name: avdVnetworkName
         location: avdSessionHostLocation
         addressPrefixes: array(avdVnetworkAddressPrefixes)
-        dnsServers: !empty(customDnsIps) ? array(customDnsIps) : []
+        dnsServers: dnsServers
         virtualNetworkPeerings: [
             {
                 remoteVirtualNetworkId: existingHubVnetResourceId
