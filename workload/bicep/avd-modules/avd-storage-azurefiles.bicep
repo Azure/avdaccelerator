@@ -12,6 +12,9 @@ param avdWorkloadSubsId string
 @description('Resource Group Name for Azure Files.')
 param avdStorageObjectsRgName string
 
+@description('Required, The service providing domain services for Azure Virtual Desktop.')
+param avdIdentityServiceProvider string
+
 @description('Resource Group Name for Azure Files.')
 param avdServiceObjectsRgName string
 
@@ -122,6 +125,9 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
         storageAccountSku: fslogixStorageSku
         allowBlobPublicAccess: false
         storageAccountKind: ((fslogixStorageSku =~ 'Premium_LRS') || (fslogixStorageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
+        azureFilesIdentityBasedAuthentication: {
+            directoryServiceOptions: (avdIdentityServiceProvider == 'AADDS') ? avdIdentityServiceProvider: null
+        }
         storageAccountAccessTier: 'Hot'
         networkAcls: {
             bypass: 'AzureServices'
