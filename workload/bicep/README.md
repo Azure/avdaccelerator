@@ -5,7 +5,7 @@
 ### Azure CLI
 
 ```bash
-az deployment tenant create \
+az deployment create \
   --template-file workload/bicep/deploy-baseline.bicep \
   --parameters @workload/bicep/parameters/deploy-baseline-parameters-example.json \
   --avdWorkloadSubsId <subscriptionId> \
