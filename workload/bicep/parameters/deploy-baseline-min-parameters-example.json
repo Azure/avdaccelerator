@@ -24,7 +24,9 @@
             "value": "<<domainJoinUserPassword>>"
         },
         "customDnsIps": {
-            "value": ""
+            "value": [
+                "<<customDnsIp>>"
+            ]
         }
     }
 }

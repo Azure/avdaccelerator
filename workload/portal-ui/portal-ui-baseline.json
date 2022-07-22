@@ -926,8 +926,8 @@
                             "visible": "[equals(steps('avdNetwork').createAvdVnet, true)]",
                             "label": "Custom DNS Servers",
                             "defaultValue": "",
-                            "placeholder": "Example: 10.10.100.4, 10.20.100.5",
-                            "toolTip": "If using custom DNS servers, enter multiple IPs separated by a comma.",
+                            "placeholder": "Example: 10.10.100.4,10.10.100.5",
+                            "toolTip": "Enter multiple IPs separated by a comma, if not provided Azure provided DNS will be used.",
                             "constraints": {
                                 "regex": ""
                             }
@@ -1146,7 +1146,7 @@
                 "createAvdVnet": "[steps('avdNetwork').createAvdVnet]",
                 "avdVnetworkAddressPrefixes": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdVnetSize, '10.10.0.0/23')]",
                 "avdVnetworkSubnetAddressPrefix": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdVnetSubnetSize, '10.10.0.0/23')]",
-                "customDnsIps": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdVnetDns, '')]",
+                "customDnsIps": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdVnetDns, 'none')]",
                 "existingHubVnetResourceId": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdHubVnetPeering.avdExistingHubVnet, 'none')]",
                 "vNetworkGatewayOnHub": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdHubVnetPeering.avdHubVnetGateway, false)]",
                 "existingVnetSubnetResourceId": "[if(equals(steps('avdNetwork').createAvdVnet, false), steps('avdNetwork').avdVnetSubnetSelectorName, 'none')]",
