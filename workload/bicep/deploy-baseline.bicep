@@ -32,7 +32,7 @@ param avdVmLocalUserPassword string = ''
     'AADDS' // Azure Active Directory Domain Services
     //'AAD' // Azure AD Join
 ])
-@description('Required, The service providing domain services for Azure Virtual Desktop.')
+@description('Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)')
 param avdIdentityServiceProvider string = 'ADDS'
 
 @description('Required. AD domain name.')
@@ -99,8 +99,8 @@ param avdVnetworkAddressPrefixes string = '10.10.0.0/23'
 @description('Optional. AVD virtual network subnet address prefix. (Default: 10.10.0.0/23)')
 param avdVnetworkSubnetAddressPrefix string = '10.10.0.0/23'
 
-@description('Required. custom DNS servers IPs.')
-param customDnsIps string = ''
+@description('Optional. custom DNS servers IPs.')
+param customDnsIps string = 'none'
 
 @description('Optional. Use Azure private DNS zones for private endpoints. (Default: false)')
 param avdVnetPrivateDnsZone bool = false
@@ -308,6 +308,7 @@ var addStorageToDomainScript = './Manual-DSC-JoinStorage-to-ADDS.ps1'
 var addStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${OuStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
 //var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
 var createOuForStorageString = string(createOuForStorage)
+var dnsServers = (customDnsIps == 'none') ? []: (split(customDnsIps, ','))
 
 var resourceGroups = [
     {
@@ -389,7 +390,7 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
         avdSessionHostLocation: avdSessionHostLocation
         avdVnetworkSubnetAddressPrefix: avdVnetworkSubnetAddressPrefix
         avdWorkloadSubsId: avdWorkloadSubsId
-        customDnsIps: customDnsIps
+        dnsServers: dnsServers
     }
     dependsOn: [
         avdBaselineResourceGroups

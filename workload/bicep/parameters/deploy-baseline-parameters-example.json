@@ -23,6 +23,9 @@
         "avdVmLocalUserPassword": {
             "value": "<<localUserPassword>>"
         },
+        "avdIdentityServiceProvider": {
+            "value": "<<domainName>>"
+        },     
         "avdIdentityDomainName": {
             "value": "<<domainName>>"
         },
@@ -75,7 +78,9 @@
             "value": "10.10.0.0/23"
         },
         "customDnsIps": {
-            "value": "<<customDnsIps>>"
+            "value": [
+                "<<customDnsIp>>"
+            ]
         },
         "avdVnetPrivateDnsZone": {
             "value": false
