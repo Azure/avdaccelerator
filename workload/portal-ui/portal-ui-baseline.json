@@ -1104,7 +1104,7 @@
                 },
                 {
                     "name": "avdResourceNaming",
-                    "label": "Resource Naming",
+                    "label": "Resource naming",
                     "type": "Microsoft.Common.Section",
                     "visible": true,
                     "elements": [
