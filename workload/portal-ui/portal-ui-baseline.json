@@ -3,7 +3,7 @@
     "view": {
         "kind": "Form",
         "properties": {
-            "isWizard": true,
+            "isWizard": false,
             "title": "AVD landing zone accelerator - Baseline",
             "steps": [
                 {
@@ -55,7 +55,7 @@
                             "type": "Microsoft.Common.TextBox",
                             "label": "Deployment prefix",
                             "toolTip": "Provide a prefix (max 4 characters) for the resource groups and resources created as part of AVD landing zones.",
-                            "placeholder": "Example: App1",
+                            "placeholder": "Example: app1",
                             "constraints": {
                                 "required": true,
                                 "regex": "^[a-z0-9A-Z-]{1,4}$",
@@ -1101,6 +1101,351 @@
                             }
                         }
                     ]
+                },
+                {
+                    "name": "avdResourceNaming",
+                    "label": "Resource Naming",
+                    "type": "Microsoft.Common.Section",
+                    "visible": true,
+                    "elements": [
+                        {
+                            "name": "avdResourceNamingInfo1",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                                "text": "AVD accelerator has built-in resource naming automation based and best practices Microsoft Cloud Adoption Framework (CAF) naming convention.",
+                                "uri": "https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming",
+                                "style": "Info"
+                            }
+                        },
+                        {
+                            "name": "avdResourceNamingInfo2",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                                "text": "And abbreviations recommendations for Azure resource types.",
+                                "uri": "https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations",
+                                "style": "Info"
+                            }
+                        },
+                        {
+                            "name": "avdResourceNamingSelection",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": true,
+                            "label": "Custom resource naming",
+                            "defaultValue": "No",
+                            "toolTip": "When set 'Yes', the information will be used to name resources. When set to 'No' deployment will use the AVD accelerator naming standard.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "Yes",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "No",
+                                        "value": false
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "avdResourceNamingWarning",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[equals(steps('avdResourceNaming').avdResourceNamingSelection, true)]",
+                            "options": {
+                                "text": "When using custom naming for resources, please make sure to follow naming rules and restrictions for Azure resources.",
+                                "uri": "https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules",
+                                "style": "Warning"
+                            }
+                        },
+                        {
+                            "name": "avdResourceNamingAvdManagementPlane",
+                            "type": "Microsoft.Common.Section",
+                            "label": "AVD Management plane naming:",
+                            "visible": "[equals(steps('avdResourceNaming').avdResourceNamingSelection, true)]",
+                            "elements": [
+                                {
+                                    "name": "avdServiceObjectsRgCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Resource group",
+                                    "toolTip": "AVD management plane resources (Workspace, Host pool, Application groups, Key vault) resource group custom name.",
+                                    "placeholder": "Example: rg-avd-use2-app1-service-objects",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
+                                        "validationMessage": "Value must be 1-90 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdWorkSpaceCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Workspace",
+                                    "toolTip": "AVD workspace custom name.",
+                                    "placeholder": "Example: vdws-use2-app1-001",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
+                                        "validationMessage": "Value must be 1-64 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdHostPoolCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Host pool",
+                                    "toolTip": "AVD host pool custom name.",
+                                    "placeholder": "Example: vdpool-use2-app1-001",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
+                                        "validationMessage": "Value must be 1-64 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdApplicationGroupCustomNameDesktop",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Application group (Desktop)",
+                                    "toolTip": "AVD desktop application group custom name.",
+                                    "placeholder": "Example: vdag-desktop-use2-app1-001",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
+                                        "validationMessage": "Value must be 1-64 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdApplicationGroupCustomNameRapp",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Application group (Remote App)",
+                                    "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneAppGroupOptions.avdDeployRappGroup, true)]",
+                                    "toolTip": "AVD remote application group custom name.",
+                                    "placeholder": "Example: vdag-rapp-use2-app1-001",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
+                                        "validationMessage": "Value must be 1-64 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdWrklKvCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Key vault",
+                                    "toolTip": "AVD keyvault prefix custom name.",
+                                    "placeholder": "Example: kv-avd",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,6}$",
+                                        "validationMessage": "Value must be 1-6 characters."
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "avdResourceNamingCompute",
+                            "type": "Microsoft.Common.Section",
+                            "label": "Compute naming:",
+                            "visible": "[equals(steps('avdResourceNaming').avdResourceNamingSelection, true)]",
+                            "elements": [
+                                {
+                                    "name": "avdComputeObjectsRgCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Resource group",
+                                    "toolTip": "AVD compute resources (VMs, NICs, Disks, Availability sets) resource group custom name.",
+                                    "placeholder": "Example: rg-avd-use2-app1-pool-compute",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
+                                        "validationMessage": "Value must be 1-90 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdApplicationSecurityGroupCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Applications security group",
+                                    "toolTip": "AVD application security custom name.",
+                                    "placeholder": "Example: asg-avd-use2-app1-001",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,80}$",
+                                        "validationMessage": "Value must be 1-80 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdSessionHostCustomNamePrefix",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Session host prefix",
+                                    "visible": "[equals(steps('avdSessionHosts').avdDeploySessionHosts, true)]",
+                                    "toolTip": "AVD session host prefix custom name.",
+                                    "placeholder": "Example: vm-avd-app1",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,7}$",
+                                        "validationMessage": "Value must be 1-7 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdAvailabilitySetCustomNamePrefix",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Availability set prefix",
+                                    "visible": "[equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdSessionHostsAvailabilitySettings, false)]",
+                                    "toolTip": "AVD availability set custom name.",
+                                    "placeholder": "Example: avail-avd",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,9}$",
+                                        "validationMessage": "Value must be 1-9 characters."
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "avdResourceNamingStorage",
+                            "type": "Microsoft.Common.Section",
+                            "label": "FSLogix storage naming:",
+                            "visible": "[equals(steps('avdResourceNaming').avdResourceNamingSelection, true)]",
+                            "elements": [
+                                {
+                                    "name": "avdResourceNamingStorageInfo1",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, false)]",
+                                    "options": {
+                                        "text": "Current deployment configuration is not creating storage (FSLogix) resources.",
+                                        "style": "Info"
+                                    }
+                                },
+                                {
+                                    "name": "avdResourceNamingStorageInfo2",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('avdSessionHosts').avdDeploySessionHosts, false)]",
+                                    "options": {
+                                        "text": "Current deployment configuration is not creating storage (FSLogix) resources.",
+                                        "style": "Info"
+                                    }
+                                },
+                                {
+                                    "name": "avdStorageObjectsRgCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Resource group",
+                                    "visible": "[equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true)]",
+                                    "toolTip": "AVD storage resources (Storage account, file shares, files private endpoints, temporary domain join VM) resource group custom name.",
+                                    "placeholder": "Example: rg-avd-use2-app1-storage",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
+                                        "validationMessage": "Value must be 1-90 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdFslogixStorageCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Storage account prefix",
+                                    "visible": "[equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true)]",
+                                    "toolTip": "AVD fslogix storage account prefix custom name.",
+                                    "placeholder": "Example: stavd",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,5}$",
+                                        "validationMessage": "Value must be 1-5 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdFslogixProfileContainerFileShareCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Profile container file share",
+                                    "visible": "[equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true)]",
+                                    "toolTip": "AVD fslogix storage account profile container file share prefix custom name.",
+                                    "placeholder": "Example: fslogix-pc-app1-001",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,12}$",
+                                        "validationMessage": "Value must be 1-12 characters."
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "avdResourceNamingNetwork",
+                            "type": "Microsoft.Common.Section",
+                            "label": "Network naming:",
+                            "visible": "[equals(steps('avdResourceNaming').avdResourceNamingSelection, true)]",
+                            "elements": [
+                                {
+                                    "name": "avdResourceNamingNetworkInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('avdNetwork').createAvdVnet, false)]",
+                                    "options": {
+                                        "text": "Current deployment configuration is not creating network resources.",
+                                        "style": "Info"
+                                    }
+                                },
+                                {
+                                    "name": "avdNetworkObjectsRgCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Resource group",
+                                    "visible": "[equals(steps('avdNetwork').createAvdVnet, true)]",
+                                    "toolTip": "AVD network resources (vNet, NSG, Route table) resource group custom name.",
+                                    "placeholder": "Example: rg-avd-use2-app1-network",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
+                                        "validationMessage": "Value must be 1-90 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdVnetworkCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Virtual network",
+                                    "visible": "[equals(steps('avdNetwork').createAvdVnet, true)]",
+                                    "toolTip": "AVD virtual network custom name.",
+                                    "placeholder": "Example: vnet-avd-use2-app1-001",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
+                                        "validationMessage": "Value must be 1-64 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdVnetworkSubnetCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Subnet",
+                                    "visible": "[equals(steps('avdNetwork').createAvdVnet, true)]",
+                                    "toolTip": "AVD virtual network subnet custom name.",
+                                    "placeholder": "Example: snet-avd-use2-app1-001",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,80}$",
+                                        "validationMessage": "Value must be 1-80 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdNetworksecurityGroupCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Network security group",
+                                    "visible": "[equals(steps('avdNetwork').createAvdVnet, true)]",
+                                    "toolTip": "AVD network security group custom name.",
+                                    "placeholder": "Example: nsg-avd-use2-app1-001",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,80}$",
+                                        "validationMessage": "Value must be 1-80 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdRouteTableCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Route table",
+                                    "visible": "[equals(steps('avdNetwork').createAvdVnet, true)]",
+                                    "toolTip": "AVD route table custom name.",
+                                    "placeholder": "Example: route-avd-use2-app1-001",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,80}$",
+                                        "validationMessage": "Value must be 1-80 characters."
+                                    }
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         },
@@ -1147,7 +1492,26 @@
                 "avdVnetPrivateDnsZoneKeyvaultId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneKeyvaultSelector.id, '')]",
                 "createAvdFslogixDeployment": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment]",
                 "fslogixStorageSku": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdStorageAccountSku, 'Standard_LRS')]",
-                "avdFslogixFileShareQuotaSize": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdSessionHostsFslogixFileShareQuota, 1 )]"
+                "avdFslogixFileShareQuotaSize": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdSessionHostsFslogixFileShareQuota, 1 )]",
+                "avdUseCustomNaming": "[steps('avdResourceNaming').avdResourceNamingSelection]",
+                "avdServiceObjectsRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdServiceObjectsRgCustomName, 'none')]",
+                "avdNetworkObjectsRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingNetwork.avdNetworkObjectsRgCustomName, 'none')]",
+                "avdComputeObjectsRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingCompute.avdComputeObjectsRgCustomName, 'none')]",
+                "avdStorageObjectsRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingStorage.avdStorageObjectsRgCustomName, 'none')]",                                                                                                                       
+                "avdVnetworkCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingNetwork.avdVnetworkCustomName, 'none')]",
+                "avdVnetworkSubnetCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingNetwork.avdVnetworkSubnetCustomName, 'none')]",
+                "avdNetworksecurityGroupCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingNetwork.avdNetworksecurityGroupCustomName, 'none')]",
+                "avdRouteTableCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingNetwork.avdRouteTableCustomName, 'none')]",
+                "avdApplicationSecurityGroupCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingCompute.avdApplicationSecurityGroupCustomName, 'none')]",
+                "avdWorkSpaceCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdWorkSpaceCustomName, 'none')]",
+                "avdHostPoolCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdHostPoolCustomName, 'none')]",
+                "avdApplicationGroupCustomNameDesktop": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdApplicationGroupCustomNameDesktop, 'none')]",
+                "avdApplicationGroupCustomNameRapp": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdApplicationGroupCustomNameRapp, 'none')]",
+                "avdSessionHostCustomNamePrefix": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingCompute.avdSessionHostCustomNamePrefix, 'none')]",
+                "avdAvailabilitySetCustomNamePrefix": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingCompute.avdAvailabilitySetCustomNamePrefix, 'none')]",
+                "avdFslogixStoragePrefixCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingStorage.avdFslogixStorageCustomName, 'none')]",
+                "avdFslogixProfileContainerFileShareCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingStorage.avdFslogixProfileContainerFileShareCustomName, 'none')]",
+                "avdWrklKvPrefixCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdWrklKvCustomName, 'none')]"
             },
             "kind": "Subscription",
             "location": "[steps('basics').avdDeploymentScope.location.name]",

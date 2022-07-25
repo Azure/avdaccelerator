@@ -23,7 +23,7 @@ param avdVnetworkName string
 param avdNetworksecurityGroupName string
 
 @description('Optional. Created if hte new VNet for AVD is created. Application Security Group (ASG) for the session hosts')
-param avdApplicationsecurityGroupName string
+param avdApplicationSecurityGroupName string
 
 @description('Optional. Created if the new VNet for AVD is created. Route Table name.')
 param avdRouteTableName string
@@ -87,7 +87,7 @@ module avdApplicationSecurityGroup '../../../carml/1.2.0/Microsoft.Network/appli
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
     name: 'AVD-ASG-${time}'
     params: {
-        name: avdApplicationsecurityGroupName
+        name: avdApplicationSecurityGroupName
         location: avdSessionHostLocation
     }
     dependsOn: []
