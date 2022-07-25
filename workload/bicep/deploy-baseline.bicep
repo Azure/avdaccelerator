@@ -165,6 +165,88 @@ param storageOuName string = ''
 @description('Optional. If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: "")')
 param createOuForStorage bool = false
 
+// Custom Naming
+// Input must followe resource naming rules on https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules
+@description('Optional. AVD resources custom naming. (Default: false)')
+param avdUseCustomNaming bool = false
+
+@maxLength(90)
+@description('Optional. AVD service resources resource group custom name. (Default: rg-avd-use2-app1-service-objects)')
+param avdServiceObjectsRgCustomName string = 'rg-avd-use2-app1-service-objects'
+
+@maxLength(90)
+@description('Optional. AVD network resources resource group custom name. (Default: rg-avd-use2-app1-network)')
+param avdNetworkObjectsRgCustomName string = 'rg-avd-use2-app1-network'
+
+@maxLength(90)
+@description('Optional. AVD network resources resource group custom name. (Default: rg-avd-use2-app1-pool-compute)')
+param avdComputeObjectsRgCustomName string = 'rg-avd-use2-app1-pool-compute'
+
+@maxLength(90)
+@description('Optional. AVD network resources resource group custom name. (Default: rg-avd-use2-app1-storage)')
+param avdStorageObjectsRgCustomName string = 'rg-avd-use2-app1-storage'
+
+@maxLength(64)
+@description('Optional. AVD virtual network custom name. (Default: vnet-avd-use2-app1-001)')
+param avdVnetworkCustomName string = 'vnet-avd-use2-app1-001'
+
+@maxLength(80)
+@description('Optional. AVD virtual network subnet custom name. (Default: snet-avd-use2-app1-001)')
+param avdVnetworkSubnetCustomName string = 'snet-avd-use2-app1-001'
+
+@maxLength(80)
+@description('Optional. AVD network security group custom name. (Default: nsg-avd-use2-app1-001)')
+param avdNetworksecurityGroupCustomName string = 'nsg-avd-use2-app1-001'
+
+@maxLength(80)
+@description('Optional. AVD route table custom name. (Default: route-avd-use2-app1-001)')
+param avdRouteTableCustomName string = 'route-avd-use2-app1-001'
+
+@maxLength(80)
+@description('Optional. AVD application security custom name. (Default: asg-avd-use2-app1-001)')
+param avdApplicationSecurityGroupCustomName string = 'asg-avd-use2-app1-001'
+
+@maxLength(64)
+@description('Optional. AVD workspace custom name. (Default: vdws-use2-app1-001)')
+param avdWorkSpaceCustomName string = 'vdws-use2-app1-001'
+
+@maxLength(64)
+@description('Optional. AVD host pool custom name. (Default: vdpool-use2-app1-001)')
+param avdHostPoolCustomName string = 'vdpool-use2-app1-001'
+
+@maxLength(64)
+@description('Optional. AVD desktop application group custom name. (Default: vdag-desktop-use2-app1-001)')
+param avdApplicationGroupCustomNameDesktop string = 'vdag-desktop-use2-app1-001'
+
+@maxLength(64)
+@description('Optional. AVD remote application group custom name. (Default: vdag-rapp-use2-app1-001)')
+param avdApplicationGroupCustomNameRapp string = 'vdag-rapp-use2-app1-001'
+
+@maxLength(7)
+@description('Optional. AVD session host prefix custom name. (Default: vm-avd-app1)')
+param avdSessionHostCustomNamePrefix string = 'vm-avd-app1'
+
+@maxLength(9)
+@description('Optional. AVD availability set custom name. (Default: avail-avd)')
+param avdAvailabilitySetCustomNamePrefix string = 'avail-avd'
+
+@maxLength(5)
+@description('Optional. AVD fslogix storage account prefix custom name. (Default: stavd)')
+param avdFslogixStoragePrefixCustomName string = 'stavd'
+
+@maxLength(12)
+@description('Optional. AVD fslogix storage account profile container file share prefix custom name. (Default: fslogix-pc-app1-001)')
+param avdFslogixProfileContainerFileShareCustomName string = 'fslogix-pc-app1-001'
+
+//@maxLength(12)
+//@description('Optional. AVD fslogix storage account office container file share prefix custom name. (Default: fslogix-oc-app1-001)')
+//param avdFslogixOfficeContainerFileShareCustomName string = 'fslogix-oc-app1-001'
+
+@maxLength(6)
+@description('Optional. AVD keyvault prefix custom name. (Default: kv-avd)')
+param avdWrklKvPrefixCustomName string = 'kv-avd'
+//
+
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
@@ -228,29 +310,29 @@ var locationAcronyms = {
 var avdNamingUniqueStringSixChar = take('${uniqueString(avdWorkloadSubsId, deploymentPrefixLowercase, time)}', 6)
 var avdManagementPlaneNamingStandard = '${avdManagementPlaneLocationAcronym}-${deploymentPrefixLowercase}'
 var avdComputeStorageResourcesNamingStandard = '${avdSessionHostLocationAcronym}-${deploymentPrefixLowercase}'
-var avdServiceObjectsRgName = 'rg-avd-${avdManagementPlaneNamingStandard}-service-objects' // max length limit 90 characters
-var avdNetworkObjectsRgName = 'rg-avd-${avdComputeStorageResourcesNamingStandard}-network' // max length limit 90 characters
-var avdComputeObjectsRgName = 'rg-avd-${avdComputeStorageResourcesNamingStandard}-pool-compute' // max length limit 90 characters
-var avdStorageObjectsRgName = 'rg-avd-${avdComputeStorageResourcesNamingStandard}-storage' // max length limit 90 characters
+var avdServiceObjectsRgName = avdUseCustomNaming ? avdServiceObjectsRgCustomName: 'rg-avd-${avdManagementPlaneNamingStandard}-service-objects' // max length limit 90 characters
+var avdNetworkObjectsRgName = avdUseCustomNaming ? avdNetworkObjectsRgCustomName: 'rg-avd-${avdComputeStorageResourcesNamingStandard}-network' // max length limit 90 characters
+var avdComputeObjectsRgName = avdUseCustomNaming ? avdComputeObjectsRgCustomName: 'rg-avd-${avdComputeStorageResourcesNamingStandard}-pool-compute' // max length limit 90 characters
+var avdStorageObjectsRgName = avdUseCustomNaming ? avdStorageObjectsRgCustomName: 'rg-avd-${avdComputeStorageResourcesNamingStandard}-storage' // max length limit 90 characters
 //var avdSharedResourcesRgName = 'rg-${avdSessionHostLocationAcronym}-avd-shared-resources'
-var avdVnetworkName = 'vnet-avd-${avdComputeStorageResourcesNamingStandard}-001'
-var avdVnetworkSubnetName = 'snet-avd-${avdComputeStorageResourcesNamingStandard}-001'
-var avdNetworksecurityGroupName = 'nsg-avd-${avdComputeStorageResourcesNamingStandard}-001'
-var avdRouteTableName = 'route-avd-${avdComputeStorageResourcesNamingStandard}-001'
-var avdApplicationsecurityGroupName = 'asg-avd-${avdComputeStorageResourcesNamingStandard}-001'
+var avdVnetworkName = avdUseCustomNaming ? avdVnetworkCustomName: 'vnet-avd-${avdComputeStorageResourcesNamingStandard}-001'
+var avdVnetworkSubnetName = avdUseCustomNaming ? avdVnetworkSubnetCustomName: 'snet-avd-${avdComputeStorageResourcesNamingStandard}-001'
+var avdNetworksecurityGroupName = avdUseCustomNaming ? avdNetworksecurityGroupCustomName: 'nsg-avd-${avdComputeStorageResourcesNamingStandard}-001'
+var avdRouteTableName = avdUseCustomNaming ? avdRouteTableCustomName: 'route-avd-${avdComputeStorageResourcesNamingStandard}-001'
+var avdApplicationSecurityGroupName = avdUseCustomNaming ? avdApplicationSecurityGroupCustomName: 'asg-avd-${avdComputeStorageResourcesNamingStandard}-001'
 var avdVnetworkPeeringName = 'peering-avd-${avdComputeStorageResourcesNamingStandard}-${avdNamingUniqueStringSixChar}'
-var avdWorkSpaceName = 'vdws-${avdManagementPlaneNamingStandard}-001'
-var avdHostPoolName = 'vdpool-${avdManagementPlaneNamingStandard}-001'
-var avdApplicationGroupNameDesktop = 'vdag-desktop-${avdManagementPlaneNamingStandard}-001'
-var avdApplicationGroupNameRapp = 'vdag-rapp-${avdManagementPlaneNamingStandard}-001'
-var avdWrklKvName = 'kv-avd-${avdComputeStorageResourcesNamingStandard}-${avdNamingUniqueStringSixChar}' // max length limit 24 characters
+var avdWorkSpaceName = avdUseCustomNaming ? avdWorkSpaceCustomName: 'vdws-${avdManagementPlaneNamingStandard}-001'
+var avdHostPoolName = avdUseCustomNaming ? avdHostPoolCustomName: 'vdpool-${avdManagementPlaneNamingStandard}-001'
+var avdApplicationGroupNameDesktop = avdUseCustomNaming ? avdApplicationGroupCustomNameDesktop: 'vdag-desktop-${avdManagementPlaneNamingStandard}-001'
+var avdApplicationGroupNameRapp = avdUseCustomNaming ? avdApplicationGroupCustomNameRapp: 'vdag-rapp-${avdManagementPlaneNamingStandard}-001'
+var avdWrklKvName = avdUseCustomNaming ? '${avdWrklKvPrefixCustomName}-${avdComputeStorageResourcesNamingStandard}-${avdNamingUniqueStringSixChar}': 'kv-avd-${avdComputeStorageResourcesNamingStandard}-${avdNamingUniqueStringSixChar}' // max length limit 24 characters
 var avdWrklKvPrivateEndpointName = 'pe-kv-avd-${deploymentPrefixLowercase}-${avdNamingUniqueStringSixChar}-vault'
-var avdSessionHostNamePrefix = 'vm-avd-${deploymentPrefix}'
-var avdAvailabilitySetNamePrefix = 'avail-avd-${avdSessionHostLocationAcronym}-${deploymentPrefix}'
+var avdSessionHostNamePrefix = avdUseCustomNaming ? avdSessionHostCustomNamePrefix: 'vm-avd-${deploymentPrefix}'
+var avdAvailabilitySetNamePrefix = avdUseCustomNaming ? '${avdAvailabilitySetCustomNamePrefix}-${avdSessionHostLocationAcronym}-${deploymentPrefix}': 'avail-avd-${avdSessionHostLocationAcronym}-${deploymentPrefix}'
 var fslogixManagedIdentityName = 'id-avd-fslogix-${avdSessionHostLocationAcronym}-${deploymentPrefix}'
-var avdFslogixProfileContainerFileShareName = 'fslogix-pc-${deploymentPrefixLowercase}-001'
-//var avdFslogixOfficeContainerFileShareName = 'fslogix-oc-${deploymentPrefixLowercase}-001'
-var avdFslogixStorageName = 'stavd${deploymentPrefix}${avdNamingUniqueStringSixChar}'
+var avdFslogixProfileContainerFileShareName = avdUseCustomNaming ? avdFslogixProfileContainerFileShareCustomName: 'fslogix-pc-${deploymentPrefixLowercase}-001'
+//var avdFslogixOfficeContainerFileShareName = avdUseCustomNaming ? avdFslogixOfficeContainerFileShareCustomName: 'fslogix-oc-${deploymentPrefixLowercase}-001'
+var avdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${deploymentPrefix}${avdNamingUniqueStringSixChar}': 'stavd${deploymentPrefix}${avdNamingUniqueStringSixChar}'
 var avdWrklStoragePrivateEndpointName = 'pe-stavd${deploymentPrefixLowercase}${avdNamingUniqueStringSixChar}-file'
 var tempStorageDomainJoinVmName = 'vm-fs-dj-${deploymentPrefix}'
 var OuStgName = !empty(storageOuName) ? storageOuName : 'Computers'
@@ -366,7 +448,7 @@ module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
 module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
     name: 'Deploy-AVD-Networking-${time}'
     params: {
-        avdApplicationsecurityGroupName: avdApplicationsecurityGroupName
+        avdApplicationSecurityGroupName: avdApplicationSecurityGroupName
         avdComputeObjectsRgName: avdComputeObjectsRgName
         avdNetworkObjectsRgName: avdNetworkObjectsRgName
         avdNetworksecurityGroupName: avdNetworksecurityGroupName
