@@ -234,11 +234,11 @@ param avdAvailabilitySetCustomNamePrefix string = 'avail-avd'
 @description('Optional. AVD fslogix storage account prefix custom name. (Default: stavd)')
 param avdFslogixStoragePrefixCustomName string = 'stavd'
 
-@maxLength(12)
+@maxLength(64)
 @description('Optional. AVD fslogix storage account profile container file share prefix custom name. (Default: fslogix-pc-app1-001)')
 param avdFslogixProfileContainerFileShareCustomName string = 'fslogix-pc-app1-001'
 
-//@maxLength(12)
+//@maxLength(64)
 //@description('Optional. AVD fslogix storage account office container file share prefix custom name. (Default: fslogix-oc-app1-001)')
 //param avdFslogixOfficeContainerFileShareCustomName string = 'fslogix-oc-app1-001'
 
