@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "6247051109289980725"
+      "templateHash": "4847498107982560114"
     }
   },
   "parameters": {
@@ -110,6 +110,69 @@
         "description": "Optional. Select existing azure image Builder managed identity. (Default: \"\")"
       }
     },
+    "avdUseCustomNaming": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. AVD resources custom naming. (Default: false)"
+      }
+    },
+    "avdSharedResourcesRgCustomName": {
+      "type": "string",
+      "defaultValue": "rg-avd-use2-shared-services",
+      "metadata": {
+        "description": "Optional. AVD shared services resources resource group custom name. (Default: rg-avd-use2-shared-services)"
+      },
+      "maxLength": 90
+    },
+    "imageGalleryCustomName": {
+      "type": "string",
+      "defaultValue": "gal_avd_use2_001",
+      "metadata": {
+        "description": "Optional. AVD Azure compute gallery custom name. (Default: gal_avd_use2_001)"
+      },
+      "maxLength": 64
+    },
+    "imageDefinitionsTemSpecCustomName": {
+      "type": "string",
+      "defaultValue": "avd_image_definition_win11_21h2",
+      "metadata": {
+        "description": "Optional. AVD Azure compute gallery image template custom name. (Default: avd_image_definition_win11_21h2)"
+      },
+      "maxLength": 64
+    },
+    "avdSharedSResourcesStorageCustomName": {
+      "type": "string",
+      "defaultValue": "stavdshar",
+      "metadata": {
+        "description": "Optional. AVD shared services storage account custom name prefix. (Default: stavdshar)"
+      },
+      "maxLength": 9
+    },
+    "avdSharedSResourcesAibContainerCustomName": {
+      "type": "string",
+      "defaultValue": "avd-imagebuilder-app1",
+      "metadata": {
+        "description": "Optional. AVD shared services storage account Azure image builder container custom name. (Default: avd-imagebuilder-app1)"
+      },
+      "maxLength": 20
+    },
+    "avdSharedSResourcesScriptsContainerCustomName": {
+      "type": "string",
+      "defaultValue": "avd-scripts-app1",
+      "metadata": {
+        "description": "Optional. AVD shared services storage account scripts container custom name. (Default: avd-scripts-app1)"
+      },
+      "maxLength": 20
+    },
+    "avdSharedServicesKvCustomName": {
+      "type": "string",
+      "defaultValue": "kv-avd",
+      "metadata": {
+        "description": "Optional. AVD shared services storage account scripts container custom name. (Default: kv-avd)"
+      },
+      "maxLength": 6
+    },
     "time": {
       "type": "string",
       "defaultValue": "[utcNow()]",
@@ -130,15 +193,15 @@
     "avdNamingUniqueStringSixChar": "[take(format('{0}', uniqueString(parameters('avdSharedServicesSubId'), variables('deploymentPrefixLowercase'), parameters('time'))), 6)]",
     "avdSharedResourcesNamingStandard": "[format('{0}', variables('avdSharedServicesLocationAcronym'))]",
     "avdSharedServicesLocationLowercase": "[toLower(parameters('avdSharedServicesLocation'))]",
-    "avdSharedResourcesRgName": "[format('rg-avd-{0}-shared-services', variables('avdSharedResourcesNamingStandard'))]",
-    "imageGalleryName": "[format('gal_avd_{0}_001', variables('avdSharedServicesLocationAcronym'))]",
+    "avdSharedResourcesRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdSharedResourcesRgCustomName'), format('rg-avd-{0}-shared-services', variables('avdSharedResourcesNamingStandard')))]",
+    "imageGalleryName": "[if(parameters('avdUseCustomNaming'), parameters('imageGalleryCustomName'), format('gal_avd_{0}_001', variables('avdSharedServicesLocationAcronym')))]",
     "aibManagedIdentityName": "[format('id-avd-imagebuilder-{0}', variables('avdSharedServicesLocationAcronym'))]",
     "deployScriptManagedIdentityName": "[format('id-avd-deployscript-{0}', variables('avdSharedServicesLocationAcronym'))]",
-    "imageDefinitionsTemSpecName": "[format('avd_image_definition_{0}', parameters('avdOsImage'))]",
-    "avdSharedSResourcesStorageName": "[format('stavdshar{0}', variables('avdNamingUniqueStringSixChar'))]",
-    "avdSharedSResourcesAibContainerName": "[format('avd-imagebuilder-{0}', variables('deploymentPrefixLowercase'))]",
-    "avdSharedSResourcesScriptsContainerName": "[format('avd-scripts-{0}', variables('deploymentPrefixLowercase'))]",
-    "avdSharedServicesKvName": "[format('kv-avd-{0}-{1}', variables('avdSharedResourcesNamingStandard'), variables('avdNamingUniqueStringSixChar'))]",
+    "imageDefinitionsTemSpecName": "[if(parameters('avdUseCustomNaming'), parameters('imageDefinitionsTemSpecCustomName'), format('avd_image_definition_{0}', parameters('avdOsImage')))]",
+    "avdSharedSResourcesStorageName": "[if(parameters('avdUseCustomNaming'), parameters('avdSharedSResourcesStorageCustomName'), format('stavdshar{0}', variables('avdNamingUniqueStringSixChar')))]",
+    "avdSharedSResourcesAibContainerName": "[if(parameters('avdUseCustomNaming'), parameters('avdSharedSResourcesAibContainerCustomName'), format('avd-imagebuilder-{0}', variables('deploymentPrefixLowercase')))]",
+    "avdSharedSResourcesScriptsContainerName": "[if(parameters('avdUseCustomNaming'), parameters('avdSharedSResourcesScriptsContainerCustomName'), format('avd-scripts-{0}', variables('deploymentPrefixLowercase')))]",
+    "avdSharedServicesKvName": "[if(parameters('avdUseCustomNaming'), parameters('avdSharedServicesKvCustomName'), format('kv-avd-{0}-{1}', variables('avdSharedResourcesNamingStandard'), variables('avdNamingUniqueStringSixChar')))]",
     "avdSharedServicesLocationAcronym": "[variables('locationAcronyms')[variables('avdSharedServicesLocationLowercase')]]",
     "locationAcronyms": {
       "eastasia": "eas",
