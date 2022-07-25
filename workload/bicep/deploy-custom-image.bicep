@@ -81,11 +81,11 @@ param imageDefinitionsTemSpecCustomName string = 'avd_image_definition_win11_21h
 @description('Optional. AVD shared services storage account custom name prefix. (Default: stavdshar)')
 param avdSharedSResourcesStorageCustomName string = 'stavdshar'
 
-@maxLength(20)
+@maxLength(60)
 @description('Optional. AVD shared services storage account Azure image builder container custom name. (Default: avd-imagebuilder-app1)')
 param avdSharedSResourcesAibContainerCustomName string = 'avd-imagebuilder-app1'
 
-@maxLength(20)
+@maxLength(60)
 @description('Optional. AVD shared services storage account scripts container custom name. (Default: avd-scripts-app1)')
 param avdSharedSResourcesScriptsContainerCustomName string = 'avd-scripts-app1'
 
