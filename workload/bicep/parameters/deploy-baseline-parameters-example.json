@@ -5,6 +5,12 @@
         "deploymentPrefix": {
             "value": "<<deploymentPrefix>>"
         },
+        "avdUseCustomNaming": {
+            "value": false
+        },
+        "avdServiceObjectsRgCustomName": {
+            "value": "<<avdServiceObjectsRgCustomName>>"
+        },
         "avdSessionHostLocation": {
             "value": "eastus2"
         },
