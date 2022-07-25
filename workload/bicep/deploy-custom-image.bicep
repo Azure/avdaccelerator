@@ -57,8 +57,42 @@ param createAibManagedIdentity bool = true
 @description('Optional. Select existing azure image Builder managed identity. (Default: "")')
 param existingAibManagedIdentityId string = ''
 
+// Custom Naming
+// Input must followe resource naming rules on https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules
 @description('Optional. Select existing azure image Builder managed identity. (Default: "")')
 param existingAibManagedIdentityName string = ''
+
+@description('Optional. AVD resources custom naming. (Default: false)')
+param avdUseCustomNaming bool = false
+
+@maxLength(90)
+@description('Optional. AVD shared services resources resource group custom name. (Default: rg-avd-use2-shared-services)')
+param avdSharedResourcesRgCustomName string = 'rg-avd-use2-shared-services'
+
+@maxLength(64)
+@description('Optional. AVD Azure compute gallery custom name. (Default: gal_avd_use2_001)')
+param imageGalleryCustomName string = 'gal_avd_use2_001'
+
+@maxLength(64)
+@description('Optional. AVD Azure compute gallery image template custom name. (Default: avd_image_definition_win11_21h2)')
+param imageDefinitionsTemSpecCustomName string = 'avd_image_definition_win11_21h2'
+
+@maxLength(9)
+@description('Optional. AVD shared services storage account custom name prefix. (Default: stavdshar)')
+param avdSharedSResourcesStorageCustomName string = 'stavdshar'
+
+@maxLength(20)
+@description('Optional. AVD shared services storage account Azure image builder container custom name. (Default: avd-imagebuilder-app1)')
+param avdSharedSResourcesAibContainerCustomName string = 'avd-imagebuilder-app1'
+
+@maxLength(20)
+@description('Optional. AVD shared services storage account scripts container custom name. (Default: avd-scripts-app1)')
+param avdSharedSResourcesScriptsContainerCustomName string = 'avd-scripts-app1'
+
+@maxLength(6)
+@description('Optional. AVD shared services storage account scripts container custom name. (Default: kv-avd)')
+param avdSharedServicesKvCustomName string = 'kv-avd'
+//
 
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
@@ -74,18 +108,15 @@ var deploymentPrefixLowercase = toLower(deploymentPrefix)
 var avdNamingUniqueStringSixChar = take('${uniqueString(avdSharedServicesSubId, deploymentPrefixLowercase, time)}', 6)
 var avdSharedResourcesNamingStandard = '${avdSharedServicesLocationAcronym}'
 var avdSharedServicesLocationLowercase = toLower(avdSharedServicesLocation)
-var avdSharedResourcesRgName = 'rg-avd-${avdSharedResourcesNamingStandard}-shared-services' // max length limit 90 characters
-var imageGalleryName = 'gal_avd_${avdSharedServicesLocationAcronym}_001'
+var avdSharedResourcesRgName = avdUseCustomNaming ? avdSharedResourcesRgCustomName: 'rg-avd-${avdSharedResourcesNamingStandard}-shared-services' // max length limit 90 characters
+var imageGalleryName = avdUseCustomNaming ? imageGalleryCustomName: 'gal_avd_${avdSharedServicesLocationAcronym}_001'
 var aibManagedIdentityName = 'id-avd-imagebuilder-${avdSharedServicesLocationAcronym}'
 var deployScriptManagedIdentityName = 'id-avd-deployscript-${avdSharedServicesLocationAcronym}'
-var imageDefinitionsTemSpecName = 'avd_image_definition_${avdOsImage}'
-var avdSharedSResourcesStorageName = 'stavdshar${avdNamingUniqueStringSixChar}'
-var avdSharedSResourcesAibContainerName = 'avd-imagebuilder-${deploymentPrefixLowercase}'
-var avdSharedSResourcesScriptsContainerName = 'avd-scripts-${deploymentPrefixLowercase}'
-var avdSharedServicesKvName = 'kv-avd-${avdSharedResourcesNamingStandard}-${avdNamingUniqueStringSixChar}' // max length limit 24 characters
-
-
-
+var imageDefinitionsTemSpecName = avdUseCustomNaming ? imageDefinitionsTemSpecCustomName: 'avd_image_definition_${avdOsImage}'
+var avdSharedSResourcesStorageName = avdUseCustomNaming ? avdSharedSResourcesStorageCustomName: 'stavdshar${avdNamingUniqueStringSixChar}'
+var avdSharedSResourcesAibContainerName = avdUseCustomNaming ? avdSharedSResourcesAibContainerCustomName: 'avd-imagebuilder-${deploymentPrefixLowercase}'
+var avdSharedSResourcesScriptsContainerName = avdUseCustomNaming ? avdSharedSResourcesScriptsContainerCustomName: 'avd-scripts-${deploymentPrefixLowercase}'
+var avdSharedServicesKvName = avdUseCustomNaming ? avdSharedServicesKvCustomName: 'kv-avd-${avdSharedResourcesNamingStandard}-${avdNamingUniqueStringSixChar}' // max length limit 24 characters
 var avdSharedServicesLocationAcronym = locationAcronyms[avdSharedServicesLocationLowercase]
 var locationAcronyms = {
     eastasia: 'eas'
