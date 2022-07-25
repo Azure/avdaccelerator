@@ -1229,7 +1229,7 @@
                                 {
                                     "name": "avdWrklKvCustomName",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Key vault",
+                                    "label": "Key vault prefix",
                                     "toolTip": "AVD keyvault prefix custom name.",
                                     "placeholder": "Example: kv-avd",
                                     "constraints": {
@@ -1279,8 +1279,8 @@
                                     "placeholder": "Example: vm-avd-app1",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,7}$",
-                                        "validationMessage": "Value must be 1-7 characters."
+                                        "regex": "^[a-z0-9A-Z-]{1,11}$",
+                                        "validationMessage": "Value must be 1-11 characters."
                                     }
                                 },
                                 {
@@ -1357,8 +1357,8 @@
                                     "placeholder": "Example: fslogix-pc-app1-001",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,12}$",
-                                        "validationMessage": "Value must be 1-12 characters."
+                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
+                                        "validationMessage": "Value must be 1-64 characters."
                                     }
                                 }
                             ]
