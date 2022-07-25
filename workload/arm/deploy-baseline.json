@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "4492334830655792606"
+      "templateHash": "2692985510021831335"
     }
   },
   "parameters": {
@@ -353,6 +353,157 @@
         "description": "Optional. If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: \"\")"
       }
     },
+    "avdUseCustomNaming": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. AVD resources custom naming. (Default: false)"
+      }
+    },
+    "avdServiceObjectsRgCustomName": {
+      "type": "string",
+      "defaultValue": "rg-avd-use2-app1-service-objects",
+      "metadata": {
+        "description": "Optional. AVD service resources resource group custom name. (Default: rg-avd-use2-app1-service-objects)"
+      },
+      "maxLength": 90
+    },
+    "avdNetworkObjectsRgCustomName": {
+      "type": "string",
+      "defaultValue": "rg-avd-use2-app1-network",
+      "metadata": {
+        "description": "Optional. AVD network resources resource group custom name. (Default: rg-avd-use2-app1-network)"
+      },
+      "maxLength": 90
+    },
+    "avdComputeObjectsRgCustomName": {
+      "type": "string",
+      "defaultValue": "rg-avd-use2-app1-pool-compute",
+      "metadata": {
+        "description": "Optional. AVD network resources resource group custom name. (Default: rg-avd-use2-app1-pool-compute)"
+      },
+      "maxLength": 90
+    },
+    "avdStorageObjectsRgCustomName": {
+      "type": "string",
+      "defaultValue": "rg-avd-use2-app1-storage",
+      "metadata": {
+        "description": "Optional. AVD network resources resource group custom name. (Default: rg-avd-use2-app1-storage)"
+      },
+      "maxLength": 90
+    },
+    "avdVnetworkCustomName": {
+      "type": "string",
+      "defaultValue": "vnet-avd-use2-app1-001",
+      "metadata": {
+        "description": "Optional. AVD virtual network custom name. (Default: vnet-avd-use2-app1-001)"
+      },
+      "maxLength": 64
+    },
+    "avdVnetworkSubnetCustomName": {
+      "type": "string",
+      "defaultValue": "snet-avd-use2-app1-001",
+      "metadata": {
+        "description": "Optional. AVD virtual network subnet custom name. (Default: snet-avd-use2-app1-001)"
+      },
+      "maxLength": 80
+    },
+    "avdNetworksecurityGroupCustomName": {
+      "type": "string",
+      "defaultValue": "nsg-avd-use2-app1-001",
+      "metadata": {
+        "description": "Optional. AVD network security group custom name. (Default: nsg-avd-use2-app1-001)"
+      },
+      "maxLength": 80
+    },
+    "avdRouteTableCustomName": {
+      "type": "string",
+      "defaultValue": "route-avd-use2-app1-001",
+      "metadata": {
+        "description": "Optional. AVD route table custom name. (Default: route-avd-use2-app1-001)"
+      },
+      "maxLength": 80
+    },
+    "avdApplicationSecurityGroupCustomName": {
+      "type": "string",
+      "defaultValue": "asg-avd-use2-app1-001",
+      "metadata": {
+        "description": "Optional. AVD application security custom name. (Default: asg-avd-use2-app1-001)"
+      },
+      "maxLength": 80
+    },
+    "avdWorkSpaceCustomName": {
+      "type": "string",
+      "defaultValue": "vdws-use2-app1-001",
+      "metadata": {
+        "description": "Optional. AVD workspace custom name. (Default: vdws-use2-app1-001)"
+      },
+      "maxLength": 64
+    },
+    "avdHostPoolCustomName": {
+      "type": "string",
+      "defaultValue": "vdpool-use2-app1-001",
+      "metadata": {
+        "description": "Optional. AVD host pool custom name. (Default: vdpool-use2-app1-001)"
+      },
+      "maxLength": 64
+    },
+    "avdApplicationGroupCustomNameDesktop": {
+      "type": "string",
+      "defaultValue": "vdag-desktop-use2-app1-001",
+      "metadata": {
+        "description": "Optional. AVD desktop application group custom name. (Default: vdag-desktop-use2-app1-001)"
+      },
+      "maxLength": 64
+    },
+    "avdApplicationGroupCustomNameRapp": {
+      "type": "string",
+      "defaultValue": "vdag-rapp-use2-app1-001",
+      "metadata": {
+        "description": "Optional. AVD remote application group custom name. (Default: vdag-rapp-use2-app1-001)"
+      },
+      "maxLength": 64
+    },
+    "avdSessionHostCustomNamePrefix": {
+      "type": "string",
+      "defaultValue": "vm-avd-app1",
+      "metadata": {
+        "description": "Optional. AVD session host prefix custom name. (Default: vm-avd-app1)"
+      },
+      "maxLength": 7
+    },
+    "avdAvailabilitySetCustomNamePrefix": {
+      "type": "string",
+      "defaultValue": "avail-avd",
+      "metadata": {
+        "description": "Optional. AVD availability set custom name. (Default: avail-avd)"
+      },
+      "maxLength": 9
+    },
+    "avdFslogixStoragePrefixCustomName": {
+      "type": "string",
+      "defaultValue": "stavd",
+      "metadata": {
+        "description": "Optional. AVD fslogix storage account prefix custom name. (Default: stavd)"
+      },
+      "maxLength": 5
+    },
+    "avdFslogixProfileContainerFileShareCustomName": {
+      "type": "string",
+      "defaultValue": "fslogix-pc-app1-001",
+      "metadata": {
+        "description": "Optional. AVD fslogix storage account profile container file share prefix custom name. (Default: fslogix-pc-app1-001)"
+      },
+      "maxLength": 12
+    },
+    "avdWrklKvPrefixCustomName": {
+      "type": "string",
+      "defaultValue": "kv-avd",
+      "metadata": {
+        "description": "Optional. AVD keyvault prefix custom name. (Default: kv-avd)"
+      },
+      "maxLength": 6
+    },
     "time": {
       "type": "string",
       "defaultValue": "[utcNow()]",
@@ -422,27 +573,27 @@
     "avdNamingUniqueStringSixChar": "[take(format('{0}', uniqueString(parameters('avdWorkloadSubsId'), variables('deploymentPrefixLowercase'), parameters('time'))), 6)]",
     "avdManagementPlaneNamingStandard": "[format('{0}-{1}', variables('avdManagementPlaneLocationAcronym'), variables('deploymentPrefixLowercase'))]",
     "avdComputeStorageResourcesNamingStandard": "[format('{0}-{1}', variables('avdSessionHostLocationAcronym'), variables('deploymentPrefixLowercase'))]",
-    "avdServiceObjectsRgName": "[format('rg-avd-{0}-service-objects', variables('avdManagementPlaneNamingStandard'))]",
-    "avdNetworkObjectsRgName": "[format('rg-avd-{0}-network', variables('avdComputeStorageResourcesNamingStandard'))]",
-    "avdComputeObjectsRgName": "[format('rg-avd-{0}-pool-compute', variables('avdComputeStorageResourcesNamingStandard'))]",
-    "avdStorageObjectsRgName": "[format('rg-avd-{0}-storage', variables('avdComputeStorageResourcesNamingStandard'))]",
-    "avdVnetworkName": "[format('vnet-avd-{0}-001', variables('avdComputeStorageResourcesNamingStandard'))]",
-    "avdVnetworkSubnetName": "[format('snet-avd-{0}-001', variables('avdComputeStorageResourcesNamingStandard'))]",
-    "avdNetworksecurityGroupName": "[format('nsg-avd-{0}-001', variables('avdComputeStorageResourcesNamingStandard'))]",
-    "avdRouteTableName": "[format('route-avd-{0}-001', variables('avdComputeStorageResourcesNamingStandard'))]",
-    "avdApplicationsecurityGroupName": "[format('asg-avd-{0}-001', variables('avdComputeStorageResourcesNamingStandard'))]",
+    "avdServiceObjectsRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdServiceObjectsRgCustomName'), format('rg-avd-{0}-service-objects', variables('avdManagementPlaneNamingStandard')))]",
+    "avdNetworkObjectsRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdNetworkObjectsRgCustomName'), format('rg-avd-{0}-network', variables('avdComputeStorageResourcesNamingStandard')))]",
+    "avdComputeObjectsRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdComputeObjectsRgCustomName'), format('rg-avd-{0}-pool-compute', variables('avdComputeStorageResourcesNamingStandard')))]",
+    "avdStorageObjectsRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdStorageObjectsRgCustomName'), format('rg-avd-{0}-storage', variables('avdComputeStorageResourcesNamingStandard')))]",
+    "avdVnetworkName": "[if(parameters('avdUseCustomNaming'), parameters('avdVnetworkCustomName'), format('vnet-avd-{0}-001', variables('avdComputeStorageResourcesNamingStandard')))]",
+    "avdVnetworkSubnetName": "[if(parameters('avdUseCustomNaming'), parameters('avdVnetworkSubnetCustomName'), format('snet-avd-{0}-001', variables('avdComputeStorageResourcesNamingStandard')))]",
+    "avdNetworksecurityGroupName": "[if(parameters('avdUseCustomNaming'), parameters('avdNetworksecurityGroupCustomName'), format('nsg-avd-{0}-001', variables('avdComputeStorageResourcesNamingStandard')))]",
+    "avdRouteTableName": "[if(parameters('avdUseCustomNaming'), parameters('avdRouteTableCustomName'), format('route-avd-{0}-001', variables('avdComputeStorageResourcesNamingStandard')))]",
+    "avdApplicationSecurityGroupName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationSecurityGroupCustomName'), format('asg-avd-{0}-001', variables('avdComputeStorageResourcesNamingStandard')))]",
     "avdVnetworkPeeringName": "[format('peering-avd-{0}-{1}', variables('avdComputeStorageResourcesNamingStandard'), variables('avdNamingUniqueStringSixChar'))]",
-    "avdWorkSpaceName": "[format('vdws-{0}-001', variables('avdManagementPlaneNamingStandard'))]",
-    "avdHostPoolName": "[format('vdpool-{0}-001', variables('avdManagementPlaneNamingStandard'))]",
-    "avdApplicationGroupNameDesktop": "[format('vdag-desktop-{0}-001', variables('avdManagementPlaneNamingStandard'))]",
-    "avdApplicationGroupNameRapp": "[format('vdag-rapp-{0}-001', variables('avdManagementPlaneNamingStandard'))]",
-    "avdWrklKvName": "[format('kv-avd-{0}-{1}', variables('avdComputeStorageResourcesNamingStandard'), variables('avdNamingUniqueStringSixChar'))]",
+    "avdWorkSpaceName": "[if(parameters('avdUseCustomNaming'), parameters('avdWorkSpaceCustomName'), format('vdws-{0}-001', variables('avdManagementPlaneNamingStandard')))]",
+    "avdHostPoolName": "[if(parameters('avdUseCustomNaming'), parameters('avdHostPoolCustomName'), format('vdpool-{0}-001', variables('avdManagementPlaneNamingStandard')))]",
+    "avdApplicationGroupNameDesktop": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomNameDesktop'), format('vdag-desktop-{0}-001', variables('avdManagementPlaneNamingStandard')))]",
+    "avdApplicationGroupNameRapp": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomNameRapp'), format('vdag-rapp-{0}-001', variables('avdManagementPlaneNamingStandard')))]",
+    "avdWrklKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('avdWrklKvPrefixCustomName'), variables('avdComputeStorageResourcesNamingStandard'), variables('avdNamingUniqueStringSixChar')), format('kv-avd-{0}-{1}', variables('avdComputeStorageResourcesNamingStandard'), variables('avdNamingUniqueStringSixChar')))]",
     "avdWrklKvPrivateEndpointName": "[format('pe-kv-avd-{0}-{1}-vault', variables('deploymentPrefixLowercase'), variables('avdNamingUniqueStringSixChar'))]",
-    "avdSessionHostNamePrefix": "[format('vm-avd-{0}', parameters('deploymentPrefix'))]",
-    "avdAvailabilitySetNamePrefix": "[format('avail-avd-{0}-{1}', variables('avdSessionHostLocationAcronym'), parameters('deploymentPrefix'))]",
+    "avdSessionHostNamePrefix": "[if(parameters('avdUseCustomNaming'), parameters('avdSessionHostCustomNamePrefix'), format('vm-avd-{0}', parameters('deploymentPrefix')))]",
+    "avdAvailabilitySetNamePrefix": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('avdAvailabilitySetCustomNamePrefix'), variables('avdSessionHostLocationAcronym'), parameters('deploymentPrefix')), format('avail-avd-{0}-{1}', variables('avdSessionHostLocationAcronym'), parameters('deploymentPrefix')))]",
     "fslogixManagedIdentityName": "[format('id-avd-fslogix-{0}-{1}', variables('avdSessionHostLocationAcronym'), parameters('deploymentPrefix'))]",
-    "avdFslogixProfileContainerFileShareName": "[format('fslogix-pc-{0}-001', variables('deploymentPrefixLowercase'))]",
-    "avdFslogixStorageName": "[format('stavd{0}{1}', parameters('deploymentPrefix'), variables('avdNamingUniqueStringSixChar'))]",
+    "avdFslogixProfileContainerFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('avdFslogixProfileContainerFileShareCustomName'), format('fslogix-pc-{0}-001', variables('deploymentPrefixLowercase')))]",
+    "avdFslogixStorageName": "[if(parameters('avdUseCustomNaming'), format('{0}{1}{2}', parameters('avdFslogixStoragePrefixCustomName'), parameters('deploymentPrefix'), variables('avdNamingUniqueStringSixChar')), format('stavd{0}{1}', parameters('deploymentPrefix'), variables('avdNamingUniqueStringSixChar')))]",
     "avdWrklStoragePrivateEndpointName": "[format('pe-stavd{0}{1}-file', variables('deploymentPrefixLowercase'), variables('avdNamingUniqueStringSixChar'))]",
     "tempStorageDomainJoinVmName": "[format('vm-fs-dj-{0}', parameters('deploymentPrefix'))]",
     "OuStgName": "[if(not(empty(parameters('storageOuName'))), parameters('storageOuName'), 'Computers')]",
@@ -1525,8 +1676,8 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "avdApplicationsecurityGroupName": {
-            "value": "[variables('avdApplicationsecurityGroupName')]"
+          "avdApplicationSecurityGroupName": {
+            "value": "[variables('avdApplicationSecurityGroupName')]"
           },
           "avdComputeObjectsRgName": {
             "value": "[variables('avdComputeObjectsRgName')]"
@@ -1621,7 +1772,7 @@
                 "description": "Network Security Group Name"
               }
             },
-            "avdApplicationsecurityGroupName": {
+            "avdApplicationSecurityGroupName": {
               "type": "string",
               "metadata": {
                 "description": "Optional. Created if hte new VNet for AVD is created. Application Security Group (ASG) for the session hosts"
@@ -2885,7 +3036,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[parameters('avdApplicationsecurityGroupName')]"
+                    "value": "[parameters('avdApplicationSecurityGroupName')]"
                   },
                   "location": {
                     "value": "[parameters('avdSessionHostLocation')]"
