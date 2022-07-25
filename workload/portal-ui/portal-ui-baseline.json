@@ -381,7 +381,7 @@
                 },
                 {
                     "name": "avdSessionHosts",
-                    "label": "Session Hosts",
+                    "label": "Session hosts",
                     "subLabel": {
                         "preValidation": "",
                         "postValidation": ""
@@ -519,9 +519,7 @@
                                     "label": "VM Size",
                                     "toolTip": "",
                                     "recommendedSizes": [
-                                        "Standard_D1",
-                                        "Standard_D2",
-                                        "Standard_D3"
+                                        "Standard_D2s_v3"
                                     ],
                                     "constraints": {
                                         "allowedSizes": [],
