@@ -331,7 +331,7 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (ena
 module virtualMachine_nic '.bicep/nested_networkInterface.bicep' = [for (nicConfiguration, index) in nicConfigurations: {
   name: '${uniqueString(deployment().name, location)}-VM-Nic-${index}'
   params: {
-    networkInterfaceName: '${name}${nicConfiguration.nicSuffix}'
+    networkInterfaceName: '${nicConfiguration.nicSuffix}${name}'
     virtualMachineName: name
     location: location
     tags: tags
@@ -377,7 +377,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-07-01' = {
     storageProfile: {
       imageReference: imageReference
       osDisk: {
-        name: '${name}-disk-os-01'
+        name: 'osdisk-001-${name}'
         createOption: contains(osDisk, 'createOption') ? osDisk.createOption : 'FromImage'
         deleteOption: contains(osDisk, 'deleteOption') ? osDisk.deleteOption : 'Delete'
         diskSizeGB: osDisk.diskSizeGB
@@ -389,7 +389,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-07-01' = {
       }
       dataDisks: [for (dataDisk, index) in dataDisks: {
         lun: index
-        name: '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
+        name: 'disk-${padLeft((index + 1), 3, '0')}-${name}'
         diskSizeGB: dataDisk.diskSizeGB
         createOption: contains(dataDisk, 'createOption') ? dataDisk.createOption : 'Empty'
         deleteOption: contains(dataDisk, 'deleteOption') ? dataDisk.deleteOption : 'Delete'
@@ -421,7 +421,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-07-01' = {
           deleteOption: contains(nicConfiguration, 'deleteOption') ? nicConfiguration.deleteOption : 'Delete'
           primary: index == 0 ? true : false
         }
-        id: az.resourceId('Microsoft.Network/networkInterfaces', '${name}${nicConfiguration.nicSuffix}')
+        id: az.resourceId('Microsoft.Network/networkInterfaces', '${nicConfiguration.nicSuffix}${name}')
       }]
     }
     diagnosticsProfile: {

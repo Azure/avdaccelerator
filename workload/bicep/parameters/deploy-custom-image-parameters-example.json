@@ -19,7 +19,7 @@
         },
         "createAibCustomRole": {
             "value": true
-        }, 
+        },
         "avdOsImage": {
             "value": "win10_21h2"
         },
