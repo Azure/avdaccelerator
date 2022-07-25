@@ -933,24 +933,30 @@
                             }
                         },
                         {
-                            "name": "avdVnetPrivateDnsZoneFilesSelector",
-                            "type": "Microsoft.Solutions.ResourceSelector",
+                            "name": "avdVnetPrivateDnsZoneSelection",
+                            "type": "Microsoft.Common.Section",
                             "visible": "[equals(steps('avdNetwork').avdVnetPrivateDnsZone, true)]",
-                            "label": "File share    (privatelink.file.core.windows.net)",
-                            "resourceType": "Microsoft.Network/privateDnsZones",
-                            "constraints": {
-                                "required": true
-                            }
-                        },
-                        {
-                            "name": "avdVnetPrivateDnsZoneKeyvaultSelector",
-                            "type": "Microsoft.Solutions.ResourceSelector",
-                            "visible": "[equals(steps('avdNetwork').avdVnetPrivateDnsZone, true)]",
-                            "label": "Key vault     (privatelink.vaultcore.azure.net)",
-                            "resourceType": "Microsoft.Network/privateDnsZones",
-                            "constraints": {
-                                "required": true
-                            }
+                            "elements": [
+                                {
+                                    "name": "avdVnetPrivateDnsZoneFilesSelector",
+                                    "type": "Microsoft.Solutions.ResourceSelector",
+                                    "visible": "[equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true)]",
+                                    "label": "File share    (privatelink.file.core.windows.net)",
+                                    "resourceType": "Microsoft.Network/privateDnsZones",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
+                                {
+                                    "name": "avdVnetPrivateDnsZoneKeyvaultSelector",
+                                    "type": "Microsoft.Solutions.ResourceSelector",
+                                    "label": "Key vault     (privatelink.vaultcore.azure.net)",
+                                    "resourceType": "Microsoft.Network/privateDnsZones",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                }
+                            ]
                         },
                         {
                             "name": "avdVnetPeeringInfoBox",
@@ -1488,8 +1494,8 @@
                 "createOuForStorage": "[steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathBool]",
                 "storageOuName": "[if(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathBool, true), steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathStorage, steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathStorageExisting)]",
                 "avdVnetPrivateDnsZone": "[steps('avdNetwork').avdVnetPrivateDnsZone]",
-                "avdVnetPrivateDnsZoneFilesId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneFilesSelector.id, '')]",
-                "avdVnetPrivateDnsZoneKeyvaultId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneKeyvaultSelector.id, '')]",
+                "avdVnetPrivateDnsZoneFilesId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneSelection.avdVnetPrivateDnsZoneFilesSelector.id, '')]",
+                "avdVnetPrivateDnsZoneKeyvaultId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneSelection.avdVnetPrivateDnsZoneKeyvaultSelector.id, '')]",
                 "createAvdFslogixDeployment": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment]",
                 "fslogixStorageSku": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdStorageAccountSku, 'Standard_LRS')]",
                 "avdFslogixFileShareQuotaSize": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdSessionHostsFslogixFileShareQuota, 1 )]",
