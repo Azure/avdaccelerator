@@ -384,7 +384,7 @@
                                     "placeholder": "Example: gal_avd_use2_001",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
+                                        "regex": "^[a-z0-9A-Z-_-]{1,64}$",
                                         "validationMessage": "Value must be 1-64 characters."
                                     }
                                 },
@@ -396,7 +396,7 @@
                                     "placeholder": "Example: avd_image_definition_win11_21h2",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
+                                        "regex": "^[a-z0-9A-Z-_-]{1,64}$",
                                         "validationMessage": "Value must be 1-64 characters."
                                     }
                                 },
