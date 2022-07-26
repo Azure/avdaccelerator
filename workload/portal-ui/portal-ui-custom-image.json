@@ -408,8 +408,8 @@
                                     "placeholder": "Example: stavdshar",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
-                                        "validationMessage": "Value must be 1-64 characters."
+                                        "regex": "^[a-z0-9A-Z-]{1,9}$",
+                                        "validationMessage": "Value must be 1-9 characters."
                                     }
                                 },
                                 {
