@@ -222,7 +222,7 @@ param avdApplicationGroupCustomNameDesktop string = 'vdag-desktop-use2-app1-001'
 @description('Optional. AVD remote application group custom name. (Default: vdag-rapp-use2-app1-001)')
 param avdApplicationGroupCustomNameRapp string = 'vdag-rapp-use2-app1-001'
 
-@maxLength(7)
+@maxLength(11)
 @description('Optional. AVD session host prefix custom name. (Default: vm-avd-app1)')
 param avdSessionHostCustomNamePrefix string = 'vm-avd-app1'
 
