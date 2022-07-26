@@ -167,7 +167,7 @@ param createOuForStorage bool = false
 
 // Custom Naming
 // Input must followe resource naming rules on https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules
-@description('Optional. AVD resources custom naming. (Default: false)')
+@description('Required. AVD resources custom naming. (Default: false)')
 param avdUseCustomNaming bool = false
 
 @maxLength(90)
