@@ -300,6 +300,157 @@
                             }
                         }
                     ]
+                },
+                {
+                    "name": "avdResourceNaming",
+                    "label": "Resource naming",
+                    "type": "Microsoft.Common.Section",
+                    "visible": true,
+                    "elements": [
+                        {
+                            "name": "avdResourceNamingInfo1",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                                "text": "AVD accelerator has built-in resource naming automation based and best practices Microsoft Cloud Adoption Framework (CAF) naming convention.",
+                                "uri": "https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming",
+                                "style": "Info"
+                            }
+                        },
+                        {
+                            "name": "avdResourceNamingInfo2",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                                "text": "And abbreviations recommendations for Azure resource types.",
+                                "uri": "https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations",
+                                "style": "Info"
+                            }
+                        },
+                        {
+                            "name": "avdResourceNamingSelection",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": true,
+                            "label": "Custom resource naming",
+                            "defaultValue": "No",
+                            "toolTip": "When set 'Yes', the information will be used to name resources. When set to 'No' deployment will use the AVD accelerator naming standard.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "Yes",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "No",
+                                        "value": false
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "avdResourceNamingWarning",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[equals(steps('avdResourceNaming').avdResourceNamingSelection, true)]",
+                            "options": {
+                                "text": "When using custom naming for resources, please make sure to follow naming rules and restrictions for Azure resources.",
+                                "uri": "https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules",
+                                "style": "Warning"
+                            }
+                        },
+                        {
+                            "name": "avdCustomImageNaming",
+                            "type": "Microsoft.Common.Section",
+                            "label": "AVD custom image naming:",
+                            "visible": "[equals(steps('avdResourceNaming').avdResourceNamingSelection, true)]",
+                            "elements": [
+                                {
+                                    "name": "avdSharedServicesRgCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Resource group",
+                                    "toolTip": "AVD shared services resources resource group custom name.",
+                                    "placeholder": "Example: rg-avd-use2-shared-services",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
+                                        "validationMessage": "Value must be 1-90 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdComputeGalleryCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Azure compute gallery",
+                                    "toolTip": "AVD Azure compute gallery custom name.",
+                                    "placeholder": "Example: gal_avd_use2_001",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z_0-9_A-Z-]{1,64}$",
+                                        "validationMessage": "Value must be 1-64 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdComputeGalleryImageDefinitionCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Image definition template spec",
+                                    "toolTip": "AVD Azure compute gallery image template custom name.",
+                                    "placeholder": "Example: avd_image_definition_win11_21h2",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z_0-9_A-Z-]{1,64}$",
+                                        "validationMessage": "Value must be 1-64 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdSharedStorageAccountCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Storage account prefix",
+                                    "toolTip": "AVD shared services storage account custom name prefix.",
+                                    "placeholder": "Example: stavdshar",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,9}$",
+                                        "validationMessage": "Value must be 1-9 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdSharedStorageAccountAibContainerCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Azure image builder container",
+                                    "toolTip": "AVD shared services storage account Azure image builder container custom name.",
+                                    "placeholder": "Example: avd-imagebuilder-app1",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,60}$",
+                                        "validationMessage": "Value must be 1-60 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdSharedStorageAccountScriptsContainerCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Scripts container",
+                                    "toolTip": "AVD shared services storage account scripts container custom name.",
+                                    "placeholder": "Example: avd-scripts-app1",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,60}$",
+                                        "validationMessage": "Value must be 1-60 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdSharedKvCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Key vault prefix",
+                                    "toolTip": "AVD shared services storage account scripts container custom name.",
+                                    "placeholder": "Example: kv-avd",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,6}$",
+                                        "validationMessage": "Value must be 1-6 characters."
+                                    }
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         },
@@ -314,7 +465,16 @@
                 "existingAibManagedIdentityName": "[if(equals(steps('avdCustomImageAib').avdCustomImageIdentityAibCreateManagedIdentity, false), steps('avdCustomImageAib').avdCustomImageIdentityAibSelectManagedIdentity.name, 'none')]",
                 "createAibCustomRole": "[steps('avdCustomImageAib').avdCustomImageIdentityAibCreateRole]",
                 "aibLocation": "[steps('avdCustomImageAib').avdCustomImageLocation]",
-                "avdOsImage": "[steps('avdCustomImage').avdCustomImageOsSelection.avdCustomImageOsImage]"
+                "avdOsImage": "[steps('avdCustomImage').avdCustomImageOsSelection.avdCustomImageOsImage]",
+
+                "avdSharedResourcesRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedServicesRgCustomName, 'none')]",
+
+                "imageGalleryCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdComputeGalleryCustomName, 'none')]",
+                "imageDefinitionsTemSpecCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdComputeGalleryImageDefinitionCustomName, 'none')]",
+                "avdSharedSResourcesStorageCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedStorageAccountCustomName, 'none')]",
+                "avdSharedSResourcesAibContainerCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedStorageAccountAibContainerCustomName, 'none')]",
+                "avdSharedSResourcesScriptsContainerCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedStorageAccountScriptsContainerCustomName, 'none')]",
+                "avdSharedServicesKvCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedKvCustomName, 'none')]"
             },
             "kind": "Subscription",
             "location": "[steps('basics').avdDeploymentScope.location.name]",
