@@ -1117,18 +1117,8 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
-                                "text": "AVD accelerator has built-in resource naming automation based and best practices Microsoft Cloud Adoption Framework (CAF) naming convention.",
-                                "uri": "https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming",
-                                "style": "Info"
-                            }
-                        },
-                        {
-                            "name": "avdResourceNamingInfo2",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "text": "And abbreviations recommendations for Azure resource types.",
-                                "uri": "https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations",
+                                "text": "The AVD accelerator provides automated resource naming based on Microsoft best practices, default resource organization and naming is shown in the diagram.",
+                                "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/diagrams/avd-accelerator-resource-organization-naming.png",
                                 "style": "Info"
                             }
                         },
@@ -1448,6 +1438,26 @@
                                     }
                                 }
                             ]
+                        },
+                        {
+                            "name": "avdResourceNamingInfo2",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                                "text": "AVD accelerator has built-in resource naming automation based and best practices Microsoft Cloud Adoption Framework (CAF) naming convention.",
+                                "uri": "https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming",
+                                "style": "Info"
+                            }
+                        },
+                        {
+                            "name": "avdResourceNamingInfo3",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                                "text": "And abbreviations recommendations for Azure resource types.",
+                                "uri": "https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations",
+                                "style": "Info"
+                            }
                         }
                     ]
                 }
