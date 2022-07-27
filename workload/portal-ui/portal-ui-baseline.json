@@ -121,16 +121,6 @@
                                     }
                                 },
                                 {
-                                    "name": "avdIdentityServiceProviderInfo",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": true,
-                                    "options": {
-                                        "text": "Identity service provider must already exist, as they are a prerequisite for the AVD accelerator deployment.",
-                                        "uri": "https://github.com/Azure/avdaccelerator/wiki/Getting-Started",
-                                        "style": "Info"
-                                    }
-                                },
-                                {
                                     "name": "avdIdentityDomainName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Domain name",
@@ -138,6 +128,16 @@
                                     "placeholder": "Example: contoso.com",
                                     "constraints": {
                                         "required": true
+                                    }
+                                },
+                                {
+                                    "name": "avdIdentityServiceProviderInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": true,
+                                    "options": {
+                                        "text": "Identity service provider must already exist, as they are a prerequisite for the AVD accelerator deployment.",
+                                        "uri": "https://github.com/Azure/avdaccelerator/wiki/Getting-Started",
+                                        "style": "Info"
                                     }
                                 }
                             ]
