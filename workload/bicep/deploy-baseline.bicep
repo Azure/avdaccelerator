@@ -4,9 +4,6 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
-
-
-
 @description('Required. The name of workload for tagging purposes')
 param avdWorkloadNameTag string = ''
 
@@ -17,7 +14,7 @@ param avdWorkloadNameTag string = ''
     'Power'
 ])
 @description('Optional. Reference to the size of the VM for your workloads (Default: Light)')
-param avdWorkloadTypeTag string= 'Light'
+param avdWorkloadTypeTag string = 'Light'
 
 @allowed([
     'Non-business'
@@ -27,10 +24,10 @@ param avdWorkloadTypeTag string= 'Light'
     'Highly confidential'
 ])
 @description('Required. Sensitivity of data hosted (Default: Non-business)')
-param avdDataClassificationTag string= 'Non-business'
+param avdDataClassificationTag string = 'Non-business'
 
 @description('Required. Sensitivity of data hosted')
-param avdDeptTag string= ''
+param avdDeptTag string = ''
 
 @allowed([
     'Low'
@@ -38,16 +35,16 @@ param avdDeptTag string= ''
     'High'
     'Mission-critical'
     'custom'
- ])
+])
 @description('Optional. criticality of each workload (Default: Low)')
-param avdCriticalityTag string= 'Low'
+param avdCriticalityTag string = 'Low'
 
-param avdCritSugestValueTag bool  = false
+param avdCritSugestValueTag bool = false
 
 param avdCritCustomValueTag string = 'change me'
 
 @description('Required. Details about the application')
-param avdApplicationNameTag string= ''
+param avdApplicationNameTag string = ''
 
 @description('Required.Service level agreement level of the application')
 param avdSlaTag string = ''
@@ -64,12 +61,10 @@ param avdCostCenterTag string = ''
 @allowed([
     'Prod'
     'Dev'
-    'staging '  
- ])
+    'staging '
+])
 @description('Required.Deployment environment of the application, workload (Default: Dev)')
 param avdEnvTag string = 'Prod'
-
-
 
 @minLength(2)
 @maxLength(4)
@@ -200,14 +195,13 @@ param avdAsUpdateDomainCount int = 5
 param fslogixStorageSku string = 'Premium_LRS'
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
-param encryptionAtHost bool = false 
+param encryptionAtHost bool = false
 
 @description('Optional. Session host VM size (Defualt: Standard_D2s_v3)')
 param avdSessionHostsSize string = 'Standard_D2s_v3'
 
 @description('Optional. OS disk type for session host (Defualt: Standard_LRS)')
 param avdSessionHostDiskType string = 'Standard_LRS'
-
 
 @allowed([
     'win10_21h2_office'
@@ -293,49 +287,45 @@ var fslogixSharePath = '\\\\${avdFslogixStorageName}.file.${environment().suffix
 var FsLogixScriptArguments = '-volumeshare ${fslogixSharePath}'
 var fslogixManagedIdentityName = 'avd-uai-fslogix'
 var avdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_01-20-2022.zip'
-var avdFslogixStorageName = take('fslogix${uniqueString(deploymentPrefixLowercase, avdSessionHostLocationLowercase)}${deploymentPrefixLowercase}',15)
+var avdFslogixStorageName = take('fslogix${uniqueString(deploymentPrefixLowercase, avdSessionHostLocationLowercase)}${deploymentPrefixLowercase}', 15)
 var avdFslogixFileShareName = 'fslogix-${deploymentPrefixLowercase}'
-var storageAccountContributorRoleId='b24988ac-6180-42a0-ab88-20f7382dd24c'
+var storageAccountContributorRoleId = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
 var readerRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-var tempStorageVmName='tempstgvm'
+var tempStorageVmName = 'tempstgvm'
 var dscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCDomainJoinStorageScripts.zip'
-var addStorageToDomainScriptUri='${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-ADDS.ps1'
-var addStorageToDomainScript='./Manual-DSC-JoinStorage-to-ADDS.ps1'
-var addStorageToDomainScriptArgs='-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${OuStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixFileShareName} -Verbose'
-var OuStgName = !empty(storageOuName)? storageOuName : 'Computers'
+var addStorageToDomainScriptUri = '${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-ADDS.ps1'
+var addStorageToDomainScript = './Manual-DSC-JoinStorage-to-ADDS.ps1'
+var addStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${OuStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixFileShareName} -Verbose'
+var OuStgName = !empty(storageOuName) ? storageOuName : 'Computers'
 var avdWrklKvName = 'avd-${uniqueString(deploymentPrefixLowercase, avdSessionHostLocationLowercase)}-${deploymentPrefixLowercase}' // max length limit 24 characters
 var avdSessionHostNamePrefix = 'avdsh-${deploymentPrefix}'
 var avdAvailabilitySetName = 'avdas-${deploymentPrefix}'
 var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
 var createOuForStorageString = string(createOuForStorage)
 
-
 var allResourcesTags = {
     WorkloadName: avdWorkloadNameTag
     WorkloadType: avdWorkloadTypeTag
     DataClassification: avdDataClassificationTag
-    Dept:avdDeptTag
+    Dept: avdDeptTag
     Criticality: avdCritSugestValueTag ? avdCriticalityTag : avdCritCustomValueTag
-    ApplicationName:avdApplicationNameTag
-    ServiceClass:avdSlaTag
-    OpsTeam:avdOpsTeamTag
-    Owner:avdOwnerTag
-    Number:avdCostCenterTag
-    Env:avdEnvTag
-    
+    ApplicationName: avdApplicationNameTag
+    ServiceClass: avdSlaTag
+    OpsTeam: avdOpsTeamTag
+    Owner: avdOwnerTag
+    Number: avdCostCenterTag
+    Env: avdEnvTag
+
 }
 
-var allComputeStorageTags= { 
-    DomainName:avdIdentityDomainName
-    JoinType:avdDeviceJoinTypeTag
+var allComputeStorageTags = {
+    DomainName: avdIdentityDomainName
+    JoinType: avdDeviceJoinTypeTag
 }
-
 
 var allAvdTags = union(allResourcesTags, allComputeStorageTags)
 
-
 var avdCritFinalValueTag = (avdCriticalityTag == 'custom') ? avdCritCustomValueTag : avdCriticalityTag
-
 
 var resourceGroups = [
     {
@@ -362,24 +352,24 @@ var telemetryId = 'pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-${location}'
 
 //  Telemetry Deployment
 resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
-  name: telemetryId
-  location: location
-  scope: tenant()
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#'
-      'contentVersion': '1.0.0.0'
-      'parameters': {}
-      'resources': {}
+    name: telemetryId
+    location: location
+    scope: tenant()
+    properties: {
+        mode: 'Incremental'
+        template: {
+            '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#'
+            'contentVersion': '1.0.0.0'
+            'parameters': {}
+            'resources': {}
+        }
     }
-  }
 }
 
 // Resource groups.
 module avdBaselineResourceGroups '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = [ for resourceGroup in resourceGroups: {
     scope: subscription(avdWorkloadSubsId)
-    name: 'Deploy-${substring(resourceGroup.name, 10)}-${time}'
+    name: 'Deploy-${substring(resourceGroup.name,  10)}-${time}'
         params: {
         name: resourceGroup.name
         location: resourceGroup.location
@@ -421,7 +411,7 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
         existingHubVnetResourceId: existingHubVnetResourceId
         avdSessionHostLocation: avdSessionHostLocation
         avdVnetworkSubnetAddressPrefix: avdVnetworkSubnetAddressPrefix
-        avdWorkloadSubsId:avdWorkloadSubsId
+        avdWorkloadSubsId: avdWorkloadSubsId
         customDnsIps: customDnsIps
     }
     dependsOn: [
@@ -440,7 +430,7 @@ module avdHostPoolandAppGroups 'avd-modules/avd-hostpool-app-groups.bicep' = {
         avdHostPoolRdpProperties: avdHostPoolRdpProperties
         avdHostPoolLoadBalancerType: avdHostPoolLoadBalancerType
         avdHostPoolType: avdHostPoolType
-        avhHostPoolMaxSessions:avhHostPoolMaxSessions
+        avhHostPoolMaxSessions: avhHostPoolMaxSessions
         avdPersonalAssignType: avdPersonalAssignType
         avdManagementPlaneLocation: avdManagementPlaneLocation
         avdServiceObjectsRgName: avdServiceObjectsRgName
@@ -483,7 +473,7 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = i
         storageAccountContributorRoleId: storageAccountContributorRoleId
         createAvdFslogixDeployment: createAvdFslogixDeployment
     }
-    dependsOn:[
+    dependsOn: [
         avdBaselineResourceGroups
     ]
 }
@@ -512,7 +502,7 @@ module avdWrklKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep
                     avdVnetPrivateDnsZoneKeyvaultId
                 ]
             }
-        ] :[
+        ] : [
             {
                 subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
                 service: 'vault'
@@ -558,7 +548,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 
 // Storage.
 module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (createAvdFslogixDeployment) {
-    name: 'Deploy-AVD-Storage-AzureFiles-${time}'    
+    name: 'Deploy-AVD-Storage-AzureFiles-${time}'
     params: {
         addStorageToDomainScript: addStorageToDomainScript
         addStorageToDomainScriptArgs: addStorageToDomainScriptArgs
@@ -591,9 +581,9 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
         tempStorageVmName: tempStorageVmName
         useSharedImage: useSharedImage
-                
+
     }
-    dependsOn:[
+    dependsOn: [
         avdBaselineResourceGroups
         avdNetworking
         avdWrklKeyVaultget
@@ -644,4 +634,3 @@ module deployAndConfigureAvdSessionHosts 'avd-modules/avd-session-hosts.bicep' =
         avdWrklKeyVault
     ]
 }
- 
