@@ -125,9 +125,10 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
         storageAccountSku: fslogixStorageSku
         allowBlobPublicAccess: false
         storageAccountKind: ((fslogixStorageSku =~ 'Premium_LRS') || (fslogixStorageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
-        azureFilesIdentityBasedAuthentication: {
-            //directoryServiceOptions: (avdIdentityServiceProvider == 'AADDS') ? avdIdentityServiceProvider: 'AD'
-            directoryServiceOptions: (avdIdentityServiceProvider == 'AADDS') ? avdIdentityServiceProvider: 'None'
+        azureFilesIdentityBasedAuthentication: (avdIdentityServiceProvider == 'ADDDS') ? {
+            directoryServiceOptions: 'AADDS'
+        }: {
+            directoryServiceOptions: 'None'
         }
         storageAccountAccessTier: 'Hot'
         networkAcls: {
