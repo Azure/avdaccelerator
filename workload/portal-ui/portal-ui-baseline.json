@@ -568,7 +568,7 @@
                                     "placeholder": "Example: OU=avd,DC=contoso,DC=com",
                                     "constraints": {}
                                 },
-                                {
+                                { 
                                     "name": "avdSessionHostsAvailabilitySettings",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "label": "Use availability zones",
