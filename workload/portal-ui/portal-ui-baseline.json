@@ -1117,7 +1117,7 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
-                                "text": "The AVD accelerator provides automated resource naming based on Microsoft best practices, default resource organization and naming is shown in the diagram.",
+                                "text": "The AVD accelerator provides automated resource naming based on Microsoft best practices, default resources organization and naming is shown in this diagram.",
                                 "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/diagrams/avd-accelerator-resource-organization-naming.png",
                                 "style": "Info"
                             }
