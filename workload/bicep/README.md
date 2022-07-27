@@ -5,7 +5,7 @@
 ### Azure CLI
 
 ```bash
-az deployment tenant create \
+az deployment create \
   --template-file workload/bicep/deploy-baseline.bicep \
   --parameters @workload/bicep/parameters/deploy-baseline-parameters-example.json \
   --avdWorkloadSubsId <subscriptionId> \
@@ -47,7 +47,7 @@ New-AzSubscriptionDeployment `
 ### Azure CLI
 
 ```bash
-az deployment tenant create \
+az deployment create \
   --template-file workload/bicep/deploy-custom-image.bicep \
   --parameters @workload/bicep/parameters/deploy-custom-image-parameters-example.json \
   --avdSharedServicesSubId <subscriptionId> \

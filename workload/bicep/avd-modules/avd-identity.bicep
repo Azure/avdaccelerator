@@ -48,7 +48,7 @@ param time string = utcNow()
 
 // FSLogix managed identity.
 module fslogixManagedIdentity '../../../carml/1.2.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = if (createAvdFslogixDeployment) {
-  scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
+  scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
   name: 'fslogix-Managed-Identity-${time}'
   params: {
     name: fslogixManagedIdentityName
