@@ -379,7 +379,7 @@ resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (
 // Resource groups.
 module avdBaselineResourceGroups '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = [ for resourceGroup in resourceGroups: {
     scope: subscription(avdWorkloadSubsId)
-    name: 'Deploy-${substring(resourceGroup.name,10)}-${time}'
+    name: 'Deploy-${substring(resourceGroup.name, 10)}-${time}'
         params: {
         name: resourceGroup.name
         location: resourceGroup.location
