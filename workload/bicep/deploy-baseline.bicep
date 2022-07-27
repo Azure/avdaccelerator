@@ -353,7 +353,6 @@ var telemetryId = 'pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-${location}'
 //  Telemetry Deployment
 resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
     name: telemetryId
-    scope: tenant()
     location: avdManagementPlaneLocation
     properties: {
         mode: 'Incremental'
