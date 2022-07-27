@@ -236,11 +236,61 @@ param enableTelemetry bool = true
 var deploymentPrefixLowercase = toLower(deploymentPrefix)
 var avdSessionHostLocationLowercase = toLower(avdSessionHostLocation)
 var avdManagementPlaneLocationLowercase = toLower(avdManagementPlaneLocation)
-var avdServiceObjectsRgName = 'rg-${avdManagementPlaneLocationLowercase}-avd-${deploymentPrefixLowercase}-service-objects' // max length limit 90 characters
-var avdNetworkObjectsRgName = 'rg-${avdSessionHostLocationLowercase}-avd-${deploymentPrefixLowercase}-network' // max length limit 90 characters
-var avdComputeObjectsRgName = 'rg-${avdSessionHostLocationLowercase}-avd-${deploymentPrefixLowercase}-pool-compute' // max length limit 90 characters
-var avdStorageObjectsRgName = 'rg-${avdSessionHostLocationLowercase}-avd-${deploymentPrefixLowercase}-storage' // max length limit 90 characters
-var avdSharedResourcesRgName = 'rg-${avdSessionHostLocationLowercase}-avd-shared-resources'
+var avdSessionHostLocationAcronym = locationAcronyms[avdSessionHostLocationLowercase]
+var avdManagementPlaneLocationAcronym = locationAcronyms[avdManagementPlaneLocation]
+var locationAcronyms = {
+    eastasia: 'eas'
+    southeastasia: 'seas'
+    centralus: 'cus'
+    eastus: 'eus'
+    eastus2: 'eus2'
+    westus: 'wus'
+    northcentralus: 'ncus'
+    southcentralus: 'scus'
+    northeurope: 'neu'
+    westeurope: 'weu'
+    japanwest: 'jpw'
+    japaneast: 'jpe'
+    brazilsouth: 'drs'
+    australiaeast: 'aue'
+    australiasoutheast: 'ause'
+    southindia: 'sin'
+    centralindia: 'cin'
+    westindia: 'win'
+    canadacentral: 'cac'
+    canadaeast: 'cae'
+    uksouth: 'uks'
+    ukwest: 'ukw'
+    westcentralus: 'wcus'
+    westus2: 'wus2'
+    koreacentral: 'krc'
+    koreasouth: 'krs'
+    francecentral: 'frc'
+    francesouth: 'frs'
+    australiacentral: 'auc'
+    australiacentral2: 'auc2'
+    uaecentral: 'aec'
+    uaenorth: 'aen'
+    southafricanorth: 'zan'
+    southafricawest: 'zaw'
+    switzerlandnorth: 'chn'
+    switzerlandwest: 'chw'
+    germanynorth: 'den'
+    germanywestcentral: 'dewc'
+    norwaywest: 'now'
+    norwayeast: 'noe'
+    brazilsoutheast: 'brse'
+    westus3: 'wus3'
+    swedencentral: 'sec'
+}
+var avdNamingUniqueStringSixChar = take('${uniqueString(avdWorkloadSubsId, deploymentPrefixLowercase, time)}', 6)
+var avdManagementPlaneNamingStandard = '${avdManagementPlaneLocationAcronym}-${deploymentPrefixLowercase}'
+var avdComputeStorageResourcesNamingStandard = '${avdSessionHostLocationAcronym}-${deploymentPrefixLowercase}'
+var avdServiceObjectsRgName = avdUseCustomNaming ? avdServiceObjectsRgCustomName: 'rg-avd-${avdManagementPlaneNamingStandard}-service-objects' // max length limit 90 characters
+var avdNetworkObjectsRgName = avdUseCustomNaming ? avdNetworkObjectsRgCustomName: 'rg-avd-${avdComputeStorageResourcesNamingStandard}-network' // max length limit 90 characters
+var avdComputeObjectsRgName = avdUseCustomNaming ? avdComputeObjectsRgCustomName: 'rg-avd-${avdComputeStorageResourcesNamingStandard}-pool-compute' // max length limit 90 characters
+var avdStorageObjectsRgName = avdUseCustomNaming ? avdStorageObjectsRgCustomName: 'rg-avd-${avdComputeStorageResourcesNamingStandard}-storage' // max length limit 90 characters
+//var avdSharedResourcesRgName = 'rg-${avdSessionHostLocationAcronym}-avd-shared-resources'
 var avdVnetworkName = 'avdvnet-${avdSessionHostLocationLowercase}-${deploymentPrefixLowercase}'
 var avdVnetworkSubnetName = 'avd-${deploymentPrefixLowercase}'
 var avdNetworksecurityGroupName = 'avdnsg-${avdSessionHostLocationLowercase}-${deploymentPrefixLowercase}'
