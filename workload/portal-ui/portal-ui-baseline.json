@@ -75,6 +75,150 @@
                     ]
                 },
                 {
+                    "name": "avdIdentity",
+                    "label": "Identity provider",
+                    "subLabel": {
+                        "preValidation": "",
+                        "postValidation": ""
+                    },
+                    "bladeTitle": "avdIdentitySettings",
+                    "elements": [
+                        {
+                            "name": "identityInfo",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                                "text": "AVD landing zone accelerator deployment expects identity service to be already available in the current Azure estate.",
+                                "uri": "https://docs.microsoft.com/azure/virtual-desktop/authentication#identities",
+                                "style": "Info"
+                            }
+                        },
+                        {
+                            "name": "avdIdentityDomainInformation",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "Domain information",
+                            "elements": [
+                                {
+                                    "name": "avdIdentityServiceProvider",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "visible": true,
+                                    "label": "Identity service provider",
+                                    "defaultValue": "Active Directory (AD DS)",
+                                    "toolTip": "Identity service provider (ADDS or AADDS) that already exist and will be used for Azure Virtual Desktop.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Active Directory (AD DS)",
+                                                "value": "ADDS"
+                                            },
+                                            {
+                                                "label": "Azure AD Domain Services (AAD DS)",
+                                                "value": "AADDS"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "avdIdentityServiceProviderInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": true,
+                                    "options": {
+                                        "text": "Identity service provider must already exist, as they are a prerequisite for the AVD accelerator deployment.",
+                                        "uri": "https://github.com/Azure/avdaccelerator/wiki/Getting-Started",
+                                        "style": "Info"
+                                    }
+                                },
+                                {
+                                    "name": "avdIdentityDomainName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Domain name",
+                                    "toolTip": "Provide username with permissions to join session host to the domain.",
+                                    "placeholder": "Example: contoso.com",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "avdIdentityDomainCredentials",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "Domain join credentials",
+                            "elements": [
+                                {
+                                    "name": "avdIdentityDomainJoinUserName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Username",
+                                    "toolTip": "Provide username with permissions to join session host to the domain.",
+                                    "placeholder": "Example: '***REMOVED***'@contoso.com",
+                                    "defaultValue": "",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
+                                {
+                                    "name": "avdIdentityDomainJoinUserPassword",
+                                    "type": "Microsoft.Common.PasswordBox",
+                                    "visible": true,
+                                    "label": {
+                                        "password": "Password"
+                                    },
+                                    "toolTip": "Provide password for domain join account.",
+                                    "constraints": {
+                                        "required": true
+                                    },
+                                    "options": {
+                                        "hideConfirmation": false
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "avdIdentityLocalCredentials",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "Session host local admin credentials",
+                            "elements": [
+                                {
+                                    "name": "avdIdentityLocalUserName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Username",
+                                    "toolTip": "Provide username for session host local admin account.",
+                                    "placeholder": "Example: '***REMOVED***'",
+                                    "defaultValue": "",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
+                                {
+                                    "name": "avdIdentityLocalUserPassword",
+                                    "type": "Microsoft.Compute.CredentialsCombo",
+                                    "visible": true,
+                                    "label": {
+                                        "password": "Password",
+                                        "confirmPassword": "Confirm password"
+                                    },
+                                    "toolTip": {
+                                        "password": "The password must be alphanumeric, contain at least 12 characters, have at least 1 letter,1 number and 1 special character."
+                                    },
+                                    "constraints": {
+                                        "required": true,
+                                        "customPasswordRegex": "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=_!*<>()])(?=\\S+$).{12,123}$",
+                                        "customValidationMessage": "Password must include 1 special character."
+                                    },
+                                    "options": {
+                                        "hideConfirmation": false
+                                    },
+                                    "osPlatform": "Windows"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
                     "name": "avdManagementPlane",
                     "label": "Management plane",
                     "subLabel": {
@@ -417,6 +561,14 @@
                             "tooltip": "This settings apply to compute, storage, image management and key vault resources.",
                             "elements": [
                                 {
+                                    "name": "avdIdentityDomainOuPath",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Session hosts OU path (Optional)",
+                                    "toolTip": "Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU.",
+                                    "placeholder": "Example: OU=avd,DC=contoso,DC=com",
+                                    "constraints": {}
+                                },
+                                {
                                     "name": "avdSessionHostsAvailabilitySettings",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "label": "Use availability zones",
@@ -455,6 +607,47 @@
                                             }
                                         ]
                                     }
+                                },
+                                {
+                                    "name": "avdIdentityDomainOuPathBool",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "visible": "[equals (steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true)]",
+                                    "label": "Create OU for storage (fslogix)",
+                                    "defaultValue": "No",
+                                    "toolTip": "It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes",
+                                                "value": true
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": false
+                                            }
+                                        ]
+                                    }
+                                },
+								{
+                                    "name": "avdIdentityDomainOuPathStorage",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "visible": "[equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathBool, true)]",
+                                    "label": "New storage OU name",
+                                    "toolTip": "OU will be created and used to locate storage account file share.",
+                                    "placeholder": "Example: avdstorage",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },	
+                                {
+                                    "name": "avdIdentityDomainOuPathStorageExisting",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "visible": "[equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathBool, false)]",
+                                    "label": "Existing storage OU name (Optional)",
+                                    "toolTip": "Provide OU where to locate storage account file share, if not provided session hosts will be placed on the default (computers) OU.",
+                                    "placeholder": "Example: avdstorage",
+                                    "constraints": {}
                                 },
                                 {
                                     "name": "avdStorageAccountSku",
@@ -667,189 +860,6 @@
                                     "constraints": {
                                         "required": true
                                     }
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "avdIdentity",
-                    "label": "Identity",
-                    "subLabel": {
-                        "preValidation": "",
-                        "postValidation": ""
-                    },
-                    "bladeTitle": "avdIdentitySettings",
-                    "elements": [
-                        {
-                            "name": "identityInfo",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "text": "AVD landing zone accelerator deployment expects identity service to be already available in the current Azure estate.",
-                                "uri": "https://docs.microsoft.com/azure/virtual-desktop/authentication#identities",
-                                "style": "Info"
-                            }
-                        },
-                        {
-                            "name": "avdIdentityDomainInformation",
-                            "type": "Microsoft.Common.Section",
-                            "visible": true,
-                            "label": "Domain information",
-                            "elements": [
-                                {
-                                    "name": "avdIdentityServiceProvider",
-                                    "type": "Microsoft.Common.OptionsGroup",
-                                    "visible": true,
-                                    "label": "Identity service provider",
-                                    "defaultValue": "Active Directory (AD DS)",
-                                    "toolTip": "The service providing domain services for Azure Virtual Desktop.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Active Directory (AD DS)",
-                                                "value": "ADDS"
-                                            },
-                                            {
-                                                "label": "Azure AD Domain Services (AAD DS)",
-                                                "value": "AADDS"
-                                            }
-                                        ]
-                                    }
-                                },
-                                {
-                                    "name": "avdIdentityDomainName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Domain name",
-                                    "toolTip": "Provide username with permissions to join session host to the domain.",
-                                    "placeholder": "Example: contoso.com",
-                                    "constraints": {
-                                        "required": true
-                                    }
-                                },
-                                {
-                                    "name": "avdIdentityDomainOuPath",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Session hosts OU path (Optional)",
-                                    "toolTip": "Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU.",
-                                    "placeholder": "Example: OU=avd,DC=contoso,DC=com",
-                                    "constraints": {}
-                                },
-                                {
-                                    "name": "avdIdentityDomainOuPathBool",
-                                    "type": "Microsoft.Common.OptionsGroup",
-                                    "visible": true,
-                                    "label": "Create OU for storage (fslogix)",
-                                    "defaultValue": "No",
-                                    "toolTip": "It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes",
-                                                "value": true
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": false
-                                            }
-                                        ]
-                                    }
-                                },
-                                {
-                                    "name": "avdIdentityDomainOuPathStorage",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "visible": "[equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathBool, true)]",
-                                    "label": "New storage OU name",
-                                    "toolTip": "OU will be created and used to locate storage account file share.",
-                                    "placeholder": "Example: avdstorage",
-                                    "constraints": {
-                                        "required": true
-                                    }
-                                },
-                                {
-                                    "name": "avdIdentityDomainOuPathStorageExisting",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "visible": "[equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathBool, false)]",
-                                    "label": "Existing storage OU name (Optional)",
-                                    "toolTip": "Provide OU where to locate storage account file share, if not provided session hosts will be placed on the default (computers) OU.",
-                                    "placeholder": "Example: avdstorage",
-                                    "constraints": {}
-                                }
-                            ]
-                        },
-                        {
-                            "name": "avdIdentityDomainCredentials",
-                            "type": "Microsoft.Common.Section",
-                            "visible": true,
-                            "label": "Domain join credentials",
-                            "elements": [
-                                {
-                                    "name": "avdIdentityDomainJoinUserName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Username",
-                                    "toolTip": "Provide username with permissions to join session host to the domain.",
-                                    "placeholder": "Example: '***REMOVED***'@contoso.com",
-                                    "defaultValue": "",
-                                    "constraints": {
-                                        "required": true
-                                    }
-                                },
-                                {
-                                    "name": "avdIdentityDomainJoinUserPassword",
-                                    "type": "Microsoft.Common.PasswordBox",
-                                    "visible": true,
-                                    "label": {
-                                        "password": "Password"
-                                    },
-                                    "toolTip": "Provide password for domain join account.",
-                                    "constraints": {
-                                        "required": true
-                                    },
-                                    "options": {
-                                        "hideConfirmation": false
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "name": "avdIdentityLocalCredentials",
-                            "type": "Microsoft.Common.Section",
-                            "visible": true,
-                            "label": "Session host local admin credentials",
-                            "elements": [
-                                {
-                                    "name": "avdIdentityLocalUserName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Username",
-                                    "toolTip": "Provide username for session host local admin account.",
-                                    "placeholder": "Example: '***REMOVED***'",
-                                    "defaultValue": "",
-                                    "constraints": {
-                                        "required": true
-                                    }
-                                },
-                                {
-                                    "name": "avdIdentityLocalUserPassword",
-                                    "type": "Microsoft.Compute.CredentialsCombo",
-                                    "visible": true,
-                                    "label": {
-                                        "password": "Password",
-                                        "confirmPassword": "Confirm password"
-                                    },
-                                    "toolTip": {
-                                        "password": "The password must be alphanumeric, contain at least 12 characters, have at least 1 letter,1 number and 1 special character."
-                                    },
-                                    "constraints": {
-                                        "required": true,
-                                        "customPasswordRegex": "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=_!*<>()])(?=\\S+$).{12,123}$",
-                                        "customValidationMessage": "Password must include 1 special character."
-                                    },
-                                    "options": {
-                                        "hideConfirmation": false
-                                    },
-                                    "osPlatform": "Windows"
                                 }
                             ]
                         }
@@ -1487,7 +1497,7 @@
                 "avdDeployRappGroup": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('avdManagementPlane').avdManagementPlaneAppGroupOptions.avdDeployRappGroup, 'none')]",
                 "avdIdentityServiceProvider": "[steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider]",
                 "avdIdentityDomainName": "[steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainName]",
-                "avdOuPath": "[steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPath]",
+                "avdOuPath": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPath]",
                 "avdDomainJoinUserName": "[steps('avdIdentity').avdIdentityDomainCredentials.avdIdentityDomainJoinUserName]",
                 "avdDomainJoinUserPassword": "[steps('avdIdentity').avdIdentityDomainCredentials.avdIdentityDomainJoinUserPassword]",
                 "avdVmLocalUserName": "[steps('avdIdentity').avdIdentityLocalCredentials.avdIdentityLocalUserName]",
@@ -1511,14 +1521,14 @@
                 "avdSessionHostDiskType": "[steps('avdSessionHosts').avdSessionHostsSettingsSection.avdSessionHostDiskType]",
                 "encryptionAtHost": "[steps('avdSessionHosts').avdSessionHostsSettingsSection.avdSessionHostEncryptionAtHost]",
                 "avdSessionHostsSize": "[if(equals(steps('avdSessionHosts').avdDeploySessionHosts, true), steps('avdSessionHosts').avdSessionHostsSettingsSection.element1, 'Standard_D2s_v4')]",
-                "createOuForStorage": "[steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathBool]",
-                "storageOuName": "[if(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathBool, true), steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathStorage, steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainOuPathStorageExisting)]",
+                "createOuForStorage": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathBool, '')]",
                 "avdVnetPrivateDnsZone": "[steps('avdNetwork').avdVnetPrivateDnsZone]",
                 "avdVnetPrivateDnsZoneFilesId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneSelection.avdVnetPrivateDnsZoneFilesSelector.id, '')]",
                 "avdVnetPrivateDnsZoneKeyvaultId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneSelection.avdVnetPrivateDnsZoneKeyvaultSelector.id, '')]",
                 "createAvdFslogixDeployment": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment]",
                 "fslogixStorageSku": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdStorageAccountSku, 'Standard_LRS')]",
                 "avdFslogixFileShareQuotaSize": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdSessionHostsFslogixFileShareQuota, 1 )]",
+                "storageOuName": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathBool, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathStorage, steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathStorageExisting)]",
                 "avdUseCustomNaming": "[steps('avdResourceNaming').avdResourceNamingSelection]",
                 "avdServiceObjectsRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdServiceObjectsRgCustomName, 'none')]",
                 "avdNetworkObjectsRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingNetwork.avdNetworkObjectsRgCustomName, 'none')]",
