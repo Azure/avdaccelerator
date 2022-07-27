@@ -289,8 +289,6 @@ var fslogixManagedIdentityName = 'avd-uai-fslogix'
 var avdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_01-20-2022.zip'
 var avdFslogixStorageName = take('fslogix${uniqueString(deploymentPrefixLowercase, avdSessionHostLocationLowercase)}${deploymentPrefixLowercase}', 15)
 var avdFslogixFileShareName = 'fslogix-${deploymentPrefixLowercase}'
-
-
 var storageAccountContributorRoleId = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
 var readerRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 var tempStorageVmName = 'tempstgvm'
@@ -355,15 +353,14 @@ var telemetryId = 'pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-${location}'
 //  Telemetry Deployment
 resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
     name: telemetryId
-    location: location
     scope: tenant()
+    location: avdManagementPlaneLocation
     properties: {
         mode: 'Incremental'
         template: {
-            '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#'
-            'contentVersion': '1.0.0.0'
-            'parameters': {}
-            'resources': {}
+            '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+            contentVersion: '1.0.0.0'
+            resources: []
         }
     }
 }
