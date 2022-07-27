@@ -320,7 +320,7 @@ var allResourcesTags = {
 
 var allComputeStorageTags = {
     DomainName: avdIdentityDomainName
-    JoinType: avdDeviceJoinTypeTag
+    JoinType: 'ADDS' // avdDeviceJoinTypeTag
 }
 
 var allAvdTags = union(allResourcesTags, allComputeStorageTags)
