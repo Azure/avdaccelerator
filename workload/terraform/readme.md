@@ -7,10 +7,10 @@ This accelerator is to be used as starter kit and you can expand its functionali
 
 - [Prerequisites](#prerequisites)  
 - [Planning](#planning)  
-- [Deployment](#deployment)  
-- [Cleanup](#cleanup)  
+- [AVD Baseline](#AVD-Baseline)  
+- [Custom Image Build](#Custom-Image-Build)  
 - [Backend Setup](#Backends)  
-- [See Also](#see-also)  
+- [Terraform file Structure](#Files)  
 
 This guide describes how to deploy Azure Virtual Desktop Accelerator using the [Terraform](https://www.terraform.io/).
 To get started with Terraform on Azure check out their [tutorial](https://learn.hashicorp.com/collections/terraform/azure-get-started/).
@@ -29,7 +29,7 @@ To get started with Terraform on Azure check out their [tutorial](https://learn.
 The deployments will require a "Prefix" which will be included in all the deployed resources name.
 Resource Groups and resource names are derived from the `Prefix` parameter, which defaults to 'acl'. Pick a unique resource prefix that is 3-5 alphanumeric characters in length without whitespaces.
 
-## AVD Baseline
+## AVD-Baseline
 Azure Virtual Desktop (Azure Virtual Desktop) resources and dependent services for establishing the baseline.
 - Azure Virtual Desktop resources: workplace, two(2) application groups and host pool
 - New virtual network (VNet), subnet with baseline NSG, DNS zones for private endpoints, route table and peering to the hub virtual network
@@ -37,7 +37,7 @@ Azure Virtual Desktop (Azure Virtual Desktop) resources and dependent services f
 - Key Vault
 - Application Security group
 
-## Custom Image Build
+## Custom-Image-Build
 Deploy a customer image based on the latest version of the Azure Marketplace image using Azure Image Builder to an Azure Compute Gallery. The custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates.
 
 
@@ -100,7 +100,7 @@ az keyvault secret set --vault-name "<Azure Virtual Desktopkeyvaultdemo>" --name
 ```
 </details>
 
-## Terraform file Structure
+## Files
 
 The Azure Virtual Desktop Baseline Terraform files are all written as individual files each having a specific function. Variables have been created in all files for consistency, all changes to defaults are to be changed from the terraform.tfvars.sample file. The structure is as follows:
 
