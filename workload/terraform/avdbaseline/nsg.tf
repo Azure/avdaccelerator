@@ -97,22 +97,6 @@ resource "azurerm_network_security_rule" "res-7" {
   ]
 }
 
-resource "azurerm_network_security_rule" "res-9" {
-  access                      = "Allow"
-  destination_address_prefix  = "168.63.129.16/28"
-  destination_port_range      = "80"
-  direction                   = "Outbound"
-  name                        = "VMhealthmonitoring"
-  network_security_group_name = azurerm_network_security_group.res-0.name
-  priority                    = 160
-  protocol                    = "Tcp"
-  resource_group_name         = azurerm_network_security_group.res-0.resource_group_name
-  source_address_prefix       = "*"
-  source_port_range           = "*"
-  depends_on = [
-    azurerm_network_security_group.res-0,
-  ]
-}
 resource "azurerm_network_security_rule" "res-10" {
   access                      = "Allow"
   destination_address_prefix  = "AzureMonitor"
