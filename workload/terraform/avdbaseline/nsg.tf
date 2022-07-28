@@ -99,7 +99,7 @@ resource "azurerm_network_security_rule" "res-7" {
 
 resource "azurerm_network_security_rule" "res-9" {
   access                      = "Allow"
-  destination_address_prefix  = "168.63.129.16"
+  destination_address_prefix  = "168.63.129.16/16"
   destination_port_range      = "80"
   direction                   = "Outbound"
   name                        = "VMhealthmonitoring"
