@@ -2,7 +2,7 @@ resource "azurerm_resource_group" "res-17" {
   location = var.avdLocation
   name     = azurerm_virtual_network.vnet.name
   tags = {
-    Environment = "AVD Accelerator TF"
+    Environment = "AVD Accelerator"
   }
 }
 
@@ -47,22 +47,6 @@ resource "azurerm_network_security_rule" "res-2" {
     azurerm_network_security_group.res-0,
   ]
 }
-resource "azurerm_network_security_rule" "res-3" {
-  access                      = "Allow"
-  destination_address_prefix  = "*"
-  destination_port_range      = "3389"
-  direction                   = "Inbound"
-  name                        = "Bastion"
-  network_security_group_name = azurerm_network_security_group.res-0.name
-  priority                    = 100
-  protocol                    = "*"
-  resource_group_name         = azurerm_network_security_group.res-0.resource_group_name
-  source_address_prefix       = "10.0.0.0/27"
-  source_port_range           = "*"
-  depends_on = [
-    azurerm_network_security_group.res-0,
-  ]
-}
 resource "azurerm_network_security_rule" "res-4" {
   access                      = "Deny"
   destination_address_prefix  = "*"
@@ -79,22 +63,7 @@ resource "azurerm_network_security_rule" "res-4" {
     azurerm_network_security_group.res-0,
   ]
 }
-resource "azurerm_network_security_rule" "res-5" {
-  access                      = "Allow"
-  destination_address_prefix  = "*"
-  destination_port_range      = "3390"
-  direction                   = "Inbound"
-  name                        = "RDPShortpath"
-  network_security_group_name = azurerm_network_security_group.res-0.name
-  priority                    = 110
-  protocol                    = "Udp"
-  resource_group_name         = azurerm_network_security_group.res-0.resource_group_name
-  source_address_prefix       = "*"
-  source_port_range           = "*"
-  depends_on = [
-    azurerm_network_security_group.res-0,
-  ]
-}
+
 resource "azurerm_network_security_rule" "res-6" {
   access                      = "Allow"
   destination_address_prefix  = "Internet"
@@ -114,7 +83,7 @@ resource "azurerm_network_security_rule" "res-6" {
 resource "azurerm_network_security_rule" "res-7" {
   access                      = "Allow"
   destination_address_prefix  = "169.254.169.254"
-  destination_port_range      = "8080"
+  destination_port_range      = "80"
   direction                   = "Outbound"
   name                        = "AzureInstanceMetadata"
   network_security_group_name = azurerm_network_security_group.res-0.name
@@ -122,22 +91,6 @@ resource "azurerm_network_security_rule" "res-7" {
   protocol                    = "Tcp"
   resource_group_name         = azurerm_network_security_group.res-0.resource_group_name
   source_address_prefix       = "*"
-  source_port_range           = "*"
-  depends_on = [
-    azurerm_network_security_group.res-0,
-  ]
-}
-resource "azurerm_network_security_rule" "res-8" {
-  access                      = "Allow"
-  destination_address_prefix  = "*"
-  destination_port_range      = "1024-65535"
-  direction                   = "Outbound"
-  name                        = "RDPShortpathServerEndpoint"
-  network_security_group_name = azurerm_network_security_group.res-0.name
-  priority                    = 170
-  protocol                    = "Udp"
-  resource_group_name         = azurerm_network_security_group.res-0.resource_group_name
-  source_address_prefixes     = ["10.1.0.0/16", "10.3.0.0/23"]
   source_port_range           = "*"
   depends_on = [
     azurerm_network_security_group.res-0,
@@ -172,22 +125,6 @@ resource "azurerm_network_security_rule" "res-10" {
   resource_group_name         = azurerm_network_security_group.res-0.resource_group_name
   source_address_prefix       = "*"
   source_port_range           = "*"
-  depends_on = [
-    azurerm_network_security_group.res-0,
-  ]
-}
-resource "azurerm_network_security_rule" "res-11" {
-  access                       = "Allow"
-  destination_address_prefixes = ["13.107.17.41/32", "13.107.64.0/18", "20.202.0.0/16", "52.112.0.0/14", "52.120.0.0/14"]
-  destination_port_range       = "3478"
-  direction                    = "Outbound"
-  name                         = "STUNAccess"
-  network_security_group_name  = azurerm_network_security_group.res-0.name
-  priority                     = 180
-  protocol                     = "Udp"
-  resource_group_name          = azurerm_network_security_group.res-0.resource_group_name
-  source_address_prefixes      = ["10.1.0.0/16", "10.3.0.0/23"]
-  source_port_range            = "3478"
   depends_on = [
     azurerm_network_security_group.res-0,
   ]

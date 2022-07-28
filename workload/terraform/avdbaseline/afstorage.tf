@@ -19,10 +19,21 @@ resource "azurerm_storage_account" "storage" {
   name                      = "stor${random_string.random.id}"
   resource_group_name       = azurerm_resource_group.rg_storage.name
   location                  = azurerm_resource_group.rg_storage.location
+  min_tls_version           = "TLS1_2"
   account_tier              = "Premium"
   account_replication_type  = "LRS"
   account_kind              = "FileStorage"
   enable_https_traffic_only = true
+  queue_properties {
+    logging {
+      delete                = true
+      read                  = true
+      write                 = true
+      version               = "1.0"
+      enabled               = true
+      retention_policy_days = 10
+    }
+  }
 }
 
 resource "azurerm_storage_share" "FSShare" {
