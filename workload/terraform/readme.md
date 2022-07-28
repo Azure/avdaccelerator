@@ -29,19 +29,17 @@ To get started with Terraform on Azure check out their [tutorial](https://learn.
 The deployments will require a "Prefix" which will be included in all the deployed resources name.
 Resource Groups and resource names are derived from the `Prefix` parameter, which defaults to 'acl'. Pick a unique resource prefix that is 3-5 alphanumeric characters in length without whitespaces.
 
-## Deployment
-What will be deployed
-Azure Virtual Desktop (Azure Virtual Desktop) resources and dependent services for establishing the baseline
+## AVD Baseline
+Azure Virtual Desktop (Azure Virtual Desktop) resources and dependent services for establishing the baseline.
 - Azure Virtual Desktop resources: workplace, two(2) application groups and host pool
-- [Optional]: new virtual network (VNet) with baseline NSG and route table
-- Azure Files Premium share. Integration with Active Directory
-- Session Hosts
+- New virtual network (VNet), subnet with baseline NSG, DNS zones for private endpoints, route table and peering to the hub virtual network
+- Azure Files Premium share, RBAC role assignment and private endpoint
+- Key Vault
+- Application Security group
 
-## Baseline Architectural Diagram
+## Custom Image Build
+Deploy a customer image based on the latest version of the Azure Marketplace image using Azure Image Builder to an Azure Compute Gallery. The custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates.
 
-![Azure Virtual Desktop accelerator diagram](https://github.com/Azure/avdaccelerator/blob/main/workload/docs/diagrams/avd-accelerator-baseline.png)
-
-_Download a [Visio file](https://github.com/Azure/avdaccelerator/tree/main/workload/docs/diagrams/Azure Virtual Desktop-accelerator-baseline-architecture.vsdx) of this architecture._
 
 ## Backends
 
@@ -104,7 +102,7 @@ az keyvault secret set --vault-name "<Azure Virtual Desktopkeyvaultdemo>" --name
 
 ## Terraform file Structure
 
-The Azure Virtual Desktop Terraform files are all written as individual files each having a specific function. Variables have been created in all files for consistency, all changes to defaults are to be changed from the terraform.tfvars file. The structure is as follows:
+The Azure Virtual Desktop Baseline Terraform files are all written as individual files each having a specific function. Variables have been created in all files for consistency, all changes to defaults are to be changed from the terraform.tfvars.sample file. The structure is as follows:
 
 | file Name           | Description                                                  |
 | ------------------- | ------------------------------------------------------------ |
@@ -113,12 +111,18 @@ The Azure Virtual Desktop Terraform files are all written as individual files ea
 | afstorage.tf        | This file creates the Storage account and Azure files shares with RBAC |
 | networking.tf       | This file creates the Virtual Network and subnets to be used |
 | nsg.tf              | This file creates a nsg |
-| host.tf             | This file creates the marketplace session host |
 | keyvault.tf         | This file creates the Key Vault to be used     |
 | appsecgrp.tf        | This file creates the Application security group to be used     |
 | routetable.tf       | This file creates the a Route Table to be used     |
 | rbac.tf             | This will creates the rbac permissions |
-| sig.tf              | This will creates the Azure Compute Gallery |
+| outputs.tf          | This will contains the outputs post deployment |
+| variables.tf        | Variables have been created in all files for various properties and names, these are placeholders and are not required to be changed unless there is a need to. See below |
+| terraform.tfvars    | This file contains all variables to be changed from the defaults, you are only required to change these as per your requirements |
+
+The Custom Image Terraform files
+| file Name           | Description                                                  |
+| ------------------- | ------------------------------------------------------------ |
+| aib.tf              | This file deploys Azure Image Builder and Compute Gallery |
 | outputs.tf          | This will contains the outputs post deployment |
 | variables.tf        | Variables have been created in all files for various properties and names, these are placeholders and are not required to be changed unless there is a need to. See below |
 | terraform.tfvars    | This file contains all variables to be changed from the defaults, you are only required to change these as per your requirements |
