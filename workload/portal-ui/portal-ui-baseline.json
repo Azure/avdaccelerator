@@ -719,7 +719,7 @@
                                     "name": "avdIdentityDomainOuPathBool",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "visible": true,
-                                    "label": "Create OU for storage (fslogix)",
+                                    "label": "Create OU for storage (FSLogix)",
                                     "defaultValue": "No",
                                     "toolTip": "It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.",
                                     "constraints": {
