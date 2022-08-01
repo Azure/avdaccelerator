@@ -16,43 +16,43 @@ param createAvdVnet bool
 @description('Optional. If new virtual network required for the AVD machines. Resource Group name for the virtual network.')
 param avdNetworkObjectsRgName string
 
-@description('Optional. Name of the virtual network if required to be created')
+@description('Optional. Name of the virtual network if required to be created.')
 param avdVnetworkName string
 
 @description('Network Security Group Name')
 param avdNetworksecurityGroupName string
 
-@description('Optional. Created if hte new VNet for AVD is created. Application Security Group (ASG) for the session hosts')
+@description('Optional. Created if a new VNet for AVD is created. Application Security Group (ASG) for the session hosts.')
 param avdApplicationSecurityGroupName string
 
 @description('Optional. Created if the new VNet for AVD is created. Route Table name.')
 param avdRouteTableName string
 
-@description('Does the hub contains a virtual network gateway')
+@description('Does the hub contain a virtual network gateway.')
 param vNetworkGatewayOnHub bool
 
-@description('Existing hub virtual network for perring')
+@description('Existing hub virtual network for peering.')
 param existingHubVnetResourceId string
 
-@description('VNet peering name for AVD VNEt to vHub.  ')
+@description('VNet peering name for AVD VNet to vHub.')
 param avdVnetworkPeeringName string
 
-@description('AVD virtual network address prefixes')
+@description('AVD VNet address prefixes.')
 param avdVnetworkAddressPrefixes string
 
-@description('AVD subnet Name')
+@description('AVD subnet Name.')
 param avdVnetworkSubnetName string
 
-@description('AVD virtual network subnet address prefix')
+@description('AVD VNet subnet address prefix.')
 param avdVnetworkSubnetAddressPrefix string
 
-@description('custom DNS servers IPs')
+@description('Custom DNS server IPs.')
 param customDnsIps string
 
-@description('Required. Location where to deploy compute services')
+@description('Required. Location where to deploy compute services.')
 param avdSessionHostLocation string = deployment().location
 
-@description('Do not modify, used to set unique value for resource deployment')
+@description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
 // =========== //
