@@ -1,6 +1,6 @@
 resource "azurerm_resource_group" "res-17" {
   location = var.avdLocation
-  name     = azurerm_virtual_network.vnet.name
+  name     = var.rg_network
   tags = {
     Environment = "AVD Accelerator"
   }
@@ -9,7 +9,7 @@ resource "azurerm_resource_group" "res-17" {
 resource "azurerm_network_security_group" "res-0" {
   location            = var.avdLocation
   name                = "nsg-${var.avdLocation}-avd-${var.prefix}"
-  resource_group_name = var.rg_network
+  resource_group_name = azurerm_resource_group.net.name
   depends_on = [
     azurerm_resource_group.res-17,
   ]
@@ -24,7 +24,7 @@ resource "azurerm_network_security_rule" "res-1" {
   network_security_group_name = azurerm_network_security_group.res-0.name
   priority                    = 110
   protocol                    = "Tcp"
-  resource_group_name         = var.rg_network
+  resource_group_name         = azurerm_resource_group.net.name
   source_address_prefix       = "*"
   source_port_range           = "*"
   depends_on = [
