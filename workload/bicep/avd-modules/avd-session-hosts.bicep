@@ -108,6 +108,9 @@ param FsLogixScriptArguments string
 @description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
 
+@description('Required. Tags to be applied to resources')
+param avdTags object
+
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
@@ -119,23 +122,6 @@ var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avd
 // =========== //
 // Deployments //
 // =========== //
-/*
-// Availability set.
-module avdAvailabilitySet './avd-availability-sets.bicep' = if (!avdUseAvailabilityZones) {
-    name: 'AVD-Availability-Set-${time}'
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-    params: {
-        avdWorkloadSubsId: avdWorkloadSubsId
-        avdComputeObjectsRgName: avdComputeObjectsRgName
-        avdAvailabilitySetNamePrefix: avdAvailabilitySetNamePrefix
-        avdSessionHostLocation: avdSessionHostLocation
-        availabilitySetCount: availabilitySetCount
-        avdAsFaultDomainCount: avdAsFaultDomainCount
-        avdAsUpdateDomainCount: avdAsUpdateDomainCount
-    }
-}
-*/
-// Call on the KV.
 resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
     name: avdWrklKvName
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
@@ -214,6 +200,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
                 } : {}
             }
         }
+        tags: avdTags
     }
     dependsOn: []
 }]
