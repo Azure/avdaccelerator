@@ -57,11 +57,11 @@ param createAibManagedIdentity bool = true
 @description('Optional. Select existing azure image Builder managed identity. (Default: "")')
 param existingAibManagedIdentityId string = ''
 
-// Custom Naming
-// Input must followe resource naming rules on https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules
 @description('Optional. Select existing azure image Builder managed identity. (Default: "")')
 param existingAibManagedIdentityName string = ''
 
+// Custom Naming
+// Input must followe resource naming rules on https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules
 @description('Optional. AVD resources custom naming. (Default: false)')
 param avdUseCustomNaming bool = false
 
@@ -94,6 +94,64 @@ param avdSharedSResourcesScriptsContainerCustomName string = 'avd-scripts-app1'
 param avdSharedServicesKvCustomName string = 'kv-avd'
 //
 
+// Resource tagging
+// 
+@description('Optional. Apply tags on resources and resource groups. (Default: false)')
+param createResourceTags bool = false
+
+@description('Optional. The name of workload for tagging purposes. (Default: AVD-image)')
+param imageBuildNameTag string = 'AVD-Image-App01'
+
+@description('Optional. Reference to the size of the VM for your workloads (Default: Contoso-Workload)')
+param workloadNameTag string = 'Contoso-Workload'
+
+@allowed([
+    'Non-business'
+    'Public'
+    'General'
+    'Confidential'
+    'Highly confidential'
+])
+@description('Optional. Sensitivity of data hosted (Default: Non-business)')
+param dataClassificationTag string = 'Non-business'
+
+@description('Optional. Department that owns the deployment, (Dafult: Contoso-AVD)')
+param departmentTag string = 'Contoso-AVD'
+
+@allowed([
+    'Low'
+    'Medium'
+    'High'
+    'Mission-critical'
+    'custom'
+])
+@description('Optional. criticality of each workload. (Default: Low)')
+param workloadCriticalityTag string = 'Low'
+
+@description('Optional. Tag value for custom criticality value. (Default: Contoso-Critical)')
+param workloadCriticalityCustomValueTag string = 'Contoso-Critical'
+
+@description('Optional. Details about the application.')
+param applicationNameTag string = 'Contoso-App'
+
+@description('Optional. Team accountable for day-to-day operations. (Contoso-Ops)')
+param opsTeamTag string = 'Contoso-Ops'
+
+@description('Optional. Organizational owner of the AVD deployment. (Default: Contoso-Owner)')
+param ownerTag string = 'Contoso-Owner'
+
+@description('Optional. Cost center of owner team. (Defualt: Contoso-CC)')
+param costCenterTag string = 'Contoso-CC'
+
+@allowed([
+    'Prod'
+    'Dev'
+    'staging '
+])
+@description('Optional. Deployment environment of the application, workload. (Default: Prod)')
+param environmentTypeTag string = 'Prod'
+//
+
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
@@ -108,15 +166,15 @@ var deploymentPrefixLowercase = toLower(deploymentPrefix)
 var avdNamingUniqueStringSixChar = take('${uniqueString(avdSharedServicesSubId, deploymentPrefixLowercase, time)}', 6)
 var avdSharedResourcesNamingStandard = '${avdSharedServicesLocationAcronym}'
 var avdSharedServicesLocationLowercase = toLower(avdSharedServicesLocation)
-var avdSharedResourcesRgName = avdUseCustomNaming ? avdSharedResourcesRgCustomName: 'rg-avd-${avdSharedResourcesNamingStandard}-shared-services' // max length limit 90 characters
-var imageGalleryName = avdUseCustomNaming ? imageGalleryCustomName: 'gal_avd_${avdSharedServicesLocationAcronym}_001'
+var avdSharedResourcesRgName = avdUseCustomNaming ? avdSharedResourcesRgCustomName : 'rg-avd-${avdSharedResourcesNamingStandard}-shared-services' // max length limit 90 characters
+var imageGalleryName = avdUseCustomNaming ? imageGalleryCustomName : 'gal_avd_${avdSharedServicesLocationAcronym}_001'
 var aibManagedIdentityName = 'id-avd-imagebuilder-${avdSharedServicesLocationAcronym}'
 var deployScriptManagedIdentityName = 'id-avd-deployscript-${avdSharedServicesLocationAcronym}'
-var imageDefinitionsTemSpecName = avdUseCustomNaming ? imageDefinitionsTemSpecCustomName: 'avd_image_definition_${avdOsImage}'
-var avdSharedSResourcesStorageName = avdUseCustomNaming ? avdSharedSResourcesStorageCustomName: 'stavdshar${avdNamingUniqueStringSixChar}'
-var avdSharedSResourcesAibContainerName = avdUseCustomNaming ? avdSharedSResourcesAibContainerCustomName: 'avd-imagebuilder-${deploymentPrefixLowercase}'
-var avdSharedSResourcesScriptsContainerName = avdUseCustomNaming ? avdSharedSResourcesScriptsContainerCustomName: 'avd-scripts-${deploymentPrefixLowercase}'
-var avdSharedServicesKvName = avdUseCustomNaming ? avdSharedServicesKvCustomName: 'kv-avd-${avdSharedResourcesNamingStandard}-${avdNamingUniqueStringSixChar}' // max length limit 24 characters
+var imageDefinitionsTemSpecName = avdUseCustomNaming ? imageDefinitionsTemSpecCustomName : 'avd_image_definition_${avdOsImage}'
+var avdSharedSResourcesStorageName = avdUseCustomNaming ? avdSharedSResourcesStorageCustomName : 'stavdshar${avdNamingUniqueStringSixChar}'
+var avdSharedSResourcesAibContainerName = avdUseCustomNaming ? avdSharedSResourcesAibContainerCustomName : 'avd-imagebuilder-${deploymentPrefixLowercase}'
+var avdSharedSResourcesScriptsContainerName = avdUseCustomNaming ? avdSharedSResourcesScriptsContainerCustomName : 'avd-scripts-${deploymentPrefixLowercase}'
+var avdSharedServicesKvName = avdUseCustomNaming ? avdSharedServicesKvCustomName : 'kv-avd-${avdSharedResourcesNamingStandard}-${avdNamingUniqueStringSixChar}' // max length limit 24 characters
 var avdSharedServicesLocationAcronym = locationAcronyms[avdSharedServicesLocationLowercase]
 var locationAcronyms = {
     eastasia: 'eas'
@@ -163,6 +221,22 @@ var locationAcronyms = {
     westus3: 'wus3'
     swedencentral: 'sec'
 }
+//
+
+// Resource tagging
+var commonResourceTags = createResourceTags ? {
+    ImageBuildName: imageBuildNameTag
+    WorkloadName: workloadNameTag
+    DataClassification: dataClassificationTag
+    Department: departmentTag
+    Criticality: (workloadCriticalityTag == 'Custom') ? workloadCriticalityCustomValueTag : workloadCriticalityTag
+    ApplicationName: applicationNameTag
+    OpsTeam: opsTeamTag
+    Owner: ownerTag
+    CostCenter: costCenterTag
+    Environment: environmentTypeTag
+
+} : {}
 //
 
 var imageVmSize = 'Standard_D4s_v3'
@@ -236,6 +310,7 @@ module avdSharedResourcesRg '../../carml/1.0.0/Microsoft.Resources/resourceGroup
     params: {
         name: avdSharedResourcesRgName
         location: avdSharedServicesLocation
+        tags: createResourceTags ? commonResourceTags : {}
     }
 }
 
@@ -288,6 +363,7 @@ module imageBuilderManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/
     params: {
         name: aibManagedIdentityName
         location: avdSharedServicesLocation
+        tags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
@@ -301,6 +377,7 @@ module deployScriptManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/
     params: {
         name: deployScriptManagedIdentityName
         location: avdSharedServicesLocation
+        tags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
@@ -375,6 +452,7 @@ module azureComputeGallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy
         name: imageGalleryName
         location: avdSharedServicesLocation
         galleryDescription: 'Azure Virtual Desktops Images'
+        tags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
@@ -395,6 +473,7 @@ module avdImageTemplataDefinition '../../carml/1.2.0/Microsoft.Compute/galleries
         sku: avdOsImageDefinitions[avdOsImage].sku
         location: aibLocation
         hyperVGeneration: avdOsImageDefinitions[avdOsImage].hyperVGeneration
+        tags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
         azureComputeGallery
@@ -476,6 +555,7 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
             osAccountType: avdOsImageDefinitions[avdOsImage].osAccountType
             version: 'latest'
         }
+        tags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
         avdImageTemplataDefinition
@@ -495,6 +575,7 @@ module imageTemplateBuild '../../carml/1.2.0/Microsoft.Resources/deploymentScrip
         azPowerShellVersion: '6.2'
         cleanupPreference: 'Always'
         timeout: 'PT2H'
+        tags: createResourceTags ? commonResourceTags : {}
         containerGroupName: 'imageTemplateBuildName-${avdOsImage}-aci'
         userAssignedIdentities: createAibManagedIdentity ? {
             '${imageBuilderManagedIdentity.outputs.resourceId}': {}
@@ -577,6 +658,7 @@ module avdSharedServicesKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/de
             virtualNetworkRules: []
             ipRules: []
         }
+        tags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
@@ -604,6 +686,7 @@ module avdSharedServicesStorage '../../carml/1.2.0/Microsoft.Storage/storageAcco
                 }
             ]
         }
+        tags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
