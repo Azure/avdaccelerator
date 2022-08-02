@@ -563,7 +563,7 @@
         "Medium",
         "High",
         "Mission-critical",
-        "custom"
+        "Custom"
       ]
     },
     "workloadCriticalityCustomValueTag": {
