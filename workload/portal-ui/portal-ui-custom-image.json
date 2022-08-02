@@ -725,7 +725,7 @@
                 "workloadCriticalityTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsCriticalityTag, 'Low')]",
                 "workloadCriticalityCustomValueTag": "[if(equals(steps('avdResourceTagging').avdResourceTags.avdTagsCriticalityTag, 'Custom'), steps('avdResourceTagging').avdResourceTags.avdTagsCustomWorkloadCriticality, 'Low')]",
                 "applicationNameTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsApplicationNameTag, 'none')]",
-                "opsTeamTag string": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsOpsTeamTag, 'none')]",
+                "opsTeamTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsOpsTeamTag, 'none')]",
                 "ownerTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsOwnerTag, 'none')]",
                 "costCenterTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsCostCenterTag, 'none')]",
                 "environmentTypeTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsEnvironmentTypeTag, 'Dev')]"
