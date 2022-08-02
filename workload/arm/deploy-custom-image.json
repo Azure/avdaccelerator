@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "7612521200083860416"
+      "templateHash": "3385563865132660847"
     }
   },
   "parameters": {
@@ -173,6 +173,109 @@
       },
       "maxLength": 6
     },
+    "createResourceTags": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Apply tags on resources and resource groups. (Default: false)"
+      }
+    },
+    "imageBuildNameTag": {
+      "type": "string",
+      "defaultValue": "AVD-Image",
+      "metadata": {
+        "description": "Optional. The name of workload for tagging purposes. (Default: AVD-Image)"
+      }
+    },
+    "workloadNameTag": {
+      "type": "string",
+      "defaultValue": "Contoso-Workload",
+      "metadata": {
+        "description": "Optional. Reference to the size of the VM for your workloads (Default: Contoso-Workload)"
+      }
+    },
+    "dataClassificationTag": {
+      "type": "string",
+      "defaultValue": "Non-business",
+      "metadata": {
+        "description": "Optional. Sensitivity of data hosted (Default: Non-business)"
+      },
+      "allowedValues": [
+        "Non-business",
+        "Public",
+        "General",
+        "Confidential",
+        "Highly confidential"
+      ]
+    },
+    "departmentTag": {
+      "type": "string",
+      "defaultValue": "Contoso-AVD",
+      "metadata": {
+        "description": "Optional. Department that owns the deployment, (Dafult: Contoso-AVD)"
+      }
+    },
+    "workloadCriticalityTag": {
+      "type": "string",
+      "defaultValue": "Low",
+      "metadata": {
+        "description": "Optional. criticality of each workload. (Default: Low)"
+      },
+      "allowedValues": [
+        "Low",
+        "Medium",
+        "High",
+        "Mission-critical",
+        "custom"
+      ]
+    },
+    "workloadCriticalityCustomValueTag": {
+      "type": "string",
+      "defaultValue": "Contoso-Critical",
+      "metadata": {
+        "description": "Optional. Tag value for custom criticality value. (Default: Contoso-Critical)"
+      }
+    },
+    "applicationNameTag": {
+      "type": "string",
+      "defaultValue": "Contoso-App",
+      "metadata": {
+        "description": "Optional. Details about the application."
+      }
+    },
+    "opsTeamTag": {
+      "type": "string",
+      "defaultValue": "Contoso-Ops",
+      "metadata": {
+        "description": "Optional. Team accountable for day-to-day operations. (Contoso-Ops)"
+      }
+    },
+    "ownerTag": {
+      "type": "string",
+      "defaultValue": "Contoso-Owner",
+      "metadata": {
+        "description": "Optional. Organizational owner of the AVD deployment. (Default: Contoso-Owner)"
+      }
+    },
+    "costCenterTag": {
+      "type": "string",
+      "defaultValue": "Contoso-CC",
+      "metadata": {
+        "description": "Optional. Cost center of owner team. (Defualt: Contoso-CC)"
+      }
+    },
+    "environmentTypeTag": {
+      "type": "string",
+      "defaultValue": "Prod",
+      "metadata": {
+        "description": "Optional. Deployment environment of the application, workload. (Default: Prod)"
+      },
+      "allowedValues": [
+        "Prod",
+        "Dev",
+        "staging "
+      ]
+    },
     "time": {
       "type": "string",
       "defaultValue": "[utcNow()]",
@@ -248,6 +351,7 @@
       "westus3": "wus3",
       "swedencentral": "sec"
     },
+    "commonResourceTags": "[if(parameters('createResourceTags'), createObject('ImageBuildName', parameters('imageBuildNameTag'), 'WorkloadName', parameters('workloadNameTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('workloadCriticalityTag'), 'Custom'), parameters('workloadCriticalityCustomValueTag'), parameters('workloadCriticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'OpsTeam', parameters('opsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag'), 'Environment', parameters('environmentTypeTag')), createObject())]",
     "imageVmSize": "Standard_D4s_v3",
     "avdOsImageDefinitions": {
       "win10_21h2_office": {
@@ -327,6 +431,9 @@
           },
           "location": {
             "value": "[parameters('avdSharedServicesLocation')]"
+          },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -933,6 +1040,9 @@
           },
           "location": {
             "value": "[parameters('avdSharedServicesLocation')]"
+          },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -1188,6 +1298,9 @@
           },
           "location": {
             "value": "[parameters('avdSharedServicesLocation')]"
+          },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -2671,6 +2784,9 @@
           },
           "galleryDescription": {
             "value": "Azure Virtual Desktops Images"
+          },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -3484,6 +3600,9 @@
           },
           "hyperVGeneration": {
             "value": "[variables('avdOsImageDefinitions')[parameters('avdOsImage')].hyperVGeneration]"
+          },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -4001,6 +4120,9 @@
               "osAccountType": "[variables('avdOsImageDefinitions')[parameters('avdOsImage')].osAccountType]",
               "version": "latest"
             }
+          },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -4460,6 +4582,9 @@
           "timeout": {
             "value": "PT2H"
           },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
+          },
           "containerGroupName": {
             "value": "[format('imageTemplateBuildName-{0}-aci', parameters('avdOsImage'))]"
           },
@@ -4765,6 +4890,9 @@
               "virtualNetworkRules": [],
               "ipRules": []
             }
+          },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -6275,6 +6403,9 @@
                 }
               ]
             }
+          },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
