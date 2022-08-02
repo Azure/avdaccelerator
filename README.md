@@ -8,18 +8,17 @@ Deploy a custom image based on the latest version of the Azure marketplace image
  - Windows 10 21H2 with O365
  - Windows 11 21H2 with O365
 
- Custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates. 
+Custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates. 
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fanlucen%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Fanlucen%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json)
 
 ## AVD Accelerator Baseline
 
 Deploy Azure Virtual Desktop (AVD) resources and dependent services for establishing the baseline
-- AVD resources: workplace, two(2) application groups and host pool
+- AVD resources: workspace, two (2) application groups and host pool
 - [Optional]: new virtual network (VNet) with baseline NSG and route table
-- Azure Files Premium share. Integration with Active Directory 
+- Azure Files share. Integration with Active Directory 
 - Session Hosts 
-
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fanlucen%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Fanlucen%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json)
 
@@ -45,6 +44,7 @@ Head over to [Getting Started Wiki](https://github.com/Azure/avdaccelerator/wiki
 ![AVD accelerator diagram](./workload/docs/diagrams/avd-accelerator-baseline.png)
 
 _Download a [Visio file](./workload/docs/diagrams/avd-accelerator-baseline-architecture.vsdx) of this architecture._
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
