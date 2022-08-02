@@ -32,13 +32,13 @@ data "azurerm_virtual_network" "ad_vnet_data" {
 }
 
 resource "azurerm_virtual_network_peering" "peer1" {
-  name                      = "peer_avdspoke_ad"
+  name                      = "peer_${var.prefix}_avdspoke_ad"
   resource_group_name       = var.rg_network
   virtual_network_name      = azurerm_virtual_network.vnet.name
   remote_virtual_network_id = data.azurerm_virtual_network.ad_vnet_data.id
 }
 resource "azurerm_virtual_network_peering" "peer2" {
-  name                      = "peer_ad_avdspoke"
+  name                      = "peer_${var.prefix}_ad_avdspoke"
   resource_group_name       = var.ad_rg
   virtual_network_name      = var.ad_vnet
   remote_virtual_network_id = azurerm_virtual_network.vnet.id
@@ -47,13 +47,14 @@ resource "azurerm_virtual_network_peering" "peer2" {
 # Creating a Private DNS Zone for the Storage Private Endpoints
 resource "azurerm_private_dns_zone" "pe-dns-zone" {
   name                = "privatelink.file.core.windows.net"
-  resource_group_name = var.rg_shared_name
+  resource_group_name = azurerm_resource_group.share.name
+
 }
 
 # Creating a Private DNS Zone for the Key Vault Endpoints
 resource "azurerm_private_dns_zone" "key-dns-zone" {
   name                = "privatelink.vaultcore.azure.net"
-  resource_group_name = var.rg_shared_name
+  resource_group_name = azurerm_resource_group.share.name
 }
 
 # Linking DNS Zone to the VNET

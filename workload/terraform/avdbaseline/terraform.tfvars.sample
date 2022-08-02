@@ -14,8 +14,8 @@ pworkspace           = "AVD Personal Workspace"
 local_admin_username = "localadmin"
 local_admin_password = "ChangeMe123!"
 ou_path              = ""
-vm_size              = "Standard_D2_v3"
-rfc3339              = "2022-07-30T12:43:13Z"
+vm_size              = "Standard_D8s_v5"
+rfc3339              = "2022-08-30T12:43:13Z" # ExpirationTime value must be between one hour and 30 days from now
 vnet_range           = ["10.11.0.0/16"]
 subnet_range         = ["10.11.0.0/24"]
 dns_servers          = ["10.0.1.4", "168.63.129.16"]
@@ -25,10 +25,14 @@ domain_user          = "domainjoiner" # do not include domain name as this is ap
 domain_password      = "ChangeMe123$"
 ad_vnet              = "infra-network"
 ad_rg                = "infra-rg"
+rdsh_count           = 2
+image_name           = "avdImage-microsoftwindowsdesktop-office-365-win11-21h2-avd-m365"
+image_rg             = "rg-eastus-avd-shared-resources"
+gallery_name         = "avd_gallery_eastus"
 avd_users = [
   "avduser01@contoso.com",
   "avduser02@contoso.com"
 ]
-rdsh_count = 2
+
 
 
