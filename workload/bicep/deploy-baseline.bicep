@@ -254,7 +254,7 @@ param avdWrklKvPrefixCustomName string = 'kv-avd'
 param createAvdResourceTags bool = false
 
 @description('Optional. The name of workload for tagging purposes. (Default: AVD)')
-param avdWorkloadNameTag string = 'AVD'
+param workloadNameTag string = 'AVD'
 
 @allowed([
     'Light'
@@ -263,7 +263,7 @@ param avdWorkloadNameTag string = 'AVD'
     'Power'
 ])
 @description('Optional. Reference to the size of the VM for your workloads (Default: Light)')
-param avdWorkloadTypeTag string = 'Light'
+param workloadTypeTag string = 'Light'
 
 @allowed([
     'Non-business'
@@ -273,10 +273,10 @@ param avdWorkloadTypeTag string = 'Light'
     'Highly confidential'
 ])
 @description('Optional. Sensitivity of data hosted (Default: Non-business)')
-param avdDataClassificationTag string = 'Non-business'
+param dataClassificationTag string = 'Non-business'
 
 @description('Optional. Sensitivity of data hosted, (Dafult: Contoso-AVD)')
-param avdDepartmentTag string = 'Contoso-AVD'
+param departmentTag string = 'Contoso-AVD'
 
 @allowed([
     'Low'
@@ -286,25 +286,25 @@ param avdDepartmentTag string = 'Contoso-AVD'
     'custom'
 ])
 @description('Optional. criticality of each workload. (Default: Low)')
-param avdCriticalityTag string = 'Low'
+param workloadCriticalityTag string = 'Low'
 
 @description('Optional. Tag value for custom criticality value. (Default: Contoso-Critical)')
-param avdCritCustomValueTag string = 'Contoso-Critical'
+param workloadCriticalityCustomValueTag string = 'Contoso-Critical'
 
 @description('Optional. Details about the application.')
-param avdApplicationNameTag string = 'Contoso-App'
+param applicationNameTag string = 'Contoso-App'
 
 @description('Required. Service level agreement level of the application. (Contoso-SLA)')
-param avdSlaTag string = 'Contoso-SLA'
+param workloadSlaTag string = 'Contoso-SLA'
 
 @description('Optional. Team accountable for day-to-day operations. (Contoso-Ops)')
-param avdOpsTeamTag string = 'Contoso-Ops'
+param opsTeamTag string = 'Contoso-Ops'
 
 @description('Optional. Organizational owner of the AVD deployment. (Default: Contoso-Owner)')
-param avdOwnerTag string = 'Contoso-Owner'
+param ownerTag string = 'Contoso-Owner'
 
 @description('Optional. Cost center of owner team. (Defualt: Contoso-CC)')
-param avdCostCenterTag string = 'Contoso-CC'
+param costCenterTag string = 'Contoso-CC'
 
 @allowed([
     'Prod'
@@ -312,7 +312,7 @@ param avdCostCenterTag string = 'Contoso-CC'
     'staging '
 ])
 @description('Optional. Deployment environment of the application, workload. (Default: Prod)')
-param avdEnvTag string = 'Prod'
+param environmentTypeTag string = 'Prod'
 //
 
 @description('Do not modify, used to set unique value for resource deployment.')
@@ -453,17 +453,17 @@ var createOuForStorageString = string(createOuForStorage)
 
 // Resource tagging
 var commonResourceTags = createAvdResourceTags ? {
-    WorkloadName: avdWorkloadNameTag
-    WorkloadType: avdWorkloadTypeTag
-    DataClassification: avdDataClassificationTag
-    Department: avdDepartmentTag
-    Criticality: (avdCriticalityTag == 'Custom') ? avdCritCustomValueTag : avdCriticalityTag
-    ApplicationName: avdApplicationNameTag
-    ServiceClass: avdSlaTag
-    OpsTeam: avdOpsTeamTag
-    Owner: avdOwnerTag
-    Number: avdCostCenterTag
-    Env: avdEnvTag
+    WorkloadName: workloadNameTag
+    WorkloadType: workloadTypeTag
+    DataClassification: dataClassificationTag
+    Department: departmentTag
+    Criticality: (workloadCriticalityTag == 'Custom') ? workloadCriticalityCustomValueTag : workloadCriticalityTag
+    ApplicationName: applicationNameTag
+    ServiceClass: workloadSlaTag
+    OpsTeam: opsTeamTag
+    Owner: ownerTag
+    Number: costCenterTag
+    Env: environmentTypeTag
 
 }: {}
 
