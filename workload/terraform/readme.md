@@ -7,9 +7,9 @@ This accelerator is to be used as starter kit and you can expand its functionali
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)  
-- [Planning](#planning)  
+- [Planning](#planning) 
+- [Custom Image Build](#Custom-Image-Build)    
 - [AVD Baseline](#AVD-Baseline)  
-- [Custom Image Build](#Custom-Image-Build)  
 - [Backend Setup](#Backends)  
 - [Terraform file Structure](#Files)  
 
