@@ -34,7 +34,7 @@ Resource Groups and resource names are derived from the `Prefix` parameter, whic
 
 Deploy a customer image based on the latest version of the Azure Marketplace image for Windows 11 21H2 with M365 using Azure Image Builder to an Azure Compute Gallery.. The custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates.
 
-![Custom Image diagram](./workload/docs/diagrams/avd-accelerator-terraform-aib-custom-image.png)
+![Custom Image diagram](../../workload/docs/diagrams/avd-accelerator-terraform-aib-custom-image.png)
 ## AVD-Baseline
 
 Azure Virtual Desktop (Azure Virtual Desktop) resources and dependent services for establishing the baseline.
