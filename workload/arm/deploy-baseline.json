@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "11789364691410292344"
+      "templateHash": "2914068012615253334"
     }
   },
   "parameters": {
@@ -504,122 +504,6 @@
       },
       "maxLength": 6
     },
-    "createResourceTags": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Apply tags on resources and resource groups. (Default: false)"
-      }
-    },
-    "workloadNameTag": {
-      "type": "string",
-      "defaultValue": "AVD",
-      "metadata": {
-        "description": "Optional. The name of workload for tagging purposes. (Default: AVD)"
-      }
-    },
-    "workloadTypeTag": {
-      "type": "string",
-      "defaultValue": "Light",
-      "metadata": {
-        "description": "Optional. Reference to the size of the VM for your workloads (Default: Light)"
-      },
-      "allowedValues": [
-        "Light",
-        "Medium",
-        "High",
-        "Power"
-      ]
-    },
-    "dataClassificationTag": {
-      "type": "string",
-      "defaultValue": "Non-business",
-      "metadata": {
-        "description": "Optional. Sensitivity of data hosted (Default: Non-business)"
-      },
-      "allowedValues": [
-        "Non-business",
-        "Public",
-        "General",
-        "Confidential",
-        "Highly-confidential"
-      ]
-    },
-    "departmentTag": {
-      "type": "string",
-      "defaultValue": "Contoso-AVD",
-      "metadata": {
-        "description": "Optional. Department that owns the deployment, (Dafult: Contoso-AVD)"
-      }
-    },
-    "workloadCriticalityTag": {
-      "type": "string",
-      "defaultValue": "Low",
-      "metadata": {
-        "description": "Optional. Criticality of the workload. (Default: Low)"
-      },
-      "allowedValues": [
-        "Low",
-        "Medium",
-        "High",
-        "Mission-critical",
-        "Custom"
-      ]
-    },
-    "workloadCriticalityCustomValueTag": {
-      "type": "string",
-      "defaultValue": "Contoso-Critical",
-      "metadata": {
-        "description": "Optional. Tag value for custom criticality value. (Default: Contoso-Critical)"
-      }
-    },
-    "applicationNameTag": {
-      "type": "string",
-      "defaultValue": "Contoso-App",
-      "metadata": {
-        "description": "Optional. Details about the application."
-      }
-    },
-    "workloadSlaTag": {
-      "type": "string",
-      "defaultValue": "Contoso-SLA",
-      "metadata": {
-        "description": "Required. Service level agreement level of the worload. (Contoso-SLA)"
-      }
-    },
-    "opsTeamTag": {
-      "type": "string",
-      "defaultValue": "workload-admins@Contoso.com",
-      "metadata": {
-        "description": "Optional. Team accountable for day-to-day operations. (workload-admins@Contoso.com)"
-      }
-    },
-    "ownerTag": {
-      "type": "string",
-      "defaultValue": "workload-owner@Contoso.com",
-      "metadata": {
-        "description": "Optional. Organizational owner of the AVD deployment. (Default: workload-owner@Contoso.com)"
-      }
-    },
-    "costCenterTag": {
-      "type": "string",
-      "defaultValue": "Contoso-CC",
-      "metadata": {
-        "description": "Optional. Cost center of owner team. (Defualt: Contoso-CC)"
-      }
-    },
-    "environmentTypeTag": {
-      "type": "string",
-      "defaultValue": "Dev",
-      "metadata": {
-        "description": "Optional. Deployment environment of the application, workload. (Default: Dev)"
-      },
-      "allowedValues": [
-        "Prod",
-        "Dev",
-        "Staging "
-      ]
-    },
     "time": {
       "type": "string",
       "defaultValue": "[utcNow()]",
@@ -751,12 +635,6 @@
     "addStorageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-JoinStorage-to-ADDS.ps1', variables('baseScriptUri'))]",
     "addStorageToDomainScript": "./Manual-DSC-JoinStorage-to-ADDS.ps1",
     "createOuForStorageString": "[string(parameters('createOuForStorage'))]",
-    "commonResourceTags": "[if(parameters('createResourceTags'), createObject('WorkloadName', parameters('workloadNameTag'), 'WorkloadType', parameters('workloadTypeTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('workloadCriticalityTag'), 'Custom'), parameters('workloadCriticalityCustomValueTag'), parameters('workloadCriticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'ServiceClass', parameters('workloadSlaTag'), 'OpsTeam', parameters('opsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag'), 'Environment', parameters('environmentTypeTag')), createObject())]",
-    "allComputeStorageTags": {
-      "DomainName": "[parameters('avdIdentityDomainName')]",
-      "JoinType": "ADDS"
-    },
-    "allResourceTags": "[union(variables('commonResourceTags'), variables('allComputeStorageTags'))]",
     "resourceGroups": [
       {
         "name": "[variables('avdServiceObjectsRgName')]",
@@ -809,9 +687,6 @@
           },
           "enableDefaultTelemetry": {
             "value": false
-          },
-          "tags": {
-            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -1311,9 +1186,6 @@
           },
           "enableDefaultTelemetry": {
             "value": false
-          },
-          "tags": {
-            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -1851,9 +1723,6 @@
           },
           "customDnsIps": {
             "value": "[parameters('customDnsIps')]"
-          },
-          "avdTags": {
-            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -1863,7 +1732,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.8.9.13224",
-              "templateHash": "11261144949767469380"
+              "templateHash": "7199832023034840226"
             }
           },
           "parameters": {
@@ -1964,12 +1833,6 @@
                 "description": "Required. Location where to deploy compute services"
               }
             },
-            "avdTags": {
-              "type": "object",
-              "metadata": {
-                "description": "Required. Tags to be applied to resources"
-              }
-            },
             "time": {
               "type": "string",
               "defaultValue": "[utcNow()]",
@@ -1997,9 +1860,6 @@
                   },
                   "location": {
                     "value": "[parameters('avdSessionHostLocation')]"
-                  },
-                  "tags": {
-                    "value": "[parameters('avdTags')]"
                   }
                 },
                 "template": {
@@ -2496,9 +2356,6 @@
                   },
                   "location": {
                     "value": "[parameters('avdSessionHostLocation')]"
-                  },
-                  "tags": {
-                    "value": "[parameters('avdTags')]"
                   }
                 },
                 "template": {
@@ -3183,9 +3040,6 @@
                   },
                   "location": {
                     "value": "[parameters('avdSessionHostLocation')]"
-                  },
-                  "tags": {
-                    "value": "[parameters('avdTags')]"
                   }
                 },
                 "template": {
@@ -3458,9 +3312,6 @@
                   },
                   "location": {
                     "value": "[parameters('avdSessionHostLocation')]"
-                  },
-                  "tags": {
-                    "value": "[parameters('avdTags')]"
                   }
                 },
                 "template": {
@@ -3787,9 +3638,6 @@
                         "routeTableName": "[parameters('avdRouteTableName')]"
                       }
                     ]
-                  },
-                  "tags": {
-                    "value": "[parameters('avdTags')]"
                   }
                 },
                 "template": {
@@ -5096,9 +4944,6 @@
           },
           "avdWorkloadSubsId": {
             "value": "[parameters('avdWorkloadSubsId')]"
-          },
-          "avdTags": {
-            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -5108,7 +4953,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.8.9.13224",
-              "templateHash": "6832536949944624139"
+              "templateHash": "17025328662020677001"
             }
           },
           "parameters": {
@@ -5202,12 +5047,6 @@
                 "description": "Optional. AVD host pool start VM on Connect."
               }
             },
-            "avdTags": {
-              "type": "object",
-              "metadata": {
-                "description": "Required. Tags to be applied to resources"
-              }
-            },
             "time": {
               "type": "string",
               "defaultValue": "[utcNow()]",
@@ -5269,9 +5108,6 @@
                   },
                   "personalDesktopAssignmentType": {
                     "value": "[parameters('avdPersonalAssignType')]"
-                  },
-                  "tags": {
-                    "value": "[parameters('avdTags')]"
                   }
                 },
                 "template": {
@@ -5802,9 +5638,6 @@
                   },
                   "hostpoolName": {
                     "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-HostPool-{0}', parameters('time')))).outputs.name.value]"
-                  },
-                  "tags": {
-                    "value": "[parameters('avdTags')]"
                   }
                 },
                 "template": {
@@ -6437,9 +6270,6 @@
           },
           "appGroupResourceIds": {
             "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-HostPool-AppGroups-{0}', parameters('time')))).outputs.avdAppGroupsArray.value]"
-          },
-          "tags": {
-            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -6862,9 +6692,6 @@
           },
           "createAvdFslogixDeployment": {
             "value": "[parameters('createAvdFslogixDeployment')]"
-          },
-          "avdTags": {
-            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -6874,7 +6701,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.8.9.13224",
-              "templateHash": "14946097262730710613"
+              "templateHash": "12675906128234604903"
             }
           },
           "parameters": {
@@ -6950,12 +6777,6 @@
                 "description": "Optional. Deploy Fslogix setup. (Default: true)"
               }
             },
-            "avdTags": {
-              "type": "object",
-              "metadata": {
-                "description": "Required. Tags to be applied to resources"
-              }
-            },
             "time": {
               "type": "string",
               "defaultValue": "[utcNow()]",
@@ -6983,9 +6804,6 @@
                   },
                   "location": {
                     "value": "[parameters('avdManagementPlaneLocation')]"
-                  },
-                  "tags": {
-                    "value": "[parameters('avdTags')]"
                   }
                 },
                 "template": {
@@ -8899,9 +8717,6 @@
                 }
               ]
             }
-          },
-          "tags": {
-            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -10483,9 +10298,6 @@
           },
           "useSharedImage": {
             "value": "[parameters('useSharedImage')]"
-          },
-          "avdTags": {
-            "value": "[if(parameters('createResourceTags'), variables('allResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -10495,7 +10307,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.8.9.13224",
-              "templateHash": "11022154430813870623"
+              "templateHash": "3729688145814473157"
             }
           },
           "parameters": {
@@ -10691,12 +10503,6 @@
                 "description": "URI for the script for adding the storage account to Active Directory."
               }
             },
-            "avdTags": {
-              "type": "object",
-              "metadata": {
-                "description": "Required. Tags to be applied to resources"
-              }
-            },
             "time": {
               "type": "string",
               "defaultValue": "[utcNow()]",
@@ -10757,9 +10563,6 @@
                   },
                   "privateEndpoints": {
                     "value": "[if(parameters('avdVnetPrivateDnsZone'), createArray(createObject('name', parameters('avdWrklStoragePrivateEndpointName'), 'subnetResourceId', parameters('subnetResourceId'), 'service', 'file', 'privateDnsZoneResourceIds', createArray(parameters('avdVnetPrivateDnsZoneFilesId')))), createArray(createObject('name', parameters('avdWrklStoragePrivateEndpointName'), 'subnetResourceId', parameters('subnetResourceId'), 'service', 'file')))]"
-                  },
-                  "tags": {
-                    "value": "[parameters('avdTags')]"
                   }
                 },
                 "template": {
@@ -11235,43 +11038,43 @@
                               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                              "Avere Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f8fab4f-1852-4a58-a46a-8eaf358af14a')]",
-                              "Avere Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c025889f-8102-4ebf-b32c-fc0c6f0c6bd9')]",
-                              "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
-                              "Backup Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')]",
-                              "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
-                              "Disk Snapshot Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
-                              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
-                              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
-                              "Logic App Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '87a39d53-fc1b-424a-814c-f7e04687dc9e')]",
-                              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
-                              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
-                              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
-                              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
-                              "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
-                              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
-                              "Reader and Data Access": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')]",
-                              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
-                              "Site Recovery Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6670b86e-a3f7-4917-ac9b-5d6ab1be4567')]",
-                              "Site Recovery Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '494ae006-db33-4328-bf46-533a6560a3ca')]",
-                              "Storage Account Backup Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
-                              "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
-                              "Storage Account Key Operator Service Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')]",
-                              "Storage Blob Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
-                              "Storage Blob Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
-                              "Storage Blob Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
-                              "Storage Blob Delegator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'db58b8e5-c6ad-4a2a-8342-4190687cbf4a')]",
-                              "Storage File Data SMB Share Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb')]",
-                              "Storage File Data SMB Share Elevated Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a7264617-510b-434b-a828-9731dc254ea7')]",
-                              "Storage File Data SMB Share Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aba4ae5f-2193-4029-9191-0cb91df5e314')]",
-                              "Storage Queue Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '974c5e8b-45b9-4653-ba55-5f855dd0fb88')]",
-                              "Storage Queue Data Message Processor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8a0f0c08-91a1-4084-bc3d-661d67233fed')]",
-                              "Storage Queue Data Message Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a')]",
-                              "Storage Queue Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '19e7f393-937e-4f77-808e-94535e297925')]",
-                              "Storage Table Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
-                              "Storage Table Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76199698-9eea-4c19-bc75-cec21354c6b6')]",
-                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
-                              "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]"
+                              "Avere Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f8fab4f-1852-4a58-a46a-8eaf358af14a')]",
+                              "Avere Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c025889f-8102-4ebf-b32c-fc0c6f0c6bd9')]",
+                              "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
+                              "Backup Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')]",
+                              "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
+                              "Disk Snapshot Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
+                              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+                              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
+                              "Logic App Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '87a39d53-fc1b-424a-814c-f7e04687dc9e')]",
+                              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
+                              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
+                              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
+                              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+                              "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
+                              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
+                              "Reader and Data Access": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')]",
+                              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+                              "Site Recovery Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6670b86e-a3f7-4917-ac9b-5d6ab1be4567')]",
+                              "Site Recovery Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '494ae006-db33-4328-bf46-533a6560a3ca')]",
+                              "Storage Account Backup Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
+                              "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
+                              "Storage Account Key Operator Service Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')]",
+                              "Storage Blob Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+                              "Storage Blob Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
+                              "Storage Blob Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
+                              "Storage Blob Delegator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'db58b8e5-c6ad-4a2a-8342-4190687cbf4a')]",
+                              "Storage File Data SMB Share Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb')]",
+                              "Storage File Data SMB Share Elevated Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a7264617-510b-434b-a828-9731dc254ea7')]",
+                              "Storage File Data SMB Share Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aba4ae5f-2193-4029-9191-0cb91df5e314')]",
+                              "Storage Queue Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '974c5e8b-45b9-4653-ba55-5f855dd0fb88')]",
+                              "Storage Queue Data Message Processor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8a0f0c08-91a1-4084-bc3d-661d67233fed')]",
+                              "Storage Queue Data Message Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a')]",
+                              "Storage Queue Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '19e7f393-937e-4f77-808e-94535e297925')]",
+                              "Storage Table Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
+                              "Storage Table Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76199698-9eea-4c19-bc75-cec21354c6b6')]",
+                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+                              "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]"
                             }
                           },
                           "resources": [
@@ -12741,43 +12544,43 @@
                                               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                                               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                                               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                                              "Avere Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f8fab4f-1852-4a58-a46a-8eaf358af14a')]",
-                                              "Avere Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c025889f-8102-4ebf-b32c-fc0c6f0c6bd9')]",
-                                              "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
-                                              "Backup Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')]",
-                                              "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
-                                              "Disk Snapshot Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
-                                              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
-                                              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
-                                              "Logic App Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '87a39d53-fc1b-424a-814c-f7e04687dc9e')]",
-                                              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
-                                              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
-                                              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
-                                              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
-                                              "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
-                                              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
-                                              "Reader and Data Access": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')]",
-                                              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
-                                              "Site Recovery Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6670b86e-a3f7-4917-ac9b-5d6ab1be4567')]",
-                                              "Site Recovery Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '494ae006-db33-4328-bf46-533a6560a3ca')]",
-                                              "Storage Account Backup Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
-                                              "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
-                                              "Storage Account Key Operator Service Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')]",
-                                              "Storage Blob Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
-                                              "Storage Blob Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
-                                              "Storage Blob Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
-                                              "Storage Blob Delegator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'db58b8e5-c6ad-4a2a-8342-4190687cbf4a')]",
-                                              "Storage File Data SMB Share Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb')]",
-                                              "Storage File Data SMB Share Elevated Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a7264617-510b-434b-a828-9731dc254ea7')]",
-                                              "Storage File Data SMB Share Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aba4ae5f-2193-4029-9191-0cb91df5e314')]",
-                                              "Storage Queue Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '974c5e8b-45b9-4653-ba55-5f855dd0fb88')]",
-                                              "Storage Queue Data Message Processor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8a0f0c08-91a1-4084-bc3d-661d67233fed')]",
-                                              "Storage Queue Data Message Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a')]",
-                                              "Storage Queue Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '19e7f393-937e-4f77-808e-94535e297925')]",
-                                              "Storage Table Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
-                                              "Storage Table Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76199698-9eea-4c19-bc75-cec21354c6b6')]",
-                                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
-                                              "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]"
+                                              "Avere Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f8fab4f-1852-4a58-a46a-8eaf358af14a')]",
+                                              "Avere Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c025889f-8102-4ebf-b32c-fc0c6f0c6bd9')]",
+                                              "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
+                                              "Backup Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')]",
+                                              "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
+                                              "Disk Snapshot Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
+                                              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+                                              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
+                                              "Logic App Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '87a39d53-fc1b-424a-814c-f7e04687dc9e')]",
+                                              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
+                                              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
+                                              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
+                                              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+                                              "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
+                                              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
+                                              "Reader and Data Access": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')]",
+                                              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+                                              "Site Recovery Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6670b86e-a3f7-4917-ac9b-5d6ab1be4567')]",
+                                              "Site Recovery Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '494ae006-db33-4328-bf46-533a6560a3ca')]",
+                                              "Storage Account Backup Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
+                                              "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
+                                              "Storage Account Key Operator Service Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')]",
+                                              "Storage Blob Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+                                              "Storage Blob Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
+                                              "Storage Blob Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
+                                              "Storage Blob Delegator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'db58b8e5-c6ad-4a2a-8342-4190687cbf4a')]",
+                                              "Storage File Data SMB Share Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb')]",
+                                              "Storage File Data SMB Share Elevated Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a7264617-510b-434b-a828-9731dc254ea7')]",
+                                              "Storage File Data SMB Share Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aba4ae5f-2193-4029-9191-0cb91df5e314')]",
+                                              "Storage Queue Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '974c5e8b-45b9-4653-ba55-5f855dd0fb88')]",
+                                              "Storage Queue Data Message Processor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8a0f0c08-91a1-4084-bc3d-661d67233fed')]",
+                                              "Storage Queue Data Message Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a')]",
+                                              "Storage Queue Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '19e7f393-937e-4f77-808e-94535e297925')]",
+                                              "Storage Table Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
+                                              "Storage Table Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76199698-9eea-4c19-bc75-cec21354c6b6')]",
+                                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+                                              "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]"
                                             }
                                           },
                                           "resources": [
@@ -13914,9 +13717,6 @@
                         "options": "3"
                       }
                     }
-                  },
-                  "tags": {
-                    "value": "[parameters('avdTags')]"
                   }
                 },
                 "template": {
@@ -17546,9 +17346,6 @@
           },
           "useSharedImage": {
             "value": "[parameters('useSharedImage')]"
-          },
-          "avdTags": {
-            "value": "[if(parameters('createResourceTags'), variables('allResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -17558,7 +17355,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.8.9.13224",
-              "templateHash": "9200084337278260406"
+              "templateHash": "13872037100135546776"
             }
           },
           "parameters": {
@@ -17754,12 +17551,6 @@
                 "description": "URI for FSlogix configuration script."
               }
             },
-            "avdTags": {
-              "type": "object",
-              "metadata": {
-                "description": "Required. Tags to be applied to resources"
-              }
-            },
             "time": {
               "type": "string",
               "defaultValue": "[utcNow()]",
@@ -17812,9 +17603,6 @@
                   },
                   "avdAsUpdateDomainCount": {
                     "value": "[parameters('avdAsUpdateDomainCount')]"
-                  },
-                  "avdTags": {
-                    "value": "[parameters('avdTags')]"
                   }
                 },
                 "template": {
@@ -17824,7 +17612,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.8.9.13224",
-                      "templateHash": "16497345851723691410"
+                      "templateHash": "11554229463912475192"
                     }
                   },
                   "parameters": {
@@ -17870,12 +17658,6 @@
                         "description": "Optional. AVD workload subscription ID, multiple subscriptions scenario."
                       }
                     },
-                    "avdTags": {
-                      "type": "object",
-                      "metadata": {
-                        "description": "Required. Tags to be applied to resources"
-                      }
-                    },
                     "time": {
                       "type": "string",
                       "defaultValue": "[utcNow()]",
@@ -17912,9 +17694,6 @@
                           },
                           "availabilitySetUpdateDomain": {
                             "value": "[parameters('avdAsUpdateDomainCount')]"
-                          },
-                          "tags": {
-                            "value": "[parameters('avdTags')]"
                           }
                         },
                         "template": {
@@ -18319,9 +18098,6 @@
                   },
                   "useSharedImage": {
                     "value": "[parameters('useSharedImage')]"
-                  },
-                  "avdTags": {
-                    "value": "[parameters('avdTags')]"
                   }
                 },
                 "template": {
@@ -18331,7 +18107,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.8.9.13224",
-                      "templateHash": "11792545056864482488"
+                      "templateHash": "12578221017086803961"
                     }
                   },
                   "parameters": {
@@ -18521,12 +18297,6 @@
                         "description": "URI for FSlogix configuration script."
                       }
                     },
-                    "avdTags": {
-                      "type": "object",
-                      "metadata": {
-                        "description": "Required. Tags to be applied to resources"
-                      }
-                    },
                     "time": {
                       "type": "string",
                       "defaultValue": "[utcNow()]",
@@ -18660,9 +18430,6 @@
                                 "Exclusions": "[if(parameters('createAvdFslogixDeployment'), createObject('Extensions', '*.vhd;*.vhdx', 'Paths', '\"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;\\\\server\\share\\*\\*.VHD;\\\\server\\share\\*\\*.VHDX', 'Processes', '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'), createObject())]"
                               }
                             }
-                          },
-                          "tags": {
-                            "value": "[parameters('avdTags')]"
                           }
                         },
                         "template": {
