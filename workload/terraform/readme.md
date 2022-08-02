@@ -4,6 +4,8 @@ This guide is designed to help you get started with deploying Azure Virtual Desk
 
 This accelerator is to be used as starter kit and you can expand its functionality by developing your own deployments. This scenario deploys a new Azure Virtual Desktop workload, so it cannot be used to maintain, modify or add resources to an existing or already deployed Azure Virtual Desktop workload from this accelerator.
 
+*Note* This terraform accelerator requires the Custom Image Build 1st before deploying the Baseline. If you prefer to use the marketplace image with no customization [see](https://docs.microsoft.com/en-us/azure/developer/terraform/create-avd-session-host)
+
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)  
@@ -32,7 +34,7 @@ Resource Groups and resource names are derived from the `Prefix` parameter, whic
 
 ## Custom-Image-Build
 
-Deploy a customer image based on the latest version of the Azure Marketplace image for Windows 11 21H2 with M365 using Azure Image Builder to an Azure Compute Gallery.. The custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates.
+Deploy a customer image based on the latest version of the Azure Marketplace image for Windows 11 21H2 with M365 using Azure Image Builder to an Azure Compute Gallery. The custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates.
 
 ![Custom Image diagram](../../workload/docs/diagrams/avd-accelerator-terraform-aib-custom-image.png)
 ## AVD-Baseline
