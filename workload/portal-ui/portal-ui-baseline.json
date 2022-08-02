@@ -939,7 +939,7 @@
                                     "name": "avdVnetPrivateDnsZoneFilesSelector",
                                     "type": "Microsoft.Solutions.ResourceSelector",
                                     "visible": "[equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true)]",
-                                    "label": "File share    (privatelink.file.core.windows.net)",
+                                    "label": "File share (privatelink.file.core.windows.net)",
                                     "resourceType": "Microsoft.Network/privateDnsZones",
                                     "constraints": {
                                         "required": true
@@ -948,7 +948,7 @@
                                 {
                                     "name": "avdVnetPrivateDnsZoneKeyvaultSelector",
                                     "type": "Microsoft.Solutions.ResourceSelector",
-                                    "label": "Key vault     (privatelink.vaultcore.azure.net)",
+                                    "label": "Key vault (privatelink.vaultcore.azure.net)",
                                     "resourceType": "Microsoft.Network/privateDnsZones",
                                     "constraints": {
                                         "required": true
