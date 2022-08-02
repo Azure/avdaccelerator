@@ -148,8 +148,8 @@ param costCenterTag string = 'Contoso-CC'
     'Dev'
     'staging '
 ])
-@description('Optional. Deployment environment of the application, workload. (Default: Prod)')
-param environmentTypeTag string = 'Prod'
+@description('Optional. Deployment environment of the application, workload. (Default: Dev)')
+param environmentTypeTag string = 'Dev'
 //
 
 @description('Do not modify, used to set unique value for resource deployment.')
