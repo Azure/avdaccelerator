@@ -52,6 +52,9 @@ param customDnsIps string
 @description('Required. Location where to deploy compute services')
 param avdSessionHostLocation string = deployment().location
 
+@description('Required. Tags to be applied to resources')
+param avdTags object
+
 @description('Do not modify, used to set unique value for resource deployment')
 param time string = utcNow()
 
@@ -66,6 +69,7 @@ module avdNetworkObjectsRg '../../../carml/1.2.0/Microsoft.Resources/resourceGro
     params: {
         name: avdNetworkObjectsRgName
         location: avdSessionHostLocation
+        tags: avdTags
     }
 }
 
@@ -76,6 +80,7 @@ module avdNetworksecurityGroup '../../../carml/1.2.0/Microsoft.Network/networkSe
     params: {
         name: avdNetworksecurityGroupName
         location: avdSessionHostLocation
+        tags: avdTags
     }
     dependsOn: [
         avdNetworkObjectsRg
@@ -89,6 +94,7 @@ module avdApplicationSecurityGroup '../../../carml/1.2.0/Microsoft.Network/appli
     params: {
         name: avdApplicationSecurityGroupName
         location: avdSessionHostLocation
+        tags: avdTags
     }
     dependsOn: []
 }
@@ -100,6 +106,7 @@ module avdRouteTable '../../../carml/1.2.0/Microsoft.Network/routeTables/deploy.
     params: {
         name: avdRouteTableName
         location: avdSessionHostLocation
+        tags: avdTags
     }
     dependsOn: [
         avdNetworkObjectsRg
@@ -143,6 +150,7 @@ module avdVirtualNetwork '../../../carml/1.2.0/Microsoft.Network/virtualNetworks
                 routeTableName: avdRouteTableName
             }
         ]
+        tags: avdTags
     }
     dependsOn: [
         avdNetworkObjectsRg
@@ -177,6 +185,7 @@ params:{
     routeTableResourceGroupName: !(empty(existingSubnet.properties.routeTable.id)) ? split(string(existingSubnet.properties.routeTable.id), '/')[4] : ''
     //serviceEndpointPolicies: existingSubnet.properties.serviceEndpointPolicies
     privateEndpointNetworkPolicies: 'Disabled'
+    tags: avdTags
     }
 }
 */

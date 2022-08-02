@@ -4,68 +4,6 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
-@description('Required. The name of workload for tagging purposes')
-param avdWorkloadNameTag string = ''
-
-@allowed([
-    'Light'
-    'Medium'
-    'Medium'
-    'Power'
-])
-@description('Optional. Reference to the size of the VM for your workloads (Default: Light)')
-param avdWorkloadTypeTag string = 'Light'
-
-@allowed([
-    'Non-business'
-    'Public'
-    'General'
-    'Confidential'
-    'Highly confidential'
-])
-@description('Required. Sensitivity of data hosted (Default: Non-business)')
-param avdDataClassificationTag string = 'Non-business'
-
-@description('Required. Sensitivity of data hosted')
-param avdDeptTag string = ''
-
-@allowed([
-    'Low'
-    'Medium'
-    'High'
-    'Mission-critical'
-    'custom'
-])
-@description('Optional. criticality of each workload (Default: Low)')
-param avdCriticalityTag string = 'Low'
-
-param avdCritSugestValueTag bool = false
-
-param avdCritCustomValueTag string = 'change me'
-
-@description('Required. Details about the application')
-param avdApplicationNameTag string = ''
-
-@description('Required.Service level agreement level of the application')
-param avdSlaTag string = ''
-
-@description('Required.Team accountable for day-to-day operations')
-param avdOpsTeamTag string = ''
-
-@description('Required.Team accountable for day-to-day operations')
-param avdOwnerTag string = ''
-
-@description('Required.Team accountable for day-to-day operations')
-param avdCostCenterTag string = ''
-
-@allowed([
-    'Prod'
-    'Dev'
-    'staging '
-])
-@description('Required.Deployment environment of the application, workload (Default: Dev)')
-param avdEnvTag string = 'Prod'
-
 @minLength(2)
 @maxLength(4)
 @description('Required. The name of the resource group to deploy.')
@@ -310,6 +248,73 @@ param avdFslogixProfileContainerFileShareCustomName string = 'fslogix-pc-app1-00
 param avdWrklKvPrefixCustomName string = 'kv-avd'
 //
 
+// Resource tagging
+// 
+@description('Optional. Apply tags on resources and resource groups. (Default: false)')
+param createAvdResourceTags bool = false
+
+@description('Optional. The name of workload for tagging purposes. (Default: AVD)')
+param avdWorkloadNameTag string = 'AVD'
+
+@allowed([
+    'Light'
+    'Medium'
+    'Medium'
+    'Power'
+])
+@description('Optional. Reference to the size of the VM for your workloads (Default: Light)')
+param avdWorkloadTypeTag string = 'Light'
+
+@allowed([
+    'Non-business'
+    'Public'
+    'General'
+    'Confidential'
+    'Highly confidential'
+])
+@description('Optional. Sensitivity of data hosted (Default: Non-business)')
+param avdDataClassificationTag string = 'Non-business'
+
+@description('Optional. Sensitivity of data hosted, (Dafult: Contoso-AVD)')
+param avdDepartmentTag string = 'Contoso-AVD'
+
+@allowed([
+    'Low'
+    'Medium'
+    'High'
+    'Mission-critical'
+    'custom'
+])
+@description('Optional. criticality of each workload. (Default: Low)')
+param avdCriticalityTag string = 'Low'
+
+@description('Optional. Tag value for custom criticality value. (Default: Contoso-Critical)')
+param avdCritCustomValueTag string = 'Contoso-Critical'
+
+@description('Optional. Details about the application.')
+param avdApplicationNameTag string = 'Contoso-App'
+
+@description('Required. Service level agreement level of the application. (Contoso-SLA)')
+param avdSlaTag string = 'Contoso-SLA'
+
+@description('Optional. Team accountable for day-to-day operations. (Contoso-Ops)')
+param avdOpsTeamTag string = 'Contoso-Ops'
+
+@description('Optional. Organizational owner of the AVD deployment. (Default: Contoso-Owner)')
+param avdOwnerTag string = 'Contoso-Owner'
+
+@description('Optional. Cost center of owner team. (Defualt: Contoso-CC)')
+param avdCostCenterTag string = 'Contoso-CC'
+
+@allowed([
+    'Prod'
+    'Dev'
+    'staging '
+])
+@description('Optional. Deployment environment of the application, workload. (Default: Prod)')
+param avdEnvTag string = 'Prod'
+//
+
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
@@ -446,12 +451,13 @@ var addStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -Storage
 //var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
 var createOuForStorageString = string(createOuForStorage)
 
-var allResourcesTags = {
+// Resource tagging
+var commonResourceTags = createAvdResourceTags ? {
     WorkloadName: avdWorkloadNameTag
     WorkloadType: avdWorkloadTypeTag
     DataClassification: avdDataClassificationTag
-    Dept: avdDeptTag
-    Criticality: avdCritSugestValueTag ? avdCriticalityTag : avdCritCustomValueTag
+    Department: avdDepartmentTag
+    Criticality: (avdCriticalityTag == 'Custom') ? avdCritCustomValueTag : avdCriticalityTag
     ApplicationName: avdApplicationNameTag
     ServiceClass: avdSlaTag
     OpsTeam: avdOpsTeamTag
@@ -459,16 +465,14 @@ var allResourcesTags = {
     Number: avdCostCenterTag
     Env: avdEnvTag
 
-}
+}: {}
 
 var allComputeStorageTags = {
     DomainName: avdIdentityDomainName
-    JoinType: 'ADDS' // avdDeviceJoinTypeTag
+    JoinType: 'ADDS' // avdDeviceJoinTypeTag waiting for PR on identity to be merged
 }
-
-var allAvdTags = union(allResourcesTags, allComputeStorageTags)
-
-var avdCritFinalValueTag = (avdCriticalityTag == 'custom') ? avdCritCustomValueTag : avdCriticalityTag
+var allResourceTags = union(commonResourceTags, allComputeStorageTags)
+//
 
 var resourceGroups = [
     {
@@ -516,12 +520,9 @@ module avdBaselineResourceGroups '../../carml/1.2.0/Microsoft.Resources/resource
         name: resourceGroup.name
         location: resourceGroup.location
         enableDefaultTelemetry: false
-        tags: allAvdTags
-        
-                  
-        }
+        tags: createAvdResourceTags ? commonResourceTags: {}
     }
-]
+}]
 
 // Storage.
 module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdFslogixDeployment) {
@@ -531,7 +532,7 @@ module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
         name: avdStorageObjectsRgName
         location: avdSessionHostLocation
         enableDefaultTelemetry: false
-        tags: allAvdTags
+        tags: createAvdResourceTags ? commonResourceTags: {}
     }
 }
 //
@@ -556,6 +557,7 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
         avdVnetworkSubnetAddressPrefix: avdVnetworkSubnetAddressPrefix
         avdWorkloadSubsId: avdWorkloadSubsId
         customDnsIps: customDnsIps
+        avdTags: createAvdResourceTags ? commonResourceTags: {}
     }
     dependsOn: [
         avdBaselineResourceGroups
@@ -580,6 +582,7 @@ module avdHostPoolandAppGroups 'avd-modules/avd-hostpool-app-groups.bicep' = {
         avdServiceObjectsRgName: avdServiceObjectsRgName
         avdStartVmOnConnect: avdStartVmOnConnect
         avdWorkloadSubsId: avdWorkloadSubsId
+        avdTags: createAvdResourceTags ? commonResourceTags: {}
     }
     dependsOn: [
         avdBaselineResourceGroups
@@ -594,6 +597,7 @@ module avdWorkSpace '../../carml/1.2.0/Microsoft.DesktopVirtualization/workspace
         name: avdWorkSpaceName
         location: avdManagementPlaneLocation
         appGroupResourceIds: avdHostPoolandAppGroups.outputs.avdAppGroupsArray
+        tags: createAvdResourceTags ? commonResourceTags: {}
     }
     dependsOn: [
         avdHostPoolandAppGroups
@@ -617,6 +621,7 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = i
         readerRoleId: readerRoleId
         storageAccountContributorRoleId: storageAccountContributorRoleId
         createAvdFslogixDeployment: createAvdFslogixDeployment
+        avdTags: createAvdResourceTags ? commonResourceTags: {}
     }
     dependsOn: [
         avdBaselineResourceGroups
@@ -679,6 +684,7 @@ module avdWrklKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep
                 }
             ]
         }
+        tags: createAvdResourceTags ? commonResourceTags: {}
     }
     dependsOn: [
         avdBaselineResourceGroups
@@ -728,6 +734,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
         tempStorageDomainJoinVmName: tempStorageDomainJoinVmName
         useSharedImage: useSharedImage
+        avdTags: createAvdResourceTags ? allResourceTags: {}
 
     }
     dependsOn: [
@@ -774,6 +781,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         hostPoolToken: avdHostPoolandAppGroups.outputs.hostPooltoken
         marketPlaceGalleryWindows: marketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
+        avdTags: createAvdResourceTags ? allResourceTags: {}
     }
     dependsOn: [
         avdBaselineResourceGroups
