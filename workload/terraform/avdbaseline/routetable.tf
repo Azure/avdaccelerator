@@ -6,7 +6,7 @@ resource "azurerm_resource_group" "udrnet" {
 resource "azurerm_route_table" "udr" {
   name                          = "avdudr-route-table"
   location                      = var.avdLocation
-  resource_group_name           = var.rg_network
+  resource_group_name           = azurerm_resource_group.udrnet.name
   disable_bgp_route_propagation = false
 
   route {
