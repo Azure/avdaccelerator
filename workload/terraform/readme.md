@@ -1,14 +1,15 @@
 # Azure Virtual Desktop Accelerator for Terraform Guide
+
 This guide is designed to help you get started with deploying Azure Virtual Desktop using the provided Terraform template(s) within this repository. Before you deploy, it is recommended to review the template(s) to understand the resources that will be deployed and the associated costs.
 
-This accelerator is to be used as starter kit and you can expand its functionality by developing your own deployments. It is meant for creating a new Azure Virtual Desktop workload, so it cannot be used to maintain, modify or add resources to an existing or already deployed Azure Virtual Desktop workload from this accelerator. You can however, destroy the existing workload and use this accelerator to create a new Azure Virtual Desktop workloads.
+This accelerator is to be used as starter kit and you can expand its functionality by developing your own deployments. This scenario deploys a new Azure Virtual Desktop workload, so it cannot be used to maintain, modify or add resources to an existing or already deployed Azure Virtual Desktop workload from this accelerator.
 
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)  
-- [Planning](#planning)  
+- [Planning](#planning) 
+- [Custom Image Build](#Custom-Image-Build)    
 - [AVD Baseline](#AVD-Baseline)  
-- [Custom Image Build](#Custom-Image-Build)  
 - [Backend Setup](#Backends)  
 - [Terraform file Structure](#Files)  
 
@@ -29,22 +30,31 @@ To get started with Terraform on Azure check out their [tutorial](https://learn.
 The deployments will require a "Prefix" which will be included in all the deployed resources name.
 Resource Groups and resource names are derived from the `Prefix` parameter, which defaults to 'acl'. Pick a unique resource prefix that is 3-5 alphanumeric characters in length without whitespaces.
 
-## AVD-Baseline
-Azure Virtual Desktop (Azure Virtual Desktop) resources and dependent services for establishing the baseline.
-- Azure Virtual Desktop resources: workplace, two(2) application groups and host pool
-- New virtual network (VNet), subnet with baseline NSG, DNS zones for private endpoints, route table and peering to the hub virtual network
-- Azure Files Premium share, RBAC role assignment and private endpoint
-- Key Vault
-- Application Security group
-
 ## Custom-Image-Build
-Deploy a customer image based on the latest version of the Azure Marketplace image using Azure Image Builder to an Azure Compute Gallery. The custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates.
 
+Deploy a customer image based on the latest version of the Azure Marketplace image for Windows 11 21H2 with M365 using Azure Image Builder to an Azure Compute Gallery.. The custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates.
+
+![Custom Image diagram](../../workload/docs/diagrams/avd-accelerator-terraform-aib-custom-image.png)
+## AVD-Baseline
+
+Azure Virtual Desktop (Azure Virtual Desktop) resources and dependent services for establishing the baseline.
+
+- Azure Virtual Desktop resources:
+  - 2 Host Pools – 1 personal and 1 pooled
+  - 2 Workspaces – 1 personal and 1 pooled
+  - Associated Desktop Application Group for personal
+  - Associated Desktop Application Group and Remote Application Group for pooled
+- Azure Files Storage with FSLogix share, RBAC role assignment and private endpoint
+- Application Security group and Network Security group
+- New VNet, subnet with baseline NSG, DNS zones for private endpoints, route table and peering to the hub virtual network
+- Key Vault and private endpoint
 
 ## Backends
 
 The default templates write a state file directly to disk locally to where you are executing terraform from. If you wish to AzureRM backend please see [AzureRM Backend](https://www.terraform.io/docs/language/settings/backends/azurerm.html). This deployment highlights using Azure Blog Storage to store state file and Key Vault
+
 ### Backends using Azure Blob Storage
+
 <details>
 <summary>Click to expand</summary>
 #### Using Azure CLI
@@ -98,15 +108,25 @@ az keyvault create --name "<Azure Virtual Desktopkeyvaultdemo>" --resource-group
 ```cli
 az keyvault secret set --vault-name "<Azure Virtual Desktopkeyvaultdemo>" --name terraform-backend-key --value "<W.........................................>"
 ```
+
 </details>
 
 ## Files
+
+The Custom Image Terraform files structure:
+| file Name           | Description                                                  |
+| ------------------- | ------------------------------------------------------------ |
+| aib.tf              | This file deploys Azure Image Builder and Compute Gallery |
+| outputs.tf          | This will contains the outputs post deployment |
+| variables.tf        | Variables have been created in all files for various properties and names, these are placeholders and are not required to be changed unless there is a need to. See below |
+| terraform.tfvars    | This file contains all variables to be changed from the defaults, you are only required to change these as per your requirements |
 
 The Azure Virtual Desktop Baseline Terraform files are all written as individual files each having a specific function. Variables have been created in all files for consistency, all changes to defaults are to be changed from the terraform.tfvars.sample file. The structure is as follows:
 
 | file Name           | Description                                                  |
 | ------------------- | ------------------------------------------------------------ |
 | main.tf             | This file deploys Azure Virtual Desktop |
+| host.tf             | This file deploys session host using the custom image in the Azure Compute Gallery |
 | provider.tf         | This file contains the Terraform provider settings and version |
 | afstorage.tf        | This file creates the Storage account and Azure files shares with RBAC |
 | networking.tf       | This file creates the Virtual Network and subnets to be used |
@@ -119,18 +139,14 @@ The Azure Virtual Desktop Baseline Terraform files are all written as individual
 | variables.tf        | Variables have been created in all files for various properties and names, these are placeholders and are not required to be changed unless there is a need to. See below |
 | terraform.tfvars    | This file contains all variables to be changed from the defaults, you are only required to change these as per your requirements |
 
-The Custom Image Terraform files
-| file Name           | Description                                                  |
-| ------------------- | ------------------------------------------------------------ |
-| aib.tf              | This file deploys Azure Image Builder and Compute Gallery |
-| outputs.tf          | This will contains the outputs post deployment |
-| variables.tf        | Variables have been created in all files for various properties and names, these are placeholders and are not required to be changed unless there is a need to. See below |
-| terraform.tfvars    | This file contains all variables to be changed from the defaults, you are only required to change these as per your requirements |
-
+Validated on provider versions:
+hashicorp/random v3.3.2
+hashicorp/azuread v2.26.1
+hashicorp/azurerm v3.61.0
 ## Deployment Steps
 
 1. Modify the `terraform.tfvars` file to define the desired names, location, networking, and other variables
-2. Before deploying, confirm the correct subscription 
+2. Before deploying, confirm the correct subscription
 3. Change directory to the Terraform folder
 4. Run `terraform init` to initialize this directory
 5. Run `terraform plan` to view the planned deployment
@@ -139,6 +155,7 @@ The Custom Image Terraform files
 ## Confirming Deployment
 
 ## Additional References
+
 <details>
 <summary>Click to expand</summary>
 
@@ -150,6 +167,7 @@ The Custom Image Terraform files
 - [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli)
 - [Configure the Azure Terraform Visual Studio Code extension](https://docs.microsoft.com/en-us/azure/developer/terraform/configure-vs-code-extension-for-terraform)
 - [Setup video](https://youtu.be/YmbmpGdhI6w)
+
 </details>
 
 ## Known Issues
