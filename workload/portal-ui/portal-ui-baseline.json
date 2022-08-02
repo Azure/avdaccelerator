@@ -1128,7 +1128,7 @@
                             "visible": true,
                             "label": "Custom resource naming",
                             "defaultValue": "No",
-                            "toolTip": "When set 'Yes', the information will be used to name resources. When set to 'No' deployment will use the AVD accelerator naming standard.",
+                            "toolTip": "When set 'Yes', the information provided will be used to name resources. When set to 'No' deployment will use the AVD accelerator naming standard.",
                             "constraints": {
                                 "required": true,
                                 "allowedValues": [
@@ -1460,6 +1460,273 @@
                             }
                         }
                     ]
+                },
+                {
+                    "name": "avdResourceTagging",
+                    "label": "Resource tagging",
+                    "type": "Microsoft.Common.Section",
+                    "visible": true,
+                    "elements": [
+                        {
+                            "name": "avdResourceNamingSelection",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": true,
+                            "label": "Create resource tags",
+                            "defaultValue": "No",
+                            "toolTip": "When set 'Yes', the information provided will be used to create tags on resources and resource groups.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "Yes",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "No",
+                                        "value": false
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "avdResourceTags",
+                            "type": "Microsoft.Common.Section",
+                            "label": "Resources tags:",
+                            "visible": "[equals(steps('avdResourceTagging').avdResourceNamingSelection, true)]",
+                            "elements": [
+                                {
+                                    "name": "avdTagsWorkloadName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Workload name:",
+                                    "toolTip": "This input will be the value of a tag named WorkloadName.",
+                                    "placeholder": "Example: AVD",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,256}$",
+                                        "validationMessage": "Value must be 1-256 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdTagsWorkloadType",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "Workload type:",
+                                    "filter": true,
+                                    "defaultValue": "Light",
+                                    "toolTip": "This input will be the value of a tag named WorkloadType, reference to the size of the VM for your workloads.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Light",
+                                                "description": "",
+                                                "value": "Light"
+                                            },
+                                            {
+                                                "label": "Medium",
+                                                "description": "",
+                                                "value": "Medium"
+                                            },
+                                            {
+                                                "label": "High",
+                                                "description": "",
+                                                "value": "High"
+                                            },
+                                            {
+                                                "label": "Power",
+                                                "description": "",
+                                                "value": "POwer"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "avdTagsDataClassificationTag",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "Data classification:",
+                                    "filter": true,
+                                    "defaultValue": "Non-business",
+                                    "toolTip": "This input will be the value of a tag named DataClassification, reference to the sensitivity of data hosted.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Non-business",
+                                                "description": "",
+                                                "value": "Non-business"
+                                            },
+                                            {
+                                                "label": "Public",
+                                                "description": "",
+                                                "value": "Public"
+                                            },
+                                            {
+                                                "label": "General",
+                                                "description": "",
+                                                "value": "General"
+                                            },
+                                            {
+                                                "label": "Confidential",
+                                                "description": "",
+                                                "value": "Confidential"
+                                            },
+                                            {
+                                                "label": "Highly-confidential",
+                                                "description": "",
+                                                "value": "Highly-confidential"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "avdTagsDepartmentTag",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Department:",
+                                    "toolTip": "This input will be the value of a tag named Department, reference the department that owns the deployment.",
+                                    "placeholder": "Example: Contoso-AVD",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,256}$",
+                                        "validationMessage": "Value must be 1-256 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdTagsCriticalityTag",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "Workload criticality:",
+                                    "filter": true,
+                                    "defaultValue": "Low",
+                                    "toolTip": "This input will be the value of a tag named Criticality, reference to the criticality of the workload.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Low",
+                                                "description": "",
+                                                "value": "Low"
+                                            },
+                                            {
+                                                "label": "Medium",
+                                                "description": "",
+                                                "value": "Medium"
+                                            },
+                                            {
+                                                "label": "High",
+                                                "description": "",
+                                                "value": "High"
+                                            },
+                                            {
+                                                "label": "Missin-critical",
+                                                "description": "",
+                                                "value": "Missin-critical"
+                                            },
+                                            {
+                                                "label": "Custom",
+                                                "description": "",
+                                                "value": "Custom"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "avdTagsCustomWorkloadCriticality",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Custom workload criticality:",
+                                    "visible": "[equals(steps('avdResourceTagging').avdResourceTags.avdTagsCriticalityTag, 'Custom')]",
+                                    "toolTip": "This input will be the value of a tag named Criticality, reference to a custom criticality for the workload.",
+                                    "placeholder": "Example: Contoso-Criticality",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,256}$",
+                                        "validationMessage": "Value must be 1-256 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdTagsApplicationNameTag",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Application name:",
+                                    "toolTip": "This input will be the value of a tag named ApplicationName, reference details about the application.",
+                                    "placeholder": "Example: Contoso-App",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,256}$",
+                                        "validationMessage": "Value must be 1-256 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdTagsWorkloadSlaTag",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Workload SLA:",
+                                    "toolTip": "This input will be the value of a tag named ServiceClass, reference to the service level agreement level of the worload.",
+                                    "placeholder": "Example: Contoso-SLA",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,256}$",
+                                        "validationMessage": "Value must be 1-256 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdTagsOpsTeamTag",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Operations team:",
+                                    "toolTip": "This input will be the value of a tag named OpsTeam, reference to the team accountable for day-to-day operations.",
+                                    "placeholder": "Example: workload-admins@Contoso.com",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
+                                {
+                                    "name": "avdTagsOwnerTag",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Owner:",
+                                    "toolTip": "This input will be the value of a tag named Owner, reference to the organizational owner of the AVD deployment.",
+                                    "placeholder": "Example: workload-owner@Contoso.com",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
+                                {
+                                    "name": "avdTagsCostCenterTag",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Cost center:",
+                                    "toolTip": "This input will be the value of a tag named CostCenter, reference to the cost center of owner team.",
+                                    "placeholder": "Example: Contoso-CC",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,256}$",
+                                        "validationMessage": "Value must be 1-256 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdTagsEnvironmentTypeTag",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "Environment type:",
+                                    "filter": true,
+                                    "defaultValue": "Dev",
+                                    "toolTip": "This input will be the value of a tag named Environment, reference to the environment type of the workload.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Dev",
+                                                "description": "",
+                                                "value": "Dev"
+                                            },
+                                            {
+                                                "label": "Staging",
+                                                "description": "",
+                                                "value": "Staging"
+                                            },
+                                            {
+                                                "label": "Prod",
+                                                "description": "",
+                                                "value": "Prod"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         },
@@ -1511,7 +1778,7 @@
                 "avdServiceObjectsRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdServiceObjectsRgCustomName, 'none')]",
                 "avdNetworkObjectsRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingNetwork.avdNetworkObjectsRgCustomName, 'none')]",
                 "avdComputeObjectsRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingCompute.avdComputeObjectsRgCustomName, 'none')]",
-                "avdStorageObjectsRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingStorage.avdStorageObjectsRgCustomName, 'none')]",                                                                                                                       
+                "avdStorageObjectsRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingStorage.avdStorageObjectsRgCustomName, 'none')]",
                 "avdVnetworkCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingNetwork.avdVnetworkCustomName, 'none')]",
                 "avdVnetworkSubnetCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingNetwork.avdVnetworkSubnetCustomName, 'none')]",
                 "avdNetworksecurityGroupCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingNetwork.avdNetworksecurityGroupCustomName, 'none')]",
@@ -1525,7 +1792,20 @@
                 "avdAvailabilitySetCustomNamePrefix": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingCompute.avdAvailabilitySetCustomNamePrefix, 'none')]",
                 "avdFslogixStoragePrefixCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingStorage.avdFslogixStorageCustomName, 'none')]",
                 "avdFslogixProfileContainerFileShareCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingStorage.avdFslogixProfileContainerFileShareCustomName, 'none')]",
-                "avdWrklKvPrefixCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdWrklKvCustomName, 'none')]"
+                "avdWrklKvPrefixCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdWrklKvCustomName, 'none')]",
+                "createResourceTags": "[steps('avdResourceTagging').avdResourceNamingSelection]",
+                "workloadNameTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsWorkloadName, 'none')]",
+                "workloadTypeTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsWorkloadType, 'Light')]",
+                "dataClassificationTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsDataClassificationTag, 'Non-business')]",
+                "departmentTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsDepartmentTag, 'none')]",
+                "workloadCriticalityTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsCriticalityTag, 'Low')]",
+                "workloadCriticalityCustomValueTag": "[if(equals(steps('avdResourceTagging').avdResourceTags.avdTagsCriticalityTag, 'Custom'), steps('avdResourceTagging').avdResourceTags.avdTagsCustomWorkloadCriticality, 'Low')]",
+                "applicationNameTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsApplicationNameTag, 'none')]",
+                "workloadSlaTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsWorkloadSlaTag, 'none')]",
+                "opsTeamTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsOpsTeamTag, 'none')]",
+                "ownerTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsOwnerTag, 'none')]",
+                "costCenterTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsCostCenterTag, 'none')]",
+                "environmentTypeTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsEnvironmentTypeTag, 'Dev')]"
             },
             "kind": "Subscription",
             "location": "[steps('basics').avdDeploymentScope.location.name]",

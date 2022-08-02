@@ -39,6 +39,9 @@ param storageAccountContributorRoleId string
 @description('Optional. Deploy Fslogix setup. (Default: true)')
 param createAvdFslogixDeployment bool
 
+@description('Required. Tags to be applied to resources')
+param avdTags object
+
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
@@ -53,6 +56,7 @@ module fslogixManagedIdentity '../../../carml/1.2.0/Microsoft.ManagedIdentity/us
   params: {
     name: fslogixManagedIdentityName
     location: avdManagementPlaneLocation
+    tags: avdTags
   }
 }
 
