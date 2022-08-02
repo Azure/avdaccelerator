@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "8350990865491069190"
+      "templateHash": "3385563865132660847"
     }
   },
   "parameters": {
@@ -182,9 +182,9 @@
     },
     "imageBuildNameTag": {
       "type": "string",
-      "defaultValue": "AVD-Image-App01",
+      "defaultValue": "AVD-Image",
       "metadata": {
-        "description": "Optional. The name of workload for tagging purposes. (Default: AVD-image)"
+        "description": "Optional. The name of workload for tagging purposes. (Default: AVD-Image)"
       }
     },
     "workloadNameTag": {
