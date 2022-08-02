@@ -99,8 +99,8 @@ param avdSharedServicesKvCustomName string = 'kv-avd'
 @description('Optional. Apply tags on resources and resource groups. (Default: false)')
 param createResourceTags bool = false
 
-@description('Optional. The name of workload for tagging purposes. (Default: AVD-image)')
-param imageBuildNameTag string = 'AVD-Image-App01'
+@description('Optional. The name of workload for tagging purposes. (Default: AVD-Image)')
+param imageBuildNameTag string = 'AVD-Image'
 
 @description('Optional. Reference to the size of the VM for your workloads (Default: Contoso-Workload)')
 param workloadNameTag string = 'Contoso-Workload'
