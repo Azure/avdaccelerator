@@ -99,6 +99,9 @@ param FsLogixScriptArguments string
 @description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
 
+@description('Required. Tags to be applied to resources')
+param avdTags object
+
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
@@ -133,6 +136,7 @@ module avdAvailabilitySet './avd-availability-sets.bicep' = if (!avdUseAvailabil
       availabilitySetCount: availabilitySetCount
       avdAsFaultDomainCount: avdAsFaultDomainCount
       avdAsUpdateDomainCount: avdAsUpdateDomainCount
+      avdTags: avdTags
   }
 }
 
@@ -173,6 +177,7 @@ module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, avdSessi
     hostPoolToken: hostPoolToken
     marketPlaceGalleryWindows: marketPlaceGalleryWindows
     useSharedImage: useSharedImage
+    avdTags: avdTags
   }
   dependsOn: [
   ]
