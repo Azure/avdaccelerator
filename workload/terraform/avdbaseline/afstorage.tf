@@ -24,16 +24,6 @@ resource "azurerm_storage_account" "storage" {
   account_replication_type  = "LRS"
   account_kind              = "FileStorage"
   enable_https_traffic_only = true
-  queue_properties {
-    logging {
-      delete                = true
-      read                  = true
-      write                 = true
-      version               = "1.0"
-      enabled               = true
-      retention_policy_days = 10
-    }
-  }
 }
 
 resource "azurerm_storage_share" "FSShare" {

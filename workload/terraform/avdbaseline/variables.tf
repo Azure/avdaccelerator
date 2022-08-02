@@ -133,3 +133,19 @@ variable "local_admin_password" {
   description = "local admin password"
   sensitive   = true
 }
+
+variable "image_name" {
+  type        = string
+  description = "Name of the custome image to use"
+}
+  
+variable "gallery_name"{
+  type       = string
+  description = "Name of the shared image gallery name"
+}
+
+variable "image_rg" {
+  type        = string
+  description = "Image Gallery resource group"
+}
+  
