@@ -1,5 +1,21 @@
 # Welcome to the Azure Virtual Desktop (AVD) Landing Zone Accelerator
 
+## AVD Accelerator Baseline
+
+Deploy Azure Virtual Desktop (AVD) resources and dependent services for establishing the baseline
+- AVD resources: workspace, two (2) application groups and host pool
+- [Optional]: new virtual network (VNet) with baseline NSG and route table
+- Azure Files share. Integration with Active Directory 
+- Session Hosts 
+
+
+|Baseline deployment options:          |                           |
+|:-------------------------------------|:------------------------: |
+|Azure portal UI          |[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json)      |
+|Command line (Bicep/ARM)              |[![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/README.md)          |
+|Terraform                             |[![Terraform](./workload/docs/icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md)                  |
+|                                      |                                                                                                                                                     |
+
 ## Optional: Custom Image Build
 
 Deploy a custom image based on the latest version of the Azure marketplace image to an Azure Compute Gallery. The following images are offered: 
@@ -10,17 +26,12 @@ Deploy a custom image based on the latest version of the Azure marketplace image
 
 Custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates. 
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json)
-
-## AVD Accelerator Baseline
-
-Deploy Azure Virtual Desktop (AVD) resources and dependent services for establishing the baseline
-- AVD resources: workspace, two (2) application groups and host pool
-- [Optional]: new virtual network (VNet) with baseline NSG and route table
-- Azure Files share. Integration with Active Directory 
-- Session Hosts 
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json)
+|Custom image deployment options:      |                           |
+|:-------------------------------------|:------------------------: |
+|Azure portal UI                       |[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json)   |
+|Command line (Bicep/ARM)              |[![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/README.md)          |
+|Terraform                             |[![Terraform](./workload/docs/icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md)                  |
+|                                      |                                                                                                                                                     |
 
 ## Overview
 
