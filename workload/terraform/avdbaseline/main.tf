@@ -4,6 +4,11 @@ resource "azurerm_resource_group" "sh" {
   location = var.avdLocation
 }
 
+resource "azurerm_resource_group" "share" {
+  name     = var.rg_shared_name
+  location = var.avdLocation
+}
+
 # Create AVD workspace
 resource "azurerm_virtual_desktop_workspace" "workspace" {
   name                = var.workspace
