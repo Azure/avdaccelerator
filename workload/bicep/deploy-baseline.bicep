@@ -283,7 +283,7 @@ param departmentTag string = 'Contoso-AVD'
     'Medium'
     'High'
     'Mission-critical'
-    'custom'
+    'Custom'
 ])
 @description('Optional. Criticality of the workload. (Default: Low)')
 param workloadCriticalityTag string = 'Low'
