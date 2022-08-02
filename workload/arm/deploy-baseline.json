@@ -4,8 +4,13 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
+<<<<<<< HEAD
       "version": "0.6.18.56646",
       "templateHash": "2572811146481769461"
+=======
+      "version": "0.8.9.13224",
+      "templateHash": "13372513752439238918"
+>>>>>>> 4ba0e408920d019dbec1de049dfd147dfb8ea540
     }
   },
   "parameters": {
@@ -1862,8 +1867,13 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
+<<<<<<< HEAD
               "version": "0.6.18.56646",
               "templateHash": "3920276106480555049"
+=======
+              "version": "0.8.9.13224",
+              "templateHash": "9272855781845924521"
+>>>>>>> 4ba0e408920d019dbec1de049dfd147dfb8ea540
             }
           },
           "parameters": {
@@ -1894,7 +1904,7 @@
             "avdVnetworkName": {
               "type": "string",
               "metadata": {
-                "description": "Optional. Name of the virtual network if required to be created"
+                "description": "Optional. Name of the virtual network if required to be created."
               }
             },
             "avdNetworksecurityGroupName": {
@@ -1906,7 +1916,7 @@
             "avdApplicationSecurityGroupName": {
               "type": "string",
               "metadata": {
-                "description": "Optional. Created if hte new VNet for AVD is created. Application Security Group (ASG) for the session hosts"
+                "description": "Optional. Created if a new VNet for AVD is created. Application Security Group (ASG) for the session hosts."
               }
             },
             "avdRouteTableName": {
@@ -1918,50 +1928,56 @@
             "vNetworkGatewayOnHub": {
               "type": "bool",
               "metadata": {
-                "description": "Does the hub contains a virtual network gateway"
+                "description": "Does the hub contain a virtual network gateway."
               }
             },
             "existingHubVnetResourceId": {
               "type": "string",
               "metadata": {
-                "description": "Existing hub virtual network for perring"
+                "description": "Existing hub virtual network for peering."
               }
             },
             "avdVnetworkPeeringName": {
               "type": "string",
               "metadata": {
-                "description": "VNet peering name for AVD VNEt to vHub.  "
+                "description": "VNet peering name for AVD VNet to vHub."
               }
             },
             "avdVnetworkAddressPrefixes": {
               "type": "string",
               "metadata": {
-                "description": "AVD virtual network address prefixes"
+                "description": "AVD VNet address prefixes."
               }
             },
             "avdVnetworkSubnetName": {
               "type": "string",
               "metadata": {
-                "description": "AVD subnet Name"
+                "description": "AVD subnet Name."
               }
             },
             "avdVnetworkSubnetAddressPrefix": {
               "type": "string",
               "metadata": {
-                "description": "AVD virtual network subnet address prefix"
+                "description": "AVD VNet subnet address prefix."
               }
             },
             "customDnsIps": {
               "type": "string",
               "metadata": {
-                "description": "custom DNS servers IPs"
+                "description": "Custom DNS server IPs."
               }
             },
             "avdSessionHostLocation": {
               "type": "string",
               "defaultValue": "[deployment().location]",
               "metadata": {
-                "description": "Required. Location where to deploy compute services"
+                "description": "Required. Location where to deploy compute services."
+              }
+            },
+            "avdTags": {
+              "type": "object",
+              "metadata": {
+                "description": "Required. Tags to be applied to resources"
               }
             },
             "avdTags": {
@@ -5107,8 +5123,13 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
+<<<<<<< HEAD
               "version": "0.6.18.56646",
               "templateHash": "10973550761269976745"
+=======
+              "version": "0.8.9.13224",
+              "templateHash": "6832536949944624139"
+>>>>>>> 4ba0e408920d019dbec1de049dfd147dfb8ea540
             }
           },
           "parameters": {
@@ -6873,8 +6894,13 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
+<<<<<<< HEAD
               "version": "0.6.18.56646",
               "templateHash": "13945381849254652625"
+=======
+              "version": "0.8.9.13224",
+              "templateHash": "14946097262730710613"
+>>>>>>> 4ba0e408920d019dbec1de049dfd147dfb8ea540
             }
           },
           "parameters": {
@@ -10494,8 +10520,13 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
+<<<<<<< HEAD
               "version": "0.6.18.56646",
               "templateHash": "15871563055704186156"
+=======
+              "version": "0.8.9.13224",
+              "templateHash": "11022154430813870623"
+>>>>>>> 4ba0e408920d019dbec1de049dfd147dfb8ea540
             }
           },
           "parameters": {
@@ -17557,8 +17588,13 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
+<<<<<<< HEAD
               "version": "0.6.18.56646",
               "templateHash": "6557043952262570548"
+=======
+              "version": "0.8.9.13224",
+              "templateHash": "9200084337278260406"
+>>>>>>> 4ba0e408920d019dbec1de049dfd147dfb8ea540
             }
           },
           "parameters": {
@@ -17823,8 +17859,13 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
+<<<<<<< HEAD
                       "version": "0.6.18.56646",
                       "templateHash": "11681010985247499968"
+=======
+                      "version": "0.8.9.13224",
+                      "templateHash": "16497345851723691410"
+>>>>>>> 4ba0e408920d019dbec1de049dfd147dfb8ea540
                     }
                   },
                   "parameters": {
@@ -18330,8 +18371,13 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
+<<<<<<< HEAD
                       "version": "0.6.18.56646",
                       "templateHash": "9736340715196394966"
+=======
+                      "version": "0.8.9.13224",
+                      "templateHash": "11792545056864482488"
+>>>>>>> 4ba0e408920d019dbec1de049dfd147dfb8ea540
                     }
                   },
                   "parameters": {
