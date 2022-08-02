@@ -24,6 +24,9 @@ param avdComputeObjectsRgName string
 @description('Optional. AVD workload subscription ID, multiple subscriptions scenario.')
 param avdWorkloadSubsId string
 
+@description('Required. Tags to be applied to resources')
+param avdTags object
+
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
@@ -44,5 +47,6 @@ module avdAvailabilitySet '../../../carml/1.2.0/Microsoft.Compute/availabilitySe
         location: avdSessionHostLocation
         availabilitySetFaultDomain: avdAsFaultDomainCount
         availabilitySetUpdateDomain: avdAsUpdateDomainCount
+        tags: avdTags
     }
 }]
