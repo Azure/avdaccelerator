@@ -469,7 +469,7 @@
                     "visible": true,
                     "elements": [
                         {
-                            "name": "avdResourceNamingSelection",
+                            "name": "avdResourceTaggingSelection",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
                             "label": "Create resource tags",
@@ -493,7 +493,7 @@
                             "name": "avdResourceTags",
                             "type": "Microsoft.Common.Section",
                             "label": "Resources tags:",
-                            "visible": "[equals(steps('avdResourceTagging').avdResourceNamingSelection, true)]",
+                            "visible": "[equals(steps('avdResourceTagging').avdResourceTaggingSelection, true)]",
                             "elements": [
                                 {
                                     "name": "avdTagsImageBuildName",
@@ -717,18 +717,18 @@
                 "avdSharedSResourcesAibContainerCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedStorageAccountAibContainerCustomName, 'none')]",
                 "avdSharedSResourcesScriptsContainerCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedStorageAccountScriptsContainerCustomName, 'none')]",
                 "avdSharedServicesKvCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedKvCustomName, 'none')]",
-                "createResourceTags": "[steps('avdResourceTagging').avdResourceNamingSelection]",
-                "imageBuildNameTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsImageBuildName, 'none')]",
-                "workloadNameTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsWorkloadName, 'none')]",
-                "dataClassificationTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsDataClassificationTag, 'Non-business')]",
-                "departmentTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsDepartmentTag, 'none')]",
-                "workloadCriticalityTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsCriticalityTag, 'Low')]",
+                "createResourceTags": "[steps('avdResourceTagging').avdResourceTaggingSelection]",
+                "imageBuildNameTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsImageBuildName, 'none')]",
+                "workloadNameTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsWorkloadName, 'none')]",
+                "dataClassificationTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsDataClassificationTag, 'Non-business')]",
+                "departmentTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsDepartmentTag, 'none')]",
+                "workloadCriticalityTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsCriticalityTag, 'Low')]",
                 "workloadCriticalityCustomValueTag": "[if(equals(steps('avdResourceTagging').avdResourceTags.avdTagsCriticalityTag, 'Custom'), steps('avdResourceTagging').avdResourceTags.avdTagsCustomWorkloadCriticality, 'Low')]",
-                "applicationNameTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsApplicationNameTag, 'none')]",
-                "opsTeamTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsOpsTeamTag, 'none')]",
-                "ownerTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsOwnerTag, 'none')]",
-                "costCenterTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsCostCenterTag, 'none')]",
-                "environmentTypeTag": "[if(equals(steps('avdResourceTagging').avdResourceNamingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsEnvironmentTypeTag, 'Dev')]"
+                "applicationNameTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsApplicationNameTag, 'none')]",
+                "opsTeamTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsOpsTeamTag, 'none')]",
+                "ownerTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsOwnerTag, 'none')]",
+                "costCenterTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsCostCenterTag, 'none')]",
+                "environmentTypeTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsEnvironmentTypeTag, 'Dev')]"
             },
             "kind": "Subscription",
             "location": "[steps('basics').avdDeploymentScope.location.name]",
