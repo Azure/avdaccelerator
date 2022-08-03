@@ -4,7 +4,7 @@ This guide is designed to help you get started with deploying Azure Virtual Desk
 
 This accelerator is to be used as starter kit and you can expand its functionality by developing your own deployments. This scenario deploys a new Azure Virtual Desktop workload, so it cannot be used to maintain, modify or add resources to an existing or already deployed Azure Virtual Desktop workload from this accelerator.
 
-*Note* This terraform accelerator requires the Custom Image Build before deploying the Baseline. If you prefer to use the marketplace image with no customization [see](https://docs.microsoft.com/en-us/azure/developer/terraform/create-avd-session-host)
+***Note*** This terraform accelerator requires the Custom Image Build before deploying the Baseline. If you prefer to use the marketplace image with no customization [see](https://docs.microsoft.com/en-us/azure/developer/terraform/create-avd-session-host)
 
 ## Table of Contents
 
@@ -30,7 +30,7 @@ To get started with Terraform on Azure check out their [tutorial](https://learn.
 ### Decide on a Prefix
 
 The deployments will require a "Prefix" which will be included in all the deployed resources name.
-Resource Groups and resource names are derived from the `Prefix` parameter, which defaults to 'acl'. Pick a unique resource prefix that is 3-5 alphanumeric characters in length without whitespaces.
+Resource Groups and resource names are derived from the `Prefix` parameter. Pick a unique resource prefix that is 3-5 alphanumeric characters in length without whitespaces.
 
 ## Custom-Image-Build
 
@@ -50,6 +50,8 @@ Azure Virtual Desktop (Azure Virtual Desktop) resources and dependent services f
 - Application Security group and Network Security group
 - New VNet, subnet with baseline NSG, DNS zones for private endpoints, route table and peering to the hub virtual network
 - Key Vault and private endpoint
+
+![Custom Image diagram](../../workload/docs/diagrams/avd-accelerator-terraform-baseline-image.png)
 
 ## Backends
 
