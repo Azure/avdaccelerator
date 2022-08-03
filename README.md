@@ -48,7 +48,7 @@ Custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https
 |Command line (Bicep/ARM)              |[![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/README.md)          |
 |Terraform                             |[![Terraform](./workload/docs/icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md)                  |
 
-## Baseline Architectural Diagram
+## Architectural Diagram
 
 ![AVD accelerator diagram](./workload/docs/diagrams/avd-accelerator-baseline.png)
 
