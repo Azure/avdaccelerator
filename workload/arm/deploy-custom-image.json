@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "7167371427441370891"
+      "templateHash": "10430380405652751718"
     }
   },
   "parameters": {
@@ -245,14 +245,14 @@
     },
     "opsTeamTag": {
       "type": "string",
-      "defaultValue": "Contoso-Ops",
+      "defaultValue": "workload-admins@Contoso.com",
       "metadata": {
         "description": "Optional. Team accountable for day-to-day operations. (Contoso-Ops)"
       }
     },
     "ownerTag": {
       "type": "string",
-      "defaultValue": "Contoso-Owner",
+      "defaultValue": "workload-owner@Contoso.com",
       "metadata": {
         "description": "Optional. Organizational owner of the AVD deployment. (Default: Contoso-Owner)"
       }
