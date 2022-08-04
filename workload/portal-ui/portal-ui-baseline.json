@@ -1499,7 +1499,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Workload name:",
                                     "toolTip": "This input will be the value of a tag named WorkloadName.",
-                                    "placeholder": "Example: AVD",
+                                    "placeholder": "Example: Contoso-Workload",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,256}$",
