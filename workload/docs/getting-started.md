@@ -8,7 +8,7 @@ This accelerator is to be used as starter kit and you can expand its functionali
 
 Prior to deploying, you need to ensure you have met the following prerequisites:
 
-- You have already deployed an ALZ architecture from a template reference implementation available. See [Deploying Enterprise-Scale Architecture in your own environment](https://github.com/Azure/Enterprise-Scale#deploying-enterprise-scale-architecture-in-your-own-environment).
+- It is recommended to have already deployed an ALZ architecture (not mandatory) from a template reference implementation available. See [Deploying Enterprise-Scale Architecture in your own environment](https://github.com/Azure/Enterprise-Scale#deploying-enterprise-scale-architecture-in-your-own-environment).
 - Access to the AVD Azure subscription(s) with owner permissions.
 - Azure AD Connect is already configured and users are already synchronized from AD DS to Azure AD
 - The account used for the deployment and the Active Directory Domain Join account cannot have multi-factor authentication (MFA) enabled.
