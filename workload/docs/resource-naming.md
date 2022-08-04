@@ -81,6 +81,9 @@ Cost Center  |  |  |
 Environment type  |Dev,Staging,Prod  |  |  
 Creation date |  |  |  
 
+AVD baseline tagging example:
+![Baseline](./diagrams/avd-accelerator-resource-tagging-baseline.png)
+
 ### Tagging for the custom image build deployment
 
 Tag Name | Tag Value | Description
@@ -98,10 +101,8 @@ Cost Center  |  |  |
 Environment type  | Dev,Staging,Prod |  |  
 Creation date |  |  |  
 
-### Resource tagging example
-
-[Baseline](./diagrams/avd-accelerator-resource-tagging-baseline.png)
-[Custom image](./diagrams/avd-accelerator-resource-tagging-custom-image.png)
+Custom image tagging example:
+![Custom image](./diagrams/avd-accelerator-resource-tagging-custom-image.png)
 
 ## Next Steps
 
