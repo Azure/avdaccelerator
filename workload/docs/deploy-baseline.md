@@ -54,12 +54,14 @@
   - **Custom Resource tagging** - When set 'Yes', the information provided will be used to create tags on resources and resource groups.  
 - **Review + create** blade
 
-Take a look at the [Naming Standard and Tagging](./Resource-naming.md) page for further information.
+Take a look at the [Naming Standard and Tagging](./resource-naming.md) page for further information.
 
 ## Other deployment Options
-We have these other options available:
-- [Command line (BICEP/ARM)](/workload/bicep/README.md)
-- [Terraform](/workload/terraform/readme.md)
+
+|We have these other options available:    |     |
+|:-----------------------------------------|:---:|
+|Command line (Bicep/ARM)                  |[![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/readme.md)          |
+|Terraform                                 |[![Terraform](./workload/docs/icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md)                  |
 
 # Next Steps
 

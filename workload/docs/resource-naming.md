@@ -46,7 +46,7 @@ vnet-avd-{Azure Region}-{Prefix}-{nnn} | Virtual Network
 snet-avd-{Azure Region}-{Prefix}-{nnn} | Virtual Network
 
 
-### Resource naming for the baseline deployment 
+### Resource naming for the custom image deployment 
 **AVD custom image naming**
 
 Resource Name | Resource Type |
@@ -59,6 +59,10 @@ Resource Name | Resource Type |
  id-avd-imagebuilder-{Azure Region} | Managed Identity |
  stavd{unique string} | Storage account |
  avd_imagedefinition{image name} | VM image definition |
+
+### Resource naming example
+
+![Resource organization and naming](./workload/docs/diagrams/avd-accelerator-resource-organization-naming.png)
 
 ### Tagging for the baseline deployment
 
@@ -93,6 +97,11 @@ Owner  |  |  |
 Cost Center  |  |  |  
 Environment type  | Dev,Staging,Prod |  |  
 Creation date |  |  |  
+
+### Resource tagging example
+
+![Resource tagging](./workload/docs/diagrams/avd-accelerator-resource-organization-naming.png)
+
 ## Next Steps
 
 Continue with: 
