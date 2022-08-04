@@ -253,8 +253,8 @@ param avdWrklKvPrefixCustomName string = 'kv-avd'
 @description('Optional. Apply tags on resources and resource groups. (Default: false)')
 param createResourceTags bool = false
 
-@description('Optional. The name of workload for tagging purposes. (Default: AVD)')
-param workloadNameTag string = 'AVD'
+@description('Optional. The name of workload for tagging purposes. (Default: Contoso-Workload)')
+param workloadNameTag string = 'Contoso-Workload'
 
 @allowed([
     'Light'
