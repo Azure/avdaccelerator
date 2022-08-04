@@ -16,7 +16,7 @@ As of today, we have a first reference implementation scenario that is one of th
 
 ## Getting Started
 
-Head over to [Getting Started Wiki](https://github.com/Azure/avdaccelerator/wiki/Getting-Started#Getting-Started) to review prerequisites and deployment options.
+Head over to [Getting Started](/workload/portal-ui/Getting-Started.md) to review prerequisites and deployment options.
 ## AVD Accelerator Baseline
 
 Deploy Azure Virtual Desktop (AVD) resources and dependent services for establishing the baseline
