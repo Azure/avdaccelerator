@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "6169403924236172780"
+      "templateHash": "14990416181544097435"
     }
   },
   "parameters": {
@@ -513,9 +513,9 @@
     },
     "workloadNameTag": {
       "type": "string",
-      "defaultValue": "AVD",
+      "defaultValue": "Contoso-Workload",
       "metadata": {
-        "description": "Optional. The name of workload for tagging purposes. (Default: AVD)"
+        "description": "Optional. The name of workload for tagging purposes. (Default: Contoso-Workload)"
       }
     },
     "workloadTypeTag": {
