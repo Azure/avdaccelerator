@@ -62,7 +62,7 @@ Resource Name | Resource Type |
 
 ### Resource naming example
 
-![Resource organization and naming](./workload/docs/diagrams/avd-accelerator-resource-organization-naming.png)
+![Resource organization and naming](./diagrams/avd-accelerator-resource-organization-naming.png)
 
 ### Tagging for the baseline deployment
 
@@ -100,7 +100,8 @@ Creation date |  |  |
 
 ### Resource tagging example
 
-![Resource tagging](./workload/docs/diagrams/avd-accelerator-resource-organization-naming.png)
+![Baseline](./diagrams/avd-accelerator-resource-tagging-baseline.png)
+![Custom image](./diagrams/avd-accelerator-resource-tagging-custom-image.png)
 
 ## Next Steps
 
