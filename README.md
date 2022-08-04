@@ -16,7 +16,7 @@ As of today, we have a first reference implementation scenario that is one of th
 
 ## Getting Started
 
-Head over to [Getting Started Wiki](https://github.com/Azure/avdaccelerator/wiki/Getting-Started#Getting-Started) to review prerequisites and deployment options.
+Head over to [Getting Started](/workload/portal-ui/Getting-Started.md) to review prerequisites and deployment options.
 ## AVD Accelerator Baseline
 
 Deploy Azure Virtual Desktop (AVD) resources and dependent services for establishing the baseline
@@ -75,3 +75,7 @@ trademarks or logos is subject to and must follow
 [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/legal/intellectualproperty/trademarks).
 Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
 Any use of third-party trademarks or logos are subject to those third-party's policies.
+
+# Known Issues
+
+Please report issues using the projects [issues](https://github.com/Azure/avdaccelerator/issues) tracker.
