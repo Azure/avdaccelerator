@@ -135,10 +135,10 @@ param workloadCriticalityCustomValueTag string = 'Contoso-Critical'
 param applicationNameTag string = 'Contoso-App'
 
 @description('Optional. Team accountable for day-to-day operations. (Contoso-Ops)')
-param opsTeamTag string = 'Contoso-Ops'
+param opsTeamTag string = 'workload-admins@Contoso.com'
 
 @description('Optional. Organizational owner of the AVD deployment. (Default: Contoso-Owner)')
-param ownerTag string = 'Contoso-Owner'
+param ownerTag string = 'workload-owner@Contoso.com'
 
 @description('Optional. Cost center of owner team. (Defualt: Contoso-CC)')
 param costCenterTag string = 'Contoso-CC'
