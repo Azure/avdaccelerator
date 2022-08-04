@@ -100,8 +100,8 @@ Creation date |  |  |
 
 ### Resource tagging example
 
-![Baseline](./diagrams/avd-accelerator-resource-tagging-baseline.png)
-![Custom image](./diagrams/avd-accelerator-resource-tagging-custom-image.png)
+[Baseline](./diagrams/avd-accelerator-resource-tagging-baseline.png)
+[Custom image](./diagrams/avd-accelerator-resource-tagging-custom-image.png)
 
 ## Next Steps
 
