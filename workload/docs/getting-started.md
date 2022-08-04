@@ -42,10 +42,15 @@ The AVD Green Field template provides a complete AVD landing zone reference impl
 In the Brownfield scenario, the automation framework will deploy the solution using existing Azure VNet, allowing you to create a new AVD workload and utilize and integrate existing Azure resources.
 
 ## Deployment Options
+
 The templates and scripts need to be executed from an execution environment, the currently available are:
-- [Azure Portal UI](#next-steps)
-- [Command line (BICEP/ARM)](/workload/bicep/README.md)
-- [Terraform](/workload/terraform/readme.md)
+
+|                                      |                           |
+|:-------------------------------------|:------------------------: |
+|Azure portal UI - Custom Image (Optional)          |[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json)      |
+|Azure portal UI - AVD Baseline                     |[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json)   |
+|Command line (Bicep/ARM)              |[![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/README.md)          |
+|Terraform                             |[![Terraform](./workload/docs/icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md)                  |
 
 <!-- ## AVD Landing Zone: Greenfield Deployment
 
@@ -61,7 +66,7 @@ This reference implementation consists of 2 deployments:
 
 It is preferable to have a new subscriptions for each deployment respectively, adhering to the Azure Landing Zone guidance. However, they can also be deployed to existing subscriptions and single subscription if required, see [Resource Organization](https://docs.microsoft.com/azure/cloud-adoption-framework/scenarios/wvd/design-area-resource-organization) for further information.
 
-This [Visio file](/workload/docs/diagrams/avd-accelerator-resource-organization-naming.vsdx) is an example of the Azure resources and organization created with this reference implementation. The following input values were used in this example:
+This [diagram](/workload/docs/diagrams/avd-accelerator-resource-organization-naming.png) is an example of the Azure resources and organization created with this reference implementation. The following input values were used in this example:
 
 - **AVD baseline deployment**:
 	- *avdWorkloadSubsId*: ID for Subscription name: Subscription AVD LZ

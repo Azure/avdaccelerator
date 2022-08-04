@@ -9,7 +9,7 @@
   - **Region** – The desired Azure Region to be used for the deployment
   - **Deployment prefix** – A prefix of maximum 4 characters that will be appended to the names of Resource Groups and Azure resources within the Resource Groups.
 - **Image Management** blade
-  - **Storage- Use availability zones** - Select "Yes" to distribute storage resources across availability zones (ehen available).
+  - **Storage- Use availability zones** - Select "Yes" to distribute storage resources across availability zones (when available).
   - **OS- Version** - Select the Image OS SKU to be used as source for the image.
 - **Image Azure Image Builder (AIB)** blade
   - **Deployment location** - Select the location where Azure Image Builder will run to create the image.
@@ -20,12 +20,14 @@
 - **Resource tagging** blade
   - **Custom resource tags** - When set 'Yes', the information provided will be used to create tags on resources and resource groups.
 
-Take a look at the [Naming Standard and Tagging](./Resource-naming.md) page for further information.
+Take a look at the [Naming Standard and Tagging](./resource-naming.md) page for further information.
 
 ## Other deployment Options
-We have these other options available:
-- [Command line (BICEP/ARM)](/workload/bicep/README.md)
-- [Terraform](/workload/terraform/readme.md)
+
+|We have these other options available:    |     |
+|:-----------------------------------------|:---:|
+|Command line (Bicep/ARM)                  |[![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/readme.md)          |
+|Terraform                                 |[![Terraform](./workload/docs/icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md)                  |
 
 # Next Steps
 
