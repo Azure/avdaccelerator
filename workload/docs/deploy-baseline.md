@@ -60,8 +60,8 @@ Take a look at the [Naming Standard and Tagging](./resource-naming.md) page for 
 
 |We have these other options available:    |     |
 |:-----------------------------------------|:---:|
-|Command line (Bicep/ARM)                  |[![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/readme.md)          |
-|Terraform                                 |[![Terraform](./workload/docs/icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md)                  |
+|Command line (Bicep/ARM)                  |[![Powershell/Azure CLI](./icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/readme.md)          |
+|Terraform                                 |[![Terraform](./icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md)                  |
 
 # Next Steps
 

@@ -106,5 +106,5 @@ Creation date |  |  |
 ## Next Steps
 
 Continue with: 
-1. [Custom image deployment (optional)](./Deploy-Custom-image.md) to build an updated and optimized image or 
-2. [AVD accelerator baseline deployment](./Deploy-Baseline.md) if you are ready to deploy an AVD workload from the market place, an updated and optimized image previously created by the custom image deployment, or the the Azure market place or from an Azure Compute Gallery.
+1. [Custom image deployment (optional)](./deploy-custom-image.md) to build an updated and optimized image or 
+2. [AVD accelerator baseline deployment](./deploy-baseline.md) if you are ready to deploy an AVD workload from the market place, an updated and optimized image previously created by the custom image deployment, or the the Azure market place or from an Azure Compute Gallery.
