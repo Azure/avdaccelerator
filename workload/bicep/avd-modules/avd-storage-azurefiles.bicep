@@ -102,6 +102,9 @@ param storageToDomainScriptArgs string
 @description('URI for the script for adding the storage account to Active Directory.')
 param storageToDomainScriptUri string
 
+@description('Required. Tags to be applied to resources')
+param avdTags object
+
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
@@ -168,6 +171,7 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
                 service: 'file'
             }
         ]
+        tags: avdTags
     }
 }
 
@@ -225,6 +229,7 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
                 options: '3'
             }
         }
+        tags: avdTags
     }
     dependsOn: [
         fslogixStorage
