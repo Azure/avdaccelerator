@@ -3,6 +3,7 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
+
 @minLength(2)
 @maxLength(4)
 @description('Required. The name of the resource group to deploy.')
@@ -255,6 +256,73 @@ param avdFslogixProfileContainerFileShareCustomName string = 'fslogix-pc-app1-00
 param avdWrklKvPrefixCustomName string = 'kv-avd'
 //
 
+// Resource tagging
+// 
+@description('Optional. Apply tags on resources and resource groups. (Default: false)')
+param createResourceTags bool = false
+
+@description('Optional. The name of workload for tagging purposes. (Default: Contoso-Workload)')
+param workloadNameTag string = 'Contoso-Workload'
+
+@allowed([
+    'Light'
+    'Medium'
+    'High'
+    'Power'
+])
+@description('Optional. Reference to the size of the VM for your workloads (Default: Light)')
+param workloadTypeTag string = 'Light'
+
+@allowed([
+    'Non-business'
+    'Public'
+    'General'
+    'Confidential'
+    'Highly-confidential'
+])
+@description('Optional. Sensitivity of data hosted (Default: Non-business)')
+param dataClassificationTag string = 'Non-business'
+
+@description('Optional. Department that owns the deployment, (Dafult: Contoso-AVD)')
+param departmentTag string = 'Contoso-AVD'
+
+@allowed([
+    'Low'
+    'Medium'
+    'High'
+    'Mission-critical'
+    'Custom'
+])
+@description('Optional. Criticality of the workload. (Default: Low)')
+param workloadCriticalityTag string = 'Low'
+
+@description('Optional. Tag value for custom criticality value. (Default: Contoso-Critical)')
+param workloadCriticalityCustomValueTag string = 'Contoso-Critical'
+
+@description('Optional. Details about the application.')
+param applicationNameTag string = 'Contoso-App'
+
+@description('Required. Service level agreement level of the worload. (Contoso-SLA)')
+param workloadSlaTag string = 'Contoso-SLA'
+
+@description('Optional. Team accountable for day-to-day operations. (workload-admins@Contoso.com)')
+param opsTeamTag string = 'workload-admins@Contoso.com'
+
+@description('Optional. Organizational owner of the AVD deployment. (Default: workload-owner@Contoso.com)')
+param ownerTag string = 'workload-owner@Contoso.com'
+
+@description('Optional. Cost center of owner team. (Defualt: Contoso-CC)')
+param costCenterTag string = 'Contoso-CC'
+
+@allowed([
+    'Prod'
+    'Dev'
+    'Staging '
+])
+@description('Optional. Deployment environment of the application, workload. (Default: Dev)')
+param environmentTypeTag string = 'Dev'
+//
+
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
@@ -318,29 +386,29 @@ var locationAcronyms = {
 var avdNamingUniqueStringSixChar = take('${uniqueString(avdWorkloadSubsId, deploymentPrefixLowercase, time)}', 6)
 var avdManagementPlaneNamingStandard = '${avdManagementPlaneLocationAcronym}-${deploymentPrefixLowercase}'
 var avdComputeStorageResourcesNamingStandard = '${avdSessionHostLocationAcronym}-${deploymentPrefixLowercase}'
-var avdServiceObjectsRgName = avdUseCustomNaming ? avdServiceObjectsRgCustomName: 'rg-avd-${avdManagementPlaneNamingStandard}-service-objects' // max length limit 90 characters
-var avdNetworkObjectsRgName = avdUseCustomNaming ? avdNetworkObjectsRgCustomName: 'rg-avd-${avdComputeStorageResourcesNamingStandard}-network' // max length limit 90 characters
-var avdComputeObjectsRgName = avdUseCustomNaming ? avdComputeObjectsRgCustomName: 'rg-avd-${avdComputeStorageResourcesNamingStandard}-pool-compute' // max length limit 90 characters
-var avdStorageObjectsRgName = avdUseCustomNaming ? avdStorageObjectsRgCustomName: 'rg-avd-${avdComputeStorageResourcesNamingStandard}-storage' // max length limit 90 characters
+var avdServiceObjectsRgName = avdUseCustomNaming ? avdServiceObjectsRgCustomName : 'rg-avd-${avdManagementPlaneNamingStandard}-service-objects' // max length limit 90 characters
+var avdNetworkObjectsRgName = avdUseCustomNaming ? avdNetworkObjectsRgCustomName : 'rg-avd-${avdComputeStorageResourcesNamingStandard}-network' // max length limit 90 characters
+var avdComputeObjectsRgName = avdUseCustomNaming ? avdComputeObjectsRgCustomName : 'rg-avd-${avdComputeStorageResourcesNamingStandard}-pool-compute' // max length limit 90 characters
+var avdStorageObjectsRgName = avdUseCustomNaming ? avdStorageObjectsRgCustomName : 'rg-avd-${avdComputeStorageResourcesNamingStandard}-storage' // max length limit 90 characters
 //var avdSharedResourcesRgName = 'rg-${avdSessionHostLocationAcronym}-avd-shared-resources'
-var avdVnetworkName = avdUseCustomNaming ? avdVnetworkCustomName: 'vnet-avd-${avdComputeStorageResourcesNamingStandard}-001'
-var avdVnetworkSubnetName = avdUseCustomNaming ? avdVnetworkSubnetCustomName: 'snet-avd-${avdComputeStorageResourcesNamingStandard}-001'
-var avdNetworksecurityGroupName = avdUseCustomNaming ? avdNetworksecurityGroupCustomName: 'nsg-avd-${avdComputeStorageResourcesNamingStandard}-001'
-var avdRouteTableName = avdUseCustomNaming ? avdRouteTableCustomName: 'route-avd-${avdComputeStorageResourcesNamingStandard}-001'
-var avdApplicationSecurityGroupName = avdUseCustomNaming ? avdApplicationSecurityGroupCustomName: 'asg-avd-${avdComputeStorageResourcesNamingStandard}-001'
+var avdVnetworkName = avdUseCustomNaming ? avdVnetworkCustomName : 'vnet-avd-${avdComputeStorageResourcesNamingStandard}-001'
+var avdVnetworkSubnetName = avdUseCustomNaming ? avdVnetworkSubnetCustomName : 'snet-avd-${avdComputeStorageResourcesNamingStandard}-001'
+var avdNetworksecurityGroupName = avdUseCustomNaming ? avdNetworksecurityGroupCustomName : 'nsg-avd-${avdComputeStorageResourcesNamingStandard}-001'
+var avdRouteTableName = avdUseCustomNaming ? avdRouteTableCustomName : 'route-avd-${avdComputeStorageResourcesNamingStandard}-001'
+var avdApplicationSecurityGroupName = avdUseCustomNaming ? avdApplicationSecurityGroupCustomName : 'asg-avd-${avdComputeStorageResourcesNamingStandard}-001'
 var avdVnetworkPeeringName = 'peering-avd-${avdComputeStorageResourcesNamingStandard}-${avdNamingUniqueStringSixChar}'
-var avdWorkSpaceName = avdUseCustomNaming ? avdWorkSpaceCustomName: 'vdws-${avdManagementPlaneNamingStandard}-001'
-var avdHostPoolName = avdUseCustomNaming ? avdHostPoolCustomName: 'vdpool-${avdManagementPlaneNamingStandard}-001'
-var avdApplicationGroupNameDesktop = avdUseCustomNaming ? avdApplicationGroupCustomNameDesktop: 'vdag-desktop-${avdManagementPlaneNamingStandard}-001'
-var avdApplicationGroupNameRapp = avdUseCustomNaming ? avdApplicationGroupCustomNameRapp: 'vdag-rapp-${avdManagementPlaneNamingStandard}-001'
-var avdWrklKvName = avdUseCustomNaming ? '${avdWrklKvPrefixCustomName}-${avdComputeStorageResourcesNamingStandard}-${avdNamingUniqueStringSixChar}': 'kv-avd-${avdComputeStorageResourcesNamingStandard}-${avdNamingUniqueStringSixChar}' // max length limit 24 characters
+var avdWorkSpaceName = avdUseCustomNaming ? avdWorkSpaceCustomName : 'vdws-${avdManagementPlaneNamingStandard}-001'
+var avdHostPoolName = avdUseCustomNaming ? avdHostPoolCustomName : 'vdpool-${avdManagementPlaneNamingStandard}-001'
+var avdApplicationGroupNameDesktop = avdUseCustomNaming ? avdApplicationGroupCustomNameDesktop : 'vdag-desktop-${avdManagementPlaneNamingStandard}-001'
+var avdApplicationGroupNameRapp = avdUseCustomNaming ? avdApplicationGroupCustomNameRapp : 'vdag-rapp-${avdManagementPlaneNamingStandard}-001'
+var avdWrklKvName = avdUseCustomNaming ? '${avdWrklKvPrefixCustomName}-${avdComputeStorageResourcesNamingStandard}-${avdNamingUniqueStringSixChar}' : 'kv-avd-${avdComputeStorageResourcesNamingStandard}-${avdNamingUniqueStringSixChar}' // max length limit 24 characters
 var avdWrklKvPrivateEndpointName = 'pe-kv-avd-${deploymentPrefixLowercase}-${avdNamingUniqueStringSixChar}-vault'
-var avdSessionHostNamePrefix = avdUseCustomNaming ? avdSessionHostCustomNamePrefix: 'vm-avd-${deploymentPrefix}'
-var avdAvailabilitySetNamePrefix = avdUseCustomNaming ? '${avdAvailabilitySetCustomNamePrefix}-${avdSessionHostLocationAcronym}-${deploymentPrefix}': 'avail-avd-${avdSessionHostLocationAcronym}-${deploymentPrefix}'
+var avdSessionHostNamePrefix = avdUseCustomNaming ? avdSessionHostCustomNamePrefix : 'vm-avd-${deploymentPrefix}'
+var avdAvailabilitySetNamePrefix = avdUseCustomNaming ? '${avdAvailabilitySetCustomNamePrefix}-${avdSessionHostLocationAcronym}-${deploymentPrefix}' : 'avail-avd-${avdSessionHostLocationAcronym}-${deploymentPrefix}'
 var fslogixManagedIdentityName = 'id-avd-fslogix-${avdSessionHostLocationAcronym}-${deploymentPrefix}'
-var avdFslogixProfileContainerFileShareName = avdUseCustomNaming ? avdFslogixProfileContainerFileShareCustomName: 'fslogix-pc-${deploymentPrefixLowercase}-001'
+var avdFslogixProfileContainerFileShareName = avdUseCustomNaming ? avdFslogixProfileContainerFileShareCustomName : 'fslogix-pc-${deploymentPrefixLowercase}-001'
 //var avdFslogixOfficeContainerFileShareName = avdUseCustomNaming ? avdFslogixOfficeContainerFileShareCustomName: 'fslogix-oc-${deploymentPrefixLowercase}-001'
-var avdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${deploymentPrefix}${avdNamingUniqueStringSixChar}': 'stavd${deploymentPrefix}${avdNamingUniqueStringSixChar}'
+var avdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${deploymentPrefix}${avdNamingUniqueStringSixChar}' : 'stavd${deploymentPrefix}${avdNamingUniqueStringSixChar}'
 var avdWrklStoragePrivateEndpointName = 'pe-stavd${deploymentPrefixLowercase}${avdNamingUniqueStringSixChar}-file'
 var managementVmName = 'vm-mgmt-${deploymentPrefix}'
 var ouStgName = !empty(storageOuName) ? storageOuName : defaultStorageOuPath
@@ -397,6 +465,29 @@ var storageToDomainScriptArgsAadds = '-DscPath ${dscAgentPackageLocationAadds} -
 var createOuForStorageString = string(createOuForStorage)
 var dnsServers = (customDnsIps == 'none') ? []: (split(customDnsIps, ','))
 
+// Resource tagging
+var commonResourceTags = createResourceTags ? {
+    WorkloadName: workloadNameTag
+    WorkloadType: workloadTypeTag
+    DataClassification: dataClassificationTag
+    Department: departmentTag
+    Criticality: (workloadCriticalityTag == 'Custom') ? workloadCriticalityCustomValueTag : workloadCriticalityTag
+    ApplicationName: applicationNameTag
+    ServiceClass: workloadSlaTag
+    OpsTeam: opsTeamTag
+    Owner: ownerTag
+    CostCenter: costCenterTag
+    Environment: environmentTypeTag
+
+} : {}
+
+var allComputeStorageTags = {
+    DomainName: avdIdentityDomainName
+    JoinType: 'ADDS' // avdDeviceJoinTypeTag waiting for PR on identity to be merged
+}
+var allResourceTags = union(commonResourceTags, allComputeStorageTags)
+//
+
 var resourceGroups = [
     {
         name: avdServiceObjectsRgName
@@ -443,6 +534,7 @@ module avdBaselineResourceGroups '../../carml/1.2.0/Microsoft.Resources/resource
         name: resourceGroup.name
         location: resourceGroup.location
         enableDefaultTelemetry: false
+        tags: createResourceTags ? commonResourceTags : {}
     }
 }]
 
@@ -454,6 +546,7 @@ module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
         name: avdStorageObjectsRgName
         location: avdSessionHostLocation
         enableDefaultTelemetry: false
+        tags: createResourceTags ? commonResourceTags : {}
     }
 }
 //
@@ -478,6 +571,7 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
         avdVnetworkSubnetAddressPrefix: avdVnetworkSubnetAddressPrefix
         avdWorkloadSubsId: avdWorkloadSubsId
         dnsServers: dnsServers
+        avdTags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
         avdBaselineResourceGroups
@@ -503,6 +597,7 @@ module avdHostPoolandAppGroups 'avd-modules/avd-hostpool-app-groups.bicep' = {
         avdStartVmOnConnect: avdStartVmOnConnect
         avdWorkloadSubsId: avdWorkloadSubsId
         avdIdentityServiceProvider: avdIdentityServiceProvider
+        avdTags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
         avdBaselineResourceGroups
@@ -517,6 +612,7 @@ module avdWorkSpace '../../carml/1.2.0/Microsoft.DesktopVirtualization/workspace
         name: avdWorkSpaceName
         location: avdManagementPlaneLocation
         appGroupResourceIds: avdHostPoolandAppGroups.outputs.avdAppGroupsArray
+        tags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
         avdHostPoolandAppGroups
@@ -540,6 +636,7 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
         readerRoleId: readerRoleId
         storageAccountContributorRoleId: storageAccountContributorRoleId
         createAvdFslogixDeployment: createAvdFslogixDeployment ? true: false
+        avdTags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
         avdBaselineResourceGroups
@@ -602,6 +699,7 @@ module avdWrklKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep
                 }
             ]
         }
+        tags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
         avdBaselineResourceGroups
@@ -652,8 +750,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
         managementVmName: managementVmName
         useSharedImage: useSharedImage
-
-
+        avdTags: createResourceTags ? allResourceTags : {}
     }
     dependsOn: [
         avdBaselineResourceGroups
@@ -699,7 +796,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         hostPoolToken: avdHostPoolandAppGroups.outputs.hostPooltoken
         marketPlaceGalleryWindows: marketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
-        avdIdentityServiceProvider: avdIdentityServiceProvider
+        avdTags: createResourceTags ? allResourceTags : {}
     }
     dependsOn: [
         avdBaselineResourceGroups
