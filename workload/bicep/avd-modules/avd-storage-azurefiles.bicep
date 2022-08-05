@@ -125,8 +125,10 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
         storageAccountSku: fslogixStorageSku
         allowBlobPublicAccess: false
         storageAccountKind: ((fslogixStorageSku =~ 'Premium_LRS') || (fslogixStorageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
-        azureFilesIdentityBasedAuthentication: {
-            directoryServiceOptions: (avdIdentityServiceProvider == 'ADDDS') ? 'AADDS': 'None'
+        azureFilesIdentityBasedAuthentication: (avdIdentityServiceProvider == 'AADDS') ? {
+            directoryServiceOptions: 'AADDS'
+        }: {
+            directoryServiceOptions: 'None'
         }
         storageAccountAccessTier: 'Hot'
         networkAcls: {
@@ -230,9 +232,9 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
 }
 
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
-module addFslogixShareToADDSSript '../../vm-custom-extensions/add-azure-files-to-adds-script.bicep' = {
+module addFslogixShareToDomainSript '../../vm-custom-extensions/add-azure-files-to-domain-script.bicep' = if(avdIdentityServiceProvider == 'ADDS')  {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
-    name: 'Add-FslogixStorage-to-ADDS-${time}'
+    name: 'Add-FslogixStorage-to-Domain-${time}'
     params: {
         location: avdSessionHostLocation
         name: managementVM.outputs.name
