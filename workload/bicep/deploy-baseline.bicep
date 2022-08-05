@@ -385,10 +385,12 @@ var FsLogixScriptArguments = '-volumeshare ${fslogixSharePath}'
 var avdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_01-20-2022.zip'
 var storageAccountContributorRoleId = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
 var readerRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-var dscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCDomainJoinStorageScripts.zip'
+var dscAgentPackageLocationAdds = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCDomainJoinStorageScriptsADDS.zip'
+var dscAgentPackageLocationAadds = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCDomainJoinStorageScriptsAADDS.zip'
 var storageToDomainScriptUri = '${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-Domain.ps1'
 var storageToDomainScript = './Manual-DSC-JoinStorage-to-Domain.ps1'
-var storageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${ouStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
+var storageToDomainScriptArgsAdds = '-DscPath ${dscAgentPackageLocationAdds} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${ouStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
+var storageToDomainScriptArgsAadds = '-DscPath ${dscAgentPackageLocationAadds} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${ouStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
 //var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
 var createOuForStorageString = string(createOuForStorage)
 var dnsServers = (customDnsIps == 'none') ? []: (split(customDnsIps, ','))
@@ -612,12 +614,12 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 }
 
 // Storage.
-module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (createAvdFslogixDeployment && avdDeploySessionHosts) {
+module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (createAvdFslogixDeployment && avdDeploySessionHosts && (avdIdentityServiceProvider == 'AADDS' || avdIdentityServiceProvider == 'ADDS')) {
     name: 'Deploy-AVD-Storage-AzureFiles-${time}'
     params: {
         avdIdentityServiceProvider: avdIdentityServiceProvider
         storageToDomainScript: storageToDomainScript
-        storageToDomainScriptArgs: storageToDomainScriptArgs
+        storageToDomainScriptArgs: (avdIdentityServiceProvider == 'ADDS') ? storageToDomainScriptArgsAdds: storageToDomainScriptArgsAadds
         storageToDomainScriptUri: storageToDomainScriptUri
         avdWrklStoragePrivateEndpointName: avdWrklStoragePrivateEndpointName
         avdApplicationSecurityGroupResourceId: createAvdVnet ? '${avdNetworking.outputs.avdApplicationSecurityGroupResourceId}' : ''
