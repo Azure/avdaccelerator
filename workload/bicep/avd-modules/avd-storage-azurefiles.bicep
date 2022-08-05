@@ -174,7 +174,7 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
 // Provision temporary VM and add it to domain.
 module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.bicep' = {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
-    name: 'Deploy-temporary-VM-FsLogixStorageToDomain-${time}'
+    name: 'Deploy-Mgmt-VM-${time}'
     params: {
         name: managementVmName
         location: avdSessionHostLocation
@@ -200,7 +200,7 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
         adminPassword: avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
         nicConfigurations: [
             {
-                nicSuffix: 'nic-001-'
+                nicSuffix: 'nic-01-'
                 deleteOption: 'Delete'
                 asgId: !empty(avdApplicationSecurityGroupResourceId) ? avdApplicationSecurityGroupResourceId : null
                 enableAcceleratedNetworking: false
@@ -232,7 +232,7 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
 }
 
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
-module addFslogixShareToDomainSript '../../vm-custom-extensions/add-azure-files-to-domain-script.bicep' = if(avdIdentityServiceProvider == 'ADDS')  {
+module addFslogixShareToDomainSript '../../vm-custom-extensions/add-azure-files-to-domain-script.bicep' = { //if(avdIdentityServiceProvider == 'ADDS')  {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
     name: 'Add-FslogixStorage-to-Domain-${time}'
     params: {
