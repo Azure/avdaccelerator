@@ -11,9 +11,9 @@ az deployment create \
   --avdWorkloadSubsId <subscriptionId> \
   --deploymentPrefix <deploymentPrefix> \
   --avdVmLocalUserName <localUserName> \
-  --avdVmLocalUserPassword $avdVmLocalUserPassword \
-  --avdIdentityDomainName <domainJoinUserName> \
-  --avdDomainJoinUserPassword $avdDomainJoinUserPassword \
+  --avdVmLocalUserPassword <LocalUserPassword> \
+  --avdIdentityDomainName <DomainJoinUserName> \
+  --avdDomainJoinUserPassword <DomainJoinUserPassword \
   --avdDomainJoinUserName <domainName>  \
   --existingHubVnetResourceId <hubVnetResourceId>  \
   --customDnsIps <customDNSservers>  \
