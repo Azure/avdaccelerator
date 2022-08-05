@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.6.18.56646",
-      "templateHash": "10905710385631205530"
+      "version": "0.9.1.41621",
+      "templateHash": "10430380405652751718"
     }
   },
   "parameters": {
@@ -173,6 +173,109 @@
       },
       "maxLength": 6
     },
+    "createResourceTags": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Apply tags on resources and resource groups. (Default: false)"
+      }
+    },
+    "imageBuildNameTag": {
+      "type": "string",
+      "defaultValue": "AVD-Image",
+      "metadata": {
+        "description": "Optional. The name of workload for tagging purposes. (Default: AVD-Image)"
+      }
+    },
+    "workloadNameTag": {
+      "type": "string",
+      "defaultValue": "Contoso-Workload",
+      "metadata": {
+        "description": "Optional. Reference to the size of the VM for your workloads (Default: Contoso-Workload)"
+      }
+    },
+    "dataClassificationTag": {
+      "type": "string",
+      "defaultValue": "Non-business",
+      "metadata": {
+        "description": "Optional. Sensitivity of data hosted (Default: Non-business)"
+      },
+      "allowedValues": [
+        "Non-business",
+        "Public",
+        "General",
+        "Confidential",
+        "Highly confidential"
+      ]
+    },
+    "departmentTag": {
+      "type": "string",
+      "defaultValue": "Contoso-AVD",
+      "metadata": {
+        "description": "Optional. Department that owns the deployment, (Dafult: Contoso-AVD)"
+      }
+    },
+    "workloadCriticalityTag": {
+      "type": "string",
+      "defaultValue": "Low",
+      "metadata": {
+        "description": "Optional. criticality of each workload. (Default: Low)"
+      },
+      "allowedValues": [
+        "Low",
+        "Medium",
+        "High",
+        "Mission-critical",
+        "custom"
+      ]
+    },
+    "workloadCriticalityCustomValueTag": {
+      "type": "string",
+      "defaultValue": "Contoso-Critical",
+      "metadata": {
+        "description": "Optional. Tag value for custom criticality value. (Default: Contoso-Critical)"
+      }
+    },
+    "applicationNameTag": {
+      "type": "string",
+      "defaultValue": "Contoso-App",
+      "metadata": {
+        "description": "Optional. Details about the application."
+      }
+    },
+    "opsTeamTag": {
+      "type": "string",
+      "defaultValue": "workload-admins@Contoso.com",
+      "metadata": {
+        "description": "Optional. Team accountable for day-to-day operations. (Contoso-Ops)"
+      }
+    },
+    "ownerTag": {
+      "type": "string",
+      "defaultValue": "workload-owner@Contoso.com",
+      "metadata": {
+        "description": "Optional. Organizational owner of the AVD deployment. (Default: Contoso-Owner)"
+      }
+    },
+    "costCenterTag": {
+      "type": "string",
+      "defaultValue": "Contoso-CC",
+      "metadata": {
+        "description": "Optional. Cost center of owner team. (Defualt: Contoso-CC)"
+      }
+    },
+    "environmentTypeTag": {
+      "type": "string",
+      "defaultValue": "Dev",
+      "metadata": {
+        "description": "Optional. Deployment environment of the application, workload. (Default: Dev)"
+      },
+      "allowedValues": [
+        "Prod",
+        "Dev",
+        "staging "
+      ]
+    },
     "time": {
       "type": "string",
       "defaultValue": "[utcNow()]",
@@ -248,6 +351,7 @@
       "westus3": "wus3",
       "swedencentral": "sec"
     },
+    "commonResourceTags": "[if(parameters('createResourceTags'), createObject('ImageBuildName', parameters('imageBuildNameTag'), 'WorkloadName', parameters('workloadNameTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('workloadCriticalityTag'), 'Custom'), parameters('workloadCriticalityCustomValueTag'), parameters('workloadCriticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'OpsTeam', parameters('opsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag'), 'Environment', parameters('environmentTypeTag')), createObject())]",
     "imageVmSize": "Standard_D4s_v3",
     "avdOsImageDefinitions": {
       "win10_21h2_office": {
@@ -327,6 +431,9 @@
           },
           "location": {
             "value": "[parameters('avdSharedServicesLocation')]"
+          },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -335,8 +442,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.6.18.56646",
-              "templateHash": "14814895842389231521"
+              "version": "0.9.1.41621",
+              "templateHash": "14783688509579789983"
             }
           },
           "parameters": {
@@ -414,8 +521,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "15996846410974920226"
+                      "version": "0.9.1.41621",
+                      "templateHash": "10450840011999083691"
                     }
                   },
                   "parameters": {
@@ -511,8 +618,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "1657700067618873784"
+                      "version": "0.9.1.41621",
+                      "templateHash": "16928789004797899732"
                     }
                   },
                   "parameters": {
@@ -807,8 +914,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.6.18.56646",
-              "templateHash": "6980444146887114231"
+              "version": "0.9.1.41621",
+              "templateHash": "9481140246360261895"
             }
           },
           "parameters": {
@@ -933,6 +1040,9 @@
           },
           "location": {
             "value": "[parameters('avdSharedServicesLocation')]"
+          },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -941,8 +1051,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.6.18.56646",
-              "templateHash": "12892190497429910804"
+              "version": "0.9.1.41621",
+              "templateHash": "8698373901450909994"
             }
           },
           "parameters": {
@@ -1033,8 +1143,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "12049945212359661061"
+                      "version": "0.9.1.41621",
+                      "templateHash": "14219231684130369343"
                     }
                   },
                   "resources": []
@@ -1071,8 +1181,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "12605517380619073806"
+                      "version": "0.9.1.41621",
+                      "templateHash": "8417334281874654716"
                     }
                   },
                   "parameters": {
@@ -1188,6 +1298,9 @@
           },
           "location": {
             "value": "[parameters('avdSharedServicesLocation')]"
+          },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -1196,8 +1309,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.6.18.56646",
-              "templateHash": "12892190497429910804"
+              "version": "0.9.1.41621",
+              "templateHash": "8698373901450909994"
             }
           },
           "parameters": {
@@ -1288,8 +1401,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "12049945212359661061"
+                      "version": "0.9.1.41621",
+                      "templateHash": "14219231684130369343"
                     }
                   },
                   "resources": []
@@ -1326,8 +1439,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "12605517380619073806"
+                      "version": "0.9.1.41621",
+                      "templateHash": "8417334281874654716"
                     }
                   },
                   "parameters": {
@@ -1455,7 +1568,7 @@
             "value": "PT10M"
           },
           "scriptContent": {
-            "value": "[if(or(parameters('useSharedImage'), parameters('createAibManagedIdentity')), '        Write-Host \"Start\"\r\n        Get-Date\r\n        Start-Sleep -Seconds 60\r\n        Write-Host \"Stop\"\r\n        Get-Date\r\n        ', '')]"
+            "value": "[if(or(parameters('useSharedImage'), parameters('createAibManagedIdentity')), '        Write-Host \"Start\"\n        Get-Date\n        Start-Sleep -Seconds 60\n        Write-Host \"Stop\"\n        Get-Date\n        ', '')]"
           }
         },
         "template": {
@@ -1464,8 +1577,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.6.18.56646",
-              "templateHash": "18287021134968147722"
+              "version": "0.9.1.41621",
+              "templateHash": "16430087813232254414"
             }
           },
           "parameters": {
@@ -1685,8 +1798,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "12049945212359661061"
+                      "version": "0.9.1.41621",
+                      "templateHash": "14219231684130369343"
                     }
                   },
                   "resources": []
@@ -1748,8 +1861,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.6.18.56646",
-              "templateHash": "2806046027436893131"
+              "version": "0.9.1.41621",
+              "templateHash": "9859371193324748216"
             }
           },
           "parameters": {
@@ -2212,8 +2325,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.6.18.56646",
-              "templateHash": "2806046027436893131"
+              "version": "0.9.1.41621",
+              "templateHash": "9859371193324748216"
             }
           },
           "parameters": {
@@ -2671,6 +2784,9 @@
           },
           "galleryDescription": {
             "value": "Azure Virtual Desktops Images"
+          },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -2679,8 +2795,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.6.18.56646",
-              "templateHash": "3233516460080705318"
+              "version": "0.9.1.41621",
+              "templateHash": "12436552138985802126"
             }
           },
           "parameters": {
@@ -2822,8 +2938,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "16169863868378219815"
+                      "version": "0.9.1.41621",
+                      "templateHash": "6937752612412253228"
                     }
                   },
                   "parameters": {
@@ -3004,8 +3120,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "5354383130279535015"
+                      "version": "0.9.1.41621",
+                      "templateHash": "9806614396233277322"
                     }
                   },
                   "parameters": {
@@ -3295,8 +3411,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.6.18.56646",
-                              "templateHash": "14881217771299798421"
+                              "version": "0.9.1.41621",
+                              "templateHash": "5182368029926927853"
                             }
                           },
                           "parameters": {
@@ -3484,6 +3600,9 @@
           },
           "hyperVGeneration": {
             "value": "[variables('avdOsImageDefinitions')[parameters('avdOsImage')].hyperVGeneration]"
+          },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -3492,8 +3611,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.6.18.56646",
-              "templateHash": "5354383130279535015"
+              "version": "0.9.1.41621",
+              "templateHash": "9806614396233277322"
             }
           },
           "parameters": {
@@ -3783,8 +3902,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "14881217771299798421"
+                      "version": "0.9.1.41621",
+                      "templateHash": "5182368029926927853"
                     }
                   },
                   "parameters": {
@@ -4001,6 +4120,9 @@
               "osAccountType": "[variables('avdOsImageDefinitions')[parameters('avdOsImage')].osAccountType]",
               "version": "latest"
             }
+          },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -4009,8 +4131,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.6.18.56646",
-              "templateHash": "18444880003807204519"
+              "version": "0.9.1.41621",
+              "templateHash": "14055853034688054890"
             }
           },
           "parameters": {
@@ -4298,8 +4420,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "9723421290657030598"
+                      "version": "0.9.1.41621",
+                      "templateHash": "13547753451051727755"
                     }
                   },
                   "parameters": {
@@ -4460,6 +4582,9 @@
           "timeout": {
             "value": "PT2H"
           },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
+          },
           "containerGroupName": {
             "value": "[format('imageTemplateBuildName-{0}-aci', parameters('avdOsImage'))]"
           },
@@ -4470,7 +4595,7 @@
             "value": "[format('-subscriptionId ''{0}'' -resourceGroupName ''{1}'' -imageTemplateName ''{2}''', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName'), if(parameters('useSharedImage'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AVD-Deploy-Image-Template-{0}', parameters('time')))).outputs.name.value, null()))]"
           },
           "scriptContent": {
-            "value": "[if(parameters('useSharedImage'), '        param(\r\n            [string] [Parameter(Mandatory=$true)] $resourceGroupName,\r\n            [string] [Parameter(Mandatory=$true)] $imageTemplateName,\r\n            [string] [Parameter(Mandatory=$true)] $subscriptionId\r\n            )\r\n                $ErrorActionPreference = \"Stop\"\r\n                Install-Module -Name Az.ImageBuilder -Force\r\n                # Kick off the Azure Image Build \r\n                Write-Host \"Kick off Image buld for $imageTemplateName\"\r\n                Invoke-AzResourceAction -ResourceName $imageTemplateName -ResourceGroupName $resourceGroupName -ResourceType \"Microsoft.VirtualMachineImages/imageTemplates\" -Action Run -Force              \r\n                $DeploymentScriptOutputs = @{}\r\n            $getStatus=$(Get-AzImageBuilderTemplate -ResourceGroupName $resourceGroupName -Name $imageTemplateName)\r\n            $status=$getStatus.LastRunStatusRunState\r\n            $statusMessage=$getStatus.LastRunStatusMessage\r\n            $startTime=Get-Date\r\n            $reset=$startTime + (New-TimeSpan -Minutes 40)\r\n            Write-Host \"Script will time out in $reset\"\r\n                do {\r\n                $now=Get-Date\r\n                Write-Host \"Getting the current time: $now\"\r\n                if (($now -eq $reset) -or ($now -gt $reset)) {\r\n                    break\r\n                }\r\n                $getStatus=$(Get-AzImageBuilderTemplate -ResourceGroupName $resourceGroupName -Name $imageTemplateName)\r\n                $status=$getStatus.LastRunStatusRunState\r\n                Write-Host \"Current status of the image build $imageTemplateName is: $status\"\r\n                Write-Host \"Script will time out in $reset\"\r\n                $DeploymentScriptOutputs=$now\r\n                $DeploymentScriptOutputs=$status\r\n                if ($status -eq \"Failed\") {\r\n                    Write-Host \"Build failed for image template: $imageTemplateName. Check the Packer logs\"\r\n                    $DeploymentScriptOutputs=\"Build Failed\"\r\n                    throw \"Build Failed\"\r\n                }\r\n                if (($status -eq \"Canceled\") -or ($status -eq \"Canceling\") ) {\r\n                    Write-Host \"User canceled the build. Delete the Image template definition: $imageTemplateName\"\r\n                    throw \"User canceled the build.\"\r\n                }\r\n                if ($status -eq \"Succeeded\") {\r\n                    Write-Host \"Success. Image template definition: $imageTemplateName is finished \"\r\n                    break\r\n                }\r\n            }\r\n            until (($now -eq $reset) -or ($now -gt $reset))\r\n            Write-Host \"Finished check for image build status at $now\"\r\n\r\n\r\n        ', '')]"
+            "value": "[if(parameters('useSharedImage'), '        param(\n            [string] [Parameter(Mandatory=$true)] $resourceGroupName,\n            [string] [Parameter(Mandatory=$true)] $imageTemplateName,\n            [string] [Parameter(Mandatory=$true)] $subscriptionId\n            )\n                $ErrorActionPreference = \"Stop\"\n                Install-Module -Name Az.ImageBuilder -Force\n                # Kick off the Azure Image Build \n                Write-Host \"Kick off Image buld for $imageTemplateName\"\n                Invoke-AzResourceAction -ResourceName $imageTemplateName -ResourceGroupName $resourceGroupName -ResourceType \"Microsoft.VirtualMachineImages/imageTemplates\" -Action Run -Force              \n                $DeploymentScriptOutputs = @{}\n            $getStatus=$(Get-AzImageBuilderTemplate -ResourceGroupName $resourceGroupName -Name $imageTemplateName)\n            $status=$getStatus.LastRunStatusRunState\n            $statusMessage=$getStatus.LastRunStatusMessage\n            $startTime=Get-Date\n            $reset=$startTime + (New-TimeSpan -Minutes 40)\n            Write-Host \"Script will time out in $reset\"\n                do {\n                $now=Get-Date\n                Write-Host \"Getting the current time: $now\"\n                if (($now -eq $reset) -or ($now -gt $reset)) {\n                    break\n                }\n                $getStatus=$(Get-AzImageBuilderTemplate -ResourceGroupName $resourceGroupName -Name $imageTemplateName)\n                $status=$getStatus.LastRunStatusRunState\n                Write-Host \"Current status of the image build $imageTemplateName is: $status\"\n                Write-Host \"Script will time out in $reset\"\n                $DeploymentScriptOutputs=$now\n                $DeploymentScriptOutputs=$status\n                if ($status -eq \"Failed\") {\n                    Write-Host \"Build failed for image template: $imageTemplateName. Check the Packer logs\"\n                    $DeploymentScriptOutputs=\"Build Failed\"\n                    throw \"Build Failed\"\n                }\n                if (($status -eq \"Canceled\") -or ($status -eq \"Canceling\") ) {\n                    Write-Host \"User canceled the build. Delete the Image template definition: $imageTemplateName\"\n                    throw \"User canceled the build.\"\n                }\n                if ($status -eq \"Succeeded\") {\n                    Write-Host \"Success. Image template definition: $imageTemplateName is finished \"\n                    break\n                }\n            }\n            until (($now -eq $reset) -or ($now -gt $reset))\n            Write-Host \"Finished check for image build status at $now\"\n\n\n        ', '')]"
           }
         },
         "template": {
@@ -4479,8 +4604,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.6.18.56646",
-              "templateHash": "16217040628581174167"
+              "version": "0.9.1.41621",
+              "templateHash": "10600018346956711037"
             }
           },
           "parameters": {
@@ -4765,6 +4890,9 @@
               "virtualNetworkRules": [],
               "ipRules": []
             }
+          },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -4773,8 +4901,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.6.18.56646",
-              "templateHash": "16663464596095754279"
+              "version": "0.9.1.41621",
+              "templateHash": "16126351869339624003"
             }
           },
           "parameters": {
@@ -5178,8 +5306,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "2697090749068477482"
+                      "version": "0.9.1.41621",
+                      "templateHash": "8692609419351909305"
                     }
                   },
                   "parameters": {
@@ -5329,8 +5457,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "13123842445914172251"
+                      "version": "0.9.1.41621",
+                      "templateHash": "12576912944868150655"
                     }
                   },
                   "parameters": {
@@ -5468,8 +5596,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.6.18.56646",
-                              "templateHash": "11880733953623709155"
+                              "version": "0.9.1.41621",
+                              "templateHash": "16193189188992493393"
                             }
                           },
                           "parameters": {
@@ -5649,8 +5777,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "17533252482162355450"
+                      "version": "0.9.1.41621",
+                      "templateHash": "8556618150517826917"
                     }
                   },
                   "parameters": {
@@ -5826,8 +5954,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.6.18.56646",
-                              "templateHash": "11413205324041710494"
+                              "version": "0.9.1.41621",
+                              "templateHash": "7121495550389757335"
                             }
                           },
                           "parameters": {
@@ -5984,8 +6112,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "13341516523366853871"
+                      "version": "0.9.1.41621",
+                      "templateHash": "13441151916302228592"
                     }
                   },
                   "parameters": {
@@ -6105,8 +6233,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "4554060140682601446"
+                      "version": "0.9.1.41621",
+                      "templateHash": "15122157418220846743"
                     }
                   },
                   "parameters": {
@@ -6275,6 +6403,9 @@
                 }
               ]
             }
+          },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -6283,8 +6414,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.6.18.56646",
-              "templateHash": "10464470598794127218"
+              "version": "0.9.1.41621",
+              "templateHash": "5271197936158309215"
             }
           },
           "parameters": {
@@ -6699,8 +6830,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "12965550548914942871"
+                      "version": "0.9.1.41621",
+                      "templateHash": "579156534319241471"
                     }
                   },
                   "parameters": {
@@ -6847,8 +6978,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "15863587580915373307"
+                      "version": "0.9.1.41621",
+                      "templateHash": "14923668828077331147"
                     }
                   },
                   "parameters": {
@@ -6958,8 +7089,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "1238564261076744009"
+                      "version": "0.9.1.41621",
+                      "templateHash": "11609610636617414204"
                     }
                   },
                   "parameters": {
@@ -7104,8 +7235,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "11822679838764360147"
+                      "version": "0.9.1.41621",
+                      "templateHash": "7036039095335249330"
                     }
                   },
                   "parameters": {
@@ -7347,8 +7478,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.6.18.56646",
-                              "templateHash": "15766588324976580933"
+                              "version": "0.9.1.41621",
+                              "templateHash": "420336751399658669"
                             }
                           },
                           "parameters": {
@@ -7472,8 +7603,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.6.18.56646",
-                                      "templateHash": "8890293456311341143"
+                                      "version": "0.9.1.41621",
+                                      "templateHash": "10555500247886328078"
                                     }
                                   },
                                   "parameters": {
@@ -7616,8 +7747,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.6.18.56646",
-                                      "templateHash": "18424272002787389588"
+                                      "version": "0.9.1.41621",
+                                      "templateHash": "17285266521058503884"
                                     }
                                   },
                                   "parameters": {
@@ -7835,8 +7966,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "4468166038235660302"
+                      "version": "0.9.1.41621",
+                      "templateHash": "17434418229593117354"
                     }
                   },
                   "parameters": {
@@ -8074,8 +8205,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.6.18.56646",
-                              "templateHash": "10592660094986790354"
+                              "version": "0.9.1.41621",
+                              "templateHash": "15710523424079177774"
                             }
                           },
                           "parameters": {
@@ -8205,8 +8336,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.6.18.56646",
-                                      "templateHash": "3279604461507817568"
+                                      "version": "0.9.1.41621",
+                                      "templateHash": "8768404998223053296"
                                     }
                                   },
                                   "parameters": {
@@ -8427,8 +8558,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "1546997530860855503"
+                      "version": "0.9.1.41621",
+                      "templateHash": "11304716720310671101"
                     }
                   },
                   "parameters": {
@@ -8640,8 +8771,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.6.18.56646",
-                              "templateHash": "10767083478793113255"
+                              "version": "0.9.1.41621",
+                              "templateHash": "12573667775029950931"
                             }
                           },
                           "parameters": {
@@ -8746,8 +8877,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.6.18.56646",
-                                      "templateHash": "11806587398392909025"
+                                      "version": "0.9.1.41621",
+                                      "templateHash": "14097622015807739726"
                                     }
                                   },
                                   "parameters": {
@@ -8965,8 +9096,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "13864683647616429603"
+                      "version": "0.9.1.41621",
+                      "templateHash": "7558456178905270954"
                     }
                   },
                   "parameters": {
@@ -9172,8 +9303,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.6.18.56646",
-                              "templateHash": "18086676683627184731"
+                              "version": "0.9.1.41621",
+                              "templateHash": "7156796144817145743"
                             }
                           },
                           "parameters": {

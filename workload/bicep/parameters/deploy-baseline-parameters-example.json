@@ -150,6 +150,9 @@
         },
         "createOuForStorage": {
             "value": false
-        }
+        },
+        "createResourceTags": {
+            "value": false
+        }        
     }
 }
