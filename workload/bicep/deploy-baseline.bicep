@@ -343,9 +343,8 @@ var avdFslogixProfileContainerFileShareName = avdUseCustomNaming ? avdFslogixPro
 var avdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${deploymentPrefix}${avdNamingUniqueStringSixChar}': 'stavd${deploymentPrefix}${avdNamingUniqueStringSixChar}'
 var avdWrklStoragePrivateEndpointName = 'pe-stavd${deploymentPrefixLowercase}${avdNamingUniqueStringSixChar}-file'
 var managementVmName = 'vm-mgmt-${deploymentPrefix}'
-var ouStgName = !empty(storageOuName) ? storageOuName : defaultStorageOuPath
-//var sessionHostOuPath = !empty(avdOuPath) ? avdOuPath : defaultOuPath
-var defaultStorageOuPath = 'Computers' //(avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers': 'Computers'
+var ouStgName = !empty(storageOuName) ? storageOuName : '' //defaultStorageOuPath
+//var defaultStorageOuPath = 'Computers' //(avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers': 'Computers'
 //
 
 var marketPlaceGalleryWindows = {
@@ -387,8 +386,8 @@ var avdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment()
 var storageAccountContributorRoleId = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
 var readerRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 var dscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCDomainJoinStorageScripts.zip'
-var storageToDomainScriptUri = '${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-ADDS.ps1'
-var storageToDomainScript = './Manual-DSC-JoinStorage-to-ADDS.ps1'
+var storageToDomainScriptUri = '${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-Domain.ps1'
+var storageToDomainScript = './Manual-DSC-JoinStorage-to-Domain.ps1'
 var storageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${ouStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
 //var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
 var createOuForStorageString = string(createOuForStorage)
@@ -613,7 +612,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 }
 
 // Storage.
-module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (createAvdFslogixDeployment) {
+module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (createAvdFslogixDeployment && avdDeploySessionHosts) {
     name: 'Deploy-AVD-Storage-AzureFiles-${time}'
     params: {
         avdIdentityServiceProvider: avdIdentityServiceProvider

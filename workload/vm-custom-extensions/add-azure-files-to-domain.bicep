@@ -15,7 +15,7 @@ param domainAdminUsername string
 
 /* Add Azure Files to AD DS domain*/
 
-resource addAzureFilesToADDS 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = {
+resource addAzureFilesToDomain 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = {
   name: '${name}/Microsoft.PowerShell.DSC'
   location: location
   properties: {
