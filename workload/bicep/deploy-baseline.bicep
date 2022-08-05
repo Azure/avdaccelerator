@@ -343,8 +343,8 @@ var avdFslogixProfileContainerFileShareName = avdUseCustomNaming ? avdFslogixPro
 var avdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${deploymentPrefix}${avdNamingUniqueStringSixChar}': 'stavd${deploymentPrefix}${avdNamingUniqueStringSixChar}'
 var avdWrklStoragePrivateEndpointName = 'pe-stavd${deploymentPrefixLowercase}${avdNamingUniqueStringSixChar}-file'
 var managementVmName = 'vm-mgmt-${deploymentPrefix}'
-var ouStgName = !empty(storageOuName) ? storageOuName : '' //defaultStorageOuPath
-//var defaultStorageOuPath = 'Computers' //(avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers': 'Computers'
+var ouStgName = !empty(storageOuName) ? storageOuName : defaultStorageOuPath
+var defaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers': 'Computers'
 //
 
 var marketPlaceGalleryWindows = {
@@ -386,9 +386,11 @@ var avdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment()
 var storageAccountContributorRoleId = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
 var readerRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 var dscAgentPackageLocationAdds = 'https://github.com/Azure/avdaccelerator/raw/issue115/workload/scripts/DSCDomainJoinStorageScriptsADDS.zip'
-var dscAgentPackageLocationAadds = 'https://github.com/Azure/avdaccelerator/raw/issue115/workload/scripts/DSCDomainJoinStorageScriptsAADDS.zip'
-var storageToDomainScriptUri = '${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-Domain.ps1'
-var storageToDomainScript = './Manual-DSC-JoinStorage-to-Domain.ps1'
+var dscAgentPackageLocationAadds = 'https://github.com/Azure/avdaccelerator/raw/issue115/workload/scripts/DSCNTFSStorageScriptsAADDS.zip'
+var storageToDomainScriptUriAdds = '${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-Domain-ADDS.ps1'
+var storageToDomainScriptUriAadds = '${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-Domain-AADDS.ps1'
+var storageToDomainScriptAdds = './Manual-DSC-JoinStorage-to-Domain-ADDS.ps1'
+var storageToDomainScriptAadds = './Manual-DSC-JoinStorage-to-Domain-AADDS.ps1'
 var storageToDomainScriptArgsAdds = '-DscPath ${dscAgentPackageLocationAdds} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${ouStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
 var storageToDomainScriptArgsAadds = '-DscPath ${dscAgentPackageLocationAadds} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${ouStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
 //var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
@@ -618,9 +620,9 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
     name: 'Deploy-AVD-Storage-AzureFiles-${time}'
     params: {
         avdIdentityServiceProvider: avdIdentityServiceProvider
-        storageToDomainScript: storageToDomainScript
+        storageToDomainScript:  (avdIdentityServiceProvider == 'ADDS') ? storageToDomainScriptAdds: storageToDomainScriptAadds
         storageToDomainScriptArgs: (avdIdentityServiceProvider == 'ADDS') ? storageToDomainScriptArgsAdds: storageToDomainScriptArgsAadds
-        storageToDomainScriptUri: storageToDomainScriptUri
+        storageToDomainScriptUri: (avdIdentityServiceProvider == 'ADDS') ? storageToDomainScriptUriAdds: storageToDomainScriptUriAadds
         avdWrklStoragePrivateEndpointName: avdWrklStoragePrivateEndpointName
         avdApplicationSecurityGroupResourceId: createAvdVnet ? '${avdNetworking.outputs.avdApplicationSecurityGroupResourceId}' : ''
         avdComputeObjectsRgName: avdComputeObjectsRgName
