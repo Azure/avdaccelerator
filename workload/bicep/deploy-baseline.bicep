@@ -344,7 +344,7 @@ var avdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCusto
 var avdWrklStoragePrivateEndpointName = 'pe-stavd${deploymentPrefixLowercase}${avdNamingUniqueStringSixChar}-file'
 var managementVmName = 'vm-mgmt-${deploymentPrefix}'
 var ouStgName = !empty(storageOuName) ? storageOuName : defaultStorageOuPath
-var defaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers': 'Computers'
+var defaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? '"AADDC Computers"': 'Computers'
 //
 
 var marketPlaceGalleryWindows = {
