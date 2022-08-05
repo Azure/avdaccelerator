@@ -234,7 +234,7 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
 module addFslogixShareToDomainSript '../../vm-custom-extensions/add-azure-files-to-domain-script.bicep' = { //if(avdIdentityServiceProvider == 'ADDS')  {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
-    name: 'Add-FslogixStorage-to-Domain-${time}'
+    name: 'Add-FslogixStorage-Setup-${time}'
     params: {
         location: avdSessionHostLocation
         name: managementVM.outputs.name
