@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.9.1.41621",
-      "templateHash": "14990416181544097435"
+      "version": "0.6.18.56646",
+      "templateHash": "862538834967255580"
     }
   },
   "parameters": {
@@ -59,6 +59,17 @@
       "metadata": {
         "description": "Required. AVD session host local password."
       }
+    },
+    "avdIdentityServiceProvider": {
+      "type": "string",
+      "defaultValue": "ADDS",
+      "metadata": {
+        "description": "Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)"
+      },
+      "allowedValues": [
+        "ADDS",
+        "AADDS"
+      ]
     },
     "avdIdentityDomainName": {
       "type": "string",
@@ -193,9 +204,9 @@
     },
     "customDnsIps": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "none",
       "metadata": {
-        "description": "Required. custom DNS servers IPs."
+        "description": "Optional. custom DNS servers IPs."
       }
     },
     "avdVnetPrivateDnsZone": {
@@ -711,8 +722,9 @@
     "avdFslogixProfileContainerFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('avdFslogixProfileContainerFileShareCustomName'), format('fslogix-pc-{0}-001', variables('deploymentPrefixLowercase')))]",
     "avdFslogixStorageName": "[if(parameters('avdUseCustomNaming'), format('{0}{1}{2}', parameters('avdFslogixStoragePrefixCustomName'), parameters('deploymentPrefix'), variables('avdNamingUniqueStringSixChar')), format('stavd{0}{1}', parameters('deploymentPrefix'), variables('avdNamingUniqueStringSixChar')))]",
     "avdWrklStoragePrivateEndpointName": "[format('pe-stavd{0}{1}-file', variables('deploymentPrefixLowercase'), variables('avdNamingUniqueStringSixChar'))]",
-    "tempStorageDomainJoinVmName": "[format('vm-fs-dj-{0}', parameters('deploymentPrefix'))]",
-    "OuStgName": "[if(not(empty(parameters('storageOuName'))), parameters('storageOuName'), 'Computers')]",
+    "managementVmName": "[format('vm-mgmt-{0}', parameters('deploymentPrefix'))]",
+    "ouStgName": "[if(not(empty(parameters('storageOuName'))), parameters('storageOuName'), variables('defaultStorageOuPath'))]",
+    "defaultStorageOuPath": "[if(equals(parameters('avdIdentityServiceProvider'), 'AADDS'), '\"AADDC Computers\"', 'Computers')]",
     "marketPlaceGalleryWindows": {
       "win10_21h2_office": {
         "publisher": "MicrosoftWindowsDesktop",
@@ -739,7 +751,7 @@
         "version": "latest"
       }
     },
-    "baseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
+    "baseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/issue115/workload/",
     "fslogixScriptUri": "[format('{0}scripts/Set-FSLogixRegKeys.ps1', variables('baseScriptUri'))]",
     "fsLogixScript": "./Set-FSLogixRegKeys.ps1",
     "fslogixSharePath": "[format('\\\\{0}.file.{1}\\{2}', variables('avdFslogixStorageName'), environment().suffixes.storage, variables('avdFslogixProfileContainerFileShareName'))]",
@@ -747,10 +759,14 @@
     "avdAgentPackageLocation": "[format('https://wvdportalstorageblob.blob.{0}/galleryartifacts/Configuration_01-20-2022.zip', environment().suffixes.storage)]",
     "storageAccountContributorRoleId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
     "readerRoleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
-    "dscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCDomainJoinStorageScripts.zip",
-    "addStorageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-JoinStorage-to-ADDS.ps1', variables('baseScriptUri'))]",
-    "addStorageToDomainScript": "./Manual-DSC-JoinStorage-to-ADDS.ps1",
+    "dscAgentPackageLocationAdds": "https://github.com/Azure/avdaccelerator/raw/issue115/workload/scripts/DSCDomainJoinStorageScriptsADDS.zip",
+    "dscAgentPackageLocationAadds": "https://github.com/Azure/avdaccelerator/raw/issue115/workload/scripts/DSCNTFSStorageScriptsAADDS.zip",
+    "storageToDomainScriptUriAdds": "[format('{0}scripts/Manual-DSC-JoinStorage-to-Domain-ADDS.ps1', variables('baseScriptUri'))]",
+    "storageToDomainScriptUriAadds": "[format('{0}scripts/Manual-DSC-JoinStorage-to-Domain-AADDS.ps1', variables('baseScriptUri'))]",
+    "storageToDomainScriptAdds": "./Manual-DSC-JoinStorage-to-Domain-ADDS.ps1",
+    "storageToDomainScriptAadds": "./Manual-DSC-JoinStorage-to-Domain-AADDS.ps1",
     "createOuForStorageString": "[string(parameters('createOuForStorage'))]",
+    "dnsServers": "[if(equals(parameters('customDnsIps'), 'none'), createArray(), split(parameters('customDnsIps'), ','))]",
     "commonResourceTags": "[if(parameters('createResourceTags'), createObject('WorkloadName', parameters('workloadNameTag'), 'WorkloadType', parameters('workloadTypeTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('workloadCriticalityTag'), 'Custom'), parameters('workloadCriticalityCustomValueTag'), parameters('workloadCriticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'ServiceClass', parameters('workloadSlaTag'), 'OpsTeam', parameters('opsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag'), 'Environment', parameters('environmentTypeTag')), createObject())]",
     "allComputeStorageTags": {
       "DomainName": "[parameters('avdIdentityDomainName')]",
@@ -820,8 +836,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "4181870745959760880"
+              "version": "0.6.18.56646",
+              "templateHash": "15875496966951609224"
             }
           },
           "parameters": {
@@ -921,8 +937,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "10450840011999083691"
+                      "version": "0.6.18.56646",
+                      "templateHash": "15996846410974920226"
                     }
                   },
                   "parameters": {
@@ -1024,8 +1040,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "8881719082751791541"
+                      "version": "0.6.18.56646",
+                      "templateHash": "3149615029737038322"
                     }
                   },
                   "parameters": {
@@ -1322,8 +1338,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "4181870745959760880"
+              "version": "0.6.18.56646",
+              "templateHash": "15875496966951609224"
             }
           },
           "parameters": {
@@ -1423,8 +1439,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "10450840011999083691"
+                      "version": "0.6.18.56646",
+                      "templateHash": "15996846410974920226"
                     }
                   },
                   "parameters": {
@@ -1526,8 +1542,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "8881719082751791541"
+                      "version": "0.6.18.56646",
+                      "templateHash": "3149615029737038322"
                     }
                   },
                   "parameters": {
@@ -1849,8 +1865,8 @@
           "avdWorkloadSubsId": {
             "value": "[parameters('avdWorkloadSubsId')]"
           },
-          "customDnsIps": {
-            "value": "[parameters('customDnsIps')]"
+          "dnsServers": {
+            "value": "[variables('dnsServers')]"
           },
           "avdTags": {
             "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
@@ -1862,8 +1878,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "3497548969604354614"
+              "version": "0.6.18.56646",
+              "templateHash": "11913590382546744547"
             }
           },
           "parameters": {
@@ -1951,10 +1967,10 @@
                 "description": "AVD VNet subnet address prefix."
               }
             },
-            "customDnsIps": {
-              "type": "string",
+            "dnsServers": {
+              "type": "array",
               "metadata": {
-                "description": "Custom DNS server IPs."
+                "description": "custom DNS servers IPs"
               }
             },
             "avdSessionHostLocation": {
@@ -2008,8 +2024,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "4181870745959760880"
+                      "version": "0.6.18.56646",
+                      "templateHash": "15875496966951609224"
                     }
                   },
                   "parameters": {
@@ -2109,8 +2125,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "10450840011999083691"
+                              "version": "0.6.18.56646",
+                              "templateHash": "15996846410974920226"
                             }
                           },
                           "parameters": {
@@ -2212,8 +2228,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "8881719082751791541"
+                              "version": "0.6.18.56646",
+                              "templateHash": "3149615029737038322"
                             }
                           },
                           "parameters": {
@@ -2507,8 +2523,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "17950800406367354248"
+                      "version": "0.6.18.56646",
+                      "templateHash": "16378221715614336998"
                     }
                   },
                   "parameters": {
@@ -2796,8 +2812,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "13205445083093971510"
+                              "version": "0.6.18.56646",
+                              "templateHash": "17481225640676632190"
                             }
                           },
                           "parameters": {
@@ -3043,8 +3059,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "8040315301834522857"
+                              "version": "0.6.18.56646",
+                              "templateHash": "10750898189164130879"
                             }
                           },
                           "parameters": {
@@ -3194,8 +3210,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "16981430557198923761"
+                      "version": "0.6.18.56646",
+                      "templateHash": "4605760620153468598"
                     }
                   },
                   "parameters": {
@@ -3319,8 +3335,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "13459690677403299765"
+                              "version": "0.6.18.56646",
+                              "templateHash": "17920125170889956682"
                             }
                           },
                           "parameters": {
@@ -3469,8 +3485,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "137856698610724308"
+                      "version": "0.6.18.56646",
+                      "templateHash": "9370579695222846475"
                     }
                   },
                   "parameters": {
@@ -3611,8 +3627,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "13801530740257393182"
+                              "version": "0.6.18.56646",
+                              "templateHash": "13959778984682704523"
                             }
                           },
                           "parameters": {
@@ -3754,7 +3770,7 @@
                     "value": "[array(parameters('avdVnetworkAddressPrefixes'))]"
                   },
                   "dnsServers": {
-                    "value": "[if(not(empty(parameters('customDnsIps'))), array(parameters('customDnsIps')), createArray())]"
+                    "value": "[parameters('dnsServers')]"
                   },
                   "virtualNetworkPeerings": {
                     "value": [
@@ -3798,8 +3814,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "17596686701741977692"
+                      "version": "0.6.18.56646",
+                      "templateHash": "15279812030135863509"
                     }
                   },
                   "parameters": {
@@ -4141,8 +4157,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "17329225503948926205"
+                              "version": "0.6.18.56646",
+                              "templateHash": "994738943630777317"
                             }
                           },
                           "parameters": {
@@ -4336,8 +4352,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "11514489850855505860"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "1954824060395634654"
                                     }
                                   },
                                   "parameters": {
@@ -4532,8 +4548,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "8974602975581983453"
+                              "version": "0.6.18.56646",
+                              "templateHash": "12959392555244626050"
                             }
                           },
                           "parameters": {
@@ -4710,8 +4726,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "8974602975581983453"
+                              "version": "0.6.18.56646",
+                              "templateHash": "12959392555244626050"
                             }
                           },
                           "parameters": {
@@ -4873,8 +4889,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "176487837949779385"
+                              "version": "0.6.18.56646",
+                              "templateHash": "3269179746565549657"
                             }
                           },
                           "parameters": {
@@ -5097,6 +5113,9 @@
           "avdWorkloadSubsId": {
             "value": "[parameters('avdWorkloadSubsId')]"
           },
+          "avdIdentityServiceProvider": {
+            "value": "[parameters('avdIdentityServiceProvider')]"
+          },
           "avdTags": {
             "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
@@ -5107,8 +5126,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "513874993058062219"
+              "version": "0.6.18.56646",
+              "templateHash": "17890184044779694612"
             }
           },
           "parameters": {
@@ -5122,6 +5141,12 @@
               "type": "string",
               "metadata": {
                 "description": "Optional. AVD workload subscription ID, multiple subscriptions scenario."
+              }
+            },
+            "avdIdentityServiceProvider": {
+              "type": "string",
+              "metadata": {
+                "description": "Required, The service providing domain services for Azure Virtual Desktop."
               }
             },
             "avdServiceObjectsRgName": {
@@ -5231,6 +5256,7 @@
                 "applicationGroupType": "RemoteApp"
               }
             ],
+            "avdHostPoolRdpPropertiesDomainServiceCheck": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), format('{0}targetisaadjoined:i:1', parameters('avdHostPoolRdpProperties')), parameters('avdHostPoolRdpProperties'))]",
             "finalApplicationGroups": "[if(parameters('avdDeployRappGroup'), concat(variables('desktopApplicaitonGroups'), variables('applicationApplicationGroups')), variables('desktopApplicaitonGroups'))]"
           },
           "resources": [
@@ -5259,7 +5285,7 @@
                     "value": "[parameters('avdStartVmOnConnect')]"
                   },
                   "customRdpProperty": {
-                    "value": "[parameters('avdHostPoolRdpProperties')]"
+                    "value": "[variables('avdHostPoolRdpPropertiesDomainServiceCheck')]"
                   },
                   "loadBalancerType": {
                     "value": "[parameters('avdHostPoolLoadBalancerType')]"
@@ -5280,8 +5306,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "5350828962037622760"
+                      "version": "0.6.18.56646",
+                      "templateHash": "12145626278869710729"
                     }
                   },
                   "parameters": {
@@ -5641,8 +5667,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "6369133284048070473"
+                              "version": "0.6.18.56646",
+                              "templateHash": "4992156597715269931"
                             }
                           },
                           "parameters": {
@@ -5813,8 +5839,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "377465382670713583"
+                      "version": "0.6.18.56646",
+                      "templateHash": "6585758065773979145"
                     }
                   },
                   "parameters": {
@@ -6092,8 +6118,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "1460529142628982142"
+                              "version": "0.6.18.56646",
+                              "templateHash": "2477181920115085628"
                             }
                           },
                           "parameters": {
@@ -6272,8 +6298,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "13356468669279706816"
+                              "version": "0.6.18.56646",
+                              "templateHash": "1592212864597017673"
                             }
                           },
                           "parameters": {
@@ -6448,8 +6474,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "12296574318361851925"
+              "version": "0.6.18.56646",
+              "templateHash": "6064180508457821393"
             }
           },
           "parameters": {
@@ -6693,8 +6719,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "6069447818572735339"
+                      "version": "0.6.18.56646",
+                      "templateHash": "7165099292690875112"
                     }
                   },
                   "parameters": {
@@ -6816,7 +6842,6 @@
       ]
     },
     {
-      "condition": "[parameters('createAvdFslogixDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('Create-Managed-ID-RoleAssign-{0}', parameters('time'))]",
@@ -6836,7 +6861,7 @@
           "avdEnterpriseAppObjectId": {
             "value": "[parameters('avdEnterpriseAppObjectId')]"
           },
-          "avdManagementPlaneLocation": {
+          "avdSessionHostLocation": {
             "value": "[parameters('avdSessionHostLocation')]"
           },
           "avdServiceObjectsRgName": {
@@ -6861,7 +6886,7 @@
             "value": "[variables('storageAccountContributorRoleId')]"
           },
           "createAvdFslogixDeployment": {
-            "value": "[parameters('createAvdFslogixDeployment')]"
+            "value": "[if(parameters('createAvdFslogixDeployment'), true(), false())]"
           },
           "avdTags": {
             "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
@@ -6873,12 +6898,12 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "806378596641384526"
+              "version": "0.6.18.56646",
+              "templateHash": "17584441182805234240"
             }
           },
           "parameters": {
-            "avdManagementPlaneLocation": {
+            "avdSessionHostLocation": {
               "type": "string",
               "metadata": {
                 "description": "Required. Location where to deploy AVD management plane."
@@ -6982,7 +7007,7 @@
                     "value": "[parameters('fslogixManagedIdentityName')]"
                   },
                   "location": {
-                    "value": "[parameters('avdManagementPlaneLocation')]"
+                    "value": "[parameters('avdSessionHostLocation')]"
                   },
                   "tags": {
                     "value": "[parameters('avdTags')]"
@@ -6994,8 +7019,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "4094344250108949026"
+                      "version": "0.6.18.56646",
+                      "templateHash": "4039171862400113580"
                     }
                   },
                   "parameters": {
@@ -7119,8 +7144,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "8198101120071371118"
+                              "version": "0.6.18.56646",
+                              "templateHash": "10803486661260993308"
                             }
                           },
                           "parameters": {
@@ -7272,7 +7297,7 @@
                     "value": "StartVMonConnect-AVD"
                   },
                   "location": {
-                    "value": "[parameters('avdManagementPlaneLocation')]"
+                    "value": "[parameters('avdSessionHostLocation')]"
                   },
                   "actions": {
                     "value": [
@@ -7292,8 +7317,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "15922035151624192733"
+                      "version": "0.6.18.56646",
+                      "templateHash": "8058587379741892534"
                     }
                   },
                   "parameters": {
@@ -7455,8 +7480,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "9859371193324748216"
+                      "version": "0.6.18.56646",
+                      "templateHash": "2806046027436893131"
                     }
                   },
                   "parameters": {
@@ -7893,7 +7918,7 @@
               ]
             },
             {
-              "condition": "[parameters('avdDeploySessionHosts')]",
+              "condition": "[parameters('createAvdFslogixDeployment')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
               "name": "[format('fslogix-UserAIdentity-RoleAssign-{0}', parameters('time'))]",
@@ -7909,7 +7934,7 @@
                     "value": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/roleDefinitions/{1}', parameters('avdWorkloadSubsId'), parameters('storageAccountContributorRoleId'))]"
                   },
                   "principalId": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.principalId.value]"
+                    "value": "[if(parameters('createAvdFslogixDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.principalId.value, '')]"
                   }
                 },
                 "template": {
@@ -7918,8 +7943,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "9859371193324748216"
+                      "version": "0.6.18.56646",
+                      "templateHash": "2806046027436893131"
                     }
                   },
                   "parameters": {
@@ -8356,7 +8381,7 @@
               ]
             },
             {
-              "condition": "[parameters('avdDeploySessionHosts')]",
+              "condition": "[parameters('createAvdFslogixDeployment')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
               "name": "[format('fslogix-UserAIdentity-ReaderRoleAssign-{0}', parameters('time'))]",
@@ -8372,7 +8397,7 @@
                     "value": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/roleDefinitions/{1}', parameters('avdWorkloadSubsId'), parameters('readerRoleId'))]"
                   },
                   "principalId": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.principalId.value]"
+                    "value": "[if(parameters('createAvdFslogixDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.principalId.value, '')]"
                   }
                 },
                 "template": {
@@ -8381,8 +8406,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "9859371193324748216"
+                      "version": "0.6.18.56646",
+                      "templateHash": "2806046027436893131"
                     }
                   },
                   "parameters": {
@@ -8822,11 +8847,11 @@
           "outputs": {
             "fslogixManagedIdentityResourceId": {
               "type": "string",
-              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value]"
+              "value": "[if(parameters('createAvdFslogixDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value, '')]"
             },
             "fslogixManagedIdentityClientId": {
               "type": "string",
-              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.clientId.value]"
+              "value": "[if(parameters('createAvdFslogixDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.clientId.value, '')]"
             }
           }
         }
@@ -8910,8 +8935,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "16126351869339624003"
+              "version": "0.6.18.56646",
+              "templateHash": "16663464596095754279"
             }
           },
           "parameters": {
@@ -9315,8 +9340,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "8692609419351909305"
+                      "version": "0.6.18.56646",
+                      "templateHash": "2697090749068477482"
                     }
                   },
                   "parameters": {
@@ -9466,8 +9491,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "12576912944868150655"
+                      "version": "0.6.18.56646",
+                      "templateHash": "13123842445914172251"
                     }
                   },
                   "parameters": {
@@ -9605,8 +9630,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "16193189188992493393"
+                              "version": "0.6.18.56646",
+                              "templateHash": "11880733953623709155"
                             }
                           },
                           "parameters": {
@@ -9786,8 +9811,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "8556618150517826917"
+                      "version": "0.6.18.56646",
+                      "templateHash": "17533252482162355450"
                     }
                   },
                   "parameters": {
@@ -9963,8 +9988,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "7121495550389757335"
+                              "version": "0.6.18.56646",
+                              "templateHash": "11413205324041710494"
                             }
                           },
                           "parameters": {
@@ -10121,8 +10146,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "13441151916302228592"
+                      "version": "0.6.18.56646",
+                      "templateHash": "13341516523366853871"
                     }
                   },
                   "parameters": {
@@ -10242,8 +10267,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "15122157418220846743"
+                      "version": "0.6.18.56646",
+                      "templateHash": "4554060140682601446"
                     }
                   },
                   "parameters": {
@@ -10377,7 +10402,7 @@
       ]
     },
     {
-      "condition": "[parameters('createAvdFslogixDeployment')]",
+      "condition": "[and(and(parameters('createAvdFslogixDeployment'), parameters('avdDeploySessionHosts')), or(equals(parameters('avdIdentityServiceProvider'), 'AADDS'), equals(parameters('avdIdentityServiceProvider'), 'ADDS')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('Deploy-AVD-Storage-AzureFiles-{0}', parameters('time'))]",
@@ -10388,14 +10413,17 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "addStorageToDomainScript": {
-            "value": "[variables('addStorageToDomainScript')]"
+          "avdIdentityServiceProvider": {
+            "value": "[parameters('avdIdentityServiceProvider')]"
           },
-          "addStorageToDomainScriptArgs": {
-            "value": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -DomainName {3} -AzureCloudEnvironment AzureCloud -SubscriptionId {4} -DomainAdminUserName {5} -DomainAdminUserPassword {6} -OUName {7} -CreateNewOU {8} -ShareName {9} -ClientId {10} -Verbose', variables('dscAgentPackageLocation'), variables('avdFslogixStorageName'), variables('avdStorageObjectsRgName'), parameters('avdIdentityDomainName'), parameters('avdWorkloadSubsId'), parameters('avdDomainJoinUserName'), parameters('avdDomainJoinUserPassword'), variables('OuStgName'), variables('createOuForStorageString'), variables('avdFslogixProfileContainerFileShareName'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.fslogixManagedIdentityClientId.value)]"
+          "storageToDomainScript": {
+            "value": "[if(equals(parameters('avdIdentityServiceProvider'), 'ADDS'), variables('storageToDomainScriptAdds'), variables('storageToDomainScriptAadds'))]"
           },
-          "addStorageToDomainScriptUri": {
-            "value": "[variables('addStorageToDomainScriptUri')]"
+          "storageToDomainScriptArgs": {
+            "value": "[if(equals(parameters('avdIdentityServiceProvider'), 'ADDS'), format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -DomainName {3} -AzureCloudEnvironment AzureCloud -SubscriptionId {4} -DomainAdminUserName {5} -DomainAdminUserPassword {6} -OUName {7} -CreateNewOU {8} -ShareName {9} -ClientId {10} -Verbose', variables('dscAgentPackageLocationAdds'), variables('avdFslogixStorageName'), variables('avdStorageObjectsRgName'), parameters('avdIdentityDomainName'), parameters('avdWorkloadSubsId'), parameters('avdDomainJoinUserName'), parameters('avdDomainJoinUserPassword'), variables('ouStgName'), variables('createOuForStorageString'), variables('avdFslogixProfileContainerFileShareName'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))).outputs.fslogixManagedIdentityClientId.value), format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -DomainName {3} -AzureCloudEnvironment AzureCloud -SubscriptionId {4} -DomainAdminUserName {5} -DomainAdminUserPassword {6} -OUName {7} -CreateNewOU {8} -ShareName {9} -ClientId {10} -Verbose', variables('dscAgentPackageLocationAadds'), variables('avdFslogixStorageName'), variables('avdStorageObjectsRgName'), parameters('avdIdentityDomainName'), parameters('avdWorkloadSubsId'), parameters('avdDomainJoinUserName'), parameters('avdDomainJoinUserPassword'), variables('ouStgName'), variables('createOuForStorageString'), variables('avdFslogixProfileContainerFileShareName'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))).outputs.fslogixManagedIdentityClientId.value))]"
+          },
+          "storageToDomainScriptUri": {
+            "value": "[if(equals(parameters('avdIdentityServiceProvider'), 'ADDS'), variables('storageToDomainScriptUriAdds'), variables('storageToDomainScriptUriAadds'))]"
           },
           "avdWrklStoragePrivateEndpointName": {
             "value": "[variables('avdWrklStoragePrivateEndpointName')]"
@@ -10430,7 +10458,7 @@
           "avdImageTemplataDefinitionId": {
             "value": "[parameters('avdImageTemplataDefinitionId')]"
           },
-          "avdOuPath": {
+          "sessionHostOuPath": {
             "value": "[parameters('avdOuPath')]"
           },
           "avdSessionHostDiskType": {
@@ -10464,7 +10492,7 @@
             "value": "[parameters('encryptionAtHost')]"
           },
           "fslogixManagedIdentityResourceId": {
-            "value": "[if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.fslogixManagedIdentityResourceId.value, '')]"
+            "value": "[if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))).outputs.fslogixManagedIdentityResourceId.value, '')]"
           },
           "avdFslogixFileShareMultichannel": {
             "value": "[if(or(contains(parameters('fslogixStorageSku'), 'Premium_LRS'), contains(parameters('fslogixStorageSku'), 'Premium_ZRS')), true(), false())]"
@@ -10478,8 +10506,8 @@
           "subnetResourceId": {
             "value": "[if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time'))), '2020-10-01').outputs.avdVirtualNetworkResourceId.value, variables('avdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId'))]"
           },
-          "tempStorageDomainJoinVmName": {
-            "value": "[variables('tempStorageDomainJoinVmName')]"
+          "managementVmName": {
+            "value": "[variables('managementVmName')]"
           },
           "useSharedImage": {
             "value": "[parameters('useSharedImage')]"
@@ -10494,8 +10522,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "16841030988609172917"
+              "version": "0.6.18.56646",
+              "templateHash": "3107232409469207820"
             }
           },
           "parameters": {
@@ -10515,6 +10543,12 @@
               "type": "string",
               "metadata": {
                 "description": "Resource Group Name for Azure Files."
+              }
+            },
+            "avdIdentityServiceProvider": {
+              "type": "string",
+              "metadata": {
+                "description": "Required, The service providing domain services for Azure Virtual Desktop."
               }
             },
             "avdServiceObjectsRgName": {
@@ -10619,7 +10653,7 @@
                 "description": "Required. AVD session host domain join credentials."
               }
             },
-            "avdOuPath": {
+            "sessionHostOuPath": {
               "type": "string",
               "metadata": {
                 "description": "Optional. OU path to join AVd VMs."
@@ -10667,25 +10701,25 @@
                 "description": "Use Azure private DNS zones for private endpoints. (Default: false)"
               }
             },
-            "tempStorageDomainJoinVmName": {
+            "managementVmName": {
               "type": "string",
               "metadata": {
-                "description": "Name for temporary virtual machine. Used to join Azure Files to domain."
+                "description": "Name for management virtual machine. for tools and to join Azure Files to domain."
               }
             },
-            "addStorageToDomainScript": {
+            "storageToDomainScript": {
               "type": "string",
               "metadata": {
                 "description": "Script name for adding storage account to Active Directory."
               }
             },
-            "addStorageToDomainScriptArgs": {
+            "storageToDomainScriptArgs": {
               "type": "string",
               "metadata": {
                 "description": "Script arguments for adding the storage account to Active Directory."
               }
             },
-            "addStorageToDomainScriptUri": {
+            "storageToDomainScriptUri": {
               "type": "string",
               "metadata": {
                 "description": "URI for the script for adding the storage account to Active Directory."
@@ -10733,6 +10767,9 @@
                   "storageAccountKind": {
                     "value": "[if(or(equals(toLower(parameters('fslogixStorageSku')), toLower('Premium_LRS')), equals(toLower(parameters('fslogixStorageSku')), toLower('Premium_ZRS'))), 'FileStorage', 'StorageV2')]"
                   },
+                  "azureFilesIdentityBasedAuthentication": {
+                    "value": "[if(equals(parameters('avdIdentityServiceProvider'), 'AADDS'), createObject('directoryServiceOptions', 'AADDS'), createObject('directoryServiceOptions', 'None'))]"
+                  },
                   "storageAccountAccessTier": {
                     "value": "Hot"
                   },
@@ -10768,8 +10805,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "5271197936158309215"
+                      "version": "0.6.18.56646",
+                      "templateHash": "10464470598794127218"
                     }
                   },
                   "parameters": {
@@ -11184,8 +11221,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "579156534319241471"
+                              "version": "0.6.18.56646",
+                              "templateHash": "12965550548914942871"
                             }
                           },
                           "parameters": {
@@ -11332,8 +11369,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "14923668828077331147"
+                              "version": "0.6.18.56646",
+                              "templateHash": "15863587580915373307"
                             }
                           },
                           "parameters": {
@@ -11443,8 +11480,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "11609610636617414204"
+                              "version": "0.6.18.56646",
+                              "templateHash": "1238564261076744009"
                             }
                           },
                           "parameters": {
@@ -11589,8 +11626,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "7036039095335249330"
+                              "version": "0.6.18.56646",
+                              "templateHash": "11822679838764360147"
                             }
                           },
                           "parameters": {
@@ -11832,8 +11869,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "420336751399658669"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "15766588324976580933"
                                     }
                                   },
                                   "parameters": {
@@ -11957,8 +11994,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.9.1.41621",
-                                              "templateHash": "10555500247886328078"
+                                              "version": "0.6.18.56646",
+                                              "templateHash": "8890293456311341143"
                                             }
                                           },
                                           "parameters": {
@@ -12101,8 +12138,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.9.1.41621",
-                                              "templateHash": "17285266521058503884"
+                                              "version": "0.6.18.56646",
+                                              "templateHash": "18424272002787389588"
                                             }
                                           },
                                           "parameters": {
@@ -12320,8 +12357,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "17434418229593117354"
+                              "version": "0.6.18.56646",
+                              "templateHash": "4468166038235660302"
                             }
                           },
                           "parameters": {
@@ -12559,8 +12596,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "15710523424079177774"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "10592660094986790354"
                                     }
                                   },
                                   "parameters": {
@@ -12690,8 +12727,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.9.1.41621",
-                                              "templateHash": "8768404998223053296"
+                                              "version": "0.6.18.56646",
+                                              "templateHash": "3279604461507817568"
                                             }
                                           },
                                           "parameters": {
@@ -12912,8 +12949,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "11304716720310671101"
+                              "version": "0.6.18.56646",
+                              "templateHash": "1546997530860855503"
                             }
                           },
                           "parameters": {
@@ -13125,8 +13162,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "12573667775029950931"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "10767083478793113255"
                                     }
                                   },
                                   "parameters": {
@@ -13231,8 +13268,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.9.1.41621",
-                                              "templateHash": "14097622015807739726"
+                                              "version": "0.6.18.56646",
+                                              "templateHash": "11806587398392909025"
                                             }
                                           },
                                           "parameters": {
@@ -13450,8 +13487,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "7558456178905270954"
+                              "version": "0.6.18.56646",
+                              "templateHash": "13864683647616429603"
                             }
                           },
                           "parameters": {
@@ -13657,8 +13694,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "7156796144817145743"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "18086676683627184731"
                                     }
                                   },
                                   "parameters": {
@@ -13814,9 +13851,9 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
-              "name": "[format('Deploy-temporary-VM-FsLogixStorageToDomain-{0}', parameters('time'))]",
+              "name": "[format('Deploy-Mgmt-VM-{0}', parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('avdWorkloadSubsId'))]",
-              "resourceGroup": "[format('{0}', parameters('avdStorageObjectsRgName'))]",
+              "resourceGroup": "[format('{0}', parameters('avdServiceObjectsRgName'))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -13824,7 +13861,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[parameters('tempStorageDomainJoinVmName')]"
+                    "value": "[parameters('managementVmName')]"
                   },
                   "location": {
                     "value": "[parameters('avdSessionHostLocation')]"
@@ -13879,7 +13916,7 @@
                   "nicConfigurations": {
                     "value": [
                       {
-                        "nicSuffix": "nic-001-",
+                        "nicSuffix": "nic-01-",
                         "deleteOption": "Delete",
                         "asgId": "[if(not(empty(parameters('avdApplicationSecurityGroupResourceId'))), parameters('avdApplicationSecurityGroupResourceId'), null())]",
                         "enableAcceleratedNetworking": false,
@@ -13908,7 +13945,7 @@
                       "enabled": true,
                       "settings": {
                         "name": "[parameters('avdIdentityDomainName')]",
-                        "ouPath": "[if(not(empty(parameters('avdOuPath'))), parameters('avdOuPath'), null())]",
+                        "ouPath": "[if(not(empty(parameters('sessionHostOuPath'))), parameters('sessionHostOuPath'), null())]",
                         "user": "[parameters('avdDomainJoinUserName')]",
                         "restart": "true",
                         "options": "3"
@@ -13925,8 +13962,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "12039436850568525791"
+                      "version": "0.6.18.56646",
+                      "templateHash": "9723910118373504032"
                     }
                   },
                   "parameters": {
@@ -14725,8 +14762,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "13774378679300485468"
+                              "version": "0.6.18.56646",
+                              "templateHash": "18123092384433123732"
                             }
                           },
                           "parameters": {
@@ -14964,8 +15001,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "4844657301430438930"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "9556177522022684513"
                                     }
                                   },
                                   "parameters": {
@@ -15138,8 +15175,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.9.1.41621",
-                                              "templateHash": "14986714380096369053"
+                                              "version": "0.6.18.56646",
+                                              "templateHash": "9634573242345467377"
                                             }
                                           },
                                           "parameters": {
@@ -15296,8 +15333,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "17015881332236392932"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "12431355036765841258"
                                     }
                                   },
                                   "parameters": {
@@ -15422,8 +15459,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "14224846953275565849"
+                              "version": "0.6.18.56646",
+                              "templateHash": "12830169057620653284"
                             }
                           },
                           "parameters": {
@@ -15541,8 +15578,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "1436505676901364058"
+                              "version": "0.6.18.56646",
+                              "templateHash": "5468651301233832668"
                             }
                           },
                           "parameters": {
@@ -15738,8 +15775,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "1436505676901364058"
+                              "version": "0.6.18.56646",
+                              "templateHash": "5468651301233832668"
                             }
                           },
                           "parameters": {
@@ -15942,8 +15979,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "1436505676901364058"
+                              "version": "0.6.18.56646",
+                              "templateHash": "5468651301233832668"
                             }
                           },
                           "parameters": {
@@ -16136,8 +16173,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "1436505676901364058"
+                              "version": "0.6.18.56646",
+                              "templateHash": "5468651301233832668"
                             }
                           },
                           "parameters": {
@@ -16330,8 +16367,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "1436505676901364058"
+                              "version": "0.6.18.56646",
+                              "templateHash": "5468651301233832668"
                             }
                           },
                           "parameters": {
@@ -16530,8 +16567,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "1436505676901364058"
+                              "version": "0.6.18.56646",
+                              "templateHash": "5468651301233832668"
                             }
                           },
                           "parameters": {
@@ -16738,8 +16775,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "1436505676901364058"
+                              "version": "0.6.18.56646",
+                              "templateHash": "5468651301233832668"
                             }
                           },
                           "parameters": {
@@ -16939,8 +16976,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "1436505676901364058"
+                              "version": "0.6.18.56646",
+                              "templateHash": "5468651301233832668"
                             }
                           },
                           "parameters": {
@@ -17124,8 +17161,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "3055002396042079678"
+                              "version": "0.6.18.56646",
+                              "templateHash": "1762467586478280301"
                             }
                           },
                           "parameters": {
@@ -17216,8 +17253,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "12840473635380099764"
+                              "version": "0.6.18.56646",
+                              "templateHash": "1462864126456485720"
                             }
                           },
                           "parameters": {
@@ -17351,9 +17388,9 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
-              "name": "[format('Add-FslogixStorage-to-ADDS-{0}', parameters('time'))]",
+              "name": "[format('Add-FslogixStorage-Setup-{0}', parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('avdWorkloadSubsId'))]",
-              "resourceGroup": "[format('{0}', parameters('avdStorageObjectsRgName'))]",
+              "resourceGroup": "[format('{0}', parameters('avdServiceObjectsRgName'))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -17364,16 +17401,16 @@
                     "value": "[parameters('avdSessionHostLocation')]"
                   },
                   "name": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Deploy-temporary-VM-FsLogixStorageToDomain-{0}', parameters('time')))).outputs.name.value]"
+                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Deploy-Mgmt-VM-{0}', parameters('time')))).outputs.name.value]"
                   },
                   "file": {
-                    "value": "[parameters('addStorageToDomainScript')]"
+                    "value": "[parameters('storageToDomainScript')]"
                   },
                   "ScriptArguments": {
-                    "value": "[parameters('addStorageToDomainScriptArgs')]"
+                    "value": "[parameters('storageToDomainScriptArgs')]"
                   },
                   "baseScriptUri": {
-                    "value": "[parameters('addStorageToDomainScriptUri')]"
+                    "value": "[parameters('storageToDomainScriptUri')]"
                   }
                 },
                 "template": {
@@ -17382,8 +17419,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "8970427822472696895"
+                      "version": "0.6.18.56646",
+                      "templateHash": "6397034068018831962"
                     }
                   },
                   "parameters": {
@@ -17407,7 +17444,7 @@
                     {
                       "type": "Microsoft.Compute/virtualMachines/extensions",
                       "apiVersion": "2021-07-01",
-                      "name": "[format('{0}/addAzureFilesToADDSScript', parameters('name'))]",
+                      "name": "[format('{0}/addAzureFilesToDomainScript', parameters('name'))]",
                       "location": "[parameters('location')]",
                       "properties": {
                         "publisher": "Microsoft.Compute",
@@ -17426,7 +17463,7 @@
               },
               "dependsOn": [
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-Fslogix-Storage-{0}', parameters('time')))]",
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Deploy-temporary-VM-FsLogixStorageToDomain-{0}', parameters('time')))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Deploy-Mgmt-VM-{0}', parameters('time')))]"
               ]
             }
           ]
@@ -17463,6 +17500,9 @@
           "avdAsUpdateDomainCount": {
             "value": "[parameters('avdAsUpdateDomainCount')]"
           },
+          "avdIdentityServiceProvider": {
+            "value": "[parameters('avdIdentityServiceProvider')]"
+          },
           "avdAvailabilitySetNamePrefix": {
             "value": "[variables('avdAvailabilitySetNamePrefix')]"
           },
@@ -17493,7 +17533,7 @@
           "avdImageTemplataDefinitionId": {
             "value": "[parameters('avdImageTemplataDefinitionId')]"
           },
-          "avdOuPath": {
+          "sessionHostOuPath": {
             "value": "[parameters('avdOuPath')]"
           },
           "avdSessionHostDiskType": {
@@ -17527,7 +17567,7 @@
             "value": "[parameters('createAvdFslogixDeployment')]"
           },
           "fslogixManagedIdentityResourceId": {
-            "value": "[if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.fslogixManagedIdentityResourceId.value, 'none')]"
+            "value": "[if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))).outputs.fslogixManagedIdentityResourceId.value, 'none')]"
           },
           "fsLogixScript": {
             "value": "[variables('fsLogixScript')]"
@@ -17557,8 +17597,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "9678243517023835170"
+              "version": "0.6.18.56646",
+              "templateHash": "3622173388262489750"
             }
           },
           "parameters": {
@@ -17634,6 +17674,12 @@
                 "description": "Optional. Sets the number of update domains for the availability set."
               }
             },
+            "avdIdentityServiceProvider": {
+              "type": "string",
+              "metadata": {
+                "description": "Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)"
+              }
+            },
             "encryptionAtHost": {
               "type": "bool",
               "metadata": {
@@ -17700,7 +17746,7 @@
                 "description": "Required. AVD session host domain join credentials."
               }
             },
-            "avdOuPath": {
+            "sessionHostOuPath": {
               "type": "string",
               "metadata": {
                 "description": "Optional. OU path to join AVd VMs."
@@ -17823,8 +17869,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "17207477688274496445"
+                      "version": "0.6.18.56646",
+                      "templateHash": "11681010985247499968"
                     }
                   },
                   "parameters": {
@@ -17923,8 +17969,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "9983666150523563673"
+                              "version": "0.6.18.56646",
+                              "templateHash": "17038009722019820851"
                             }
                           },
                           "parameters": {
@@ -17952,7 +17998,7 @@
                               "type": "string",
                               "defaultValue": "Aligned",
                               "metadata": {
-                                "description": "Optional. SKU of the availability set.\n- Use \\'Aligned\\' for virtual machines with managed disks\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\n"
+                                "description": "Optional. SKU of the availability set.\r\n- Use \\'Aligned\\' for virtual machines with managed disks\r\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\r\n"
                               }
                             },
                             "proximityPlacementGroupId": {
@@ -18083,8 +18129,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "7007730368872710565"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "6489478267799687368"
                                     }
                                   },
                                   "parameters": {
@@ -18260,8 +18306,8 @@
                   "avdImageTemplataDefinitionId": {
                     "value": "[parameters('avdImageTemplataDefinitionId')]"
                   },
-                  "avdOuPath": {
-                    "value": "[parameters('avdOuPath')]"
+                  "sessionHostOuPath": {
+                    "value": "[parameters('sessionHostOuPath')]"
                   },
                   "avdSessionHostsCount": {
                     "value": "[if(and(equals(range(1, variables('avdSessionHostBatchCount'))[copyIndex()], variables('avdSessionHostBatchCount')), greater(variables('divisionRemainderValue'), 0)), variables('divisionRemainderValue'), variables('avdMaxSessionHostsPerTemplateDeployment'))]"
@@ -18320,6 +18366,9 @@
                   "useSharedImage": {
                     "value": "[parameters('useSharedImage')]"
                   },
+                  "avdIdentityServiceProvider": {
+                    "value": "[parameters('avdIdentityServiceProvider')]"
+                  },
                   "avdTags": {
                     "value": "[parameters('avdTags')]"
                   }
@@ -18330,8 +18379,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "68926448760553737"
+                      "version": "0.6.18.56646",
+                      "templateHash": "12014979768607534433"
                     }
                   },
                   "parameters": {
@@ -18461,13 +18510,19 @@
                         "description": "Required. AVD session host domain join credentials."
                       }
                     },
+                    "avdIdentityServiceProvider": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)"
+                      }
+                    },
                     "avdWrklKvName": {
                       "type": "string",
                       "metadata": {
                         "description": "Required. Name of keyvault that contains credentials."
                       }
                     },
-                    "avdOuPath": {
+                    "sessionHostOuPath": {
                       "type": "string",
                       "metadata": {
                         "description": "Optional. OU path to join AVd VMs"
@@ -18638,7 +18693,7 @@
                               "enabled": true,
                               "settings": {
                                 "name": "[parameters('avdIdentityDomainName')]",
-                                "ouPath": "[if(not(empty(parameters('avdOuPath'))), parameters('avdOuPath'), null())]",
+                                "ouPath": "[if(not(empty(parameters('sessionHostOuPath'))), parameters('sessionHostOuPath'), null())]",
                                 "user": "[parameters('avdDomainJoinUserName')]",
                                 "restart": "true",
                                 "options": "3"
@@ -18671,8 +18726,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "12039436850568525791"
+                              "version": "0.6.18.56646",
+                              "templateHash": "9723910118373504032"
                             }
                           },
                           "parameters": {
@@ -19471,8 +19526,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "13774378679300485468"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "18123092384433123732"
                                     }
                                   },
                                   "parameters": {
@@ -19710,8 +19765,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.9.1.41621",
-                                              "templateHash": "4844657301430438930"
+                                              "version": "0.6.18.56646",
+                                              "templateHash": "9556177522022684513"
                                             }
                                           },
                                           "parameters": {
@@ -19884,8 +19939,8 @@
                                                   "metadata": {
                                                     "_generator": {
                                                       "name": "bicep",
-                                                      "version": "0.9.1.41621",
-                                                      "templateHash": "14986714380096369053"
+                                                      "version": "0.6.18.56646",
+                                                      "templateHash": "9634573242345467377"
                                                     }
                                                   },
                                                   "parameters": {
@@ -20042,8 +20097,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.9.1.41621",
-                                              "templateHash": "17015881332236392932"
+                                              "version": "0.6.18.56646",
+                                              "templateHash": "12431355036765841258"
                                             }
                                           },
                                           "parameters": {
@@ -20168,8 +20223,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "14224846953275565849"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "12830169057620653284"
                                     }
                                   },
                                   "parameters": {
@@ -20287,8 +20342,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "1436505676901364058"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "5468651301233832668"
                                     }
                                   },
                                   "parameters": {
@@ -20484,8 +20539,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "1436505676901364058"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "5468651301233832668"
                                     }
                                   },
                                   "parameters": {
@@ -20688,8 +20743,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "1436505676901364058"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "5468651301233832668"
                                     }
                                   },
                                   "parameters": {
@@ -20882,8 +20937,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "1436505676901364058"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "5468651301233832668"
                                     }
                                   },
                                   "parameters": {
@@ -21076,8 +21131,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "1436505676901364058"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "5468651301233832668"
                                     }
                                   },
                                   "parameters": {
@@ -21276,8 +21331,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "1436505676901364058"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "5468651301233832668"
                                     }
                                   },
                                   "parameters": {
@@ -21484,8 +21539,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "1436505676901364058"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "5468651301233832668"
                                     }
                                   },
                                   "parameters": {
@@ -21685,8 +21740,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "1436505676901364058"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "5468651301233832668"
                                     }
                                   },
                                   "parameters": {
@@ -21870,8 +21925,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "3055002396042079678"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "1762467586478280301"
                                     }
                                   },
                                   "parameters": {
@@ -21962,8 +22017,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "12840473635380099764"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "1462864126456485720"
                                     }
                                   },
                                   "parameters": {
@@ -22129,8 +22184,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "5682191773010532839"
+                              "version": "0.6.18.56646",
+                              "templateHash": "4221834084412303253"
                             }
                           },
                           "parameters": {
@@ -22223,8 +22278,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "11622218780665330831"
+                              "version": "0.6.18.56646",
+                              "templateHash": "10920572017087077244"
                             }
                           },
                           "parameters": {
