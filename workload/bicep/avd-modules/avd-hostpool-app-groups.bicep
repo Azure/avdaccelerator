@@ -57,6 +57,9 @@ param avhHostPoolMaxSessions int
 @description('Optional. AVD host pool start VM on Connect.')
 param avdStartVmOnConnect bool
 
+@description('Required. Tags to be applied to resources')
+param avdTags object
+
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
@@ -98,6 +101,7 @@ module avdHostPool '../../../carml/1.2.0/Microsoft.DesktopVirtualization/hostpoo
     loadBalancerType: avdHostPoolLoadBalancerType
     maxSessionLimit: avhHostPoolMaxSessions
     personalDesktopAssignmentType: avdPersonalAssignType
+    tags: avdTags
   }
 }
 
@@ -110,6 +114,7 @@ module avdApplicationGroups '../../../carml/1.2.0/Microsoft.DesktopVirtualizatio
     location: applicationGroup.location
     applicationGroupType: applicationGroup.applicationGroupType
     hostpoolName: avdHostPool.outputs.name
+    tags: avdTags
   }
   dependsOn: [
     avdHostPool
