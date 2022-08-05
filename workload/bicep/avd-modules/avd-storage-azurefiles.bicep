@@ -67,7 +67,7 @@ param avdWrklKvName string
 param avdDomainJoinUserName string
 
 @description('Optional. OU path to join AVd VMs.')
-param avdOuPath string
+param sessionHostOuPath string
 
 @description('Application Security Group (ASG) for the session hosts.')
 param avdApplicationSecurityGroupResourceId string
@@ -217,7 +217,7 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
             enabled: true
             settings: {
                 name: avdIdentityDomainName
-                ouPath: !empty(avdOuPath) ? avdOuPath : null
+                ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
                 user: avdDomainJoinUserName
                 restart: 'true'
                 options: '3'
