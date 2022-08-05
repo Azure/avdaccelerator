@@ -6,6 +6,29 @@
 
 ```bash
 az deployment create \
+  --template-file workload/bicep/deploy-custom-image.bicep \
+  --parameters @workload/bicep/parameters/deploy-custom-image-parameters-example.json \
+  --avdSharedServicesSubId <subscriptionId> \
+  --deploymentPrefix <deploymentPrefix> \
+  --Location eastus2
+```
+
+### PowerShell
+
+```powershell
+New-AzSubscriptionDeployment `
+  -TemplateFile workload/bicep/deploy-custom-image.bicep `
+  -TemplateParameterFile workload/bicep/parameters/deploy-custom-image-parameters-example.json `
+  -avdSharedServicesSubId <subscriptionId> `
+  -deploymentPrefix <deploymentPrefix> `
+  -Location eastus2
+```
+## AVD Accelerator Baseline
+
+### Azure CLI
+
+```bash
+az deployment create \
   --template-file workload/bicep/deploy-baseline.bicep \
   --parameters @workload/bicep/parameters/deploy-baseline-parameters-example.json \
   --avdWorkloadSubsId <subscriptionId> \
@@ -39,30 +62,6 @@ New-AzSubscriptionDeployment `
   -existingHubVnetResourceId <hubVnetResourceId>  `
   -customDnsIps <customDNSservers>  `
   -avdEnterpriseAppObjectId <wvdAppObjectId> `
-  -Location eastus2
-```
-
-## AVD Accelerator Baseline
-
-### Azure CLI
-
-```bash
-az deployment create \
-  --template-file workload/bicep/deploy-custom-image.bicep \
-  --parameters @workload/bicep/parameters/deploy-custom-image-parameters-example.json \
-  --avdSharedServicesSubId <subscriptionId> \
-  --deploymentPrefix <deploymentPrefix> \
-  --Location eastus2
-```
-
-### PowerShell
-
-```powershell
-New-AzSubscriptionDeployment `
-  -TemplateFile workload/bicep/deploy-custom-image.bicep `
-  -TemplateParameterFile workload/bicep/parameters/deploy-custom-image-parameters-example.json `
-  -avdSharedServicesSubId <subscriptionId> `
-  -deploymentPrefix <deploymentPrefix> `
   -Location eastus2
 ```
 
