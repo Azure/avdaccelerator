@@ -46,7 +46,7 @@ param avdDomainJoinUserName string = ''
 param avdDomainJoinUserPassword string = ''
 
 @description('Optional. OU path to join AVd VMs. (Default: "")')
-param avdSessionHostsOuPath string = ''
+param avdOuPath string = ''
 
 @allowed([
     'Personal'
@@ -343,8 +343,9 @@ var avdFslogixProfileContainerFileShareName = avdUseCustomNaming ? avdFslogixPro
 var avdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${deploymentPrefix}${avdNamingUniqueStringSixChar}': 'stavd${deploymentPrefix}${avdNamingUniqueStringSixChar}'
 var avdWrklStoragePrivateEndpointName = 'pe-stavd${deploymentPrefixLowercase}${avdNamingUniqueStringSixChar}-file'
 var managementVmName = 'vm-mgmt-${deploymentPrefix}'
-var OuStgName = !empty(storageOuName) ? storageOuName : ((avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers': 'Computers')
-var avdOuPath = !empty(avdSessionHostsOuPath) ? avdSessionHostsOuPath : ((avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers': 'Computers')
+var ouStgName = !empty(storageOuName) ? storageOuName : defaultStorageOuPath
+//var sessionHostOuPath = !empty(avdOuPath) ? avdOuPath : defaultOuPath
+var defaultStorageOuPath = 'Computers' //(avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers': 'Computers'
 //
 
 var marketPlaceGalleryWindows = {
@@ -388,7 +389,7 @@ var readerRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 var dscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCDomainJoinStorageScripts.zip'
 var storageToDomainScriptUri = '${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-ADDS.ps1'
 var storageToDomainScript = './Manual-DSC-JoinStorage-to-ADDS.ps1'
-var storageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${OuStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
+var storageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${ouStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
 //var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
 var createOuForStorageString = string(createOuForStorage)
 var dnsServers = (customDnsIps == 'none') ? []: (split(customDnsIps, ','))
@@ -630,7 +631,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         avdFslogixStorageName: avdFslogixStorageName
         avdIdentityDomainName: avdIdentityDomainName
         avdImageTemplataDefinitionId: avdImageTemplataDefinitionId
-        avdOuPath: avdOuPath
+        sessionHostOuPath: avdOuPath
         avdSessionHostDiskType: avdSessionHostDiskType
         avdSessionHostLocation: avdSessionHostLocation
         avdSessionHostsSize: avdSessionHostsSize
@@ -677,7 +678,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         avdHostPoolName: avdHostPoolName
         avdIdentityDomainName: avdIdentityDomainName
         avdImageTemplataDefinitionId: avdImageTemplataDefinitionId
-        avdOuPath: avdOuPath
+        sessionHostOuPath: avdOuPath
         avdSessionHostDiskType: avdSessionHostDiskType
         avdSessionHostLocation: avdSessionHostLocation
         avdSessionHostNamePrefix: avdSessionHostNamePrefix
@@ -695,6 +696,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         hostPoolToken: avdHostPoolandAppGroups.outputs.hostPooltoken
         marketPlaceGalleryWindows: marketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
+        avdIdentityServiceProvider: avdIdentityServiceProvider
     }
     dependsOn: [
         avdBaselineResourceGroups

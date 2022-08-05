@@ -39,6 +39,9 @@ param avdAsFaultDomainCount int
 @description('Optional. Sets the number of update domains for the availability set.')
 param avdAsUpdateDomainCount int
 
+@description('Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)')
+param avdIdentityServiceProvider string
+
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool
 
@@ -73,7 +76,7 @@ param avdIdentityDomainName string
 param avdDomainJoinUserName string
 
 @description('Optional. OU path to join AVd VMs.')
-param avdOuPath string
+param sessionHostOuPath string
 
 @description('Application Security Group (ASG) for the session hosts.')
 param avdApplicationSecurityGroupResourceId string
@@ -153,7 +156,7 @@ module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, avdSessi
     avdHostPoolName: avdHostPoolName
     avdIdentityDomainName: avdIdentityDomainName
     avdImageTemplataDefinitionId: avdImageTemplataDefinitionId
-    avdOuPath: avdOuPath
+    sessionHostOuPath: sessionHostOuPath
     avdSessionHostsCount: i == avdSessionHostBatchCount && divisionRemainderValue > 0 ? divisionRemainderValue : avdMaxSessionHostsPerTemplateDeployment
     avdSessionHostCountIndex: i == 1 ? avdSessionHostCountIndex : ((i - 1) * avdMaxSessionHostsPerTemplateDeployment) + avdSessionHostCountIndex
     avdSessionHostDiskType: avdSessionHostDiskType
@@ -173,6 +176,7 @@ module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, avdSessi
     hostPoolToken: hostPoolToken
     marketPlaceGalleryWindows: marketPlaceGalleryWindows
     useSharedImage: useSharedImage
+    avdIdentityServiceProvider: avdIdentityServiceProvider
   }
   dependsOn: [
   ]

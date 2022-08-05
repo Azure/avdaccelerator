@@ -78,11 +78,14 @@ param avdIdentityDomainName string
 @description('Required. AVD session host domain join credentials.')
 param avdDomainJoinUserName string
 
+@description('Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)')
+param avdIdentityServiceProvider string
+
 @description('Required. Name of keyvault that contains credentials.')
 param avdWrklKvName string
 
 @description('Optional. OU path to join AVd VMs')
-param avdOuPath string
+param sessionHostOuPath string
 
 @description('Application Security Group (ASG) for the session hosts.')
 param avdApplicationSecurityGroupResourceId string
@@ -189,7 +192,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
             enabled: true
             settings: {
                 name: avdIdentityDomainName
-                ouPath: !empty(avdOuPath) ? avdOuPath : null
+                ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
                 user: avdDomainJoinUserName
                 restart: 'true'
                 options: '3'
