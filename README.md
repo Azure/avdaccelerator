@@ -1,27 +1,5 @@
 # Welcome to the Azure Virtual Desktop (AVD) Landing Zone Accelerator
 
-## Optional: Custom Image Build
-
-Deploy a custom image based on the latest version of the Azure marketplace image to an Azure Compute Gallery. The following images are offered: 
- - Windows 10 21H2
- - Windows 11 21H2
- - Windows 10 21H2 with O365
- - Windows 11 21H2 with O365
-
- Custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates. 
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fissue115%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fissue115%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json)
-
-## AVD Accelerator Baseline
-
-Deploy Azure Virtual Desktop (AVD) resources and dependent services for establishing the baseline
-- AVD resources: workplace, two(2) application groups and host pool
-- [Optional]: new virtual network (VNet) with baseline NSG and route table
-- Azure Files Premium share. Integration with Active Directory 
-- Session Hosts 
-
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fissue115%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fissue115%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json)
 
 ## Overview
 
@@ -36,15 +14,47 @@ The AVD Landing Zone Accelerator only addresses what gets deployed in the specif
 This repository will contain various customer scenarios that can help accelerate the development and deployment of AVD that conforms with [Enterprise-Scale for AVD best practices and guidelines](https://docs.microsoft.com/azure/cloud-adoption-framework/scenarios/wvd/ready). Each scenario aims to represent common customer experiences with the goal of accelerating the process of developing and deploying conforming AVD using IaaC. Each scenario will eventually have an ARM, Bicep, PowerShell and CLI version to choose from.
 As of today, we have a first reference implementation scenario that is one of the most common ones used by Enterprise customers and partners and it can be used to deploy an AVD workload. We will continue to add new scenarios in future updates.
 
-## Next Steps
+## Getting Started
 
-Head over to [Getting Started Wiki](https://github.com/Azure/avdaccelerator/wiki/Getting-Started#Getting-Started) to review prerequisites and deployment options.
+Head over to [Getting Started](/workload/docs/getting-started.md) to review prerequisites and deployment options.
 
-## Baseline Architectural Diagram
+## AVD Accelerator Baseline
+
+Deploy Azure Virtual Desktop (AVD) resources and dependent services for establishing the baseline
+- AVD resources: workspace, two (2) application groups and host pool
+- [Optional]: new virtual network (VNet) with baseline NSG and route table
+- Azure Files share. Integration with Active Directory 
+- Session Hosts 
+
+
+|Baseline deployment options:          |                           |
+|:-------------------------------------|:------------------------: |
+|Azure portal UI          |[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json)      |
+|Command line (Bicep/ARM)              |[![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/readme.md)          |
+|Terraform                             |[![Terraform](./workload/docs/icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md)                  |
+
+## Optional: Custom Image Build
+
+Deploy a custom image based on the latest version of the Azure marketplace image to an Azure Compute Gallery. The following images are offered: 
+ - Windows 10 21H2
+ - Windows 11 21H2
+ - Windows 10 21H2 with O365
+ - Windows 11 21H2 with O365
+
+Custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates. 
+
+|Custom image deployment options:      |                           |
+|:-------------------------------------|:------------------------: |
+|Azure portal UI                       |[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json)   |
+|Command line (Bicep/ARM)              |[![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/readme.md)          |
+|Terraform                             |[![Terraform](./workload/docs/icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md)                  |
+
+## Architectural Diagram
 
 ![AVD accelerator diagram](./workload/docs/diagrams/avd-accelerator-baseline.png)
 
 _Download a [Visio file](./workload/docs/diagrams/avd-accelerator-baseline-architecture.vsdx) of this architecture._
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
@@ -66,3 +76,7 @@ trademarks or logos is subject to and must follow
 [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/legal/intellectualproperty/trademarks).
 Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
 Any use of third-party trademarks or logos are subject to those third-party's policies.
+
+# Known Issues
+
+Please report issues using the projects [issues](https://github.com/Azure/avdaccelerator/issues) tracker.
