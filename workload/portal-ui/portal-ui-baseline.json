@@ -818,12 +818,11 @@
                                         "confirmPassword": "Confirm password"
                                     },
                                     "toolTip": {
-                                        "password": "The password must be alphanumeric, contain at least 12 characters, have at least 1 letter,1 number and 1 special character."
+                                        "password": "The Password must have at least 12 characters and contain 3 of the following: 1 lower case character, 1 upper case character, 1 number, and 1 special character."
                                     },
                                     "constraints": {
                                         "required": true,
-                                        "customPasswordRegex": "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=_!*<>()])(?=\\S+$).{12,123}$",
-                                        "customValidationMessage": "Password must contain at least 12 characters, have at least 1 letter,1 number and 1 special character."
+                                        "customPasswordRegex": "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=_!*<>()])(?=\\S+$).{12,123}$"
                                     },
                                     "options": {
                                         "hideConfirmation": false
