@@ -823,7 +823,7 @@
                                     "constraints": {
                                         "required": true,
                                         "customPasswordRegex": "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=_!*<>()])(?=\\S+$).{12,123}$",
-                                        "customValidationMessage": "Password must include 1 special character."
+                                        "customValidationMessage": "Password must contain at least 12 characters, have at least 1 letter,1 number and 1 special character."
                                     },
                                     "options": {
                                         "hideConfirmation": false
