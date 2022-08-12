@@ -51,7 +51,7 @@ Custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https
 
 ## Architectural Diagram
 
-![AVD accelerator diagram](./workload/docs/diagrams/avd-accelerator-baseline.png)
+![AVD accelerator diagram](./workload/docs/diagrams/avd-accelerator-baseline-architecture.png)
 
 _Download a [Visio file](./workload/docs/diagrams/avd-accelerator-baseline-architecture.vsdx) of this architecture._
 
