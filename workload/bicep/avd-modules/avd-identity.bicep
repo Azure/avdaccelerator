@@ -4,7 +4,7 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 @description('Required. Location where to deploy AVD management plane.')
-param avdManagementPlaneLocation string
+param avdSessionHostLocation string
 
 @description('Optional. AVD workload subscription ID, multiple subscriptions scenario.')
 param avdWorkloadSubsId string
@@ -55,7 +55,7 @@ module fslogixManagedIdentity '../../../carml/1.2.0/Microsoft.ManagedIdentity/us
   name: 'fslogix-Managed-Identity-${time}'
   params: {
     name: fslogixManagedIdentityName
-    location: avdManagementPlaneLocation
+    location: avdSessionHostLocation
     tags: avdTags
   }
 }
@@ -68,7 +68,7 @@ module startVMonConnectRole '../../../carml/1.2.0/Microsoft.Authorization/roleDe
     subscriptionId: avdWorkloadSubsId
     description: 'Start VM on connect AVD'
     roleName: 'StartVMonConnect-AVD'
-    location: avdManagementPlaneLocation
+    location: avdSessionHostLocation
     actions: [
       'Microsoft.Compute/virtualMachines/start/action'
       'Microsoft.Compute/virtualMachines/*/read'
@@ -93,33 +93,29 @@ module startVMonConnectRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/
   ]
 }
 // FSLogix.
-module fslogixRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (avdDeploySessionHosts) {
+module fslogixRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (createAvdFslogixDeployment) {
   name: 'fslogix-UserAIdentity-RoleAssign-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
   params: {
     roleDefinitionIdOrName: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${storageAccountContributorRoleId}'
-    principalId: fslogixManagedIdentity.outputs.principalId
+    principalId: createAvdFslogixDeployment ? fslogixManagedIdentity.outputs.principalId: ''
   }
-  dependsOn: [
-    fslogixManagedIdentity
-  ]
+  dependsOn: []
 }
 //FSLogix.
-module fslogixReaderRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (avdDeploySessionHosts) {
+module fslogixReaderRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (createAvdFslogixDeployment) {
   name: 'fslogix-UserAIdentity-ReaderRoleAssign-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
   params: {
     roleDefinitionIdOrName: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${readerRoleId}'
-    principalId: fslogixManagedIdentity.outputs.principalId
+    principalId: createAvdFslogixDeployment ? fslogixManagedIdentity.outputs.principalId: ''
   }
-  dependsOn: [
-    fslogixManagedIdentity
-  ]
+  dependsOn: []
 }
 //
 
 // =========== //
 // Outputs //
 // =========== //
-output fslogixManagedIdentityResourceId string = fslogixManagedIdentity.outputs.resourceId
-output fslogixManagedIdentityClientId string = fslogixManagedIdentity.outputs.clientId
+output fslogixManagedIdentityResourceId string = createAvdFslogixDeployment ? fslogixManagedIdentity.outputs.resourceId: ''
+output fslogixManagedIdentityClientId string = createAvdFslogixDeployment ? fslogixManagedIdentity.outputs.clientId: ''

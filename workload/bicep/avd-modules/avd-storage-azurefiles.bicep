@@ -12,6 +12,9 @@ param avdWorkloadSubsId string
 @description('Resource Group Name for Azure Files.')
 param avdStorageObjectsRgName string
 
+@description('Required, The service providing domain services for Azure Virtual Desktop.')
+param avdIdentityServiceProvider string
+
 @description('Resource Group Name for Azure Files.')
 param avdServiceObjectsRgName string
 
@@ -64,7 +67,7 @@ param avdWrklKvName string
 param avdDomainJoinUserName string
 
 @description('Optional. OU path to join AVd VMs.')
-param avdOuPath string
+param sessionHostOuPath string
 
 @description('Application Security Group (ASG) for the session hosts.')
 param avdApplicationSecurityGroupResourceId string
@@ -87,17 +90,17 @@ param avdVnetPrivateDnsZone bool
 @description('Use Azure private DNS zones for private endpoints. (Default: false)')
 param avdVnetPrivateDnsZoneFilesId string
 
-@description('Name for temporary virtual machine. Used to join Azure Files to domain.')
-param tempStorageDomainJoinVmName string
+@description('Name for management virtual machine. for tools and to join Azure Files to domain.')
+param managementVmName string
 
 @description('Script name for adding storage account to Active Directory.')
-param addStorageToDomainScript string
+param storageToDomainScript string
 
 @description('Script arguments for adding the storage account to Active Directory.')
-param addStorageToDomainScriptArgs string
+param storageToDomainScriptArgs string
 
 @description('URI for the script for adding the storage account to Active Directory.')
-param addStorageToDomainScriptUri string
+param storageToDomainScriptUri string
 
 @description('Required. Tags to be applied to resources')
 param avdTags object
@@ -125,6 +128,11 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
         storageAccountSku: fslogixStorageSku
         allowBlobPublicAccess: false
         storageAccountKind: ((fslogixStorageSku =~ 'Premium_LRS') || (fslogixStorageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
+        azureFilesIdentityBasedAuthentication: (avdIdentityServiceProvider == 'AADDS') ? {
+            directoryServiceOptions: 'AADDS'
+        }: {
+            directoryServiceOptions: 'None'
+        }
         storageAccountAccessTier: 'Hot'
         networkAcls: {
             bypass: 'AzureServices'
@@ -168,11 +176,11 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
 }
 
 // Provision temporary VM and add it to domain.
-module storageVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.bicep' = {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
-    name: 'Deploy-temporary-VM-FsLogixStorageToDomain-${time}'
+module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.bicep' = {
+    scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
+    name: 'Deploy-Mgmt-VM-${time}'
     params: {
-        name: tempStorageDomainJoinVmName
+        name: managementVmName
         location: avdSessionHostLocation
         systemAssignedIdentity: false
         userAssignedIdentities: {
@@ -196,7 +204,7 @@ module storageVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.
         adminPassword: avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
         nicConfigurations: [
             {
-                nicSuffix: 'nic-001-'
+                nicSuffix: 'nic-01-'
                 deleteOption: 'Delete'
                 asgId: !empty(avdApplicationSecurityGroupResourceId) ? avdApplicationSecurityGroupResourceId : null
                 enableAcceleratedNetworking: false
@@ -215,7 +223,7 @@ module storageVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.
             enabled: true
             settings: {
                 name: avdIdentityDomainName
-                ouPath: !empty(avdOuPath) ? avdOuPath : null
+                ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
                 user: avdDomainJoinUserName
                 restart: 'true'
                 options: '3'
@@ -229,19 +237,19 @@ module storageVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.
 }
 
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
-module addFslogixShareToADDSSript '../../vm-custom-extensions/add-azure-files-to-adds-script.bicep' = {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
-    name: 'Add-FslogixStorage-to-ADDS-${time}'
+module addFslogixShareToDomainSript '../../vm-custom-extensions/add-azure-files-to-domain-script.bicep' = { //if(avdIdentityServiceProvider == 'ADDS')  {
+    scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
+    name: 'Add-FslogixStorage-Setup-${time}'
     params: {
         location: avdSessionHostLocation
-        name: storageVM.outputs.name
-        file: addStorageToDomainScript
-        ScriptArguments: addStorageToDomainScriptArgs
-        baseScriptUri: addStorageToDomainScriptUri
+        name: managementVM.outputs.name
+        file: storageToDomainScript
+        ScriptArguments: storageToDomainScriptArgs
+        baseScriptUri: storageToDomainScriptUri
     }
     dependsOn: [
         fslogixStorage
-        storageVM
+        managementVM
     ]
 }
 
