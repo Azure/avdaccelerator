@@ -9,6 +9,9 @@ param avdManagementPlaneLocation string
 @description('Optional. AVD workload subscription ID, multiple subscriptions scenario.')
 param avdWorkloadSubsId string
 
+@description('Required, The service providing domain services for Azure Virtual Desktop.')
+param avdIdentityServiceProvider string
+
 @description('AVD Resource Group Name for the service objects.')
 param avdServiceObjectsRgName string
 
@@ -78,7 +81,7 @@ var applicationApplicationGroups = [
     applicationGroupType: 'RemoteApp'
   }
 ]
-
+var avdHostPoolRdpPropertiesDomainServiceCheck = (avdIdentityServiceProvider == 'AAD') ? '${avdHostPoolRdpProperties}targetisaadjoined:i:1' : avdHostPoolRdpProperties
 var finalApplicationGroups = avdDeployRappGroup ? concat(desktopApplicaitonGroups, applicationApplicationGroups) : desktopApplicaitonGroups
 
 // =========== //
@@ -94,7 +97,7 @@ module avdHostPool '../../../carml/1.2.0/Microsoft.DesktopVirtualization/hostpoo
     location: avdManagementPlaneLocation
     hostpoolType: avdHostPoolType
     startVMOnConnect: avdStartVmOnConnect
-    customRdpProperty: avdHostPoolRdpProperties
+    customRdpProperty: avdHostPoolRdpPropertiesDomainServiceCheck
     loadBalancerType: avdHostPoolLoadBalancerType
     maxSessionLimit: avhHostPoolMaxSessions
     personalDesktopAssignmentType: avdPersonalAssignType

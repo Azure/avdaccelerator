@@ -48,17 +48,17 @@ param (
         [string] $DomainAdminUserPassword
 
 )
-Write-Host "Downloading the DSCDomainJoinStorageScripts.zip from $DscPath"
-$DscArhive="DSCDomainJoinStorageScripts.zip"
-$appName = 'DSCDomainJoinStorageScripts'
+Write-Host "Downloading the DSCNTFSStorageScriptsAADDS.zip from $DscPath"
+$DscArhive="DSCNTFSStorageScriptsAADDS.zip"
+$appName = 'DSCNTFSStorageScriptsAADDS'
 $drive = 'C:\Packages'
 New-Item -Path $drive -Name $appName -ItemType Directory -ErrorAction SilentlyContinue
-$LocalPath = "C:\Packages\DSCDomainJoinStorageScripts"
+$LocalPath = "C:\Packages\DSCNTFSStorageScriptsAADDS"
 $OutputPath = $LocalPath + '\' + $DscArhive
 Invoke-WebRequest -Uri $DscPath -OutFile $OutputPath
 
 Write-Host "Expanding the archive $DscArchive" 
-Expand-Archive -LiteralPath 'C:\\Packages\\DSCDomainJoinStorageScripts\\DSCDomainJoinStorageScripts.zip' -DestinationPath $Localpath -Force -Verbose
+Expand-Archive -LiteralPath 'C:\\Packages\\DSCNTFSStorageScriptsAADDS\\DSCNTFSStorageScriptsAADDS.zip' -DestinationPath $Localpath -Force -Verbose
 
 Set-Location -Path $LocalPath
 
