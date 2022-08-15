@@ -1,6 +1,6 @@
 # PowerShell and Azure CLI deployments
 
-## Optional: Custom Image Build deployment
+## AVD Accelerator Baseline
 
 ### Azure CLI
 
@@ -42,7 +42,7 @@ New-AzSubscriptionDeployment `
   -Location eastus2
 ```
 
-## AVD Accelerator Baseline
+## Optional: Custom Image Build deployment
 
 ### Azure CLI
 
