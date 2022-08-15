@@ -28,6 +28,14 @@ param avdVmLocalUserName string = ''
 @secure()
 param avdVmLocalUserPassword string = ''
 
+@allowed([
+    'ADDS' // Active Directory Domain Services
+    'AADDS' // Azure Active Directory Domain Services
+    //'AAD' // Azure AD Join
+])
+@description('Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)')
+param avdIdentityServiceProvider string = 'ADDS'
+
 @description('Required. AD domain name.')
 param avdIdentityDomainName string = ''
 
@@ -92,8 +100,8 @@ param avdVnetworkAddressPrefixes string = '10.10.0.0/23'
 @description('Optional. AVD virtual network subnet address prefix. (Default: 10.10.0.0/23)')
 param avdVnetworkSubnetAddressPrefix string = '10.10.0.0/23'
 
-@description('Required. custom DNS servers IPs.')
-param customDnsIps string = ''
+@description('Optional. custom DNS servers IPs.')
+param customDnsIps string = 'none'
 
 @description('Optional. Use Azure private DNS zones for private endpoints. (Default: false)')
 param avdVnetPrivateDnsZone bool = false
@@ -402,8 +410,9 @@ var avdFslogixProfileContainerFileShareName = avdUseCustomNaming ? avdFslogixPro
 //var avdFslogixOfficeContainerFileShareName = avdUseCustomNaming ? avdFslogixOfficeContainerFileShareCustomName: 'fslogix-oc-${deploymentPrefixLowercase}-001'
 var avdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${deploymentPrefixLowercase}${avdNamingUniqueStringSixChar}' : 'stavd${deploymentPrefixLowercase}${avdNamingUniqueStringSixChar}'
 var avdWrklStoragePrivateEndpointName = 'pe-stavd${deploymentPrefixLowercase}${avdNamingUniqueStringSixChar}-file'
-var tempStorageDomainJoinVmName = 'vm-fs-dj-${deploymentPrefixLowercase}'
-var OuStgName = !empty(storageOuName) ? storageOuName : 'Computers'
+var managementVmName = 'vm-mgmt-${deploymentPrefixLowercase}'
+var ouStgName = !empty(storageOuName) ? storageOuName : defaultStorageOuPath
+var defaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? '"AADDC Computers"': 'Computers'
 //
 
 var marketPlaceGalleryWindows = {
@@ -436,7 +445,7 @@ var marketPlaceGalleryWindows = {
     }
 }
 
-var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
+var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/issue115/workload/'
 var fslogixScriptUri = '${baseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
 var fsLogixScript = './Set-FSLogixRegKeys.ps1'
 var fslogixSharePath = '\\\\${avdFslogixStorageName}.file.${environment().suffixes.storage}\\${avdFslogixProfileContainerFileShareName}'
@@ -444,12 +453,17 @@ var FsLogixScriptArguments = '-volumeshare ${fslogixSharePath}'
 var avdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_01-20-2022.zip'
 var storageAccountContributorRoleId = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
 var readerRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-var dscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCDomainJoinStorageScripts.zip'
-var addStorageToDomainScriptUri = '${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-ADDS.ps1'
-var addStorageToDomainScript = './Manual-DSC-JoinStorage-to-ADDS.ps1'
-var addStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${OuStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
+var dscAgentPackageLocationAdds = 'https://github.com/Azure/avdaccelerator/raw/issue115/workload/scripts/DSCDomainJoinStorageScriptsADDS.zip'
+var dscAgentPackageLocationAadds = 'https://github.com/Azure/avdaccelerator/raw/issue115/workload/scripts/DSCNTFSStorageScriptsAADDS.zip'
+var storageToDomainScriptUriAdds = '${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-Domain-ADDS.ps1'
+var storageToDomainScriptUriAadds = '${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-Domain-AADDS.ps1'
+var storageToDomainScriptAdds = './Manual-DSC-JoinStorage-to-Domain-ADDS.ps1'
+var storageToDomainScriptAadds = './Manual-DSC-JoinStorage-to-Domain-AADDS.ps1'
+var storageToDomainScriptArgsAdds = '-DscPath ${dscAgentPackageLocationAdds} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${ouStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
+var storageToDomainScriptArgsAadds = '-DscPath ${dscAgentPackageLocationAadds} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${ouStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
 //var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
 var createOuForStorageString = string(createOuForStorage)
+var dnsServers = (customDnsIps == 'none') ? []: (split(customDnsIps, ','))
 
 // Resource tagging
 var commonResourceTags = createResourceTags ? {
@@ -556,7 +570,7 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
         avdSessionHostLocation: avdSessionHostLocation
         avdVnetworkSubnetAddressPrefix: avdVnetworkSubnetAddressPrefix
         avdWorkloadSubsId: avdWorkloadSubsId
-        customDnsIps: customDnsIps
+        dnsServers: dnsServers
         avdTags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
@@ -582,6 +596,7 @@ module avdHostPoolandAppGroups 'avd-modules/avd-hostpool-app-groups.bicep' = {
         avdServiceObjectsRgName: avdServiceObjectsRgName
         avdStartVmOnConnect: avdStartVmOnConnect
         avdWorkloadSubsId: avdWorkloadSubsId
+        avdIdentityServiceProvider: avdIdentityServiceProvider
         avdTags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
@@ -606,13 +621,13 @@ module avdWorkSpace '../../carml/1.2.0/Microsoft.DesktopVirtualization/workspace
 //
 
 // Identity: managed identities and role assignments.
-module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = if (createAvdFslogixDeployment) {
+module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
     name: 'Create-Managed-ID-RoleAssign-${time}'
     params: {
         avdComputeObjectsRgName: avdComputeObjectsRgName
         avdDeploySessionHosts: avdDeploySessionHosts
         avdEnterpriseAppObjectId: avdEnterpriseAppObjectId
-        avdManagementPlaneLocation: avdSessionHostLocation
+        avdSessionHostLocation: avdSessionHostLocation
         avdServiceObjectsRgName: avdServiceObjectsRgName
         avdStorageObjectsRgName: avdStorageObjectsRgName
         avdWorkloadSubsId: avdWorkloadSubsId
@@ -620,7 +635,7 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = i
         fslogixManagedIdentityName: fslogixManagedIdentityName
         readerRoleId: readerRoleId
         storageAccountContributorRoleId: storageAccountContributorRoleId
-        createAvdFslogixDeployment: createAvdFslogixDeployment
+        createAvdFslogixDeployment: createAvdFslogixDeployment ? true: false
         avdTags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
@@ -699,12 +714,13 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 }
 
 // Storage.
-module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (createAvdFslogixDeployment) {
+module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (createAvdFslogixDeployment && avdDeploySessionHosts && (avdIdentityServiceProvider == 'AADDS' || avdIdentityServiceProvider == 'ADDS')) {
     name: 'Deploy-AVD-Storage-AzureFiles-${time}'
     params: {
-        addStorageToDomainScript: addStorageToDomainScript
-        addStorageToDomainScriptArgs: addStorageToDomainScriptArgs
-        addStorageToDomainScriptUri: addStorageToDomainScriptUri
+        avdIdentityServiceProvider: avdIdentityServiceProvider
+        storageToDomainScript:  (avdIdentityServiceProvider == 'ADDS') ? storageToDomainScriptAdds: storageToDomainScriptAadds
+        storageToDomainScriptArgs: (avdIdentityServiceProvider == 'ADDS') ? storageToDomainScriptArgsAdds: storageToDomainScriptArgsAadds
+        storageToDomainScriptUri: (avdIdentityServiceProvider == 'ADDS') ? storageToDomainScriptUriAdds: storageToDomainScriptUriAadds
         avdWrklStoragePrivateEndpointName: avdWrklStoragePrivateEndpointName
         avdApplicationSecurityGroupResourceId: createAvdVnet ? '${avdNetworking.outputs.avdApplicationSecurityGroupResourceId}' : ''
         avdComputeObjectsRgName: avdComputeObjectsRgName
@@ -716,7 +732,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         avdFslogixStorageName: avdFslogixStorageName
         avdIdentityDomainName: avdIdentityDomainName
         avdImageTemplataDefinitionId: avdImageTemplataDefinitionId
-        avdOuPath: avdOuPath
+        sessionHostOuPath: avdOuPath
         avdSessionHostDiskType: avdSessionHostDiskType
         avdSessionHostLocation: avdSessionHostLocation
         avdSessionHostsSize: avdSessionHostsSize
@@ -732,10 +748,9 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         fslogixStorageSku: fslogixStorageSku
         marketPlaceGalleryWindows: marketPlaceGalleryWindows['win10_21h2']
         subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
-        tempStorageDomainJoinVmName: tempStorageDomainJoinVmName
+        managementVmName: managementVmName
         useSharedImage: useSharedImage
         avdTags: createResourceTags ? allResourceTags : {}
-
     }
     dependsOn: [
         avdBaselineResourceGroups
@@ -753,6 +768,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         avdApplicationSecurityGroupResourceId: createAvdVnet ? '${avdNetworking.outputs.avdApplicationSecurityGroupResourceId}' : ''
         avdAsFaultDomainCount: avdAsFaultDomainCount
         avdAsUpdateDomainCount: avdAsUpdateDomainCount
+        avdIdentityServiceProvider: avdIdentityServiceProvider
         avdAvailabilitySetNamePrefix: avdAvailabilitySetNamePrefix
         avdComputeObjectsRgName: avdComputeObjectsRgName
         avdDeploySessionHostsCount: avdDeploySessionHostsCount
@@ -763,7 +779,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         avdHostPoolName: avdHostPoolName
         avdIdentityDomainName: avdIdentityDomainName
         avdImageTemplataDefinitionId: avdImageTemplataDefinitionId
-        avdOuPath: avdOuPath
+        sessionHostOuPath: avdOuPath
         avdSessionHostDiskType: avdSessionHostDiskType
         avdSessionHostLocation: avdSessionHostLocation
         avdSessionHostNamePrefix: avdSessionHostNamePrefix

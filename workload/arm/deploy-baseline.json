@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "14990416181544097435"
+      "templateHash": "13795971445071239260"
     }
   },
   "parameters": {
@@ -59,6 +59,17 @@
       "metadata": {
         "description": "Required. AVD session host local password."
       }
+    },
+    "avdIdentityServiceProvider": {
+      "type": "string",
+      "defaultValue": "ADDS",
+      "metadata": {
+        "description": "Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)"
+      },
+      "allowedValues": [
+        "ADDS",
+        "AADDS"
+      ]
     },
     "avdIdentityDomainName": {
       "type": "string",
@@ -193,9 +204,9 @@
     },
     "customDnsIps": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "none",
       "metadata": {
-        "description": "Required. custom DNS servers IPs."
+        "description": "Optional. custom DNS servers IPs."
       }
     },
     "avdVnetPrivateDnsZone": {
@@ -705,14 +716,15 @@
     "avdApplicationGroupNameRapp": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomNameRapp'), format('vdag-rapp-{0}-001', variables('avdManagementPlaneNamingStandard')))]",
     "avdWrklKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('avdWrklKvPrefixCustomName'), variables('avdComputeStorageResourcesNamingStandard'), variables('avdNamingUniqueStringSixChar')), format('kv-avd-{0}-{1}', variables('avdComputeStorageResourcesNamingStandard'), variables('avdNamingUniqueStringSixChar')))]",
     "avdWrklKvPrivateEndpointName": "[format('pe-kv-avd-{0}-{1}-vault', variables('deploymentPrefixLowercase'), variables('avdNamingUniqueStringSixChar'))]",
-    "avdSessionHostNamePrefix": "[if(parameters('avdUseCustomNaming'), parameters('avdSessionHostCustomNamePrefix'), format('vm-avd-{0}', parameters('deploymentPrefix')))]",
-    "avdAvailabilitySetNamePrefix": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('avdAvailabilitySetCustomNamePrefix'), variables('avdSessionHostLocationAcronym'), parameters('deploymentPrefix')), format('avail-avd-{0}-{1}', variables('avdSessionHostLocationAcronym'), parameters('deploymentPrefix')))]",
-    "fslogixManagedIdentityName": "[format('id-avd-fslogix-{0}-{1}', variables('avdSessionHostLocationAcronym'), parameters('deploymentPrefix'))]",
+    "avdSessionHostNamePrefix": "[if(parameters('avdUseCustomNaming'), parameters('avdSessionHostCustomNamePrefix'), format('vm-avd-{0}', variables('deploymentPrefixLowercase')))]",
+    "avdAvailabilitySetNamePrefix": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('avdAvailabilitySetCustomNamePrefix'), variables('avdSessionHostLocationAcronym'), variables('deploymentPrefixLowercase')), format('avail-avd-{0}-{1}', variables('avdSessionHostLocationAcronym'), variables('deploymentPrefixLowercase')))]",
+    "fslogixManagedIdentityName": "[format('id-avd-fslogix-{0}-{1}', variables('avdSessionHostLocationAcronym'), variables('deploymentPrefixLowercase'))]",
     "avdFslogixProfileContainerFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('avdFslogixProfileContainerFileShareCustomName'), format('fslogix-pc-{0}-001', variables('deploymentPrefixLowercase')))]",
-    "avdFslogixStorageName": "[if(parameters('avdUseCustomNaming'), format('{0}{1}{2}', parameters('avdFslogixStoragePrefixCustomName'), parameters('deploymentPrefix'), variables('avdNamingUniqueStringSixChar')), format('stavd{0}{1}', parameters('deploymentPrefix'), variables('avdNamingUniqueStringSixChar')))]",
+    "avdFslogixStorageName": "[if(parameters('avdUseCustomNaming'), format('{0}{1}{2}', parameters('avdFslogixStoragePrefixCustomName'), variables('deploymentPrefixLowercase'), variables('avdNamingUniqueStringSixChar')), format('stavd{0}{1}', variables('deploymentPrefixLowercase'), variables('avdNamingUniqueStringSixChar')))]",
     "avdWrklStoragePrivateEndpointName": "[format('pe-stavd{0}{1}-file', variables('deploymentPrefixLowercase'), variables('avdNamingUniqueStringSixChar'))]",
-    "tempStorageDomainJoinVmName": "[format('vm-fs-dj-{0}', parameters('deploymentPrefix'))]",
-    "OuStgName": "[if(not(empty(parameters('storageOuName'))), parameters('storageOuName'), 'Computers')]",
+    "managementVmName": "[format('vm-mgmt-{0}', variables('deploymentPrefixLowercase'))]",
+    "ouStgName": "[if(not(empty(parameters('storageOuName'))), parameters('storageOuName'), variables('defaultStorageOuPath'))]",
+    "defaultStorageOuPath": "[if(equals(parameters('avdIdentityServiceProvider'), 'AADDS'), '\"AADDC Computers\"', 'Computers')]",
     "marketPlaceGalleryWindows": {
       "win10_21h2_office": {
         "publisher": "MicrosoftWindowsDesktop",
@@ -739,7 +751,7 @@
         "version": "latest"
       }
     },
-    "baseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
+    "baseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/issue115/workload/",
     "fslogixScriptUri": "[format('{0}scripts/Set-FSLogixRegKeys.ps1', variables('baseScriptUri'))]",
     "fsLogixScript": "./Set-FSLogixRegKeys.ps1",
     "fslogixSharePath": "[format('\\\\{0}.file.{1}\\{2}', variables('avdFslogixStorageName'), environment().suffixes.storage, variables('avdFslogixProfileContainerFileShareName'))]",
@@ -747,10 +759,14 @@
     "avdAgentPackageLocation": "[format('https://wvdportalstorageblob.blob.{0}/galleryartifacts/Configuration_01-20-2022.zip', environment().suffixes.storage)]",
     "storageAccountContributorRoleId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
     "readerRoleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
-    "dscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCDomainJoinStorageScripts.zip",
-    "addStorageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-JoinStorage-to-ADDS.ps1', variables('baseScriptUri'))]",
-    "addStorageToDomainScript": "./Manual-DSC-JoinStorage-to-ADDS.ps1",
+    "dscAgentPackageLocationAdds": "https://github.com/Azure/avdaccelerator/raw/issue115/workload/scripts/DSCDomainJoinStorageScriptsADDS.zip",
+    "dscAgentPackageLocationAadds": "https://github.com/Azure/avdaccelerator/raw/issue115/workload/scripts/DSCNTFSStorageScriptsAADDS.zip",
+    "storageToDomainScriptUriAdds": "[format('{0}scripts/Manual-DSC-JoinStorage-to-Domain-ADDS.ps1', variables('baseScriptUri'))]",
+    "storageToDomainScriptUriAadds": "[format('{0}scripts/Manual-DSC-JoinStorage-to-Domain-AADDS.ps1', variables('baseScriptUri'))]",
+    "storageToDomainScriptAdds": "./Manual-DSC-JoinStorage-to-Domain-ADDS.ps1",
+    "storageToDomainScriptAadds": "./Manual-DSC-JoinStorage-to-Domain-AADDS.ps1",
     "createOuForStorageString": "[string(parameters('createOuForStorage'))]",
+    "dnsServers": "[if(equals(parameters('customDnsIps'), 'none'), createArray(), split(parameters('customDnsIps'), ','))]",
     "commonResourceTags": "[if(parameters('createResourceTags'), createObject('WorkloadName', parameters('workloadNameTag'), 'WorkloadType', parameters('workloadTypeTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('workloadCriticalityTag'), 'Custom'), parameters('workloadCriticalityCustomValueTag'), parameters('workloadCriticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'ServiceClass', parameters('workloadSlaTag'), 'OpsTeam', parameters('opsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag'), 'Environment', parameters('environmentTypeTag')), createObject())]",
     "allComputeStorageTags": {
       "DomainName": "[parameters('avdIdentityDomainName')]",
@@ -1849,8 +1865,8 @@
           "avdWorkloadSubsId": {
             "value": "[parameters('avdWorkloadSubsId')]"
           },
-          "customDnsIps": {
-            "value": "[parameters('customDnsIps')]"
+          "dnsServers": {
+            "value": "[variables('dnsServers')]"
           },
           "avdTags": {
             "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
@@ -1863,7 +1879,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "3497548969604354614"
+              "templateHash": "16662985846988131285"
             }
           },
           "parameters": {
@@ -1951,10 +1967,10 @@
                 "description": "AVD VNet subnet address prefix."
               }
             },
-            "customDnsIps": {
-              "type": "string",
+            "dnsServers": {
+              "type": "array",
               "metadata": {
-                "description": "Custom DNS server IPs."
+                "description": "custom DNS servers IPs"
               }
             },
             "avdSessionHostLocation": {
@@ -3754,7 +3770,7 @@
                     "value": "[array(parameters('avdVnetworkAddressPrefixes'))]"
                   },
                   "dnsServers": {
-                    "value": "[if(not(empty(parameters('customDnsIps'))), array(parameters('customDnsIps')), createArray())]"
+                    "value": "[parameters('dnsServers')]"
                   },
                   "virtualNetworkPeerings": {
                     "value": [
@@ -5097,6 +5113,9 @@
           "avdWorkloadSubsId": {
             "value": "[parameters('avdWorkloadSubsId')]"
           },
+          "avdIdentityServiceProvider": {
+            "value": "[parameters('avdIdentityServiceProvider')]"
+          },
           "avdTags": {
             "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
           }
@@ -5108,7 +5127,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "513874993058062219"
+              "templateHash": "3818578679557394086"
             }
           },
           "parameters": {
@@ -5122,6 +5141,12 @@
               "type": "string",
               "metadata": {
                 "description": "Optional. AVD workload subscription ID, multiple subscriptions scenario."
+              }
+            },
+            "avdIdentityServiceProvider": {
+              "type": "string",
+              "metadata": {
+                "description": "Required, The service providing domain services for Azure Virtual Desktop."
               }
             },
             "avdServiceObjectsRgName": {
@@ -5231,6 +5256,7 @@
                 "applicationGroupType": "RemoteApp"
               }
             ],
+            "avdHostPoolRdpPropertiesDomainServiceCheck": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), format('{0}targetisaadjoined:i:1', parameters('avdHostPoolRdpProperties')), parameters('avdHostPoolRdpProperties'))]",
             "finalApplicationGroups": "[if(parameters('avdDeployRappGroup'), concat(variables('desktopApplicaitonGroups'), variables('applicationApplicationGroups')), variables('desktopApplicaitonGroups'))]"
           },
           "resources": [
@@ -5259,7 +5285,7 @@
                     "value": "[parameters('avdStartVmOnConnect')]"
                   },
                   "customRdpProperty": {
-                    "value": "[parameters('avdHostPoolRdpProperties')]"
+                    "value": "[variables('avdHostPoolRdpPropertiesDomainServiceCheck')]"
                   },
                   "loadBalancerType": {
                     "value": "[parameters('avdHostPoolLoadBalancerType')]"
@@ -6816,7 +6842,6 @@
       ]
     },
     {
-      "condition": "[parameters('createAvdFslogixDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('Create-Managed-ID-RoleAssign-{0}', parameters('time'))]",
@@ -6836,7 +6861,7 @@
           "avdEnterpriseAppObjectId": {
             "value": "[parameters('avdEnterpriseAppObjectId')]"
           },
-          "avdManagementPlaneLocation": {
+          "avdSessionHostLocation": {
             "value": "[parameters('avdSessionHostLocation')]"
           },
           "avdServiceObjectsRgName": {
@@ -6861,7 +6886,7 @@
             "value": "[variables('storageAccountContributorRoleId')]"
           },
           "createAvdFslogixDeployment": {
-            "value": "[parameters('createAvdFslogixDeployment')]"
+            "value": "[if(parameters('createAvdFslogixDeployment'), true(), false())]"
           },
           "avdTags": {
             "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
@@ -6874,11 +6899,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "806378596641384526"
+              "templateHash": "18119471319891470790"
             }
           },
           "parameters": {
-            "avdManagementPlaneLocation": {
+            "avdSessionHostLocation": {
               "type": "string",
               "metadata": {
                 "description": "Required. Location where to deploy AVD management plane."
@@ -6982,7 +7007,7 @@
                     "value": "[parameters('fslogixManagedIdentityName')]"
                   },
                   "location": {
-                    "value": "[parameters('avdManagementPlaneLocation')]"
+                    "value": "[parameters('avdSessionHostLocation')]"
                   },
                   "tags": {
                     "value": "[parameters('avdTags')]"
@@ -7272,7 +7297,7 @@
                     "value": "StartVMonConnect-AVD"
                   },
                   "location": {
-                    "value": "[parameters('avdManagementPlaneLocation')]"
+                    "value": "[parameters('avdSessionHostLocation')]"
                   },
                   "actions": {
                     "value": [
@@ -7893,7 +7918,7 @@
               ]
             },
             {
-              "condition": "[parameters('avdDeploySessionHosts')]",
+              "condition": "[parameters('createAvdFslogixDeployment')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
               "name": "[format('fslogix-UserAIdentity-RoleAssign-{0}', parameters('time'))]",
@@ -7909,7 +7934,7 @@
                     "value": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/roleDefinitions/{1}', parameters('avdWorkloadSubsId'), parameters('storageAccountContributorRoleId'))]"
                   },
                   "principalId": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.principalId.value]"
+                    "value": "[if(parameters('createAvdFslogixDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.principalId.value, '')]"
                   }
                 },
                 "template": {
@@ -8356,7 +8381,7 @@
               ]
             },
             {
-              "condition": "[parameters('avdDeploySessionHosts')]",
+              "condition": "[parameters('createAvdFslogixDeployment')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
               "name": "[format('fslogix-UserAIdentity-ReaderRoleAssign-{0}', parameters('time'))]",
@@ -8372,7 +8397,7 @@
                     "value": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/roleDefinitions/{1}', parameters('avdWorkloadSubsId'), parameters('readerRoleId'))]"
                   },
                   "principalId": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.principalId.value]"
+                    "value": "[if(parameters('createAvdFslogixDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.principalId.value, '')]"
                   }
                 },
                 "template": {
@@ -8822,11 +8847,11 @@
           "outputs": {
             "fslogixManagedIdentityResourceId": {
               "type": "string",
-              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value]"
+              "value": "[if(parameters('createAvdFslogixDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value, '')]"
             },
             "fslogixManagedIdentityClientId": {
               "type": "string",
-              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.clientId.value]"
+              "value": "[if(parameters('createAvdFslogixDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.clientId.value, '')]"
             }
           }
         }
@@ -10377,7 +10402,7 @@
       ]
     },
     {
-      "condition": "[parameters('createAvdFslogixDeployment')]",
+      "condition": "[and(and(parameters('createAvdFslogixDeployment'), parameters('avdDeploySessionHosts')), or(equals(parameters('avdIdentityServiceProvider'), 'AADDS'), equals(parameters('avdIdentityServiceProvider'), 'ADDS')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('Deploy-AVD-Storage-AzureFiles-{0}', parameters('time'))]",
@@ -10388,14 +10413,17 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "addStorageToDomainScript": {
-            "value": "[variables('addStorageToDomainScript')]"
+          "avdIdentityServiceProvider": {
+            "value": "[parameters('avdIdentityServiceProvider')]"
           },
-          "addStorageToDomainScriptArgs": {
-            "value": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -DomainName {3} -AzureCloudEnvironment AzureCloud -SubscriptionId {4} -DomainAdminUserName {5} -DomainAdminUserPassword {6} -OUName {7} -CreateNewOU {8} -ShareName {9} -ClientId {10} -Verbose', variables('dscAgentPackageLocation'), variables('avdFslogixStorageName'), variables('avdStorageObjectsRgName'), parameters('avdIdentityDomainName'), parameters('avdWorkloadSubsId'), parameters('avdDomainJoinUserName'), parameters('avdDomainJoinUserPassword'), variables('OuStgName'), variables('createOuForStorageString'), variables('avdFslogixProfileContainerFileShareName'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.fslogixManagedIdentityClientId.value)]"
+          "storageToDomainScript": {
+            "value": "[if(equals(parameters('avdIdentityServiceProvider'), 'ADDS'), variables('storageToDomainScriptAdds'), variables('storageToDomainScriptAadds'))]"
           },
-          "addStorageToDomainScriptUri": {
-            "value": "[variables('addStorageToDomainScriptUri')]"
+          "storageToDomainScriptArgs": {
+            "value": "[if(equals(parameters('avdIdentityServiceProvider'), 'ADDS'), format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -DomainName {3} -AzureCloudEnvironment AzureCloud -SubscriptionId {4} -DomainAdminUserName {5} -DomainAdminUserPassword {6} -OUName {7} -CreateNewOU {8} -ShareName {9} -ClientId {10} -Verbose', variables('dscAgentPackageLocationAdds'), variables('avdFslogixStorageName'), variables('avdStorageObjectsRgName'), parameters('avdIdentityDomainName'), parameters('avdWorkloadSubsId'), parameters('avdDomainJoinUserName'), parameters('avdDomainJoinUserPassword'), variables('ouStgName'), variables('createOuForStorageString'), variables('avdFslogixProfileContainerFileShareName'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))).outputs.fslogixManagedIdentityClientId.value), format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -DomainName {3} -AzureCloudEnvironment AzureCloud -SubscriptionId {4} -DomainAdminUserName {5} -DomainAdminUserPassword {6} -OUName {7} -CreateNewOU {8} -ShareName {9} -ClientId {10} -Verbose', variables('dscAgentPackageLocationAadds'), variables('avdFslogixStorageName'), variables('avdStorageObjectsRgName'), parameters('avdIdentityDomainName'), parameters('avdWorkloadSubsId'), parameters('avdDomainJoinUserName'), parameters('avdDomainJoinUserPassword'), variables('ouStgName'), variables('createOuForStorageString'), variables('avdFslogixProfileContainerFileShareName'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))).outputs.fslogixManagedIdentityClientId.value))]"
+          },
+          "storageToDomainScriptUri": {
+            "value": "[if(equals(parameters('avdIdentityServiceProvider'), 'ADDS'), variables('storageToDomainScriptUriAdds'), variables('storageToDomainScriptUriAadds'))]"
           },
           "avdWrklStoragePrivateEndpointName": {
             "value": "[variables('avdWrklStoragePrivateEndpointName')]"
@@ -10430,7 +10458,7 @@
           "avdImageTemplataDefinitionId": {
             "value": "[parameters('avdImageTemplataDefinitionId')]"
           },
-          "avdOuPath": {
+          "sessionHostOuPath": {
             "value": "[parameters('avdOuPath')]"
           },
           "avdSessionHostDiskType": {
@@ -10464,7 +10492,7 @@
             "value": "[parameters('encryptionAtHost')]"
           },
           "fslogixManagedIdentityResourceId": {
-            "value": "[if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.fslogixManagedIdentityResourceId.value, '')]"
+            "value": "[if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))).outputs.fslogixManagedIdentityResourceId.value, '')]"
           },
           "avdFslogixFileShareMultichannel": {
             "value": "[if(or(contains(parameters('fslogixStorageSku'), 'Premium_LRS'), contains(parameters('fslogixStorageSku'), 'Premium_ZRS')), true(), false())]"
@@ -10478,8 +10506,8 @@
           "subnetResourceId": {
             "value": "[if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time'))), '2020-10-01').outputs.avdVirtualNetworkResourceId.value, variables('avdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId'))]"
           },
-          "tempStorageDomainJoinVmName": {
-            "value": "[variables('tempStorageDomainJoinVmName')]"
+          "managementVmName": {
+            "value": "[variables('managementVmName')]"
           },
           "useSharedImage": {
             "value": "[parameters('useSharedImage')]"
@@ -10495,7 +10523,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "16841030988609172917"
+              "templateHash": "16263056489884733775"
             }
           },
           "parameters": {
@@ -10515,6 +10543,12 @@
               "type": "string",
               "metadata": {
                 "description": "Resource Group Name for Azure Files."
+              }
+            },
+            "avdIdentityServiceProvider": {
+              "type": "string",
+              "metadata": {
+                "description": "Required, The service providing domain services for Azure Virtual Desktop."
               }
             },
             "avdServiceObjectsRgName": {
@@ -10619,7 +10653,7 @@
                 "description": "Required. AVD session host domain join credentials."
               }
             },
-            "avdOuPath": {
+            "sessionHostOuPath": {
               "type": "string",
               "metadata": {
                 "description": "Optional. OU path to join AVd VMs."
@@ -10667,25 +10701,25 @@
                 "description": "Use Azure private DNS zones for private endpoints. (Default: false)"
               }
             },
-            "tempStorageDomainJoinVmName": {
+            "managementVmName": {
               "type": "string",
               "metadata": {
-                "description": "Name for temporary virtual machine. Used to join Azure Files to domain."
+                "description": "Name for management virtual machine. for tools and to join Azure Files to domain."
               }
             },
-            "addStorageToDomainScript": {
+            "storageToDomainScript": {
               "type": "string",
               "metadata": {
                 "description": "Script name for adding storage account to Active Directory."
               }
             },
-            "addStorageToDomainScriptArgs": {
+            "storageToDomainScriptArgs": {
               "type": "string",
               "metadata": {
                 "description": "Script arguments for adding the storage account to Active Directory."
               }
             },
-            "addStorageToDomainScriptUri": {
+            "storageToDomainScriptUri": {
               "type": "string",
               "metadata": {
                 "description": "URI for the script for adding the storage account to Active Directory."
@@ -10732,6 +10766,9 @@
                   },
                   "storageAccountKind": {
                     "value": "[if(or(equals(toLower(parameters('fslogixStorageSku')), toLower('Premium_LRS')), equals(toLower(parameters('fslogixStorageSku')), toLower('Premium_ZRS'))), 'FileStorage', 'StorageV2')]"
+                  },
+                  "azureFilesIdentityBasedAuthentication": {
+                    "value": "[if(equals(parameters('avdIdentityServiceProvider'), 'AADDS'), createObject('directoryServiceOptions', 'AADDS'), createObject('directoryServiceOptions', 'None'))]"
                   },
                   "storageAccountAccessTier": {
                     "value": "Hot"
@@ -13814,9 +13851,9 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
-              "name": "[format('Deploy-temporary-VM-FsLogixStorageToDomain-{0}', parameters('time'))]",
+              "name": "[format('Deploy-Mgmt-VM-{0}', parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('avdWorkloadSubsId'))]",
-              "resourceGroup": "[format('{0}', parameters('avdStorageObjectsRgName'))]",
+              "resourceGroup": "[format('{0}', parameters('avdServiceObjectsRgName'))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -13824,7 +13861,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[parameters('tempStorageDomainJoinVmName')]"
+                    "value": "[parameters('managementVmName')]"
                   },
                   "location": {
                     "value": "[parameters('avdSessionHostLocation')]"
@@ -13879,7 +13916,7 @@
                   "nicConfigurations": {
                     "value": [
                       {
-                        "nicSuffix": "nic-001-",
+                        "nicSuffix": "nic-01-",
                         "deleteOption": "Delete",
                         "asgId": "[if(not(empty(parameters('avdApplicationSecurityGroupResourceId'))), parameters('avdApplicationSecurityGroupResourceId'), null())]",
                         "enableAcceleratedNetworking": false,
@@ -13908,7 +13945,7 @@
                       "enabled": true,
                       "settings": {
                         "name": "[parameters('avdIdentityDomainName')]",
-                        "ouPath": "[if(not(empty(parameters('avdOuPath'))), parameters('avdOuPath'), null())]",
+                        "ouPath": "[if(not(empty(parameters('sessionHostOuPath'))), parameters('sessionHostOuPath'), null())]",
                         "user": "[parameters('avdDomainJoinUserName')]",
                         "restart": "true",
                         "options": "3"
@@ -17351,9 +17388,9 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
-              "name": "[format('Add-FslogixStorage-to-ADDS-{0}', parameters('time'))]",
+              "name": "[format('Add-FslogixStorage-Setup-{0}', parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('avdWorkloadSubsId'))]",
-              "resourceGroup": "[format('{0}', parameters('avdStorageObjectsRgName'))]",
+              "resourceGroup": "[format('{0}', parameters('avdServiceObjectsRgName'))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -17364,16 +17401,16 @@
                     "value": "[parameters('avdSessionHostLocation')]"
                   },
                   "name": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Deploy-temporary-VM-FsLogixStorageToDomain-{0}', parameters('time')))).outputs.name.value]"
+                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Deploy-Mgmt-VM-{0}', parameters('time')))).outputs.name.value]"
                   },
                   "file": {
-                    "value": "[parameters('addStorageToDomainScript')]"
+                    "value": "[parameters('storageToDomainScript')]"
                   },
                   "ScriptArguments": {
-                    "value": "[parameters('addStorageToDomainScriptArgs')]"
+                    "value": "[parameters('storageToDomainScriptArgs')]"
                   },
                   "baseScriptUri": {
-                    "value": "[parameters('addStorageToDomainScriptUri')]"
+                    "value": "[parameters('storageToDomainScriptUri')]"
                   }
                 },
                 "template": {
@@ -17383,7 +17420,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "8970427822472696895"
+                      "templateHash": "11036052039253406248"
                     }
                   },
                   "parameters": {
@@ -17407,7 +17444,7 @@
                     {
                       "type": "Microsoft.Compute/virtualMachines/extensions",
                       "apiVersion": "2021-07-01",
-                      "name": "[format('{0}/addAzureFilesToADDSScript', parameters('name'))]",
+                      "name": "[format('{0}/addAzureFilesToDomainScript', parameters('name'))]",
                       "location": "[parameters('location')]",
                       "properties": {
                         "publisher": "Microsoft.Compute",
@@ -17426,7 +17463,7 @@
               },
               "dependsOn": [
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-Fslogix-Storage-{0}', parameters('time')))]",
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Deploy-temporary-VM-FsLogixStorageToDomain-{0}', parameters('time')))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Deploy-Mgmt-VM-{0}', parameters('time')))]"
               ]
             }
           ]
@@ -17463,6 +17500,9 @@
           "avdAsUpdateDomainCount": {
             "value": "[parameters('avdAsUpdateDomainCount')]"
           },
+          "avdIdentityServiceProvider": {
+            "value": "[parameters('avdIdentityServiceProvider')]"
+          },
           "avdAvailabilitySetNamePrefix": {
             "value": "[variables('avdAvailabilitySetNamePrefix')]"
           },
@@ -17493,7 +17533,7 @@
           "avdImageTemplataDefinitionId": {
             "value": "[parameters('avdImageTemplataDefinitionId')]"
           },
-          "avdOuPath": {
+          "sessionHostOuPath": {
             "value": "[parameters('avdOuPath')]"
           },
           "avdSessionHostDiskType": {
@@ -17527,7 +17567,7 @@
             "value": "[parameters('createAvdFslogixDeployment')]"
           },
           "fslogixManagedIdentityResourceId": {
-            "value": "[if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.fslogixManagedIdentityResourceId.value, 'none')]"
+            "value": "[if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))).outputs.fslogixManagedIdentityResourceId.value, 'none')]"
           },
           "fsLogixScript": {
             "value": "[variables('fsLogixScript')]"
@@ -17558,7 +17598,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "9678243517023835170"
+              "templateHash": "9454307859897716106"
             }
           },
           "parameters": {
@@ -17634,6 +17674,12 @@
                 "description": "Optional. Sets the number of update domains for the availability set."
               }
             },
+            "avdIdentityServiceProvider": {
+              "type": "string",
+              "metadata": {
+                "description": "Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)"
+              }
+            },
             "encryptionAtHost": {
               "type": "bool",
               "metadata": {
@@ -17700,7 +17746,7 @@
                 "description": "Required. AVD session host domain join credentials."
               }
             },
-            "avdOuPath": {
+            "sessionHostOuPath": {
               "type": "string",
               "metadata": {
                 "description": "Optional. OU path to join AVd VMs."
@@ -18260,8 +18306,8 @@
                   "avdImageTemplataDefinitionId": {
                     "value": "[parameters('avdImageTemplataDefinitionId')]"
                   },
-                  "avdOuPath": {
-                    "value": "[parameters('avdOuPath')]"
+                  "sessionHostOuPath": {
+                    "value": "[parameters('sessionHostOuPath')]"
                   },
                   "avdSessionHostsCount": {
                     "value": "[if(and(equals(range(1, variables('avdSessionHostBatchCount'))[copyIndex()], variables('avdSessionHostBatchCount')), greater(variables('divisionRemainderValue'), 0)), variables('divisionRemainderValue'), variables('avdMaxSessionHostsPerTemplateDeployment'))]"
@@ -18320,6 +18366,9 @@
                   "useSharedImage": {
                     "value": "[parameters('useSharedImage')]"
                   },
+                  "avdIdentityServiceProvider": {
+                    "value": "[parameters('avdIdentityServiceProvider')]"
+                  },
                   "avdTags": {
                     "value": "[parameters('avdTags')]"
                   }
@@ -18331,7 +18380,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "68926448760553737"
+                      "templateHash": "4352291509137025396"
                     }
                   },
                   "parameters": {
@@ -18461,13 +18510,19 @@
                         "description": "Required. AVD session host domain join credentials."
                       }
                     },
+                    "avdIdentityServiceProvider": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)"
+                      }
+                    },
                     "avdWrklKvName": {
                       "type": "string",
                       "metadata": {
                         "description": "Required. Name of keyvault that contains credentials."
                       }
                     },
-                    "avdOuPath": {
+                    "sessionHostOuPath": {
                       "type": "string",
                       "metadata": {
                         "description": "Optional. OU path to join AVd VMs"
@@ -18638,7 +18693,7 @@
                               "enabled": true,
                               "settings": {
                                 "name": "[parameters('avdIdentityDomainName')]",
-                                "ouPath": "[if(not(empty(parameters('avdOuPath'))), parameters('avdOuPath'), null())]",
+                                "ouPath": "[if(not(empty(parameters('sessionHostOuPath'))), parameters('sessionHostOuPath'), null())]",
                                 "user": "[parameters('avdDomainJoinUserName')]",
                                 "restart": "true",
                                 "options": "3"
