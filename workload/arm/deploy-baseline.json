@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "13795971445071239260"
+      "templateHash": "6094333488407558329"
     }
   },
   "parameters": {
@@ -10523,7 +10523,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "16263056489884733775"
+              "templateHash": "9178973478423884949"
             }
           },
           "parameters": {
@@ -10714,7 +10714,7 @@
               }
             },
             "storageToDomainScriptArgs": {
-              "type": "string",
+              "type": "secureString",
               "metadata": {
                 "description": "Script arguments for adding the storage account to Active Directory."
               }
@@ -17420,7 +17420,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "11036052039253406248"
+                      "templateHash": "10022200887088130030"
                     }
                   },
                   "parameters": {
@@ -17437,7 +17437,7 @@
                       "type": "string"
                     },
                     "ScriptArguments": {
-                      "type": "string"
+                      "type": "secureString"
                     }
                   },
                   "resources": [
