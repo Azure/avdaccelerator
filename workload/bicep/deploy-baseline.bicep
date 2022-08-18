@@ -443,7 +443,7 @@ var marketPlaceGalleryWindows = {
     }
 }
 
-var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
+var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/storage-custom-ou/workload/'
 var fslogixScriptUri = '${baseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
 var fsLogixScript = './Set-FSLogixRegKeys.ps1'
 var fslogixSharePath = '\\\\${avdFslogixStorageName}.file.${environment().suffixes.storage}\\${avdFslogixProfileContainerFileShareName}'
