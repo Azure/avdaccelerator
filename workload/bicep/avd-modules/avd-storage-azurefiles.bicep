@@ -97,7 +97,7 @@ param managementVmName string
 param storageToDomainScript string
 
 @description('Script arguments for adding the storage account to Active Directory.')
-@secure()
+//@secure()
 param storageToDomainScriptArgs string
 
 @description('URI for the script for adding the storage account to Active Directory.')

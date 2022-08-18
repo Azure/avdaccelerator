@@ -2,7 +2,7 @@ param name string
 param location string
 param baseScriptUri string
 param file string
-@secure()
+//@secure()
 param ScriptArguments string
 
 resource addAzureFilesToDomainScript 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = {
