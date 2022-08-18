@@ -143,7 +143,7 @@
         "avdImageTemplataDefinitionId": {
             "value": ""
         },
-        "storageOuName": {
+        "storageOuPath": {
             "value": ""
         },
         "createOuForStorage": {

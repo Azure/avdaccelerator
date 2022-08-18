@@ -80,3 +80,6 @@ Any use of third-party trademarks or logos are subject to those third-party's po
 # Known Issues
 
 Please report issues using the projects [issues](https://github.com/Azure/avdaccelerator/issues) tracker.
+
+### Reporting issues
+Microsoft Support is not handling issues for any published tools in this repository. However, we would like to welcome you to open issues using GitHub issues to collaborate and improve these tools. You can open [issues](https://github.com/Azure/avdaccelerator/issues) and add the corresponding label (like **5-RDS-on-Windows-Server**) to associate it with the appropriate tool. 

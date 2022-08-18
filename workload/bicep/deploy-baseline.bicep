@@ -169,7 +169,7 @@ param useSharedImage bool = false
 param avdImageTemplataDefinitionId string = ''
 
 @description('Optional. OU name for Azure Storage Account. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.  (Default: "")')
-param storageOuName string = ''
+param storageOuPath string = ''
 
 @description('Optional. If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: "")')
 param createOuForStorage bool = false
@@ -411,8 +411,11 @@ var avdFslogixProfileContainerFileShareName = avdUseCustomNaming ? avdFslogixPro
 var avdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${deploymentPrefixLowercase}${avdNamingUniqueStringSixChar}' : 'stavd${deploymentPrefixLowercase}${avdNamingUniqueStringSixChar}'
 var avdWrklStoragePrivateEndpointName = 'pe-stavd${deploymentPrefixLowercase}${avdNamingUniqueStringSixChar}-file'
 var managementVmName = 'vm-mgmt-${deploymentPrefixLowercase}'
-var ouStgName = !empty(storageOuName) ? storageOuName : defaultStorageOuPath
-var defaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? '"AADDC Computers"': 'Computers'
+//var ouStgName = !empty(storageOuName) ? storageOuName : defaultStorageOuPath
+var ouStgName = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${defaultStorageOuPath}"'
+
+//var defaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? '"AADDC Computers"': 'Computers'
+var defaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers': 'Computers'
 //
 
 var marketPlaceGalleryWindows = {
@@ -445,7 +448,7 @@ var marketPlaceGalleryWindows = {
     }
 }
 
-var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/issue115/workload/'
+var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var fslogixScriptUri = '${baseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
 var fsLogixScript = './Set-FSLogixRegKeys.ps1'
 var fslogixSharePath = '\\\\${avdFslogixStorageName}.file.${environment().suffixes.storage}\\${avdFslogixProfileContainerFileShareName}'
@@ -453,8 +456,8 @@ var FsLogixScriptArguments = '-volumeshare ${fslogixSharePath}'
 var avdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_01-20-2022.zip'
 var storageAccountContributorRoleId = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
 var readerRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-var dscAgentPackageLocationAdds = 'https://github.com/Azure/avdaccelerator/raw/issue115/workload/scripts/DSCDomainJoinStorageScriptsADDS.zip'
-var dscAgentPackageLocationAadds = 'https://github.com/Azure/avdaccelerator/raw/issue115/workload/scripts/DSCNTFSStorageScriptsAADDS.zip'
+var dscAgentPackageLocationAdds = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCDomainJoinStorageScriptsADDS.zip'
+var dscAgentPackageLocationAadds = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCNTFSStorageScriptsAADDS.zip'
 var storageToDomainScriptUriAdds = '${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-Domain-ADDS.ps1'
 var storageToDomainScriptUriAadds = '${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-Domain-AADDS.ps1'
 var storageToDomainScriptAdds = './Manual-DSC-JoinStorage-to-Domain-ADDS.ps1'
