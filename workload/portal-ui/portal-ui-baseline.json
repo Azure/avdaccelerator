@@ -644,9 +644,9 @@
                                     "name": "avdIdentityDomainOuPathStorageExisting",
                                     "type": "Microsoft.Common.TextBox",
                                     "visible": "[equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathBool, false)]",
-                                    "label": "Existing storage OU name (Optional)",
+                                    "label": "Existing storage OU path (Optional)",
                                     "toolTip": "Provide OU where to locate storage account file share, if not provided session hosts will be placed on the default (computers) OU.",
-                                    "placeholder": "Example: Example: OU=storage,OU=avd,DC=contoso,DC=com",
+                                    "placeholder": "Example: OU=storage,OU=avd,DC=contoso,DC=com",
                                     "constraints": {}
                                 },
                                 {
