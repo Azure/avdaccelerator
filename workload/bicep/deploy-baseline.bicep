@@ -412,7 +412,7 @@ var avdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCusto
 var avdWrklStoragePrivateEndpointName = 'pe-stavd${deploymentPrefixLowercase}${avdNamingUniqueStringSixChar}-file'
 var managementVmName = 'vm-mgmt-${deploymentPrefixLowercase}'
 //var ouStgName = !empty(storageOuName) ? storageOuName : defaultStorageOuPath
-var ouStgName = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${defaultStorageOuPath}"'
+var ouStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${defaultStorageOuPath}"'
 
 //var defaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? '"AADDC Computers"': 'Computers'
 var defaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers': 'Computers'
@@ -462,8 +462,8 @@ var storageToDomainScriptUriAdds = '${baseScriptUri}scripts/Manual-DSC-JoinStora
 var storageToDomainScriptUriAadds = '${baseScriptUri}scripts/Manual-DSC-JoinStorage-to-Domain-AADDS.ps1'
 var storageToDomainScriptAdds = './Manual-DSC-JoinStorage-to-Domain-ADDS.ps1'
 var storageToDomainScriptAadds = './Manual-DSC-JoinStorage-to-Domain-AADDS.ps1'
-var storageToDomainScriptArgsAdds = '-DscPath ${dscAgentPackageLocationAdds} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${ouStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
-var storageToDomainScriptArgsAadds = '-DscPath ${dscAgentPackageLocationAadds} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${ouStgName} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
+var storageToDomainScriptArgsAdds = '-DscPath ${dscAgentPackageLocationAdds} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${ouStgPath} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
+var storageToDomainScriptArgsAadds = '-DscPath ${dscAgentPackageLocationAadds} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -OUName ${ouStgPath} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
 //var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
 var createOuForStorageString = string(createOuForStorage)
 var dnsServers = (customDnsIps == 'none') ? []: (split(customDnsIps, ','))
