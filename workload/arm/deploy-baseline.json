@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.4.1272.37030",
-      "templateHash": "416583689752580357"
+      "version": "0.6.18.56646",
+      "templateHash": "12933007808812660188"
     }
   },
   "parameters": {
@@ -350,7 +350,7 @@
         "description": "Optional. Source custom image ID. (Default: \"\")"
       }
     },
-    "storageOuPath": {
+    "storageOuName": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -628,7 +628,7 @@
       "allowedValues": [
         "Prod",
         "Dev",
-        "Staging "
+        "Staging "
       ]
     },
     "time": {
@@ -723,6 +723,8 @@
     "avdFslogixStorageName": "[if(parameters('avdUseCustomNaming'), format('{0}{1}{2}', parameters('avdFslogixStoragePrefixCustomName'), variables('deploymentPrefixLowercase'), variables('avdNamingUniqueStringSixChar')), format('stavd{0}{1}', variables('deploymentPrefixLowercase'), variables('avdNamingUniqueStringSixChar')))]",
     "avdWrklStoragePrivateEndpointName": "[format('pe-stavd{0}{1}-file', variables('deploymentPrefixLowercase'), variables('avdNamingUniqueStringSixChar'))]",
     "managementVmName": "[format('vm-mgmt-{0}', variables('deploymentPrefixLowercase'))]",
+    "ouStgName": "[if(not(empty(parameters('storageOuName'))), parameters('storageOuName'), variables('defaultStorageOuPath'))]",
+    "defaultStorageOuPath": "[if(equals(parameters('avdIdentityServiceProvider'), 'AADDS'), '\"AADDC Computers\"', 'Computers')]",
     "marketPlaceGalleryWindows": {
       "win10_21h2_office": {
         "publisher": "MicrosoftWindowsDesktop",
@@ -749,7 +751,7 @@
         "version": "latest"
       }
     },
-    "baseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/storage-custom-ou/workload/",
+    "baseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
     "fslogixScriptUri": "[format('{0}scripts/Set-FSLogixRegKeys.ps1', variables('baseScriptUri'))]",
     "fsLogixScript": "./Set-FSLogixRegKeys.ps1",
     "fslogixSharePath": "[format('\\\\{0}.file.{1}\\{2}', variables('avdFslogixStorageName'), environment().suffixes.storage, variables('avdFslogixProfileContainerFileShareName'))]",
@@ -757,14 +759,12 @@
     "avdAgentPackageLocation": "[format('https://wvdportalstorageblob.blob.{0}/galleryartifacts/Configuration_01-20-2022.zip', environment().suffixes.storage)]",
     "storageAccountContributorRoleId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
     "readerRoleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
-    "dscAgentPackageLocationAdds": "https://github.com/Azure/avdaccelerator/raw/storage-custom-ou/workload/scripts/DSCDomainJoinStorageScriptsADDS.zip",
-    "dscAgentPackageLocationAadds": "https://github.com/Azure/avdaccelerator/raw/storage-custom-ou/workload/scripts/DSCNTFSStorageScriptsAADDS.zip",
+    "dscAgentPackageLocationAdds": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCDomainJoinStorageScriptsADDS.zip",
+    "dscAgentPackageLocationAadds": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCNTFSStorageScriptsAADDS.zip",
     "storageToDomainScriptUriAdds": "[format('{0}scripts/Manual-DSC-JoinStorage-to-Domain-ADDS.ps1', variables('baseScriptUri'))]",
     "storageToDomainScriptUriAadds": "[format('{0}scripts/Manual-DSC-JoinStorage-to-Domain-AADDS.ps1', variables('baseScriptUri'))]",
     "storageToDomainScriptAdds": "./Manual-DSC-JoinStorage-to-Domain-ADDS.ps1",
     "storageToDomainScriptAadds": "./Manual-DSC-JoinStorage-to-Domain-AADDS.ps1",
-    "ouStgPath": "[if(not(empty(parameters('storageOuPath'))), format('\"{0}\"', parameters('storageOuPath')), format('\"{0}\"', variables('defaultStorageOuPath')))]",
-    "defaultStorageOuPath": "[if(equals(parameters('avdIdentityServiceProvider'), 'AADDS'), 'AADDC Computers', 'Computers')]",
     "createOuForStorageString": "[string(parameters('createOuForStorage'))]",
     "dnsServers": "[if(equals(parameters('customDnsIps'), 'none'), createArray(), split(parameters('customDnsIps'), ','))]",
     "commonResourceTags": "[if(parameters('createResourceTags'), createObject('WorkloadName', parameters('workloadNameTag'), 'WorkloadType', parameters('workloadTypeTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('workloadCriticalityTag'), 'Custom'), parameters('workloadCriticalityCustomValueTag'), parameters('workloadCriticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'ServiceClass', parameters('workloadSlaTag'), 'OpsTeam', parameters('opsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag'), 'Environment', parameters('environmentTypeTag')), createObject())]",
@@ -836,8 +836,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.1272.37030",
-              "templateHash": "11210885837047490178"
+              "version": "0.6.18.56646",
+              "templateHash": "15875496966951609224"
             }
           },
           "parameters": {
@@ -937,8 +937,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "15729189627955918611"
+                      "version": "0.6.18.56646",
+                      "templateHash": "15996846410974920226"
                     }
                   },
                   "parameters": {
@@ -1040,8 +1040,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "12898997049863443971"
+                      "version": "0.6.18.56646",
+                      "templateHash": "3149615029737038322"
                     }
                   },
                   "parameters": {
@@ -1338,8 +1338,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.1272.37030",
-              "templateHash": "11210885837047490178"
+              "version": "0.6.18.56646",
+              "templateHash": "15875496966951609224"
             }
           },
           "parameters": {
@@ -1439,8 +1439,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "15729189627955918611"
+                      "version": "0.6.18.56646",
+                      "templateHash": "15996846410974920226"
                     }
                   },
                   "parameters": {
@@ -1542,8 +1542,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "12898997049863443971"
+                      "version": "0.6.18.56646",
+                      "templateHash": "3149615029737038322"
                     }
                   },
                   "parameters": {
@@ -1878,8 +1878,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.1272.37030",
-              "templateHash": "1403534472456239770"
+              "version": "0.6.18.56646",
+              "templateHash": "11913590382546744547"
             }
           },
           "parameters": {
@@ -2024,8 +2024,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "11210885837047490178"
+                      "version": "0.6.18.56646",
+                      "templateHash": "15875496966951609224"
                     }
                   },
                   "parameters": {
@@ -2125,8 +2125,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "15729189627955918611"
+                              "version": "0.6.18.56646",
+                              "templateHash": "15996846410974920226"
                             }
                           },
                           "parameters": {
@@ -2228,8 +2228,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "12898997049863443971"
+                              "version": "0.6.18.56646",
+                              "templateHash": "3149615029737038322"
                             }
                           },
                           "parameters": {
@@ -2523,8 +2523,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "866651985942033165"
+                      "version": "0.6.18.56646",
+                      "templateHash": "16378221715614336998"
                     }
                   },
                   "parameters": {
@@ -2812,8 +2812,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "11661907173605239470"
+                              "version": "0.6.18.56646",
+                              "templateHash": "17481225640676632190"
                             }
                           },
                           "parameters": {
@@ -3059,8 +3059,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "3968702474926240201"
+                              "version": "0.6.18.56646",
+                              "templateHash": "10750898189164130879"
                             }
                           },
                           "parameters": {
@@ -3210,8 +3210,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "1582628490469045614"
+                      "version": "0.6.18.56646",
+                      "templateHash": "4605760620153468598"
                     }
                   },
                   "parameters": {
@@ -3335,8 +3335,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "2279973763022665235"
+                              "version": "0.6.18.56646",
+                              "templateHash": "17920125170889956682"
                             }
                           },
                           "parameters": {
@@ -3485,8 +3485,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "6200517940019237660"
+                      "version": "0.6.18.56646",
+                      "templateHash": "9370579695222846475"
                     }
                   },
                   "parameters": {
@@ -3627,8 +3627,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "2135890679293100476"
+                              "version": "0.6.18.56646",
+                              "templateHash": "13959778984682704523"
                             }
                           },
                           "parameters": {
@@ -3814,8 +3814,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "18128724619456450275"
+                      "version": "0.6.18.56646",
+                      "templateHash": "15279812030135863509"
                     }
                   },
                   "parameters": {
@@ -4157,8 +4157,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "10395474196772399153"
+                              "version": "0.6.18.56646",
+                              "templateHash": "994738943630777317"
                             }
                           },
                           "parameters": {
@@ -4352,8 +4352,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "6258651507037877272"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "1954824060395634654"
                                     }
                                   },
                                   "parameters": {
@@ -4548,8 +4548,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "799530623499377757"
+                              "version": "0.6.18.56646",
+                              "templateHash": "12959392555244626050"
                             }
                           },
                           "parameters": {
@@ -4726,8 +4726,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "799530623499377757"
+                              "version": "0.6.18.56646",
+                              "templateHash": "12959392555244626050"
                             }
                           },
                           "parameters": {
@@ -4889,8 +4889,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "3404961238926385378"
+                              "version": "0.6.18.56646",
+                              "templateHash": "3269179746565549657"
                             }
                           },
                           "parameters": {
@@ -5050,11 +5050,11 @@
           "outputs": {
             "avdApplicationSecurityGroupResourceId": {
               "type": "string",
-              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdComputeObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-ASG-{0}', parameters('time')))).outputs.resourceId.value]"
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdComputeObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-ASG-{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value]"
             },
             "avdVirtualNetworkResourceId": {
               "type": "string",
-              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdNetworkObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-vNet-{0}', parameters('time')))).outputs.resourceId.value]"
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdNetworkObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-vNet-{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value]"
             }
           }
         }
@@ -5126,8 +5126,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.1272.37030",
-              "templateHash": "999630861330536184"
+              "version": "0.6.18.56646",
+              "templateHash": "17890184044779694612"
             }
           },
           "parameters": {
@@ -5306,8 +5306,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "3117307877931253723"
+                      "version": "0.6.18.56646",
+                      "templateHash": "12145626278869710729"
                     }
                   },
                   "parameters": {
@@ -5667,8 +5667,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "5381532856658962230"
+                              "version": "0.6.18.56646",
+                              "templateHash": "4992156597715269931"
                             }
                           },
                           "parameters": {
@@ -5839,8 +5839,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "12875561161215672098"
+                      "version": "0.6.18.56646",
+                      "templateHash": "6585758065773979145"
                     }
                   },
                   "parameters": {
@@ -6118,8 +6118,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "12655976374239725114"
+                              "version": "0.6.18.56646",
+                              "templateHash": "2477181920115085628"
                             }
                           },
                           "parameters": {
@@ -6298,8 +6298,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "9233088267749855128"
+                              "version": "0.6.18.56646",
+                              "templateHash": "1592212864597017673"
                             }
                           },
                           "parameters": {
@@ -6474,8 +6474,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.1272.37030",
-              "templateHash": "4103964909634047299"
+              "version": "0.6.18.56646",
+              "templateHash": "6064180508457821393"
             }
           },
           "parameters": {
@@ -6719,8 +6719,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "2584154009595185731"
+                      "version": "0.6.18.56646",
+                      "templateHash": "7165099292690875112"
                     }
                   },
                   "parameters": {
@@ -6898,8 +6898,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.1272.37030",
-              "templateHash": "1109625953671494275"
+              "version": "0.6.18.56646",
+              "templateHash": "17584441182805234240"
             }
           },
           "parameters": {
@@ -7019,8 +7019,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "13893403746146982368"
+                      "version": "0.6.18.56646",
+                      "templateHash": "4039171862400113580"
                     }
                   },
                   "parameters": {
@@ -7144,8 +7144,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "11951688931271404061"
+                              "version": "0.6.18.56646",
+                              "templateHash": "10803486661260993308"
                             }
                           },
                           "parameters": {
@@ -7317,8 +7317,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "3838426691454410664"
+                      "version": "0.6.18.56646",
+                      "templateHash": "8058587379741892534"
                     }
                   },
                   "parameters": {
@@ -7468,7 +7468,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "roleDefinitionIdOrName": {
-                    "value": "[if(parameters('createStartVmOnConnectCustomRole'), reference(subscriptionResourceId(parameters('avdWorkloadSubsId'), 'Microsoft.Resources/deployments', format('Start-VM-on-Connect-Role-{0}', parameters('time')))).outputs.resourceId.value, '')]"
+                    "value": "[if(parameters('createStartVmOnConnectCustomRole'), reference(subscriptionResourceId(parameters('avdWorkloadSubsId'), 'Microsoft.Resources/deployments', format('Start-VM-on-Connect-Role-{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value, '')]"
                   },
                   "principalId": {
                     "value": "[parameters('avdEnterpriseAppObjectId')]"
@@ -7480,8 +7480,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "705132930948732073"
+                      "version": "0.6.18.56646",
+                      "templateHash": "2806046027436893131"
                     }
                   },
                   "parameters": {
@@ -7934,7 +7934,7 @@
                     "value": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/roleDefinitions/{1}', parameters('avdWorkloadSubsId'), parameters('storageAccountContributorRoleId'))]"
                   },
                   "principalId": {
-                    "value": "[if(parameters('createAvdFslogixDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time')))).outputs.principalId.value, '')]"
+                    "value": "[if(parameters('createAvdFslogixDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.principalId.value, '')]"
                   }
                 },
                 "template": {
@@ -7943,8 +7943,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "705132930948732073"
+                      "version": "0.6.18.56646",
+                      "templateHash": "2806046027436893131"
                     }
                   },
                   "parameters": {
@@ -8397,7 +8397,7 @@
                     "value": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/roleDefinitions/{1}', parameters('avdWorkloadSubsId'), parameters('readerRoleId'))]"
                   },
                   "principalId": {
-                    "value": "[if(parameters('createAvdFslogixDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time')))).outputs.principalId.value, '')]"
+                    "value": "[if(parameters('createAvdFslogixDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.principalId.value, '')]"
                   }
                 },
                 "template": {
@@ -8406,8 +8406,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "705132930948732073"
+                      "version": "0.6.18.56646",
+                      "templateHash": "2806046027436893131"
                     }
                   },
                   "parameters": {
@@ -8847,11 +8847,11 @@
           "outputs": {
             "fslogixManagedIdentityResourceId": {
               "type": "string",
-              "value": "[if(parameters('createAvdFslogixDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time')))).outputs.resourceId.value, '')]"
+              "value": "[if(parameters('createAvdFslogixDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value, '')]"
             },
             "fslogixManagedIdentityClientId": {
               "type": "string",
-              "value": "[if(parameters('createAvdFslogixDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time')))).outputs.clientId.value, '')]"
+              "value": "[if(parameters('createAvdFslogixDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.clientId.value, '')]"
             }
           }
         }
@@ -8897,7 +8897,7 @@
             }
           },
           "privateEndpoints": {
-            "value": "[if(parameters('avdVnetPrivateDnsZone'), createArray(createObject('name', variables('avdWrklKvPrivateEndpointName'), 'subnetResourceId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time')))).outputs.avdVirtualNetworkResourceId.value, variables('avdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId')), 'service', 'vault', 'privateDnsZoneResourceIds', createArray(parameters('avdVnetPrivateDnsZoneKeyvaultId')))), createArray(createObject('name', variables('avdWrklKvPrivateEndpointName'), 'subnetResourceId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time')))).outputs.avdVirtualNetworkResourceId.value, variables('avdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId')), 'service', 'vault')))]"
+            "value": "[if(parameters('avdVnetPrivateDnsZone'), createArray(createObject('name', variables('avdWrklKvPrivateEndpointName'), 'subnetResourceId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time'))), '2020-10-01').outputs.avdVirtualNetworkResourceId.value, variables('avdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId')), 'service', 'vault', 'privateDnsZoneResourceIds', createArray(parameters('avdVnetPrivateDnsZoneKeyvaultId')))), createArray(createObject('name', variables('avdWrklKvPrivateEndpointName'), 'subnetResourceId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time'))), '2020-10-01').outputs.avdVirtualNetworkResourceId.value, variables('avdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId')), 'service', 'vault')))]"
           },
           "secrets": {
             "value": {
@@ -8935,8 +8935,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.1272.37030",
-              "templateHash": "3075838374450174281"
+              "version": "0.6.18.56646",
+              "templateHash": "16663464596095754279"
             }
           },
           "parameters": {
@@ -9340,8 +9340,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "6519971147982239572"
+                      "version": "0.6.18.56646",
+                      "templateHash": "2697090749068477482"
                     }
                   },
                   "parameters": {
@@ -9491,8 +9491,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "15855433121305015007"
+                      "version": "0.6.18.56646",
+                      "templateHash": "13123842445914172251"
                     }
                   },
                   "parameters": {
@@ -9630,8 +9630,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "11441439516888600077"
+                              "version": "0.6.18.56646",
+                              "templateHash": "11880733953623709155"
                             }
                           },
                           "parameters": {
@@ -9811,8 +9811,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "28668124663457451"
+                      "version": "0.6.18.56646",
+                      "templateHash": "17533252482162355450"
                     }
                   },
                   "parameters": {
@@ -9988,8 +9988,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "1243413910317927700"
+                              "version": "0.6.18.56646",
+                              "templateHash": "11413205324041710494"
                             }
                           },
                           "parameters": {
@@ -10146,8 +10146,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "9544075237459182210"
+                      "version": "0.6.18.56646",
+                      "templateHash": "13341516523366853871"
                     }
                   },
                   "parameters": {
@@ -10267,8 +10267,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "6901383074007761096"
+                      "version": "0.6.18.56646",
+                      "templateHash": "4554060140682601446"
                     }
                   },
                   "parameters": {
@@ -10420,7 +10420,7 @@
             "value": "[if(equals(parameters('avdIdentityServiceProvider'), 'ADDS'), variables('storageToDomainScriptAdds'), variables('storageToDomainScriptAadds'))]"
           },
           "storageToDomainScriptArgs": {
-            "value": "[if(equals(parameters('avdIdentityServiceProvider'), 'ADDS'), format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -DomainName {3} -AzureCloudEnvironment AzureCloud -SubscriptionId {4} -DomainAdminUserName {5} -DomainAdminUserPassword {6} -OUName {7} -CreateNewOU {8} -ShareName {9} -ClientId {10} -Verbose', variables('dscAgentPackageLocationAdds'), variables('avdFslogixStorageName'), variables('avdStorageObjectsRgName'), parameters('avdIdentityDomainName'), parameters('avdWorkloadSubsId'), parameters('avdDomainJoinUserName'), parameters('avdDomainJoinUserPassword'), variables('ouStgPath'), variables('createOuForStorageString'), variables('avdFslogixProfileContainerFileShareName'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))).outputs.fslogixManagedIdentityClientId.value), format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -DomainName {3} -AzureCloudEnvironment AzureCloud -SubscriptionId {4} -DomainAdminUserName {5} -DomainAdminUserPassword {6} -OUName {7} -CreateNewOU {8} -ShareName {9} -ClientId {10} -Verbose', variables('dscAgentPackageLocationAadds'), variables('avdFslogixStorageName'), variables('avdStorageObjectsRgName'), parameters('avdIdentityDomainName'), parameters('avdWorkloadSubsId'), parameters('avdDomainJoinUserName'), parameters('avdDomainJoinUserPassword'), variables('ouStgPath'), variables('createOuForStorageString'), variables('avdFslogixProfileContainerFileShareName'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))).outputs.fslogixManagedIdentityClientId.value))]"
+            "value": "[if(equals(parameters('avdIdentityServiceProvider'), 'ADDS'), format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -DomainName {3} -AzureCloudEnvironment AzureCloud -SubscriptionId {4} -DomainAdminUserName {5} -DomainAdminUserPassword {6} -OUName {7} -CreateNewOU {8} -ShareName {9} -ClientId {10} -Verbose', variables('dscAgentPackageLocationAdds'), variables('avdFslogixStorageName'), variables('avdStorageObjectsRgName'), parameters('avdIdentityDomainName'), parameters('avdWorkloadSubsId'), parameters('avdDomainJoinUserName'), parameters('avdDomainJoinUserPassword'), variables('ouStgName'), variables('createOuForStorageString'), variables('avdFslogixProfileContainerFileShareName'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))).outputs.fslogixManagedIdentityClientId.value), format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -DomainName {3} -AzureCloudEnvironment AzureCloud -SubscriptionId {4} -DomainAdminUserName {5} -DomainAdminUserPassword {6} -OUName {7} -CreateNewOU {8} -ShareName {9} -ClientId {10} -Verbose', variables('dscAgentPackageLocationAadds'), variables('avdFslogixStorageName'), variables('avdStorageObjectsRgName'), parameters('avdIdentityDomainName'), parameters('avdWorkloadSubsId'), parameters('avdDomainJoinUserName'), parameters('avdDomainJoinUserPassword'), variables('ouStgName'), variables('createOuForStorageString'), variables('avdFslogixProfileContainerFileShareName'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))).outputs.fslogixManagedIdentityClientId.value))]"
           },
           "storageToDomainScriptUri": {
             "value": "[if(equals(parameters('avdIdentityServiceProvider'), 'ADDS'), variables('storageToDomainScriptUriAdds'), variables('storageToDomainScriptUriAadds'))]"
@@ -10429,7 +10429,7 @@
             "value": "[variables('avdWrklStoragePrivateEndpointName')]"
           },
           "avdApplicationSecurityGroupResourceId": {
-            "value": "[if(parameters('createAvdVnet'), format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time')))).outputs.avdApplicationSecurityGroupResourceId.value), '')]"
+            "value": "[if(parameters('createAvdVnet'), format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time'))), '2020-10-01').outputs.avdApplicationSecurityGroupResourceId.value), '')]"
           },
           "avdComputeObjectsRgName": {
             "value": "[variables('avdComputeObjectsRgName')]"
@@ -10474,7 +10474,7 @@
             "value": "[variables('avdStorageObjectsRgName')]"
           },
           "avdSubnetId": {
-            "value": "[if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time')))).outputs.avdVirtualNetworkResourceId.value, variables('avdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId'))]"
+            "value": "[if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time'))), '2020-10-01').outputs.avdVirtualNetworkResourceId.value, variables('avdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId'))]"
           },
           "avdVmLocalUserName": {
             "value": "[parameters('avdVmLocalUserName')]"
@@ -10504,7 +10504,7 @@
             "value": "[variables('marketPlaceGalleryWindows').win10_21h2]"
           },
           "subnetResourceId": {
-            "value": "[if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time')))).outputs.avdVirtualNetworkResourceId.value, variables('avdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId'))]"
+            "value": "[if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time'))), '2020-10-01').outputs.avdVirtualNetworkResourceId.value, variables('avdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId'))]"
           },
           "managementVmName": {
             "value": "[variables('managementVmName')]"
@@ -10522,8 +10522,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.1272.37030",
-              "templateHash": "13259903099494472158"
+              "version": "0.6.18.56646",
+              "templateHash": "11278819429853656256"
             }
           },
           "parameters": {
@@ -10805,8 +10805,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "4319667726806184437"
+                      "version": "0.6.18.56646",
+                      "templateHash": "10464470598794127218"
                     }
                   },
                   "parameters": {
@@ -11221,8 +11221,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "7909193831990040134"
+                              "version": "0.6.18.56646",
+                              "templateHash": "12965550548914942871"
                             }
                           },
                           "parameters": {
@@ -11272,43 +11272,43 @@
                               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                              "Avere Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f8fab4f-1852-4a58-a46a-8eaf358af14a')]",
-                              "Avere Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c025889f-8102-4ebf-b32c-fc0c6f0c6bd9')]",
-                              "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
-                              "Backup Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')]",
-                              "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
-                              "Disk Snapshot Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
-                              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
-                              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
-                              "Logic App Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '87a39d53-fc1b-424a-814c-f7e04687dc9e')]",
-                              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
-                              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
-                              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
-                              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
-                              "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
-                              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
-                              "Reader and Data Access": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')]",
-                              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
-                              "Site Recovery Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6670b86e-a3f7-4917-ac9b-5d6ab1be4567')]",
-                              "Site Recovery Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '494ae006-db33-4328-bf46-533a6560a3ca')]",
-                              "Storage Account Backup Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
-                              "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
-                              "Storage Account Key Operator Service Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')]",
-                              "Storage Blob Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
-                              "Storage Blob Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
-                              "Storage Blob Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
-                              "Storage Blob Delegator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'db58b8e5-c6ad-4a2a-8342-4190687cbf4a')]",
-                              "Storage File Data SMB Share Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb')]",
-                              "Storage File Data SMB Share Elevated Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a7264617-510b-434b-a828-9731dc254ea7')]",
-                              "Storage File Data SMB Share Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aba4ae5f-2193-4029-9191-0cb91df5e314')]",
-                              "Storage Queue Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '974c5e8b-45b9-4653-ba55-5f855dd0fb88')]",
-                              "Storage Queue Data Message Processor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8a0f0c08-91a1-4084-bc3d-661d67233fed')]",
-                              "Storage Queue Data Message Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a')]",
-                              "Storage Queue Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '19e7f393-937e-4f77-808e-94535e297925')]",
-                              "Storage Table Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
-                              "Storage Table Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76199698-9eea-4c19-bc75-cec21354c6b6')]",
-                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
-                              "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]"
+                              "Avere Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f8fab4f-1852-4a58-a46a-8eaf358af14a')]",
+                              "Avere Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c025889f-8102-4ebf-b32c-fc0c6f0c6bd9')]",
+                              "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
+                              "Backup Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')]",
+                              "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
+                              "Disk Snapshot Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
+                              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+                              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
+                              "Logic App Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '87a39d53-fc1b-424a-814c-f7e04687dc9e')]",
+                              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
+                              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
+                              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
+                              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+                              "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
+                              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
+                              "Reader and Data Access": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')]",
+                              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+                              "Site Recovery Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6670b86e-a3f7-4917-ac9b-5d6ab1be4567')]",
+                              "Site Recovery Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '494ae006-db33-4328-bf46-533a6560a3ca')]",
+                              "Storage Account Backup Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
+                              "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
+                              "Storage Account Key Operator Service Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')]",
+                              "Storage Blob Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+                              "Storage Blob Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
+                              "Storage Blob Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
+                              "Storage Blob Delegator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'db58b8e5-c6ad-4a2a-8342-4190687cbf4a')]",
+                              "Storage File Data SMB Share Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb')]",
+                              "Storage File Data SMB Share Elevated Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a7264617-510b-434b-a828-9731dc254ea7')]",
+                              "Storage File Data SMB Share Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aba4ae5f-2193-4029-9191-0cb91df5e314')]",
+                              "Storage Queue Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '974c5e8b-45b9-4653-ba55-5f855dd0fb88')]",
+                              "Storage Queue Data Message Processor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8a0f0c08-91a1-4084-bc3d-661d67233fed')]",
+                              "Storage Queue Data Message Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a')]",
+                              "Storage Queue Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '19e7f393-937e-4f77-808e-94535e297925')]",
+                              "Storage Table Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
+                              "Storage Table Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76199698-9eea-4c19-bc75-cec21354c6b6')]",
+                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+                              "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]"
                             }
                           },
                           "resources": [
@@ -11369,8 +11369,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "1591424286997344502"
+                              "version": "0.6.18.56646",
+                              "templateHash": "15863587580915373307"
                             }
                           },
                           "parameters": {
@@ -11480,8 +11480,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "12193053222969300788"
+                              "version": "0.6.18.56646",
+                              "templateHash": "1238564261076744009"
                             }
                           },
                           "parameters": {
@@ -11626,8 +11626,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "9048517894900578927"
+                              "version": "0.6.18.56646",
+                              "templateHash": "11822679838764360147"
                             }
                           },
                           "parameters": {
@@ -11869,8 +11869,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "15359712412199251197"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "15766588324976580933"
                                     }
                                   },
                                   "parameters": {
@@ -11994,8 +11994,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.4.1272.37030",
-                                              "templateHash": "10394849387851860818"
+                                              "version": "0.6.18.56646",
+                                              "templateHash": "8890293456311341143"
                                             }
                                           },
                                           "parameters": {
@@ -12138,8 +12138,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.4.1272.37030",
-                                              "templateHash": "707278226880887605"
+                                              "version": "0.6.18.56646",
+                                              "templateHash": "18424272002787389588"
                                             }
                                           },
                                           "parameters": {
@@ -12357,8 +12357,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "2954705680438016922"
+                              "version": "0.6.18.56646",
+                              "templateHash": "4468166038235660302"
                             }
                           },
                           "parameters": {
@@ -12596,8 +12596,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "12966411906466047962"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "10592660094986790354"
                                     }
                                   },
                                   "parameters": {
@@ -12727,8 +12727,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.4.1272.37030",
-                                              "templateHash": "17457778210048871612"
+                                              "version": "0.6.18.56646",
+                                              "templateHash": "3279604461507817568"
                                             }
                                           },
                                           "parameters": {
@@ -12778,43 +12778,43 @@
                                               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                                               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                                               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                                              "Avere Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f8fab4f-1852-4a58-a46a-8eaf358af14a')]",
-                                              "Avere Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c025889f-8102-4ebf-b32c-fc0c6f0c6bd9')]",
-                                              "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
-                                              "Backup Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')]",
-                                              "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
-                                              "Disk Snapshot Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
-                                              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
-                                              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
-                                              "Logic App Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '87a39d53-fc1b-424a-814c-f7e04687dc9e')]",
-                                              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
-                                              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
-                                              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
-                                              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
-                                              "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
-                                              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
-                                              "Reader and Data Access": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')]",
-                                              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
-                                              "Site Recovery Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6670b86e-a3f7-4917-ac9b-5d6ab1be4567')]",
-                                              "Site Recovery Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '494ae006-db33-4328-bf46-533a6560a3ca')]",
-                                              "Storage Account Backup Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
-                                              "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
-                                              "Storage Account Key Operator Service Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')]",
-                                              "Storage Blob Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
-                                              "Storage Blob Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
-                                              "Storage Blob Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
-                                              "Storage Blob Delegator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'db58b8e5-c6ad-4a2a-8342-4190687cbf4a')]",
-                                              "Storage File Data SMB Share Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb')]",
-                                              "Storage File Data SMB Share Elevated Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a7264617-510b-434b-a828-9731dc254ea7')]",
-                                              "Storage File Data SMB Share Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aba4ae5f-2193-4029-9191-0cb91df5e314')]",
-                                              "Storage Queue Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '974c5e8b-45b9-4653-ba55-5f855dd0fb88')]",
-                                              "Storage Queue Data Message Processor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8a0f0c08-91a1-4084-bc3d-661d67233fed')]",
-                                              "Storage Queue Data Message Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a')]",
-                                              "Storage Queue Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '19e7f393-937e-4f77-808e-94535e297925')]",
-                                              "Storage Table Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
-                                              "Storage Table Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76199698-9eea-4c19-bc75-cec21354c6b6')]",
-                                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
-                                              "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]"
+                                              "Avere Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f8fab4f-1852-4a58-a46a-8eaf358af14a')]",
+                                              "Avere Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c025889f-8102-4ebf-b32c-fc0c6f0c6bd9')]",
+                                              "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
+                                              "Backup Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')]",
+                                              "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
+                                              "Disk Snapshot Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
+                                              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+                                              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
+                                              "Logic App Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '87a39d53-fc1b-424a-814c-f7e04687dc9e')]",
+                                              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
+                                              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
+                                              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
+                                              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+                                              "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
+                                              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
+                                              "Reader and Data Access": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')]",
+                                              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+                                              "Site Recovery Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6670b86e-a3f7-4917-ac9b-5d6ab1be4567')]",
+                                              "Site Recovery Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '494ae006-db33-4328-bf46-533a6560a3ca')]",
+                                              "Storage Account Backup Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
+                                              "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
+                                              "Storage Account Key Operator Service Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')]",
+                                              "Storage Blob Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+                                              "Storage Blob Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
+                                              "Storage Blob Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
+                                              "Storage Blob Delegator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'db58b8e5-c6ad-4a2a-8342-4190687cbf4a')]",
+                                              "Storage File Data SMB Share Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb')]",
+                                              "Storage File Data SMB Share Elevated Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a7264617-510b-434b-a828-9731dc254ea7')]",
+                                              "Storage File Data SMB Share Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aba4ae5f-2193-4029-9191-0cb91df5e314')]",
+                                              "Storage Queue Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '974c5e8b-45b9-4653-ba55-5f855dd0fb88')]",
+                                              "Storage Queue Data Message Processor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8a0f0c08-91a1-4084-bc3d-661d67233fed')]",
+                                              "Storage Queue Data Message Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a')]",
+                                              "Storage Queue Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '19e7f393-937e-4f77-808e-94535e297925')]",
+                                              "Storage Table Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
+                                              "Storage Table Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76199698-9eea-4c19-bc75-cec21354c6b6')]",
+                                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+                                              "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]"
                                             }
                                           },
                                           "resources": [
@@ -12949,8 +12949,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "4317072350963286754"
+                              "version": "0.6.18.56646",
+                              "templateHash": "1546997530860855503"
                             }
                           },
                           "parameters": {
@@ -13162,8 +13162,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "12699412137408029572"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "10767083478793113255"
                                     }
                                   },
                                   "parameters": {
@@ -13268,8 +13268,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.4.1272.37030",
-                                              "templateHash": "13790292481887541215"
+                                              "version": "0.6.18.56646",
+                                              "templateHash": "11806587398392909025"
                                             }
                                           },
                                           "parameters": {
@@ -13487,8 +13487,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "5533761007879570685"
+                              "version": "0.6.18.56646",
+                              "templateHash": "13864683647616429603"
                             }
                           },
                           "parameters": {
@@ -13694,8 +13694,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "17617770234961431175"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "18086676683627184731"
                                     }
                                   },
                                   "parameters": {
@@ -13962,8 +13962,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "17336458202819680147"
+                      "version": "0.6.18.56646",
+                      "templateHash": "9723910118373504032"
                     }
                   },
                   "parameters": {
@@ -14762,8 +14762,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "6124203543695009493"
+                              "version": "0.6.18.56646",
+                              "templateHash": "18123092384433123732"
                             }
                           },
                           "parameters": {
@@ -15001,8 +15001,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "6315485743382474131"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "9556177522022684513"
                                     }
                                   },
                                   "parameters": {
@@ -15175,8 +15175,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.4.1272.37030",
-                                              "templateHash": "11137090315115463136"
+                                              "version": "0.6.18.56646",
+                                              "templateHash": "9634573242345467377"
                                             }
                                           },
                                           "parameters": {
@@ -15333,8 +15333,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "15847363873257364440"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "12431355036765841258"
                                     }
                                   },
                                   "parameters": {
@@ -15459,8 +15459,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "1221055330468311616"
+                              "version": "0.6.18.56646",
+                              "templateHash": "12830169057620653284"
                             }
                           },
                           "parameters": {
@@ -15578,8 +15578,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "14725292187090512400"
+                              "version": "0.6.18.56646",
+                              "templateHash": "5468651301233832668"
                             }
                           },
                           "parameters": {
@@ -15775,8 +15775,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "14725292187090512400"
+                              "version": "0.6.18.56646",
+                              "templateHash": "5468651301233832668"
                             }
                           },
                           "parameters": {
@@ -15979,8 +15979,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "14725292187090512400"
+                              "version": "0.6.18.56646",
+                              "templateHash": "5468651301233832668"
                             }
                           },
                           "parameters": {
@@ -16173,8 +16173,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "14725292187090512400"
+                              "version": "0.6.18.56646",
+                              "templateHash": "5468651301233832668"
                             }
                           },
                           "parameters": {
@@ -16367,8 +16367,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "14725292187090512400"
+                              "version": "0.6.18.56646",
+                              "templateHash": "5468651301233832668"
                             }
                           },
                           "parameters": {
@@ -16567,8 +16567,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "14725292187090512400"
+                              "version": "0.6.18.56646",
+                              "templateHash": "5468651301233832668"
                             }
                           },
                           "parameters": {
@@ -16775,8 +16775,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "14725292187090512400"
+                              "version": "0.6.18.56646",
+                              "templateHash": "5468651301233832668"
                             }
                           },
                           "parameters": {
@@ -16976,8 +16976,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "14725292187090512400"
+                              "version": "0.6.18.56646",
+                              "templateHash": "5468651301233832668"
                             }
                           },
                           "parameters": {
@@ -17161,8 +17161,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "17143783980097543843"
+                              "version": "0.6.18.56646",
+                              "templateHash": "1762467586478280301"
                             }
                           },
                           "parameters": {
@@ -17253,8 +17253,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "5774299816951148982"
+                              "version": "0.6.18.56646",
+                              "templateHash": "1462864126456485720"
                             }
                           },
                           "parameters": {
@@ -17419,8 +17419,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "17646197042882224412"
+                      "version": "0.6.18.56646",
+                      "templateHash": "16669451438068584976"
                     }
                   },
                   "parameters": {
@@ -17492,7 +17492,7 @@
             "value": "[variables('avdAgentPackageLocation')]"
           },
           "avdApplicationSecurityGroupResourceId": {
-            "value": "[if(parameters('createAvdVnet'), format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time')))).outputs.avdApplicationSecurityGroupResourceId.value), '')]"
+            "value": "[if(parameters('createAvdVnet'), format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time'))), '2020-10-01').outputs.avdApplicationSecurityGroupResourceId.value), '')]"
           },
           "avdAsFaultDomainCount": {
             "value": "[parameters('avdAsFaultDomainCount')]"
@@ -17549,7 +17549,7 @@
             "value": "[parameters('avdSessionHostsSize')]"
           },
           "avdSubnetId": {
-            "value": "[if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time')))).outputs.avdVirtualNetworkResourceId.value, variables('avdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId'))]"
+            "value": "[if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time'))), '2020-10-01').outputs.avdVirtualNetworkResourceId.value, variables('avdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId'))]"
           },
           "avdUseAvailabilityZones": {
             "value": "[parameters('avdUseAvailabilityZones')]"
@@ -17597,8 +17597,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.1272.37030",
-              "templateHash": "5306219095916190433"
+              "version": "0.6.18.56646",
+              "templateHash": "3622173388262489750"
             }
           },
           "parameters": {
@@ -17869,8 +17869,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "3433967873539594803"
+                      "version": "0.6.18.56646",
+                      "templateHash": "11681010985247499968"
                     }
                   },
                   "parameters": {
@@ -17969,8 +17969,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "13559126495377546114"
+                              "version": "0.6.18.56646",
+                              "templateHash": "17038009722019820851"
                             }
                           },
                           "parameters": {
@@ -18129,8 +18129,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "3907380768789611008"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "6489478267799687368"
                                     }
                                   },
                                   "parameters": {
@@ -18379,8 +18379,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.4.1272.37030",
-                      "templateHash": "14065155309421434768"
+                      "version": "0.6.18.56646",
+                      "templateHash": "12014979768607534433"
                     }
                   },
                   "parameters": {
@@ -18726,8 +18726,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "17336458202819680147"
+                              "version": "0.6.18.56646",
+                              "templateHash": "9723910118373504032"
                             }
                           },
                           "parameters": {
@@ -19526,8 +19526,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "6124203543695009493"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "18123092384433123732"
                                     }
                                   },
                                   "parameters": {
@@ -19765,8 +19765,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.4.1272.37030",
-                                              "templateHash": "6315485743382474131"
+                                              "version": "0.6.18.56646",
+                                              "templateHash": "9556177522022684513"
                                             }
                                           },
                                           "parameters": {
@@ -19939,8 +19939,8 @@
                                                   "metadata": {
                                                     "_generator": {
                                                       "name": "bicep",
-                                                      "version": "0.4.1272.37030",
-                                                      "templateHash": "11137090315115463136"
+                                                      "version": "0.6.18.56646",
+                                                      "templateHash": "9634573242345467377"
                                                     }
                                                   },
                                                   "parameters": {
@@ -20097,8 +20097,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.4.1272.37030",
-                                              "templateHash": "15847363873257364440"
+                                              "version": "0.6.18.56646",
+                                              "templateHash": "12431355036765841258"
                                             }
                                           },
                                           "parameters": {
@@ -20223,8 +20223,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "1221055330468311616"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "12830169057620653284"
                                     }
                                   },
                                   "parameters": {
@@ -20342,8 +20342,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "14725292187090512400"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "5468651301233832668"
                                     }
                                   },
                                   "parameters": {
@@ -20539,8 +20539,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "14725292187090512400"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "5468651301233832668"
                                     }
                                   },
                                   "parameters": {
@@ -20743,8 +20743,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "14725292187090512400"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "5468651301233832668"
                                     }
                                   },
                                   "parameters": {
@@ -20937,8 +20937,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "14725292187090512400"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "5468651301233832668"
                                     }
                                   },
                                   "parameters": {
@@ -21131,8 +21131,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "14725292187090512400"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "5468651301233832668"
                                     }
                                   },
                                   "parameters": {
@@ -21331,8 +21331,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "14725292187090512400"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "5468651301233832668"
                                     }
                                   },
                                   "parameters": {
@@ -21539,8 +21539,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "14725292187090512400"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "5468651301233832668"
                                     }
                                   },
                                   "parameters": {
@@ -21740,8 +21740,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "14725292187090512400"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "5468651301233832668"
                                     }
                                   },
                                   "parameters": {
@@ -21925,8 +21925,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "17143783980097543843"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "1762467586478280301"
                                     }
                                   },
                                   "parameters": {
@@ -22017,8 +22017,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.4.1272.37030",
-                                      "templateHash": "5774299816951148982"
+                                      "version": "0.6.18.56646",
+                                      "templateHash": "1462864126456485720"
                                     }
                                   },
                                   "parameters": {
@@ -22184,8 +22184,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "15866332551626423320"
+                              "version": "0.6.18.56646",
+                              "templateHash": "4221834084412303253"
                             }
                           },
                           "parameters": {
@@ -22278,8 +22278,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.4.1272.37030",
-                              "templateHash": "15058212372752875435"
+                              "version": "0.6.18.56646",
+                              "templateHash": "10920572017087077244"
                             }
                           },
                           "parameters": {
