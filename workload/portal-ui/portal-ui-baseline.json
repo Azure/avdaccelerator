@@ -1805,7 +1805,7 @@
                 "createAvdFslogixDeployment": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment]",
                 "fslogixStorageSku": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdStorageAccountSku, 'Standard_LRS')]",
                 "avdFslogixFileShareQuotaSize": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdSessionHostsFslogixFileShareQuota, 1 )]",
-                "storageOuPath": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathBool, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathStorage, steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathStorageExisting)]",
+                "storageOuPath": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathStorage]",
                 "avdUseCustomNaming": "[steps('avdResourceNaming').avdResourceNamingSelection]",
                 "avdServiceObjectsRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdServiceObjectsRgCustomName, 'none')]",
                 "avdNetworkObjectsRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingNetwork.avdNetworkObjectsRgCustomName, 'none')]",
