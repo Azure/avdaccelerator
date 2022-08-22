@@ -26,9 +26,9 @@ param(
 	[ValidateNotNullOrEmpty()]
 	[string] $ShareName,
 
-	[Parameter(Mandatory = $true)]
-	[ValidateNotNullOrEmpty()]
-	[string] $CustomOuPath,
+	#[Parameter(Mandatory = $true)]
+	#[ValidateNotNullOrEmpty()]
+	#[string] $CustomOuPath,
 
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
