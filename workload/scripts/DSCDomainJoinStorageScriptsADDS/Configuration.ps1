@@ -78,9 +78,9 @@ Configuration DomainJoinFileShare
         [ValidateNotNullOrEmpty()]
         [string] $DomainName,
 
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $CustomOuPath,
+        #[Parameter(Mandatory = $true)]
+        #[ValidateNotNullOrEmpty()]
+        #[string] $CustomOuPath,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
