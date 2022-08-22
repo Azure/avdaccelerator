@@ -78,9 +78,9 @@ Configuration DomainJoinFileShare
         [ValidateNotNullOrEmpty()]
         [string] $DomainName,
 
-        #[Parameter(Mandatory = $true)]
-        #[ValidateNotNullOrEmpty()]
-        #[string] $CustomOuPath,
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $CustomOuPath,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -192,5 +192,4 @@ $config = @{
     )
 }
 
-DomainJoinFileShare -ConfigurationData $config -StorageAccountName $StorageAccountName -StorageAccountRG $StorageAccountRG -SubscriptionId $SubscriptionId -ShareName $ShareName -DomainName $DomainName -AzureCloudEnvironment $AzureCloudEnvironment -OUName $OUName -CreateNewOU $CreateNewOU -DomainAdminUserName $DomainAdminUserName -DomainAdminUserPassword $DomainAdminUserPassword -ClientId $ClientId -Verbose; 
-# -CustomOuPath $CustomOuPath
+DomainJoinFileShare -ConfigurationData $config -StorageAccountName $StorageAccountName -StorageAccountRG $StorageAccountRG -SubscriptionId $SubscriptionId -ShareName $ShareName -DomainName $DomainName -AzureCloudEnvironment $AzureCloudEnvironment -CustomOuPath $CustomOuPath -OUName $OUName -CreateNewOU $CreateNewOU -DomainAdminUserName $DomainAdminUserName -DomainAdminUserPassword $DomainAdminUserPassword -ClientId $ClientId -Verbose; 
