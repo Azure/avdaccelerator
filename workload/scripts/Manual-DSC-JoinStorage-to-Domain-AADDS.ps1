@@ -29,7 +29,7 @@ param (
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [bool] $CustomOuPath,
+        [string] $CustomOuPath,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
