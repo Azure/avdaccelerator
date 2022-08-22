@@ -565,7 +565,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Session hosts OU path (Optional)",
                                     "toolTip": "Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU.",
-                                    "placeholder": "Example: OU=avd,DC=contoso,DC=com",
+                                    "placeholder": "Example: OU=session-hosts,OU=avd,DC=contoso,DC=com",
                                     "constraints": {}
                                 },
                                 { 
@@ -644,9 +644,9 @@
                                     "name": "avdIdentityDomainOuPathStorageExisting",
                                     "type": "Microsoft.Common.TextBox",
                                     "visible": "[equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathBool, false)]",
-                                    "label": "Existing storage OU name (Optional)",
+                                    "label": "Existing storage OU path (Optional)",
                                     "toolTip": "Provide OU where to locate storage account file share, if not provided session hosts will be placed on the default (computers) OU.",
-                                    "placeholder": "Example: avdstorage",
+                                    "placeholder": "Example: OU=storage,OU=avd,DC=contoso,DC=com",
                                     "constraints": {}
                                 },
                                 {
@@ -1805,7 +1805,7 @@
                 "createAvdFslogixDeployment": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment]",
                 "fslogixStorageSku": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdStorageAccountSku, 'Standard_LRS')]",
                 "avdFslogixFileShareQuotaSize": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdSessionHostsFslogixFileShareQuota, 1 )]",
-                "storageOuName": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathBool, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathStorage, steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathStorageExisting)]",
+                "storageOuPath": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathBool, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathStorage, steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathStorageExisting)]",
                 "avdUseCustomNaming": "[steps('avdResourceNaming').avdResourceNamingSelection]",
                 "avdServiceObjectsRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdServiceObjectsRgCustomName, 'none')]",
                 "avdNetworkObjectsRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingNetwork.avdNetworkObjectsRgCustomName, 'none')]",
