@@ -77,9 +77,6 @@ trademarks or logos is subject to and must follow
 Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
 Any use of third-party trademarks or logos are subject to those third-party's policies.
 
-# Known Issues
+## Reporting issues
 
-Please report issues using the projects [issues](https://github.com/Azure/avdaccelerator/issues) tracker.
-
-### Reporting issues
-Microsoft Support is not handling issues for any published tools in this repository. However, we would like to welcome you to open issues using GitHub issues to collaborate and improve these tools. You can open [issues](https://github.com/Azure/avdaccelerator/issues) and add the corresponding label (like **5-RDS-on-Windows-Server**) to associate it with the appropriate tool. 
+Microsoft Support is not yet handling issues for any published tools in this repository. However, we would like to welcome you to open issues using GitHub [issues](https://github.com/Azure/avdaccelerator/issues) to collaborate and improve these tools.
