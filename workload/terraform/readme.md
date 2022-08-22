@@ -174,7 +174,6 @@ hashicorp/azurerm v3.61.0
 
 </details>
 
-## Known Issues
+## Reporting issues
 
-This wiki is being actively developed
-Please report issues using the projects [issues](https://github.com/Azure/avdaccelerator/issues) tracker and use the Terraform document label.
+Microsoft Support is not yet handling issues for any published tools in this repository. However, we would like to welcome you to open issues using GitHub [issues](https://github.com/Azure/avdaccelerator/issues) to collaborate and improve these tools.
