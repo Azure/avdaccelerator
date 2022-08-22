@@ -26,9 +26,9 @@ param(
 	[ValidateNotNullOrEmpty()]
 	[string] $ShareName,
 
-	#[Parameter(Mandatory = $true)]
-	#[ValidateNotNullOrEmpty()]
-	#[string] $CustomOuPath,
+	[Parameter(Mandatory = $true)]
+	[ValidateNotNullOrEmpty()]
+	[string] $CustomOuPath,
 
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
@@ -108,13 +108,13 @@ Write-Log "Setting Azure subscription to $SubscriptionId"
 Select-AzSubscription -SubscriptionId $SubscriptionId
 
 
-#if ( $CustomOuPath -eq 'true') {
+if ( $CustomOuPath -eq 'true') {
 	Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitDistinguishedName $OUName -OverwriteExistingADObject
 	Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to custom OU path $OUName"
-#} else {
-#	Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitName $OUName -OverwriteExistingADObject
-#	Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to default OU path $OUName"
-#}
+} else {
+	Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitName $OUName -OverwriteExistingADObject
+	Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to default OU path $OUName"
+}
 
 ## Setting default permissions 
 #$defaultPermission = "None | StorageFileDataSmbShareContributor | StorageFileDataSmbShareReader | StorageFileDataSmbShareElevatedContributor" # Set the default permission of your choice
