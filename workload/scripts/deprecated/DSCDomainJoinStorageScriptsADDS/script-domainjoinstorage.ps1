@@ -18,17 +18,21 @@ param(
 	[ValidateNotNullOrEmpty()]
 	[string] $ClientId,
 
-    	[Parameter(Mandatory = $true)]
-    	[ValidateNotNullOrEmpty()]
-    	[string] $SubscriptionId,
+	[Parameter(Mandatory = $true)]
+	[ValidateNotNullOrEmpty()]
+	[string] $SubscriptionId,
 
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
 	[string] $ShareName,
 
-      [Parameter(Mandatory = $true)]
-      [ValidateNotNullOrEmpty()]
-      [string] $CustomOuPath,
+	[Parameter(Mandatory = $true)]
+	[ValidateNotNullOrEmpty()]
+	[string] $CustomOuPath,
+
+	[Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $IdentityServiceProvider,
 
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
@@ -52,7 +56,7 @@ $ErrorActionPreference = "Stop"
 . (Join-Path $ScriptPath "Logger.ps1")
 
 Write-Log "Turning off Windows firewall. "
-Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+Set-NetFirewallProfile -Profile Domain, Public, Private -Enabled False
 
 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 Install-Module -Name PowershellGet -MinimumVersion 2.2.4.1 -Force
@@ -61,44 +65,49 @@ Install-Module -Name Az.Storage -Force
 Install-Module -Name Az.Network -Force
 Install-Module -Name Az.Resources -Force
 
-#Write-Log "Installing AzFilesHybrid module"
-#$AzFilesZipLocation = Get-ChildItem -Path $PSScriptRoot -Filter "AzFilesHybrid*.zip"
-#Expand-Archive $AzFilesZipLocation.FullName -DestinationPath $PSScriptRoot -Force
-#Set-Location $PSScriptRoot
-#$AzFilesHybridPath = (Join-Path $PSScriptRoot "CopyToPSPath.ps1")
-#& $AzFilesHybridPath
+Write-Log "Installing AzFilesHybrid module"
+$AzFilesZipLocation = Get-ChildItem -Path $PSScriptRoot -Filter "AzFilesHybrid*.zip"
+Expand-Archive $AzFilesZipLocation.FullName -DestinationPath $PSScriptRoot -Force
+Set-Location $PSScriptRoot
+$AzFilesHybridPath = (Join-Path $PSScriptRoot "CopyToPSPath.ps1")
+& $AzFilesHybridPath
 
-# Please note: ActiveDirectory powershell module is only available on AD joined machines.
-# To install it, RSAT administrative tools must be installed on the VM which will
-# install the ActiveDirectory powershell module. AzFilesHybrid module takes care of
-# installing the RSAT tool, ActiveDirectory powershell module.
-#Import-Module -Name AzFilesHybrid -Force
-#$ADModule = Get-Module -Name ActiveDirectory
-#if (-not $ADModule) {
-#    Request-OSFeature -WindowsClientCapability "Rsat.ActiveDirectory.DS-LDS.Tools" -WindowsServerFeature "RSAT-AD-PowerShell"
-#    Import-Module -Name activedirectory -Force -Verbose
-#}
 
-$IsStorageAccountDomainJoined = Get-ADObject -Filter 'ObjectClass -eq "Computer"' | Where-Object {$_.Name -eq $StorageAccountName}
+if ($IdentityServiceProvider -eq 'ADDS') {
+	# Please note: ActiveDirectory powershell module is only available on AD joined machines.
+	# To install it, RSAT administrative tools must be installed on the VM which will
+	# install the ActiveDirectory powershell module. AzFilesHybrid module takes care of
+	# installing the RSAT tool, ActiveDirectory powershell module.
+	Import-Module -Name AzFilesHybrid -Force
+	$ADModule = Get-Module -Name ActiveDirectory
+	if (-not $ADModule) {
+		Request-OSFeature -WindowsClientCapability "Rsat.ActiveDirectory.DS-LDS.Tools" -WindowsServerFeature "RSAT-AD-PowerShell"
+		Import-Module -Name activedirectory -Force -Verbose
+	}
+}
+
+$IsStorageAccountDomainJoined = Get-ADObject -Filter 'ObjectClass -eq "Computer"' | Where-Object { $_.Name -eq $StorageAccountName }
 if ($IsStorageAccountDomainJoined) {
-    Write-Log "Storage account $StorageAccountName is already domain joined."
-    return
+	Write-Log "Storage account $StorageAccountName is already domain joined."
+	return
 }
 
-if ( $CreateNewOU -eq 'true') {
-Write-Log "Creating AD Organizational unit $OUName'"
-Get-ADOrganizationalUnit -Filter 'Name -like $OUName'
-$OrganizationalUnit = Get-ADOrganizationalUnit -Filter 'Name -like $OUName '
-if (-not $OrganizationalUnit) {
-	foreach($DCName in $DomainName.split('.')) {
-		$OUPath = $OUPath + ',DC=' + $DCName
-	}
+if ($IdentityServiceProvider -eq 'ADDS') {
+	if ( $CreateNewOU -eq 'true') {
+		Write-Log "Creating AD Organizational unit $OUName'"
+		Get-ADOrganizationalUnit -Filter 'Name -like $OUName'
+		$OrganizationalUnit = Get-ADOrganizationalUnit -Filter 'Name -like $OUName '
+		if (-not $OrganizationalUnit) {
+			foreach ($DCName in $DomainName.split('.')) {
+				$OUPath = $OUPath + ',DC=' + $DCName
+			}
 
-	$OUPath = $OUPath.substring(1)
-	New-ADOrganizationalUnit -name $OUName -path $OUPath
+			$OUPath = $OUPath.substring(1)
+			New-ADOrganizationalUnit -name $OUName -path $OUPath
+		}
+
+	}
 }
-
-	}
 
 Write-Log "Domain joining storage account $StorageAccountName in Resource group $StorageAccountRG"
 # Add-AzAccount -Environment $AzureCloudEnvironment -identity
@@ -107,17 +116,17 @@ Connect-AzAccount -Identity -AccountId $ClientId
 Write-Log "Setting Azure subscription to $SubscriptionId"
 Select-AzSubscription -SubscriptionId $SubscriptionId
 
-#if ( $CustomOuPath -eq 'true') {
-#Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitDistinguishedName $OUName -OverwriteExistingADObject
-#Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to custom OU path $OUName"
-#}
-#else {
-#Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitName $OUName -OverwriteExistingADObject
-#Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to default OU path $OUName"
-#}
+
+if ( $CustomOuPath -eq 'true') {
+	Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitDistinguishedName $OUName -OverwriteExistingADObject
+	Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to custom OU path $OUName"
+} else {
+	Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitName $OUName -OverwriteExistingADObject
+	Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to default OU path $OUName"
+}
 
 ## Setting default permissions 
-$defaultPermission = "None|StorageFileDataSmbShareContributor|StorageFileDataSmbShareReader|StorageFileDataSmbShareElevatedContributor" # Set the default permission of your choice
+#$defaultPermission = "None | StorageFileDataSmbShareContributor | StorageFileDataSmbShareReader | StorageFileDataSmbShareElevatedContributor" # Set the default permission of your choice
 
 $defaultPermission = "StorageFileDataSmbShareContributor" # Set the default permission of your choice
 Write-Log "Setting up the default permission of $defaultPermission to storage account $StorageAccountName in $StorageAccountRG"
