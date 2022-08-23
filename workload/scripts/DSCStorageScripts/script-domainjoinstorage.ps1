@@ -31,6 +31,10 @@ param(
 	[string] $CustomOuPath,
 
 	[Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $IdentityServiceProvider,
+
+	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
 	[string] $DomainName,
 
@@ -68,15 +72,18 @@ Set-Location $PSScriptRoot
 $AzFilesHybridPath = (Join-Path $PSScriptRoot "CopyToPSPath.ps1")
 & $AzFilesHybridPath
 
-# Please note: ActiveDirectory powershell module is only available on AD joined machines.
-# To install it, RSAT administrative tools must be installed on the VM which will
-# install the ActiveDirectory powershell module. AzFilesHybrid module takes care of
-# installing the RSAT tool, ActiveDirectory powershell module.
-Import-Module -Name AzFilesHybrid -Force
-$ADModule = Get-Module -Name ActiveDirectory
-if (-not $ADModule) {
-	Request-OSFeature -WindowsClientCapability "Rsat.ActiveDirectory.DS-LDS.Tools" -WindowsServerFeature "RSAT-AD-PowerShell"
-	Import-Module -Name activedirectory -Force -Verbose
+
+if ($IdentityServiceProvider -eq 'ADDS') {
+	# Please note: ActiveDirectory powershell module is only available on AD joined machines.
+	# To install it, RSAT administrative tools must be installed on the VM which will
+	# install the ActiveDirectory powershell module. AzFilesHybrid module takes care of
+	# installing the RSAT tool, ActiveDirectory powershell module.
+	Import-Module -Name AzFilesHybrid -Force
+	$ADModule = Get-Module -Name ActiveDirectory
+	if (-not $ADModule) {
+		Request-OSFeature -WindowsClientCapability "Rsat.ActiveDirectory.DS-LDS.Tools" -WindowsServerFeature "RSAT-AD-PowerShell"
+		Import-Module -Name activedirectory -Force -Verbose
+	}
 }
 
 $IsStorageAccountDomainJoined = Get-ADObject -Filter 'ObjectClass -eq "Computer"' | Where-Object { $_.Name -eq $StorageAccountName }
@@ -85,19 +92,21 @@ if ($IsStorageAccountDomainJoined) {
 	return
 }
 
-if ( $CreateNewOU -eq 'true') {
-	Write-Log "Creating AD Organizational unit $OUName'"
-	Get-ADOrganizationalUnit -Filter 'Name -like $OUName'
-	$OrganizationalUnit = Get-ADOrganizationalUnit -Filter 'Name -like $OUName '
-	if (-not $OrganizationalUnit) {
-		foreach ($DCName in $DomainName.split('.')) {
-			$OUPath = $OUPath + ',DC=' + $DCName
+if ($IdentityServiceProvider -eq 'ADDS') {
+	if ( $CreateNewOU -eq 'true') {
+		Write-Log "Creating AD Organizational unit $OUName'"
+		Get-ADOrganizationalUnit -Filter 'Name -like $OUName'
+		$OrganizationalUnit = Get-ADOrganizationalUnit -Filter 'Name -like $OUName '
+		if (-not $OrganizationalUnit) {
+			foreach ($DCName in $DomainName.split('.')) {
+				$OUPath = $OUPath + ',DC=' + $DCName
+			}
+
+			$OUPath = $OUPath.substring(1)
+			New-ADOrganizationalUnit -name $OUName -path $OUPath
 		}
 
-		$OUPath = $OUPath.substring(1)
-		New-ADOrganizationalUnit -name $OUName -path $OUPath
 	}
-
 }
 
 Write-Log "Domain joining storage account $StorageAccountName in Resource group $StorageAccountRG"
