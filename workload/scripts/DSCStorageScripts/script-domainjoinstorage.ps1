@@ -65,13 +65,14 @@ Install-Module -Name Az.Storage -Force
 Install-Module -Name Az.Network -Force
 Install-Module -Name Az.Resources -Force
 
-Write-Log "Installing AzFilesHybrid module"
-$AzFilesZipLocation = Get-ChildItem -Path $PSScriptRoot -Filter "AzFilesHybrid*.zip"
-Expand-Archive $AzFilesZipLocation.FullName -DestinationPath $PSScriptRoot -Force
-Set-Location $PSScriptRoot
-$AzFilesHybridPath = (Join-Path $PSScriptRoot "CopyToPSPath.ps1")
-& $AzFilesHybridPath
-
+if ($IdentityServiceProvider -eq 'ADDS') {
+	Write-Log "Installing AzFilesHybrid module"
+	$AzFilesZipLocation = Get-ChildItem -Path $PSScriptRoot -Filter "AzFilesHybrid*.zip"
+	Expand-Archive $AzFilesZipLocation.FullName -DestinationPath $PSScriptRoot -Force
+	Set-Location $PSScriptRoot
+	$AzFilesHybridPath = (Join-Path $PSScriptRoot "CopyToPSPath.ps1")
+	& $AzFilesHybridPath
+}
 
 if ($IdentityServiceProvider -eq 'ADDS') {
 	# Please note: ActiveDirectory powershell module is only available on AD joined machines.
@@ -84,15 +85,11 @@ if ($IdentityServiceProvider -eq 'ADDS') {
 		Request-OSFeature -WindowsClientCapability "Rsat.ActiveDirectory.DS-LDS.Tools" -WindowsServerFeature "RSAT-AD-PowerShell"
 		Import-Module -Name activedirectory -Force -Verbose
 	}
-}
-
-$IsStorageAccountDomainJoined = Get-ADObject -Filter 'ObjectClass -eq "Computer"' | Where-Object { $_.Name -eq $StorageAccountName }
-if ($IsStorageAccountDomainJoined) {
-	Write-Log "Storage account $StorageAccountName is already domain joined."
-	return
-}
-
-if ($IdentityServiceProvider -eq 'ADDS') {
+	$IsStorageAccountDomainJoined = Get-ADObject -Filter 'ObjectClass -eq "Computer"' | Where-Object { $_.Name -eq $StorageAccountName }
+	if ($IsStorageAccountDomainJoined) {
+		Write-Log "Storage account $StorageAccountName is already domain joined."
+		return
+	}
 	if ( $CreateNewOU -eq 'true') {
 		Write-Log "Creating AD Organizational unit $OUName'"
 		Get-ADOrganizationalUnit -Filter 'Name -like $OUName'
@@ -109,20 +106,22 @@ if ($IdentityServiceProvider -eq 'ADDS') {
 	}
 }
 
-Write-Log "Domain joining storage account $StorageAccountName in Resource group $StorageAccountRG"
+Write-Log "Connecting to managed identity account"
 # Add-AzAccount -Environment $AzureCloudEnvironment -identity
 Connect-AzAccount -Identity -AccountId $ClientId
 
 Write-Log "Setting Azure subscription to $SubscriptionId"
 Select-AzSubscription -SubscriptionId $SubscriptionId
 
-
-if ( $CustomOuPath -eq 'true') {
-	Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitDistinguishedName $OUName -OverwriteExistingADObject
-	Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to custom OU path $OUName"
-} else {
-	Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitName $OUName -OverwriteExistingADObject
-	Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to default OU path $OUName"
+if ($IdentityServiceProvider -eq 'ADDS') {
+	Write-Log "Domain joining storage account $StorageAccountName in Resource group $StorageAccountRG"
+	if ( $CustomOuPath -eq 'true') {
+		Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitDistinguishedName $OUName -OverwriteExistingADObject
+		Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to custom OU path $OUName"
+	} else {
+		Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitName $OUName -OverwriteExistingADObject
+		Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to default OU path $OUName"
+	}
 }
 
 ## Setting default permissions 
