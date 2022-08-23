@@ -17,7 +17,7 @@ function Write-Log {
             $Message = "[ERROR] $Message"
         }
         
-        Add-Content -Value "$DateTime - $Invocation - $Message" -Path "$([environment]::GetEnvironmentVariable('TEMP', 'Machine'))\ScriptLog.log"
+        Add-Content -Value "$DateTime - $Invocation - $Message" -Path "$([environment]::GetEnvironmentVariable('TEMP', 'Machine'))\ManualDscStorageScriptsLog.log"
     }
     catch {
         throw [System.Exception]::new("Some error occurred while writing to log file with message: $Message", $PSItem.Exception)
