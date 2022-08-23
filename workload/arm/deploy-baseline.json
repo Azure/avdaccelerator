@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.4.1272.37030",
-      "templateHash": "2042738955405667593"
+      "templateHash": "10949353561177825390"
     }
   },
   "parameters": {
@@ -10521,7 +10521,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.4.1272.37030",
-              "templateHash": "13259903099494472158"
+              "templateHash": "14263198684163198318"
             }
           },
           "parameters": {
@@ -17418,7 +17418,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.4.1272.37030",
-                      "templateHash": "17646197042882224412"
+                      "templateHash": "3746450410864065851"
                     }
                   },
                   "parameters": {
@@ -17442,7 +17442,7 @@
                     {
                       "type": "Microsoft.Compute/virtualMachines/extensions",
                       "apiVersion": "2021-07-01",
-                      "name": "[format('{0}/addAzureFilesToDomainScript', parameters('name'))]",
+                      "name": "[format('{0}/dscStorageScript', parameters('name'))]",
                       "location": "[parameters('location')]",
                       "properties": {
                         "publisher": "Microsoft.Compute",
