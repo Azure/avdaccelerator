@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "13311758684703351753"
+      "templateHash": "8067494995644246269"
     }
   },
   "parameters": {
@@ -17596,7 +17596,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "13456979041828018399"
+              "templateHash": "9454307859897716106"
             }
           },
           "parameters": {
@@ -17868,7 +17868,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "11408258689728406843"
+                      "templateHash": "17207477688274496445"
                     }
                   },
                   "parameters": {
@@ -17968,7 +17968,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.9.1.41621",
-                              "templateHash": "16393297973013496057"
+                              "templateHash": "9983666150523563673"
                             }
                           },
                           "parameters": {
@@ -17996,7 +17996,7 @@
                               "type": "string",
                               "defaultValue": "Aligned",
                               "metadata": {
-                                "description": "Optional. SKU of the availability set.\r\n- Use \\'Aligned\\' for virtual machines with managed disks\r\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\r\n"
+                                "description": "Optional. SKU of the availability set.\n- Use \\'Aligned\\' for virtual machines with managed disks\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\n"
                               }
                             },
                             "proximityPlacementGroupId": {
