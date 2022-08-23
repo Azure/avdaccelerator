@@ -6,56 +6,60 @@
         This script will be run on a domain joined session host under domain admin credentials.
 #>
 
-    param
-    (    
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $StorageAccountName,
+param
+(    
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $StorageAccountName,
 
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $StorageAccountRG,
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $StorageAccountRG,
 
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $ShareName,
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $ShareName,
 
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $DomainName,
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $DomainName,
 
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $CustomOuPath,
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $CustomOuPath,
 
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $AzureCloudEnvironment,
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $IdentityServiceProvider,
 
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $SubscriptionId,
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $AzureCloudEnvironment,
 
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $ClientId,
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $SubscriptionId,
 
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $OUName,
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $ClientId,
 
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $CreateNewOU,
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $OUName,
 
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $DomainAdminUserName,
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $CreateNewOU,
+
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $DomainAdminUserName,
 	
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $DomainAdminUserPassword
-    )
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $DomainAdminUserPassword
+)
 
 
 Configuration DomainJoinFileShare
@@ -81,6 +85,10 @@ Configuration DomainJoinFileShare
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $CustomOuPath,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $IdentityServiceProvider,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -113,8 +121,8 @@ Configuration DomainJoinFileShare
 
     # Import the module that contains the File resource.
     Import-DscResource -ModuleName PsDesiredStateConfiguration
-$secStringPassword = ConvertTo-SecureString $DomainAdminUserPassword -AsPlainText -Force
-$DomainAdminCred = New-Object System.Management.Automation.PSCredential ($DomainAdminUserName, $secStringPassword)
+    $secStringPassword = ConvertTo-SecureString $DomainAdminUserPassword -AsPlainText -Force
+    $DomainAdminCred = New-Object System.Management.Automation.PSCredential ($DomainAdminUserName, $secStringPassword)
 
     $ErrorActionPreference = 'Stop'
     
@@ -123,26 +131,24 @@ $DomainAdminCred = New-Object System.Management.Automation.PSCredential ($Domain
     
     Node localhost
     {
-        LocalConfigurationManager
-        {
+        LocalConfigurationManager {
             RebootNodeIfNeeded = $true
-            ConfigurationMode = "ApplyOnly"
-		DebugMode = "All" 
+            ConfigurationMode  = "ApplyOnly"
+            DebugMode          = "All" 
         }
 
-        Script DomainJoinStorage
-        {
+        Script DomainJoinStorage {
             # TestScript runs first and if it returns false, then SetScript runs
-            GetScript = {
-                return @{'Result' = ''}
+            GetScript            = {
+                return @{'Result' = '' }
             }
-            SetScript = {
+            SetScript            = {
                 . (Join-Path $using:ScriptPath "Logger.ps1")
                 try {
-                        Write-Log "DSC DomainJoinStorage SetScript Domain joining storage account $Using:StorageAccountName"
-                        & "$using:ScriptPath\Script-DomainJoinStorage.ps1" -StorageAccountName $Using:StorageAccountName -StorageAccountRG $Using:StorageAccountRG -SubscriptionId $Using:SubscriptionId -ClientId $Using:ClientId -ShareName $Using:ShareName -DomainName $Using:DomainName -AzureCloudEnvironment $Using:AzureCloudEnvironment -CustomOuPath $CustomOuPath -OUName $Using:OUName -CreateNewOU $Using:CreateNewOU
+                    Write-Log "DSC DomainJoinStorage SetScript Domain joining storage account $Using:StorageAccountName"
+                    & "$using:ScriptPath\Script-DomainJoinStorage.ps1" -StorageAccountName $Using:StorageAccountName -StorageAccountRG $Using:StorageAccountRG -SubscriptionId $Using:SubscriptionId -ClientId $Using:ClientId -ShareName $Using:ShareName -DomainName $Using:DomainName -IdentityServiceProvider $Using:IdentityServiceProvider -AzureCloudEnvironment $Using:AzureCloudEnvironment -CustomOuPath $Using:CustomOuPath -OUName $Using:OUName -CreateNewOU $Using:CreateNewOU
 
-                        Write-Log "Successfully domain joined Storage account"
+                    Write-Log "Successfully domain joined Storage account"
                 }
                 catch {
                     $ErrMsg = $PSItem | Format-List -Force | Out-String
@@ -150,7 +156,7 @@ $DomainAdminCred = New-Object System.Management.Automation.PSCredential ($Domain
                     throw [System.Exception]::new("Some error occurred in DSC DomainJoinStorage SetScript: $ErrMsg", $PSItem.Exception)
                 }
             }
-            TestScript = {
+            TestScript           = {
                 . (Join-Path $using:ScriptPath "Logger.ps1")
 
                 try {
@@ -161,7 +167,7 @@ $DomainAdminCred = New-Object System.Management.Automation.PSCredential ($Domain
                     }
                     else {
                         Import-Module activedirectory
-                        $IsStorageAccountDomainJoined = Get-ADObject -Filter 'ObjectClass -eq "Computer"' | Where-Object {$_.Name -eq $Using:StorageAccountName}
+                        $IsStorageAccountDomainJoined = Get-ADObject -Filter 'ObjectClass -eq "Computer"' | Where-Object { $_.Name -eq $Using:StorageAccountName }
                         if ($IsStorageAccountDomainJoined) {
                             Write-Log "Storage account $Using:StorageAccountName is already domain joined."
                             return $True
@@ -179,7 +185,7 @@ $DomainAdminCred = New-Object System.Management.Automation.PSCredential ($Domain
                 }
             }
 		
-            	PsDscRunAsCredential = $DomainAdminCred
+            PsDscRunAsCredential = $DomainAdminCred
         }
     }
 }
@@ -187,11 +193,11 @@ $DomainAdminCred = New-Object System.Management.Automation.PSCredential ($Domain
 $config = @{
     AllNodes = @(
         @{
-            NodeName = 'localhost';
+            NodeName                    = 'localhost';
             PSDscAllowPlainTextPassword = $true
-            PsDscAllowDomainUser = $true
-         }
+            PsDscAllowDomainUser        = $true
+        }
     )
 }
 
-DomainJoinFileShare -ConfigurationData $config -StorageAccountName $StorageAccountName -StorageAccountRG $StorageAccountRG -SubscriptionId $SubscriptionId -ShareName $ShareName -DomainName $DomainName -AzureCloudEnvironment $AzureCloudEnvironment -CustomOuPath $CustomOuPath -OUName $OUName -CreateNewOU $CreateNewOU -DomainAdminUserName $DomainAdminUserName -DomainAdminUserPassword $DomainAdminUserPassword -ClientId $ClientId -Verbose; 
+DomainJoinFileShare -ConfigurationData $config -StorageAccountName $StorageAccountName -StorageAccountRG $StorageAccountRG -SubscriptionId $SubscriptionId -ShareName $ShareName -DomainName $DomainName -IdentityServiceProvider $IdentityServiceProvider -AzureCloudEnvironment $AzureCloudEnvironment -CustomOuPath $CustomOuPath -OUName $OUName -CreateNewOU $CreateNewOU -DomainAdminUserName $DomainAdminUserName -DomainAdminUserPassword $DomainAdminUserPassword -ClientId $ClientId -Verbose;
