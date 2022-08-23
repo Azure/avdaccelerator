@@ -148,7 +148,7 @@ Configuration DomainJoinFileShare
                     Write-Log "DSC DomainJoinStorage SetScript Domain joining storage account $Using:StorageAccountName"
                     & "$using:ScriptPath\Script-DomainJoinStorage.ps1" -StorageAccountName $Using:StorageAccountName -StorageAccountRG $Using:StorageAccountRG -SubscriptionId $Using:SubscriptionId -ClientId $Using:ClientId -ShareName $Using:ShareName -DomainName $Using:DomainName -IdentityServiceProvider $Using:IdentityServiceProvider -AzureCloudEnvironment $Using:AzureCloudEnvironment -CustomOuPath $Using:CustomOuPath -OUName $Using:OUName -CreateNewOU $Using:CreateNewOU
 
-                    Write-Log "Successfully domain joined Storage account"
+                    Write-Log "Successfully domain joined and/or NTFS permission set on Storage account"
                 }
                 catch {
                     $ErrMsg = $PSItem | Format-List -Force | Out-String
