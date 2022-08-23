@@ -5,8 +5,8 @@ param file string
 @secure()
 param ScriptArguments string
 
-resource addAzureFilesToDomainScript 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = {
-  name: '${name}/addAzureFilesToDomainScript'
+resource dscStorageScript 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = {
+  name: '${name}/dscStorageScript'
   location: location
   properties: {
     publisher: 'Microsoft.Compute'
