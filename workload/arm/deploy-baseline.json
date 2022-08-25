@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "8067494995644246269"
+      "templateHash": "13453980346843110809"
     }
   },
   "parameters": {
@@ -709,7 +709,7 @@
     "avdNetworksecurityGroupName": "[if(parameters('avdUseCustomNaming'), parameters('avdNetworksecurityGroupCustomName'), format('nsg-avd-{0}-001', variables('avdComputeStorageResourcesNamingStandard')))]",
     "avdRouteTableName": "[if(parameters('avdUseCustomNaming'), parameters('avdRouteTableCustomName'), format('route-avd-{0}-001', variables('avdComputeStorageResourcesNamingStandard')))]",
     "avdApplicationSecurityGroupName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationSecurityGroupCustomName'), format('asg-avd-{0}-001', variables('avdComputeStorageResourcesNamingStandard')))]",
-    "avdVnetworkPeeringName": "[format('peering-avd-{0}-{1}', variables('avdComputeStorageResourcesNamingStandard'), variables('avdNamingUniqueStringSixChar'))]",
+    "avdVnetworkPeeringName": "[format('peer-avd-{0}-{1}', variables('avdComputeStorageResourcesNamingStandard'), variables('avdNamingUniqueStringSixChar'))]",
     "avdWorkSpaceName": "[if(parameters('avdUseCustomNaming'), parameters('avdWorkSpaceCustomName'), format('vdws-{0}-001', variables('avdManagementPlaneNamingStandard')))]",
     "avdHostPoolName": "[if(parameters('avdUseCustomNaming'), parameters('avdHostPoolCustomName'), format('vdpool-{0}-001', variables('avdManagementPlaneNamingStandard')))]",
     "avdApplicationGroupNameDesktop": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomNameDesktop'), format('vdag-desktop-{0}-001', variables('avdManagementPlaneNamingStandard')))]",
@@ -749,7 +749,7 @@
         "version": "latest"
       }
     },
-    "baseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
+    "baseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/nttdata-testing/workload/",
     "fslogixScriptUri": "[format('{0}scripts/Set-FSLogixRegKeys.ps1', variables('baseScriptUri'))]",
     "fsLogixScript": "./Set-FSLogixRegKeys.ps1",
     "fslogixSharePath": "[format('\\\\{0}.file.{1}\\{2}', variables('avdFslogixStorageName'), environment().suffixes.storage, variables('avdFslogixProfileContainerFileShareName'))]",
@@ -757,7 +757,7 @@
     "avdAgentPackageLocation": "[format('https://wvdportalstorageblob.blob.{0}/galleryartifacts/Configuration_01-20-2022.zip', environment().suffixes.storage)]",
     "storageAccountContributorRoleId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
     "readerRoleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
-    "dscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip",
+    "dscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/nttdata-testing/workload/scripts/DSCStorageScripts.zip",
     "storageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-Storage-Scripts.ps1', variables('baseScriptUri'))]",
     "storageToDomainScript": "./Manual-DSC-Storage-Scripts.ps1",
     "ouStgPath": "[if(not(empty(parameters('storageOuPath'))), format('\"{0}\"', parameters('storageOuPath')), format('\"{0}\"', variables('defaultStorageOuPath')))]",
@@ -17596,7 +17596,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "9454307859897716106"
+              "templateHash": "13456979041828018399"
             }
           },
           "parameters": {
@@ -17868,7 +17868,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "17207477688274496445"
+                      "templateHash": "11408258689728406843"
                     }
                   },
                   "parameters": {
@@ -17968,7 +17968,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.9.1.41621",
-                              "templateHash": "9983666150523563673"
+                              "templateHash": "16393297973013496057"
                             }
                           },
                           "parameters": {
@@ -17996,7 +17996,7 @@
                               "type": "string",
                               "defaultValue": "Aligned",
                               "metadata": {
-                                "description": "Optional. SKU of the availability set.\n- Use \\'Aligned\\' for virtual machines with managed disks\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\n"
+                                "description": "Optional. SKU of the availability set.\r\n- Use \\'Aligned\\' for virtual machines with managed disks\r\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\r\n"
                               }
                             },
                             "proximityPlacementGroupId": {
