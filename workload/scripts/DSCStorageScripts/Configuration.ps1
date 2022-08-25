@@ -119,6 +119,12 @@ Configuration DomainJoinFileShare
         [string] $DomainAdminUserPassword
     )
 
+    Write-Host "Forcing group policy updates"
+    gpupdate /force
+
+    Write-Host "Waiting for domain policies to be applied (2 minutes)"
+    Start-Sleep -Seconds 120
+
     # Import the module that contains the File resource.
     Import-DscResource -ModuleName PsDesiredStateConfiguration
     $secStringPassword = ConvertTo-SecureString $DomainAdminUserPassword -AsPlainText -Force
