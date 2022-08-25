@@ -56,6 +56,12 @@ param (
         [string] $DomainAdminUserPassword
 
 )
+Write-Host "Forcing group policy updates"
+gpupdate /force
+
+Write-Host "Waiting for domain policies to be applied (2 minutes)"
+Start-Sleep -Seconds 120
+
 Write-Host "Downloading the DSCStorageScripts.zip from $DscPath"
 $DscArhive="DSCStorageScripts.zip"
 $appName = 'DSCStorageScripts'
