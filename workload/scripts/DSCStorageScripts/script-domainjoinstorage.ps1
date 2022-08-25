@@ -55,10 +55,10 @@ $ErrorActionPreference = "Stop"
 
 . (Join-Path $ScriptPath "Logger.ps1")
 
-Write-Host "Forcing group policy updates"
+Write-Log "Forcing group policy updates"
 gpupdate /force
 
-Write-Host "Waiting for domain policies to be applied (2 minutes)"
+Write-Log "Waiting for domain policies to be applied (2 minutes)"
 Start-Sleep -Seconds 120
 
 
