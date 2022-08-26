@@ -522,7 +522,7 @@
                                 {
                                     "name": "avdEnterApplication",
                                     "type": "Microsoft.Common.TextBox",
-                                    "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.startVmOnConnect, true)]",
+                                    "visible": true,
                                     "label": "AVD enterprise application ObjectID",
                                     "defaultValue": "",
                                     "toolTip": "Provide the ObjectID of the enterprise application Azure Virtual Desktop (ApplicationID: 9cdead84-a844-4324-93f2-b2e6bb768d07).",
