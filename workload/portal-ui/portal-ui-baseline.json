@@ -1811,7 +1811,7 @@
                 "avdStartVmOnConnect": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.startVmOnConnect, false)]",
                 "avdDeployScalingPlan": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.avdScalingPlan, false)]",
                 "createStartVmOnConnectCustomRole": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.startVmOnConnect, true), steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.createVmRole, false)]",
-                "avdEnterpriseAppObjectId": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.createVmRole, true), steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.avdEnterApplication.objectId, 'none')]",
+                "avdEnterpriseAppObjectId": "[steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.avdEnterApplication.objectId]",
                 "avdUseAvailabilityZones": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdSessionHostsAvailabilitySettings]",
                 "avdDeploySessionHostsCount": "[if(equals(steps('avdSessionHosts').avdDeploySessionHosts, true), steps('avdSessionHosts').avdSessionHostsSettingsSection.avdSessionHostsCount, 1)]",
                 "useSharedImage": "[if(equals(steps('avdSessionHosts').avdDeploySessionHosts, true), steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsImageSource, false)]",
