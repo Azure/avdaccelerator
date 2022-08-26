@@ -24,8 +24,20 @@ param avdApplicationGroupNameDesktop string
 @description('Optional. AVD deploy remote app application group.')
 param avdDeployRappGroup bool
 
+@description('Optional. AVD deploy scaling plan.')
+param avdDeployScalingPlan bool
+
 @description('AVD Host Pool Name')
 param avdHostPoolName string
+
+@description('AVD scaling plan name')
+param avdScalingPlanName string
+
+@description('AVD scaling plan schedules')
+param avdScalingPlanSchedules array
+
+@description('AVD workspace name.')
+param avdWorkSpaceName string
 
 @description('Optional. AVD host pool Custom RDP properties.')
 param avdHostPoolRdpProperties string
@@ -59,6 +71,9 @@ param avdStartVmOnConnect bool
 
 @description('Required. Tags to be applied to resources')
 param avdTags object
+
+@description('Required. Tag to exclude resources from scaling plan. ')
+param avdScalingPlanExclusionTag string
 
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
@@ -121,8 +136,53 @@ module avdApplicationGroups '../../../carml/1.2.0/Microsoft.DesktopVirtualizatio
   ]
 }]
 
+// Workspace.
+module avdWorkSpace '../../../carml/1.2.0/Microsoft.DesktopVirtualization/workspaces/deploy.bicep' = {
+  scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
+  name: 'Deploy-AVD-WorkSpace-${time}'
+  params: {
+      name: avdWorkSpaceName
+      location: avdManagementPlaneLocation
+      appGroupResourceIds: avdDeployRappGroup ? [
+        '/subscriptions/${avdWorkloadSubsId}/resourceGroups/${avdServiceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${avdApplicationGroupNameDesktop}'
+        '/subscriptions/${avdWorkloadSubsId}/resourceGroups/${avdServiceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${avdApplicationGroupNameRapp}'
+      ]: [
+        '/subscriptions/${avdWorkloadSubsId}/resourceGroups/${avdServiceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${avdApplicationGroupNameDesktop}'
+      ]
+      tags: avdTags
+  }
+  dependsOn: [
+    avdHostPool
+    avdApplicationGroups
+  ]
+}
+
+// Scaling plan.
+module avdScalingPlan '../../../carml/1.2.0/Microsoft.DesktopVirtualization/scalingplans/deploy.bicep' = if (avdDeployScalingPlan && (avdHostPoolType == 'Pooled'))  {
+  scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
+  name: 'Deploy-AVD-ScalingPlan-${time}'
+  params: {
+      name: avdScalingPlanName
+      location: avdManagementPlaneLocation
+      hostPoolType: 'Pooled' //avdHostPoolType
+      exclusionTag: avdScalingPlanExclusionTag
+      schedules: avdScalingPlanSchedules
+      hostPoolReferences: [
+        {
+        hostPoolArmPath: '/subscriptions/${avdWorkloadSubsId}/resourceGroups/${avdServiceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${avdHostPoolName}'
+        scalingPlanEnabled: true
+        }
+      ]
+      tags: avdTags
+  }
+  dependsOn: [
+    avdHostPool
+    avdApplicationGroups
+    avdWorkSpace
+  ]
+}
+
 // =========== //
 // Outputs //
 // =========== //
-output avdAppGroupsArray array = [for (resourceId, i) in finalApplicationGroups: avdApplicationGroups[i].outputs.resourceId]
 output hostPooltoken string = avdHostPool.outputs.hostPoolRestrationInfo.token
