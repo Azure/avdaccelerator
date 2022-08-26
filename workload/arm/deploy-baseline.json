@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "17222857033606583977"
+      "templateHash": "10300848916829758423"
     }
   },
   "parameters": {
@@ -851,6 +851,7 @@
     "avdAgentPackageLocation": "[format('https://wvdportalstorageblob.blob.{0}/galleryartifacts/Configuration_01-20-2022.zip', environment().suffixes.storage)]",
     "storageAccountContributorRoleId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
     "readerRoleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
+    "avdVmPowerStateContributor": "40c5ff49-9181-41f8-ae61-143b0e78555e",
     "dscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/nttdata-testing/workload/scripts/DSCStorageScripts.zip",
     "storageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-Storage-Scripts.ps1', variables('baseScriptUri'))]",
     "storageToDomainScript": "./Manual-DSC-Storage-Scripts.ps1",
@@ -7940,6 +7941,9 @@
           "storageAccountContributorRoleId": {
             "value": "[variables('storageAccountContributorRoleId')]"
           },
+          "avdVmPowerStateContributor": {
+            "value": "[variables('avdVmPowerStateContributor')]"
+          },
           "createAvdFslogixDeployment": {
             "value": "[if(parameters('createAvdFslogixDeployment'), true(), false())]"
           },
@@ -7954,7 +7958,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "5150726828237014251"
+              "templateHash": "17939954176254602535"
             }
           },
           "parameters": {
@@ -8034,6 +8038,12 @@
               "type": "string",
               "metadata": {
                 "description": "GUID for built in role ID of Storage Account Contributor."
+              }
+            },
+            "avdVmPowerStateContributor": {
+              "type": "string",
+              "metadata": {
+                "description": "GUID for built in role ID of Desktop Virtualization Power On Off Contributor."
               }
             },
             "createAvdFslogixDeployment": {
@@ -9927,7 +9937,7 @@
                     "value": "[parameters('avdManagementPlaneLocation')]"
                   },
                   "roleDefinitionIdOrName": {
-                    "value": "Desktop Virtualization Power On Off Contributor"
+                    "value": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/roleDefinitions/{1}', parameters('avdWorkloadSubsId'), parameters('avdVmPowerStateContributor'))]"
                   },
                   "principalId": {
                     "value": "[parameters('avdEnterpriseAppObjectId')]"

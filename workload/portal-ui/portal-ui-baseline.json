@@ -457,9 +457,30 @@
                             "label": "Session host scaling options",
                             "elements": [
                                 {
+                                    "name": "avdScalingPlan",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
+                                    "label": "AVD scaling plan",
+                                    "defaultValue": "Yes (Recommended)",
+                                    "toolTip": "Will automatically manage session host power state based on usage and schedules (weekdays and weekend schedules will be created). ",
+                                    "constraints": {
+                                        "required": false,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes (Recommended)",
+                                                "value": true
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": false
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
                                     "name": "startVmOnConnect",
                                     "type": "Microsoft.Common.OptionsGroup",
-                                    "visible": true,
+                                    "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Personal')]",
                                     "label": "Start VM on connect",
                                     "defaultValue": "Yes (Recommended)",
                                     "toolTip": "If powered off, start VM once user connects. ",
@@ -1787,7 +1808,8 @@
                 "vNetworkGatewayOnHub": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdHubVnetPeering.avdHubVnetGateway, false)]",
                 "existingVnetSubnetResourceId": "[if(equals(steps('avdNetwork').createAvdVnet, false), steps('avdNetwork').avdVnetSubnetSelectorName, 'none')]",
                 "avdDeploySessionHosts": "[steps('avdSessionHosts').avdDeploySessionHosts]",
-                "avdStartVmOnConnect": "[steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.startVmOnConnect]",
+                "avdStartVmOnConnect": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.startVmOnConnect, false)]",
+                "avdDeployScalingPlan": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.avdScalingPlan, false)]",
                 "createStartVmOnConnectCustomRole": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.startVmOnConnect, true), steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.createVmRole, false)]",
                 "avdEnterpriseAppObjectId": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.createVmRole, true), steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.avdEnterApplication.objectId, 'none')]",
                 "avdUseAvailabilityZones": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdSessionHostsAvailabilitySettings]",
