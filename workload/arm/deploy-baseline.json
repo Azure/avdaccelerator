@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "1849710941872241296"
+      "templateHash": "11242906826463160500"
     }
   },
   "parameters": {
@@ -900,7 +900,7 @@
         "version": "latest"
       }
     },
-    "baseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/nttdata-testing/workload/",
+    "baseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
     "fslogixScriptUri": "[format('{0}scripts/Set-FSLogixRegKeys.ps1', variables('baseScriptUri'))]",
     "fsLogixScript": "./Set-FSLogixRegKeys.ps1",
     "fslogixSharePath": "[format('\\\\{0}.file.{1}\\{2}', variables('avdFslogixStorageName'), environment().suffixes.storage, variables('avdFslogixProfileContainerFileShareName'))]",
@@ -909,7 +909,7 @@
     "storageAccountContributorRoleId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
     "readerRoleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
     "avdVmPowerStateContributor": "40c5ff49-9181-41f8-ae61-143b0e78555e",
-    "dscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/nttdata-testing/workload/scripts/DSCStorageScripts.zip",
+    "dscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip",
     "storageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-Storage-Scripts.ps1', variables('baseScriptUri'))]",
     "storageToDomainScript": "./Manual-DSC-Storage-Scripts.ps1",
     "ouStgPath": "[if(not(empty(parameters('storageOuPath'))), format('\"{0}\"', parameters('storageOuPath')), format('\"{0}\"', variables('defaultStorageOuPath')))]",
@@ -19217,7 +19217,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "12250497150788419020"
+              "templateHash": "13153949641919731086"
             }
           },
           "parameters": {
@@ -19495,7 +19495,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "17207477688274496445"
+                      "templateHash": "11408258689728406843"
                     }
                   },
                   "parameters": {
@@ -19595,7 +19595,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.9.1.41621",
-                              "templateHash": "9983666150523563673"
+                              "templateHash": "16393297973013496057"
                             }
                           },
                           "parameters": {
@@ -19623,7 +19623,7 @@
                               "type": "string",
                               "defaultValue": "Aligned",
                               "metadata": {
-                                "description": "Optional. SKU of the availability set.\n- Use \\'Aligned\\' for virtual machines with managed disks\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\n"
+                                "description": "Optional. SKU of the availability set.\r\n- Use \\'Aligned\\' for virtual machines with managed disks\r\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\r\n"
                               }
                             },
                             "proximityPlacementGroupId": {

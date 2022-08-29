@@ -587,7 +587,7 @@ var marketPlaceGalleryWindows = {
     }
 }
 
-var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/nttdata-testing/workload/'
+var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var fslogixScriptUri = '${baseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
 var fsLogixScript = './Set-FSLogixRegKeys.ps1'
 var fslogixSharePath = '\\\\${avdFslogixStorageName}.file.${environment().suffixes.storage}\\${avdFslogixProfileContainerFileShareName}'
@@ -596,7 +596,7 @@ var avdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment()
 var storageAccountContributorRoleId = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
 var readerRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 var avdVmPowerStateContributor = '40c5ff49-9181-41f8-ae61-143b0e78555e'
-var dscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/nttdata-testing/workload/scripts/DSCStorageScripts.zip'
+var dscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip'
 var storageToDomainScriptUri = '${baseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
 var storageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
 var ouStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${defaultStorageOuPath}"'
