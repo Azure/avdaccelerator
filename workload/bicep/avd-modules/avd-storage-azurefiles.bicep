@@ -9,6 +9,9 @@ param avdComputeObjectsRgName string
 @description('Optional. AVD workload subscription ID, multiple subscriptions scenario.')
 param avdWorkloadSubsId string
 
+@description('Required. Virtual machine time zone.')
+param avdTimeZone string
+
 @description('Resource Group Name for Azure Files.')
 param avdStorageObjectsRgName string
 
@@ -183,6 +186,7 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
     params: {
         name: managementVmName
         location: avdSessionHostLocation
+        timeZone: avdTimeZone
         systemAssignedIdentity: false
         userAssignedIdentities: {
             '${fslogixManagedIdentityResourceId}': {}
