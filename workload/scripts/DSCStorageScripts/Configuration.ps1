@@ -118,7 +118,7 @@ Configuration DomainJoinFileShare
         [ValidateNotNullOrEmpty()]
         [string] $DomainAdminUserPassword
     )
-
+    
     # Import the module that contains the File resource.
     Import-DscResource -ModuleName PsDesiredStateConfiguration
     $secStringPassword = ConvertTo-SecureString $DomainAdminUserPassword -AsPlainText -Force
