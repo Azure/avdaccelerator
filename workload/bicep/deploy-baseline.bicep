@@ -70,8 +70,8 @@ param avdPersonalAssignType string = 'Automatic'
 @description('Optional. AVD host pool load balacing type. (Default: BreadthFirst)')
 param avdHostPoolLoadBalancerType string = 'BreadthFirst'
 
-@description('Optional. AVD host pool maximum number of user sessions per session host. (Default: 15)')
-param avhHostPoolMaxSessions int = 15
+@description('Optional. AVD host pool maximum number of user sessions per session host. (Default: 5)')
+param avhHostPoolMaxSessions int = 5
 
 @description('Optional. AVD host pool start VM on Connect. (Default: true)')
 param avdStartVmOnConnect bool = true
