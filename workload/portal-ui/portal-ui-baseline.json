@@ -362,7 +362,7 @@
                                     "name": "loadBalancerType",
                                     "type": "Microsoft.Common.DropDown",
                                     "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
-                                    "label": "Load balancer",
+                                    "label": "Load balancing algorithm",
                                     "defaultValue": "BreadthFirst",
                                     "multiLine": true,
                                     "toolTip": "Breadth-first load balancing distributes new user sessions across all available session hosts in the host pool. Depth-first load balancing distributes new user sessions to an available session host with the highest number of connections but has not reached its maximum session limit threshold.",
@@ -386,7 +386,7 @@
                                     "name": "maxSessions",
                                     "type": "Microsoft.Common.TextBox",
                                     "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
-                                    "label": "Max sessions",
+                                    "label": "Max session limit",
                                     "defaultValue": "5",
                                     "toolTip": "The maximum number of users that have concurrent sessions on a session host. When setting a host pool to have depth first load balancing or planning to use Autoscaling, you must set an appropriate max session limit according to the configuration of your deployment and capacity of your VMs.",
                                     "constraints": {
