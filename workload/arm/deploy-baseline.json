@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "10300848916829758423"
+      "templateHash": "1849710941872241296"
     }
   },
   "parameters": {
@@ -134,9 +134,9 @@
     },
     "avhHostPoolMaxSessions": {
       "type": "int",
-      "defaultValue": 15,
+      "defaultValue": 5,
       "metadata": {
-        "description": "Optional. AVD host pool maximum number of user sessions per session host. (Default: 15)"
+        "description": "Optional. AVD host pool maximum number of user sessions per session host. (Default: 5)"
       }
     },
     "avdStartVmOnConnect": {
@@ -468,9 +468,9 @@
     },
     "avdScalingPlanCustomName": {
       "type": "string",
-      "defaultValue": "scal-use2-app1-001",
+      "defaultValue": "vdscaling-use2-app1-001",
       "metadata": {
-        "description": "Optional. AVD scaling plan custom name. (Default: scal-use2-app1-001)"
+        "description": "Optional. AVD scaling plan custom name. (Default: vdscaling-use2-app1-001)"
       },
       "maxLength": 64
     },
@@ -712,6 +712,63 @@
       "westus3": "wus3",
       "swedencentral": "sec"
     },
+    "timeZones": {
+      "australiacentral": "AUS Eastern Standard Time",
+      "australiacentral2": "AUS Eastern Standard Time",
+      "australiaeast": "AUS Eastern Standard Time",
+      "australiasoutheast": "AUS Eastern Standard Time",
+      "brazilsouth": "E. South America Standard Time",
+      "brazilsoutheast": "E. South America Standard Time",
+      "canadacentral": "Eastern Standard Time",
+      "canadaeast": "Eastern Standard Time",
+      "centralindia": "India Standard Time",
+      "centralus": "Central Standard Time",
+      "chinaeast": "China Standard Time",
+      "chinaeast2": "China Standard Time",
+      "chinanorth": "China Standard Time",
+      "chinanorth2": "China Standard Time",
+      "eastasia": "China Standard Time",
+      "eastus": "Eastern Standard Time",
+      "eastus2": "Eastern Standard Time",
+      "francecentral": "Central Europe Standard Time",
+      "francesouth": "Central Europe Standard Time",
+      "germanynorth": "Central Europe Standard Time",
+      "germanywestcentral": "Central Europe Standard Time",
+      "japaneast": "Tokyo Standard Time",
+      "japanwest": "Tokyo Standard Time",
+      "jioindiacentral": "India Standard Time",
+      "jioindiawest": "India Standard Time",
+      "koreacentral": "Korea Standard Time",
+      "koreasouth": "Korea Standard Time",
+      "northcentralus": "Central Standard Time",
+      "northeurope": "GMT Standard Time",
+      "norwayeast": "Central Europe Standard Time",
+      "norwaywest": "Central Europe Standard Time",
+      "southafricanorth": "South Africa Standard Time",
+      "southafricawest": "South Africa Standard Time",
+      "southcentralus": "Central Standard Time",
+      "southindia": "India Standard Time",
+      "southeastasia": "Singapore Standard Time",
+      "swedencentral": "Central Europe Standard Time",
+      "switzerlandnorth": "Central Europe Standard Time",
+      "switzerlandwest": "Central Europe Standard Time",
+      "uaecentral": "Arabian Standard Time",
+      "uaenorth": "Arabian Standard Time",
+      "uksouth": "GMT Standard Time",
+      "ukwest": "GMT Standard Time",
+      "usdodcentral": "Central Standard Time",
+      "usdodeast": "Eastern Standard Time",
+      "usgovarizona": "Mountain Standard Time",
+      "usgoviowa": "Central Standard Time",
+      "usgovtexas": "Central Standard Time",
+      "usgovvirginia": "Eastern Standard Time",
+      "westcentralus": "Mountain Standard Time",
+      "westeurope": "Central Europe Standard Time",
+      "westindia": "India Standard Time",
+      "westus": "Pacific Standard Time",
+      "westus2": "Pacific Standard Time",
+      "westus3": "Mountain Standard Time"
+    },
     "avdNamingUniqueStringSixChar": "[take(format('{0}', uniqueString(parameters('avdWorkloadSubsId'), variables('deploymentPrefixLowercase'), parameters('time'))), 6)]",
     "avdManagementPlaneNamingStandard": "[format('{0}-{1}', variables('avdManagementPlaneLocationAcronym'), variables('deploymentPrefixLowercase'))]",
     "avdComputeStorageResourcesNamingStandard": "[format('{0}-{1}', variables('avdSessionHostLocationAcronym'), variables('deploymentPrefixLowercase'))]",
@@ -729,7 +786,7 @@
     "avdHostPoolName": "[if(parameters('avdUseCustomNaming'), parameters('avdHostPoolCustomName'), format('vdpool-{0}-001', variables('avdManagementPlaneNamingStandard')))]",
     "avdApplicationGroupNameDesktop": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomNameDesktop'), format('vdag-desktop-{0}-001', variables('avdManagementPlaneNamingStandard')))]",
     "avdApplicationGroupNameRapp": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomNameRapp'), format('vdag-rapp-{0}-001', variables('avdManagementPlaneNamingStandard')))]",
-    "avdScalingPlanName": "[if(parameters('avdUseCustomNaming'), parameters('avdScalingPlanCustomName'), format('scal-{0}-001', variables('avdManagementPlaneNamingStandard')))]",
+    "avdScalingPlanName": "[if(parameters('avdUseCustomNaming'), parameters('avdScalingPlanCustomName'), format('vdscaling-{0}-001', variables('avdManagementPlaneNamingStandard')))]",
     "avdScalingPlanExclusionTag": "[format('Exclude-{0}', variables('avdScalingPlanName'))]",
     "avdScalingPlanWeekdaysScheduleName": "[format('weekdays-{0}', variables('avdManagementPlaneNamingStandard'))]",
     "avdScalingPlanWeekendScheduleName": "[format('weekend-{0}', variables('avdManagementPlaneNamingStandard'))]",
@@ -5662,6 +5719,9 @@
           "avdDeployRappGroup": {
             "value": "[parameters('avdDeployRappGroup')]"
           },
+          "avdTimeZone": {
+            "value": "[variables('timeZones')[parameters('avdSessionHostLocation')]]"
+          },
           "avdHostPoolName": {
             "value": "[variables('avdHostPoolName')]"
           },
@@ -5718,7 +5778,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "4354005603932254480"
+              "templateHash": "17423602604071849236"
             }
           },
           "parameters": {
@@ -5732,6 +5792,12 @@
               "type": "string",
               "metadata": {
                 "description": "Optional. AVD workload subscription ID, multiple subscriptions scenario."
+              }
+            },
+            "avdTimeZone": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Virtual machine time zone."
               }
             },
             "avdIdentityServiceProvider": {
@@ -7467,6 +7533,9 @@
                   },
                   "exclusionTag": {
                     "value": "[parameters('avdScalingPlanExclusionTag')]"
+                  },
+                  "timeZone": {
+                    "value": "[parameters('avdTimeZone')]"
                   },
                   "schedules": {
                     "value": "[parameters('avdScalingPlanSchedules')]"
@@ -11960,6 +12029,9 @@
           "storageToDomainScriptUri": {
             "value": "[variables('storageToDomainScriptUri')]"
           },
+          "avdTimeZone": {
+            "value": "[variables('timeZones')[parameters('avdSessionHostLocation')]]"
+          },
           "avdWrklStoragePrivateEndpointName": {
             "value": "[variables('avdWrklStoragePrivateEndpointName')]"
           },
@@ -12058,7 +12130,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "11386576215513237469"
+              "templateHash": "3266919356575023481"
             }
           },
           "parameters": {
@@ -12072,6 +12144,12 @@
               "type": "string",
               "metadata": {
                 "description": "Optional. AVD workload subscription ID, multiple subscriptions scenario."
+              }
+            },
+            "avdTimeZone": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Virtual machine time zone."
               }
             },
             "avdStorageObjectsRgName": {
@@ -15400,6 +15478,9 @@
                   },
                   "location": {
                     "value": "[parameters('avdSessionHostLocation')]"
+                  },
+                  "timeZone": {
+                    "value": "[parameters('avdTimeZone')]"
                   },
                   "systemAssignedIdentity": {
                     "value": false
@@ -19026,6 +19107,9 @@
           "avdAgentPackageLocation": {
             "value": "[variables('avdAgentPackageLocation')]"
           },
+          "avdTimeZone": {
+            "value": "[variables('timeZones')[parameters('avdSessionHostLocation')]]"
+          },
           "avdApplicationSecurityGroupResourceId": {
             "value": "[if(parameters('createAvdVnet'), format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time'))), '2020-10-01').outputs.avdApplicationSecurityGroupResourceId.value), '')]"
           },
@@ -19133,7 +19217,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "13456979041828018399"
+              "templateHash": "12250497150788419020"
             }
           },
           "parameters": {
@@ -19147,6 +19231,12 @@
               "type": "string",
               "metadata": {
                 "description": "Required. Location where to deploy compute services."
+              }
+            },
+            "avdTimeZone": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Virtual machine time zone."
               }
             },
             "avdSessionHostNamePrefix": {
@@ -19405,7 +19495,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "11408258689728406843"
+                      "templateHash": "17207477688274496445"
                     }
                   },
                   "parameters": {
@@ -19505,7 +19595,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.9.1.41621",
-                              "templateHash": "16393297973013496057"
+                              "templateHash": "9983666150523563673"
                             }
                           },
                           "parameters": {
@@ -19533,7 +19623,7 @@
                               "type": "string",
                               "defaultValue": "Aligned",
                               "metadata": {
-                                "description": "Optional. SKU of the availability set.\r\n- Use \\'Aligned\\' for virtual machines with managed disks\r\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\r\n"
+                                "description": "Optional. SKU of the availability set.\n- Use \\'Aligned\\' for virtual machines with managed disks\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\n"
                               }
                             },
                             "proximityPlacementGroupId": {
@@ -19811,6 +19901,9 @@
                   "avdAgentPackageLocation": {
                     "value": "[parameters('avdAgentPackageLocation')]"
                   },
+                  "avdTimeZone": {
+                    "value": "[parameters('avdTimeZone')]"
+                  },
                   "avdApplicationSecurityGroupResourceId": {
                     "value": "[parameters('avdApplicationSecurityGroupResourceId')]"
                   },
@@ -19915,7 +20008,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "4352291509137025396"
+                      "templateHash": "8804628002490335841"
                     }
                   },
                   "parameters": {
@@ -19929,6 +20022,12 @@
                       "type": "string",
                       "metadata": {
                         "description": "Required. Location where to deploy compute services."
+                      }
+                    },
+                    "avdTimeZone": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Virtual machine time zone."
                       }
                     },
                     "avdSessionHostNamePrefix": {
@@ -20150,6 +20249,9 @@
                           },
                           "location": {
                             "value": "[parameters('avdSessionHostLocation')]"
+                          },
+                          "timeZone": {
+                            "value": "[parameters('avdTimeZone')]"
                           },
                           "userAssignedIdentities": {
                             "value": "[if(parameters('createAvdFslogixDeployment'), createObject(format('{0}', parameters('fslogixManagedIdentityResourceId')), createObject()), createObject())]"
