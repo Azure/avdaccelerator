@@ -387,7 +387,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
                                     "label": "Max sessions",
-                                    "defaultValue": "10",
+                                    "defaultValue": "5",
                                     "toolTip": "The maximum number of users that have concurrent sessions on a session host. When setting a host pool to have depth first load balancing or planning to use Autoscaling, you must set an appropriate max session limit according to the configuration of your deployment and capacity of your VMs.",
                                     "constraints": {
                                         "required": false,
@@ -478,16 +478,6 @@
                                     }
                                 },
                                 {
-                                    "name": "avdScalingPlanInfo",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.avdScalingPlan, 'Yes (Recommended)')]",
-                                    "options": {
-                                        "text": "Session hosts can be excluded from the scaling plan by assigning the tag name Exclude-avdScalingPlanName, if not using custom resource naming and example of default tag name is Exclude-vdscaling-eus2-app1-001.",
-                                        "uri": "https://docs.microsoft.com/en-us/azure/virtual-desktop/autoscale-scenarios#scenario-4-how-do-exclusion-tags-work",
-                                        "style": "Info"
-                                    }
-                                },
-                                {
                                     "name": "startVmOnConnect",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Personal')]",
@@ -538,6 +528,16 @@
                                     "toolTip": "Provide the ObjectID of the enterprise application Azure Virtual Desktop (ApplicationID: 9cdead84-a844-4324-93f2-b2e6bb768d07).",
                                     "constraints": {
                                         "required": true
+                                    }
+                                },
+                                {
+                                    "name": "avdScalingPlanInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
+                                    "options": {
+                                        "text": "Session hosts can be excluded from the scaling plan by assigning the tag name Exclude-avdScalingPlanName, if not using custom resource naming and example of default tag name is Exclude-vdscaling-eus2-app1-001.",
+                                        "uri": "https://docs.microsoft.com/en-us/azure/virtual-desktop/autoscale-scenarios#scenario-4-how-do-exclusion-tags-work",
+                                        "style": "Info"
                                     }
                                 },
                                 {
