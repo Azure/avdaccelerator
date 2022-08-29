@@ -55,6 +55,13 @@ $ErrorActionPreference = "Stop"
 
 . (Join-Path $ScriptPath "Logger.ps1")
 
+Write-Log "Forcing group policy updates"
+gpupdate /force
+
+Write-Log "Waiting for domain policies to be applied (2 minutes)"
+Start-Sleep -Seconds 120
+
+
 Write-Log "Turning off Windows firewall. "
 Set-NetFirewallProfile -Profile Domain, Public, Private -Enabled False
 

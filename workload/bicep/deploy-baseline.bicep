@@ -70,8 +70,8 @@ param avdPersonalAssignType string = 'Automatic'
 @description('Optional. AVD host pool load balacing type. (Default: BreadthFirst)')
 param avdHostPoolLoadBalancerType string = 'BreadthFirst'
 
-@description('Optional. AVD host pool maximum number of user sessions per session host. (Default: 15)')
-param avhHostPoolMaxSessions int = 15
+@description('Optional. AVD host pool maximum number of user sessions per session host. (Default: 5)')
+param avhHostPoolMaxSessions int = 5
 
 @description('Optional. AVD host pool start VM on Connect. (Default: true)')
 param avdStartVmOnConnect bool = true
@@ -84,6 +84,9 @@ param avdDeployRappGroup bool = false
 
 @description('Optional. AVD host pool Custom RDP properties. (Default: audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2)')
 param avdHostPoolRdpProperties string = 'audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2'
+
+@description('Optional. AVD deploy scaling plan. (Default: true)')
+param avdDeployScalingPlan bool = true
 
 @description('Optional. Create new virtual network. (Default: true)')
 param createAvdVnet bool = true
@@ -222,6 +225,10 @@ param avdWorkSpaceCustomName string = 'vdws-use2-app1-001'
 @maxLength(64)
 @description('Optional. AVD host pool custom name. (Default: vdpool-use2-app1-001)')
 param avdHostPoolCustomName string = 'vdpool-use2-app1-001'
+
+@maxLength(64)
+@description('Optional. AVD scaling plan custom name. (Default: vdscaling-use2-app1-001)')
+param avdScalingPlanCustomName string = 'vdscaling-use2-app1-001'
 
 @maxLength(64)
 @description('Optional. AVD desktop application group custom name. (Default: vdag-desktop-use2-app1-001)')
@@ -383,6 +390,63 @@ var locationAcronyms = {
     westus3: 'wus3'
     swedencentral: 'sec'
 }
+var timeZones = {
+    australiacentral: 'AUS Eastern Standard Time'
+    australiacentral2: 'AUS Eastern Standard Time'
+    australiaeast: 'AUS Eastern Standard Time'
+    australiasoutheast: 'AUS Eastern Standard Time'
+    brazilsouth: 'E. South America Standard Time'
+    brazilsoutheast: 'E. South America Standard Time'
+    canadacentral: 'Eastern Standard Time'
+    canadaeast: 'Eastern Standard Time'
+    centralindia: 'India Standard Time'
+    centralus: 'Central Standard Time'
+    chinaeast: 'China Standard Time'
+    chinaeast2: 'China Standard Time'
+    chinanorth: 'China Standard Time'
+    chinanorth2: 'China Standard Time'
+    eastasia: 'China Standard Time'
+    eastus: 'Eastern Standard Time'
+    eastus2: 'Eastern Standard Time'
+    francecentral: 'Central Europe Standard Time'
+    francesouth: 'Central Europe Standard Time'
+    germanynorth: 'Central Europe Standard Time'
+    germanywestcentral: 'Central Europe Standard Time'
+    japaneast: 'Tokyo Standard Time'
+    japanwest: 'Tokyo Standard Time'
+    jioindiacentral: 'India Standard Time'
+    jioindiawest: 'India Standard Time'
+    koreacentral: 'Korea Standard Time'
+    koreasouth: 'Korea Standard Time'
+    northcentralus: 'Central Standard Time'
+    northeurope: 'GMT Standard Time'
+    norwayeast: 'Central Europe Standard Time'
+    norwaywest: 'Central Europe Standard Time'
+    southafricanorth: 'South Africa Standard Time'
+    southafricawest: 'South Africa Standard Time'
+    southcentralus: 'Central Standard Time'
+    southindia: 'India Standard Time'
+    southeastasia: 'Singapore Standard Time'
+    swedencentral: 'Central Europe Standard Time'
+    switzerlandnorth: 'Central Europe Standard Time'
+    switzerlandwest: 'Central Europe Standard Time'
+    uaecentral: 'Arabian Standard Time'
+    uaenorth: 'Arabian Standard Time'
+    uksouth: 'GMT Standard Time'
+    ukwest: 'GMT Standard Time'
+    usdodcentral: 'Central Standard Time'
+    usdodeast: 'Eastern Standard Time'
+    usgovarizona: 'Mountain Standard Time'
+    usgoviowa: 'Central Standard Time'
+    usgovtexas: 'Central Standard Time'
+    usgovvirginia: 'Eastern Standard Time'
+    westcentralus: 'Mountain Standard Time'
+    westeurope: 'Central Europe Standard Time'
+    westindia: 'India Standard Time'
+    westus: 'Pacific Standard Time'
+    westus2: 'Pacific Standard Time'
+    westus3: 'Mountain Standard Time'
+}
 var avdNamingUniqueStringSixChar = take('${uniqueString(avdWorkloadSubsId, deploymentPrefixLowercase, time)}', 6)
 var avdManagementPlaneNamingStandard = '${avdManagementPlaneLocationAcronym}-${deploymentPrefixLowercase}'
 var avdComputeStorageResourcesNamingStandard = '${avdSessionHostLocationAcronym}-${deploymentPrefixLowercase}'
@@ -401,6 +465,10 @@ var avdWorkSpaceName = avdUseCustomNaming ? avdWorkSpaceCustomName : 'vdws-${avd
 var avdHostPoolName = avdUseCustomNaming ? avdHostPoolCustomName : 'vdpool-${avdManagementPlaneNamingStandard}-001'
 var avdApplicationGroupNameDesktop = avdUseCustomNaming ? avdApplicationGroupCustomNameDesktop : 'vdag-desktop-${avdManagementPlaneNamingStandard}-001'
 var avdApplicationGroupNameRapp = avdUseCustomNaming ? avdApplicationGroupCustomNameRapp : 'vdag-rapp-${avdManagementPlaneNamingStandard}-001'
+var avdScalingPlanName = avdUseCustomNaming ? avdScalingPlanCustomName : 'vdscaling-${avdManagementPlaneNamingStandard}-001'
+var avdScalingPlanExclusionTag = 'Exclude-${avdScalingPlanName}'
+var avdScalingPlanWeekdaysScheduleName = 'weekdays-${avdManagementPlaneNamingStandard}'
+var avdScalingPlanWeekendScheduleName = 'weekend-${avdManagementPlaneNamingStandard}'
 var avdWrklKvName = avdUseCustomNaming ? '${avdWrklKvPrefixCustomName}-${avdComputeStorageResourcesNamingStandard}-${avdNamingUniqueStringSixChar}' : 'kv-avd-${avdComputeStorageResourcesNamingStandard}-${avdNamingUniqueStringSixChar}' // max length limit 24 characters
 var avdWrklKvPrivateEndpointName = 'pe-kv-avd-${deploymentPrefixLowercase}-${avdNamingUniqueStringSixChar}-vault'
 var avdSessionHostNamePrefix = avdUseCustomNaming ? avdSessionHostCustomNamePrefix : 'vm-avd-${deploymentPrefixLowercase}'
@@ -412,6 +480,82 @@ var avdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCusto
 var avdWrklStoragePrivateEndpointName = 'pe-stavd${deploymentPrefixLowercase}${avdNamingUniqueStringSixChar}-file'
 var managementVmName = 'vm-mgmt-${deploymentPrefixLowercase}'
 //
+
+var avdScalingPlanSchedules = [
+    {
+        daysOfWeek: [
+            'Monday'
+            'Tuesday'
+            'Wednesday'
+            'Thursday'
+            'Friday'
+        ]
+        name: avdScalingPlanWeekdaysScheduleName
+        offPeakLoadBalancingAlgorithm: 'DepthFirst'
+        offPeakStartTime: {
+            hour: 20
+            minute: 0
+        }
+        peakLoadBalancingAlgorithm: 'DepthFirst'
+        peakStartTime: {
+            hour: 9
+            minute: 0
+        }
+        rampDownCapacityThresholdPct: 90
+        rampDownForceLogoffUsers: true
+        rampDownLoadBalancingAlgorithm: 'DepthFirst'
+        rampDownMinimumHostsPct: 10
+        rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
+        rampDownStartTime: {
+            hour: 18
+            minute: 0
+        }
+        rampDownStopHostsWhen: 'ZeroActiveSessions'
+        rampDownWaitTimeMinutes: 30
+        rampUpCapacityThresholdPct: 80
+        rampUpLoadBalancingAlgorithm: 'BreadthFirst'
+        rampUpMinimumHostsPct: 20
+        rampUpStartTime: {
+            hour: 7
+            minute: 0
+        }
+    }
+    {
+        daysOfWeek: [
+            'Saturday'
+            'Sunday'
+        ]
+        name: avdScalingPlanWeekendScheduleName
+        offPeakLoadBalancingAlgorithm: 'DepthFirst'
+        offPeakStartTime: {
+            hour: 18
+            minute: 0
+        }
+        peakLoadBalancingAlgorithm: 'DepthFirst'
+        peakStartTime: {
+            hour: 10
+            minute: 0
+        }
+        rampDownCapacityThresholdPct: 90
+        rampDownForceLogoffUsers: true
+        rampDownLoadBalancingAlgorithm: 'DepthFirst'
+        rampDownMinimumHostsPct: 5
+        rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
+        rampDownStartTime: {
+            hour: 16
+            minute: 0
+        }
+        rampDownStopHostsWhen: 'ZeroActiveSessions'
+        rampDownWaitTimeMinutes: 30
+        rampUpCapacityThresholdPct: 90
+        rampUpLoadBalancingAlgorithm: 'DepthFirst'
+        rampUpMinimumHostsPct: 5
+        rampUpStartTime: {
+            hour: 9
+            minute: 0
+        }
+    }
+]
 
 var marketPlaceGalleryWindows = {
     win10_21h2_office: {
@@ -443,7 +587,7 @@ var marketPlaceGalleryWindows = {
     }
 }
 
-var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
+var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/nttdata-testing/workload/'
 var fslogixScriptUri = '${baseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
 var fsLogixScript = './Set-FSLogixRegKeys.ps1'
 var fslogixSharePath = '\\\\${avdFslogixStorageName}.file.${environment().suffixes.storage}\\${avdFslogixProfileContainerFileShareName}'
@@ -451,7 +595,8 @@ var FsLogixScriptArguments = '-volumeshare ${fslogixSharePath}'
 var avdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_01-20-2022.zip'
 var storageAccountContributorRoleId = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
 var readerRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-var dscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip'
+var avdVmPowerStateContributor = '40c5ff49-9181-41f8-ae61-143b0e78555e'
+var dscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/nttdata-testing/workload/scripts/DSCStorageScripts.zip'
 var storageToDomainScriptUri = '${baseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
 var storageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
 var ouStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${defaultStorageOuPath}"'
@@ -462,6 +607,7 @@ var createOuForStorageString = string(createOuForStorage)
 var dnsServers = (customDnsIps == 'none') ? []: (split(customDnsIps, ','))
 
 // Resource tagging
+// Tag Exclude-${avdScalingPlanName} is used by scaling plans to exclude session hosts from scaling. Exmaple: Exclude-vdscal-eus2-app1-001
 var commonResourceTags = createResourceTags ? {
     WorkloadName: workloadNameTag
     WorkloadType: workloadTypeTag
@@ -483,23 +629,6 @@ var allComputeStorageTags = {
 }
 var allResourceTags = union(commonResourceTags, allComputeStorageTags)
 //
-
-var resourceGroups = [
-    {
-        name: avdServiceObjectsRgName
-        location: avdManagementPlaneLocation
-    }
-    {
-        name: avdComputeObjectsRgName
-        location: avdSessionHostLocation
-    }
-    /*
-    {
-        name: avdStorageObjectsRgName
-        location: avdSessionHostLocation
-    }
-    */
-]
 
 var telemetryId = 'pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-${avdManagementPlaneLocation}'
 
@@ -523,16 +652,41 @@ resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (
 
 // Resource groups.
 // Compute, service objects, network.
-module avdBaselineResourceGroups '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = [for resourceGroup in resourceGroups: {
+// Network.
+module avdBaselineNetworkResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdVnet) {
     scope: subscription(avdWorkloadSubsId)
-    name: 'Deploy-${substring(resourceGroup.name, 10)}-${time}'
+    name: 'Deploy-${avdNetworkObjectsRgName}-${time}'
     params: {
-        name: resourceGroup.name
-        location: resourceGroup.location
+        name: avdNetworkObjectsRgName
+        location: avdSessionHostLocation
         enableDefaultTelemetry: false
         tags: createResourceTags ? commonResourceTags : {}
     }
-}]
+}
+
+// Service objects.
+module avdBaselineServiceObjectsResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
+    scope: subscription(avdWorkloadSubsId)
+    name: 'Deploy-${avdServiceObjectsRgName}-${time}'
+    params: {
+        name: avdServiceObjectsRgName
+        location: avdSessionHostLocation
+        enableDefaultTelemetry: false
+        tags: createResourceTags ? commonResourceTags : {}
+    }
+}
+
+// Compute.
+module avdBaselineComputeResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
+    scope: subscription(avdWorkloadSubsId)
+    name: 'Deploy-${avdComputeObjectsRgName}-${time}'
+    params: {
+        name: avdComputeObjectsRgName
+        location: avdSessionHostLocation
+        enableDefaultTelemetry: false
+        tags: createResourceTags ? allComputeStorageTags : {}
+    }
+}
 
 // Storage.
 module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdFslogixDeployment) {
@@ -542,12 +696,12 @@ module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
         name: avdStorageObjectsRgName
         location: avdSessionHostLocation
         enableDefaultTelemetry: false
-        tags: createResourceTags ? commonResourceTags : {}
+        tags: createResourceTags ? allComputeStorageTags : {}
     }
 }
 //
 
-// Optional. Networking.
+// Networking.
 module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
     name: 'Deploy-AVD-Networking-${time}'
     params: {
@@ -570,22 +724,27 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
         avdTags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
-        avdBaselineResourceGroups
+        avdBaselineNetworkResourceGroup
     ]
 }
 
 // AVD management plane.
-// Host pool and application groups.
-module avdHostPoolandAppGroups 'avd-modules/avd-hostpool-app-groups.bicep' = {
+module avdManagementPLane 'avd-modules/avd-management-plane.bicep' = {
     name: 'Deploy-AVD-HostPool-AppGroups-${time}'
     params: {
         avdApplicationGroupNameDesktop: avdApplicationGroupNameDesktop
+        avdWorkSpaceName: avdWorkSpaceName
         avdApplicationGroupNameRapp: avdApplicationGroupNameRapp
         avdDeployRappGroup: avdDeployRappGroup
+        avdTimeZone: timeZones[avdSessionHostLocation]
         avdHostPoolName: avdHostPoolName
         avdHostPoolRdpProperties: avdHostPoolRdpProperties
         avdHostPoolLoadBalancerType: avdHostPoolLoadBalancerType
         avdHostPoolType: avdHostPoolType
+        avdDeployScalingPlan: avdDeployScalingPlan
+        avdScalingPlanExclusionTag: avdScalingPlanExclusionTag
+        avdScalingPlanSchedules: avdScalingPlanSchedules
+        avdScalingPlanName: avdScalingPlanName
         avhHostPoolMaxSessions: avhHostPoolMaxSessions
         avdPersonalAssignType: avdPersonalAssignType
         avdManagementPlaneLocation: avdManagementPlaneLocation
@@ -596,25 +755,10 @@ module avdHostPoolandAppGroups 'avd-modules/avd-hostpool-app-groups.bicep' = {
         avdTags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
-        avdBaselineResourceGroups
+        avdBaselineServiceObjectsResourceGroup
+        deployAvdManagedIdentitiesRoleAssign
     ]
 }
-
-// Workspace.
-module avdWorkSpace '../../carml/1.2.0/Microsoft.DesktopVirtualization/workspaces/deploy.bicep' = {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
-    name: 'Deploy-AVD-WorkSpace-${time}'
-    params: {
-        name: avdWorkSpaceName
-        location: avdManagementPlaneLocation
-        appGroupResourceIds: avdHostPoolandAppGroups.outputs.avdAppGroupsArray
-        tags: createResourceTags ? commonResourceTags : {}
-    }
-    dependsOn: [
-        avdHostPoolandAppGroups
-    ]
-}
-//
 
 // Identity: managed identities and role assignments.
 module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
@@ -623,6 +767,7 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
         avdComputeObjectsRgName: avdComputeObjectsRgName
         avdDeploySessionHosts: avdDeploySessionHosts
         avdEnterpriseAppObjectId: avdEnterpriseAppObjectId
+        avdDeployScalingPlan: avdDeployScalingPlan
         avdSessionHostLocation: avdSessionHostLocation
         avdServiceObjectsRgName: avdServiceObjectsRgName
         avdStorageObjectsRgName: avdStorageObjectsRgName
@@ -630,12 +775,15 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
         createStartVmOnConnectCustomRole: createStartVmOnConnectCustomRole
         fslogixManagedIdentityName: fslogixManagedIdentityName
         readerRoleId: readerRoleId
+        avdManagementPlaneLocation: avdManagementPlaneLocation
         storageAccountContributorRoleId: storageAccountContributorRoleId
+        avdVmPowerStateContributor: avdVmPowerStateContributor
         createAvdFslogixDeployment: createAvdFslogixDeployment ? true: false
         avdTags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
-        avdBaselineResourceGroups
+        avdBaselineComputeResourceGroup
+        avdBaselineStorageResourceGroup
     ]
 }
 
@@ -698,7 +846,7 @@ module avdWrklKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep
         tags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
-        avdBaselineResourceGroups
+        avdBaselineServiceObjectsResourceGroup
         //updateExistingSubnet
     ]
 }
@@ -717,6 +865,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         storageToDomainScript:  storageToDomainScript
         storageToDomainScriptArgs: storageToDomainScriptArgs
         storageToDomainScriptUri: storageToDomainScriptUri
+        avdTimeZone: timeZones[avdSessionHostLocation]
         avdWrklStoragePrivateEndpointName: avdWrklStoragePrivateEndpointName
         avdApplicationSecurityGroupResourceId: createAvdVnet ? '${avdNetworking.outputs.avdApplicationSecurityGroupResourceId}' : ''
         avdComputeObjectsRgName: avdComputeObjectsRgName
@@ -749,7 +898,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         avdTags: createResourceTags ? allResourceTags : {}
     }
     dependsOn: [
-        avdBaselineResourceGroups
+        avdBaselineStorageResourceGroup
         avdNetworking
         avdWrklKeyVaultget
         avdWrklKeyVault
@@ -761,6 +910,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
     name: 'Deploy-and-Configure-AVD-SessionHosts-${time}'
     params: {
         avdAgentPackageLocation: avdAgentPackageLocation
+        avdTimeZone: timeZones[avdSessionHostLocation]
         avdApplicationSecurityGroupResourceId: createAvdVnet ? '${avdNetworking.outputs.avdApplicationSecurityGroupResourceId}' : ''
         avdAsFaultDomainCount: avdAsFaultDomainCount
         avdAsUpdateDomainCount: avdAsUpdateDomainCount
@@ -790,13 +940,13 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         fsLogixScript: fsLogixScript
         FsLogixScriptArguments: FsLogixScriptArguments
         fslogixScriptUri: fslogixScriptUri
-        hostPoolToken: avdHostPoolandAppGroups.outputs.hostPooltoken
+        hostPoolToken: avdManagementPLane.outputs.hostPooltoken
         marketPlaceGalleryWindows: marketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
         avdTags: createResourceTags ? allResourceTags : {}
     }
     dependsOn: [
-        avdBaselineResourceGroups
+        avdBaselineComputeResourceGroup
         avdNetworking
         avdWrklKeyVaultget
         avdWrklKeyVault

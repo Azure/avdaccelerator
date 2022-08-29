@@ -62,17 +62,6 @@ param time string = utcNow()
 // Deployments //
 // =========== //
 
-// Resource group.
-module avdNetworkObjectsRg '../../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdVnet) {
-    scope: subscription(avdWorkloadSubsId)
-    name: 'AVD-RG-Network-${time}'
-    params: {
-        name: avdNetworkObjectsRgName
-        location: avdSessionHostLocation
-        tags: avdTags
-    }
-}
-
 // Network security group.
 module avdNetworksecurityGroup '../../../carml/1.2.0/Microsoft.Network/networkSecurityGroups/deploy.bicep' = if (createAvdVnet) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdNetworkObjectsRgName}')
@@ -82,9 +71,7 @@ module avdNetworksecurityGroup '../../../carml/1.2.0/Microsoft.Network/networkSe
         location: avdSessionHostLocation
         tags: avdTags
     }
-    dependsOn: [
-        avdNetworkObjectsRg
-    ]
+    dependsOn: []
 }
 
 // Application security group.
@@ -108,9 +95,7 @@ module avdRouteTable '../../../carml/1.2.0/Microsoft.Network/routeTables/deploy.
         location: avdSessionHostLocation
         tags: avdTags
     }
-    dependsOn: [
-        avdNetworkObjectsRg
-    ]
+    dependsOn: []
 }
 
 // Virtual network.
@@ -153,7 +138,6 @@ module avdVirtualNetwork '../../../carml/1.2.0/Microsoft.Network/virtualNetworks
         tags: avdTags
     }
     dependsOn: [
-        avdNetworkObjectsRg
         avdNetworksecurityGroup
         avdApplicationSecurityGroup
         avdRouteTable
