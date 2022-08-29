@@ -227,8 +227,8 @@ param avdWorkSpaceCustomName string = 'vdws-use2-app1-001'
 param avdHostPoolCustomName string = 'vdpool-use2-app1-001'
 
 @maxLength(64)
-@description('Optional. AVD scaling plan custom name. (Default: scal-use2-app1-001)')
-param avdScalingPlanCustomName string = 'scal-use2-app1-001'
+@description('Optional. AVD scaling plan custom name. (Default: vdscaling-use2-app1-001)')
+param avdScalingPlanCustomName string = 'vdscaling-use2-app1-001'
 
 @maxLength(64)
 @description('Optional. AVD desktop application group custom name. (Default: vdag-desktop-use2-app1-001)')
@@ -408,7 +408,7 @@ var avdWorkSpaceName = avdUseCustomNaming ? avdWorkSpaceCustomName : 'vdws-${avd
 var avdHostPoolName = avdUseCustomNaming ? avdHostPoolCustomName : 'vdpool-${avdManagementPlaneNamingStandard}-001'
 var avdApplicationGroupNameDesktop = avdUseCustomNaming ? avdApplicationGroupCustomNameDesktop : 'vdag-desktop-${avdManagementPlaneNamingStandard}-001'
 var avdApplicationGroupNameRapp = avdUseCustomNaming ? avdApplicationGroupCustomNameRapp : 'vdag-rapp-${avdManagementPlaneNamingStandard}-001'
-var avdScalingPlanName = avdUseCustomNaming ? avdScalingPlanCustomName : 'scal-${avdManagementPlaneNamingStandard}-001'
+var avdScalingPlanName = avdUseCustomNaming ? avdScalingPlanCustomName : 'vdscaling-${avdManagementPlaneNamingStandard}-001'
 var avdScalingPlanExclusionTag = 'Exclude-${avdScalingPlanName}'
 var avdScalingPlanWeekdaysScheduleName = 'weekdays-${avdManagementPlaneNamingStandard}'
 var avdScalingPlanWeekendScheduleName = 'weekend-${avdManagementPlaneNamingStandard}'
@@ -550,6 +550,7 @@ var createOuForStorageString = string(createOuForStorage)
 var dnsServers = (customDnsIps == 'none') ? []: (split(customDnsIps, ','))
 
 // Resource tagging
+// Tag Exclude-${avdScalingPlanName} is used by scaling plans to exclude session hosts from scaling. Exmaple: Exclude-vdscal-eus2-app1-001
 var commonResourceTags = createResourceTags ? {
     WorkloadName: workloadNameTag
     WorkloadType: workloadTypeTag

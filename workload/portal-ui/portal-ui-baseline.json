@@ -478,6 +478,16 @@
                                     }
                                 },
                                 {
+                                    "name": "avdScalingPlanInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.avdScalingPlan, 'Yes (Recommended)')]",
+                                    "options": {
+                                        "text": "Session hosts can be excluded from the scaling plan by assigning the tag name Exclude-avdScalingPlanName, if not using custom resource naming and example of default tag name is Exclude-vdscaling-eus2-app1-001.",
+                                        "uri": "https://docs.microsoft.com/en-us/azure/virtual-desktop/autoscale-scenarios#scenario-4-how-do-exclusion-tags-work",
+                                        "style": "Info"
+                                    }
+                                },
+                                {
                                     "name": "startVmOnConnect",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Personal')]",
@@ -1248,6 +1258,18 @@
                                     }
                                 },
                                 {
+                                    "name": "avdScalingPlanCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Scaling Plan",
+                                    "toolTip": "AVD host pool scaling plan.",
+                                    "placeholder": "Example: vdscaling-use2-app1-001",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
+                                        "validationMessage": "Value must be 1-64 characters."
+                                    }
+                                },
+                                {
                                     "name": "avdApplicationGroupCustomNameDesktop",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Application group (Desktop)",
@@ -1840,6 +1862,7 @@
                 "avdApplicationSecurityGroupCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingCompute.avdApplicationSecurityGroupCustomName, 'none')]",
                 "avdWorkSpaceCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdWorkSpaceCustomName, 'none')]",
                 "avdHostPoolCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdHostPoolCustomName, 'none')]",
+                "avdScalingPlanCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdScalingPlanCustomName, 'none')]",
                 "avdApplicationGroupCustomNameDesktop": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdApplicationGroupCustomNameDesktop, 'none')]",
                 "avdApplicationGroupCustomNameRapp": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdApplicationGroupCustomNameRapp, 'none')]",
                 "avdSessionHostCustomNamePrefix": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingCompute.avdSessionHostCustomNamePrefix, 'none')]",
