@@ -9,6 +9,9 @@ param avdManagementPlaneLocation string
 @description('Optional. AVD workload subscription ID, multiple subscriptions scenario.')
 param avdWorkloadSubsId string
 
+@description('Required. Virtual machine time zone.')
+param avdTimeZone string
+
 @description('Required, The service providing domain services for Azure Virtual Desktop.')
 param avdIdentityServiceProvider string
 
@@ -166,6 +169,7 @@ module avdScalingPlan '../../../carml/1.2.0/Microsoft.DesktopVirtualization/scal
       location: avdManagementPlaneLocation
       hostPoolType: 'Pooled' //avdHostPoolType
       exclusionTag: avdScalingPlanExclusionTag
+      timeZone: avdTimeZone
       schedules: avdScalingPlanSchedules
       hostPoolReferences: [
         {

@@ -9,26 +9,17 @@ param avdSubnetId string
 @description('Required. Location where to deploy compute services.')
 param avdSessionHostLocation string
 
+@description('Required. Virtual machine time zone.')
+param avdTimeZone string
+
 @description('AVD Session Host prefix.')
 param avdSessionHostNamePrefix string
-
-//@description('Optional. Availablity Set name.')
-//param avdAvailabilitySetNamePrefix string
 
 @description('Optional. Availablity Set name.')
 param avdAvailabilitySetNamePrefix string
 
 @description('Optional. Availablity Set max members.')
 param maxAvailabilitySetMembersCount int
-
-//@description('Optional. Availablity Set count.')
-//param availabilitySetCount int
-
-//@description('Optional. Sets the number of fault domains for the availability set.')
-//param avdAsFaultDomainCount int
-
-//@description('Optional. Sets the number of update domains for the availability set.')
-//param avdAsUpdateDomainCount int
 
 @description('Resource Group name for the session hosts')
 param avdComputeObjectsRgName string
@@ -137,6 +128,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
     params: {
         name: '${avdSessionHostNamePrefix}-${padLeft((i + avdSessionHostCountIndex), 3, '0')}'
         location: avdSessionHostLocation
+        timeZone: avdTimeZone
         userAssignedIdentities: createAvdFslogixDeployment ? {
             '${fslogixManagedIdentityResourceId}': {}
         } : {}
