@@ -56,6 +56,7 @@ param (
         [string] $DomainAdminUserPassword
 
 )
+
 Write-Host "Downloading the DSCStorageScripts.zip from $DscPath"
 $DscArhive="DSCStorageScripts.zip"
 $appName = 'DSCStorageScripts'
