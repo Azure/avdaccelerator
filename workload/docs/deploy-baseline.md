@@ -20,13 +20,15 @@
 - **Management plane** blade
   - **Deployment location** - The Azure Region where management plane resources (workspace, host pool, application groups) will be deployed. These resources are not available in all locations but are globally replicated and they can share the same location as the session hosts or not.
   - **Host pool type** - This option determines if a personal (aka single session) or pool (aka multi-session ) host pool will be configured.
-  - When Pool is selected:
-    - **Load balancing method** - Choose either breadth-first or depth-first, based on your usage pattern. Learn more about what each of these options means at [Host pool load-balancing methods](https://docs.microsoft.com/azure/virtual-desktop/host-pool-load-balancing).
-    - **Max sessions** - Enter the maximum number of users you want load-balanced to a single session host.
+  - When Pooled is selected:
+    - **Load balancing algorithm** - Choose either breadth-first or depth-first, based on your usage pattern. Learn more about what each of these options means at [Host pool load-balancing methods](https://docs.microsoft.com/azure/virtual-desktop/host-pool-load-balancing).
+    - **Max session limit** - Enter the maximum number of users you want load-balanced to a single session host.
     - **Create remote app group** - Choose if you want to create a RemoteApp application group or not. A Desktop application group will be created by default.
+    - **Scaling plan** - Choose if you want to create a sacling plan or not. An AVD scaling plan will be created and host pools assigned to it.
   - When Personal is selected:
     - **Machine assignment** - Select either Automatic or Direct.
-  - **Start VM on connect** - Choose if you want the host pool to be configured to allow users starting session hosts on demand.
+    - **Start VM on connect** - Choose if you want the host pool to be configured to allow users starting session hosts on demand.
+    - **Create start VM on connect role** - Choose if you want to create start VM on connect custom role.
   - **AVD enterprise application ObjectID** - Provide the ObjectID of the enterprise application Azure Virtual Desktop (ApplicationID:  9cdead84-a844-4324-93f2-b2e6bb768d07
 
 - **Session hosts** blade
