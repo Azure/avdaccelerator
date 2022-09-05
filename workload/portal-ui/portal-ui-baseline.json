@@ -362,7 +362,7 @@
                                     "name": "loadBalancerType",
                                     "type": "Microsoft.Common.DropDown",
                                     "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
-                                    "label": "Load balancer",
+                                    "label": "Load balancing algorithm",
                                     "defaultValue": "BreadthFirst",
                                     "multiLine": true,
                                     "toolTip": "Breadth-first load balancing distributes new user sessions across all available session hosts in the host pool. Depth-first load balancing distributes new user sessions to an available session host with the highest number of connections but has not reached its maximum session limit threshold.",
@@ -386,8 +386,8 @@
                                     "name": "maxSessions",
                                     "type": "Microsoft.Common.TextBox",
                                     "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
-                                    "label": "Max sessions",
-                                    "defaultValue": "10",
+                                    "label": "Max session limit",
+                                    "defaultValue": "5",
                                     "toolTip": "The maximum number of users that have concurrent sessions on a session host. When setting a host pool to have depth first load balancing or planning to use Autoscaling, you must set an appropriate max session limit according to the configuration of your deployment and capacity of your VMs.",
                                     "constraints": {
                                         "required": false,
@@ -457,9 +457,30 @@
                             "label": "Session host scaling options",
                             "elements": [
                                 {
+                                    "name": "avdScalingPlan",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
+                                    "label": "AVD scaling plan",
+                                    "defaultValue": "Yes (Recommended)",
+                                    "toolTip": "Will automatically manage session host power state based on usage and schedules (weekdays and weekend schedules will be created). ",
+                                    "constraints": {
+                                        "required": false,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes (Recommended)",
+                                                "value": true
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": false
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
                                     "name": "startVmOnConnect",
                                     "type": "Microsoft.Common.OptionsGroup",
-                                    "visible": true,
+                                    "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Personal')]",
                                     "label": "Start VM on connect",
                                     "defaultValue": "Yes (Recommended)",
                                     "toolTip": "If powered off, start VM once user connects. ",
@@ -501,12 +522,22 @@
                                 {
                                     "name": "avdEnterApplication",
                                     "type": "Microsoft.Common.TextBox",
-                                    "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.startVmOnConnect, true)]",
+                                    "visible": true,
                                     "label": "AVD enterprise application ObjectID",
                                     "defaultValue": "",
                                     "toolTip": "Provide the ObjectID of the enterprise application Azure Virtual Desktop (ApplicationID: 9cdead84-a844-4324-93f2-b2e6bb768d07).",
                                     "constraints": {
                                         "required": true
+                                    }
+                                },
+                                {
+                                    "name": "avdScalingPlanInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
+                                    "options": {
+                                        "text": "Session hosts can be excluded from the scaling plan by assigning the tag name Exclude-avdScalingPlanName, if not using custom resource naming and example of default tag name is Exclude-vdscaling-eus2-app1-001.",
+                                        "uri": "https://docs.microsoft.com/en-us/azure/virtual-desktop/autoscale-scenarios#scenario-4-how-do-exclusion-tags-work",
+                                        "style": "Info"
                                     }
                                 },
                                 {
@@ -1227,6 +1258,18 @@
                                     }
                                 },
                                 {
+                                    "name": "avdScalingPlanCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Scaling Plan",
+                                    "toolTip": "AVD host pool scaling plan.",
+                                    "placeholder": "Example: vdscaling-use2-app1-001",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
+                                        "validationMessage": "Value must be 1-64 characters."
+                                    }
+                                },
+                                {
                                     "name": "avdApplicationGroupCustomNameDesktop",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Application group (Desktop)",
@@ -1787,9 +1830,10 @@
                 "vNetworkGatewayOnHub": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdHubVnetPeering.avdHubVnetGateway, false)]",
                 "existingVnetSubnetResourceId": "[if(equals(steps('avdNetwork').createAvdVnet, false), steps('avdNetwork').avdVnetSubnetSelectorName, 'none')]",
                 "avdDeploySessionHosts": "[steps('avdSessionHosts').avdDeploySessionHosts]",
-                "avdStartVmOnConnect": "[steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.startVmOnConnect]",
+                "avdStartVmOnConnect": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.startVmOnConnect, false)]",
+                "avdDeployScalingPlan": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.avdScalingPlan, false)]",
                 "createStartVmOnConnectCustomRole": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.startVmOnConnect, true), steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.createVmRole, false)]",
-                "avdEnterpriseAppObjectId": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.createVmRole, true), steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.avdEnterApplication.objectId, 'none')]",
+                "avdEnterpriseAppObjectId": "[steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.avdEnterApplication.objectId]",
                 "avdUseAvailabilityZones": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdSessionHostsAvailabilitySettings]",
                 "avdDeploySessionHostsCount": "[if(equals(steps('avdSessionHosts').avdDeploySessionHosts, true), steps('avdSessionHosts').avdSessionHostsSettingsSection.avdSessionHostsCount, 1)]",
                 "useSharedImage": "[if(equals(steps('avdSessionHosts').avdDeploySessionHosts, true), steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsImageSource, false)]",
@@ -1818,6 +1862,7 @@
                 "avdApplicationSecurityGroupCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingCompute.avdApplicationSecurityGroupCustomName, 'none')]",
                 "avdWorkSpaceCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdWorkSpaceCustomName, 'none')]",
                 "avdHostPoolCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdHostPoolCustomName, 'none')]",
+                "avdScalingPlanCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdScalingPlanCustomName, 'none')]",
                 "avdApplicationGroupCustomNameDesktop": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdApplicationGroupCustomNameDesktop, 'none')]",
                 "avdApplicationGroupCustomNameRapp": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdApplicationGroupCustomNameRapp, 'none')]",
                 "avdSessionHostCustomNamePrefix": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingCompute.avdSessionHostCustomNamePrefix, 'none')]",

@@ -9,6 +9,9 @@ param avdSubnetId string
 @description('Required. Location where to deploy compute services.')
 param avdSessionHostLocation string
 
+@description('Required. Virtual machine time zone.')
+param avdTimeZone string
+
 @description('AVD Session Host prefix.')
 param avdSessionHostNamePrefix string
 
@@ -150,6 +153,7 @@ module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, avdSessi
   name: 'AVD-SH-Batch-${i-1}-${time}'
   params: {
     avdAgentPackageLocation: avdAgentPackageLocation
+    avdTimeZone: avdTimeZone
     avdApplicationSecurityGroupResourceId: avdApplicationSecurityGroupResourceId
     avdAvailabilitySetNamePrefix: avdAvailabilitySetNamePrefix
     maxAvailabilitySetMembersCount: maxAvailabilitySetMembersCount
