@@ -1,37 +1,60 @@
-//tested last on azurerm v3.13.0
+/*tested on
+Terraform v1.2.8
+on windows_amd64
++ provider registry.terraform.io/azure/azapi v0.5.0
++ provider registry.terraform.io/hashicorp/azuread v2.25.0
++ provider registry.terraform.io/hashicorp/azurerm v3.21.1
++ provider registry.terraform.io/hashicorp/local v2.2.3
++ provider registry.terraform.io/hashicorp/random v3.3.2
++ provider registry.terraform.io/hashicorp/time v0.8.0
+*/
+
 avdLocation          = "eastus"
-rg_shared_name       = "rg-avd-test-shared-resources"
-rg_network           = "rg-avd-test-network"
-rg_stor              = "rg-avd-storage"
-rg                   = "rg-avd-compute"
-rg_so                = "rg-avd-service-objects"
-rg_image_name        = "rg-avd-image-resources"
-prefix               = "testAVD"
-hostpool             = "avd-hostpool"
-personalpool         = "avd-personalpool"
-workspace            = "AVD Workspace"
-pworkspace           = "AVD Personal Workspace"
+rg_shared_name       = "rg-avd-eus-demo-shared-resources"  #rg-avd-<location>-<prefix>-shared-resources
+rg_network           = "rg-avd-eus-demo-network"            #rg-avd-<location>-<prefix>-network
+rg_stor              = "rg-avd-eus-demo-storage"           #rg-avd-<location>-<prefix>-storage
+rg_pool              = "rg-avd-eus-demo-pool-compute"      #rg-avd-<location>-<prefix>-pool-compute
+rg_personal          = "rg-avd-eus-demo-personal-compute"  #rg-avd-<location>-<prefix>-pool-compute
+rg_remoteapp         = "rg-avd-eus-demo-remoteapp-compute" #rg-avd-<location>-<prefix>-pool-compute
+rg_so                = "rg-avd-eus-demo-service-objects"   #rg-avd-<azure Region>-<prefix>-service-objects
+rg_image_name        = "rg-avd-demo-image-resources"
+prefix               = "demo"
+hostpool             = "vdpool-eus-demo-001" #vdpool-<azure region>-<prefix>
+personalpool         = "vdpool-eus-demo-personal-001"
+raghostpool          = "vdpool-eus-demo-remoteapp-001"
+workspace            = "vdws-eus-demo-001" #vdws-<azure region>-<prefix>-<nnn>
+pworkspace           = "vdws-eus-demo-personal-001"
+ragworkspace         = "vdws-eus-demo-remoteapp-001"
+pag                  = "vdag-pdesktop-eus-demo-001"
+dag                  = "vdag-desktop-eus-demo-001" #vdag-desktop-<azure region>-<prefix>-<nnn>
+rag                  = "vdag-rapp-eus-demo-001"    #vdag-rapp-<azure region>-<prefix>-<nnn>
 local_admin_username = "localadmin"
 local_admin_password = "ChangeMe123!"
-ou_path              = ""
+ou_path              = "OU=AVD,OU=AAD,DC=jensheerin,DC=net"
 vm_size              = "Standard_D8s_v5"
-rfc3339              = "2022-08-30T12:43:13Z" # ExpirationTime value must be between one hour and 30 days from now
-vnet_range           = ["10.11.0.0/16"]
-subnet_range         = ["10.11.0.0/24"]
-dns_servers          = ["10.0.1.4", "168.63.129.16"]
-aad_group_name       = "AVDUsers"
-domain_name          = "infra.local"
+rfc3339              = "2022-09-30T12:43:13Z" # ExpirationTime value must be between one hour and 30 days from now
+vnet_range           = ["10.10.0.0/23"]
+subnet_range         = ["10.10.0.0/23"]
+allow_list_ip        = ["10.10.0.0/23"]
+dns_servers          = ["10.0.1.6", "168.63.129.16"]
+rt                   = "route-avd-eus-demo-001" #route-avd-<azure region>-<prefix>-<nnn>
+nsg                  = "nsg-avd-eus-demo-001"   #nsg-avd-<azure region>-<prefix>-<nnn>
+aad_group_name       = "avdusersgrp"
+domain_name          = "contoso.net"
 domain_user          = "domainjoiner" # do not include domain name as this is appended
 domain_password      = "ChangeMe123$"
+vnet                 = "vnet-avd-eus-demo-001" #vnet-avd-<azure region>-<prefix>-<nnn>
+snet                 = "snet-avd-eus-demo-001" #snet-avd-<azure region>-<prefix>-<nnn>
 ad_vnet              = "infra-network"
 ad_rg                = "infra-rg"
 rdsh_count           = 2
 image_name           = "avdImage-microsoftwindowsdesktop-office-365-win11-21h2-avd-m365"
-image_rg             = "rg-eastus-avd-shared-resources"
-gallery_name         = "avd_gallery_eastus"
+image_rg             = "rg-eastus-avd-AIBdemoAVD-shared-resources"
+gallery_name         = "avdgallery_eastus_AIBdemoAVD"
 avd_users = [
-  "avduser01@contoso.com",
-  "avduser02@contoso.com"
+  "avduser01@contoso.net",
+  "avduser02@contoso.net"
 ]
+
 
 
