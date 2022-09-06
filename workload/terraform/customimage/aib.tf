@@ -86,7 +86,7 @@ resource "time_sleep" "aib" {
 }
 
 resource "azurerm_shared_image_gallery" "aib" {
-  name                = "avdgallery_${var.location}"
+  name                = "avdgallery_${var.location}_${var.prefix}"
   resource_group_name = azurerm_resource_group.aib.name
   location            = azurerm_resource_group.aib.location
   tags                = var.tags

@@ -9,9 +9,10 @@ This accelerator is to be used as starter kit and you can expand its functionali
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)  
-- [Planning](#planning) 
+- [Planning](#planning)
+- [AVD Spoke Network](#AVD-Network)
+- [AVD Baseline](#AVD-Baseline)   
 - [Custom Image Build](#Custom-Image-Build)    
-- [AVD Baseline](#AVD-Baseline)  
 - [Backend Setup](#Backends)  
 - [Terraform file Structure](#Files)  
 
@@ -32,26 +33,46 @@ To get started with Terraform on Azure check out their [tutorial](https://learn.
 The deployments will require a "Prefix" which will be included in all the deployed resources name.
 Resource Groups and resource names are derived from the `Prefix` parameter. Pick a unique resource prefix that is 3-5 alphanumeric characters in length without whitespaces.
 
-## Custom-Image-Build
+## AVD-Network
 
-Deploy a customer image based on the latest version of the Azure Marketplace image for Windows 11 21H2 with M365 using Azure Image Builder to an Azure Compute Gallery. The custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates.
+Azure Virtual Desktop (Azure Virtual Desktop) resources and dependent services for establishing the spoke network.
 
-![Custom Image diagram](../../workload/docs/diagrams/avd-accelerator-terraform-aib-custom-image.png)
+- Azure Virtual Desktop resources:
+  - Network Security group
+  - New VNet and subnet
+  - Peering to the hub virtual network
+  - Baseline NSG
+  - DNS zones for private endpoints
+  - Route table
+ 
+![AVD Network Spoke Image diagram](../../workload/docs/diagrams/avd-accelerator-terraform-baseline-image.png)
+
+
 ## AVD-Baseline
 
 Azure Virtual Desktop (Azure Virtual Desktop) resources and dependent services for establishing the baseline.
 
 - Azure Virtual Desktop resources:
-  - 2 Host Pools – 1 personal and 1 pooled
-  - 2 Workspaces – 1 personal and 1 pooled
+  - 1 Host Pools – pooled
+  - 1 Desktop application group
+  - 1 Workspaces – 1 pooled
+  - Options to add personal and remote app host pools, workspaces, desktop application groups
+  - 2 Session host VMs domain join (options to use custom image or marketplace image)
+  - AVD Monitoring, log analytics workspace and diagnostic logs enabled
+  - AVD Scaling plan
   - Associated Desktop Application Group for personal
   - Associated Desktop Application Group and Remote Application Group for pooled
 - Azure Files Storage with FSLogix share, RBAC role assignment and private endpoint
-- Application Security group and Network Security group
-- New VNet, subnet with baseline NSG, DNS zones for private endpoints, route table and peering to the hub virtual network
+- Application Security group
 - Key Vault and private endpoint
 
-![Custom Image diagram](../../workload/docs/diagrams/avd-accelerator-terraform-baseline-image.png)
+![AVD Baseline diagram](../../workload/docs/diagrams/avd-accelerator-terraform-baseline-image.png)
+
+## Custom-Image-Build
+
+Deploy a customer image based on the latest version of the Azure Marketplace image for Windows 11 21H2 with M365 using Azure Image Builder to an Azure Compute Gallery. The custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates.
+
+![Custom Image diagram](../../workload/docs/diagrams/avd-accelerator-terraform-aib-custom-image.png)
 
 ## Backends
 
