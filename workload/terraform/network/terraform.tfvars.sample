@@ -1,0 +1,16 @@
+//tested last on azurerm v3.18.0
+avdLocation  = "eastus"
+prefix       = "demo"
+rg_network   = "rg-avd-eus-demo-network" #rg-avd-<location>-<prefix>-network
+vnet_range   = ["10.10.0.0/23"]
+subnet_range = ["10.10.0.0/23"]
+dns_servers  = ["10.0.1.6", "168.63.129.16"]
+rt           = "route-avd-eus-demo-001" #route-avd-<azure region>-<prefix>-<nnn>
+nsg          = "nsg-avd-eus-demo-001"   #nsg-avd-<azure region>-<prefix>-<nnn>
+vnet         = "vnet-avd-eus-demo-001"  #vnet-avd-<azure region>-<prefix>-<nnn>
+snet         = "snet-avd-eus-demo-001"  #snet-avd-<azure region>-<prefix>-<nnn>
+ad_vnet      = "infra-network"
+ad_rg        = "infra-rg"
+
+
+

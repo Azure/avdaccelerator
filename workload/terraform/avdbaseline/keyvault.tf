@@ -1,53 +1,53 @@
-data "azurerm_client_config" "current" {}
-
-resource "azurerm_resource_group" "keyrg" {
+resource "azurerm_resource_group" "rgkv" {
   name     = var.rg_so
   location = var.avdLocation
 }
 
-resource "azurerm_key_vault" "keyvault" {
-  name                        = "avd-${random_string.random.id}-acctf"
-  location                    = azurerm_resource_group.keyrg.location
-  resource_group_name         = azurerm_resource_group.keyrg.name
-  enabled_for_disk_encryption = true
-  tenant_id                   = data.azurerm_client_config.current.tenant_id
-  soft_delete_retention_days  = 7
-  purge_protection_enabled    = true
+resource "azurerm_key_vault" "kv" {
+  name                     = local.keyvault_name
+  tenant_id                = data.azurerm_client_config.current.tenant_id
+  location                 = var.avdLocation
+  resource_group_name      = var.rg_so
+  sku_name                 = "standard"
+  purge_protection_enabled = true
+  tags                     = local.tags
+  depends_on = [
+    azurerm_resource_group.rgkv
+  ]
 
-  sku_name = "standard"
+  lifecycle { ignore_changes = [access_policy, tags] }
 
   network_acls {
-    bypass         = "AzureServices"
     default_action = "Deny"
-  }
-  access_policy {
-    tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = data.azurerm_client_config.current.object_id
-
-    key_permissions = [
-      "Get",
-    ]
-
-    secret_permissions = [
-      "Get",
-    ]
-
-    storage_permissions = [
-      "Get",
-    ]
+    bypass         = "None"
   }
 }
 
-resource "azurerm_private_endpoint" "pe" {
-  name                = "keyvault-endpoint"
-  location            = azurerm_resource_group.keyrg.location
-  resource_group_name = azurerm_resource_group.keyrg.name
-  subnet_id           = azurerm_subnet.subnet.id
+resource "azurerm_key_vault_access_policy" "deploy" {
+  key_vault_id = azurerm_key_vault.kv.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azurerm_client_config.current.object_id
+
+  key_permissions         = ["Get", "List", "Update", "Create", "Import", "Delete", "Recover"]
+  secret_permissions      = ["Get", "List", "Set", "Delete", "Purge", "Recover"]
+  certificate_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Purge", "Recover"]
+  storage_permissions     = ["Get", "List", "Update", "Delete"]
+}
+
+resource "azurerm_private_endpoint" "kvpe" {
+  name                = "pe-${local.keyvault_name}-vault"
+  location            = var.avdLocation
+  resource_group_name = var.rg_so
+  subnet_id           = data.azurerm_subnet.subnet.id
+  tags                = local.tags
+
+  lifecycle { ignore_changes = [tags] }
 
   private_service_connection {
-    name                           = "${random_string.random.result}-privateserviceconnection"
-    private_connection_resource_id = azurerm_key_vault.keyvault.id
-    subresource_names              = ["vault"]
+    name                           = "psc-kv-${var.prefix}"
+    private_connection_resource_id = azurerm_key_vault.kv.id
     is_manual_connection           = false
+    subresource_names              = ["Vault"]
   }
 }
+
