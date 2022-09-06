@@ -1,12 +1,13 @@
-# Create session host
+
+# Creates Session Host 
 data "azurerm_shared_image" "avd" {
   name                = var.image_name
   gallery_name        = var.gallery_name
   resource_group_name = var.image_rg
 }
 
-locals {
-  registration_token = azurerm_virtual_desktop_host_pool_registration_info.registrationinfo.token
+resource "time_rotating" "avd_token" {
+  rotation_days = 1
 }
 
 resource "random_string" "AVD_local_password" {
@@ -18,37 +19,38 @@ resource "random_string" "AVD_local_password" {
 }
 
 resource "azurerm_resource_group" "shrg" {
-  name     = var.rg
+  name     = var.rg_pool
   location = var.avdLocation
 }
 
 resource "azurerm_network_interface" "avd_vm_nic" {
   count               = var.rdsh_count
   name                = "${var.prefix}-${count.index + 1}-nic"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.shrg.name
+  location            = azurerm_resource_group.shrg.location
 
   ip_configuration {
     name                          = "nic${count.index + 1}_config"
-    subnet_id                     = azurerm_subnet.subnet.id
+    subnet_id                     = data.azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
   }
 
   depends_on = [
-    azurerm_resource_group.rg
+    azurerm_resource_group.shrg
   ]
 }
 
 resource "azurerm_windows_virtual_machine" "avd_vm" {
-  count                 = var.rdsh_count
-  name                  = "${var.prefix}-${count.index + 1}"
-  resource_group_name   = azurerm_resource_group.shrg.name
-  location              = azurerm_resource_group.shrg.location
-  size                  = var.vm_size
-  network_interface_ids = ["${azurerm_network_interface.avd_vm_nic.*.id[count.index]}"]
-  provision_vm_agent    = true
-  admin_username        = var.local_admin_username
-  admin_password        = var.local_admin_password
+  count                      = var.rdsh_count
+  name                       = "${var.prefix}-${count.index + 1}"
+  resource_group_name        = azurerm_resource_group.shrg.name
+  location                   = azurerm_resource_group.shrg.location
+  size                       = var.vm_size
+  network_interface_ids      = ["${azurerm_network_interface.avd_vm_nic.*.id[count.index]}"]
+  provision_vm_agent         = true
+  admin_username             = var.local_admin_username
+  admin_password             = var.local_admin_password
+  encryption_at_host_enabled = true
 
   os_disk {
     name                 = "${lower(var.prefix)}-${count.index + 1}"
@@ -56,12 +58,26 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
     storage_account_type = "Standard_LRS"
   }
 
+  # To use marketplace image, uncomment the following lines and comment the source_image_id line
+  /*
+  source_image_reference {
+    publisher = var.vm_marketplace_mage.publisher
+    offer     = var.vm_marketplace_image.offer
+    sku       = var.vm_marketplace_image.sku
+    version   = var.vm_marketplace_image.version
+  }
+*/
+
   source_image_id = data.azurerm_shared_image.avd.id
 
   depends_on = [
     azurerm_resource_group.shrg,
     azurerm_network_interface.avd_vm_nic
   ]
+
+  identity {
+    type = "SystemAssigned"
+  }
 }
 
 resource "azurerm_virtual_machine_extension" "domain_join" {
@@ -93,11 +109,9 @@ PROTECTED_SETTINGS
     ignore_changes = [settings, protected_settings]
   }
 
-  depends_on = [
-    azurerm_virtual_network_peering.peer1,
-    azurerm_virtual_network_peering.peer2
-  ]
+
 }
+
 
 resource "azurerm_virtual_machine_extension" "vmext_dsc" {
   count                      = var.rdsh_count
@@ -131,3 +145,4 @@ PROTECTED_SETTINGS
     azurerm_virtual_desktop_host_pool.hostpool
   ]
 }
+
