@@ -1,9 +1,3 @@
-## Create a Resource Group for Storage
-resource "azurerm_resource_group" "rg_storage" {
-  location = var.avdLocation
-  name     = var.rg_stor
-}
-
 resource "azurerm_user_assigned_identity" "mi" {
   name                = "id-avd-fslogix-eus-${var.prefix}"
   resource_group_name = azurerm_resource_group.rg_storage.name
@@ -64,8 +58,8 @@ resource "azurerm_role_assignment" "af_role" {
 
 resource "azurerm_private_endpoint" "afpe" {
   name                = "pe-${local.storage_name}-file"
-  location            = var.avdLocation
-  resource_group_name = var.rg_stor
+  location            = azurerm_resource_group.rg_storage.location
+  resource_group_name = azurerm_resource_group.rg_storage.name
   subnet_id           = data.azurerm_subnet.subnet.id
   tags                = local.tags
 

@@ -1,24 +1,18 @@
 resource "random_uuid" "example" {}
 
-# Resource group name is output when execution plan is applied.
-resource "azurerm_resource_group" "sh" {
-  name     = var.rg_so
-  location = var.avdLocation
-}
-
 # Create AVD workspace
 resource "azurerm_virtual_desktop_workspace" "workspace" {
   name                = var.workspace
-  resource_group_name = azurerm_resource_group.sh.name
-  location            = azurerm_resource_group.sh.location
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
   friendly_name       = "${var.prefix} Workspace"
   description         = "${var.prefix} Workspace"
 }
 
 # Create AVD host pool
 resource "azurerm_virtual_desktop_host_pool" "hostpool" {
-  resource_group_name      = azurerm_resource_group.sh.name
-  location                 = azurerm_resource_group.sh.location
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
   name                     = var.hostpool
   friendly_name            = var.hostpool
   validate_environment     = true
@@ -50,8 +44,8 @@ resource "azurerm_role_assignment" "power" {
 # autoscale settings scenario 1 https://docs.microsoft.com/en-us/azure/virtual-desktop/autoscale-scenarios
 resource "azurerm_virtual_desktop_scaling_plan" "scplan" {
   name                = "Demo-scaling-plan"
-  location            = azurerm_resource_group.sh.location
-  resource_group_name = azurerm_resource_group.sh.name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
   friendly_name       = "Scaling Plan Example"
   description         = "Demo Scaling Plan"
   time_zone           = "Eastern Standard Time"
@@ -112,9 +106,9 @@ resource "azurerm_virtual_desktop_host_pool_registration_info" "registrationinfo
 
 # Create AVD DAG
 resource "azurerm_virtual_desktop_application_group" "dag" {
-  resource_group_name = azurerm_resource_group.sh.name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
   host_pool_id        = azurerm_virtual_desktop_host_pool.hostpool.id
-  location            = azurerm_resource_group.sh.location
   type                = "Desktop"
   name                = var.dag
   friendly_name       = "Desktop AppGroup"
@@ -131,7 +125,7 @@ resource "azurerm_virtual_desktop_workspace_application_group_association" "ws-d
 # Get Log Analytics Workspace data
 data "azurerm_log_analytics_workspace" "lawksp" {
   name                = lower(replace("law-avd-${var.prefix}", "-", ""))
-  resource_group_name = azurerm_resource_group.sh.name
+  resource_group_name = azurerm_resource_group.rg.name
 
   depends_on = [
     azurerm_virtual_desktop_workspace.workspace,

@@ -18,11 +18,6 @@ resource "random_string" "AVD_local_password" {
   override_special = "*!@#?"
 }
 
-resource "azurerm_resource_group" "shrg" {
-  name     = var.rg_pool
-  location = var.avdLocation
-}
-
 resource "azurerm_network_interface" "avd_vm_nic" {
   count               = var.rdsh_count
   name                = "${var.prefix}-${count.index + 1}-nic"
