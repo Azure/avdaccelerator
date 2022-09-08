@@ -1,13 +1,8 @@
-resource "azurerm_resource_group" "rgkv" {
-  name     = var.rg_so
-  location = var.avdLocation
-}
-
 resource "azurerm_key_vault" "kv" {
   name                     = local.keyvault_name
   tenant_id                = data.azurerm_client_config.current.tenant_id
-  location                 = var.avdLocation
-  resource_group_name      = var.rg_so
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
   sku_name                 = "standard"
   purge_protection_enabled = true
   tags                     = local.tags
@@ -36,8 +31,8 @@ resource "azurerm_key_vault_access_policy" "deploy" {
 
 resource "azurerm_private_endpoint" "kvpe" {
   name                = "pe-${local.keyvault_name}-vault"
-  location            = var.avdLocation
-  resource_group_name = var.rg_so
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
   subnet_id           = data.azurerm_subnet.subnet.id
   tags                = local.tags
 
