@@ -1,17 +1,9 @@
-/*
 # Creating a Private DNS Zone for the Storage Private Endpoints
 resource "azurerm_private_dns_zone" "pe-dns-zone" {
   name                = "privatelink.file.core.windows.net"
   resource_group_name = azurerm_resource_group.net.name
   tags                = local.tags
   lifecycle { ignore_changes = [tags] }
-}
-*/
-
-# Get existing Private DNS Zone for the Storage Private Endpoints
-data "azurerm_private_dns_zone" "pe-dns-zone" {
-  name                = "privatelink.file.core.windows.net"
-  resource_group_name = "contoso-dns"
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "filelink" {
@@ -23,7 +15,6 @@ resource "azurerm_private_dns_zone_virtual_network_link" "filelink" {
   lifecycle { ignore_changes = [tags] }
 }
 
-/*
 # Creating a Private DNS Zone for the Key Vault Endpoints
 resource "azurerm_private_dns_zone" "key-dns-zone" {
   name                = "privatelink.vaultcore.azure.net"
@@ -31,13 +22,6 @@ resource "azurerm_private_dns_zone" "key-dns-zone" {
   tags                = local.tags
 
   lifecycle { ignore_changes = [tags] }
-}
-*/
-
-# Get existing Private DNS Zone for the Storage Private Endpoints
-data "azurerm_private_dns_zone" "key-dns-zone" {
-  name                = "privatelink.vaultcore.azure.net"
-  resource_group_name = "contoso-dns"
 }
 
 # Linking DNS Zone to the VNET
@@ -50,4 +34,3 @@ resource "azurerm_private_dns_zone_virtual_network_link" "netlink" {
 
   lifecycle { ignore_changes = [tags] }
 }
-

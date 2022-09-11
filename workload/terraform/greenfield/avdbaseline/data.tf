@@ -11,8 +11,22 @@ resource "random_string" "random" {
 }
 
 # Get network subnet data
+data "azurerm_virtual_network" "vnet" {
+  name                = var.vnet
+  resource_group_name = var.rg_network
+
+  depends_on = [
+    module.network
+  ]
+}
+
+# Get network subnet data
 data "azurerm_subnet" "subnet" {
   name                 = var.snet
   resource_group_name  = var.rg_network
   virtual_network_name = var.vnet
+
+  depends_on = [
+    module.network
+  ]
 }

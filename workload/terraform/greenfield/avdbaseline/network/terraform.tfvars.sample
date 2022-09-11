@@ -1,4 +1,4 @@
-//tested last on azurerm v3.18.0
+//tested last on a hashicorp/azurerm v3.22.0.
 avdLocation  = "eastus"
 prefix       = "demo"
 rg_network   = "rg-avd-eus-demo-network" #rg-avd-<location>-<prefix>-network
@@ -11,5 +11,4 @@ vnet         = "vnet-avd-eus-demo-001"  #vnet-avd-<azure region>-<prefix>-<nnn>
 snet         = "snet-avd-eus-demo-001"  #snet-avd-<azure region>-<prefix>-<nnn>
 ad_vnet      = "infra-network" # hub vnet name
 ad_rg        = "infra-rg" # hub network resource group
-
 

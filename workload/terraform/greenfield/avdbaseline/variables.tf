@@ -61,6 +61,11 @@ variable "raghostpool" {
   description = "Name of the Azure Virtual Desktop remote app group"
 }
 
+variable "scplan" {
+  type        = string
+  description = "Name of the session host scaling plan"
+}
+
 variable "rg_shared_name" {
   type        = string
   description = "Name of the Resource group in which to deploy shared resources"
