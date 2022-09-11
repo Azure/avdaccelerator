@@ -54,7 +54,7 @@ The Azure Virtual Desktop Network Terraform files are all written as individual 
 | rg.tf                      | Creates the resource groups |
 | routetable.tf              | Creates a routetable |
 | locals.tf                  | This file is for locals |
-| main.tf                    | This file contains the provider |
+| main.tf                    | This file contains the Terraform provider settings and version |
 | nsg.tf                     | Creates the network security group with required URLs |
 | variables.tf               | Variables have been created in all files for various properties and names |
 | networking.tf              | Creates the AVD spoke virtual network, subnet and peering to the hub network |
@@ -62,7 +62,7 @@ The Azure Virtual Desktop Network Terraform files are all written as individual 
 
 Validated on provider versions:
 
-- hashicorp/azurerm v3.22.0.
+- hashicorp/azurerm v3.22.0
 
 ![AVD Network Spoke Image diagram](../../workload/docs/diagrams/avd-accelerator-terraform-spoke-network.png)
 
@@ -83,6 +83,31 @@ Azure Virtual Desktop resources and dependent services for establishing the base
 - Azure Files Storage with FSLogix share, RBAC role assignment and private endpoint
 - Application Security group
 - Key Vault and private endpoint
+
+The Azure Virtual Desktop Baseline Terraform files are all written as individual files each having a specific function. Variables have been created in all files for consistency, all changes to defaults are to be changed from the terraform.tfvars.sample file. The structure is as follows:
+
+| file Name                  | Description                                                  |
+| ---------------------------| ------------------------------------------------------------ |
+| main.tf                    | This file deploys Azure Virtual Desktop |
+| data.tf                    | This file has data lookup |
+| locals.tf                  | This file is for locals |
+| host.tf                    | This file deploys session host using the custom image in the Azure Compute Gallery |
+| provider.tf                | This file contains the Terraform provider settings and version |
+| afstorage.tf               | This file creates the Storage account and Azure files shares with RBAC |
+| keyvault.tf                | This file creates the Key Vault to be used     |
+| appsecgrp.tf               | This file creates the Application security group to be used     |
+| avd.tf                     | This file creates the a Azure Virtual Desktop service objects     |
+| rbac.tf                    | This will creates the rbac permissions |
+| output.tf                  | This will contains the outputs post deployment |
+| variables.tf               | Variables have been created in all files for various properties and names |
+| rg.tf                      | Creates the resources group for the deployment |
+| terraform.tfvars.sample    | This file contains the values for the variables change per your requirements |
+
+Validated on provider versions:
+- hashicorp/random v3.3.2
+- hashicorp/azuread v2.26.1
+- hashicorp/azurerm v3.22.0
+
 
 ![AVD Baseline diagram](../../workload/docs/diagrams/avd-accelerator-terraform-baseline-image.png)
 
@@ -164,28 +189,6 @@ The Custom Image Terraform files structure:
 | variables.tf        | Variables have been created in all files for various properties and names, these are placeholders and are not required to be changed unless there is a need to. See below |
 | terraform.tfvars    | This file contains all variables to be changed from the defaults, you are only required to change these as per your requirements |
 
-The Azure Virtual Desktop Baseline Terraform files are all written as individual files each having a specific function. Variables have been created in all files for consistency, all changes to defaults are to be changed from the terraform.tfvars.sample file. The structure is as follows:
-
-| file Name           | Description                                                  |
-| ------------------- | ------------------------------------------------------------ |
-| main.tf             | This file deploys Azure Virtual Desktop |
-| host.tf             | This file deploys session host using the custom image in the Azure Compute Gallery |
-| provider.tf         | This file contains the Terraform provider settings and version |
-| afstorage.tf        | This file creates the Storage account and Azure files shares with RBAC |
-| networking.tf       | This file creates the Virtual Network and subnets to be used |
-| nsg.tf              | This file creates a nsg |
-| keyvault.tf         | This file creates the Key Vault to be used     |
-| appsecgrp.tf        | This file creates the Application security group to be used     |
-| routetable.tf       | This file creates the a Route Table to be used     |
-| rbac.tf             | This will creates the rbac permissions |
-| outputs.tf          | This will contains the outputs post deployment |
-| variables.tf        | Variables have been created in all files for various properties and names, these are placeholders and are not required to be changed unless there is a need to. See below |
-| terraform.tfvars    | This file contains all variables to be changed from the defaults, you are only required to change these as per your requirements |
-
-Validated on provider versions:
-hashicorp/random v3.3.2
-hashicorp/azuread v2.26.1
-hashicorp/azurerm v3.61.0
 ## Deployment Steps
 
 1. Modify the `terraform.tfvars` file to define the desired names, location, networking, and other variables
