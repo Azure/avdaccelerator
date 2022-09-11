@@ -1,23 +1,16 @@
-# Resource group name is output when execution plan is applied.
-resource "azurerm_resource_group" "sh" {
-  name     = var.rg_so
-  location = var.avdLocation
-}
-
-
 # Create AVD Personal workspace
 resource "azurerm_virtual_desktop_workspace" "pworkspace" {
   name                = var.pworkspace
-  resource_group_name = azurerm_resource_group.sh.name
-  location            = azurerm_resource_group.sh.location
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
   friendly_name       = "${var.prefix} Personal Workspace"
   description         = "${var.prefix} Personal Workspace"
 }
 
 # Create AVD personal pool
 resource "azurerm_virtual_desktop_host_pool" "personalpool" {
-  resource_group_name   = azurerm_resource_group.sh.name
-  location              = azurerm_resource_group.sh.location
+  resource_group_name   = azurerm_resource_group.rg.name
+  location              = azurerm_resource_group.rg.location
   name                  = var.personalpool
   friendly_name         = var.personalpool
   validate_environment  = false
@@ -29,9 +22,9 @@ resource "azurerm_virtual_desktop_host_pool" "personalpool" {
 
 # Create AVD Personal DAG
 resource "azurerm_virtual_desktop_application_group" "pdag" {
-  resource_group_name = azurerm_resource_group.sh.name
+  resource_group_name = azurerm_resource_group.rg.name
   host_pool_id        = azurerm_virtual_desktop_host_pool.personalpool.id
-  location            = azurerm_resource_group.sh.location
+  location            = azurerm_resource_group.rg.location
   type                = "Desktop"
   name                = var.pag
   friendly_name       = "Desktop AppGroup"
@@ -48,7 +41,7 @@ resource "azurerm_virtual_desktop_workspace_application_group_association" "ws-p
 # Get Log Analytics Workspace data
 data "azurerm_log_analytics_workspace" "lawksp" {
   name                = lower(replace("law-avd-${var.prefix}", "-", ""))
-  resource_group_name = azurerm_resource_group.sh.name
+  resource_group_name = azurerm_resource_group.rg.name
 
   depends_on = [
     azurerm_virtual_desktop_workspace.pworkspace,
