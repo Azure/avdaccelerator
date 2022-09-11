@@ -30,12 +30,11 @@ dag                  = "vdag-desktop-eus-demo-001" #vdag-desktop-<azure region>-
 rag                  = "vdag-rapp-eus-demo-001"    #vdag-rapp-<azure region>-<prefix>-<nnn>
 local_admin_username = "localadmin"
 local_admin_password = "ChangeMe123!"
-ou_path              = "OU=AVD,OU=AAD,DC=jensheerin,DC=net"
+ou_path              = "OU=AVD,OU=AAD,DC=contoso,DC=net"
 vm_size              = "Standard_D8s_v5"
-rfc3339              = "2022-09-30T12:43:13Z" # ExpirationTime value must be between one hour and 30 days from now
-vnet_range           = ["10.10.0.0/23"]
-subnet_range         = ["10.10.0.0/23"]
-allow_list_ip        = ["10.10.0.0/23"]
+vnet_range           = ["10.21.0.0/23"]
+subnet_range         = ["10.21.0.0/23"]
+allow_list_ip        = ["10.21.0.0/23"]
 dns_servers          = ["10.0.1.6", "168.63.129.16"]
 rt                   = "route-avd-eus-demo-001" #route-avd-<azure region>-<prefix>-<nnn>
 nsg                  = "nsg-avd-eus-demo-001"   #nsg-avd-<azure region>-<prefix>-<nnn>

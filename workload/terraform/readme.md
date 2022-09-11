@@ -32,21 +32,10 @@ To get started with Terraform on Azure check out their [tutorial](https://learn.
 
 The deployments will require a "Prefix" which will be included in all the deployed resources name.
 Resource Groups and resource names are derived from the `Prefix` parameter. Pick a unique resource prefix that is 3-5 alphanumeric characters in length without whitespaces.
-
-## AVD-Network
-
-Azure Virtual Desktop (Azure Virtual Desktop) resources and dependent services for establishing the spoke network.
-
-- Azure Virtual Desktop resources:
-  - Network Security group
-  - New VNet and subnet
-  - Peering to the hub virtual network
-  - Baseline NSG
-  - DNS zones for private endpoints
-  - Route table
  
 ![AVD Network Spoke Image diagram](../../workload/docs/diagrams/avd-accelerator-terraform-baseline-image.png)
 
+Do this 1st |AVD Spoke Network |[![Terraform](./workload/docs/icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md)                  |
 
 ## AVD-Baseline
 
