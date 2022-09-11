@@ -4,8 +4,25 @@ module "avdi" {
   avdLocation = var.avdLocation
   prefix      = var.prefix
   rg_so       = var.rg_so
+
 }
 
+# Creates the Azure Virtual Desktop Spoke Network resources
+module "network" {
+  source       = "./network"
+  avdLocation  = var.avdLocation
+  rg_network   = var.rg_network
+  vnet         = var.vnet
+  snet         = var.snet
+  dns_servers  = var.dns_servers
+  vnet_range   = var.vnet_range
+  nsg          = var.nsg
+  prefix       = var.prefix
+  rt           = var.rt
+  ad_rg        = var.ad_rg
+  ad_vnet      = var.ad_vnet
+  subnet_range = var.subnet_range
+}
 
 # Optional - creates AVD hostpool, remote application group, and workspace for remote apps
 # Uncomment out if needed - this is a separate module from the desktop one above

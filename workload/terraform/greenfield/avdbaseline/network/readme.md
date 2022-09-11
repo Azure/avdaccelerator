@@ -6,7 +6,6 @@ Azure Virtual Desktop resources and dependent services for establishing the Azur
 - New VNet and subnet
 - Peering to the hub virtual network
 - Baseline NSG
-- DNS zones for private endpoints
 - Route table
 
 ## Files
@@ -15,21 +14,20 @@ The Azure Virtual Desktop Network Terraform files are all written as individual 
 | file Name                  | Description                                                  |
 | ---------------------------| ------------------------------------------------------------ |
 | data.tf                    | This file has data lookup |
+| dns_zones.tf               | This file creates the private DNS zone and links |
 | output.tf                  | This will contains the outputs post deployment |
 | rg.tf                      | Creates the resource groups |
 | routetable.tf              | Creates a routetable |
 | locals.tf                  | This file is for locals |
 | main.tf                    | This file contains the provider |
 | nsg.tf                     | Creates the network security group with required URLs |
-| dns_zones.tf               | Creates DNS zones for file and keyvault |
 | variables.tf               | Variables have been created in all files for various properties and names |
 | networking.tf              | Creates the AVD spoke virtual network, subnet and peering to the hub network |
 | terraform.tfvars.sample    | This file contains the values for the variables change per your requirements |
 
 Validated on provider versions:
-hashicorp/random v3.3.2
-hashicorp/azuread v2.26.1
-hashicorp/azurerm v3.81.0
+
+- hashicorp/azurerm v3.22.0.
 
 ## Deployment Steps
 

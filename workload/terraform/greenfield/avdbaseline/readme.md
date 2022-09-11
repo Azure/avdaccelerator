@@ -35,9 +35,34 @@ Resource Groups and resource names are derived from the `Prefix` parameter. Pick
  
 ## AVD-Network
  
-|AVD Spoke Network required for baseline | Click icon to access      |
-|:---------------------------------------|:------------------------: |
-|AVD Spoke Network                       |[![Terraform](../../workload/docs/icons/terraform.png)](/network/readme.md)
+Azure Virtual Desktop resources and dependent services for establishing the Azure Virtual Desktop spoke network:
+
+- Network Security group
+- New VNet and subnet
+- Peering to the hub virtual network
+- Baseline NSG
+- Route table
+
+## Files
+
+The Azure Virtual Desktop Network Terraform files are all written as individual files each having a specific function. Variables have been created in all files for consistency, all changes to defaults are to be changed from the terraform.tfvars.sample file. The structure is as follows:
+| file Name                  | Description                                                  |
+| ---------------------------| ------------------------------------------------------------ |
+| data.tf                    | This file has data lookup |
+| dns_zones.tf               | This file creates the private DNS zone and links |
+| output.tf                  | This will contains the outputs post deployment |
+| rg.tf                      | Creates the resource groups |
+| routetable.tf              | Creates a routetable |
+| locals.tf                  | This file is for locals |
+| main.tf                    | This file contains the provider |
+| nsg.tf                     | Creates the network security group with required URLs |
+| variables.tf               | Variables have been created in all files for various properties and names |
+| networking.tf              | Creates the AVD spoke virtual network, subnet and peering to the hub network |
+| terraform.tfvars.sample    | This file contains the values for the variables change per your requirements |
+
+Validated on provider versions:
+
+- hashicorp/azurerm v3.22.0.
 
 ![AVD Network Spoke Image diagram](../../workload/docs/diagrams/avd-accelerator-terraform-spoke-network.png)
 
