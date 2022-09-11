@@ -35,12 +35,13 @@ Resource Groups and resource names are derived from the `Prefix` parameter. Pick
  
 ## AVD-Network
  
-|AVD Spoke Network required for baseline | Click icon to access code |
+|AVD Spoke Network required for baseline | Click icon to access      |
 |:---------------------------------------|:------------------------: |
 |AVD Spoke Network                       |[![Terraform](../../workload/docs/icons/terraform.png)](/network/readme.md)
+
 ![AVD Network Spoke Image diagram](../../workload/docs/diagrams/avd-accelerator-terraform-spoke-network.png)
 
-## AVD-Baseline
+## AVD-Baseline  
 
 Azure Virtual Desktop resources and dependent services for establishing the baseline.
 
