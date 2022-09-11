@@ -37,7 +37,8 @@ Resource Groups and resource names are derived from the `Prefix` parameter. Pick
 
 ![AVD Network Spoke Image diagram](../../workload/docs/diagrams/avd-accelerator-terraform-baseline-image.png)
 
-Do this 1st |AVD Spoke Network |[![Terraform](./workload/docs/icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/network/readme.md)                  |
+Do this 1st
+|AVD Spoke Network |[![Terraform](../../workload/docs/icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/network/readme.md)                  |
 
 ## AVD-Baseline
 
