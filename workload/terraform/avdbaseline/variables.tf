@@ -101,11 +101,6 @@ variable "ad_vnet" {
   description = "Name of domain controller vnet"
 }
 
-variable "rfc3339" {
-  type        = string
-  description = "Registration token expiration"
-}
-
 variable "dns_servers" {
   type        = list(string)
   description = "Custom DNS configuration"

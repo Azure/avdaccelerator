@@ -17,11 +17,6 @@ resource "azurerm_storage_account" "storage" {
   account_kind              = "FileStorage"
   enable_https_traffic_only = true
 
-  network_rules {
-    default_action = "Deny"
-    bypass         = ["Metrics", "Logging", "AzureServices"]
-  }
-
   identity {
     type = "SystemAssigned"
   }
@@ -72,7 +67,4 @@ resource "azurerm_private_endpoint" "afpe" {
     subresource_names              = ["file"]
   }
 }
-
-
-
 

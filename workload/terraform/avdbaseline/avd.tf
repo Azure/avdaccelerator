@@ -11,8 +11,8 @@ resource "azurerm_virtual_desktop_workspace" "workspace" {
 
 # Create AVD host pool
 resource "azurerm_virtual_desktop_host_pool" "hostpool" {
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  resource_group_name      = azurerm_resource_group.rg.name
   name                     = var.hostpool
   friendly_name            = var.hostpool
   validate_environment     = true
@@ -34,7 +34,7 @@ data "azuread_service_principal" "spn" {
 
 resource "azurerm_role_assignment" "power" {
   name                             = random_uuid.example.result
-  scope                            = azurerm_resource_group.sh.id
+  scope                            = azurerm_resource_group.rg.id
   role_definition_id               = data.azurerm_role_definition.power_role.role_definition_id
   principal_id                     = data.azuread_service_principal.spn.application_id
   skip_service_principal_aad_check = true
@@ -100,8 +100,9 @@ resource "azurerm_virtual_desktop_scaling_plan" "scplan" {
 }
 
 resource "azurerm_virtual_desktop_host_pool_registration_info" "registrationinfo" {
-  hostpool_id     = azurerm_virtual_desktop_host_pool.hostpool.id
-  expiration_date = var.rfc3339
+  hostpool_id = azurerm_virtual_desktop_host_pool.hostpool.id
+  # Generating RFC3339Time for the expiration of the token. 
+  expiration_date = timeadd(timestamp(), "48h")
 }
 
 # Create AVD DAG
