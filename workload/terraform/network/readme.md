@@ -1,14 +1,13 @@
 ## AVD-Network
 
-Azure Virtual Desktop resources and dependent services for establishing the Azure Virtual Desktop spoke network.
+Azure Virtual Desktop resources and dependent services for establishing the Azure Virtual Desktop spoke network:
 
-- Azure Virtual Desktop resources:
-  - Network Security group
-  - New VNet and subnet
-  - Peering to the hub virtual network
-  - Baseline NSG
-  - DNS zones for private endpoints
-  - Route table
+- Network Security group
+- New VNet and subnet
+- Peering to the hub virtual network
+- Baseline NSG
+- DNS zones for private endpoints
+- Route table
 
 ## Files
 
@@ -34,7 +33,7 @@ hashicorp/azurerm v3.81.0
 
 ## Deployment Steps
 
-1. Modify the `terraform.tfvars` file to define the desired names, location, networking, and other variables
+1. Rename the `terraform.tfvars.sample` to `terraform.tfvars` and modify to define the desired names, location, networking, and other variables
 2. Before deploying, confirm the correct subscription
 3. Change directory to the Terraform folder
 4. Run `terraform init` to initialize this directory
@@ -43,3 +42,4 @@ hashicorp/azurerm v3.81.0
 
 ## Confirming Deployment
 
+![Network resources deployed](../../workload/docs/diagrams/avd-accelerator-terraform-network-deployed.png)
