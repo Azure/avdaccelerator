@@ -1,19 +1,8 @@
-resource "azurerm_resource_group" "res-17" {
-  location = var.avdLocation
-  name     = var.rg_network
-  tags     = var.tags
-
-  lifecycle { ignore_changes = [tags] }
-}
-
 resource "azurerm_network_security_group" "res-0" {
-  location            = var.avdLocation
+  location            = azurerm_resource_group.net.location
   name                = var.nsg
-  resource_group_name = var.rg_network
-  tags                = var.tags
-  depends_on = [
-    azurerm_resource_group.res-17,
-  ]
+  resource_group_name = azurerm_resource_group.net.name
+  tags                = local.tags
 
   security_rule {
     access                     = "Allow"
