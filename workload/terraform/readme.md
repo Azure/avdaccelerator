@@ -34,11 +34,13 @@ The deployments will require a "Prefix" which will be included in all the deploy
 Resource Groups and resource names are derived from the `Prefix` parameter. Pick a unique resource prefix that is 3-5 alphanumeric characters in length without whitespaces.
  
 ## AVD-Network
+An AVD Spoke Network is required for the Baseline deployment. Click on the Terraform icon to access code.
 
-![AVD Network Spoke Image diagram](../../workload/docs/diagrams/avd-accelerator-terraform-baseline-image.png)
+|AVD Spoke Network deployment options: |                           |
+|:-------------------------------------|:------------------------: |
+|AVD Spoke Network                     |[![Terraform](../../workload/docs/icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/network/readme.md)                  |
 
-Do this 1st
-|AVD Spoke Network |[![Terraform](../../workload/docs/icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/network/readme.md)                  |
+![AVD Network Spoke Image diagram](../../workload/docs/diagrams/avd-accelerator-terraform-spoke-network.png)
 
 ## AVD-Baseline
 
