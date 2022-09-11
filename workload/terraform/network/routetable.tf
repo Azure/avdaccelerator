@@ -11,7 +11,7 @@ resource "azurerm_route_table" "udr" {
   }
 
   tags = local.tags
-  }
+}
 
 
 resource "azurerm_subnet_route_table_association" "udrasso" {
