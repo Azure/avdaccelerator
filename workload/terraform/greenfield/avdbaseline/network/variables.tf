@@ -50,6 +50,7 @@ variable "ad_vnet" {
   description = "Name of domain controller vnet"
 }
 
+
 variable "prefix" {
   type        = string
   description = "Prefix of the name of the AVD machine(s)"
