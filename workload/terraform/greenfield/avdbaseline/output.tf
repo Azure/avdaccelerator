@@ -40,15 +40,15 @@ output "session_host_count" {
 
 output "dnsservers" {
   description = "Custom DNS configuration"
-  value       = azurerm_virtual_network.vnet.dns_servers
+  value       = data.azurerm_virtual_network.vnet.dns_servers
 }
 
 output "vnetrange" {
   description = "Address range for deployment vnet"
-  value       = azurerm_virtual_network.vnet.address_space
+  value       = data.azurerm_virtual_network.vnet.address_space
 }
 
 output "AVD_user_groupname" {
   description = "Azure Active Directory Group for AVD users"
-  value       = azuread_group.aad_group.display_name
+  value       = data.azuread_group.adds_group.display_name
 }
