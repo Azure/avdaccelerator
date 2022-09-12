@@ -64,7 +64,7 @@ Validated on provider versions:
 
 - hashicorp/azurerm v3.22.0
 
-![AVD Network Spoke Image diagram](../../../workload/docs/diagrams/avd-accelerator-terraform-spoke-network.png)
+![AVD Network Spoke Image diagram](../../../docs/diagrams/avd-accelerator-terraform-spoke-network.png)
 
 ## AVD-Baseline  
 
@@ -116,7 +116,7 @@ Validated on provider versions:
 
 Deploy a customer image based on the latest version of the Azure Marketplace image for Windows 11 21H2 with M365 using Azure Image Builder to an Azure Compute Gallery. The custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates.
 
-![Custom Image diagram](../../../workload/docs/diagrams/avd-accelerator-terraform-aib-custom-image.png)
+![Custom Image diagram](../../../docs/diagrams/avd-accelerator-terraform-aib-custom-image.png)
 
 ## Backends
 
