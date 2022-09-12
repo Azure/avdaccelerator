@@ -40,4 +40,4 @@ Validated on provider versions:
 
 ## Confirming Deployment
 
-![AVD Network Spoke Image diagram](../../../docs/diagrams/avd-accelerator-terraform-spoke-network.png)
+![AVD Network Spoke Image diagram](../../../../docs/diagrams/avd-accelerator-terraform-spoke-network.png)
