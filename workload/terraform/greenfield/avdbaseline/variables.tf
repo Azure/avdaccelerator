@@ -2,11 +2,6 @@ variable "avdLocation" {
   description = "Location of the resource group."
 }
 
-variable "rg" {
-  type        = string
-  description = "Name of the Resource group in which to deploy session host"
-}
-
 variable "rg_so" {
   type        = string
   description = "Name of the Resource group in which to deploy service objects"
@@ -20,6 +15,55 @@ variable "rg_stor" {
 variable "rg_network" {
   type        = string
   description = "Name of the Resource group in which to deploy network resources"
+}
+
+variable "rg_pool" {
+  description = "Resource group AVD machines will be deployed to"
+}
+
+variable "vnet" {
+  type        = string
+  description = "Name of avd vnet"
+}
+
+variable "snet" {
+  type        = string
+  description = "Name of subnet"
+}
+
+variable "nsg" {
+  type        = string
+  description = "Name of the nsg"
+}
+
+variable "rt" {
+  type        = string
+  description = "Name of the route table"
+}
+
+variable "dag" {
+  type        = string
+  description = "Name of the Azure Virtual Desktop desktop application group"
+}
+
+variable "rag" {
+  type        = string
+  description = "Name of the Azure Virtual Desktop remote application group"
+}
+
+variable "pag" {
+  type        = string
+  description = "Name of the Azure Virtual Desktop remote application group"
+}
+
+variable "raghostpool" {
+  type        = string
+  description = "Name of the Azure Virtual Desktop remote app group"
+}
+
+variable "scplan" {
+  type        = string
+  description = "Name of the session host scaling plan"
 }
 
 variable "rg_shared_name" {
@@ -52,14 +96,14 @@ variable "personalpool" {
   description = "Name of the Azure Virtual Desktop host pool"
 }
 
+variable "ragworkspace" {
+  type        = string
+  description = "Name of the Azure Virtual Desktop workspace"
+}
+
 variable "ad_vnet" {
   type        = string
   description = "Name of domain controller vnet"
-}
-
-variable "rfc3339" {
-  type        = string
-  description = "Registration token expiration"
 }
 
 variable "dns_servers" {
@@ -138,9 +182,9 @@ variable "image_name" {
   type        = string
   description = "Name of the custome image to use"
 }
-  
-variable "gallery_name"{
-  type       = string
+
+variable "gallery_name" {
+  type        = string
   description = "Name of the shared image gallery name"
 }
 
@@ -148,4 +192,9 @@ variable "image_rg" {
   type        = string
   description = "Image Gallery resource group"
 }
-  
+
+# Create a storage allow list of IP Addresses
+variable "allow_list_ip" {
+  type        = list(string)
+  description = "List of allowed IP Addresses"
+}
