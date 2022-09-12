@@ -40,4 +40,4 @@ Validated on provider versions:
 
 ## Confirming Deployment
 
-![Network resources deployed(../../../../docs/diagrams/avd-accelerator-terraform-network-deployed.png)
+![Network resources deployed(../../../docs/diagrams/avd-accelerator-terraform-network-deployed.png)
