@@ -701,6 +701,7 @@ module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
 }
 //
 
+/*
 // Validation Deployment Script
 // This module validates the selected parameter values and collects required data
 module validation 'avd-modules/avd-validation.bicep' = {
@@ -740,7 +741,7 @@ module validation 'avd-modules/avd-validation.bicep' = {
     managedIdentity
   ]
 }
-
+*/
 
 
 // Networking.
