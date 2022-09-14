@@ -701,6 +701,48 @@ module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
 }
 //
 
+// Validation Deployment Script
+// This module validates the selected parameter values and collects required data
+module validation 'avd-modules/avd-validation.bicep' = {
+  name: 'AVD-Deployment-Validation-${time}'
+  scope: resourceGroup(avdServiceObjectsRgName)
+  params: {
+    Availability: Availability
+    DiskEncryption: DiskEncryption
+    DiskSku: DiskSku
+    DomainName: DomainName
+    DomainServices: DomainServices
+    EphemeralOsDisk: EphemeralOsDisk
+    ImageSku: ImageSku
+    KerberosEncryption: KerberosEncryption
+    Location: Location
+    ManagedIdentityResourceId: managedIdentity.outputs.resourceIdentifier
+    NamingStandard: NamingStandard
+    PooledHostPool: PooledHostPool
+    RecoveryServices: RecoveryServices
+    SasToken: SasToken
+    ScriptsUri: ScriptsUri    
+    SecurityPrincipalIds: SecurityPrincipalObjectIds
+    SecurityPrincipalNames: SecurityPrincipalNames
+    SessionHostCount: SessionHostCount
+    SessionHostIndex: SessionHostIndex
+    StartVmOnConnect: StartVmOnConnect
+    //StorageCount: StorageCount
+    StorageSolution: StorageSolution
+    Tags: createResourceTags ? commonResourceTags : {}
+    Timestamp: time
+    VirtualNetwork: VirtualNetwork
+    VirtualNetworkResourceGroup: VirtualNetworkResourceGroup
+    VmSize: avdSessionHostsSize
+  }
+  dependsOn: [
+    resourceGroups
+    managedIdentity
+  ]
+}
+
+
+
 // Networking.
 module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
     name: 'Deploy-AVD-Networking-${time}'
