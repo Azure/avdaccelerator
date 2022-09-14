@@ -84,7 +84,7 @@ param time string = utcNow()
 // =========== //
 // Variable declaration //
 // =========== //
-var desktopApplicaitonGroups = [
+var varDesktopApplicaitonGroups = [
   {
     name: avdApplicationGroupNameDesktop
     location: avdManagementPlaneLocation
@@ -92,15 +92,15 @@ var desktopApplicaitonGroups = [
   }
 ]
 
-var applicationApplicationGroups = [
+var varApplicationApplicationGroups = [
   {
     name: avdApplicationGroupNameRapp
     location: avdManagementPlaneLocation
     applicationGroupType: 'RemoteApp'
   }
 ]
-var avdHostPoolRdpPropertiesDomainServiceCheck = (avdIdentityServiceProvider == 'AAD') ? '${avdHostPoolRdpProperties}targetisaadjoined:i:1' : avdHostPoolRdpProperties
-var finalApplicationGroups = avdDeployRappGroup ? concat(desktopApplicaitonGroups, applicationApplicationGroups) : desktopApplicaitonGroups
+var varAvdHostPoolRdpPropertiesDomainServiceCheck = (avdIdentityServiceProvider == 'AAD') ? '${avdHostPoolRdpProperties}targetisaadjoined:i:1' : avdHostPoolRdpProperties
+var varFinalApplicationGroups = avdDeployRappGroup ? concat(varDesktopApplicaitonGroups, varApplicationApplicationGroups) : varDesktopApplicaitonGroups
 
 // =========== //
 // Deployments //
@@ -115,7 +115,7 @@ module avdHostPool '../../../carml/1.2.0/Microsoft.DesktopVirtualization/hostpoo
     location: avdManagementPlaneLocation
     hostpoolType: avdHostPoolType
     startVMOnConnect: avdStartVmOnConnect
-    customRdpProperty: avdHostPoolRdpPropertiesDomainServiceCheck
+    customRdpProperty: varAvdHostPoolRdpPropertiesDomainServiceCheck
     loadBalancerType: avdHostPoolLoadBalancerType
     maxSessionLimit: avhHostPoolMaxSessions
     personalDesktopAssignmentType: avdPersonalAssignType
@@ -124,7 +124,7 @@ module avdHostPool '../../../carml/1.2.0/Microsoft.DesktopVirtualization/hostpoo
 }
 
 // Application groups.
-module avdApplicationGroups '../../../carml/1.2.0/Microsoft.DesktopVirtualization/applicationgroups/deploy.bicep' = [for applicationGroup in finalApplicationGroups: {
+module avdApplicationGroups '../../../carml/1.2.0/Microsoft.DesktopVirtualization/applicationgroups/deploy.bicep' = [for applicationGroup in varFinalApplicationGroups: {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
   name: 'Deploy-AppGroup-${applicationGroup.name}-${time}'
   params: {

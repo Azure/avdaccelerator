@@ -1,0 +1,117 @@
+{
+    "AVDScalingPlansDeployDiagnosticLogDeployLogAnalytics": {
+      "parameters": {
+        "logAnalytics": {
+          "value": "[[parameters('logAnalytics')]"
+        },
+        "effect": {
+          "value": "[[parameters('AVDScalingPlansLogAnalyticsEffect')]"
+        },
+        "profileName": {
+          "value": "[[parameters('profileName')]"
+        }
+      }
+    },
+    "NetworkNICDeployDiagnosticLogDeployLogAnalytics": {
+      "parameters": {
+        "logAnalytics": {
+          "value": "[[parameters('logAnalytics')]"
+        },
+        "effect": {
+          "value": "[[parameters('NetworkNICLogAnalyticsEffect')]"
+        },
+        "profileName": {
+          "value": "[[parameters('profileName')]"
+        }
+      }
+    },
+    "NetworkSecurityGroupsDeployDiagnosticLogDeployLogAnalytics": {
+      "parameters": {
+        "logAnalytics": {
+          "value": "[[parameters('logAnalytics')]"
+        },
+        "effect": {
+          "value": "[[parameters('NetworkSecurityGroupsLogAnalyticsEffect')]"
+        },
+        "profileName": {
+          "value": "[[parameters('profileName')]"
+        }
+      }
+    },
+    "StorageAccountDeployDiagnosticLogDeployLogAnalytics": {
+      "parameters": {
+        "logAnalytics": {
+          "value": "[[parameters('logAnalytics')]"
+        },
+        "effect": {
+          "value": "[[parameters('StorageAccountsLogAnalyticsEffect')]"
+        }
+      }
+    },
+    "VirtualMachinesDeployDiagnosticLogDeployLogAnalytics": {
+      "parameters": {
+        "logAnalytics": {
+          "value": "[[parameters('logAnalytics')]"
+        },
+        "effect": {
+          "value": "[[parameters('VirtualMachinesLogAnalyticsEffect')]"
+        },
+        "profileName": {
+          "value": "[[parameters('profileName')]"
+        }
+      }
+    },
+    "VirtualNetworkDeployDiagnosticLogDeployLogAnalytics": {
+      "parameters": {
+        "logAnalytics": {
+          "value": "[[parameters('logAnalytics')]"
+        },
+        "effect": {
+          "value": "[[parameters('VirtualNetworkLogAnalyticsEffect')]"
+        },
+        "profileName": {
+          "value": "[[parameters('profileName')]"
+        }
+      }
+    },
+    "AVDAppGroupDeployDiagnosticLogDeployLogAnalytics": {
+      "parameters": {
+        "logAnalytics": {
+          "value": "[[parameters('logAnalytics')]"
+        },
+        "effect": {
+          "value": "[[parameters('AVDAppGroupsLogAnalyticsEffect')]"
+        },
+        "profileName": {
+          "value": "[[parameters('profileName')]"
+        }
+      }
+    },
+    "AVDHostPoolsDeployDiagnosticLogDeployLogAnalytics": {
+      "parameters": {
+        "logAnalytics": {
+          "value": "[[parameters('logAnalytics')]"
+        },
+        "effect": {
+          "value": "[[parameters('AVDHostPoolsLogAnalyticsEffect')]"
+        },
+        "profileName": {
+          "value": "[[parameters('profileName')]"
+        }
+      }
+    },
+    "AVDWorkspaceDeployDiagnosticLogDeployLogAnalytics": {
+      "parameters": {
+        "logAnalytics": {
+          "value": "[[parameters('logAnalytics')]"
+        },
+        "effect": {
+          "value": "[[parameters('AVDWorkspaceLogAnalyticsEffect')]"
+        },
+        "profileName": {
+          "value": "[[parameters('profileName')]"
+        }
+      }
+    }
+  }
+  
