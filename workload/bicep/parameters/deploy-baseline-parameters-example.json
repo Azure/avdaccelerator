@@ -143,17 +143,23 @@
         "useSharedImage": {
             "value": false
         },
-        "avdImageTemplataDefinitionId": {
-            "value": ""
+        "avdImageTemplateDefinitionId": {
+            "value": "<<imageID>>"
         },
         "storageOuPath": {
-            "value": ""
+            "value": "<<ouPath>>"
         },
         "createOuForStorage": {
             "value": false
         },
         "createResourceTags": {
             "value": false
-        }        
+        },
+        "deployAlaWorkspace": {
+            "value": true
+        },        
+        "avdAlaWorkspaceDataRetention": {
+            "value": 90
+        }    
     }
 }
