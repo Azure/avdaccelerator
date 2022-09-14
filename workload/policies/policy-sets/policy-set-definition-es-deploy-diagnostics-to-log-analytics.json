@@ -1,0 +1,273 @@
+{
+    "name": "policy-set-deploy-diagnostics-to-log-analytics",
+    "type": "Microsoft.Authorization/policySetDefinitions",
+    "apiVersion": "2021-06-01",
+    "scope": null,
+    "properties": {
+      "policyType": "Custom",
+      "displayName": "Deploy Diagnostic Settings to Azure Services",
+      "description": "This policy set deploys the configurations of application Azure resources to forward diagnostic logs and metrics to an Azure Log Analytics workspace. See the list of policies of the services that are included ",
+      "metadata": {
+        "version": "1.1.0",
+        "category": "Monitoring"
+      },
+      "parameters": {
+        "logAnalytics": {
+          "metadata": {
+            "description": "Select Log Analytics workspace from dropdown list. If this workspace is outside of the scope of the assignment you must manually grant 'Log Analytics Contributor' permissions (or similar) to the policy assignment's principal ID.",
+            "displayName": "Log Analytics workspace",
+            "strongType": "omsWorkspace"
+          },
+          "type": "String"
+        },
+        "profileName": {
+          "type": "String",
+          "defaultValue": "setbypolicy",
+          "metadata": {
+            "displayName": "Profile name",
+            "description": "The diagnostic settings profile name"
+          }
+        },
+        "NetworkSecurityGroupsLogAnalyticsEffect": {
+          "type": "String",
+          "defaultValue": "DeployIfNotExists",
+          "allowedValues": [
+            "DeployIfNotExists",
+            "Disabled"
+          ],
+          "metadata": {
+            "displayName": "Deploy Diagnostic Settings for Network Security Groups to Log Analytics workspace",
+            "description": "Deploys the diagnostic settings for Network Security Groups to stream to a Log Analytics workspace when any Network Security Groups which is missing this diagnostic settings is created or updated. The Policy will set the diagnostic with all metrics and category enabled"
+          }
+        },
+        "NetworkNICLogAnalyticsEffect": {
+          "type": "String",
+          "defaultValue": "DeployIfNotExists",
+          "allowedValues": [
+            "DeployIfNotExists",
+            "Disabled"
+          ],
+          "metadata": {
+            "displayName": "Deploy Diagnostic Settings for Network Interfaces to Log Analytics workspace",
+            "description": "Deploys the diagnostic settings for Network Interfaces to stream to a Log Analytics workspace when any Network Interfaces which is missing this diagnostic settings is created or updated. The Policy will set the diagnostic with all metrics and category enabled"
+          }
+        },
+        "VirtualNetworkLogAnalyticsEffect": {
+          "type": "String",
+          "defaultValue": "DeployIfNotExists",
+          "allowedValues": [
+            "DeployIfNotExists",
+            "Disabled"
+          ],
+          "metadata": {
+            "displayName": "Deploy Diagnostic Settings for Virtual Network to Log Analytics workspace",
+            "description": "Deploys the diagnostic settings for Virtual Network to stream to a Log Analytics workspace when any Virtual Network which is missing this diagnostic settings is created or updated. The Policy will set the diagnostic with all metrics and category enabled"
+          }
+        },
+        "VirtualMachinesLogAnalyticsEffect": {
+          "type": "String",
+          "defaultValue": "DeployIfNotExists",
+          "allowedValues": [
+            "DeployIfNotExists",
+            "Disabled"
+          ],
+          "metadata": {
+            "displayName": "Deploy Diagnostic Settings for Virtual Machines to Log Analytics workspace",
+            "description": "Deploys the diagnostic settings for Virtual Machines to stream to a Log Analytics workspace when any Virtual Machines which is missing this diagnostic settings is created or updated. The Policy will set the diagnostic with all metrics and category enabled"
+          }
+        },
+        "AVDScalingPlansLogAnalyticsEffect": {
+          "type": "String",
+          "defaultValue": "DeployIfNotExists",
+          "allowedValues": [
+            "DeployIfNotExists",
+            "Disabled"
+          ],
+          "metadata": {
+            "displayName": "Deploy Diagnostic Settings for AVD Scaling Plans to Log Analytics workspace",
+            "description": "Deploys the diagnostic settings for AVD Scaling Plans to stream to a Log Analytics workspace when any application groups which is missing this diagnostic settings is created or updated. The Policy will set the diagnostic with all metrics and category enabled"
+          }
+        },
+        "AVDAppGroupsLogAnalyticsEffect": {
+          "type": "String",
+          "defaultValue": "DeployIfNotExists",
+          "allowedValues": [
+            "DeployIfNotExists",
+            "Disabled"
+          ],
+          "metadata": {
+            "displayName": "Deploy Diagnostic Settings for AVD Application Groups to Log Analytics workspace",
+            "description": "Deploys the diagnostic settings for AVD Application groups to stream to a Log Analytics workspace when any application groups which is missing this diagnostic settings is created or updated. The Policy will set the diagnostic with all metrics and category enabled"
+          }
+        },
+        "AVDWorkspaceLogAnalyticsEffect": {
+          "type": "String",
+          "defaultValue": "DeployIfNotExists",
+          "allowedValues": [
+            "DeployIfNotExists",
+            "Disabled"
+          ],
+          "metadata": {
+            "displayName": "Deploy Diagnostic Settings for AVD Workspace to Log Analytics workspace",
+            "description": "Deploys the diagnostic settings for AVD Workspace to stream to a Log Analytics workspace when any Workspace which is missing this diagnostic settings is created or updated. The Policy will set the diagnostic with all metrics and category enabled"
+          }
+        },
+        "AVDHostPoolsLogAnalyticsEffect": {
+          "type": "String",
+          "defaultValue": "DeployIfNotExists",
+          "allowedValues": [
+            "DeployIfNotExists",
+            "Disabled"
+          ],
+          "metadata": {
+            "displayName": "Deploy Diagnostic Settings for AVD Host pools to Log Analytics workspace",
+            "description": "Deploys the diagnostic settings for AVD Host pools to stream to a Log Analytics workspace when any host pool which is missing this diagnostic settings is created or updated. The Policy will set the diagnostic with all metrics and category enabled"
+          }
+        }
+      },
+      "policyDefinitions": [
+        {
+          "policyDefinitionReferenceId": "StorageAccountDeployDiagnosticLogDeployLogAnalytics",
+          "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/6f8f98a4-f108-47cb-8e98-91a0d85cd474",
+          "parameters": {
+            "logAnalytics": {
+              "value": "[[parameters('logAnalytics')]"
+            },
+            "effect": {
+              "value": "[[parameters('StorageAccountsLogAnalyticsEffect')]"
+            }
+          },
+          "groupNames": []
+        },
+        {
+          "policyDefinitionReferenceId": "AVDScalingPlansDeployDiagnosticLogDeployLogAnalytics",
+          "policyDefinitionId": "${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/Deploy-Diagnostics-AVDScalingPlans",
+          "parameters": {
+            "logAnalytics": {
+              "value": "[[parameters('logAnalytics')]"
+            },
+            "effect": {
+              "value": "[[parameters('AVDScalingPlansLogAnalyticsEffect')]"
+            },
+            "profileName": {
+              "value": "[[parameters('profileName')]"
+            }
+          },
+          "groupNames": []
+        },
+        {
+          "policyDefinitionReferenceId": "AVDAppGroupDeployDiagnosticLogDeployLogAnalytics",
+          "policyDefinitionId": "${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/Deploy-Diagnostics-AVDAppGroup",
+          "parameters": {
+            "logAnalytics": {
+              "value": "[[parameters('logAnalytics')]"
+            },
+            "effect": {
+              "value": "[[parameters('AVDAppGroupsLogAnalyticsEffect')]"
+            },
+            "profileName": {
+              "value": "[[parameters('profileName')]"
+            }
+          },
+          "groupNames": []
+        },
+        {
+          "policyDefinitionReferenceId": "AVDWorkspaceDeployDiagnosticLogDeployLogAnalytics",
+          "policyDefinitionId": "${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/Deploy-Diagnostics-AVDWorkspace",
+          "parameters": {
+            "logAnalytics": {
+              "value": "[[parameters('logAnalytics')]"
+            },
+            "effect": {
+              "value": "[[parameters('AVDWorkspaceLogAnalyticsEffect')]"
+            },
+            "profileName": {
+              "value": "[[parameters('profileName')]"
+            }
+          },
+          "groupNames": []
+        },
+        {
+          "policyDefinitionReferenceId": "AVDHostPoolsDeployDiagnosticLogDeployLogAnalytics",
+          "policyDefinitionId": "${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/Deploy-Diagnostics-AVDHostPools",
+          "parameters": {
+            "logAnalytics": {
+              "value": "[[parameters('logAnalytics')]"
+            },
+            "effect": {
+              "value": "[[parameters('AVDHostPoolsLogAnalyticsEffect')]"
+            },
+            "profileName": {
+              "value": "[[parameters('profileName')]"
+            }
+          },
+          "groupNames": []
+        },
+        {
+          "policyDefinitionReferenceId": "NetworkSecurityGroupsDeployDiagnosticLogDeployLogAnalytics",
+          "policyDefinitionId": "${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/Deploy-Diagnostics-NetworkSecurityGroups",
+          "parameters": {
+            "logAnalytics": {
+              "value": "[[parameters('logAnalytics')]"
+            },
+            "effect": {
+              "value": "[[parameters('NetworkSecurityGroupsLogAnalyticsEffect')]"
+            },
+            "profileName": {
+              "value": "[[parameters('profileName')]"
+            }
+          },
+          "groupNames": []
+        },
+        {
+          "policyDefinitionReferenceId": "NetworkNICDeployDiagnosticLogDeployLogAnalytics",
+          "policyDefinitionId": "${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/Deploy-Diagnostics-NIC",
+          "parameters": {
+            "logAnalytics": {
+              "value": "[[parameters('logAnalytics')]"
+            },
+            "effect": {
+              "value": "[[parameters('NetworkNICLogAnalyticsEffect')]"
+            },
+            "profileName": {
+              "value": "[[parameters('profileName')]"
+            }
+          },
+          "groupNames": []
+        },
+        {
+          "policyDefinitionReferenceId": "VirtualNetworkDeployDiagnosticLogDeployLogAnalytics",
+          "policyDefinitionId": "${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/Deploy-Diagnostics-VirtualNetwork",
+          "parameters": {
+            "logAnalytics": {
+              "value": "[[parameters('logAnalytics')]"
+            },
+            "effect": {
+              "value": "[[parameters('VirtualNetworkLogAnalyticsEffect')]"
+            },
+            "profileName": {
+              "value": "[[parameters('profileName')]"
+            }
+          },
+          "groupNames": []
+        },
+        {
+          "policyDefinitionReferenceId": "VirtualMachinesDeployDiagnosticLogDeployLogAnalytics",
+          "policyDefinitionId": "${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/Deploy-Diagnostics-VM",
+          "parameters": {
+            "logAnalytics": {
+              "value": "[[parameters('logAnalytics')]"
+            },
+            "effect": {
+              "value": "[[parameters('VirtualMachinesLogAnalyticsEffect')]"
+            },
+            "profileName": {
+              "value": "[[parameters('profileName')]"
+            }
+          },
+          "groupNames": []
+        }
+   ],
+      "policyDefinitionGroups": null
+    }
+  }

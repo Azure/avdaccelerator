@@ -61,7 +61,7 @@ param marketPlaceGalleryWindows object
 param useSharedImage bool
 
 @description('Source custom image ID.')
-param avdImageTemplataDefinitionId string
+param avdImageTemplateDefinitionId string
 
 @description('Fslogix Managed Identity Resource ID.')
 param fslogixManagedIdentityResourceId string
@@ -115,10 +115,10 @@ param time string = utcNow()
 // Variable declaration //
 // =========== //
 
-var avdMaxSessionHostsPerTemplateDeployment = 30 //50 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
-var divisionValue = avdDeploySessionHostsCount / avdMaxSessionHostsPerTemplateDeployment // This determines if any full batches are required.
-var divisionRemainderValue = avdDeploySessionHostsCount % avdMaxSessionHostsPerTemplateDeployment // This determines if any partial batches are required.
-var avdSessionHostBatchCount = divisionRemainderValue > 0 ? divisionValue + 1 : divisionValue // This determines the total number of batches needed, whether full and / or partial.
+var varAvdMaxSessionHostsPerTemplateDeployment = 30 //50 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
+var varDivisionValue = avdDeploySessionHostsCount / varAvdMaxSessionHostsPerTemplateDeployment // This determines if any full batches are required.
+var varDivisionRemainderValue = avdDeploySessionHostsCount % varAvdMaxSessionHostsPerTemplateDeployment // This determines if any partial batches are required.
+var varAvdSessionHostBatchCount = varDivisionRemainderValue > 0 ? varDivisionValue + 1 : varDivisionValue // This determines the total number of batches needed, whether full and / or partial.
 
 var maxAvailabilitySetMembersCount = 20 //200 // This is the max number of session hosts that can be deployed in an availability set.
 var divisionAvSetValue = avdDeploySessionHostsCount / maxAvailabilitySetMembersCount // This determines if any full availability sets are required.
@@ -148,7 +148,7 @@ module avdAvailabilitySet './avd-availability-sets.bicep' = if (!avdUseAvailabil
 
 // Session hosts.
 @batchSize(1)
-module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, avdSessionHostBatchCount): {
+module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, varAvdSessionHostBatchCount): {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
   name: 'AVD-SH-Batch-${i-1}-${time}'
   params: {
@@ -163,10 +163,10 @@ module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, avdSessi
     avdServiceObjectsRgName: avdServiceObjectsRgName
     avdHostPoolName: avdHostPoolName
     avdIdentityDomainName: avdIdentityDomainName
-    avdImageTemplataDefinitionId: avdImageTemplataDefinitionId
+    avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
     sessionHostOuPath: sessionHostOuPath
-    avdSessionHostsCount: i == avdSessionHostBatchCount && divisionRemainderValue > 0 ? divisionRemainderValue : avdMaxSessionHostsPerTemplateDeployment
-    avdSessionHostCountIndex: i == 1 ? avdSessionHostCountIndex : ((i - 1) * avdMaxSessionHostsPerTemplateDeployment) + avdSessionHostCountIndex
+    avdSessionHostsCount: i == varAvdSessionHostBatchCount && varDivisionRemainderValue > 0 ? varDivisionRemainderValue : varAvdMaxSessionHostsPerTemplateDeployment
+    avdSessionHostCountIndex: i == 1 ? avdSessionHostCountIndex : ((i - 1) * varAvdMaxSessionHostsPerTemplateDeployment) + avdSessionHostCountIndex
     avdSessionHostDiskType: avdSessionHostDiskType
     avdSessionHostLocation: avdSessionHostLocation
     avdSessionHostNamePrefix: avdSessionHostNamePrefix

@@ -1169,6 +1169,127 @@
                     ]
                 },
                 {
+                    "name": "avdMonitoring",
+                    "label": "Monitoring",
+                    "type": "Microsoft.Common.Section",
+                    "visible": true,
+                    "elements": [
+                        {
+                            "name": "avdDeployMonitoring",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": true,
+                            "label": "Deploy monitoring",
+                            "defaultValue": "Yes (Recommended)",
+                            "toolTip": "Deploy monitoring settings and if selected deploy Azure log analytics workspace.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "Yes (Recommended)",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "No",
+                                        "value": false
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "avdDeployMonitoringInfo1",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[equals(steps('avdMonitoring').avdDeployMonitoring, true)]",
+                            "options": {
+                                "text": "Azure Virtual Desktop monitoring requires an existing Azure Log Analytics Workspace or the creation of a new one.",
+                                "uri": "https://docs.microsoft.com/en-us/azure/virtual-desktop/azure-monitor",
+                                "style": "Info"
+                            }
+                        },
+                        {
+                            "name": "avdDeployMonitoringAlaWorkspace",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": "[equals(steps('avdMonitoring').avdDeployMonitoring, true)]",
+                            "label": "Log analytics workspace",
+                            "defaultValue": "New",
+                            "toolTip": "Deploy monitoring settings and if selected deploy Azure log analytics workspace.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "New",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "Existing",
+                                        "value": false
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "avdDeployMonitoringNewAlaWorkspaceRetention",
+                            "type": "Microsoft.Common.TextBox",
+                            "visible": "[equals(steps('avdMonitoring').avdDeployMonitoringAlaWorkspace, true)]", 
+                            "label": "Retention policy (Days)",
+                            "toolTip": "Number of days data will be retained in the workspace.",
+                            "defaultValue": 90,
+                            "constraints": {
+                                "required": true,
+                                "regex": "^[a-z0-9A-Z-]{1,90}$",
+                                "validationMessage": "Value must be 1-90 characters."
+                            }
+                        },
+                        {
+                            "name": "avdAlaWorkspaceSubs",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "subscriptions?api-version=2020-01-01"
+                            }
+                        },
+                        {
+                            "name": "avdAlaWorkspaceSubsSelection",
+                            "type": "Microsoft.Common.DropDown",
+                            "visible": "[equals(steps('avdMonitoring').avdDeployMonitoringAlaWorkspace, false)]", 
+                            "label": "Workspace subscription",
+                            "toolTip": "",
+                            "multiselect": false,
+                            "selectAll": false,
+                            "filter": true,
+                            "filterPlaceholder": "Filter items ...",
+                            "multiLine": true,
+                            "constraints": {
+                                "allowedValues": "[map(steps('avdMonitoring').avdAlaWorkspaceSubs.value, (sub) => parse(concat('{\"label\":\"', sub.displayName, '\",\"description\":\"', sub.subscriptionId, '\",\"value\":\"', toLower(sub.subscriptionId), '\"}')) )]",
+                                "required": true
+                            }
+                        },
+                        {
+                            "name": "avdAlaWorkspaceExistingWorkspaces",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat('subscriptions/', steps(steps('avdMonitoring').avdAlaWorkspaceSubsSelection, '/providers/microsoft.operationalinsights/workspaces?api-version=2021-08-01')]"
+                            }
+                        },
+                        {
+                            "name": "avdAlaWorkspaceExistingWorkspacesSelection",
+                            "type": "Microsoft.Common.DropDown",
+                            "visible": "[equals(steps('avdMonitoring').avdDeployMonitoringAlaWorkspace, false)]", 
+                            "label": "Workspace",
+                            "toolTip": "",
+                            "multiselect": false,
+                            "selectAll": true,
+                            "filter": true,
+                            "filterPlaceholder": "Filter items ...",
+                            "multiLine": true,
+                            "constraints": {
+                                "allowedValues": "[map(steps('avdMonitoring').avdAlaWorkspaceSubs.value, (workspace) => parse(concat('{\"label\":\"', workspace.name, '\",\"description\":\"', workspace.location, '\",\"value\":\"', toLower(workspace.id), '\"}')) )]",
+                                "required": true
+                            }
+                        }
+                    ]
+                },
+                {
                     "name": "avdResourceNaming",
                     "label": "Resource naming",
                     "type": "Microsoft.Common.Section",
@@ -1838,7 +1959,7 @@
                 "avdDeploySessionHostsCount": "[if(equals(steps('avdSessionHosts').avdDeploySessionHosts, true), steps('avdSessionHosts').avdSessionHostsSettingsSection.avdSessionHostsCount, 1)]",
                 "useSharedImage": "[if(equals(steps('avdSessionHosts').avdDeploySessionHosts, true), steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsImageSource, false)]",
                 "avdOsImage": "[if(equals(steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsImageSource, false), steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsOsImage, 'win11_21h2')]",
-                "avdImageTemplataDefinitionId": "[if(equals(steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsImageSource, true), steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsComputeGalleryImage.id, 'none')]",
+                "avdImageTemplateDefinitionId": "[if(equals(steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsImageSource, true), steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsComputeGalleryImage.id, 'none')]",
                 "avdSessionHostDiskType": "[steps('avdSessionHosts').avdSessionHostsSettingsSection.avdSessionHostDiskType]",
                 "encryptionAtHost": "[steps('avdSessionHosts').avdSessionHostsSettingsSection.avdSessionHostEncryptionAtHost]",
                 "avdSessionHostsSize": "[if(equals(steps('avdSessionHosts').avdDeploySessionHosts, true), steps('avdSessionHosts').avdSessionHostsSettingsSection.element1, 'Standard_D2s_v4')]",

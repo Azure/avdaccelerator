@@ -59,6 +59,10 @@ param avdTags object
 param time string = utcNow()
 
 // =========== //
+// Variable declaration //
+// =========== //
+
+// =========== //
 // Deployments //
 // =========== //
 
