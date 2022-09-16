@@ -1,10 +1,10 @@
 
 # Creates Session Host 
-data "azurerm_shared_image" "avd" {
-  name                = var.image_name
-  gallery_name        = var.gallery_name
-  resource_group_name = var.image_rg
-}
+# data "azurerm_shared_image" "avd" {
+#   name                = var.image_name
+#   gallery_name        = var.gallery_name
+#   resource_group_name = var.image_rg
+# }
 
 resource "time_rotating" "avd_token" {
   rotation_days = 1
@@ -37,7 +37,7 @@ resource "azurerm_network_interface" "avd_vm_nic" {
 
 resource "azurerm_windows_virtual_machine" "avd_vm" {
   count                      = var.rdsh_count
-  name                       = "${var.prefix}-${count.index + 1}"
+  name                       = "avd-vm-${var.prefix}-${count.index + 1}"
   resource_group_name        = azurerm_resource_group.shrg.name
   location                   = azurerm_resource_group.shrg.location
   size                       = var.vm_size
@@ -45,7 +45,7 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   provision_vm_agent         = true
   admin_username             = var.local_admin_username
   admin_password             = var.local_admin_password
-  encryption_at_host_enabled = true
+  encryption_at_host_enabled = false
 
   os_disk {
     name                 = "${lower(var.prefix)}-${count.index + 1}"
@@ -63,8 +63,8 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   }
 */
 
-  source_image_id = data.azurerm_shared_image.avd.id
-
+  //source_image_id = data.azurerm_shared_image.avd.id
+source_image_id = "/subscriptions/${var.hub_subscription_id}/resourceGroups/${var.image_rg}/providers/Microsoft.Compute/galleries/${var.gallery_name}/images/${var.image_name}/versions/latest"
   depends_on = [
     azurerm_resource_group.shrg,
     azurerm_network_interface.avd_vm_nic

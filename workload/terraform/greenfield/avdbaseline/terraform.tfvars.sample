@@ -9,41 +9,45 @@ on windows_amd64
 + provider registry.terraform.io/hashicorp/time v0.8.0
 */
 
-avdLocation          = "eastus"
-rg_shared_name       = "rg-avd-eus-demo-shared-resources"  #rg-avd-<location>-<prefix>-shared-resources
-rg_network           = "rg-avd-eus-demo-network"            #rg-avd-<location>-<prefix>-network
-rg_stor              = "rg-avd-eus-demo-storage"           #rg-avd-<location>-<prefix>-storage
-rg_pool              = "rg-avd-eus-demo-pool-compute"      #rg-avd-<location>-<prefix>-pool-compute
-rg_personal          = "rg-avd-eus-demo-personal-compute"  #rg-avd-<location>-<prefix>-pool-compute
-rg_remoteapp         = "rg-avd-eus-demo-remoteapp-compute" #rg-avd-<location>-<prefix>-pool-compute
-rg_so                = "rg-avd-eus-demo-service-objects"   #rg-avd-<azure Region>-<prefix>-service-objects
-rg_image_name        = "rg-avd-demo-image-resources"
+avdLocation          = "westeurope"
+rg_shared_name       = "shared-resources"  #rg-avd-<location>-<prefix>-shared-resources
+rg_network           = "network"           #rg-avd-<location>-<prefix>-network
+rg_stor              = "storage"           #rg-avd-<location>-<prefix>-storage
+rg_pool              = "pool-compute"      #rg-avd-<location>-<prefix>-pool-compute
+rg_personal          = "personal-compute"  #rg-avd-<location>-<prefix>-pool-compute
+rg_remoteapp         = "remoteapp-compute" #rg-avd-<location>-<prefix>-pool-compute
+rg_so                = "service-objects"   #rg-avd-<azure Region>-<prefix>-service-objects
+rg_image_name        = "image-resources"
+
+hostpool             = "vdpool" #vdpool-<azure region>-<prefix>
+personalpool         = "vdpool"
+raghostpool          = "vdpool"
+workspace            = "vdws" #vdws-<azure region>-<prefix>-<nnn>
+pworkspace           = "vdws"
+ragworkspace         = "vdws"
+pag                  = "vpag"
+dag                  = "vdag" #vdag-desktop-<azure region>-<prefix>-<nnn>
+rag                  = "vrag" #vdag-rapp-<azure region>-<prefix>-<nnn>
+rt                   = "route-avd" #route-avd-<azure region>-<prefix>-<nnn>
+nsg                  = "nsg-avd"   #nsg-avd-<azure region>-<prefix>-<nnn>
+scplan               = "scaling-plan" #avd-<location>-<prefix>-scaling-plan
+vnet                 = "vnet-avd" #vnet-avd-<azure region>-<prefix>-<nnn>
+snet                 = "snet-avd" #snet-avd-<azure region>-<prefix>-<nnn>
+
+
 prefix               = "demo"
-hostpool             = "vdpool-eus-demo-001" #vdpool-<azure region>-<prefix>
-personalpool         = "vdpool-eus-demo-personal-001"
-raghostpool          = "vdpool-eus-demo-remoteapp-001"
-workspace            = "vdws-eus-demo-001" #vdws-<azure region>-<prefix>-<nnn>
-pworkspace           = "vdws-eus-demo-personal-001"
-ragworkspace         = "vdws-eus-demo-remoteapp-001"
-pag                  = "vdag-pdesktop-eus-demo-001"
-dag                  = "vdag-desktop-eus-demo-001" #vdag-desktop-<azure region>-<prefix>-<nnn>
-rag                  = "vdag-rapp-eus-demo-001"    #vdag-rapp-<azure region>-<prefix>-<nnn>
-local_admin_username = "localadmin"
-local_admin_password = "ChangeMe123!"
-ou_path              = "OU=AVD,OU=AAD,DC=contoso,DC=net"
+local_admin_username = "localadmin"  # Your AVD VM login id to manage username
+local_admin_password = "ChangeMe123!"  # Your AVD VM login id to manage password
+ou_path              = "OU=AVD,OU=AAD,DC=contoso,DC=net" #optional 
 vm_size              = "Standard_D8s_v5"
 vnet_range           = ["10.21.0.0/23"]
 subnet_range         = ["10.21.0.0/23"]
 allow_list_ip        = ["10.21.0.0/23"]
 dns_servers          = ["10.0.1.6", "168.63.129.16"]
-rt                   = "route-avd-eus-demo-001" #route-avd-<azure region>-<prefix>-<nnn>
-nsg                  = "nsg-avd-eus-demo-001"   #nsg-avd-<azure region>-<prefix>-<nnn>
-aad_group_name       = "avdusersgrp"
-domain_name          = "contoso.net"
+aad_group_name       = "Desktop Virtualization User"  #user group must pre-created on your AD server and sync to Azure AD
+domain_name          = "contoso.net" # your on-perm AD server domain name 
 domain_user          = "domainjoiner" # do not include domain name as this is appended
 domain_password      = "ChangeMe123$"
-vnet                 = "vnet-avd-eus-demo-001" #vnet-avd-<azure region>-<prefix>-<nnn>
-snet                 = "snet-avd-eus-demo-001" #snet-avd-<azure region>-<prefix>-<nnn>
 ad_vnet              = "infra-network"
 ad_rg                = "infra-rg"
 rdsh_count           = 2
@@ -53,7 +57,8 @@ gallery_name         = "avdgallery_eastus_AIBdemoAVD"
 avd_users = [
   "avduser01@contoso.net",
   "avduser02@contoso.net"
-]
+] #the list of users must pre-created on your AD server and sync to Azure AD
+
 
 
 
