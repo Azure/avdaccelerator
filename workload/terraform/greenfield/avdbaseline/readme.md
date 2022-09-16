@@ -25,6 +25,7 @@ To get started with Terraform on Azure check out their [tutorial](https://learn.
 - Current version of the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 - Current version of the Terraform CLI
 - An Azure Subscription(s) where you or an identity you manage has `Owner` [RBAC permissions](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#owner)
+- Ensure Encrption at Host feature is already enabled on the subscription. To enable: az feature register --name EncryptionAtHost  --namespace Microsoft.Compute. To validate: az feature show --name EncryptionAtHost --namespace Microsoft.Compute
 
 ## Planning
 
