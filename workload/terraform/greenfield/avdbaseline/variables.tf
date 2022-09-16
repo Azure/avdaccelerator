@@ -198,3 +198,13 @@ variable "allow_list_ip" {
   type        = list(string)
   description = "List of allowed IP Addresses"
 }
+
+variable "hub_subscription_id" {
+  type        = string
+  description = "Hub Subscription id"
+}
+   
+variable "spoke_subscription_id" {
+  type        = string
+  description = "Spoke Subscription id"
+}
