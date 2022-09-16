@@ -130,9 +130,9 @@ var varCustomPolicySetDefinitions = {
 }
 
 var varAvdOsSettingsAlaWorkspaceName = deployAlaWorkspace ? avdAlaWorkspaceName: varAvdExistingAlaWorkspaceName
-var varAvdExistingAlaWorkspaceName = split(alaWorkspaceId, '/')[8]
-var varAvdExistingAlaWorkspaceRgName = split(alaWorkspaceId, '/')[4]
-var varAvdExistingAlaWorkspaceSubID = split(alaWorkspaceId, '/')[2]
+var varAvdExistingAlaWorkspaceName =  deployAlaWorkspace ? '' : split(alaWorkspaceId, '/')[8]
+var varAvdExistingAlaWorkspaceRgName = deployAlaWorkspace ? '' :  split(alaWorkspaceId, '/')[4]
+var varAvdExistingAlaWorkspaceSubID = deployAlaWorkspace ? '' :  split(alaWorkspaceId, '/')[2]
 var varAvdOsSettingsAlaWorkspaceRgName = deployAlaWorkspace ? avdMonitoringRgName: varAvdExistingAlaWorkspaceRgName
 var varAvdOsSettingsAlaWorkspaceSubId = deployAlaWorkspace ? avdWorkloadSubsId: varAvdExistingAlaWorkspaceSubID
 

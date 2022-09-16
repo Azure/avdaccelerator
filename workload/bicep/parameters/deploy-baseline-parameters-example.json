@@ -17,6 +17,9 @@
         "avdManagementPlaneLocation": {
             "value": "eastus2"
         },
+        "avdDeployMonitoring": {
+            "value": true
+        },   
         "avdWorkloadSubsId": {
             "value": "<<subscriptionId>>"
         },
