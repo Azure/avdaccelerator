@@ -127,6 +127,9 @@ param avdFslogixFileShareQuotaSize int = 512
 @description('Optional. Deploy new session hosts. (Default: true)')
 param avdDeploySessionHosts bool = true
 
+@description('Optional. Deploy AVD monitoring resources and setings. (Default: true)')
+param avdDeployMonitoring bool = true
+
 @description('Optional. Deploy AVD Azure log analytics workspace. (Default: true)')
 param deployAlaWorkspace bool = true
 
@@ -681,6 +684,9 @@ module avdBaselineNetworkResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
         enableDefaultTelemetry: false
         tags: createResourceTags ? varCommonResourceTags : {}
     }
+    dependsOn: [
+        deployMonitoring
+    ]
 }
 
 // Service objects.
@@ -693,6 +699,9 @@ module avdBaselineServiceObjectsResourceGroup '../../carml/1.2.0/Microsoft.Resou
         enableDefaultTelemetry: false
         tags: createResourceTags ? varCommonResourceTags : {}
     }
+    dependsOn: [
+        deployMonitoring
+    ]
 }
 
 // Compute.
@@ -705,6 +714,9 @@ module avdBaselineComputeResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
         enableDefaultTelemetry: false
         tags: createResourceTags ? varAllComputeStorageTags : {}
     }
+    dependsOn: [
+        deployMonitoring
+    ]
 }
 
 // Storage.
@@ -714,6 +726,21 @@ module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
     params: {
         name: varAvdStorageObjectsRgName
         location: avdSessionHostLocation
+        enableDefaultTelemetry: false
+        tags: createResourceTags ? varAllComputeStorageTags : {}
+    }
+    dependsOn: [
+        deployMonitoring
+    ]
+}
+
+// Monitoring.
+module avdBaselineMonitoringResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (deployAlaWorkspace) {
+    scope: subscription(avdWorkloadSubsId)
+    name: 'Deploy-${varAvdMonitoringRgName}-${time}'
+    params: {
+        name: varAvdMonitoringRgName
+        location: avdManagementPlaneLocation
         enableDefaultTelemetry: false
         tags: createResourceTags ? varAllComputeStorageTags : {}
     }
@@ -763,17 +790,22 @@ module validation 'avd-modules/avd-validation.bicep' = {
 */
 
 // Monitoring.
-module avdBaselineMonitoringResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (deployAlaWorkspace) {
-    scope: subscription(avdWorkloadSubsId)
-    name: 'Deploy-${varAvdMonitoringRgName}-${time}'
+module deployMonitoring './avd-modules/avd-monitoring.bicep' = if (avdDeployMonitoring) {
+    name: 'Deploy-AVD-monitoring-${time}'
     params: {
-        name: varAvdMonitoringRgName
-        location: avdManagementPlaneLocation
-        enableDefaultTelemetry: false
-        tags: createResourceTags ? varAllComputeStorageTags : {}
+        avdManagementPlaneLocation: avdManagementPlaneLocation
+        deployAlaWorkspace: deployAlaWorkspace
+        alaWorkspaceId: deployAlaWorkspace ? '' : alaWorkspaceId
+        avdMonitoringRgName: varAvdMonitoringRgName
+        avdAlaWorkspaceName: deployAlaWorkspace ? varAvdAlaWorkspaceName: ''
+        avdAlaWorkspaceDataRetention: avdAlaWorkspaceDataRetention
+        avdWorkloadSubsId: avdWorkloadSubsId
+        avdTags: createResourceTags ? varAllResourceTags : {}
     }
+    dependsOn: [
+        avdBaselineMonitoringResourceGroup
+    ]
 }
-//
 
 // Networking.
 module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
@@ -799,6 +831,7 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
     }
     dependsOn: [
         avdBaselineNetworkResourceGroup
+        deployMonitoring
     ]
 }
 
@@ -1017,27 +1050,6 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         hostPoolToken: avdManagementPLane.outputs.hostPooltoken
         marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
-        avdTags: createResourceTags ? varAllResourceTags : {}
-    }
-    dependsOn: [
-        avdBaselineComputeResourceGroup
-        avdNetworking
-        avdWrklKeyVaultget
-        avdWrklKeyVault
-    ]
-}
-
-// Monitoring.
-module deployMonitoring './avd-modules/avd-monitoring.bicep' = if (avdDeploySessionHosts) {
-    name: 'Deploy-AVD-monitoring-${time}'
-    params: {
-        avdManagementPlaneLocation: avdManagementPlaneLocation
-        deployAlaWorkspace: deployAlaWorkspace
-        alaWorkspaceId: deployAlaWorkspace ? '' : alaWorkspaceId
-        avdMonitoringRgName: varAvdMonitoringRgName
-        avdAlaWorkspaceName: deployAlaWorkspace ? varAvdAlaWorkspaceName: ''
-        avdAlaWorkspaceDataRetention: avdAlaWorkspaceDataRetention
-        avdWorkloadSubsId: avdWorkloadSubsId
         avdTags: createResourceTags ? varAllResourceTags : {}
     }
     dependsOn: [
