@@ -24,8 +24,8 @@ param avdAlaWorkspaceName string
 @description('Required.  Azure log analytics workspace name data retention.')
 param avdAlaWorkspaceDataRetention int
 
-//@description('Required. Tags to be applied to resources')
-//param avdTags object
+@description('Required. Tags to be applied to resources')
+param avdTags object
 
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
@@ -583,6 +583,11 @@ module avdPolicySetassignment '../../../carml/1.2.0/Microsoft.Authorization/poli
     description: varCustomPolicySetDefinitions.libSetDefinition.properties.description
     displayName: varCustomPolicySetDefinitions.libSetDefinition.properties.displayName
     metadata: varCustomPolicySetDefinitions.libSetDefinition.properties.metadata
+    identity: 'SystemAssigned'
+    roleDefinitionIds: [
+      '/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa'
+      '/providers/Microsoft.Authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293'
+    ]
     parameters: {
       logAnalytics: {
         value: deployAlaWorkspace ? avdAlaWorkspace.outputs.resourceId : alaWorkspaceId
@@ -592,6 +597,7 @@ module avdPolicySetassignment '../../../carml/1.2.0/Microsoft.Authorization/poli
   }
   dependsOn: [
     avdPolicySetDefinitions
+    avdAlaWorkspace
   ]
 }
 
@@ -599,16 +605,18 @@ module avdPolicySetassignment '../../../carml/1.2.0/Microsoft.Authorization/poli
 @batchSize(1)
 module avdOsEvents '../../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/dataSources/deploy.bicep' = [for (varWindowsEvent, i) in varWindowsEvents: {
   scope: resourceGroup('${varAvdOsSettingsAlaWorkspaceSubId}', '${varAvdOsSettingsAlaWorkspaceRgName}')
-  name: 'AVD-Monitoring-OS-Settings-${i}-${time}'
+  name: 'AVD-Monitoring-OS-Events-${i}-${time}'
   params: {
-    name: 'workspaces/${varAvdOsSettingsAlaWorkspaceName}/dataSources/WindowsEvent${i}'
+    name: 'WindowsEvent${i}'
     kind: 'WindowsEvent'
     logAnalyticsWorkspaceName: deployAlaWorkspace ? avdAlaWorkspace.outputs.name: varAvdExistingAlaWorkspaceName
     eventLogName: varWindowsEvent.name
     eventTypes: varWindowsEvent.types
-    //tags: avdTags
+    tags: avdTags
   }
-  dependsOn: []
+  dependsOn: [
+    avdAlaWorkspace
+  ]
 }]
 
 @batchSize(1)
@@ -616,14 +624,14 @@ module avdOsPerformanceCounters '../../../carml/1.2.1/Microsoft.OperationalInsig
   scope: resourceGroup('${varAvdOsSettingsAlaWorkspaceSubId}', '${varAvdOsSettingsAlaWorkspaceRgName}')
   name: 'AVD-Monitoring-OS-Performance-Counters-${i}-${time}'
   params: {
-    name: '${varAvdOsSettingsAlaWorkspaceName}/WindowsEvent${i}'
+    name: 'WindowsPerformanceCounter${i}'
     kind: 'WindowsPerformanceCounter'
     logAnalyticsWorkspaceName: deployAlaWorkspace ? avdAlaWorkspace.outputs.name: varAvdExistingAlaWorkspaceName
     objectName: varWindowsPerformanceCounter.objectName
     instanceName: varWindowsPerformanceCounter.instanceName
     intervalSeconds: varWindowsPerformanceCounter.intervalSeconds
     counterName: varWindowsPerformanceCounter.counterName
-    //tags: avdTags
+    tags: avdTags
   }
   dependsOn: [
     avdOsEvents
