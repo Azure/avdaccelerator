@@ -54,6 +54,9 @@ rdsh_count           = 2
 image_name           = "avdImage-microsoftwindowsdesktop-office-365-win11-21h2-avd-m365"
 image_rg             = "rg-eastus-avd-AIBdemoAVD-shared-resources"
 gallery_name         = "avdgallery_eastus_AIBdemoAVD"
+spoke_subscription_id = "Your Spoke Subscription ID"
+hub_subscription_id = "Your Hub Subscription ID"
+
 avd_users = [
   "avduser01@contoso.net",
   "avduser02@contoso.net"
