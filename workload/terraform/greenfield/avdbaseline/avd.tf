@@ -30,6 +30,7 @@ data "azurerm_role_definition" "power_role" {
 
 data "azuread_service_principal" "spn" {
   display_name = "Windows Virtual Desktop"
+  application_id = "9cdead84-a844-4324-93f2-b2e6bb768d07"
 }
 
 resource "azurerm_role_assignment" "power" {
