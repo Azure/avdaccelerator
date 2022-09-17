@@ -21,6 +21,11 @@ resource "azurerm_virtual_desktop_host_pool" "hostpool" {
   type                     = "Pooled"
   maximum_sessions_allowed = 16
   load_balancer_type       = "DepthFirst" #[BreadthFirst DepthFirst]
+
+
+  depends_on = [
+    azurerm_resource_group.rg
+  ]
 }
 
 #Autoscale is currently only available in the public cloud.
@@ -29,8 +34,12 @@ data "azurerm_role_definition" "power_role" {
 }
 
 data "azuread_service_principal" "spn" {
+<<<<<<< HEAD
   display_name = "Windows Virtual Desktop"
   
+=======
+  application_id = "9cdead84-a844-4324-93f2-b2e6bb768d07"
+>>>>>>> e7c8fb8808a146ff58112c64832c6661cd530140
 }
 
 resource "azurerm_role_assignment" "power" {
@@ -145,18 +154,9 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
   log_analytics_workspace_id = data.azurerm_log_analytics_workspace.lawksp.id
 
   depends_on = [
-    data.azurerm_log_analytics_workspace.lawksp
+    data.azurerm_log_analytics_workspace.lawksp,
+    azurerm_virtual_desktop_host_pool.hostpool
   ]
-
-  log {
-    category = "AgentHealthStatus"
-    enabled  = true
-
-    retention_policy {
-      days    = 7
-      enabled = true
-    }
-  }
 
   log {
     category = "Checkpoint"
@@ -167,26 +167,9 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
       enabled = true
     }
   }
-  log {
-    category = "Connection"
-    enabled  = true
 
-    retention_policy {
-      days    = 7
-      enabled = true
-    }
-  }
   log {
     category = "Error"
-    enabled  = true
-
-    retention_policy {
-      days    = 7
-      enabled = true
-    }
-  }
-  log {
-    category = "HostRegistration"
     enabled  = true
 
     retention_policy {
@@ -204,7 +187,36 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
     }
   }
 
+   log {
+    category = "Connection"
+    enabled  = true
+
+    retention_policy {
+      days    = 7
+      enabled = true
+    }
+  }
+   log {
+    category = "HostRegistration"
+    enabled  = true
+
+    retention_policy {
+      days    = 7
+      enabled = true
+    }
+  }
+
   log {
+    category = "AgentHealthStatus"
+    enabled  = true
+
+    retention_policy {
+      days    = 7
+      enabled = true
+    }
+  }
+
+ log {
     category = "NetworkData"
     enabled  = true
 
@@ -224,9 +236,6 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
     }
   }
 }
-
-
-
 
 # Create Diagnostic Settings for AVD Desktop App Group
 resource "azurerm_monitor_diagnostic_setting" "avd-dag1" {

@@ -46,7 +46,13 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   admin_username             = var.local_admin_username
   admin_password             = var.local_admin_password
   encryption_at_host_enabled = true
+<<<<<<< HEAD
    os_disk {
+=======
+  # To enable encryption at host you must ensure the feature is already enabled on the subscription with az feature register --name EncryptionAtHost  --namespace Microsoft.Compute. To check az feature show --name EncryptionAtHost --namespace Microsoft.Compute
+
+  os_disk {
+>>>>>>> e7c8fb8808a146ff58112c64832c6661cd530140
     name                 = "${lower(var.prefix)}-${count.index + 1}"
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
@@ -66,7 +72,9 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
 source_image_id = "/subscriptions/${var.hub_subscription_id}/resourceGroups/${var.image_rg}/providers/Microsoft.Compute/galleries/${var.gallery_name}/images/${var.image_name}/versions/latest"
   depends_on = [
     azurerm_resource_group.shrg,
-    azurerm_network_interface.avd_vm_nic
+    azurerm_network_interface.avd_vm_nic,
+    azurerm_resource_group.rg,
+    azurerm_virtual_desktop_host_pool.hostpool
   ]
 
   identity {
