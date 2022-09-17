@@ -188,5 +188,6 @@ module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, avdSessi
     avdTags: avdTags
   }
   dependsOn: [
+    avdAvailabilitySet
   ]
 }]
