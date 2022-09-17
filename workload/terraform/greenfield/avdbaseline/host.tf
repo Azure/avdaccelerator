@@ -46,8 +46,7 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   admin_username             = var.local_admin_username
   admin_password             = var.local_admin_password
   encryption_at_host_enabled = true
- # To enable encryption at host you must ensure the feature is already enabled on the subscription with az feature register --name EncryptionAtHost  --namespace Microsoft.Compute. To check az feature show --name EncryptionAtHost --namespace Microsoft.Compute
-  os_disk {
+   os_disk {
     name                 = "${lower(var.prefix)}-${count.index + 1}"
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
