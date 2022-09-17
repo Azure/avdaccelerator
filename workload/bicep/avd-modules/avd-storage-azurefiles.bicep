@@ -148,7 +148,7 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
             shares: [
                 {
                     name: avdFslogixProfileContainerFileShareName
-                    shareQuota: avdFslogixFileShareQuotaSize * 100 //Portal UI steps scale
+                    sharedQuota: avdFslogixFileShareQuotaSize * 100 //Portal UI steps scale
                 }
             ]
             protocolSettings: avdFslogixFileShareMultichannel ? {
@@ -241,6 +241,29 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
     ]
 }
 
+// Introduce delay for management VM to be ready.
+module managementVmDelay '../../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
+    scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
+    name: 'AVD-Management-VM-Delay-${time}'
+    params: {
+        name: 'AVD-userManagedIdentityDelay-${time}'
+        location: avdSessionHostLocation
+        azPowerShellVersion: '6.2'
+        cleanupPreference: 'Always'
+        timeout: 'PT10M'
+        scriptContent: '''
+        Write-Host "Start"
+        Get-Date
+        Start-Sleep -Seconds 120
+        Write-Host "Stop"
+        Get-Date
+        '''
+    }
+    dependsOn: [
+        managementVM
+    ]
+}
+
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
 module addFslogixShareToDomainSript '../../vm-custom-extensions/add-azure-files-to-domain-script.bicep' = { //if(avdIdentityServiceProvider == 'ADDS')  {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
@@ -254,7 +277,7 @@ module addFslogixShareToDomainSript '../../vm-custom-extensions/add-azure-files-
     }
     dependsOn: [
         fslogixStorage
-        managementVM
+        managementVmDelay
     ]
 }
 

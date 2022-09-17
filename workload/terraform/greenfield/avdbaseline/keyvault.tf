@@ -7,6 +7,13 @@ resource "azurerm_key_vault" "kv" {
   purge_protection_enabled = true
   tags                     = local.tags
 
+  depends_on = [
+    azurerm_resource_group.rg,
+    azurerm_virtual_desktop_host_pool.hostpool,
+    azurerm_virtual_desktop_workspace.workspace,
+    azurerm_virtual_desktop_application_group.dag
+  ]
+
 
   lifecycle { ignore_changes = [access_policy, tags] }
 
