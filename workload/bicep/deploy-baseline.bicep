@@ -1074,5 +1074,7 @@ module deployMonitoringEventsPerformanceSettings './avd-modules/avd-monitoring-e
     }
     dependsOn: [
         deployMonitoringDiagnosticSettings
+        deployAndConfigureAvdSessionHosts
+        deployAvdStorageAzureFiles
     ]
 }
