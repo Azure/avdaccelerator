@@ -1,5 +1,5 @@
 {
-    "name": "policy-set-deploy-diagnostics-to-log-analytics",
+    "name": "policy-set-deploy-avd-diagnostics-to-log-analytics",
     "type": "Microsoft.Authorization/policySetDefinitions",
     "apiVersion": "2021-06-01",
     "scope": null,

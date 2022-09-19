@@ -78,7 +78,7 @@ var varCustomPolicyDefinitions = [
 
 // This variable contains a number of objects that load in the custom Azure Policy Set/Initiative Defintions that are provided as part of the ESLZ/ALZ reference implementation - this is automatically created in the file 'infra-as-code\bicep\modules\policy\lib\policy_set_definitions\_policySetDefinitionsBicepInput.txt' via a GitHub action, that runs on a daily schedule, and is then manually copied into this variable.
 var varCustomPolicySetDefinitions = {
-  name: 'policy-set-deploy-diagnostics-to-log-analytics'
+  name: 'policy-set-deploy-avd-diagnostics-to-log-analytics'
   libSetDefinition: json(loadTextContent('../../policies/policy-sets/policy-set-definition-es-deploy-diagnostics-to-log-analytics.json'))
   libSetChildDefinitions: [
     {
