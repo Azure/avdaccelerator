@@ -71,7 +71,7 @@ var varCustomPolicyDefinitions = [
     libDefinition: json(loadTextContent('../../policies/policy-definitions/policy-definition-es-deploy-diagnostics-virtual-network.json'))
   }
   //{
-  //  name: 'policy-deploy-diagnostics-virtual-storage'
+  //  name: 'policy-deploy-diagnostics-storage-account'
   //  libDefinition: json(loadTextContent('../../policies/policy-definitions/policy-definition-es-deploy-diagnostics-virtual-network.json'))
   //}
 ]
