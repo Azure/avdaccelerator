@@ -685,7 +685,7 @@ module avdBaselineNetworkResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
         tags: createResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
-        deployMonitoring
+        deployMonitoringDiagnosticSettings
     ]
 }
 
@@ -700,7 +700,7 @@ module avdBaselineServiceObjectsResourceGroup '../../carml/1.2.0/Microsoft.Resou
         tags: createResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
-        deployMonitoring
+        deployMonitoringDiagnosticSettings
     ]
 }
 
@@ -715,7 +715,7 @@ module avdBaselineComputeResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
         tags: createResourceTags ? varAllComputeStorageTags : {}
     }
     dependsOn: [
-        deployMonitoring
+        deployMonitoringDiagnosticSettings
     ]
 }
 
@@ -730,7 +730,7 @@ module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
         tags: createResourceTags ? varAllComputeStorageTags : {}
     }
     dependsOn: [
-        deployMonitoring
+        deployMonitoringDiagnosticSettings
     ]
 }
 
@@ -789,9 +789,9 @@ module validation 'avd-modules/avd-validation.bicep' = {
 }
 */
 
-// Monitoring.
-module deployMonitoring './avd-modules/avd-monitoring.bicep' = if (avdDeployMonitoring) {
-    name: 'Deploy-AVD-monitoring-${time}'
+// Monitoring Diagnostic settings policies and if enabled log analytics work space.
+module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring-diagnostic-settings.bicep' = if (avdDeployMonitoring) {
+    name: 'Deploy-AVD-Diagnostic-${time}'
     params: {
         avdManagementPlaneLocation: avdManagementPlaneLocation
         deployAlaWorkspace: deployAlaWorkspace
@@ -831,7 +831,7 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
     }
     dependsOn: [
         avdBaselineNetworkResourceGroup
-        deployMonitoring
+        deployMonitoringDiagnosticSettings
     ]
 }
 
@@ -1057,5 +1057,22 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         avdNetworking
         avdWrklKeyVaultget
         avdWrklKeyVault
+    ]
+}
+
+// Monitoring Diagnostic settings policies and if enabled log analytics work space.
+module deployMonitoringEventsPerformanceSettings './avd-modules/avd-monitoring-events-performance-counters.bicep' = if (avdDeployMonitoring) {
+    name: 'Deploy-AVD-Events-Performance-${time}'
+    params: {
+        avdManagementPlaneLocation: avdManagementPlaneLocation
+        deployAlaWorkspace: deployAlaWorkspace
+        alaWorkspaceId: deployAlaWorkspace ? '' : alaWorkspaceId
+        avdMonitoringRgName: varAvdMonitoringRgName
+        avdAlaWorkspaceName: deployAlaWorkspace ? varAvdAlaWorkspaceName: ''
+        avdWorkloadSubsId: avdWorkloadSubsId
+        avdTags: createResourceTags ? varAllResourceTags : {}
+    }
+    dependsOn: [
+        deployMonitoringDiagnosticSettings
     ]
 }
