@@ -12,7 +12,6 @@ This accelerator is to be used as starter kit and you can expand its functionali
 - [Planning](#planning)
 - [AVD Spoke Network](#AVD-Network)
 - [AVD Baseline](#AVD-Baseline)   
-- [Custom Image Build](#Custom-Image-Build)    
 - [Backend Setup](#Backends)  
 - [Terraform file Structure](#Files)  
 
@@ -112,13 +111,6 @@ Validated on provider versions:
 
 ![AVD Baseline diagram](../../../docs/diagrams/avd-accelerator-terraform-baseline-image.png)
 
-
-## Custom-Image-Build
-
-Deploy a customer image based on the latest version of the Azure Marketplace image for Windows 11 21H2 with M365 using Azure Image Builder to an Azure Compute Gallery. The custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates.
-
-![Custom Image diagram](../../../docs/diagrams/avd-accelerator-terraform-aib-custom-image.png)
-
 ## Backends
 
 The default templates write a state file directly to disk locally to where you are executing terraform from. If you wish to AzureRM backend please see [AzureRM Backend](https://www.terraform.io/docs/language/settings/backends/azurerm.html). This deployment highlights using Azure Blog Storage to store state file and Key Vault
@@ -180,17 +172,6 @@ az keyvault secret set --vault-name "<Azure Virtual Desktopkeyvaultdemo>" --name
 ```
 
 </details>
-
-## Files
-
-The Custom Image Terraform files structure:
-| file Name           | Description                                                  |
-| ------------------- | ------------------------------------------------------------ |
-| aib.tf              | This file deploys Azure Image Builder and Compute Gallery |
-| outputs.tf          | This will contains the outputs post deployment |
-| variables.tf        | Variables have been created in all files for various properties and names, these are placeholders and are not required to be changed unless there is a need to. See below |
-| terraform.tfvars    | This file contains all variables to be changed from the defaults, you are only required to change these as per your requirements |
-
 ## Deployment Steps
 
 1. Modify the `terraform.tfvars` file to define the desired names, location, networking, and other variables
