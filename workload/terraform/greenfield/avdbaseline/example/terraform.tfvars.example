@@ -8,7 +8,7 @@ on windows_amd64
 + provider registry.terraform.io/hashicorp/random v3.3.2
 + provider registry.terraform.io/hashicorp/time v0.8.0
 */
-
+avdLocation          = "westeurope"
 rg_shared_name       = "shared-resources"  #rg-avd-<location>-<prefix>-shared-resources
 rg_network           = "network"           #rg-avd-<location>-<prefix>-network
 rg_stor              = "storage"           #rg-avd-<location>-<prefix>-storage
