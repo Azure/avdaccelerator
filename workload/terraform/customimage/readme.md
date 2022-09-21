@@ -25,7 +25,7 @@ To get started with Terraform on Azure check out their [tutorial](https://learn.
 
 Deploy a customer image based on the latest version of the Azure Marketplace image for Windows 11 21H2 with M365 using Azure Image Builder to an Azure Compute Gallery. The custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates.
 
-![Custom Image diagram](../../../docs/diagrams/avd-accelerator-terraform-aib-custom-image.png)
+![Custom Image diagram](../docs/diagrams/avd-accelerator-terraform-aib-custom-image.png)
 
 ## Files
 
@@ -111,7 +111,7 @@ az keyvault secret set --vault-name "<Azure Virtual Desktopkeyvaultdemo>" --name
 5. Run `terraform apply` to confirm the deployment
 
 ## Confirming Deployment
-![Verify resource created in the portal](../../../docs/diagrams/avd-accelerator-terraform-aib-deployed.png)
+![Verify resource created in the portal](../docs/diagrams/avd-accelerator-terraform-aib-deployed.png)
 
 ## Additional References
 
