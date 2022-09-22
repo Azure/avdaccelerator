@@ -20,11 +20,11 @@ variables:
   - name: var-bashPreInjectScript
     value: 'set -E; function catch { echo "##vso[task.logissue type=error]Caller: $(caller), LineNo: $LINENO, Command: $BASH_COMMAND" ; exit 1 ; } ; echo ; echo "Current working directory: $(pwd)" ; echo ; trap catch ERR'
   - name: avdShrdlSubsId
-    value: f013bc3f-1407-4b68-a977-9f22ef438677
+    value: Enter your subscription ID
   - name: avdWrklSubsId
-    value: f013bc3f-1407-4b68-a977-9f22ef438677
+    value: Enter your subscription ID
   - name: avdWrklSecretAccess
-    value: f013bc3f-1407-4b68-a977-9f22ef438677
+    value: Enter your subscription ID
   - name: createAvdVnet
     value: false
   - name: useSharedImage
@@ -35,15 +35,15 @@ variables:
     value: win10_21h2_office
     #value: win11_21h2
   - name: avdIdentityDomainName
-    value: azurelab.ca
+    value: domain.com[Change this to your domain name]
   - name: avdDomainJoinUserName
-    value: 'azadmin@azurelab.ca'
+    value: 'enter value as "user@domain.com"'[Change this to your domain alias]
   - name: avdDomainJoinUserPassword
-    value: '!V0ipc@123'
+    value: 'Enter your password'
   - name: avdVmLocalUserName
     value: azadmin
   - name: avdVmLocalUserPassword
-    value: '!R37fallacy1505'
+    value: 'Enter your password'
 
 
 stages:
