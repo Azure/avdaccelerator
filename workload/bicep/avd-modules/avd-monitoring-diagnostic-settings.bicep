@@ -203,7 +203,7 @@ module avdPolicySetassignment '../../../carml/1.2.0/Microsoft.Authorization/poli
         value: deployAlaWorkspace ? avdAlaWorkspace.outputs.resourceId : alaWorkspaceId
       }
     }
-    policyDefinitionId: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/policySetDefinitions/policy-set-deploy-diagnostics-to-log-analytics'
+    policyDefinitionId: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/policySetDefinitions/policy-set-deploy-avd-diagnostics-to-log-analytics'
   }
   dependsOn: [
     avdPolicySetDefinitions
