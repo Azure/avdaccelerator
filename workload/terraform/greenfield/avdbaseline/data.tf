@@ -12,8 +12,8 @@ resource "random_string" "random" {
 
 # Get network subnet data
 data "azurerm_virtual_network" "vnet" {
-  name                = "${var.vnet}-${substr(var.avdLocation,0,5)}-${var.prefix}"  //var.vnet
-  resource_group_name = "rg-avd-${substr(var.avdLocation,0,5)}-${var.prefix}-${var.rg_network}" //var.rg_network
+  name                = "${var.vnet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"              //var.vnet
+  resource_group_name = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_network}" //var.rg_network
 
   depends_on = [
     module.network
@@ -22,9 +22,9 @@ data "azurerm_virtual_network" "vnet" {
 
 # Get network subnet data
 data "azurerm_subnet" "subnet" {
-  name                 = "${var.snet}-${substr(var.avdLocation,0,5)}-${var.prefix}" //var.snet
-  resource_group_name  = "rg-avd-${substr(var.avdLocation,0,5)}-${var.prefix}-${var.rg_network}" //var.rg_network
-  virtual_network_name = "${var.vnet}-${substr(var.avdLocation,0,5)}-${var.prefix}" //var.vnet
+  name                 = "${var.snet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"              //var.snet
+  resource_group_name  = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_network}" //var.rg_network
+  virtual_network_name = "${var.vnet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"              //var.vnet
 
   depends_on = [
     module.network
