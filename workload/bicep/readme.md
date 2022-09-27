@@ -33,12 +33,16 @@ New-AzSubscriptionDeployment `
   -deploymentPrefix <deploymentPrefix> `
   -avdVmLocalUserName <localUserName> `
   -avdVmLocalUserPassword $avdVmLocalUserPassword `
+  -avdIdentityServiceProvider <IdentityServiceProvider> `
   -avdIdentityDomainName <domainJoinUserName> `
-  -avdDomainJoinUserPassword $avdDomainJoinUserPassword `
   -avdDomainJoinUserName <domainJoinUserName>  `
+  -avdDomainJoinUserPassword $avdDomainJoinUserPassword `
   -existingHubVnetResourceId <hubVnetResourceId>  `
   -customDnsIps <customDNSservers>  `
   -avdEnterpriseAppObjectId <wvdAppObjectId> `
+  -avdVnetPrivateDnsZone $true `
+  -avdVnetPrivateDnsZoneFilesId <PrivateDnsZoneFilesId> `
+  -avdVnetPrivateDnsZoneKeyvaultId <PrivateDnsZoneKeyvaultId> `
   -Location eastus2
 ```
 
