@@ -8,9 +8,6 @@
         "avdUseCustomNaming": {
             "value": false
         },
-        "avdServiceObjectsRgCustomName": {
-            "value": "<<avdServiceObjectsRgCustomName>>"
-        },
         "avdSessionHostLocation": {
             "value": "eastus2"
         },
@@ -90,13 +87,13 @@
             "value": "<<customDnsIp>>"
         },
         "avdVnetPrivateDnsZone": {
-            "value": false
+            "value": true
         },
         "avdVnetPrivateDnsZoneFilesId": {
-            "value": ""
+            "value": "<<PrivateDnsZoneFilesId>>"
         },
         "avdVnetPrivateDnsZoneKeyvaultId": {
-            "value": ""
+            "value": "<<PrivateDnsZoneKeyvaultId>>"
         },
         "vNetworkGatewayOnHub": {
             "value": false
