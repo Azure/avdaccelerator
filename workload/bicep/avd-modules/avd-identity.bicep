@@ -123,12 +123,22 @@ module fslogixReaderRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/rol
   dependsOn: []
 }
 
-//Scaling plan.
-module scalingPlanRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/subscription/deploy.bicep' = if (avdDeployScalingPlan) {
-  name: 'Scaling-Plan-Role-Assign-${time}'
-  scope: subscription(avdWorkloadSubsId)
+//Scaling plan compute RG.
+module scalingPlanRoleAssignCompute '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (avdDeployScalingPlan) {
+  name: 'Scaling-Plan-Assign-Compute-${time}'
+  scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
   params: {
-    location: avdManagementPlaneLocation
+    roleDefinitionIdOrName: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${avdVmPowerStateContributor}' 
+    principalId: avdEnterpriseAppObjectId
+  }
+  dependsOn: []
+}
+
+//Scaling plan service objects RG.
+module scalingPlanRoleAssignServiceObjects '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (avdDeployScalingPlan) {
+  name: 'Scaling-Plan-Assign-Service-${time}'
+  scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
+  params: {
     roleDefinitionIdOrName: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${avdVmPowerStateContributor}' 
     principalId: avdEnterpriseAppObjectId
   }

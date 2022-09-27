@@ -207,7 +207,7 @@ variable "hub_subscription_id" {
   type        = string
   description = "Hub Subscription id"
 }
-   
+
 variable "spoke_subscription_id" {
   type        = string
   description = "Spoke Subscription id"
