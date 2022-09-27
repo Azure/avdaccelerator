@@ -8,17 +8,21 @@
 az deployment create \
   --template-file workload/bicep/deploy-baseline.bicep \
   --parameters @workload/bicep/parameters/deploy-baseline-parameters-example.json \
-  --avdWorkloadSubsId <subscriptionId> \
-  --deploymentPrefix <deploymentPrefix> \
-  --avdVmLocalUserName <localUserName> \
-  --avdVmLocalUserPassword <LocalUserPassword> \
-  --avdIdentityDomainName <DomainJoinUserName> \
-  --avdDomainJoinUserPassword <DomainJoinUserPassword \
-  --avdDomainJoinUserName <domainName>  \
-  --existingHubVnetResourceId <hubVnetResourceId>  \
-  --customDnsIps <customDNSservers>  \
-  --avdEnterpriseAppObjectId <wvdAppObjectId> \
-  --location eastus
+  --parameters avdWorkloadSubsId=<subscriptionId> \
+  --parameters deploymentPrefix=<deploymentPrefix> \
+  --parameters avdVmLocalUserName=<localUserName> \
+  --parameters avdVmLocalUserPassword=<LocalUserPassword> \
+  --parameters avdIdentityServiceProvider="<IdentityServiceProvider>" \
+  --parameters avdIdentityDomainName=<DomainJoinUserName> \
+  --parameters avdDomainJoinUserName=<domainName>  \
+  --parameters avdDomainJoinUserPassword=<DomainJoinUserPassword \
+  --parameters existingHubVnetResourceId=<hubVnetResourceId>  \
+  --parameters customDnsIps=<customDNSservers>  \
+  --parameters avdEnterpriseAppObjectId=<wvdAppObjectId> \
+  --parameters avdVnetPrivateDnsZone=true \
+  --parameters avdVnetPrivateDnsZoneFilesId="<PrivateDnsZoneFilesId>" \
+  --parameters avdVnetPrivateDnsZoneKeyvaultId="<PrivateDnsZoneKeyvaultId>" \
+  --location "eastus"
 ```
 
 ### PowerShell
@@ -29,21 +33,21 @@ $avdDomainJoinUserPassword = Read-Host -Prompt "Domain join password" -AsSecureS
 New-AzSubscriptionDeployment `
   -TemplateFile workload/bicep/deploy-baseline.bicep `
   -TemplateParameterFile workload/bicep/parameters/deploy-baseline-parameters-example.json `
-  -avdWorkloadSubsId <subscriptionId> `
-  -deploymentPrefix <deploymentPrefix> `
-  -avdVmLocalUserName <localUserName> `
+  -avdWorkloadSubsId "<subscriptionId>" `
+  -deploymentPrefix "<deploymentPrefix>" `
+  -avdVmLocalUserName "<localUserName>" `
   -avdVmLocalUserPassword $avdVmLocalUserPassword `
-  -avdIdentityServiceProvider <IdentityServiceProvider> `
-  -avdIdentityDomainName <domainJoinUserName> `
-  -avdDomainJoinUserName <domainJoinUserName>  `
+  -avdIdentityServiceProvider "<IdentityServiceProvider>" `
+  -avdIdentityDomainName "<domainJoinUserName>" `
+  -avdDomainJoinUserName "<domainJoinUserName>"  `
   -avdDomainJoinUserPassword $avdDomainJoinUserPassword `
-  -existingHubVnetResourceId <hubVnetResourceId>  `
-  -customDnsIps <customDNSservers>  `
-  -avdEnterpriseAppObjectId <wvdAppObjectId> `
+  -existingHubVnetResourceId "<hubVnetResourceId>"  `
+  -customDnsIps "<customDNSservers>"  `
+  -avdEnterpriseAppObjectId "<wvdAppObjectId>" `
   -avdVnetPrivateDnsZone $true `
-  -avdVnetPrivateDnsZoneFilesId <PrivateDnsZoneFilesId> `
-  -avdVnetPrivateDnsZoneKeyvaultId <PrivateDnsZoneKeyvaultId> `
-  -Location eastus2
+  -avdVnetPrivateDnsZoneFilesId "<PrivateDnsZoneFilesId>" `
+  -avdVnetPrivateDnsZoneKeyvaultId "<PrivateDnsZoneKeyvaultId>" `
+  -Location "eastus2"
 ```
 
 ## Optional: Custom Image Build deployment
@@ -54,8 +58,8 @@ New-AzSubscriptionDeployment `
 az deployment create \
   --template-file workload/bicep/deploy-custom-image.bicep \
   --parameters @workload/bicep/parameters/deploy-custom-image-parameters-example.json \
-  --avdSharedServicesSubId <subscriptionId> \
-  --deploymentPrefix <deploymentPrefix> \
+  --parameters avdSharedServicesSubId="<subscriptionId>" \
+  --parameters deploymentPrefix="<deploymentPrefix>" \
   --Location eastus2
 ```
 
@@ -65,9 +69,9 @@ az deployment create \
 New-AzSubscriptionDeployment `
   -TemplateFile workload/bicep/deploy-custom-image.bicep `
   -TemplateParameterFile workload/bicep/parameters/deploy-custom-image-parameters-example.json `
-  -avdSharedServicesSubId <subscriptionId> `
-  -deploymentPrefix <deploymentPrefix> `
-  -Location eastus2
+  -avdSharedServicesSubId "<subscriptionId>" `
+  -deploymentPrefix "<deploymentPrefix>" `
+  -Location "eastus2"
 ```
 
 ## Contributing
