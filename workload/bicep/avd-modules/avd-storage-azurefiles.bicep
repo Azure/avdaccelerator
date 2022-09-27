@@ -211,7 +211,7 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
             {
                 nicSuffix: 'nic-01-'
                 deleteOption: 'Delete'
-                asgId: !empty(avdApplicationSecurityGroupResourceId) ? avdApplicationSecurityGroupResourceId : null
+                applicationSecurityGroups: !empty(avdApplicationSecurityGroupResourceId) ? avdApplicationSecurityGroupResourceId : null
                 enableAcceleratedNetworking: false
                 ipConfigurations: [
                     {

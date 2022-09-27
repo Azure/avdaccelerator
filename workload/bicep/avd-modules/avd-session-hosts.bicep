@@ -153,7 +153,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
             {
                 nicSuffix: 'nic-001-'
                 deleteOption: 'Delete'
-                asgId: !empty(avdApplicationSecurityGroupResourceId) ? avdApplicationSecurityGroupResourceId : null
+                applicationSecurityGroups: !empty(avdApplicationSecurityGroupResourceId) ? avdApplicationSecurityGroupResourceId : null
                 enableAcceleratedNetworking: false
                 ipConfigurations: [
                     {
