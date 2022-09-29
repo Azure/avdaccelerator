@@ -1,6 +1,6 @@
 # AVD accelerator custom image build deployment walk through
 
-| Portal UI Experience (ARM)                                   |
+| Portal UI Experience (ARM) |
 | ------------------------------------------------------------ |
 | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json) |
 
@@ -24,14 +24,14 @@ Take a look at the [Naming Standard and Tagging](./resource-naming.md) page for 
 
 ## Other deployment Options
 
-|We have these other options available:    |     |
+| We have these other options available: | |
 |:-----------------------------------------|:---:|
-|Command line (Bicep/ARM)                  |[![Powershell/Azure CLI](./icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/readme.md)          |
-|Terraform                                 |[![Terraform](./icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md)                  |
+|Command line (Bicep/ARM) |[![Powershell/Azure CLI](./icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/readme.md) |
+|Terraform |[![Terraform](./icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md) |
 
 ## Next Steps
 
-- After successful deployment, you can remove the temporary resource group (IT_rg-avd-eus-shared-services_avd_image...) and its resources that was used to provision the custom image
+- After successful deployment, you can remove the temporary resource group (IT_rg-avd-eus-shared-services_avd_image) and its resources that was used to provision the custom image
 
 ## Known Issues
 
