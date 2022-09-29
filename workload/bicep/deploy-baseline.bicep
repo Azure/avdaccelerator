@@ -478,7 +478,7 @@ var varAvdServiceObjectsRgName = avdUseCustomNaming ? avdServiceObjectsRgCustomN
 var varAvdNetworkObjectsRgName = avdUseCustomNaming ? avdNetworkObjectsRgCustomName : 'rg-avd-${varAvdComputeStorageResourcesNamingStandard}-network' // max length limit 90 characters
 var varAvdComputeObjectsRgName = avdUseCustomNaming ? avdComputeObjectsRgCustomName : 'rg-avd-${varAvdComputeStorageResourcesNamingStandard}-pool-compute' // max length limit 90 characters
 var varAvdStorageObjectsRgName = avdUseCustomNaming ? avdStorageObjectsRgCustomName : 'rg-avd-${varAvdComputeStorageResourcesNamingStandard}-storage' // max length limit 90 characters
-var varAvdMonitoringRgName = avdUseCustomNaming ? avdMonitoringRgCustomName : 'rg-avd-${varAvdComputeStorageResourcesNamingStandard}-monitoring' // max length limit 90 characters
+var varAvdMonitoringRgName = avdUseCustomNaming ? avdMonitoringRgCustomName : 'rg-avd-${varAvdManagementPlaneNamingStandard}-monitoring' // max length limit 90 characters
 //var varAvdSharedResourcesRgName = 'rg-${varAvdSessionHostLocationAcronym}-avd-shared-resources'
 var varAvdVnetworkName = avdUseCustomNaming ? avdVnetworkCustomName : 'vnet-avd-${varAvdComputeStorageResourcesNamingStandard}-001'
 var varAvdVnetworkSubnetName = avdUseCustomNaming ? avdVnetworkSubnetCustomName : 'snet-avd-${varAvdComputeStorageResourcesNamingStandard}-001'
@@ -504,7 +504,7 @@ var varAvdFslogixProfileContainerFileShareName = avdUseCustomNaming ? avdFslogix
 var varAvdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}' : 'stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}'
 var varAvdWrklStoragePrivateEndpointName = 'pe-stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}-file'
 var varManagementVmName = 'vm-mgmt-${varDeploymentPrefixLowercase}'
-var varAvdAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-${varAvdManagementPlaneNamingStandard}-001'
+var varAvdAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
 //
 
 var varAvdScalingPlanSchedules = [
