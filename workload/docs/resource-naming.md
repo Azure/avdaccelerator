@@ -9,43 +9,43 @@ The naming of resources is hard coded in the templates but can also be modified 
 
 | Resource Name | Resource Type | Description |
 |:--|:--|:--|
-| rg-avd-{Azure Region}-{Prefix}-service-objects | Resource Group | Contains related AVD service objects |
-| vdws-{Azure Region}-{Prefix}-{nnn}| AVD Workspace | |
-| vdpool-{Azure Region}-{Prefix} | AVD Host pool | |
-| vdag-desktop-{Azure Region}-{Prefix}-{nnn} | AVD Application group (Desktop) | |
-| vdag-rapp-{Azure Region}-{Prefix}-{nnn} | AVD Application group (RemoteApp) | |
-| kv-avd-{Azure Region}-{Prefix}-{uniquestring} | Key vault | |
-| id-avd-fslogix-{AzureRegion}-{Prefix} | Managed identity | |
+| `rg-avd-{Azure Region}-{Prefix}-service-objects` | Resource Group | Contains related AVD service objects |
+| `vdws-{Azure Region}-{Prefix}-{nnn}` | AVD Workspace | |
+| `vdpool-{Azure Region}-{Prefix}` | AVD Host pool | |
+| `vdag-desktop-{Azure Region}-{Prefix}-{nnn}` | AVD Application group (Desktop) | |
+| `vdag-rapp-{Azure Region}-{Prefix}-{nnn}` | AVD Application group (RemoteApp) | |
+| `kv-avd-{Azure Region}-{Prefix}-{uniquestring}` | Key vault | |
+| `id-avd-fslogix-{AzureRegion}-{Prefix}` | Managed identity | |
 
 ### Compute naming
 
 | Resource Name | Resource Type |
 |:--|:--|
-| rg-avd-{AzureRegion}-{Prefix}-pool-compute | Resource Group |
-| avail-avd-{AzureRegion}-{Prefix}-{nnn} | Availability set |
-| osdisk-{AzureRegion}-avd-{Prefix}-{nnn} | Disk |
-| nic-{nn}-{VM name} | Network Interface |
-| vm-avd-{Prefix}-{nn} | Virtual Machine |
+| `rg-avd-{AzureRegion}-{Prefix}-pool-compute` | Resource Group |
+| `avail-avd-{AzureRegion}-{Prefix}-{nnn}` | Availability set |
+| `osdisk-{AzureRegion}-avd-{Prefix}-{nnn}` | Disk |
+| `nic-{nn}-{VM name}` | Network Interface |
+| `vm-avd-{Prefix}-{nn}` | Virtual Machine |
 
 ### FSLogix Storage naming
 
 | Resource Name | Resource Type |
 |:--|:--|
-| rg-avd-{AzureRegion}-{Prefix}-storage | Resource Group |
-| stavd-{unique string} | Storage account |
-| pe-{storage account name}-file | Private endpoint |
-| nic-{nn}-{private endpoint name} | Network Interface |
-| vm-fs-dj-{Prefix} | Virtual Machine |
+| `rg-avd-{AzureRegion}-{Prefix}-storage` | Resource Group |
+| `stavd-{unique string}` | Storage account |
+| `pe-{storage account name}-file` | Private endpoint |
+| `nic-{nn}-{private endpoint name}` | Network Interface |
+| `vm-fs-dj-{Prefix}` | Virtual Machine |
 
 ### Network naming
 
 | Resource Name | Resource Type |
 |:--|:--|
-| rg-avd-{Azure Region}-{Prefix}-network | Resource Group |
-| nsg-avd-{Azure Region}-{Prefix}-{nnn} | Network Security Group |
-| route-avd-{Azure Region}-{Prefix}-{nnn} | Route Table |
-| vnet-avd-{Azure Region}-{Prefix}-{nnn} | Virtual Network |
-| snet-avd-{Azure Region}-{Prefix}-{nnn} | Virtual Network |
+| `rg-avd-{Azure Region}-{Prefix}-network` | Resource Group |
+| `nsg-avd-{Azure Region}-{Prefix}-{nnn}` | Network Security Group |
+| `route-avd-{Azure Region}-{Prefix}-{nnn}` | Route Table |
+| `vnet-avd-{Azure Region}-{Prefix}-{nnn}` | Virtual Network |
+| `snet-avd-{Azure Region}-{Prefix}-{nnn}` | Virtual Network |
 
 ### Resource naming for the custom image deployment
 
@@ -53,14 +53,14 @@ The naming of resources is hard coded in the templates but can also be modified 
 
 | Resource Name | Resource Type |
 |:--|:--|
-| rg-{Azure Region}-avd-shared-resources | Resource Group |
-| gal-avd-{Azure Region}-{nnn} | Azure compute gallery |
-| avd_image_definition_{Image name}| Image Template |
-| kv-avd-{Azure Region}-{unique-string}| Key vault |
-| id-avd-deployscript-{Azure Region} | Managed Identity |
-| id-avd-imagebuilder-{Azure Region} | Managed Identity |
-| stavd{unique string} | Storage account |
-| avd_imagedefinition{image name} | VM image definition |
+| `rg-{Azure Region}-avd-shared-resources` | Resource Group |
+| `gal-avd-{Azure Region}-{nnn}` | Azure compute gallery |
+| `avd_image_definition_{Image name}` | Image Template |
+| `kv-avd-{Azure Region}-{unique-string}` | Key vault |
+| `id-avd-deployscript-{Azure Region}` | Managed Identity |
+| `id-avd-imagebuilder-{Azure Region}` | Managed Identity |
+| `stavd{unique string}` | Storage account |
+| `avd_imagedefinition{image name}` | VM image definition |
 
 ### Resource naming example
 
@@ -80,7 +80,7 @@ The naming of resources is hard coded in the templates but can also be modified 
 | Operations team  |  |  |
 | Owner  |  |  |
 | Cost Center  |  |  |
-| Environment type  |Dev,Staging,Prod  |  |
+| Environment type  | Dev,Staging,Prod  |  |
 | Creation date |  |  |
 
 AVD baseline tagging example:
