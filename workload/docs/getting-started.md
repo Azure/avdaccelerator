@@ -44,12 +44,12 @@ In the Brownfield scenario, the automation framework will deploy the solution us
 
 The templates and scripts need to be executed from an execution environment, the currently available are:
 
-|                                      |                           |
-|:-------------------------------------|:------------------------: |
-|Azure portal UI - AVD Baseline        |[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json)      |
-|Azure portal UI - Custom Image (Optional)                   |[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json)   |
-|Command line (Bicep/ARM)              |[![Powershell/Azure CLI](./icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/readme.md)          |
-|Terraform                             |[![Terraform](./icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md)                  |
+| Deployment Type | Link |
+|:--|:--|
+| Azure portal UI - AVD Baseline |[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json) |
+| Azure portal UI - Custom Image (Optional) |[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json) |
+| Command line (Bicep/ARM) |[![Powershell/Azure CLI](./icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/readme.md) |
+| Terraform |[![Terraform](./icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md) |
 
 <!-- ## AVD Landing Zone: Greenfield Deployment
 
@@ -68,18 +68,18 @@ It is preferable to have a new subscriptions for each deployment respectively, a
 This [diagram](/workload/docs/diagrams/avd-accelerator-resource-organization-naming.png) is an example of the Azure resources and organization created with this reference implementation. The following input values were used in this example:
 
 - **AVD baseline deployment**:
-  - *avdWorkloadSubsId*: ID for Subscription name: Subscription AVD LZ
-  - *deploymentPrefix*: app1
-  - *avdManagementPlaneLocation*: East US 2
-  - *avdSessionHostLocation*: East US 2
-  - *avdUseCustomNaming*: false
-  - *Unique string*: a1b2c3 (6 characters string calculated by the deployment)
+  - `avdWorkloadSubsId`: ID for Subscription name: Subscription AVD LZ
+  - `deploymentPrefix`: app1
+  - `avdManagementPlaneLocation`: East US 2
+  - `avdSessionHostLocation`: East US 2
+  - `avdUseCustomNaming`: false
+  - `Unique string`: a1b2c3 (6 characters string calculated by the deployment)
 
 - **Custom image deployment**:
-  - *avdSharedServicesLocation*: East US 2
-  - *avdSharedServicesSubId*:  ID for Subscription name: Subscription AVD Shared Services
-  - *avdUseCustomNaming*: false
-  - *Unique string*: a1b2c3 (6 characters string calculated by the deployment)
+  - `avdSharedServicesLocation`: East US 2
+  - `avdSharedServicesSubId`:  ID for Subscription name: Subscription AVD Shared Services
+  - `avdUseCustomNaming`: false
+  - `Unique string`: a1b2c3 (6 characters string calculated by the deployment)
 
 ## Naming standard
 
