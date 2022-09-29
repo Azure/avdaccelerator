@@ -467,6 +467,7 @@ var varTimeZones = {
     westus2: 'Pacific Standard Time'
     westus3: 'Mountain Standard Time'
 }
+
 var varAvdNamingUniqueStringSixChar = take('${uniqueString(avdWorkloadSubsId, varDeploymentPrefixLowercase, time)}', 6)
 var varAvdManagementPlaneNamingStandard = '${varAvdManagementPlaneLocationAcronym}-${varDeploymentPrefixLowercase}'
 var varAvdComputeStorageResourcesNamingStandard = '${varAvdSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
@@ -654,6 +655,21 @@ var varAllResourceTags = union(varCommonResourceTags, varAllComputeStorageTags)
 
 var varTelemetryId = 'pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-${avdManagementPlaneLocation}'
 
+var resourceGroups = [
+    {
+        name: varAvdServiceObjectsRgName
+        location: avdManagementPlaneLocation
+        enableDefaultTelemetry: false
+        tags: createResourceTags ? varCommonResourceTags : {}
+    }
+    {
+        name: varAvdComputeObjectsRgName
+        location: avdSessionHostLocation
+        enableDefaultTelemetry: false
+        tags: createResourceTags ? varAllComputeStorageTags : {}
+    }
+]
+
 // =========== //
 // Deployments //
 // =========== //
@@ -689,35 +705,17 @@ module avdBaselineNetworkResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
     ]
 }
 
-// Service objects.
-module avdBaselineServiceObjectsResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
+// Compute, service objects
+module avdBaselineResourceGroups '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = [for resourceGroup in resourceGroups: {
     scope: subscription(avdWorkloadSubsId)
-    name: 'Deploy-${varAvdServiceObjectsRgName}-${time}'
+    name: 'Deploy-${substring(resourceGroup.name, 10)}-${time}'
     params: {
-        name: varAvdServiceObjectsRgName
-        location: avdManagementPlaneLocation
-        enableDefaultTelemetry: false
-        tags: createResourceTags ? varCommonResourceTags : {}
+        name: resourceGroup.name
+        location: resourceGroup.location
+        enableDefaultTelemetry: resourceGroup.enableDefaultTelemetry
+        tags: resourceGroup.tags
     }
-    dependsOn: [
-        deployMonitoringDiagnosticSettings
-    ]
-}
-
-// Compute.
-module avdBaselineComputeResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
-    scope: subscription(avdWorkloadSubsId)
-    name: 'Deploy-${varAvdComputeObjectsRgName}-${time}'
-    params: {
-        name: varAvdComputeObjectsRgName
-        location: avdSessionHostLocation
-        enableDefaultTelemetry: false
-        tags: createResourceTags ? varAllComputeStorageTags : {}
-    }
-    dependsOn: [
-        deployMonitoringDiagnosticSettings
-    ]
-}
+}]
 
 // Storage.
 module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdFslogixDeployment) {
@@ -862,7 +860,7 @@ module avdManagementPLane 'avd-modules/avd-management-plane.bicep' = {
         avdTags: createResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
-        avdBaselineServiceObjectsResourceGroup
+        avdBaselineResourceGroups
         deployAvdManagedIdentitiesRoleAssign
     ]
 }
@@ -889,7 +887,7 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
         avdTags: createResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
-        avdBaselineComputeResourceGroup
+        avdBaselineResourceGroups
         avdBaselineStorageResourceGroup
     ]
 }
@@ -953,7 +951,7 @@ module avdWrklKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep
         tags: createResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
-        avdBaselineServiceObjectsResourceGroup
+        avdBaselineResourceGroups
         //updateExistingSubnet
     ]
 }
@@ -1053,7 +1051,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         avdTags: createResourceTags ? varAllResourceTags : {}
     }
     dependsOn: [
-        avdBaselineComputeResourceGroup
+        avdBaselineResourceGroups
         avdNetworking
         avdWrklKeyVaultget
         avdWrklKeyVault
