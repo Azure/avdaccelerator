@@ -42,7 +42,7 @@ In the Brownfield scenario, the automation framework will deploy the solution us
 
 ## Deployment Options
 
-The templates and scripts need to be executed from an execution environment, the currently available are:
+The templates and scripts need to be executed from an execution environment, the currently available options are:
 
 | Deployment Type | Link |
 |:--|:--|
