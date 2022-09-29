@@ -24,8 +24,10 @@ Take a look at the [Naming Standard and Tagging](./resource-naming.md) page for 
 
 ## Other deployment Options
 
-| We have these other options available: | |
-|:-----------------------------------------|:---:|
+We have these other options available:
+
+| Deployment Type | Link |
+|:--|:--|
 |Command line (Bicep/ARM) |[![Powershell/Azure CLI](./icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/readme.md) |
 |Terraform |[![Terraform](./icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md) |
 
