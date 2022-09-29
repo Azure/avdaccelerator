@@ -9,23 +9,9 @@ param avdManagementPlaneLocation string
 @description('Required. AVD workload subscription ID, multiple subscriptions scenario.')
 param avdWorkloadSubsId string
 
-@description('Required. create new Azure log analytics workspace.')
-param deployAlaWorkspace bool
-
 @description('Required. Exisintg Azure log analytics workspace.')
 param alaWorkspaceId string
 
-@description('Required. AVD Resource Group Name for monitoring resources.')
-param avdMonitoringRgName string
-
-@description('Required.  Azure log analytics workspace name.')
-param avdAlaWorkspaceName string
-
-@description('Required.  Azure log analytics workspace name data retention.')
-param avdAlaWorkspaceDataRetention int
-
-@description('Required. Tags to be applied to resources')
-param avdTags object
 
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
@@ -132,17 +118,6 @@ var varCustomPolicySetDefinitions = {
 // =========== //
 // Deployments //
 // =========== //
-// Azure log analytics workspace.
-module avdAlaWorkspace '../../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (deployAlaWorkspace) {
-  scope: resourceGroup('${avdWorkloadSubsId}', '${avdMonitoringRgName}')
-  name: 'AVD-Log-Analytics-Workspace-${time}'
-  params: {
-    location: avdManagementPlaneLocation
-    name: avdAlaWorkspaceName
-    dataRetention: avdAlaWorkspaceDataRetention
-    tags: avdTags
-  }
-}
 
 // Policy definitions.
 module avdPolicyDefinitions '../../../carml/1.2.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: {
@@ -200,14 +175,13 @@ module avdPolicySetassignment '../../../carml/1.2.0/Microsoft.Authorization/poli
     ]
     parameters: {
       logAnalytics: {
-        value: deployAlaWorkspace ? avdAlaWorkspace.outputs.resourceId : alaWorkspaceId
+        value: alaWorkspaceId
       }
     }
     policyDefinitionId: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/policySetDefinitions/policy-set-deploy-avd-diagnostics-to-log-analytics'
   }
   dependsOn: [
     avdPolicySetDefinitions
-    avdAlaWorkspace
   ]
 }
 

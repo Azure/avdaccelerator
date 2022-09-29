@@ -133,6 +133,9 @@ param avdDeployMonitoring bool = true
 @description('Optional. Deploy AVD Azure log analytics workspace. (Default: true)')
 param deployAlaWorkspace bool = true
 
+@description('Required. Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace.')
+param deployCustomAzurePolicy bool = false
+
 @description('Optional. AVD Azure log analytics workspace data retention. (Default: 90)')
 param avdAlaWorkspaceDataRetention int = 90
 
@@ -732,19 +735,6 @@ module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
     ]
 }
 
-// Monitoring.
-module avdBaselineMonitoringResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (deployAlaWorkspace) {
-    scope: subscription(avdWorkloadSubsId)
-    name: 'Deploy-${varAvdMonitoringRgName}-${time}'
-    params: {
-        name: varAvdMonitoringRgName
-        location: avdManagementPlaneLocation
-        enableDefaultTelemetry: false
-        tags: createResourceTags ? varAllComputeStorageTags : {}
-    }
-}
-//
-
 /*
 // Validation Deployment Script
 // This module validates the selected parameter values and collects required data
@@ -787,12 +777,13 @@ module validation 'avd-modules/avd-validation.bicep' = {
 }
 */
 
-// Monitoring Diagnostic settings policies and if enabled log analytics work space.
-module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring-diagnostic-settings.bicep' = if (avdDeployMonitoring) {
+// Monitoring Diagnostic settings policies. Performance couunters on new or existing Log Analytics workspace. New workspace if needed.
+module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring.bicep' = if (avdDeployMonitoring || deployAlaWorkspace) {
     name: 'Deploy-AVD-Diagnostic-${time}'
     params: {
         avdManagementPlaneLocation: avdManagementPlaneLocation
         deployAlaWorkspace: deployAlaWorkspace
+        deployCustomAzurePolicy: deployCustomAzurePolicy
         alaWorkspaceId: deployAlaWorkspace ? '' : alaWorkspaceId
         avdMonitoringRgName: varAvdMonitoringRgName
         avdAlaWorkspaceName: deployAlaWorkspace ? varAvdAlaWorkspaceName: ''
@@ -800,9 +791,7 @@ module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring-diagnost
         avdWorkloadSubsId: avdWorkloadSubsId
         avdTags: createResourceTags ? varAllResourceTags : {}
     }
-    dependsOn: [
-        avdBaselineMonitoringResourceGroup
-    ]
+    dependsOn: []
 }
 
 // Networking.
@@ -1058,21 +1047,3 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
     ]
 }
 
-// Monitoring Diagnostic settings policies and if enabled log analytics work space.
-module deployMonitoringEventsPerformanceSettings './avd-modules/avd-monitoring-events-performance-counters.bicep' = if (avdDeployMonitoring) {
-    name: 'Deploy-AVD-Events-Performance-${time}'
-    params: {
-        avdManagementPlaneLocation: avdManagementPlaneLocation
-        deployAlaWorkspace: deployAlaWorkspace
-        alaWorkspaceId: deployAlaWorkspace ? '' : alaWorkspaceId
-        avdMonitoringRgName: varAvdMonitoringRgName
-        avdAlaWorkspaceName: deployAlaWorkspace ? varAvdAlaWorkspaceName: ''
-        avdWorkloadSubsId: avdWorkloadSubsId
-        avdTags: createResourceTags ? varAllResourceTags : {}
-    }
-    dependsOn: [
-        deployMonitoringDiagnosticSettings
-        deployAndConfigureAvdSessionHosts
-        deployAvdStorageAzureFiles
-    ]
-}
