@@ -134,7 +134,7 @@ param avdDeployMonitoring bool = true
 param deployAlaWorkspace bool = true
 
 @description('Required. Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace.')
-param deployCustomAzurePolicy bool = false
+param deployCustomPolicyMonitoring bool = false
 
 @description('Optional. AVD Azure log analytics workspace data retention. (Default: 90)')
 param avdAlaWorkspaceDataRetention int = 90
@@ -783,7 +783,7 @@ module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring.bicep' =
     params: {
         avdManagementPlaneLocation: avdManagementPlaneLocation
         deployAlaWorkspace: deployAlaWorkspace
-        deployCustomAzurePolicy: deployCustomAzurePolicy
+        deployCustomPolicyMonitoring: deployCustomPolicyMonitoring
         alaWorkspaceId: deployAlaWorkspace ? '' : alaWorkspaceId
         avdMonitoringRgName: varAvdMonitoringRgName
         avdAlaWorkspaceName: deployAlaWorkspace ? varAvdAlaWorkspaceName: ''
