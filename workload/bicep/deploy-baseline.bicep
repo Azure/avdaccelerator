@@ -779,7 +779,7 @@ module validation 'avd-modules/avd-validation.bicep' = {
 
 // Monitoring Diagnostic settings policies. Performance couunters on new or existing Log Analytics workspace. New workspace if needed.
 module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring.bicep' = if (avdDeployMonitoring || deployAlaWorkspace) {
-    name: 'Deploy-AVD-Diagnostic-${time}'
+    name: 'Deploy-AVD-Monitoring-${time}'
     params: {
         avdManagementPlaneLocation: avdManagementPlaneLocation
         deployAlaWorkspace: deployAlaWorkspace
