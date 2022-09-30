@@ -123,6 +123,19 @@
             "displayName": "Deploy Diagnostic Settings for AVD Host pools to Log Analytics workspace",
             "description": "Deploys the diagnostic settings for AVD Host pools to stream to a Log Analytics workspace when any host pool which is missing this diagnostic settings is created or updated. The Policy will set the diagnostic with all metrics and category enabled"
           }
+        },
+
+        "AzureFilesLogAnalyticsEffect" :{
+          "type": "String",
+          "defaultValue": "DeployIfNotExists",
+          "allowedValues": [
+            "DeployIfNotExists",
+            "Disabled"
+          ],
+          "metadata": {
+            "displayName": "Deploy Diagnostic Settings for Azure Files to Log Analytics workspace",
+            "description": "Deploys the diagnostic settings for Azure Files to stream to a Log Analytics workspace when any Azure Files share is missing this diagnostic settings is created or updated. The Policy will set the diagnostic with all metrics and category enabled"
+          }
         }
       },
       "policyDefinitions": [
@@ -244,6 +257,22 @@
             },
             "effect": {
               "value": "[[parameters('VirtualNetworkLogAnalyticsEffect')]"
+            },
+            "profileName": {
+              "value": "[[parameters('profileName')]"
+            }
+          },
+          "groupNames": []
+        },
+        {
+          "policyDefinitionReferenceId": "AzureFilesDeployDiagnosticLogDeployLogAnalytics",
+          "policyDefinitionId": "${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/Deploy-Diagnostics-AzureFiles",
+          "parameters": {
+            "logAnalytics": {
+              "value": "[[parameters('logAnalytics')]"
+            },
+            "effect": {
+              "value": "[[parameters('AzureFilesLogAnalyticsEffect')]"
             },
             "profileName": {
               "value": "[[parameters('profileName')]"

@@ -56,10 +56,10 @@ var varCustomPolicyDefinitions = [
     name: 'policy-deploy-diagnostics-virtual-network'
     libDefinition: json(loadTextContent('../../policies/policy-definitions/policy-definition-es-deploy-diagnostics-virtual-network.json'))
   }
-  //{
-  //  name: 'policy-deploy-diagnostics-storage-account'
-  //  libDefinition: json(loadTextContent('../../policies/policy-definitions/policy-definition-es-deploy-diagnostics-virtual-network.json'))
-  //}
+  {
+   name: 'policy-deploy-diagnostics-azure-files'
+   libDefinition: json(loadTextContent('../../policies/policy-definitions/policy-definition-es-deploy-diagnostics-azure-files.json'))
+  }
 ]
 
 // This variable contains a number of objects that load in the custom Azure Policy Set/Initiative Defintions that are provided as part of the ESLZ/ALZ reference implementation - this is automatically created in the file 'infra-as-code\bicep\modules\policy\lib\policy_set_definitions\_policySetDefinitionsBicepInput.txt' via a GitHub action, that runs on a daily schedule, and is then manually copied into this variable.
@@ -107,11 +107,11 @@ var varCustomPolicySetDefinitions = {
       definitionId: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-virtual-network'
       definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.VirtualNetworkDeployDiagnosticLogDeployLogAnalytics.parameters
     }
-    //{
-    //  definitionReferenceId: 'StorageAccountDeployDiagnosticLogDeployLogAnalytics'
-    //  definitionId: '${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-virtual-network'
-    //  definitionParameters: varvarPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.StorageAccountDeployDiagnosticLogDeployLogAnalytics.parameters
-    //}
+    {
+      definitionReferenceId: 'AzureFilesDeployDiagnosticLogDeployLogAnalytics'
+      definitionId: '${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-azure-files'
+      definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.AzureFilesDeployDiagnosticLogDeployLogAnalytics.parameters
+    }
   ]
 }
 
