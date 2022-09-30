@@ -13,7 +13,7 @@ param avdWorkloadSubsId string
 param deployAlaWorkspace bool
 
 @description('Required. Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace.')
-param deployCustomAzurePolicy bool
+param deployCustomPolicyMonitoring bool
 
 @description('Required. Exisintg Azure log analytics workspace.')
 param alaWorkspaceId string
@@ -66,7 +66,7 @@ module avdAlaWorkspace '../../../carml/1.2.1/Microsoft.OperationalInsights/works
 
 // Policy definitions.
 
-module deployDiagnosticsAzurePolicyForAvd 'avd-monitoring-azure-policy.bicep' = if (deployCustomAzurePolicy) {
+module deployDiagnosticsAzurePolicyForAvd 'avd-monitoring-azure-policy.bicep' = if (deployCustomPolicyMonitoring) {
   scope: subscription('${avdWorkloadSubsId}')
   name: 'Deploy-And-Assign-Custom-Azure-Policy-for-Diagnostics-${time}'
   params: {
