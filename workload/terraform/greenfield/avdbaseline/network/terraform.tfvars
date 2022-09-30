@@ -11,7 +11,6 @@ vnet                  = "vnet-avd-eus-modu-001"       #vnet-avd-<azure region>-<
 snet                  = "snet-avd-eus-modu-001"       #snet-avd-<azure region>-<prefix>-<nnn>
 ad_vnet               = "infra-network"               # hub vnet name
 ad_rg                 = "infra-rg"                    # hub network resource group
-spoke_subscription_id = "00a93b06-3af5-467c-8645-e08b58b4cb22"
-hub_subscription_id   = "c3caea05-d40f-4cd5-a694-68a5bef3904d"
-
+spoke_subscription_id = "Your Spoke Subscription ID"
+hub_subscription_id = "Your Hub Subscription ID"
 
