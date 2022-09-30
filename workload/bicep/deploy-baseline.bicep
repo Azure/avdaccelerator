@@ -1034,6 +1034,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         fsLogixScript: varFsLogixScript
         FsLogixScriptArguments: varFsLogixScriptArguments
         fslogixScriptUri: varFslogixScriptUri
+        FslogixSharePath: varFslogixSharePath
         hostPoolToken: avdManagementPLane.outputs.hostPooltoken
         marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage

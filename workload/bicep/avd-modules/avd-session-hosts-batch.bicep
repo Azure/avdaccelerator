@@ -102,6 +102,11 @@ param fsLogixScript string
 @description('Configuration arguments for FSlogix.')
 param FsLogixScriptArguments string
 
+
+@description('Path for the FSlogix share.')
+param FslogixSharePath string
+
+
 @description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
 
@@ -180,6 +185,7 @@ module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, varAvdSe
     fslogixManagedIdentityResourceId: fslogixManagedIdentityResourceId
     fsLogixScript: fsLogixScript
     FsLogixScriptArguments: FsLogixScriptArguments
+    FslogixSharePath: FslogixSharePath
     fslogixScriptUri: fslogixScriptUri
     hostPoolToken: hostPoolToken
     marketPlaceGalleryWindows: marketPlaceGalleryWindows
