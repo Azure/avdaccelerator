@@ -99,6 +99,9 @@ param fsLogixScript string
 @description('Configuration arguments for FSlogix.')
 param FsLogixScriptArguments string
 
+@description('Path for the FSlogix share.')
+param FslogixSharePath string
+
 @description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
 
@@ -190,7 +193,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
                 }
                 Exclusions: createAvdFslogixDeployment ? {
                     Extensions: '*.vhd;*.vhdx'
-                    Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;\\\\server\\share\\*\\*.VHD;\\\\server\\share\\*\\*.VHDX'
+                    Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${FslogixSharePath}\\*\\*.VHD;${FslogixSharePath}\\*\\*.VHDX'
                     Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
                 } : {}
             }
