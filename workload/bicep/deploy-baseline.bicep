@@ -142,6 +142,15 @@ param avdAlaWorkspaceDataRetention int = 90
 @description('Optional. Existing Azure log analytics workspace to connect to. (Default: )')
 param alaWorkspaceId string = ''
 
+@description('Required. Create and assign custom Azure Policy for NSG flow logs and network security')
+param deployCustomPolicyNetworking bool = false 
+
+@description('Optional. Deploy Azure storage account for flow logs. (Default: false)')
+param deployStgAccountForFlowLogs bool = false
+
+@description('Optional. Existing Azure Storage account Resourece ID for NSG flow logs. (Default: )')
+param stgAccountForFlowLogsId string = ''
+
 @minValue(1)
 @maxValue(999)
 @description('Optional. Cuantity of session hosts to deploy. (Default: 1)')
@@ -224,6 +233,10 @@ param avdVnetworkCustomName string = 'vnet-avd-use2-app1-001'
 @maxLength(64)
 @description('Optional. AVD Azure log analytics workspace custom name. (Default: log-avd-use2-app1-001)')
 param avdAlaWorkspaceCustomName string = 'log-avd-use2-app1-001'
+
+@maxLength(64)
+@description('Optional. Azure Storage Account custom name for NSG flow logs. (Default: stavduse2flowlogs001)')
+param avdStgAccountForFlowLogsCustomName string = 'stavduse2flowlogs001'
 
 @maxLength(80)
 @description('Optional. AVD virtual network subnet custom name. (Default: snet-avd-use2-app1-001)')
@@ -505,6 +518,7 @@ var varAvdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCu
 var varAvdWrklStoragePrivateEndpointName = 'pe-stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}-file'
 var varManagementVmName = 'vm-mgmt-${varDeploymentPrefixLowercase}'
 var varAvdAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
+var varStgAccountForFlowLogsName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}' : 'stavd${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}'
 //
 
 var varAvdScalingPlanSchedules = [
@@ -777,8 +791,8 @@ module validation 'avd-modules/avd-validation.bicep' = {
 }
 */
 
-// Monitoring Diagnostic settings policies. Performance couunters on new or existing Log Analytics workspace. New workspace if needed.
-module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring.bicep' = if (avdDeployMonitoring || deployAlaWorkspace) {
+// Azure Policies for monitoring Diagnostic settings. Performance couunters on new or existing Log Analytics workspace. New workspace if needed.
+module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring.bicep' = if (avdDeployMonitoring) {
     name: 'Deploy-AVD-Monitoring-${time}'
     params: {
         avdManagementPlaneLocation: avdManagementPlaneLocation
@@ -793,6 +807,25 @@ module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring.bicep' =
     }
     dependsOn: []
 }
+
+// Azure Policies for network monitorig/security . New storage account/Reuse existing one if needed created for the NSG flow logs
+
+module deployAzurePolicyNetworking './avd-modules/avd-azure-policy-networking.bicep' = if (deployCustomPolicyNetworking) {
+    name: 'Enable-Azure-Policy-for-Netwok-Security-${time}'
+    params: {
+        alaWorkspaceId: deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaWorkspaceId
+        avdManagementPlaneLocation: avdManagementPlaneLocation
+        avdWorkloadSubsId: avdWorkloadSubsId
+        avdMonitoringRgName: varAvdMonitoringRgName
+        stgAccountForFlowLogsId: deployStgAccountForFlowLogs ? '' : stgAccountForFlowLogsId
+        stgAccountForFlowLogsName: deployStgAccountForFlowLogs ? varStgAccountForFlowLogsName : ''
+        avdTags: createResourceTags ? varAllResourceTags : {}
+    }
+    dependsOn: [
+        deployMonitoringDiagnosticSettings
+    ]
+}
+
 
 // Networking.
 module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
