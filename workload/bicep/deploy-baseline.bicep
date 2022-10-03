@@ -880,7 +880,7 @@ module avdManagementPLane 'avd-modules/avd-management-plane.bicep' = {
         avdWorkloadSubsId: avdWorkloadSubsId
         avdIdentityServiceProvider: avdIdentityServiceProvider
         avdTags: createResourceTags ? varCommonResourceTags : {}
-        avdDiagnosticWorkspaceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceId : alaWorkspaceId) : ''
+        avdDiagnosticWorkspaceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaWorkspaceId) : ''
         avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
     dependsOn: [
