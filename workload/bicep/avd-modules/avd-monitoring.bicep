@@ -98,3 +98,4 @@ module deployMonitoringEventsPerformanceSettings 'avd-monitoring-events-performa
 // =========== //
 // Outputs     //
 // =========== //
+output avdAlaWorkspaceResourceId string = avdAlaWorkspace.outputs.resourceId
