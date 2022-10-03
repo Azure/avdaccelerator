@@ -124,8 +124,7 @@
             "description": "Deploys the diagnostic settings for AVD Host pools to stream to a Log Analytics workspace when any host pool which is missing this diagnostic settings is created or updated. The Policy will set the diagnostic with all metrics and category enabled"
           }
         },
-
-        "AzureFilesLogAnalyticsEffect" :{
+        "AzureFilesLogAnalyticsEffect": {
           "type": "String",
           "defaultValue": "DeployIfNotExists",
           "allowedValues": [
