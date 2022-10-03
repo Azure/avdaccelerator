@@ -139,19 +139,6 @@
       },
       "policyDefinitions": [
         {
-          "policyDefinitionReferenceId": "StorageAccountDeployDiagnosticLogDeployLogAnalytics",
-          "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/6f8f98a4-f108-47cb-8e98-91a0d85cd474",
-          "parameters": {
-            "logAnalytics": {
-              "value": "[[parameters('logAnalytics')]"
-            },
-            "effect": {
-              "value": "[[parameters('StorageAccountsLogAnalyticsEffect')]"
-            }
-          },
-          "groupNames": []
-        },
-        {
           "policyDefinitionReferenceId": "AVDScalingPlansDeployDiagnosticLogDeployLogAnalytics",
           "policyDefinitionId": "${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/Deploy-Diagnostics-AVDScalingPlans",
           "parameters": {
