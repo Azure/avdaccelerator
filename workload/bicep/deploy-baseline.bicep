@@ -778,7 +778,7 @@ module validation 'avd-modules/avd-validation.bicep' = {
 */
 
 // Monitoring Diagnostic settings policies. Performance couunters on new or existing Log Analytics workspace. New workspace if needed.
-module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring.bicep' = if (avdDeployMonitoring || deployAlaWorkspace) {
+module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring.bicep' = if (avdDeployMonitoring) {
     name: 'Deploy-AVD-Monitoring-${time}'
     params: {
         avdManagementPlaneLocation: avdManagementPlaneLocation
@@ -847,6 +847,8 @@ module avdManagementPLane 'avd-modules/avd-management-plane.bicep' = {
         avdWorkloadSubsId: avdWorkloadSubsId
         avdIdentityServiceProvider: avdIdentityServiceProvider
         avdTags: createResourceTags ? varCommonResourceTags : {}
+        avdDiagnosticWorkspaceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceId : alaWorkspaceId) : ''
+        avdDiagnosticLogsRetentionInDays: avdDeployMonitoring ? avdAlaWorkspaceDataRetention : 0
     }
     dependsOn: [
         avdBaselineResourceGroups
