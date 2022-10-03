@@ -96,4 +96,4 @@ module deployMonitoringEventsPerformanceSettings 'avd-monitoring-events-performa
 // =========== //
 // Outputs //
 // =========== //
-output avdAlaWorkspaceId string = deployAlaWorkspace ? avdAlaWorkspace.outputs.resourceId : alaWorkspaceId
+output avdAlaWorkspaceResourceId string = deployAlaWorkspace ? avdAlaWorkspace.outputs.resourceId : alaWorkspaceId
