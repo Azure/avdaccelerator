@@ -66,7 +66,7 @@ module avdAlaWorkspace '../../../carml/1.2.1/Microsoft.OperationalInsights/works
 
 // Policy definitions.
 
-module deployDiagnosticsAzurePolicyForAvd 'avd-monitoring-azure-policy.bicep' = if (deployCustomPolicyMonitoring) {
+module deployDiagnosticsAzurePolicyForAvd 'avd-azure-policy-monitoring.bicep' = if (deployCustomPolicyMonitoring) {
   scope: subscription('${avdWorkloadSubsId}')
   name: 'Deploy-And-Assign-Custom-Polocy-Monitoring-${time}'
   params: {
