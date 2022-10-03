@@ -164,7 +164,7 @@ module avdPolicySetassignment '../../../carml/1.2.0/Microsoft.Authorization/poli
   name: 'AVD-Policy-Set-Assignment-${time}'
   params: {
     location: avdManagementPlaneLocation
-    name: varCustomPolicySetDefinitions.name
+    name: '${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}'
     description: varCustomPolicySetDefinitions.libSetDefinition.properties.description
     displayName: varCustomPolicySetDefinitions.libSetDefinition.properties.displayName
     metadata: varCustomPolicySetDefinitions.libSetDefinition.properties.metadata
