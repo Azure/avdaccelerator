@@ -49,21 +49,21 @@ param avdHostPoolRdpProperties string
   'Personal'
   'Pooled'
 ])
-@description('Optional. AVD host pool type. (Default: Pooled)')
+@description('Optional. AVD host pool type.')
 param avdHostPoolType string
 
 @allowed([
   'Automatic'
   'Direct'
 ])
-@description('Optional. AVD host pool type. (Default: Automatic)')
+@description('Optional. AVD host pool type.')
 param avdPersonalAssignType string
 
 @allowed([
   'BreadthFirst'
   'DepthFirst'
 ])
-@description('Required. AVD host pool load balacing type. (Default: BreadthFirst)')
+@description('Required. AVD host pool load balacing type.')
 param avdHostPoolLoadBalancerType string
 
 @description('Optional. AVD host pool maximum number of user sessions per session host.')
@@ -75,8 +75,14 @@ param avdStartVmOnConnect bool
 @description('Required. Tags to be applied to resources')
 param avdTags object
 
-@description('Required. Tag to exclude resources from scaling plan. ')
+@description('Required. Tag to exclude resources from scaling plan.')
 param avdScalingPlanExclusionTag string
+
+@description('Optional. Log analytics workspace for diagnostic logs.')
+param avdDiagnosticWorkspaceId string
+
+@description('Optional. Diagnostic logs retention.')
+param avdDiagnosticLogsRetentionInDays int
 
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
@@ -101,6 +107,31 @@ var varApplicationApplicationGroups = [
 ]
 var varAvdHostPoolRdpPropertiesDomainServiceCheck = (avdIdentityServiceProvider == 'AAD') ? '${avdHostPoolRdpProperties}targetisaadjoined:i:1' : avdHostPoolRdpProperties
 var varFinalApplicationGroups = avdDeployRappGroup ? concat(varDesktopApplicaitonGroups, varApplicationApplicationGroups) : varDesktopApplicaitonGroups
+var varAvdHostPoolDiagnostic = [
+  'Checkpoint'
+  'Error'
+  'Management'
+  'Connection'
+  'HostRegistration'
+  'AgentHealthStatus'
+  'NetworkData'
+  'ConnectionGraphicsData'
+  'SessionHostManagement'
+]
+var varAvdApplicationGroupDiagnostic = [
+  'Checkpoint'
+  'Error'
+  'Management'
+]
+var varAvdWorkspaceDiagnostic = [
+  'Checkpoint'
+  'Error'
+  'Management'
+  'Feed'
+]
+var varAvdScalingPlanDiagnostic = [
+  'Autoscale'
+]
 
 // =========== //
 // Deployments //
@@ -120,6 +151,9 @@ module avdHostPool '../../../carml/1.2.0/Microsoft.DesktopVirtualization/hostpoo
     maxSessionLimit: avhHostPoolMaxSessions
     personalDesktopAssignmentType: avdPersonalAssignType
     tags: avdTags
+    diagnosticWorkspaceId: avdDiagnosticWorkspaceId
+    diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
+    diagnosticLogCategoriesToEnable: varAvdHostPoolDiagnostic
   }
 }
 
@@ -133,6 +167,9 @@ module avdApplicationGroups '../../../carml/1.2.0/Microsoft.DesktopVirtualizatio
     applicationGroupType: applicationGroup.applicationGroupType
     hostpoolName: avdHostPool.outputs.name
     tags: avdTags
+    diagnosticWorkspaceId: avdDiagnosticWorkspaceId
+    diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
+    diagnosticLogCategoriesToEnable: varAvdApplicationGroupDiagnostic
   }
   dependsOn: [
     avdHostPool
@@ -153,6 +190,9 @@ module avdWorkSpace '../../../carml/1.2.0/Microsoft.DesktopVirtualization/worksp
         '/subscriptions/${avdWorkloadSubsId}/resourceGroups/${avdServiceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${avdApplicationGroupNameDesktop}'
       ]
       tags: avdTags
+      diagnosticWorkspaceId: avdDiagnosticWorkspaceId
+      diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
+      diagnosticLogCategoriesToEnable: varAvdWorkspaceDiagnostic
   }
   dependsOn: [
     avdHostPool
@@ -178,6 +218,9 @@ module avdScalingPlan '../../../carml/1.2.0/Microsoft.DesktopVirtualization/scal
         }
       ]
       tags: avdTags
+      diagnosticWorkspaceId: avdDiagnosticWorkspaceId
+      diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
+      logsToEnable: varAvdScalingPlanDiagnostic
   }
   dependsOn: [
     avdHostPool
