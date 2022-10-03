@@ -109,7 +109,7 @@ var varCustomPolicySetDefinitions = {
     }
     {
       definitionReferenceId: 'AzureFilesDeployDiagnosticLogDeployLogAnalytics'
-      definitionId: '${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-azure-files'
+      definitionId: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-azure-files'
       definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.AzureFilesDeployDiagnosticLogDeployLogAnalytics.parameters
     }
   ]
