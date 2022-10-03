@@ -20,52 +20,52 @@ param time string = utcNow()
 // Variable declaration //
 // =========== //
 // Policy Set/Initiative Definition Parameter Variables
-var varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters = loadJsonContent('../../policies/policy-sets/parameters/policy-set-definition-es-deploy-diagnostics-to-log-analytics.parameters.json')
+var varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters = loadJsonContent('../../policies/monitoring/policy-sets/parameters/policy-set-definition-es-deploy-diagnostics-to-log-analytics.parameters.json')
 
 // This variable contains a number of objects that load in the custom Azure Policy Defintions that are provided as part of the ESLZ/ALZ reference implementation. 
 var varCustomPolicyDefinitions = [
   {
     name: 'policy-deploy-diagnostics-avd-application-group'
-    libDefinition: json(loadTextContent('../../policies/policy-definitions/policy-definition-es-deploy-diagnostics-avd-application-group.json'))
+    libDefinition: json(loadTextContent('../../policies/monitoring/policy-definitions/policy-definition-es-deploy-diagnostics-avd-application-group.json'))
   }
   {
     name: 'policy-deploy-diagnostics-avd-host-pool'
-    libDefinition: json(loadTextContent('../../policies/policy-definitions/policy-definition-es-deploy-diagnostics-avd-host-pool.json'))
+    libDefinition: json(loadTextContent('../../policies/monitoring/policy-definitions/policy-definition-es-deploy-diagnostics-avd-host-pool.json'))
   }
   {
     name: 'policy-deploy-diagnostics-avd-scaling-plan'
-    libDefinition: json(loadTextContent('../../policies/policy-definitions/policy-definition-es-deploy-diagnostics-avd-scaling-plan.json'))
+    libDefinition: json(loadTextContent('../../policies/monitoring/policy-definitions/policy-definition-es-deploy-diagnostics-avd-scaling-plan.json'))
   }
   {
     name: 'policy-deploy-diagnostics-avd-workspace'
-    libDefinition: json(loadTextContent('../../policies/policy-definitions/policy-definition-es-deploy-diagnostics-avd-workspace.json'))
+    libDefinition: json(loadTextContent('../../policies/monitoring/policy-definitions/policy-definition-es-deploy-diagnostics-avd-workspace.json'))
   }
   {
     name: 'policy-deploy-diagnostics-network-security-group'
-    libDefinition: json(loadTextContent('../../policies/policy-definitions/policy-definition-es-deploy-diagnostics-network-security-group.json'))
+    libDefinition: json(loadTextContent('../../policies/monitoring/policy-definitions/policy-definition-es-deploy-diagnostics-network-security-group.json'))
   }
   {
     name: 'policy-deploy-diagnostics-nic'
-    libDefinition: json(loadTextContent('../../policies/policy-definitions/policy-definition-es-deploy-diagnostics-nic.json'))
+    libDefinition: json(loadTextContent('../../policies/monitoring/policy-definitions/policy-definition-es-deploy-diagnostics-nic.json'))
   }
   {
     name: 'policy-deploy-diagnostics-virtual-machine'
-    libDefinition: json(loadTextContent('../../policies/policy-definitions/policy-definition-es-deploy-diagnostics-virtual-machine.json'))
+    libDefinition: json(loadTextContent('../../policies/monitoring/policy-definitions/policy-definition-es-deploy-diagnostics-virtual-machine.json'))
   }
   {
     name: 'policy-deploy-diagnostics-virtual-network'
-    libDefinition: json(loadTextContent('../../policies/policy-definitions/policy-definition-es-deploy-diagnostics-virtual-network.json'))
+    libDefinition: json(loadTextContent('../../policies/monitoring/policy-definitions/policy-definition-es-deploy-diagnostics-virtual-network.json'))
   }
   {
    name: 'policy-deploy-diagnostics-azure-files'
-   libDefinition: json(loadTextContent('../../policies/policy-definitions/policy-definition-es-deploy-diagnostics-azure-files.json'))
+   libDefinition: json(loadTextContent('../../policies/monitoring/policy-definitions/policy-definition-es-deploy-diagnostics-azure-files.json'))
   }
 ]
 
 // This variable contains a number of objects that load in the custom Azure Policy Set/Initiative Defintions that are provided as part of the ESLZ/ALZ reference implementation - this is automatically created in the file 'infra-as-code\bicep\modules\policy\lib\policy_set_definitions\_policySetDefinitionsBicepInput.txt' via a GitHub action, that runs on a daily schedule, and is then manually copied into this variable.
 var varCustomPolicySetDefinitions = {
   name: 'policy-set-deploy-avd-diagnostics-to-log-analytics'
-  libSetDefinition: json(loadTextContent('../../policies/policy-sets/policy-set-definition-es-deploy-diagnostics-to-log-analytics.json'))
+  libSetDefinition: json(loadTextContent('../../policies/monitoring/policy-sets/policy-set-definition-es-deploy-diagnostics-to-log-analytics.json'))
   libSetChildDefinitions: [
     {
       definitionReferenceId: 'AVDAppGroupDeployDiagnosticLogDeployLogAnalytics'
