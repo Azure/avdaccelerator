@@ -61,3 +61,4 @@ stages:
             - storageOuPath $(storageOuPath)
             - deployCustomPolicyMonitoring $(deployCustomPolicyMonitoring)
             - alaWorkspaceId $(alaWorkspaceId)
+            - deployCustomPolicyNetworking $(deployCustomPolicyNetworking)
