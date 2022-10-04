@@ -234,7 +234,7 @@ param avdVnetworkCustomName string = 'vnet-avd-use2-app1-001'
 @description('Optional. AVD Azure log analytics workspace custom name. (Default: log-avd-use2-app1-001)')
 param avdAlaWorkspaceCustomName string = 'log-avd-use2-app1-001'
 
-@maxLength(64)
+@maxLength(24)
 @description('Optional. Azure Storage Account custom name for NSG flow logs. (Default: stavduse2flowlogs001)')
 param avdStgAccountForFlowLogsCustomName string = 'stavduse2flowlogs001'
 
@@ -813,7 +813,8 @@ module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring.bicep' =
 module deployAzurePolicyNetworking './avd-modules/avd-azure-policy-networking.bicep' = if (deployCustomPolicyNetworking) {
     name: 'Enable-Azure-Policy-for-Netwok-Security-${time}'
     params: {
-        alaWorkspaceId: deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaWorkspaceId
+        alaWorkspaceResourceId: deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaWorkspaceId
+        alaWorkspaceId: deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceId : alaWorkspaceId 
         avdManagementPlaneLocation: avdManagementPlaneLocation
         avdWorkloadSubsId: avdWorkloadSubsId
         avdMonitoringRgName: varAvdMonitoringRgName

@@ -97,3 +97,4 @@ module deployMonitoringEventsPerformanceSettings 'avd-monitoring-events-performa
 // Outputs //
 // =========== //
 output avdAlaWorkspaceResourceId string = deployAlaWorkspace ? avdAlaWorkspace.outputs.resourceId : alaWorkspaceId
+output avdAlaWorkspaceId string = deployAlaWorkspace ? avdAlaWorkspace.outputs.logAnalyticsWorkspaceId : alaWorkspaceId // may need to call on existing LGA to get workspace guid

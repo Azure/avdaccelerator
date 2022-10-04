@@ -15,7 +15,11 @@ param avdMonitoringRgName string
 @description('Required.  Azure Storage Account name.')
 param stgAccountForFlowLogsName string
 
-@description('Required. Exisintg Azure log analytics workspace.')
+@description('Required.  Azure log analytics workspace Resource Id .')
+param alaWorkspaceResourceId string
+
+
+@description('Required.  Azure log analytics workspace ID.')
 param alaWorkspaceId string
 
 @description('Required. Existing Azure Storage account for NSG flow logs. (Default: )')
@@ -39,53 +43,6 @@ var varPolicySetDefinitionEsDeployAzurePolicyNetworkParameters = loadJsonContent
 var varCustomPolicySetDefinitions = {
   name: 'policy-set-deploy-networking'
   libSetDefinition: json(loadTextContent('../../policies/networking/policy-sets/policy-set-definition-es-deploy-networking.json'))
-  libSetChildDefinitions: [
-    {
-      definitionReferenceId: 'AVDAppGroupDeployDiagnosticLogDeployLogAnalytics'
-      definitionId: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-avd-application-group'
-      definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.AVDAppGroupDeployDiagnosticLogDeployLogAnalytics.parameters
-    }
-    {
-      definitionReferenceId: 'AVDHostPoolsDeployDiagnosticLogDeployLogAnalytics'
-      definitionId: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-avd-host-pool'
-      definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.AVDHostPoolsDeployDiagnosticLogDeployLogAnalytics.parameters
-    }
-    {
-      definitionReferenceId: 'AVDScalingPlansDeployDiagnosticLogDeployLogAnalytics'
-      definitionId: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-avd-scaling-plan'
-      definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.AVDScalingPlansDeployDiagnosticLogDeployLogAnalytics.parameters
-    }
-    {
-      definitionReferenceId: 'AVDWorkspaceDeployDiagnosticLogDeployLogAnalytics'
-      definitionId: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-avd-workspace'
-      definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.AVDWorkspaceDeployDiagnosticLogDeployLogAnalytics.parameters
-    }
-    {
-      definitionReferenceId: 'NetworkSecurityGroupsDeployDiagnosticLogDeployLogAnalytics'
-      definitionId: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-network-security-group'
-      definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.NetworkSecurityGroupsDeployDiagnosticLogDeployLogAnalytics.parameters
-    }
-    {
-      definitionReferenceId: 'NetworkNICDeployDiagnosticLogDeployLogAnalytics'
-      definitionId: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-nic'
-      definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.NetworkNICDeployDiagnosticLogDeployLogAnalytics.parameters
-    }
-    {
-      definitionReferenceId: 'VirtualMachinesDeployDiagnosticLogDeployLogAnalytics'
-      definitionId: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-virtual-machine'
-      definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.VirtualMachinesDeployDiagnosticLogDeployLogAnalytics.parameters
-    }
-    {
-      definitionReferenceId: 'VirtualNetworkDeployDiagnosticLogDeployLogAnalytics'
-      definitionId: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-virtual-network'
-      definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.VirtualNetworkDeployDiagnosticLogDeployLogAnalytics.parameters
-    }
-    {
-      definitionReferenceId: 'AzureFilesDeployDiagnosticLogDeployLogAnalytics'
-      definitionId: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-azure-files'
-      definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.AzureFilesDeployDiagnosticLogDeployLogAnalytics.parameters
-    }
-  ]
 }
 
 
@@ -96,13 +53,45 @@ var varCustomPolicySetDefinitions = {
 
 // Storage account for NSG flow logs. If blank value passed - then to 
 
+module deployStgAccountForFlowLogs '../../../carml/1.2.1/Microsoft.Storage/storageAccounts/deploy.bicep' = if (empty(stgAccountForFlowLogsId)) {
+scope: resourceGroup ('${avdMonitoringRgName}')
+name: 'Deploy-Stg-Account-for-Flow-Logs-${stgAccountForFlowLogsName}-${time}'
+params: {
+  location: avdManagementPlaneLocation
+  tags: avdTags
+  name: stgAccountForFlowLogsName
+  storageAccountKind: 'StorageV2'
+  publicNetworkAccess: 'Disabled'
+  networkAcls: {
+    bypass: 'AzureServices'
+    defaultAction: 'Deny'
+  }
+}
+  }
 // Policy definitions.
 
-
 // Policy set definition.
+ 
+module avdNetworkingPolicySetDefinition '../../../carml/1.2.0/Microsoft.Authorization/policySetDefinitions/subscription/deploy.bicep' = {
+  scope: subscription('${avdWorkloadSubsId}')
+  name: 'AVD-Network-Policy-Set-Definition-${time}'
+  params: {
+    location: avdManagementPlaneLocation
+    name: varCustomPolicySetDefinitions.name
+    description: varCustomPolicySetDefinitions.libSetDefinition.properties.description
+    displayName: varCustomPolicySetDefinitions.libSetDefinition.properties.displayName
+    metadata: varCustomPolicySetDefinitions.libSetDefinition.properties.metadata
+    parameters: varCustomPolicySetDefinitions.libSetDefinition.properties.parameters
+    policyDefinitions: varCustomPolicySetDefinitions.libSetDefinition.properties.policyDefinitions
+    policyDefinitionGroups: varCustomPolicySetDefinitions.libSetDefinition.properties.policyDefinitionGroups
 
+  }
+}
 
 // Policy set assignment.
+
+
+
 
 // =========== //
 // Outputs     //
