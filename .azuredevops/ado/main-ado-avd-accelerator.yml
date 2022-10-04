@@ -62,3 +62,5 @@ stages:
             - deployCustomPolicyMonitoring $(deployCustomPolicyMonitoring)
             - alaWorkspaceId $(alaWorkspaceId)
             - deployCustomPolicyNetworking $(deployCustomPolicyNetworking)
+            - deployStgAccountForFlowLogs $(deployStgAccountForFlowLogs)
+            - stgAccountForFlowLogsId $(stgAccountForFlowLogsId)
