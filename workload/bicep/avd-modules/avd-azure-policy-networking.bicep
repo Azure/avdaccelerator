@@ -55,7 +55,7 @@ var varCustomPolicySetDefinitions = {
 
 module deployStgAccountForFlowLogs '../../../carml/1.2.1/Microsoft.Storage/storageAccounts/deploy.bicep' = if (empty(stgAccountForFlowLogsId)) {
 scope: resourceGroup ('${avdMonitoringRgName}')
-name: 'Deploy-Stg-Account-for-Flow-Logs-${stgAccountForFlowLogsName}-${time}'
+name: substring('Deploy-Stg-Account-for-Flow-Logs-${stgAccountForFlowLogsName}-${time}',0,63)
 params: {
   location: avdManagementPlaneLocation
   tags: avdTags
@@ -74,7 +74,7 @@ params: {
  
 module avdNetworkingPolicySetDefinition '../../../carml/1.2.0/Microsoft.Authorization/policySetDefinitions/subscription/deploy.bicep' = {
   scope: subscription('${avdWorkloadSubsId}')
-  name: 'AVD-Network-Policy-Set-Definition-${time}'
+  name: substring('AVD-Network-Policy-Set-Definition-${time}',0,63)
   params: {
     location: avdManagementPlaneLocation
     name: varCustomPolicySetDefinitions.name
