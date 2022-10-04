@@ -1,15 +1,25 @@
 {
-    "AVDScalingPlansDeployDiagnosticLogDeployLogAnalytics": {
+    "AuditForFlowLogs": {
       "parameters": {
-        "logAnalytics": {
-          "value": "[[parameters('logAnalytics')]"
-        },
         "effect": {
-          "value": "[[parameters('AVDScalingPlansLogAnalyticsEffect')]"
-        },
-        "profileName": {
-          "value": "[[parameters('profileName')]"
+          "value": "[[parameters('AuditForFlowLogs')]"
         }
       }
+    },
+    "RemediateNsgFlowLogs": {
+        "parameters": {
+            "effect": {
+                "value": "[[parameters('RemediateNsgFlowLogs')]"
+            },
+            "nsgRegion": { "value": "[[parameters('nsgRegion')]" },
+            "storageId": { "value": "[[parameters('storageId')]" },
+            "networkWatcherRG": { "value": "[[parameters('networkWatcherRG')]" },
+            "networkWatcherName": { "value": "[[parameters('networkWatcherName')]" },
+            "timeInterval": { "value": "[[parameters('timeInterval')]" },
+            "workspaceResourceId": { "value": "[[parameters('workspaceResourceId')]" },
+            "workspaceRegion": { "value": "[[parameters('workspaceRegion')]" },
+            "workspaceId": { "value": "[[parameters('workspaceId')]" },
+            "retentionDays":{ "value": "[[parameters('retentionDays')]" }
+        }
     }
   }
