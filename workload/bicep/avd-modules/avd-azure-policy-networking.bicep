@@ -81,7 +81,7 @@ module avdNetworkingPolicySetDefinition '../../../carml/1.2.0/Microsoft.Authoriz
     description: varCustomPolicySetDefinitions.libSetDefinition.properties.description
     displayName: varCustomPolicySetDefinitions.libSetDefinition.properties.displayName
     metadata: varCustomPolicySetDefinitions.libSetDefinition.properties.metadata
-    parameters: varPolicySetDefinitionEsDeployAzurePolicyNetworkParameters
+    parameters: varCustomPolicySetDefinitions.libSetDefinition.properties.parameters
     policyDefinitions: varCustomPolicySetDefinitions.libSetDefinition.properties.policyDefinitions
     policyDefinitionGroups: varCustomPolicySetDefinitions.libSetDefinition.properties.policyDefinitionGroups
 
