@@ -38,13 +38,16 @@
         }
       }
     },
-    "StorageAccountDeployDiagnosticLogDeployLogAnalytics": {
+    "AzureFilesDeployDiagnosticLogDeployLogAnalytics": {
       "parameters": {
         "logAnalytics": {
           "value": "[[parameters('logAnalytics')]"
         },
         "effect": {
-          "value": "[[parameters('StorageAccountsLogAnalyticsEffect')]"
+          "value": "[[parameters('AzureFilesLogAnalyticsEffect')]"
+        },
+        "profileName": {
+          "value": "[[parameters('profileName')]"
         }
       }
     },

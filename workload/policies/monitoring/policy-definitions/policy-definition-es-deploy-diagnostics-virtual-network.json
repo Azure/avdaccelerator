@@ -1,15 +1,15 @@
 {
-    "name": "policy-deploy-diagnostics-avd-workspace",
+    "name": "policy-deploy-diagnostics-virtual-network",
     "type": "Microsoft.Authorization/policyDefinitions",
     "apiVersion": "2021-06-01",
     "scope": null,
     "properties": {
       "policyType": "Custom",
       "mode": "Indexed",
-      "displayName": "Deploy Diagnostic Settings for AVD Workspace to Log Analytics workspace",
-      "description": "Deploys the diagnostic settings for AVD Workspace to stream to a Log Analytics workspace when any Workspace which is missing this diagnostic settings is created or updated. The Policy will set the diagnostic with all and categorys enabled.",
+      "displayName": "Custom - Deploy Diagnostic Settings for Virtual Network to Log Analytics workspace",
+      "description": "Custom - Deploys the diagnostic settings for Virtual Network to stream to a Log Analytics workspace when any Virtual Network which is missing this diagnostic settings is created or updated. The Policy will set the diagnostic with all metrics and category enabled",
       "metadata": {
-        "version": "1.0.1",
+        "version": "1.0.0",
         "category": "Monitoring"
       },
       "parameters": {
@@ -41,6 +41,18 @@
             "description": "The diagnostic settings profile name"
           }
         },
+        "metricsEnabled": {
+          "type": "String",
+          "defaultValue": "True",
+          "allowedValues": [
+            "True",
+            "False"
+          ],
+          "metadata": {
+            "displayName": "Enable metrics",
+            "description": "Whether to enable metrics stream to the Log Analytics workspace - True or False"
+          }
+        },
         "logsEnabled": {
           "type": "String",
           "defaultValue": "True",
@@ -57,7 +69,7 @@
       "policyRule": {
         "if": {
           "field": "type",
-          "equals": "Microsoft.DesktopVirtualization/workspaces"
+          "equals": "Microsoft.Network/virtualNetworks"
         },
         "then": {
           "effect": "[parameters('effect')]",
@@ -68,6 +80,10 @@
               "allOf": [
                 {
                   "field": "Microsoft.Insights/diagnosticSettings/logs.enabled",
+                  "equals": "true"
+                },
+                {
+                  "field": "Microsoft.Insights/diagnosticSettings/metrics.enabled",
                   "equals": "true"
                 },
                 {
@@ -99,6 +115,9 @@
                     "profileName": {
                       "type": "String"
                     },
+                    "metricsEnabled": {
+                      "type": "String"
+                    },
                     "logsEnabled": {
                       "type": "String"
                     }
@@ -106,28 +125,26 @@
                   "variables": {},
                   "resources": [
                     {
-                      "type": "Microsoft.DesktopVirtualization/workspaces/providers/diagnosticSettings",
+                      "type": "Microsoft.Network/virtualNetworks/providers/diagnosticSettings",
                       "apiVersion": "2017-05-01-preview",
                       "name": "[concat(parameters('resourceName'), '/', 'Microsoft.Insights/', parameters('profileName'))]",
                       "location": "[parameters('location')]",
                       "dependsOn": [],
                       "properties": {
                         "workspaceId": "[parameters('logAnalytics')]",
+                        "metrics": [
+                          {
+                            "category": "AllMetrics",
+                            "enabled": "[parameters('metricsEnabled')]",
+                            "retentionPolicy": {
+                              "enabled": false,
+                              "days": 0
+                            }
+                          }
+                        ],
                         "logs": [
                           {
-                            "category": "Checkpoint",
-                            "enabled": "[parameters('logsEnabled')]"
-                          },
-                          {
-                            "category": "Error",
-                            "enabled": "[parameters('logsEnabled')]"
-                          },
-                          {
-                            "category": "Management",
-                            "enabled": "[parameters('logsEnabled')]"
-                          },
-                          {
-                            "category": "Feed",
+                            "category": "VMProtectionAlerts",
                             "enabled": "[parameters('logsEnabled')]"
                           }
                         ]
@@ -148,6 +165,9 @@
                   },
                   "profileName": {
                     "value": "[parameters('profileName')]"
+                  },
+                  "metricsEnabled": {
+                    "value": "[parameters('metricsEnabled')]"
                   },
                   "logsEnabled": {
                     "value": "[parameters('logsEnabled')]"

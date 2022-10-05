@@ -1,13 +1,13 @@
 {
-    "name": "policy-deploy-diagnostics-avd-application-group",
+    "name": "policy-deploy-diagnostics-avd-workspace",
     "type": "Microsoft.Authorization/policyDefinitions",
     "apiVersion": "2021-06-01",
     "scope": null,
     "properties": {
       "policyType": "Custom",
       "mode": "Indexed",
-      "displayName": "Deploy Diagnostic Settings for AVD Application group to Log Analytics workspace",
-      "description": "Deploys the diagnostic settings for AVD Application group to stream to a Log Analytics workspace when any application group which is missing this diagnostic settings is created or updated. The Policy will set the diagnostic with all and categorys enabled.",
+      "displayName": "Custom - Deploy Diagnostic Settings for AVD Workspace to Log Analytics workspace",
+      "description": "Custom - Deploys the diagnostic settings for AVD Workspace to stream to a Log Analytics workspace when any Workspace which is missing this diagnostic settings is created or updated. The Policy will set the diagnostic with all and categorys enabled.",
       "metadata": {
         "version": "1.0.1",
         "category": "Monitoring"
@@ -57,7 +57,7 @@
       "policyRule": {
         "if": {
           "field": "type",
-          "equals": "Microsoft.DesktopVirtualization/applicationGroups"
+          "equals": "Microsoft.DesktopVirtualization/workspaces"
         },
         "then": {
           "effect": "[parameters('effect')]",
@@ -106,7 +106,7 @@
                   "variables": {},
                   "resources": [
                     {
-                      "type": "Microsoft.DesktopVirtualization/applicationGroups/providers/diagnosticSettings",
+                      "type": "Microsoft.DesktopVirtualization/workspaces/providers/diagnosticSettings",
                       "apiVersion": "2017-05-01-preview",
                       "name": "[concat(parameters('resourceName'), '/', 'Microsoft.Insights/', parameters('profileName'))]",
                       "location": "[parameters('location')]",
@@ -124,6 +124,10 @@
                           },
                           {
                             "category": "Management",
+                            "enabled": "[parameters('logsEnabled')]"
+                          },
+                          {
+                            "category": "Feed",
                             "enabled": "[parameters('logsEnabled')]"
                           }
                         ]
