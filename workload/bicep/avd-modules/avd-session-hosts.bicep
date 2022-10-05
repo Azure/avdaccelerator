@@ -99,11 +99,23 @@ param fsLogixScript string
 @description('Configuration arguments for FSlogix.')
 param FsLogixScriptArguments string
 
+@description('Path for the FSlogix share.')
+param FslogixSharePath string
+
 @description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
 
 @description('Required. Tags to be applied to resources')
 param avdTags object
+
+@description('Optional. Log analytics workspace for diagnostic logs.')
+param avdDiagnosticWorkspaceId string
+
+@description('Optional. Diagnostic logs retention.')
+param avdDiagnosticLogsRetentionInDays int
+
+@description('Optional. Deploy AVD monitoring resources and setings. (Default: true)')
+param avdDeployMonitoring bool
 
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
@@ -112,7 +124,9 @@ param time string = utcNow()
 // Variable declaration //
 // =========== //
 var varAllAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
-
+var varNicDiagnosticMetricsToEnable = [
+    'AllMetrics'
+  ]
 // =========== //
 // Deployments //
 // =========== //
@@ -190,12 +204,22 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
                 }
                 Exclusions: createAvdFslogixDeployment ? {
                     Extensions: '*.vhd;*.vhdx'
-                    Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;\\\\server\\share\\*\\*.VHD;\\\\server\\share\\*\\*.VHDX'
+                    Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${FslogixSharePath}\\*\\*.VHD;${FslogixSharePath}\\*\\*.VHDX'
                     Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
                 } : {}
             }
         }
+        // Enable monitoring agent
+        extensionMonitoringAgentConfig:{
+            enabled: avdDeployMonitoring
+        }
+        monitoringWorkspaceId: avdDiagnosticWorkspaceId
         tags: avdTags
+        nicdiagnosticMetricsToEnable: varNicDiagnosticMetricsToEnable
+        diagnosticWorkspaceId: avdDiagnosticWorkspaceId
+        diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
+        
+
     }
     dependsOn: []
 }]
