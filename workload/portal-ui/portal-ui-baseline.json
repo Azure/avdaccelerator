@@ -134,7 +134,7 @@
                                     "name": "avdIdentityDomainName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Domain name",
-                                    "toolTip": "Provide username with permissions to join session host to the domain.",
+                                    "toolTip": "Provide identity service domain name.",
                                     "placeholder": "Example: contoso.com",
                                     "constraints": {
                                         "required": true
