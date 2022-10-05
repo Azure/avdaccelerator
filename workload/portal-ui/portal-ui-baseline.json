@@ -68,7 +68,7 @@
                             "visible": true,
                             "options": {
                                 "text": "Azure AVD Landing Zones ARM deployment requires owner access at the subscription scope. Visit this link to get more information on RBAC permissions and scopes.",
-                                "uri": "https://docs.microsoft.com/en-us/azure/role-based-access-control/scope-overview",
+                                "uri": "https://docs.microsoft.com/azure/role-based-access-control/scope-overview",
                                 "style": "Warning"
                             }
                         }
@@ -314,7 +314,7 @@
                             "visible": true,
                             "options": {
                                 "text": "Select the location where management plane resources (workspace, host pool, application groups) will be deployed, this resources are not available in all locations but are globally replicated and they can share the same location as the session hosts or not.",
-                                "uri": "https://docs.microsoft.com/en-us/azure/virtual-desktop/data-locations",
+                                "uri": "https://docs.microsoft.com/azure/virtual-desktop/data-locations",
                                 "style": "Info"
                             }
                         },
@@ -355,7 +355,7 @@
                                     "options": {
                                         "icon": "Warning",
                                         "text": "Host pool type can not be changed after deployment.",
-                                        "uri": "https://docs.microsoft.com/en-us/azure/virtual-desktop/environment-setup"
+                                        "uri": "https://docs.microsoft.com/azure/virtual-desktop/environment-setup"
                                     }
                                 },
                                 {
@@ -536,7 +536,7 @@
                                     "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
                                     "options": {
                                         "text": "Session hosts can be excluded from the scaling plan by assigning the tag name Exclude-avdScalingPlanName, if not using custom resource naming and example of default tag name is Exclude-vdscaling-eus2-app1-001.",
-                                        "uri": "https://docs.microsoft.com/en-us/azure/virtual-desktop/autoscale-scenarios#scenario-4-how-do-exclusion-tags-work",
+                                        "uri": "https://docs.microsoft.com/azure/virtual-desktop/autoscale-scenarios#scenario-4-how-do-exclusion-tags-work",
                                         "style": "Info"
                                     }
                                 },
@@ -546,7 +546,7 @@
                                     "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.createVmRole, false)]",
                                     "options": {
                                         "text": "Start VM on Connect will not work without a custom role definition. If you enable start on connect, but do not specify a custom role VM's will not start on-demand. Only select no if this custom role already exists and is assigned to your AVD subscription.",
-                                        "uri": "https://docs.microsoft.com/en-us/azure/virtual-desktop/start-virtual-machine-connect",
+                                        "uri": "https://docs.microsoft.com/azure/virtual-desktop/start-virtual-machine-connect",
                                         "style": "Warning"
                                     }
                                 }
@@ -819,7 +819,7 @@
                                     "visible": "[equals(steps('avdSessionHosts').avdSessionHostsSettingsSection.avdSessionHostEncryptionAtHost, true)]",
                                     "options": {
                                         "text": "Encryption at host requires feature EncryptionAtHost of resource provider Microsoft.Compute to be registered in the subscription.",
-                                        "uri": "https://docs.microsoft.com/en-us/azure/virtual-machines/disks-enable-host-based-encryption-portal?msclkid=31c2d29bbce111ec8bca8257221ab9d1",
+                                        "uri": "https://docs.microsoft.com/azure/virtual-machines/disks-enable-host-based-encryption-portal?msclkid=31c2d29bbce111ec8bca8257221ab9d1",
                                         "style": "Warning"
                                     }
                                 }
@@ -1201,7 +1201,17 @@
                             "visible": "[equals(steps('avdMonitoring').avdDeployMonitoring, true)]",
                             "options": {
                                 "text": "Azure Virtual Desktop monitoring requires an existing Azure Log Analytics Workspace or the creation of a new one.",
-                                "uri": "https://docs.microsoft.com/en-us/azure/virtual-desktop/azure-monitor",
+                                "uri": "https://docs.microsoft.com/azure/virtual-desktop/azure-monitor",
+                                "style": "Info"
+                            }
+                        },
+                        {
+                            "name": "avdDeployMonitoringInfo2",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[equals(steps('avdMonitoring').avdDeployMonitoring, true)]",
+                            "options": {
+                                "text": "Deployment will configured all required settings to use the AVD insights workbook.",
+                                "uri": "https://learn.microsoft.com/azure/virtual-desktop/azure-monitor?WT.mc_id=Portal-AppInsightsExtension",
                                 "style": "Info"
                             }
                         },
@@ -1332,7 +1342,7 @@
                             "visible": "[equals(steps('avdResourceNaming').avdResourceNamingSelection, true)]",
                             "options": {
                                 "text": "When using custom naming for resources, please make sure to follow naming rules and restrictions for Azure resources.",
-                                "uri": "https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules",
+                                "uri": "https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules",
                                 "style": "Warning"
                             }
                         },
@@ -1640,7 +1650,7 @@
                             "visible": true,
                             "options": {
                                 "text": "AVD accelerator has built-in resource naming automation based and best practices Microsoft Cloud Adoption Framework (CAF) naming convention.",
-                                "uri": "https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming",
+                                "uri": "https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming",
                                 "style": "Info"
                             }
                         },
@@ -1650,7 +1660,7 @@
                             "visible": true,
                             "options": {
                                 "text": "And abbreviations recommendations for Azure resource types.",
-                                "uri": "https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations",
+                                "uri": "https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations",
                                 "style": "Info"
                             }
                         }

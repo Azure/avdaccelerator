@@ -4,7 +4,7 @@ This guide is designed to help you get started with deploying Azure Virtual Desk
 
 This accelerator is to be used as starter kit and you can expand its functionality by developing your own deployments. This scenario deploys a new Azure Virtual Desktop workload, so it cannot be used to maintain, modify or add resources to an existing or already deployed Azure Virtual Desktop workload from this accelerator.
 
-***Note*** This terraform accelerator requires the Custom Image Build before deploying the Baseline. If you prefer to use the marketplace image with no customization [see](https://docs.microsoft.com/en-us/azure/developer/terraform/create-avd-session-host)
+***Note*** This terraform accelerator requires the Custom Image Build before deploying the Baseline. If you prefer to use the marketplace image with no customization [see](https://docs.microsoft.com/azure/developer/terraform/create-avd-session-host)
 
 ## Table of Contents
 
@@ -22,9 +22,9 @@ To get started with Terraform on Azure check out their [tutorial](https://learn.
 ## Prerequisites
 
 - Meet the prerequisites listed [here](https://github.com/Azure/avdaccelerator/wiki/Getting-Started#Getting-Started)
-- Current version of the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+- Current version of the [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli)
 - Current version of the Terraform CLI
-- An Azure Subscription(s) where you or an identity you manage has `Owner` [RBAC permissions](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#owner)
+- An Azure Subscription(s) where you or an identity you manage has `Owner` [RBAC permissions](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner)
 
 ## Planning
 
@@ -128,7 +128,7 @@ The default templates write a state file directly to disk locally to where you a
 <summary>Click to expand</summary>
 #### Using Azure CLI
 
-[Store state in Azure Storage](https://docs.microsoft.com/en-us/azure/developer/terraform/store-state-in-azure-storage)
+[Store state in Azure Storage](https://docs.microsoft.com/azure/developer/terraform/store-state-in-azure-storage)
 
 ```cli
 RESOURCE_GROUP_NAME=tstate
@@ -166,7 +166,7 @@ echo "access_key: $ACCOUNT_KEY"
 
 ### Create a key vault
 
-[Create Key Vault](https://docs.microsoft.com/en-us/azure/key-vault/secrets/quick-create-cli)
+[Create Key Vault](https://docs.microsoft.com/azure/key-vault/secrets/quick-create-cli)
 
 ```cli
 az keyvault create --name "<Azure Virtual Desktopkeyvaultdemo>" --resource-group $RESOURCE_GROUP_NAME --location "<East US>"
@@ -211,8 +211,8 @@ The Custom Image Terraform files structure:
 - [Powershell VS Code Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.PowerShell)
 - [HashiCorp Terraform VS Code Extension](https://marketplace.visualstudio.com/items?itemName=HashiCorp.terraform)
 - [Azure Terraform VS Code Extension Name](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureterraform)
-- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli)
-- [Configure the Azure Terraform Visual Studio Code extension](https://docs.microsoft.com/en-us/azure/developer/terraform/configure-vs-code-extension-for-terraform)
+- [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli-windows?tabs=azure-cli)
+- [Configure the Azure Terraform Visual Studio Code extension](https://docs.microsoft.com/azure/developer/terraform/configure-vs-code-extension-for-terraform)
 - [Setup video](https://youtu.be/YmbmpGdhI6w)
 
 </details>
