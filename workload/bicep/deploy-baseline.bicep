@@ -811,7 +811,7 @@ module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring.bicep' =
 // Azure Policies for network monitorig/security . New storage account/Reuse existing one if needed created for the NSG flow logs
 
 module deployAzurePolicyNetworking './avd-modules/avd-azure-policy-networking.bicep' = if (deployCustomPolicyNetworking) {
-    name: 'Enable-Azure-Policy-for-Netwok-Security-${time}'
+    name: length('Enable-Azure-Policy-for-Netwok-Security-${time}') > 64 ? substring('Enable-Azure-Policy-for-Netwok-Security-${time}',0,63) : 'Enable-Azure-Policy-for-Netwok-Security-${time}'
     params: {
         alaWorkspaceResourceId: deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaWorkspaceId
         alaWorkspaceId: deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceId : alaWorkspaceId 
