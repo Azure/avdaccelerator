@@ -102,10 +102,8 @@ param fsLogixScript string
 @description('Configuration arguments for FSlogix.')
 param FsLogixScriptArguments string
 
-
 @description('Path for the FSlogix share.')
 param FslogixSharePath string
-
 
 @description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
@@ -113,23 +111,29 @@ param fslogixScriptUri string
 @description('Required. Tags to be applied to resources')
 param avdTags object
 
+@description('Optional. Log analytics workspace for diagnostic logs.')
+param avdDiagnosticWorkspaceId string
+
+@description('Optional. Diagnostic logs retention.')
+param avdDiagnosticLogsRetentionInDays int
+
+@description('Optional. Deploy AVD monitoring resources and setings. (Default: true)')
+param avdDeployMonitoring bool
+
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
 // =========== //
 // Variable declaration //
 // =========== //
-
 var varAvdMaxSessionHostsPerTemplateDeployment = 30 //50 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
 var varDivisionValue = avdDeploySessionHostsCount / varAvdMaxSessionHostsPerTemplateDeployment // This determines if any full batches are required.
 var varDivisionRemainderValue = avdDeploySessionHostsCount % varAvdMaxSessionHostsPerTemplateDeployment // This determines if any partial batches are required.
 var varAvdSessionHostBatchCount = varDivisionRemainderValue > 0 ? varDivisionValue + 1 : varDivisionValue // This determines the total number of batches needed, whether full and / or partial.
-
 var maxAvailabilitySetMembersCount = 20 //200 // This is the max number of session hosts that can be deployed in an availability set.
 var divisionAvSetValue = avdDeploySessionHostsCount / maxAvailabilitySetMembersCount // This determines if any full availability sets are required.
 var divisionAvSetRemainderValue = avdDeploySessionHostsCount % maxAvailabilitySetMembersCount // This determines if any partial availability sets are required.
 var availabilitySetCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue + 1 : divisionAvSetValue // This determines the total number of availability sets needed, whether full and / or partial.
-
 
 // =========== //
 // Deployments //
@@ -192,6 +196,9 @@ module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, varAvdSe
     useSharedImage: useSharedImage
     avdIdentityServiceProvider: avdIdentityServiceProvider
     avdTags: avdTags
+    avdDeployMonitoring: avdDeployMonitoring
+    avdDiagnosticWorkspaceId: avdDiagnosticWorkspaceId
+    avdDiagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
   }
   dependsOn: [
     avdAvailabilitySet
