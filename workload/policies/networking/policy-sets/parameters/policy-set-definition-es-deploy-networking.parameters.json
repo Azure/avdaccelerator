@@ -1,5 +1,5 @@
 {
-    "AuditForFlowLogs": {
+    "AuditForFlowLogsEffect": {
       "parameters": {
         "effect": {
           "value": "[[parameters('AuditForFlowLogs')]"
