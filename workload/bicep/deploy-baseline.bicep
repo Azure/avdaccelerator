@@ -849,6 +849,8 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
         avdWorkloadSubsId: avdWorkloadSubsId
         dnsServers: varDnsServers
         avdTags: createResourceTags ? varCommonResourceTags : {}
+        avdDiagnosticWorkspaceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaWorkspaceId) : ''
+        avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
     dependsOn: [
         avdBaselineNetworkResourceGroup
@@ -1026,6 +1028,8 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         managementVmName: varManagementVmName
         useSharedImage: useSharedImage
         avdTags: createResourceTags ? varAllResourceTags : {}
+        avdDiagnosticWorkspaceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaWorkspaceId) : ''
+        avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
     dependsOn: [
         avdBaselineStorageResourceGroup
@@ -1075,6 +1079,9 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
         avdTags: createResourceTags ? varAllResourceTags : {}
+        avdDeployMonitoring: avdDeployMonitoring
+        avdDiagnosticWorkspaceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaWorkspaceId) : ''
+        avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
     dependsOn: [
         avdBaselineResourceGroups
