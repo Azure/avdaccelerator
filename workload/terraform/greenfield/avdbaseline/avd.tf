@@ -41,7 +41,7 @@ resource "azurerm_role_assignment" "power" {
   depends_on                       = [data.azurerm_role_definition.power_role]
 }
 
-# autoscale settings scenario 1 https://docs.microsoft.com/en-us/azure/virtual-desktop/autoscale-scenarios
+# autoscale settings scenario 1 https://docs.microsoft.com/azure/virtual-desktop/autoscale-scenarios
 resource "azurerm_virtual_desktop_scaling_plan" "scplan" {
   name                = var.scplan
   location            = azurerm_resource_group.rg.location

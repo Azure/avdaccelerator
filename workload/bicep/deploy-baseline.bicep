@@ -202,7 +202,7 @@ param storageOuPath string = ''
 param createOuForStorage bool = false
 
 // Custom Naming
-// Input must followe resource naming rules on https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules
+// Input must followe resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
 @description('Required. AVD resources custom naming. (Default: false)')
 param avdUseCustomNaming bool = false
 
