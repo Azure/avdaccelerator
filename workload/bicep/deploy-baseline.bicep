@@ -133,11 +133,23 @@ param avdDeployMonitoring bool = true
 @description('Optional. Deploy AVD Azure log analytics workspace. (Default: true)')
 param deployAlaWorkspace bool = true
 
+@description('Required. Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace.')
+param deployCustomPolicyMonitoring bool = false
+
 @description('Optional. AVD Azure log analytics workspace data retention. (Default: 90)')
 param avdAlaWorkspaceDataRetention int = 90
 
 @description('Optional. Existing Azure log analytics workspace to connect to. (Default: )')
 param alaWorkspaceId string = ''
+
+@description('Required. Create and assign custom Azure Policy for NSG flow logs and network security')
+param deployCustomPolicyNetworking bool = false 
+
+@description('Optional. Deploy Azure storage account for flow logs. (Default: false)')
+param deployStgAccountForFlowLogs bool = false
+
+@description('Optional. Existing Azure Storage account Resourece ID for NSG flow logs. (Default: )')
+param stgAccountForFlowLogsId string = ''
 
 @minValue(1)
 @maxValue(999)
@@ -221,6 +233,10 @@ param avdVnetworkCustomName string = 'vnet-avd-use2-app1-001'
 @maxLength(64)
 @description('Optional. AVD Azure log analytics workspace custom name. (Default: log-avd-use2-app1-001)')
 param avdAlaWorkspaceCustomName string = 'log-avd-use2-app1-001'
+
+@maxLength(24)
+@description('Optional. Azure Storage Account custom name for NSG flow logs. (Default: stavduse2flowlogs001)')
+param avdStgAccountForFlowLogsCustomName string = 'stavduse2flowlogs001'
 
 @maxLength(80)
 @description('Optional. AVD virtual network subnet custom name. (Default: snet-avd-use2-app1-001)')
@@ -467,6 +483,7 @@ var varTimeZones = {
     westus2: 'Pacific Standard Time'
     westus3: 'Mountain Standard Time'
 }
+
 var varAvdNamingUniqueStringSixChar = take('${uniqueString(avdWorkloadSubsId, varDeploymentPrefixLowercase, time)}', 6)
 var varAvdManagementPlaneNamingStandard = '${varAvdManagementPlaneLocationAcronym}-${varDeploymentPrefixLowercase}'
 var varAvdComputeStorageResourcesNamingStandard = '${varAvdSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
@@ -474,7 +491,7 @@ var varAvdServiceObjectsRgName = avdUseCustomNaming ? avdServiceObjectsRgCustomN
 var varAvdNetworkObjectsRgName = avdUseCustomNaming ? avdNetworkObjectsRgCustomName : 'rg-avd-${varAvdComputeStorageResourcesNamingStandard}-network' // max length limit 90 characters
 var varAvdComputeObjectsRgName = avdUseCustomNaming ? avdComputeObjectsRgCustomName : 'rg-avd-${varAvdComputeStorageResourcesNamingStandard}-pool-compute' // max length limit 90 characters
 var varAvdStorageObjectsRgName = avdUseCustomNaming ? avdStorageObjectsRgCustomName : 'rg-avd-${varAvdComputeStorageResourcesNamingStandard}-storage' // max length limit 90 characters
-var varAvdMonitoringRgName = avdUseCustomNaming ? avdMonitoringRgCustomName : 'rg-avd-${varAvdComputeStorageResourcesNamingStandard}-monitoring' // max length limit 90 characters
+var varAvdMonitoringRgName = avdUseCustomNaming ? avdMonitoringRgCustomName : 'rg-avd-${varAvdSessionHostLocationAcronym}-monitoring' // max length limit 90 characters
 //var varAvdSharedResourcesRgName = 'rg-${varAvdSessionHostLocationAcronym}-avd-shared-resources'
 var varAvdVnetworkName = avdUseCustomNaming ? avdVnetworkCustomName : 'vnet-avd-${varAvdComputeStorageResourcesNamingStandard}-001'
 var varAvdVnetworkSubnetName = avdUseCustomNaming ? avdVnetworkSubnetCustomName : 'snet-avd-${varAvdComputeStorageResourcesNamingStandard}-001'
@@ -500,7 +517,8 @@ var varAvdFslogixProfileContainerFileShareName = avdUseCustomNaming ? avdFslogix
 var varAvdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}' : 'stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}'
 var varAvdWrklStoragePrivateEndpointName = 'pe-stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}-file'
 var varManagementVmName = 'vm-mgmt-${varDeploymentPrefixLowercase}'
-var varAvdAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-${varAvdManagementPlaneNamingStandard}-001'
+var varAvdAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
+var varStgAccountForFlowLogsName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}' : 'stavd${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}'
 //
 
 var varAvdScalingPlanSchedules = [
@@ -654,6 +672,21 @@ var varAllResourceTags = union(varCommonResourceTags, varAllComputeStorageTags)
 
 var varTelemetryId = 'pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-${avdManagementPlaneLocation}'
 
+var resourceGroups = [
+    {
+        name: varAvdServiceObjectsRgName
+        location: avdManagementPlaneLocation
+        enableDefaultTelemetry: false
+        tags: createResourceTags ? varCommonResourceTags : {}
+    }
+    {
+        name: varAvdComputeObjectsRgName
+        location: avdSessionHostLocation
+        enableDefaultTelemetry: false
+        tags: createResourceTags ? varAllComputeStorageTags : {}
+    }
+]
+
 // =========== //
 // Deployments //
 // =========== //
@@ -689,35 +722,17 @@ module avdBaselineNetworkResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
     ]
 }
 
-// Service objects.
-module avdBaselineServiceObjectsResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
+// Compute, service objects
+module avdBaselineResourceGroups '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = [for resourceGroup in resourceGroups: {
     scope: subscription(avdWorkloadSubsId)
-    name: 'Deploy-${varAvdServiceObjectsRgName}-${time}'
+    name: 'Deploy-${substring(resourceGroup.name, 10)}-${time}'
     params: {
-        name: varAvdServiceObjectsRgName
-        location: avdManagementPlaneLocation
-        enableDefaultTelemetry: false
-        tags: createResourceTags ? varCommonResourceTags : {}
+        name: resourceGroup.name
+        location: resourceGroup.location
+        enableDefaultTelemetry: resourceGroup.enableDefaultTelemetry
+        tags: resourceGroup.tags
     }
-    dependsOn: [
-        deployMonitoringDiagnosticSettings
-    ]
-}
-
-// Compute.
-module avdBaselineComputeResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
-    scope: subscription(avdWorkloadSubsId)
-    name: 'Deploy-${varAvdComputeObjectsRgName}-${time}'
-    params: {
-        name: varAvdComputeObjectsRgName
-        location: avdSessionHostLocation
-        enableDefaultTelemetry: false
-        tags: createResourceTags ? varAllComputeStorageTags : {}
-    }
-    dependsOn: [
-        deployMonitoringDiagnosticSettings
-    ]
-}
+}]
 
 // Storage.
 module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdFslogixDeployment) {
@@ -733,19 +748,6 @@ module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
         deployMonitoringDiagnosticSettings
     ]
 }
-
-// Monitoring.
-module avdBaselineMonitoringResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (deployAlaWorkspace) {
-    scope: subscription(avdWorkloadSubsId)
-    name: 'Deploy-${varAvdMonitoringRgName}-${time}'
-    params: {
-        name: varAvdMonitoringRgName
-        location: avdManagementPlaneLocation
-        enableDefaultTelemetry: false
-        tags: createResourceTags ? varAllComputeStorageTags : {}
-    }
-}
-//
 
 /*
 // Validation Deployment Script
@@ -789,12 +791,13 @@ module validation 'avd-modules/avd-validation.bicep' = {
 }
 */
 
-// Monitoring Diagnostic settings policies and if enabled log analytics work space.
-module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring-diagnostic-settings.bicep' = if (avdDeployMonitoring) {
-    name: 'Deploy-AVD-Diagnostic-${time}'
+// Azure Policies for monitoring Diagnostic settings. Performance couunters on new or existing Log Analytics workspace. New workspace if needed.
+module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring.bicep' = if (avdDeployMonitoring) {
+    name: 'Deploy-AVD-Monitoring-${time}'
     params: {
         avdManagementPlaneLocation: avdManagementPlaneLocation
         deployAlaWorkspace: deployAlaWorkspace
+        deployCustomPolicyMonitoring: deployCustomPolicyMonitoring
         alaWorkspaceId: deployAlaWorkspace ? '' : alaWorkspaceId
         avdMonitoringRgName: varAvdMonitoringRgName
         avdAlaWorkspaceName: deployAlaWorkspace ? varAvdAlaWorkspaceName: ''
@@ -802,10 +805,28 @@ module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring-diagnost
         avdWorkloadSubsId: avdWorkloadSubsId
         avdTags: createResourceTags ? varAllResourceTags : {}
     }
+    dependsOn: []
+}
+
+// Azure Policies for network monitorig/security . New storage account/Reuse existing one if needed created for the NSG flow logs
+
+module deployAzurePolicyNetworking './avd-modules/avd-azure-policy-networking.bicep' = if (deployCustomPolicyNetworking) {
+    name: length('Enable-Azure-Policy-for-Netwok-Security-${time}') > 64 ? substring('Enable-Azure-Policy-for-Netwok-Security-${time}',0,63) : 'Enable-Azure-Policy-for-Netwok-Security-${time}'
+    params: {
+        alaWorkspaceResourceId: deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaWorkspaceId
+        alaWorkspaceId: deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceId : alaWorkspaceId 
+        avdManagementPlaneLocation: avdManagementPlaneLocation
+        avdWorkloadSubsId: avdWorkloadSubsId
+        avdMonitoringRgName: varAvdMonitoringRgName
+        stgAccountForFlowLogsId: deployStgAccountForFlowLogs ? '' : stgAccountForFlowLogsId
+        stgAccountForFlowLogsName: deployStgAccountForFlowLogs ? varStgAccountForFlowLogsName : ''
+        avdTags: createResourceTags ? varAllResourceTags : {}
+    }
     dependsOn: [
-        avdBaselineMonitoringResourceGroup
+        deployMonitoringDiagnosticSettings
     ]
 }
+
 
 // Networking.
 module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
@@ -828,6 +849,8 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
         avdWorkloadSubsId: avdWorkloadSubsId
         dnsServers: varDnsServers
         avdTags: createResourceTags ? varCommonResourceTags : {}
+        avdDiagnosticWorkspaceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaWorkspaceId) : ''
+        avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
     dependsOn: [
         avdBaselineNetworkResourceGroup
@@ -860,9 +883,11 @@ module avdManagementPLane 'avd-modules/avd-management-plane.bicep' = {
         avdWorkloadSubsId: avdWorkloadSubsId
         avdIdentityServiceProvider: avdIdentityServiceProvider
         avdTags: createResourceTags ? varCommonResourceTags : {}
+        avdDiagnosticWorkspaceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaWorkspaceId) : ''
+        avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
     dependsOn: [
-        avdBaselineServiceObjectsResourceGroup
+        avdBaselineResourceGroups
         deployAvdManagedIdentitiesRoleAssign
     ]
 }
@@ -889,7 +914,7 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
         avdTags: createResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
-        avdBaselineComputeResourceGroup
+        avdBaselineResourceGroups
         avdBaselineStorageResourceGroup
     ]
 }
@@ -953,7 +978,7 @@ module avdWrklKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep
         tags: createResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
-        avdBaselineServiceObjectsResourceGroup
+        avdBaselineResourceGroups
         //updateExistingSubnet
     ]
 }
@@ -1003,6 +1028,8 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         managementVmName: varManagementVmName
         useSharedImage: useSharedImage
         avdTags: createResourceTags ? varAllResourceTags : {}
+        avdDiagnosticWorkspaceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaWorkspaceId) : ''
+        avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
     dependsOn: [
         avdBaselineStorageResourceGroup
@@ -1047,34 +1074,20 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         fsLogixScript: varFsLogixScript
         FsLogixScriptArguments: varFsLogixScriptArguments
         fslogixScriptUri: varFslogixScriptUri
+        FslogixSharePath: varFslogixSharePath
         hostPoolToken: avdManagementPLane.outputs.hostPooltoken
         marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
         avdTags: createResourceTags ? varAllResourceTags : {}
+        avdDeployMonitoring: avdDeployMonitoring
+        avdDiagnosticWorkspaceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaWorkspaceId) : ''
+        avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
     dependsOn: [
-        avdBaselineComputeResourceGroup
+        avdBaselineResourceGroups
         avdNetworking
         avdWrklKeyVaultget
         avdWrklKeyVault
     ]
 }
 
-// Monitoring Diagnostic settings policies and if enabled log analytics work space.
-module deployMonitoringEventsPerformanceSettings './avd-modules/avd-monitoring-events-performance-counters.bicep' = if (avdDeployMonitoring) {
-    name: 'Deploy-AVD-Events-Performance-${time}'
-    params: {
-        avdManagementPlaneLocation: avdManagementPlaneLocation
-        deployAlaWorkspace: deployAlaWorkspace
-        alaWorkspaceId: deployAlaWorkspace ? '' : alaWorkspaceId
-        avdMonitoringRgName: varAvdMonitoringRgName
-        avdAlaWorkspaceName: deployAlaWorkspace ? varAvdAlaWorkspaceName: ''
-        avdWorkloadSubsId: avdWorkloadSubsId
-        avdTags: createResourceTags ? varAllResourceTags : {}
-    }
-    dependsOn: [
-        deployMonitoringDiagnosticSettings
-        deployAndConfigureAvdSessionHosts
-        deployAvdStorageAzureFiles
-    ]
-}

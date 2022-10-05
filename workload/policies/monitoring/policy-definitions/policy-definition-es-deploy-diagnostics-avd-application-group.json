@@ -1,15 +1,15 @@
 {
-    "name": "policy-deploy-diagnostics-network-security-group",
+    "name": "policy-deploy-diagnostics-avd-application-group",
     "type": "Microsoft.Authorization/policyDefinitions",
     "apiVersion": "2021-06-01",
     "scope": null,
     "properties": {
       "policyType": "Custom",
       "mode": "Indexed",
-      "displayName": "Deploy Diagnostic Settings for Network Security Groups to Log Analytics workspace",
-      "description": "Deploys the diagnostic settings for Network Security Groups to stream to a Log Analytics workspace when any Network Security Groups which is missing this diagnostic settings is created or updated. The Policy will set the diagnostic with all metrics and category enabled",
+      "displayName": "Custom - Deploy Diagnostic Settings for AVD Application group to Log Analytics workspace",
+      "description": "Custom - Deploys the diagnostic settings for AVD Application group to stream to a Log Analytics workspace when any application group which is missing this diagnostic settings is created or updated. The Policy will set the diagnostic with all and categorys enabled.",
       "metadata": {
-        "version": "1.0.0",
+        "version": "1.0.1",
         "category": "Monitoring"
       },
       "parameters": {
@@ -57,7 +57,7 @@
       "policyRule": {
         "if": {
           "field": "type",
-          "equals": "Microsoft.Network/networkSecurityGroups"
+          "equals": "Microsoft.DesktopVirtualization/applicationGroups"
         },
         "then": {
           "effect": "[parameters('effect')]",
@@ -106,21 +106,24 @@
                   "variables": {},
                   "resources": [
                     {
-                      "type": "Microsoft.Network/networkSecurityGroups/providers/diagnosticSettings",
+                      "type": "Microsoft.DesktopVirtualization/applicationGroups/providers/diagnosticSettings",
                       "apiVersion": "2017-05-01-preview",
                       "name": "[concat(parameters('resourceName'), '/', 'Microsoft.Insights/', parameters('profileName'))]",
                       "location": "[parameters('location')]",
                       "dependsOn": [],
                       "properties": {
                         "workspaceId": "[parameters('logAnalytics')]",
-                        "metrics": [],
                         "logs": [
                           {
-                            "category": "NetworkSecurityGroupEvent",
+                            "category": "Checkpoint",
                             "enabled": "[parameters('logsEnabled')]"
                           },
                           {
-                            "category": "NetworkSecurityGroupRuleCounter",
+                            "category": "Error",
+                            "enabled": "[parameters('logsEnabled')]"
+                          },
+                          {
+                            "category": "Management",
                             "enabled": "[parameters('logsEnabled')]"
                           }
                         ]
