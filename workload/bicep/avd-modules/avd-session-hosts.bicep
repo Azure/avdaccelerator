@@ -108,6 +108,15 @@ param fslogixScriptUri string
 @description('Required. Tags to be applied to resources')
 param avdTags object
 
+@description('Optional. Log analytics workspace for diagnostic logs.')
+param avdDiagnosticWorkspaceId string
+
+@description('Optional. Diagnostic logs retention.')
+param avdDiagnosticLogsRetentionInDays int
+
+@description('Optional. Deploy AVD monitoring resources and setings. (Default: true)')
+param avdDeployMonitoring bool
+
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
@@ -115,7 +124,9 @@ param time string = utcNow()
 // Variable declaration //
 // =========== //
 var varAllAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avdSessionHostLocation, 3)
-
+var varNicDiagnosticMetricsToEnable = [
+    'AllMetrics'
+  ]
 // =========== //
 // Deployments //
 // =========== //
@@ -198,7 +209,17 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
                 } : {}
             }
         }
+        // Enable monitoring agent
+        extensionMonitoringAgentConfig:{
+            enabled: avdDeployMonitoring
+        }
+        monitoringWorkspaceId: avdDiagnosticWorkspaceId
         tags: avdTags
+        nicdiagnosticMetricsToEnable: varNicDiagnosticMetricsToEnable
+        diagnosticWorkspaceId: avdDiagnosticWorkspaceId
+        diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
+        
+
     }
     dependsOn: []
 }]

@@ -109,8 +109,26 @@ param storageToDomainScriptUri string
 @description('Required. Tags to be applied to resources')
 param avdTags object
 
+@description('Optional. Log analytics workspace for diagnostic logs.')
+param avdDiagnosticWorkspaceId string
+
+@description('Optional. Diagnostic logs retention.')
+param avdDiagnosticLogsRetentionInDays int
+
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
+
+// =========== //
+// Variable declaration //
+// =========== //
+var varAvdFileShareLogsDiagnostic = [
+    'StorageRead'
+    'StorageWrite'
+    'StorageDelete'
+]
+var varAvdFileShareMetricsDiagnostic = [
+    'Transaction'
+]
 
 // =========== //
 // Deployments //
@@ -158,6 +176,9 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
                     }
                 }
             } : {}
+            diagnosticWorkspaceId: avdDiagnosticWorkspaceId
+            diagnosticLogCategoriesToEnable: varAvdFileShareLogsDiagnostic
+            diagnosticMetricsToEnable: varAvdFileShareMetricsDiagnostic
         }
         privateEndpoints: avdVnetPrivateDnsZone ? [
             {
@@ -176,6 +197,8 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
             }
         ]
         tags: avdTags
+        diagnosticWorkspaceId: avdDiagnosticWorkspaceId
+        diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
     }
 }
 
