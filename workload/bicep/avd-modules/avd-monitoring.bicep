@@ -71,7 +71,7 @@ resource avdAlaWorkspaceKey 'Microsoft.OperationalInsights/workspaces@2021-06-01
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdMonitoringRgName}')
 }
 
-output test string = avdAlaWorkspaceKey.properties.
+output test string = avdAlaWorkspaceKey.properties.lis
 
 // Policy definitions.
 
@@ -106,4 +106,4 @@ module deployMonitoringEventsPerformanceSettings 'avd-monitoring-events-performa
 // Outputs //
 // =========== //
 output avdAlaWorkspaceResourceId string = deployAlaWorkspace ? avdAlaWorkspace.outputs.resourceId : alaWorkspaceId
-output avdAlaWorkspaceId string = deployAlaWorkspace ? avdAlaWorkspace.outputs.logAnalyticsWorkspaceId : alaWorkspaceId // may need to call on existing LGA to get workspace guid
+output avdAlaWorkspaceId string = deployAlaWorkspace ? avdAlaWorkspace.outputs.logAnalyticsWorkspaceId : alaWorkspaceId // may need to call on existing LGA to get workspace guid // We should be safe to remove this one as CARML modules use the resource ID instead
