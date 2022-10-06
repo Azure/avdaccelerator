@@ -1814,7 +1814,7 @@
                 "avdHostPoolLoadBalancerType": "[steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.loadBalancerType]",
                 "avhHostPoolMaxSessions": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.maxSessions, 1)]",
                 "avdPersonalAssignType": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.assignmentType, 'Automatic')]",
-                "avdDeployRappGroup": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('avdManagementPlane').avdManagementPlaneAppGroupOptions.avdDeployRappGroup, 'none')]",
+                "avdDeployRappGroup": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('avdManagementPlane').avdManagementPlaneAppGroupOptions.avdDeployRappGroup, false)]",
                 "avdIdentityServiceProvider": "[steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider]",
                 "avdIdentityDomainName": "[steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainName]",
                 "avdOuPath": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPath]",
