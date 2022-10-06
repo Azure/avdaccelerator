@@ -110,7 +110,7 @@ param storageToDomainScriptUri string
 param avdTags object
 
 @description('Optional. Log analytics workspace for diagnostic logs.')
-param avdDiagnosticWorkspaceId string
+param avdAlaWorkspaceResourceId string
 
 @description('Optional. Diagnostic logs retention.')
 param avdDiagnosticLogsRetentionInDays int
@@ -176,7 +176,7 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
                     }
                 }
             } : {}
-            diagnosticWorkspaceId: avdDiagnosticWorkspaceId
+            diagnosticWorkspaceId: avdAlaWorkspaceResourceId
             diagnosticLogCategoriesToEnable: varAvdFileShareLogsDiagnostic
             diagnosticMetricsToEnable: varAvdFileShareMetricsDiagnostic
         }
@@ -197,7 +197,7 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
             }
         ]
         tags: avdTags
-        diagnosticWorkspaceId: avdDiagnosticWorkspaceId
+        diagnosticWorkspaceId: avdAlaWorkspaceResourceId
         diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
     }
 }

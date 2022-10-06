@@ -109,7 +109,7 @@ param fslogixScriptUri string
 param avdTags object
 
 @description('Optional. Log analytics workspace for diagnostic logs.')
-param avdDiagnosticWorkspaceId string
+param avdAlaWorkspaceResourceId string
 
 @description('Optional. Diagnostic logs retention.')
 param avdDiagnosticLogsRetentionInDays int
@@ -215,10 +215,10 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
             enabled: avdDeployMonitoring
             enableAutomaticUpgrade: true
         }
-        monitoringWorkspaceId: avdDiagnosticWorkspaceId
+        monitoringWorkspaceId: avdAlaWorkspaceResourceId
         tags: avdTags
         nicdiagnosticMetricsToEnable: varNicDiagnosticMetricsToEnable
-        diagnosticWorkspaceId: avdDiagnosticWorkspaceId
+        diagnosticWorkspaceId: avdAlaWorkspaceResourceId
         diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
     }
     dependsOn: []
