@@ -18,7 +18,6 @@ param stgAccountForFlowLogsName string
 @description('Required.  Azure log analytics workspace Resource Id .')
 param alaWorkspaceResourceId string
 
-
 @description('Required.  Azure log analytics workspace ID.')
 param alaWorkspaceId string
 
