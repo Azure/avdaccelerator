@@ -15,7 +15,7 @@ param deployAlaWorkspace bool
 @description('Required. Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace.')
 param deployCustomPolicyMonitoring bool
 
-@description('Required. Exisintg Azure log analytics workspace.')
+@description('Required. Exisintg Azure log analytics workspace resource.')
 param alaWorkspaceId string
 
 @description('Required. AVD Resource Group Name for monitoring resources.')

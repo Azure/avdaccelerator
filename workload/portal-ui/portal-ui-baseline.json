@@ -2000,7 +2000,7 @@
                 "avdDeployMonitoring": "[steps('avdMonitoring').avdDeployMonitoring]",
                 "deployAlaWorkspace": "[if(equals(steps('avdMonitoring').avdDeployMonitoring, true), steps('avdMonitoring').avdDeployMonitoringAlaWorkspace, false)]",
                 "avdAlaWorkspaceDataRetention": "[if(equals(steps('avdMonitoring').avdDeployMonitoringAlaWorkspace, true), steps('avdMonitoring').avdDeployMonitoringNewAlaWorkspaceRetention, 0)]",
-                "alaWorkspaceId": "[if(equals(steps('avdMonitoring').avdDeployMonitoringAlaWorkspace, false), steps('avdMonitoring').avdAlaWorkspaceExistingWorkspacesSelection.id, 'none')]",
+                "alaExistingWorkspaceResourceId": "[if(equals(steps('avdMonitoring').avdDeployMonitoringAlaWorkspace, false), steps('avdMonitoring').avdAlaWorkspaceExistingWorkspacesSelection.id, 'none')]",
                 "deployCustomPolicyMonitoring": "[if(equals(steps('avdMonitoring').avdDeployMonitoring, true), steps('avdMonitoring').avdDeployMonitoringPolicies, false)]"
 
             },
