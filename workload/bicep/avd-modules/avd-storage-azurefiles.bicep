@@ -40,7 +40,7 @@ param avdSessionHostsSize string
 param avdSessionHostDiskType string
 
 @description('Market Place OS image')
-param marketPlaceGalleryWindows object
+param marketPlaceGalleryWindowsManagementVm object
 
 @description('Set to deploy image from Azure. Compute Gallery')
 param useSharedImage bool
@@ -217,9 +217,10 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
         encryptionAtHost: encryptionAtHost
         availabilityZone: []
         osType: 'Windows'
-        licenseType: 'Windows_Client'
+        //licenseType: 'Windows_Client'
         vmSize: avdSessionHostsSize
-        imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinitionId}\'}') : marketPlaceGalleryWindows
+        //imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinitionId}\'}') : marketPlaceGalleryWindows
+        imageReference: marketPlaceGalleryWindowsManagementVm
         osDisk: {
             createOption: 'fromImage'
             deleteOption: 'Delete'

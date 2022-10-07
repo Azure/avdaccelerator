@@ -1628,6 +1628,49 @@
                             ]
                         },
                         {
+                            "name": "avdResourceNamingMonitoring",
+                            "type": "Microsoft.Common.Section",
+                            "label": "Monitoring naming:",
+                            "visible": "[equals(steps('avdResourceNaming').avdResourceNamingSelection, true)]",
+                            "elements": [
+                                {
+                                    "name": "avdResourceNamingMonitoringInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('avdMonitoring').avdDeployMonitoring, false)]",
+                                    "options": {
+                                        "text": "Current deployment configuration is not creating monitoring resources.",
+                                        "style": "Info"
+                                    }
+                                },
+                                {
+                                    "name": "avdMonitoringObjectsRgCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Resource group",
+                                    "visible": "[equals(steps('avdMonitoring').avdDeployMonitoring, true)]",
+                                    "toolTip": "AVD monitoring resources (log analytics workspace) resource group custom name.",
+                                    "placeholder": "Example: rg-avd-use2-monitoring",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
+                                        "validationMessage": "Value must be 1-90 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdMonitoringLogAnalyticsWorkspaceName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Log analytics workspace name",
+                                    "visible": "[equals(steps('avdMonitoring').avdDeployMonitoring, true)]",
+                                    "toolTip": "AVD monitoring log analytics workspace custom name.",
+                                    "placeholder": "Example: log-avd-use2",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
+                                        "validationMessage": "Value must be 1-90 characters."
+                                    }
+                                }
+                            ]
+                        },
+                        {
                             "name": "avdResourceNamingInfo2",
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
@@ -2001,7 +2044,9 @@
                 "deployAlaWorkspace": "[if(equals(steps('avdMonitoring').avdDeployMonitoring, true), steps('avdMonitoring').avdDeployMonitoringAlaWorkspace, false)]",
                 "avdAlaWorkspaceDataRetention": "[if(equals(steps('avdMonitoring').avdDeployMonitoringAlaWorkspace, true), steps('avdMonitoring').avdDeployMonitoringNewAlaWorkspaceRetention, 0)]",
                 "alaExistingWorkspaceResourceId": "[if(equals(steps('avdMonitoring').avdDeployMonitoringAlaWorkspace, false), steps('avdMonitoring').avdAlaWorkspaceExistingWorkspacesSelection.id, 'none')]",
-                "deployCustomPolicyMonitoring": "[if(equals(steps('avdMonitoring').avdDeployMonitoring, true), steps('avdMonitoring').avdDeployMonitoringPolicies, false)]"
+                "deployCustomPolicyMonitoring": "[if(equals(steps('avdMonitoring').avdDeployMonitoring, true), steps('avdMonitoring').avdDeployMonitoringPolicies, false)]",
+                "avdMonitoringRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingMonitoring.avdMonitoringObjectsRgCustomName, 'none')]",
+                "avdAlaWorkspaceCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingMonitoring.avdMonitoringLogAnalyticsWorkspaceName, 'none')]"
 
             },
             "kind": "Subscription",

@@ -517,7 +517,7 @@ var varAvdFslogixProfileContainerFileShareName = avdUseCustomNaming ? avdFslogix
 var varAvdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}' : 'stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}'
 var varAvdWrklStoragePrivateEndpointName = 'pe-stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}-file'
 var varManagementVmName = 'vm-mgmt-${varDeploymentPrefixLowercase}'
-var varAvdAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${avdManagementPlaneLocation}' //'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
+var varAvdAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${varAvdManagementPlaneLocationAcronym}' //'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
 var varStgAccountForFlowLogsName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}' : 'stavd${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}'
 //
 
@@ -604,25 +604,34 @@ var varMarketPlaceGalleryWindows = {
         sku: 'win10-21h2-avd-m365'
         version: 'latest'
     }
-
     win10_21h2: {
         publisher: 'MicrosoftWindowsDesktop'
         offer: 'windows-10'
         sku: 'win10-21h2-avd'
         version: 'latest'
     }
-
     win11_21h2_office: {
         publisher: 'MicrosoftWindowsDesktop'
         offer: 'office-365'
         sku: 'win11-21h2-avd-m365'
         version: 'latest'
     }
-
     win11_21h2: {
         publisher: 'MicrosoftWindowsDesktop'
         offer: 'Windows-11'
         sku: 'win11-21h2-avd'
+        version: 'latest'
+    }
+    winServer_2022_Datacenter: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2022-datacenter'
+        version: 'latest'
+    }
+    winServer_2019_Datacenter: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2019-datacenter'
         version: 'latest'
     }
 }
@@ -1023,7 +1032,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         fslogixManagedIdentityResourceId: createAvdFslogixDeployment ? deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId : ''
         avdFslogixFileShareMultichannel: (contains(fslogixStorageSku, 'Premium_LRS') || contains(fslogixStorageSku, 'Premium_ZRS')) ? true : false
         fslogixStorageSku: fslogixStorageSku
-        marketPlaceGalleryWindows: varMarketPlaceGalleryWindows['win10_21h2']
+        marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows['winServer_2022_Datacenter']
         subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${varAvdVnetworkSubnetName}' : existingVnetSubnetResourceId
         managementVmName: varManagementVmName
         useSharedImage: useSharedImage
