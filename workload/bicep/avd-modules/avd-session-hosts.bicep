@@ -213,7 +213,6 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
         // Enable monitoring agent
         extensionMonitoringAgentConfig:{
             enabled: avdDeployMonitoring
-            enableAutomaticUpgrade: true
         }
         monitoringWorkspaceId: avdAlaWorkspaceResourceId
         tags: avdTags
