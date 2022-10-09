@@ -109,7 +109,7 @@ param fslogixScriptUri string
 param avdTags object
 
 @description('Optional. Log analytics workspace for diagnostic logs.')
-param avdDiagnosticWorkspaceId string
+param avdAlaWorkspaceResourceId string
 
 @description('Optional. Diagnostic logs retention.')
 param avdDiagnosticLogsRetentionInDays int
@@ -130,6 +130,7 @@ var varNicDiagnosticMetricsToEnable = [
 // =========== //
 // Deployments //
 // =========== //
+// Get key vault.
 resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
     name: avdWrklKvName
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
@@ -213,13 +214,11 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
         extensionMonitoringAgentConfig:{
             enabled: avdDeployMonitoring
         }
-        monitoringWorkspaceId: avdDiagnosticWorkspaceId
+        monitoringWorkspaceId: avdAlaWorkspaceResourceId
         tags: avdTags
         nicdiagnosticMetricsToEnable: varNicDiagnosticMetricsToEnable
-        diagnosticWorkspaceId: avdDiagnosticWorkspaceId
+        diagnosticWorkspaceId: avdAlaWorkspaceResourceId
         diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
-        
-
     }
     dependsOn: []
 }]

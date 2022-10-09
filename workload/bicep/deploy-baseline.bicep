@@ -139,8 +139,8 @@ param deployCustomPolicyMonitoring bool = false
 @description('Optional. AVD Azure log analytics workspace data retention. (Default: 90)')
 param avdAlaWorkspaceDataRetention int = 90
 
-@description('Optional. Existing Azure log analytics workspace to connect to. (Default: )')
-param alaWorkspaceId string = ''
+@description('Optional. Existing Azure log analytics workspace resource ID to connect to. (Default: )')
+param alaExistingWorkspaceResourceId string = ''
 
 @description('Required. Create and assign custom Azure Policy for NSG flow logs and network security')
 param deployCustomPolicyNetworking bool = false 
@@ -202,7 +202,7 @@ param storageOuPath string = ''
 param createOuForStorage bool = false
 
 // Custom Naming
-// Input must followe resource naming rules on https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules
+// Input must followe resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
 @description('Required. AVD resources custom naming. (Default: false)')
 param avdUseCustomNaming bool = false
 
@@ -517,7 +517,7 @@ var varAvdFslogixProfileContainerFileShareName = avdUseCustomNaming ? avdFslogix
 var varAvdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}' : 'stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}'
 var varAvdWrklStoragePrivateEndpointName = 'pe-stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}-file'
 var varManagementVmName = 'vm-mgmt-${varDeploymentPrefixLowercase}'
-var varAvdAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
+var varAvdAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${varAvdManagementPlaneLocationAcronym}' //'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
 var varStgAccountForFlowLogsName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}' : 'stavd${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}'
 //
 
@@ -604,25 +604,34 @@ var varMarketPlaceGalleryWindows = {
         sku: 'win10-21h2-avd-m365'
         version: 'latest'
     }
-
     win10_21h2: {
         publisher: 'MicrosoftWindowsDesktop'
         offer: 'windows-10'
         sku: 'win10-21h2-avd'
         version: 'latest'
     }
-
     win11_21h2_office: {
         publisher: 'MicrosoftWindowsDesktop'
         offer: 'office-365'
         sku: 'win11-21h2-avd-m365'
         version: 'latest'
     }
-
     win11_21h2: {
         publisher: 'MicrosoftWindowsDesktop'
         offer: 'Windows-11'
         sku: 'win11-21h2-avd'
+        version: 'latest'
+    }
+    winServer_2022_Datacenter: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2022-datacenter'
+        version: 'latest'
+    }
+    winServer_2019_Datacenter: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2019-datacenter'
         version: 'latest'
     }
 }
@@ -798,7 +807,7 @@ module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring.bicep' =
         avdManagementPlaneLocation: avdManagementPlaneLocation
         deployAlaWorkspace: deployAlaWorkspace
         deployCustomPolicyMonitoring: deployCustomPolicyMonitoring
-        alaWorkspaceId: deployAlaWorkspace ? '' : alaWorkspaceId
+        alaWorkspaceId: deployAlaWorkspace ? '' : alaExistingWorkspaceResourceId
         avdMonitoringRgName: varAvdMonitoringRgName
         avdAlaWorkspaceName: deployAlaWorkspace ? varAvdAlaWorkspaceName: ''
         avdAlaWorkspaceDataRetention: avdAlaWorkspaceDataRetention
@@ -813,8 +822,8 @@ module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring.bicep' =
 module deployAzurePolicyNetworking './avd-modules/avd-azure-policy-networking.bicep' = if (deployCustomPolicyNetworking) {
     name: length('Enable-Azure-Policy-for-Netwok-Security-${time}') > 64 ? substring('Enable-Azure-Policy-for-Netwok-Security-${time}',0,63) : 'Enable-Azure-Policy-for-Netwok-Security-${time}'
     params: {
-        alaWorkspaceResourceId: deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaWorkspaceId
-        alaWorkspaceId: deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceId : alaWorkspaceId 
+        alaWorkspaceResourceId: deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId
+        alaWorkspaceId: deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceId : alaExistingWorkspaceResourceId 
         avdManagementPlaneLocation: avdManagementPlaneLocation
         avdWorkloadSubsId: avdWorkloadSubsId
         avdMonitoringRgName: varAvdMonitoringRgName
@@ -849,7 +858,7 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
         avdWorkloadSubsId: avdWorkloadSubsId
         dnsServers: varDnsServers
         avdTags: createResourceTags ? varCommonResourceTags : {}
-        avdDiagnosticWorkspaceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaWorkspaceId) : ''
+        avdAlaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
     dependsOn: [
@@ -883,7 +892,7 @@ module avdManagementPLane 'avd-modules/avd-management-plane.bicep' = {
         avdWorkloadSubsId: avdWorkloadSubsId
         avdIdentityServiceProvider: avdIdentityServiceProvider
         avdTags: createResourceTags ? varCommonResourceTags : {}
-        avdDiagnosticWorkspaceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaWorkspaceId) : ''
+        avdAlaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
     dependsOn: [
@@ -1023,12 +1032,12 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         fslogixManagedIdentityResourceId: createAvdFslogixDeployment ? deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId : ''
         avdFslogixFileShareMultichannel: (contains(fslogixStorageSku, 'Premium_LRS') || contains(fslogixStorageSku, 'Premium_ZRS')) ? true : false
         fslogixStorageSku: fslogixStorageSku
-        marketPlaceGalleryWindows: varMarketPlaceGalleryWindows['win10_21h2']
+        marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows['winServer_2022_Datacenter']
         subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${varAvdVnetworkSubnetName}' : existingVnetSubnetResourceId
         managementVmName: varManagementVmName
         useSharedImage: useSharedImage
         avdTags: createResourceTags ? varAllResourceTags : {}
-        avdDiagnosticWorkspaceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaWorkspaceId) : ''
+        avdAlaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
     dependsOn: [
@@ -1080,7 +1089,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         useSharedImage: useSharedImage
         avdTags: createResourceTags ? varAllResourceTags : {}
         avdDeployMonitoring: avdDeployMonitoring
-        avdDiagnosticWorkspaceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaWorkspaceId) : ''
+        avdAlaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
     dependsOn: [

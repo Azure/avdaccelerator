@@ -5,7 +5,7 @@ resource "azurerm_user_assigned_identity" "mi" {
 }
 
 ## Azure Storage Accounts requires a globally unique names
-## https://docs.microsoft.com/en-us/azure/storage/common/storage-account-overview
+## https://docs.microsoft.com/azure/storage/common/storage-account-overview
 ## Create a File Storage Account 
 resource "azurerm_storage_account" "storage" {
   name                      = local.storage_name
@@ -34,7 +34,7 @@ resource "azurerm_storage_share" "FSShare" {
 
 
 ## Azure built-in roles
-## https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
+## https://docs.microsoft.com/azure/role-based-access-control/built-in-roles
 data "azurerm_role_definition" "storage_role" {
   name = "Storage File Data SMB Share Contributor"
 }
