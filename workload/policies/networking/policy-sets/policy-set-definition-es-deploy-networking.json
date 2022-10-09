@@ -128,7 +128,7 @@
             "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/5e1cd26a-5090-4fdb-9d6a-84a90335e22d",
             "parameters":{
               "effect": {
-                "value": "[[parameters('RemediateNsgFlowLogs')]"
+                "value": "[parameters('RemediateNsgFlowLogs')]"
             },
             "nsgRegion": { "value": "[parameters('nsgRegion')]" },
             "storageId": { "value": "[parameters('storageId')]" },
