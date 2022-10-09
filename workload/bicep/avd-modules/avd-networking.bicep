@@ -56,7 +56,7 @@ param avdSessionHostLocation string = deployment().location
 param avdTags object
 
 @description('Optional. Log analytics workspace for diagnostic logs.')
-param avdDiagnosticWorkspaceId string
+param avdAlaWorkspaceResourceId string
 
 @description('Optional. Diagnostic logs retention.')
 param avdDiagnosticLogsRetentionInDays int
@@ -90,7 +90,7 @@ module avdNetworksecurityGroup '../../../carml/1.2.0/Microsoft.Network/networkSe
         name: avdNetworksecurityGroupName
         location: avdSessionHostLocation
         tags: avdTags
-        diagnosticWorkspaceId: avdDiagnosticWorkspaceId
+        diagnosticWorkspaceId: avdAlaWorkspaceResourceId
         diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
         diagnosticLogCategoriesToEnable: varAvdNetworkSecurityGroupDiagnostic
     }
@@ -159,7 +159,7 @@ module avdVirtualNetwork '../../../carml/1.2.0/Microsoft.Network/virtualNetworks
             }
         ]
         tags: avdTags
-        diagnosticWorkspaceId: avdDiagnosticWorkspaceId
+        diagnosticWorkspaceId: avdAlaWorkspaceResourceId
         diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
         diagnosticLogCategoriesToEnable: varAvdVirtualNetworkLogsDiagnostic
         diagnosticMetricsToEnable: varAvdVirtualNetworkMetricsDiagnostic

@@ -112,7 +112,7 @@ param fslogixScriptUri string
 param avdTags object
 
 @description('Optional. Log analytics workspace for diagnostic logs.')
-param avdDiagnosticWorkspaceId string
+param avdAlaWorkspaceResourceId string
 
 @description('Optional. Diagnostic logs retention.')
 param avdDiagnosticLogsRetentionInDays int
@@ -197,7 +197,7 @@ module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, varAvdSe
     avdIdentityServiceProvider: avdIdentityServiceProvider
     avdTags: avdTags
     avdDeployMonitoring: avdDeployMonitoring
-    avdDiagnosticWorkspaceId: avdDiagnosticWorkspaceId
+    avdAlaWorkspaceResourceId: avdAlaWorkspaceResourceId
     avdDiagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
   }
   dependsOn: [

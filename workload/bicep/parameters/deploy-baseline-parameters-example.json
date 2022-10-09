@@ -160,7 +160,13 @@
         },
         "deployAlaWorkspace": {
             "value": true
-        },        
+        },   
+        "deployCustomPolicyMonitoring": {
+            "value": false
+        },  
+        "alaExistingWorkspaceResourceId": {
+            "value": "<<ExistingLogAnalyticsWorkspaceID>>"
+        },           
         "avdAlaWorkspaceDataRetention": {
             "value": 90
         }    
