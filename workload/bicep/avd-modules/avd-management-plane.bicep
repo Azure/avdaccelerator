@@ -79,7 +79,7 @@ param avdTags object
 param avdScalingPlanExclusionTag string
 
 @description('Optional. Log analytics workspace for diagnostic logs.')
-param avdDiagnosticWorkspaceId string
+param avdAlaWorkspaceResourceId string
 
 @description('Optional. Diagnostic logs retention.')
 param avdDiagnosticLogsRetentionInDays int
@@ -151,7 +151,7 @@ module avdHostPool '../../../carml/1.2.0/Microsoft.DesktopVirtualization/hostpoo
     maxSessionLimit: avhHostPoolMaxSessions
     personalDesktopAssignmentType: avdPersonalAssignType
     tags: avdTags
-    diagnosticWorkspaceId: avdDiagnosticWorkspaceId
+    diagnosticWorkspaceId: avdAlaWorkspaceResourceId
     diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
     diagnosticLogCategoriesToEnable: varAvdHostPoolDiagnostic
   }
@@ -167,7 +167,7 @@ module avdApplicationGroups '../../../carml/1.2.0/Microsoft.DesktopVirtualizatio
     applicationGroupType: applicationGroup.applicationGroupType
     hostpoolName: avdHostPool.outputs.name
     tags: avdTags
-    diagnosticWorkspaceId: avdDiagnosticWorkspaceId
+    diagnosticWorkspaceId: avdAlaWorkspaceResourceId
     diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
     diagnosticLogCategoriesToEnable: varAvdApplicationGroupDiagnostic
   }
@@ -190,7 +190,7 @@ module avdWorkSpace '../../../carml/1.2.0/Microsoft.DesktopVirtualization/worksp
         '/subscriptions/${avdWorkloadSubsId}/resourceGroups/${avdServiceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${avdApplicationGroupNameDesktop}'
       ]
       tags: avdTags
-      diagnosticWorkspaceId: avdDiagnosticWorkspaceId
+      diagnosticWorkspaceId: avdAlaWorkspaceResourceId
       diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
       diagnosticLogCategoriesToEnable: varAvdWorkspaceDiagnostic
   }
@@ -218,7 +218,7 @@ module avdScalingPlan '../../../carml/1.2.0/Microsoft.DesktopVirtualization/scal
         }
       ]
       tags: avdTags
-      diagnosticWorkspaceId: avdDiagnosticWorkspaceId
+      diagnosticWorkspaceId: avdAlaWorkspaceResourceId
       diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
       logsToEnable: varAvdScalingPlanDiagnostic
   }
