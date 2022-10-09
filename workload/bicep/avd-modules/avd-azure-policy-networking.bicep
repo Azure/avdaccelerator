@@ -93,7 +93,7 @@ module avdNetworkingPolicySetDefinitionAssignment '../../../carml/1.2.0/Microsof
   scope: subscription('${avdWorkloadSubsId}')
   name: length('AVD-NetPolicySetAssign-${time}') > 64 ? substring('AVD-NetPolicySetAssign-${time}',0,63) : 'AVD-NetPolicySetAssign-${time}'
   params: {
-    name: '${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}'
+    name: length('${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}') > 64 ? substring('${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}',0,63) : '${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}'
     location: avdManagementPlaneLocation
     policyDefinitionId: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/policySetDefinitions/${varCustomPolicySetDefinitions.name}'
     identity: 'SystemAssigned'
