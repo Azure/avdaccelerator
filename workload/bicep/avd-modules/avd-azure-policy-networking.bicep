@@ -91,7 +91,7 @@ module avdNetworkingPolicySetDefinition '../../../carml/1.2.0/Microsoft.Authoriz
 // Policy set assignment.
 module avdNetworkingPolicySetDefinitionAssignment '../../../carml/1.2.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = {
   scope: subscription('${avdWorkloadSubsId}')
-  name: length('AVD-Network-Policy-Set-Assign-${time}') > 64 ? substring('AVD-Network-Policy-Set-Assign-${time}',0,63) : 'AVD-Network-Policy-Set-Assign-${time}'
+  name: length('AVD-NetPolicySetAssign-${time}') > 64 ? substring('AVD-NetPolicySetAssign-${time}',0,63) : 'AVD-NetPolicySetAssign-${time}'
   params: {
     name: '${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}'
     location: avdManagementPlaneLocation
