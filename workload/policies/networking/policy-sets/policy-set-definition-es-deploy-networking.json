@@ -27,7 +27,7 @@
         "nsgRegion": {
           "metadata": {
             "description": "Configures for network security groups in the selected region only.",
-            "displayName": "Network security group Region",
+            "displayName": "Network security group Region"
           },
           "type": "String"
         },
@@ -113,11 +113,11 @@
       "policyDefinitions": [
         {
           "policyDefinitionReferenceId": "AuditForFlowLogs",
-          "policyDefinitionId": "${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/c251913d-7d24-4958-af87-478ed3b9ba41",
+          "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/c251913d-7d24-4958-af87-478ed3b9ba41",
           "parameters": {
             "effect": {
-              "value": "[[parameters('AuditForFlowLogsEffect')]"
-            },
+              "value": "[parameters('AuditForFlowLogsEffect')]"
+            }
           },
           "groupNames": [
             "AUDIT"
@@ -125,18 +125,20 @@
         },
         {
             "policyDefinitionReferenceId": "RemediateNsgFlowLogs",
-            "policyDefinitionId": "${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/5e1cd26a-5090-4fdb-9d6a-84a90335e22d",
-            "parameters" :{
-                "effect":"[[parameters('RemediateNsgFlowLogsEffect')]",
-                "nsgRegion": "[[parameters('nsgRegion')]",
-                "storageId": "[[parameters('storageId')]",
-                "networkWatcherRG": "[[parameters('networkWatcherRG')]",
-                "networkWatcherName": "[[parameters('networkWatcherName')]",
-                "timeInterval":"[[parameters('timeInterval')]",
-                "workspaceResourceId": "[[parameters('workspaceResourceId')]",
-                "workspaceRegion":"[[parameters('workspaceRegion')]",
-                "workspaceId":"[[parameters('workspaceId')]",
-                "retentionDays":"[[parameters('retentionDays')]",
+            "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/5e1cd26a-5090-4fdb-9d6a-84a90335e22d",
+            "parameters":{
+              "effect": {
+                "value": "[parameters('RemediateNsgFlowLogsEffect')]"
+            },
+            "nsgRegion": { "value": "[parameters('nsgRegion')]" },
+            "storageId": { "value": "[parameters('storageId')]" },
+            "networkWatcherRG": { "value": "[parameters('networkWatcherRG')]" },
+            "networkWatcherName": { "value": "[parameters('networkWatcherName')]" },
+            "timeInterval": { "value": "[parameters('timeInterval')]" },
+            "workspaceResourceId": { "value": "[parameters('workspaceResourceId')]" },
+            "workspaceRegion": { "value": "[parameters('workspaceRegion')]" },
+            "workspaceId": { "value": "[parameters('workspaceId')]" },
+            "retentionDays":{ "value": "[parameters('retentionDays')]" }
             },
             "groupNames" :[
                 "REMEDIATE"

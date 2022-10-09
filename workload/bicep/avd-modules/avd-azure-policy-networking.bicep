@@ -35,7 +35,7 @@ param time string = utcNow()
 // =========== //
 // Policy Set/Initiative Definition Parameter Variables
 
-var varPolicySetDefinitionEsDeployAzurePolicyNetworkParameters = loadJsonContent('../../policies/networking/policy-sets/parameters/policy-set-definition-es-deploy-networking.parameters.json')
+// var varPolicySetDefinitionEsDeployAzurePolicyNetworkParameters = loadJsonContent('../../policies/networking/policy-sets/parameters/policy-set-definition-es-deploy-networking.parameters.json')
 
 // This variable contains a number of objects that load in the custom Azure Policy Set/Initiative Defintions 
 // This variable contains a number of objects that load in the custom Azure Policy Set/Initiative Defintions that are provided as part of the ESLZ/ALZ reference implementation - this is automatically created in the file 'infra-as-code\bicep\modules\policy\lib\policy_set_definitions\_policySetDefinitionsBicepInput.txt' via a GitHub action, that runs on a daily schedule, and is then manually copied into this variable.
@@ -88,10 +88,35 @@ module avdNetworkingPolicySetDefinition '../../../carml/1.2.0/Microsoft.Authoriz
 }
 
 // Policy set assignment.
+module avdNetworkingPolicySetDefinitionAssignment '../../../carml/1.2.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = {
+  scope: subscription('${avdWorkloadSubsId}')
+  name: length('AVD-NetPolicySetAssign-${time}') > 64 ? substring('AVD-NetPolicySetAssign-${time}',0,63) : 'AVD-NetPolicySetAssign-${time}'
+  params: {
+    name: length('${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}') > 64 ? substring('${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}',0,63) : '${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}'
+    displayName: varCustomPolicySetDefinitions.libSetDefinition.properties.displayName
+    description: varCustomPolicySetDefinitions.libSetDefinition.properties.description
+    location: avdManagementPlaneLocation
+    policyDefinitionId: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/policySetDefinitions/${varCustomPolicySetDefinitions.name}'
+    identity: 'SystemAssigned'
+    roleDefinitionIds: [
+      '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ]
+    parameters: {
+      nsgRegion: { value: avdManagementPlaneLocation }
+      storageId: { value: (empty(stgAccountForFlowLogsId)) ? '${deployStgAccountForFlowLogs.outputs.resourceId}' : stgAccountForFlowLogsId  }
+      workspaceResourceId: { value: alaWorkspaceResourceId }
+      workspaceRegion: { value: avdManagementPlaneLocation }
+      workspaceId: { value: alaWorkspaceId }
+      networkWatcherRG: { value: avdMonitoringRgName }
+      networkWatcherName: { value: 'AVD-NetworkWatcher-${avdManagementPlaneLocation}' }
 
-
-
-
+  }
+      }
+      dependsOn: [ 
+        avdNetworkingPolicySetDefinition
+        deployStgAccountForFlowLogs
+       ]
+  }
 // =========== //
 // Outputs     //
 // =========== //

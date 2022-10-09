@@ -60,7 +60,7 @@ stages:
             - createOuForStorage $(createOuForStorage)
             - storageOuPath $(storageOuPath)
             - deployCustomPolicyMonitoring $(deployCustomPolicyMonitoring)
-            - alaWorkspaceId $(alaWorkspaceId)
+            - alaExistingWorkspaceResourceId $(alaExistingWorkspaceResourceId)
             - deployCustomPolicyNetworking $(deployCustomPolicyNetworking)
             - deployStgAccountForFlowLogs $(deployStgAccountForFlowLogs)
             - stgAccountForFlowLogsId $(stgAccountForFlowLogsId)
