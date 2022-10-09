@@ -113,7 +113,7 @@
       "policyDefinitions": [
         {
           "policyDefinitionReferenceId": "AuditForFlowLogs",
-          "policyDefinitionId": "${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/c251913d-7d24-4958-af87-478ed3b9ba41",
+          "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/c251913d-7d24-4958-af87-478ed3b9ba41",
           "parameters": {
             "effect": {
               "value": "[[parameters('AuditForFlowLogsEffect')]"
@@ -125,7 +125,7 @@
         },
         {
             "policyDefinitionReferenceId": "RemediateNsgFlowLogs",
-            "policyDefinitionId": "${avdWorkloadSubsId}/providers/Microsoft.Authorization/policyDefinitions/5e1cd26a-5090-4fdb-9d6a-84a90335e22d",
+            "policyDefinitionId": "$/providers/Microsoft.Authorization/policyDefinitions/5e1cd26a-5090-4fdb-9d6a-84a90335e22d",
             "parameters":{
               "effect": {
                 "value": "[[parameters('RemediateNsgFlowLogs')]"
