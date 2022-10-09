@@ -96,7 +96,12 @@ module avdNetworkingPolicySetDefinitionAssignment '../../../carml/1.2.0/Microsof
     name: '${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}'
     location: avdManagementPlaneLocation
     policyDefinitionId: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/policySetDefinitions/${varCustomPolicySetDefinitions.name}'
+    identity: 'SystemAssigned'
+    roleDefinitionIds: [
+      '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ]
   }
+  dependsOn: [ avdNetworkingPolicySetDefinition ]
 }
 
 
