@@ -116,7 +116,7 @@
           "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/c251913d-7d24-4958-af87-478ed3b9ba41",
           "parameters": {
             "effect": {
-              "value": "[[parameters('AuditForFlowLogsEffect')]"
+              "value": "[parameters('AuditForFlowLogsEffect')]"
             }
           },
           "groupNames": [
@@ -130,15 +130,15 @@
               "effect": {
                 "value": "[[parameters('RemediateNsgFlowLogs')]"
             },
-            "nsgRegion": { "value": "[[parameters('nsgRegion')]" },
-            "storageId": { "value": "[[parameters('storageId')]" },
-            "networkWatcherRG": { "value": "[[parameters('networkWatcherRG')]" },
-            "networkWatcherName": { "value": "[[parameters('networkWatcherName')]" },
-            "timeInterval": { "value": "[[parameters('timeInterval')]" },
-            "workspaceResourceId": { "value": "[[parameters('workspaceResourceId')]" },
-            "workspaceRegion": { "value": "[[parameters('workspaceRegion')]" },
-            "workspaceId": { "value": "[[parameters('workspaceId')]" },
-            "retentionDays":{ "value": "[[parameters('retentionDays')]" }
+            "nsgRegion": { "value": "[parameters('nsgRegion')]" },
+            "storageId": { "value": "[parameters('storageId')]" },
+            "networkWatcherRG": { "value": "[parameters('networkWatcherRG')]" },
+            "networkWatcherName": { "value": "[parameters('networkWatcherName')]" },
+            "timeInterval": { "value": "[parameters('timeInterval')]" },
+            "workspaceResourceId": { "value": "[parameters('workspaceResourceId')]" },
+            "workspaceRegion": { "value": "[parameters('workspaceRegion')]" },
+            "workspaceId": { "value": "[parameters('workspaceId')]" },
+            "retentionDays":{ "value": "[parameters('retentionDays')]" }
             },
             "groupNames" :[
                 "REMEDIATE"
