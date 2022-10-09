@@ -101,7 +101,10 @@ module avdNetworkingPolicySetDefinitionAssignment '../../../carml/1.2.0/Microsof
       '/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
     ]
   }
-  dependsOn: [ avdNetworkingPolicySetDefinition ]
+  dependsOn: [ 
+    avdNetworkingPolicySetDefinition
+    deployStgAccountForFlowLogs
+   ]
 }
 
 
