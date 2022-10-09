@@ -27,7 +27,7 @@
         "nsgRegion": {
           "metadata": {
             "description": "Configures for network security groups in the selected region only.",
-            "displayName": "Network security group Region",
+            "displayName": "Network security group Region"
           },
           "type": "String"
         },
