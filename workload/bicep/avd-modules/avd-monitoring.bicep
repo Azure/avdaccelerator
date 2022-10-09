@@ -15,7 +15,7 @@ param deployAlaWorkspace bool
 @description('Required. Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace.')
 param deployCustomPolicyMonitoring bool
 
-@description('Required. Exisintg Azure log analytics workspace.')
+@description('Required. Exisintg Azure log analytics workspace resource.')
 param alaWorkspaceId string
 
 @description('Required. AVD Resource Group Name for monitoring resources.')
@@ -64,6 +64,16 @@ module avdAlaWorkspace '../../../carml/1.2.1/Microsoft.OperationalInsights/works
   ]
 }
 
+
+// Get log analytics workspace.
+/*
+resource avdAlaWorkspaceKey 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (deployAlaWorkspace)  {
+  name: avdAlaWorkspaceName
+  scope: resourceGroup('${avdWorkloadSubsId}', '${avdMonitoringRgName}')
+}
+
+output test string = avdAlaWorkspaceKey.apiVersion.
+*/
 // Policy definitions.
 
 module deployDiagnosticsAzurePolicyForAvd 'avd-azure-policy-monitoring.bicep' = if (deployCustomPolicyMonitoring) {
@@ -97,4 +107,4 @@ module deployMonitoringEventsPerformanceSettings 'avd-monitoring-events-performa
 // Outputs //
 // =========== //
 output avdAlaWorkspaceResourceId string = deployAlaWorkspace ? avdAlaWorkspace.outputs.resourceId : alaWorkspaceId
-output avdAlaWorkspaceId string = deployAlaWorkspace ? avdAlaWorkspace.outputs.logAnalyticsWorkspaceId : alaWorkspaceId // may need to call on existing LGA to get workspace guid
+output avdAlaWorkspaceId string = deployAlaWorkspace ? avdAlaWorkspace.outputs.logAnalyticsWorkspaceId : alaWorkspaceId // may need to call on existing LGA to get workspace guid // We should be safe to remove this one as CARML modules use the resource ID instead
