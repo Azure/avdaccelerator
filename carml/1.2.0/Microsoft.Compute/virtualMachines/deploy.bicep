@@ -171,6 +171,11 @@ param extensionMonitoringAgentConfig object = {
   enabled: false
 }
 
+@description('Optional. The configuration for the [Azure Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed')
+param extensionAzureMonitoringAgentConfig object = {
+  enabled: false
+}
+
 @description('Optional. Resource ID of the monitoring log analytics workspace. Must be set when extensionMonitoringAgentConfig is set to true.')
 param monitoringWorkspaceId string = ''
 
@@ -508,6 +513,27 @@ module vm_microsoftMonitoringAgentExtension 'extensions/deploy.bicep' = if (exte
     enableDefaultTelemetry: enableDefaultTelemetry
   }
 }
+
+module vm_azureMonitoringAgentExtension 'extensions/deploy.bicep' = if (extensionAzureMonitoringAgentConfig.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-MicrosoftMonitoringAgent'
+  params: {
+    virtualMachineName: virtualMachine.name
+    name: 'AzureMonitoringAgent'
+    publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
+    type: 'DependencyAgentWindows'
+    typeHandlerVersion: contains(extensionAzureMonitoringAgentConfig, 'typeHandlerVersion') ? extensionAzureMonitoringAgentConfig.typeHandlerVersion : '9.5'
+    autoUpgradeMinorVersion: contains(extensionAzureMonitoringAgentConfig, 'autoUpgradeMinorVersion') ? extensionAzureMonitoringAgentConfig.autoUpgradeMinorVersion : true
+    enableAutomaticUpgrade: contains(extensionAzureMonitoringAgentConfig, 'enableAutomaticUpgrade') ? extensionAzureMonitoringAgentConfig.enableAutomaticUpgrade : true
+    settings: {
+      workspaceId: !empty(monitoringWorkspaceId) ? reference(vm_logAnalyticsWorkspace.id, vm_logAnalyticsWorkspace.apiVersion).customerId : ''
+    }
+    protectedSettings: {
+      workspaceKey: !empty(monitoringWorkspaceId) ? vm_logAnalyticsWorkspace.listKeys().primarySharedKey : ''
+    }
+    enableDefaultTelemetry: enableDefaultTelemetry
+  }
+}
+
 
 module vm_dependencyAgentExtension 'extensions/deploy.bicep' = if (extensionDependencyAgentConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-DependencyAgent'
