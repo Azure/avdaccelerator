@@ -55,7 +55,7 @@ param marketPlaceGalleryWindows object
 param useSharedImage bool
 
 @description('Source custom image ID.')
-param avdImageTemplataDefinitionId string
+param avdImageTemplateDefinitionId string
 
 @description('Fslogix Managed Identity Resource ID.')
 param fslogixManagedIdentityResourceId string
@@ -99,6 +99,9 @@ param fsLogixScript string
 @description('Configuration arguments for FSlogix.')
 param FsLogixScriptArguments string
 
+@description('Path for the FSlogix share.')
+param FslogixSharePath string
+
 @description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
 
@@ -138,7 +141,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
         osType: 'Windows'
         licenseType: 'Windows_Client'
         vmSize: avdSessionHostsSize
-        imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplataDefinitionId}\'}') : marketPlaceGalleryWindows
+        imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinitionId}\'}') : marketPlaceGalleryWindows
         osDisk: {
             createOption: 'fromImage'
             deleteOption: 'Delete'
@@ -164,9 +167,8 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
             }
         ]
         // Join domain.
-        allowExtensionOperations: true
         extensionDomainJoinPassword: avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
-        extensionDomainJoinConfig: {
+        extensionDomainJoinConfig: (avdIdentityServiceProvider != 'AAD') ? {
             enabled: true
             settings: {
                 name: avdIdentityDomainName
@@ -175,7 +177,11 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
                 restart: 'true'
                 options: '3'
             }
-        }
+        }: {}
+        // Azure AD Join.
+        extensionAadJoinConfig: (avdIdentityServiceProvider == 'AAD') ? {
+            enabled: true
+        }: {}
         // Enable and Configure Microsoft Malware.
         extensionAntiMalwareConfig: {
             enabled: true
@@ -190,7 +196,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
                 }
                 Exclusions: createAvdFslogixDeployment ? {
                     Extensions: '*.vhd;*.vhdx'
-                    Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;\\\\server\\share\\*\\*.VHD;\\\\server\\share\\*\\*.VHDX'
+                    Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${FslogixSharePath}\\*\\*.VHD;${FslogixSharePath}\\*\\*.VHDX'
                     Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
                 } : {}
             }
@@ -217,7 +223,7 @@ module addAvdHostsToHostPool '../../vm-custom-extensions/add-avd-session-hosts.b
 }]
 
 // Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
-module configureFsLogixForAvdHosts '../../vm-custom-extensions/configure-fslogix-session-hosts.bicep' = [for i in range(1, avdSessionHostsCount): if (createAvdFslogixDeployment) {
+module configureFsLogixForAvdHosts '../../vm-custom-extensions/configure-fslogix-session-hosts.bicep' = [for i in range(1, avdSessionHostsCount): if (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD')) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
     name: 'Configure-FsLogix-for-${padLeft((i + avdSessionHostCountIndex), 3, '0')}-${time}'
     params: {
