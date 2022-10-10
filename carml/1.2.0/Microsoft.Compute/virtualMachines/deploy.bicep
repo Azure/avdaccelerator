@@ -515,7 +515,7 @@ module vm_microsoftMonitoringAgentExtension 'extensions/deploy.bicep' = if (exte
 }
 
 module vm_azureMonitoringAgentExtension 'extensions/deploy.bicep' = if (extensionAzureMonitoringAgentConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VM-MicrosoftMonitoringAgent'
+  name: '${uniqueString(deployment().name, location)}-VM-AzureMonitoringAgent'
   params: {
     virtualMachineName: virtualMachine.name
     name: 'AzureMonitoringAgent'

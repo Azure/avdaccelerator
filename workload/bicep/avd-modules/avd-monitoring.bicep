@@ -57,6 +57,7 @@ module avdAlaWorkspace '../../../carml/1.2.1/Microsoft.OperationalInsights/works
     location: avdManagementPlaneLocation
     name: avdAlaWorkspaceName
     dataRetention: avdAlaWorkspaceDataRetention
+    useResourcePermissions: true
     tags: avdTags
   }
   dependsOn:[
