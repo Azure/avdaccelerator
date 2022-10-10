@@ -161,6 +161,11 @@ param extensionDomainJoinConfig object = {
   enabled: false
 }
 
+@description('Optional. The configuration for the Azure AD Windows login extension. Must at least contain the ["enabled": true] property to be executed')
+param extensionAadJoinConfig object = {
+  enabled: false
+}
+
 @description('Optional. The configuration for the [Anti Malware] extension. Must at least contain the ["enabled": true] property to be executed')
 param extensionAntiMalwareConfig object = {
   enabled: false
@@ -465,6 +470,20 @@ module vm_domainJoinExtension 'extensions/deploy.bicep' = if (extensionDomainJoi
     protectedSettings: {
       Password: extensionDomainJoinPassword
     }
+    enableDefaultTelemetry: enableDefaultTelemetry
+  }
+}
+
+module vm_aadJoinExtension 'extensions/deploy.bicep' = if (extensionAadJoinConfig.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-DomainJoin'
+  params: {
+    virtualMachineName: virtualMachine.name
+    name: 'AADJoin'
+    publisher: 'Microsoft.Azure.ActiveDirectory'
+    type: 'AADLoginForWindows'
+    typeHandlerVersion: contains(extensionAadJoinConfig, 'typeHandlerVersion') ? extensionAadJoinConfig.typeHandlerVersion : '1.0'
+    autoUpgradeMinorVersion: contains(extensionAadJoinConfig, 'autoUpgradeMinorVersion') ? extensionAadJoinConfig.autoUpgradeMinorVersion : true
+    enableAutomaticUpgrade: contains(extensionAadJoinConfig, 'enableAutomaticUpgrade') ? extensionAadJoinConfig.enableAutomaticUpgrade : false
     enableDefaultTelemetry: enableDefaultTelemetry
   }
 }
