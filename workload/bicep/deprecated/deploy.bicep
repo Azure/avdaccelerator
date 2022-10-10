@@ -712,7 +712,7 @@ module azureComputeGallery '../carml/1.0.0/Microsoft.Compute/galleries/deploy.bi
 //
 
 // Image Template Definition
-module avdImageTemplataDefinition '../carml/1.0.0/Microsoft.Compute/galleries/images/deploy.bicep' = if (useSharedImage) {
+module avdImageTemplateDefinition '../carml/1.0.0/Microsoft.Compute/galleries/images/deploy.bicep' = if (useSharedImage) {
     scope: resourceGroup('${avdShrdlSubscriptionId}', '${avdSharedResourcesRgName}')
     name: 'Deploy-AVD-Image-Template-Definition-${time}'
     params: {
@@ -744,7 +744,7 @@ module imageTemplate '../carml/1.0.0/Microsoft.VirtualMachineImages/imageTemplat
         userMsiResourceGroup: createAibManagedIdentity && useSharedImage ? imageBuilderManagedIdentity.outputs.resourceGroupName : ''
         location: aiblocation
         imageReplicationRegions: (avdSessionHostLocation == aiblocation) ? array('${avdSessionHostLocation}') : concat(array('${aiblocation}'), array('${avdSessionHostLocation}'))
-        sigImageDefinitionId: useSharedImage ? avdImageTemplataDefinition.outputs.resourceId : ''
+        sigImageDefinitionId: useSharedImage ? avdImageTemplateDefinition.outputs.resourceId : ''
         vmSize: imageVmSize
         customizationSteps: [
             {
@@ -810,7 +810,7 @@ module imageTemplate '../carml/1.0.0/Microsoft.VirtualMachineImages/imageTemplat
         }
     }
     dependsOn: [
-        avdImageTemplataDefinition
+        avdImageTemplateDefinition
         azureComputeGallery
         avdSharedResourcesRg
         azureImageBuilderRoleAssign
@@ -1164,7 +1164,7 @@ module avdSessionHosts '../carml/1.0.0/Microsoft.Compute/virtualMachines/deploy.
         osType: 'Windows'
         licenseType: 'Windows_Client'
         vmSize: avdSessionHostsSize
-        imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplataDefinition.outputs.resourceId}\'}') : marketPlaceGalleryWindows[avdOsImage]
+        imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinition.outputs.resourceId}\'}') : marketPlaceGalleryWindows[avdOsImage]
         osDisk: {
             createOption: 'fromImage'
             deleteOption: 'Delete'

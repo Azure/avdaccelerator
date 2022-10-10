@@ -61,7 +61,7 @@ param marketPlaceGalleryWindows object
 param useSharedImage bool
 
 @description('Source custom image ID.')
-param avdImageTemplataDefinitionId string
+param avdImageTemplateDefinitionId string
 
 @description('Fslogix Managed Identity Resource ID.')
 param fslogixManagedIdentityResourceId string
@@ -101,6 +101,9 @@ param fsLogixScript string
 
 @description('Configuration arguments for FSlogix.')
 param FsLogixScriptArguments string
+
+@description('Path for the FSlogix share.')
+param FslogixSharePath string
 
 @description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
@@ -163,7 +166,7 @@ module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, avdSessi
     avdServiceObjectsRgName: avdServiceObjectsRgName
     avdHostPoolName: avdHostPoolName
     avdIdentityDomainName: avdIdentityDomainName
-    avdImageTemplataDefinitionId: avdImageTemplataDefinitionId
+    avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
     sessionHostOuPath: sessionHostOuPath
     avdSessionHostsCount: i == avdSessionHostBatchCount && divisionRemainderValue > 0 ? divisionRemainderValue : avdMaxSessionHostsPerTemplateDeployment
     avdSessionHostCountIndex: i == 1 ? avdSessionHostCountIndex : ((i - 1) * avdMaxSessionHostsPerTemplateDeployment) + avdSessionHostCountIndex
@@ -180,6 +183,7 @@ module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, avdSessi
     fslogixManagedIdentityResourceId: fslogixManagedIdentityResourceId
     fsLogixScript: fsLogixScript
     FsLogixScriptArguments: FsLogixScriptArguments
+    FslogixSharePath: FslogixSharePath
     fslogixScriptUri: fslogixScriptUri
     hostPoolToken: hostPoolToken
     marketPlaceGalleryWindows: marketPlaceGalleryWindows
