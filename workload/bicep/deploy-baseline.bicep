@@ -1042,6 +1042,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
     }
     dependsOn: [
         avdBaselineStorageResourceGroup
+        deployMonitoringDiagnosticSettings
         avdNetworking
         avdWrklKeyVaultget
         avdWrklKeyVault
@@ -1094,6 +1095,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
     }
     dependsOn: [
         avdBaselineResourceGroups
+        deployMonitoringDiagnosticSettings
         avdNetworking
         avdWrklKeyVaultget
         avdWrklKeyVault
