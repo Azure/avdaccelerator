@@ -976,7 +976,7 @@
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
                             "label": "Azure private DNS zone (Private endpoints)",
-                            "defaultValue": "No",
+                            "defaultValue": "Yes",
                             "toolTip": "It is recommended to use Azure private DNS zones for private endpoint name spaces (ALZ recommended and deployed).",
                             "constraints": {
                                 "required": true,
