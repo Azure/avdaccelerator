@@ -119,7 +119,8 @@ var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avd
 // =========== //
 // Deployments //
 // =========== //
-resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+// Get keyvault.
+resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = if (avdIdentityServiceProvider != 'AAD') {
     name: avdWrklKvName
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
 }
