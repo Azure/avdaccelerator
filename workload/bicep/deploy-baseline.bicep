@@ -701,7 +701,7 @@ module avdBaselineComputeResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
 }
 
 // Storage.
-module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdFslogixDeployment) {
+module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD')) {
     scope: subscription(avdWorkloadSubsId)
     name: 'Deploy-${avdStorageObjectsRgName}-${time}'
     params: {
@@ -832,6 +832,7 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
         fslogixManagedIdentityName: fslogixManagedIdentityName
         readerRoleId: readerRoleId
         avdManagementPlaneLocation: avdManagementPlaneLocation
+        avdIdentityServiceProvider: avdIdentityServiceProvider
         storageAccountContributorRoleId: storageAccountContributorRoleId
         avdVmPowerStateContributor: avdVmPowerStateContributor
         createAvdFslogixDeployment: createAvdFslogixDeployment ? true: false
@@ -923,9 +924,9 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
     name: avdWrklKvName
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
 }
-
+/*
 // Storage.
-module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (createAvdFslogixDeployment && avdDeploySessionHosts && (avdIdentityServiceProvider == 'AADDS' || avdIdentityServiceProvider == 'ADDS')) {
+module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (createAvdFslogixDeployment && avdDeploySessionHosts && (avdIdentityServiceProvider != 'AAD')) {
     name: 'Deploy-AVD-Storage-AzureFiles-${time}'
     params: {
         avdIdentityServiceProvider: avdIdentityServiceProvider
@@ -971,7 +972,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         avdWrklKeyVault
     ]
 }
-
+*/
 // Session hosts.
 module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.bicep' = if (avdDeploySessionHosts) {
     name: 'Deploy-and-Configure-AVD-SessionHosts-${time}'
