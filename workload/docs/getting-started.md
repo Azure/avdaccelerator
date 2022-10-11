@@ -16,6 +16,7 @@ Prior to deploying, you need to ensure you have met the following prerequisites:
 - You have the appropriate [licenses](https://docs.microsoft.com/azure/virtual-desktop/prerequisites#operating-systems-and-licenses) for proper AVD entitlement
 - If the new AVD workload will be connected (peered) with a Hub VNet, contributor permissions are required on the referenced Hub VNet
 - If using existing Virtual Networks, the deployment will fail if Private Endpoint policies are enabled. See the following article on disabling them: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy)
+- Private DNS zones for Azure files (privatelink.file.core.windows.net) and keyvault private (privatelink.vaultcore.azure.net) endpoints resolution.
 
 ### Subscription requirements
 
