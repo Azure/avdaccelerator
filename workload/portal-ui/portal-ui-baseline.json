@@ -720,7 +720,7 @@
                                     "visible": "[equals (steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true)]",
                                     "label": "File share size",
                                     "subLabel": "x 100GB",
-                                    "toolTip": "Size of Premium File share storage in 10GB increments",
+                                    "toolTip": "Size of Azure File share quota, the maximum sizes are 5TB for standard SKU and 100TB for premium SKU",
                                     "min": 1,
                                     "max": 100,
                                     "defaultValue": 1,
