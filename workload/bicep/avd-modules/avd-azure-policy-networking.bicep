@@ -107,8 +107,8 @@ module avdNetworkingPolicySetDefinitionAssignment '../../../carml/1.2.0/Microsof
       workspaceResourceId: { value: alaWorkspaceResourceId }
       workspaceRegion: { value: avdManagementPlaneLocation }
       workspaceId: { value: alaWorkspaceId }
-      networkWatcherRG: { value: avdMonitoringRgName }
-      networkWatcherName: { value: 'AVD-NetworkWatcher-${avdManagementPlaneLocation}' }
+      networkWatcherRG: { value: 'NetworkWatcherRG' }
+      networkWatcherName: { value: 'NetworkWatcher_${avdManagementPlaneLocation}' }
 
   }
       }
