@@ -78,7 +78,7 @@ param avdWrklKvName string
 @description('Optional. OU path to join AVd VMs')
 param sessionHostOuPath string
 
-@description('Application Security Group (ASG) for the session hosts.')
+@description('Application Security Group for the session hosts.')
 param avdApplicationSecurityGroupResourceId string
 
 @description('AVD host pool token.')
