@@ -157,7 +157,13 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
                 nicSuffix: 'nic-001-'
                 deleteOption: 'Delete'
                 enableAcceleratedNetworking: false
-                ipConfigurations: [
+                ipConfigurations: createAvdVnet ? [
+                    {
+                        name: 'ipconfig01'
+                        subnetId: avdSubnetId
+                        applicationSecurityGroups: avdApplicationSecurityGroupResourceId
+                    }
+                ] : [
                     {
                         name: 'ipconfig01'
                         subnetId: avdSubnetId
