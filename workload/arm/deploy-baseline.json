@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "11319131553570185181"
+      "templateHash": "14959313331657682174"
     }
   },
   "parameters": {
@@ -5778,7 +5778,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "17423602604071849236"
+              "templateHash": "97466777917177362"
             }
           },
           "parameters": {
@@ -5869,7 +5869,7 @@
             "avdHostPoolType": {
               "type": "string",
               "metadata": {
-                "description": "Optional. AVD host pool type. (Default: Pooled)"
+                "description": "Optional. AVD host pool type."
               },
               "allowedValues": [
                 "Personal",
@@ -5879,7 +5879,7 @@
             "avdPersonalAssignType": {
               "type": "string",
               "metadata": {
-                "description": "Optional. AVD host pool type. (Default: Automatic)"
+                "description": "Optional. AVD host pool type."
               },
               "allowedValues": [
                 "Automatic",
@@ -5889,7 +5889,7 @@
             "avdHostPoolLoadBalancerType": {
               "type": "string",
               "metadata": {
-                "description": "Required. AVD host pool load balacing type. (Default: BreadthFirst)"
+                "description": "Required. AVD host pool load balacing type."
               },
               "allowedValues": [
                 "BreadthFirst",
@@ -8027,7 +8027,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "1905606854692545489"
+              "templateHash": "16055027548936912508"
             }
           },
           "parameters": {
@@ -8118,7 +8118,7 @@
             "createAvdFslogixDeployment": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. Deploy Fslogix setup. (Default: true)"
+                "description": "Optional. Deploy Fslogix setup."
               }
             },
             "avdTags": {
@@ -12546,6 +12546,9 @@
           "avdSubnetId": {
             "value": "[if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time'))), '2020-10-01').outputs.avdVirtualNetworkResourceId.value, variables('avdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId'))]"
           },
+          "createAvdVnet": {
+            "value": "[parameters('createAvdVnet')]"
+          },
           "avdVmLocalUserName": {
             "value": "[parameters('avdVmLocalUserName')]"
           },
@@ -12593,7 +12596,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "13409644309235720804"
+              "templateHash": "6316249033239781410"
             }
           },
           "parameters": {
@@ -12645,6 +12648,12 @@
                 "description": "AVD subnet ID."
               }
             },
+            "createAvdVnet": {
+              "type": "bool",
+              "metadata": {
+                "description": "Optional. Create new virtual network."
+              }
+            },
             "avdSessionHostLocation": {
               "type": "string",
               "metadata": {
@@ -12660,13 +12669,13 @@
             "avdSessionHostsSize": {
               "type": "string",
               "metadata": {
-                "description": "Session host VM size. (Defualt: Standard_D2s_v3) "
+                "description": "Session host VM size."
               }
             },
             "avdSessionHostDiskType": {
               "type": "string",
               "metadata": {
-                "description": "OS disk type for session host. (Defualt: Standard_LRS) "
+                "description": "OS disk type for session host."
               }
             },
             "marketPlaceGalleryWindows": {
@@ -12768,13 +12777,13 @@
             "avdVnetPrivateDnsZone": {
               "type": "bool",
               "metadata": {
-                "description": "Use Azure private DNS zones for private endpoints. (Default: false)"
+                "description": "Use Azure private DNS zones for private endpoints."
               }
             },
             "avdVnetPrivateDnsZoneFilesId": {
               "type": "string",
               "metadata": {
-                "description": "Use Azure private DNS zones for private endpoints. (Default: false)"
+                "description": "Use Azure private DNS zones for private endpoints."
               }
             },
             "managementVmName": {
@@ -15998,13 +16007,7 @@
                         "nicSuffix": "nic-01-",
                         "deleteOption": "Delete",
                         "enableAcceleratedNetworking": false,
-                        "ipConfigurations": [
-                          {
-                            "name": "ipconfig01",
-                            "subnetId": "[parameters('avdSubnetId')]",
-                            "applicationSecurityGroups": "[if(not(empty(parameters('avdApplicationSecurityGroupResourceId'))), parameters('avdApplicationSecurityGroupResourceId'), null())]"
-                          }
-                        ]
+                        "ipConfigurations": "[if(parameters('createAvdVnet'), createArray(createObject('name', 'ipconfig01', 'subnetId', parameters('avdSubnetId'), 'applicationSecurityGroups', parameters('avdApplicationSecurityGroupResourceId'))), createArray(createObject('name', 'ipconfig01', 'subnetId', parameters('avdSubnetId'))))]"
                       }
                     ]
                   },
@@ -19934,6 +19937,9 @@
           "avdSubnetId": {
             "value": "[if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time'))), '2020-10-01').outputs.avdVirtualNetworkResourceId.value, variables('avdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId'))]"
           },
+          "createAvdVnet": {
+            "value": "[parameters('createAvdVnet')]"
+          },
           "avdUseAvailabilityZones": {
             "value": "[parameters('avdUseAvailabilityZones')]"
           },
@@ -19981,7 +19987,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "1663661508906898543"
+              "templateHash": "9079086879500174879"
             }
           },
           "parameters": {
@@ -20042,7 +20048,7 @@
             "avdUseAvailabilityZones": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Defualt: true)"
+                "description": "Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set."
               }
             },
             "avdAvailabilitySetNamePrefix": {
@@ -20063,10 +20069,16 @@
                 "description": "Optional. Sets the number of update domains for the availability set."
               }
             },
+            "createAvdVnet": {
+              "type": "bool",
+              "metadata": {
+                "description": "Optional. Create new virtual network."
+              }
+            },
             "avdIdentityServiceProvider": {
               "type": "string",
               "metadata": {
-                "description": "Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)"
+                "description": "Required, The service providing domain services for Azure Virtual Desktop."
               }
             },
             "encryptionAtHost": {
@@ -20716,6 +20728,9 @@
                   "avdSessionHostNamePrefix": {
                     "value": "[parameters('avdSessionHostNamePrefix')]"
                   },
+                  "createAvdVnet": {
+                    "value": "[parameters('createAvdVnet')]"
+                  },
                   "avdSessionHostsSize": {
                     "value": "[parameters('avdSessionHostsSize')]"
                   },
@@ -20772,7 +20787,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "6965773332341005891"
+                      "templateHash": "8211994751355225457"
                     }
                   },
                   "parameters": {
@@ -20836,6 +20851,12 @@
                         "description": "Quantity of session hosts to deploy"
                       }
                     },
+                    "createAvdVnet": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Optional. Create new virtual network."
+                      }
+                    },
                     "avdSessionHostCountIndex": {
                       "type": "int",
                       "metadata": {
@@ -20845,7 +20866,7 @@
                     "avdUseAvailabilityZones": {
                       "type": "bool",
                       "metadata": {
-                        "description": "Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Defualt: true)"
+                        "description": "Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set."
                       }
                     },
                     "encryptionAtHost": {
@@ -20911,7 +20932,7 @@
                     "avdIdentityServiceProvider": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)"
+                        "description": "Required, The service providing domain services for Azure Virtual Desktop."
                       }
                     },
                     "avdWrklKvName": {
@@ -20929,7 +20950,7 @@
                     "avdApplicationSecurityGroupResourceId": {
                       "type": "string",
                       "metadata": {
-                        "description": "Application Security Group (ASG) for the session hosts."
+                        "description": "Application Security Group for the session hosts."
                       }
                     },
                     "hostPoolToken": {
@@ -21068,13 +21089,7 @@
                                 "nicSuffix": "nic-001-",
                                 "deleteOption": "Delete",
                                 "enableAcceleratedNetworking": false,
-                                "ipConfigurations": [
-                                  {
-                                    "name": "ipconfig01",
-                                    "subnetId": "[parameters('avdSubnetId')]",
-                                    "applicationSecurityGroups": "[if(not(empty(parameters('avdApplicationSecurityGroupResourceId'))), parameters('avdApplicationSecurityGroupResourceId'), null())]"
-                                  }
-                                ]
+                                "ipConfigurations": "[if(parameters('createAvdVnet'), createArray(createObject('name', 'ipconfig01', 'subnetId', parameters('avdSubnetId'), 'applicationSecurityGroups', parameters('avdApplicationSecurityGroupResourceId'))), createArray(createObject('name', 'ipconfig01', 'subnetId', parameters('avdSubnetId'))))]"
                               }
                             ]
                           },
