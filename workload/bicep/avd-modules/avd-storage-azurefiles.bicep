@@ -215,13 +215,7 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
                 nicSuffix: 'nic-01-'
                 deleteOption: 'Delete'
                 enableAcceleratedNetworking: false
-                ipConfigurations: createAvdVnet ? [
-                    {
-                        name: 'ipconfig01'
-                        subnetId: avdSubnetId
-                        applicationSecurityGroups: avdApplicationSecurityGroupResourceId
-                    }
-                ] : [
+                ipConfigurations: [
                     {
                         name: 'ipconfig01'
                         subnetId: avdSubnetId
