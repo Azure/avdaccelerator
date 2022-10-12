@@ -993,6 +993,5 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         avdNetworking
         avdWrklKeyVaultget
         avdWrklKeyVault
-        deployAvdStorageAzureFiles
     ]
 }
