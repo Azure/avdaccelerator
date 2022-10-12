@@ -33,10 +33,10 @@ param avdSessionHostLocation string
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool
 
-@description('Session host VM size. (Defualt: Standard_D2s_v3) ')
+@description('Session host VM size.')
 param avdSessionHostsSize string
 
-@description('OS disk type for session host. (Defualt: Standard_LRS) ')
+@description('OS disk type for session host.')
 param avdSessionHostDiskType string
 
 @description('Market Place OS image')
@@ -87,10 +87,10 @@ param fslogixStorageSku string
 @description('Azure File share quota')
 param avdFslogixFileShareQuotaSize int
 
-@description('Use Azure private DNS zones for private endpoints. (Default: false)')
+@description('Use Azure private DNS zones for private endpoints.')
 param avdVnetPrivateDnsZone bool
 
-@description('Use Azure private DNS zones for private endpoints. (Default: false)')
+@description('Use Azure private DNS zones for private endpoints.')
 param avdVnetPrivateDnsZoneFilesId string
 
 @description('Name for management virtual machine. for tools and to join Azure Files to domain.')
