@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "14959313331657682174"
+      "templateHash": "415074871214598670"
     }
   },
   "parameters": {
@@ -12596,7 +12596,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "6316249033239781410"
+              "templateHash": "7770182617766994684"
             }
           },
           "parameters": {
@@ -16007,7 +16007,12 @@
                         "nicSuffix": "nic-01-",
                         "deleteOption": "Delete",
                         "enableAcceleratedNetworking": false,
-                        "ipConfigurations": "[if(parameters('createAvdVnet'), createArray(createObject('name', 'ipconfig01', 'subnetId', parameters('avdSubnetId'), 'applicationSecurityGroups', parameters('avdApplicationSecurityGroupResourceId'))), createArray(createObject('name', 'ipconfig01', 'subnetId', parameters('avdSubnetId'))))]"
+                        "ipConfigurations": [
+                          {
+                            "name": "ipconfig01",
+                            "subnetId": "[parameters('avdSubnetId')]"
+                          }
+                        ]
                       }
                     ]
                   },
@@ -19987,7 +19992,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "9079086879500174879"
+              "templateHash": "9705392089820425790"
             }
           },
           "parameters": {
@@ -20787,7 +20792,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "8211994751355225457"
+                      "templateHash": "7733975668881056843"
                     }
                   },
                   "parameters": {
@@ -21089,7 +21094,12 @@
                                 "nicSuffix": "nic-001-",
                                 "deleteOption": "Delete",
                                 "enableAcceleratedNetworking": false,
-                                "ipConfigurations": "[if(parameters('createAvdVnet'), createArray(createObject('name', 'ipconfig01', 'subnetId', parameters('avdSubnetId'), 'applicationSecurityGroups', parameters('avdApplicationSecurityGroupResourceId'))), createArray(createObject('name', 'ipconfig01', 'subnetId', parameters('avdSubnetId'))))]"
+                                "ipConfigurations": [
+                                  {
+                                    "name": "ipconfig01",
+                                    "subnetId": "[parameters('avdSubnetId')]"
+                                  }
+                                ]
                               }
                             ]
                           },
