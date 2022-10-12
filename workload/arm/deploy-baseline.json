@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "14959313331657682174"
+      "templateHash": "17293176764256262328"
     }
   },
   "parameters": {
@@ -12596,7 +12596,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "6316249033239781410"
+              "templateHash": "11903095974118404614"
             }
           },
           "parameters": {
@@ -16045,7 +16045,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "15485394565447232737"
+                      "templateHash": "17094657261638733351"
                     }
                   },
                   "parameters": {
@@ -16845,7 +16845,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.9.1.41621",
-                              "templateHash": "7206985858015871385"
+                              "templateHash": "5548632646116242518"
                             }
                           },
                           "parameters": {
@@ -16965,11 +16965,7 @@
                                           "id": "[parameters('ipConfigurationArray')[copyIndex('ipConfigurations')].subnetId]"
                                         },
                                         "loadBalancerBackendAddressPools": "[if(contains(parameters('ipConfigurationArray')[copyIndex('ipConfigurations')], 'loadBalancerBackendAddressPools'), parameters('ipConfigurationArray')[copyIndex('ipConfigurations')].loadBalancerBackendAddressPools, null())]",
-                                        "applicationSecurityGroups": [
-                                          {
-                                            "id": "[if(contains(parameters('ipConfigurationArray')[copyIndex('ipConfigurations')], 'applicationSecurityGroups'), parameters('ipConfigurationArray')[copyIndex('ipConfigurations')].applicationSecurityGroups, null())]"
-                                          }
-                                        ]
+                                        "applicationSecurityGroups": "[if(contains(parameters('ipConfigurationArray')[copyIndex('ipConfigurations')], 'applicationSecurityGroups'), createArray(createObject('id', parameters('ipConfigurationArray')[copyIndex('ipConfigurations')].applicationSecurityGroups)), null())]"
                                       }
                                     }
                                   }
@@ -19987,7 +19983,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "9079086879500174879"
+              "templateHash": "4192071456090441320"
             }
           },
           "parameters": {
@@ -20787,7 +20783,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "8211994751355225457"
+                      "templateHash": "16048699801763979434"
                     }
                   },
                   "parameters": {
@@ -21143,7 +21139,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.9.1.41621",
-                              "templateHash": "15485394565447232737"
+                              "templateHash": "17094657261638733351"
                             }
                           },
                           "parameters": {
@@ -21943,7 +21939,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.9.1.41621",
-                                      "templateHash": "7206985858015871385"
+                                      "templateHash": "5548632646116242518"
                                     }
                                   },
                                   "parameters": {
@@ -22063,11 +22059,7 @@
                                                   "id": "[parameters('ipConfigurationArray')[copyIndex('ipConfigurations')].subnetId]"
                                                 },
                                                 "loadBalancerBackendAddressPools": "[if(contains(parameters('ipConfigurationArray')[copyIndex('ipConfigurations')], 'loadBalancerBackendAddressPools'), parameters('ipConfigurationArray')[copyIndex('ipConfigurations')].loadBalancerBackendAddressPools, null())]",
-                                                "applicationSecurityGroups": [
-                                                  {
-                                                    "id": "[if(contains(parameters('ipConfigurationArray')[copyIndex('ipConfigurations')], 'applicationSecurityGroups'), parameters('ipConfigurationArray')[copyIndex('ipConfigurations')].applicationSecurityGroups, null())]"
-                                                  }
-                                                ]
+                                                "applicationSecurityGroups": "[if(contains(parameters('ipConfigurationArray')[copyIndex('ipConfigurations')], 'applicationSecurityGroups'), createArray(createObject('id', parameters('ipConfigurationArray')[copyIndex('ipConfigurations')].applicationSecurityGroups)), null())]"
                                               }
                                             }
                                           }
