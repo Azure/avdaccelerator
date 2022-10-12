@@ -158,7 +158,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
                     {
                         name: 'ipconfig01'
                         subnetId: avdSubnetId
-                        applicationSecurityGroups: !empty(avdApplicationSecurityGroupResourceId) ? avdApplicationSecurityGroupResourceId : null
+                        applicationSecurityGroups: !empty(avdApplicationSecurityGroupResourceId) ? avdApplicationSecurityGroupResourceId : ''
                     }
                 ]
             }
