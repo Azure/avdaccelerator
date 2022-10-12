@@ -27,6 +27,9 @@ param avdWrklStoragePrivateEndpointName string
 @description('AVD subnet ID.')
 param avdSubnetId string
 
+@description('Optional. Create new virtual network.')
+param createAvdVnet bool
+
 @description('Required. Location where to deploy compute services.')
 param avdSessionHostLocation string
 
@@ -212,11 +215,16 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
                 nicSuffix: 'nic-01-'
                 deleteOption: 'Delete'
                 enableAcceleratedNetworking: false
-                ipConfigurations: [
+                ipConfigurations: createAvdVnet ? [
                     {
                         name: 'ipconfig01'
                         subnetId: avdSubnetId
-                        applicationSecurityGroups: !empty(avdApplicationSecurityGroupResourceId) ? avdApplicationSecurityGroupResourceId : ''
+                        applicationSecurityGroups: avdApplicationSecurityGroupResourceId
+                    }
+                ] : [
+                    {
+                        name: 'ipconfig01'
+                        subnetId: avdSubnetId
                     }
                 ]
             }
