@@ -81,11 +81,11 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2021-05-01' = {
           id: ipConfiguration.subnetId
         }
         loadBalancerBackendAddressPools: contains(ipConfiguration, 'loadBalancerBackendAddressPools') ? ipConfiguration.loadBalancerBackendAddressPools : null
-        applicationSecurityGroups: [
+        applicationSecurityGroups: contains(ipConfiguration, 'applicationSecurityGroups') ? [
           {
-            id: contains(ipConfiguration, 'applicationSecurityGroups') ? ipConfiguration.applicationSecurityGroups : null
+            id: ipConfiguration.applicationSecurityGroups
           }
-        ]
+        ]: null
       }
     }]
   }
