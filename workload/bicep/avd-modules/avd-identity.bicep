@@ -45,7 +45,7 @@ param storageAccountContributorRoleId string
 @description('GUID for built in role ID of Desktop Virtualization Power On Off Contributor.')
 param avdVmPowerStateContributor string
 
-@description('Optional. Deploy Fslogix setup. (Default: true)')
+@description('Optional. Deploy Fslogix setup.')
 param createAvdFslogixDeployment bool
 
 @description('Required. Tags to be applied to resources')
