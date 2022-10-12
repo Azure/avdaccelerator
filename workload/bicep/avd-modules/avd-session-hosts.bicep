@@ -36,7 +36,7 @@ param avdSessionHostsCount int
 @description('The session host number to begin with for the deployment.')
 param avdSessionHostCountIndex int
 
-@description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Defualt: true)')
+@description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set.')
 param avdUseAvailabilityZones bool
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
@@ -69,7 +69,7 @@ param avdIdentityDomainName string
 @description('Required. AVD session host domain join credentials.')
 param avdDomainJoinUserName string
 
-@description('Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)')
+@description('Required, The service providing domain services for Azure Virtual Desktop.')
 param avdIdentityServiceProvider string
 
 @description('Required. Name of keyvault that contains credentials.')
