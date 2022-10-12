@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "2199909814285268376"
+      "templateHash": "8397459540847919138"
     }
   },
   "parameters": {
@@ -12593,7 +12593,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "18006751130790973205"
+              "templateHash": "12658478500178894323"
             }
           },
           "parameters": {
@@ -16001,8 +16001,7 @@
                         "ipConfigurations": [
                           {
                             "name": "ipconfig01",
-                            "subnetId": "[parameters('avdSubnetId')]",
-                            "applicationSecurityGroups": "[if(not(empty(parameters('avdApplicationSecurityGroupResourceId'))), parameters('avdApplicationSecurityGroupResourceId'), '')]"
+                            "subnetId": "[parameters('avdSubnetId')]"
                           }
                         ]
                       }
@@ -19981,7 +19980,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "2732969855164871599"
+              "templateHash": "18031939850939349109"
             }
           },
           "parameters": {
@@ -20772,7 +20771,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "9621813106673643585"
+                      "templateHash": "15273313690615080557"
                     }
                   },
                   "parameters": {
@@ -21071,8 +21070,7 @@
                                 "ipConfigurations": [
                                   {
                                     "name": "ipconfig01",
-                                    "subnetId": "[parameters('avdSubnetId')]",
-                                    "applicationSecurityGroups": "[if(not(empty(parameters('avdApplicationSecurityGroupResourceId'))), parameters('avdApplicationSecurityGroupResourceId'), '')]"
+                                    "subnetId": "[parameters('avdSubnetId')]"
                                   }
                                 ]
                               }
