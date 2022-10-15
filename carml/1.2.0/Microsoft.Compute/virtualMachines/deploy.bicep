@@ -484,9 +484,7 @@ module vm_aadJoinExtension 'extensions/deploy.bicep' = if (extensionAadJoinConfi
     typeHandlerVersion: contains(extensionAadJoinConfig, 'typeHandlerVersion') ? extensionAadJoinConfig.typeHandlerVersion : '1.0'
     autoUpgradeMinorVersion: contains(extensionAadJoinConfig, 'autoUpgradeMinorVersion') ? extensionAadJoinConfig.autoUpgradeMinorVersion : true
     enableAutomaticUpgrade: contains(extensionAadJoinConfig, 'enableAutomaticUpgrade') ? extensionAadJoinConfig.enableAutomaticUpgrade : false
-        //settings: {
-    //  mdmId: 
-    //}
+    settings: extensionAadJoinConfig.settings
     enableDefaultTelemetry: enableDefaultTelemetry
   }
 }

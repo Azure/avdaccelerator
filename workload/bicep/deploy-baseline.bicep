@@ -36,6 +36,9 @@ param avdVmLocalUserPassword string = ''
 @description('Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)')
 param avdIdentityServiceProvider string = 'ADDS'
 
+@description('Required, Eronll session hosts on Intune. (Defualt: false)')
+param createIntuneEnrollment bool = false
+
 @description('Required. AD domain name.')
 param avdIdentityDomainName string = ''
 
@@ -616,7 +619,7 @@ var storageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
 var storageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -IdentityServiceProvider ${avdIdentityServiceProvider} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
 var createOuForStorageString = string(createOuForStorage)
 var dnsServers = (customDnsIps == 'none') ? []: (split(customDnsIps, ','))
-
+var varCreateAvdFslogixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: createAvdFslogixDeployment
 // Resource tagging
 // Tag Exclude-${avdScalingPlanName} is used by scaling plans to exclude session hosts from scaling. Exmaple: Exclude-vdscal-eus2-app1-001
 var commonResourceTags = createResourceTags ? {
@@ -992,6 +995,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         avdAsFaultDomainCount: avdAsFaultDomainCount
         avdAsUpdateDomainCount: avdAsUpdateDomainCount
         avdIdentityServiceProvider: avdIdentityServiceProvider
+        createIntuneEnrollment: createIntuneEnrollment
         avdAvailabilitySetNamePrefix: avdAvailabilitySetNamePrefix
         avdComputeObjectsRgName: avdComputeObjectsRgName
         avdDeploySessionHostsCount: avdDeploySessionHostsCount
@@ -1012,7 +1016,8 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         avdVmLocalUserName: avdVmLocalUserName
         avdWorkloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
-        createAvdFslogixDeployment: (avdIdentityServiceProvider == 'AAD') ? createAvdFslogixDeployment: false
+        //createAvdFslogixDeployment: (avdIdentityServiceProvider == 'AAD') ? createAvdFslogixDeployment: false
+        createAvdFslogixDeployment: (avdIdentityServiceProvider == 'AAD') ? false: createAvdFslogixDeployment
         fslogixManagedIdentityResourceId:  (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD'))  ? deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId : ''
         fsLogixScript: (avdIdentityServiceProvider != 'AAD') ? fsLogixScript: ''
         FsLogixScriptArguments: (avdIdentityServiceProvider != 'AAD') ? FsLogixScriptArguments: ''

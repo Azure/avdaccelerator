@@ -69,8 +69,11 @@ param avdIdentityDomainName string
 @description('Required. AVD session host domain join credentials.')
 param avdDomainJoinUserName string
 
-@description('Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)')
+@description('Required, The service providing domain services for Azure Virtual Desktop.')
 param avdIdentityServiceProvider string
+
+@description('Required, Eronll session hosts on Intune.')
+param createIntuneEnrollment bool
 
 @description('Required. Name of keyvault that contains credentials.')
 param avdWrklKvName string
@@ -168,7 +171,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
                 ]
             }
         ]
-        // Join domain.
+        // ADDS or AADDS domain join.
         extensionDomainJoinPassword: avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
         extensionDomainJoinConfig: {
             enabled: (avdIdentityServiceProvider == 'AAD') ? false: true
@@ -180,10 +183,15 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
                 options: '3'
             }
         }
-        // Azure AD Join.
-        extensionAadJoinConfig: {
+        // Azure AD (AAD) Join.
+        extensionAadJoinConfig: createIntuneEnrollment ? {
             enabled: (avdIdentityServiceProvider == 'AAD') ? true: false
-        }
+            settings: {
+                mdmId: '0000000a-0000-0000-c000-000000000000'
+            }
+            }: {
+                enabled: (avdIdentityServiceProvider == 'AAD') ? true: false
+            }
         // Enable and Configure Microsoft Malware.
         extensionAntiMalwareConfig: {
             enabled: true
