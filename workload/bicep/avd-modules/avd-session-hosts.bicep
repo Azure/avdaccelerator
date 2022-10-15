@@ -136,6 +136,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
         userAssignedIdentities: createAvdFslogixDeployment ? {
             '${fslogixManagedIdentityResourceId}': {}
         } : {}
+        systemAssignedIdentity: (avdIdentityServiceProvider == 'AAD') ? true: false
         availabilityZone: avdUseAvailabilityZones ? take(skip(allAvailabilityZones, i % length(allAvailabilityZones)), 1) : []
         encryptionAtHost: encryptionAtHost
         availabilitySetName: !avdUseAvailabilityZones ? '${avdAvailabilitySetNamePrefix}-${padLeft(((1 + (i + avdSessionHostCountIndex) / maxAvailabilitySetMembersCount)), 3, '0')}': ''
@@ -169,8 +170,8 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
         ]
         // Join domain.
         extensionDomainJoinPassword: avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
-        extensionDomainJoinConfig: (avdIdentityServiceProvider != 'AAD') ? {
-            enabled: true
+        extensionDomainJoinConfig: {
+            enabled: (avdIdentityServiceProvider == 'AAD') ? false: true
             settings: {
                 name: avdIdentityDomainName
                 ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
@@ -178,11 +179,11 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
                 restart: 'true'
                 options: '3'
             }
-        }: {}
+        }
         // Azure AD Join.
-        extensionAadJoinConfig: (avdIdentityServiceProvider == 'AAD') ? {
-            enabled: true
-        }: {}
+        extensionAadJoinConfig: {
+            enabled: (avdIdentityServiceProvider == 'AAD') ? true: false
+        }
         // Enable and Configure Microsoft Malware.
         extensionAntiMalwareConfig: {
             enabled: true
