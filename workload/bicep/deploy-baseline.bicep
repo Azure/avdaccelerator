@@ -483,7 +483,6 @@ var avdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCusto
 var avdWrklStoragePrivateEndpointName = 'pe-stavd${deploymentPrefixLowercase}${avdNamingUniqueStringSixChar}-file'
 var managementVmName = 'vm-mgmt-${deploymentPrefixLowercase}'
 //
-
 var avdScalingPlanSchedules = [
     {
         daysOfWeek: [
@@ -909,6 +908,16 @@ module avdWrklKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep
                     value: avdVmLocalUserName
                     contentType: 'Session host local user credentials'
                 }
+                {
+                    name: 'avdDomainJoinUserName'
+                    value: 'AAD-Joined-Deployment-No-Domain-Credentials'
+                    contentType: 'Domain join credentials'
+                }
+                {
+                    name: 'avdDomainJoinUserPassword'
+                    value: 'AAD-Joined-Deployment-No-Domain-Credentials'
+                    contentType: 'Domain join credentials'
+                }
             ]
         }
         tags: createResourceTags ? commonResourceTags : {}
@@ -924,7 +933,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
     name: avdWrklKvName
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
 }
-/*
+
 // Storage.
 module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (createAvdFslogixDeployment && avdDeploySessionHosts && (avdIdentityServiceProvider != 'AAD')) {
     name: 'Deploy-AVD-Storage-AzureFiles-${time}'
@@ -972,7 +981,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         avdWrklKeyVault
     ]
 }
-*/
+
 // Session hosts.
 module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.bicep' = if (avdDeploySessionHosts) {
     name: 'Deploy-and-Configure-AVD-SessionHosts-${time}'

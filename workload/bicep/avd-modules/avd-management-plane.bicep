@@ -99,7 +99,7 @@ var applicationApplicationGroups = [
     applicationGroupType: 'RemoteApp'
   }
 ]
-var avdHostPoolRdpPropertiesDomainServiceCheck = (avdIdentityServiceProvider == 'AAD') ? '${avdHostPoolRdpProperties};targetisaadjoined:i:1' : avdHostPoolRdpProperties
+var avdHostPoolRdpPropertiesDomainServiceCheck = (avdIdentityServiceProvider == 'AAD') ? '${avdHostPoolRdpProperties};targetisaadjoined:i:1;enablerdsaadauth:i:1' : avdHostPoolRdpProperties
 var finalApplicationGroups = avdDeployRappGroup ? concat(desktopApplicaitonGroups, applicationApplicationGroups) : desktopApplicaitonGroups
 
 // =========== //
