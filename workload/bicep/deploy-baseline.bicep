@@ -1016,7 +1016,6 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         avdVmLocalUserName: avdVmLocalUserName
         avdWorkloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
-        //createAvdFslogixDeployment: (avdIdentityServiceProvider == 'AAD') ? createAvdFslogixDeployment: false
         createAvdFslogixDeployment: (avdIdentityServiceProvider == 'AAD') ? false: createAvdFslogixDeployment
         fslogixManagedIdentityResourceId:  (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD'))  ? deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId : ''
         fsLogixScript: (avdIdentityServiceProvider != 'AAD') ? fsLogixScript: ''
