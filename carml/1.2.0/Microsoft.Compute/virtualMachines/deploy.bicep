@@ -475,15 +475,18 @@ module vm_domainJoinExtension 'extensions/deploy.bicep' = if (extensionDomainJoi
 }
 
 module vm_aadJoinExtension 'extensions/deploy.bicep' = if (extensionAadJoinConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VM-DomainJoin'
+  name: '${uniqueString(deployment().name, location)}-VM-AADJoin'
   params: {
     virtualMachineName: virtualMachine.name
-    name: 'AADJoin'
+    name: 'AADLoginForWindows'
     publisher: 'Microsoft.Azure.ActiveDirectory'
     type: 'AADLoginForWindows'
     typeHandlerVersion: contains(extensionAadJoinConfig, 'typeHandlerVersion') ? extensionAadJoinConfig.typeHandlerVersion : '1.0'
     autoUpgradeMinorVersion: contains(extensionAadJoinConfig, 'autoUpgradeMinorVersion') ? extensionAadJoinConfig.autoUpgradeMinorVersion : true
     enableAutomaticUpgrade: contains(extensionAadJoinConfig, 'enableAutomaticUpgrade') ? extensionAadJoinConfig.enableAutomaticUpgrade : false
+        //settings: {
+    //  mdmId: 
+    //}
     enableDefaultTelemetry: enableDefaultTelemetry
   }
 }
