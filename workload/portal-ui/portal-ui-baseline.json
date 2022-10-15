@@ -97,7 +97,7 @@
                             "name": "avdIdentityDomainInformation",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
-                            "label": "Domain information",
+                            "label": "Domain to join",
                             "elements": [
                                 {
                                     "name": "avdIdentityServiceProvider",
@@ -120,6 +120,27 @@
                                             {
                                                 "label": "Azure AD Domain Services (AAD DS)",
                                                 "value": "AADDS"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "avdIdentityServiceProviderIntuneEnrollment",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "visible": "[equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD')]",
+                                    "label": "Enroll VM with Intune",
+                                    "defaultValue": "No",
+                                    "toolTip": "If Intune is configured in your Azure AD tenant, you can choose to have the VM automatically enrolled during the deployment by selecting Yes.",
+                                    "constraints": {
+                                        "required": false,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes",
+                                                "value": true
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": false
                                             }
                                         ]
                                     }
@@ -1841,6 +1862,7 @@
                 "avdPersonalAssignType": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.assignmentType, 'Automatic')]",
                 "avdDeployRappGroup": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('avdManagementPlane').avdManagementPlaneAppGroupOptions.avdDeployRappGroup, false)]",
                 "avdIdentityServiceProvider": "[steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider]",
+                "createIntuneEnrollment": "[if(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'), steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProviderIntuneEnrollment, false)]",
                 "avdIdentityDomainName": "[if(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'), 'none', steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainName)]",
                 "avdOuPath": "[if(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'), 'none', steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPath)]",
                 "avdDomainJoinUserName": "[if(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'), 'none', steps('avdIdentity').avdIdentityDomainCredentials.avdIdentityDomainJoinUserName)]",
