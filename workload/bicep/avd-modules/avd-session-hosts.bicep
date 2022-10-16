@@ -58,7 +58,7 @@ param marketPlaceGalleryWindows object
 param useSharedImage bool
 
 @description('Source custom image ID.')
-param avdImageTemplataDefinitionId string
+param avdImageTemplateDefinitionId string
 
 @description('Fslogix Managed Identity Resource ID.')
 param fslogixManagedIdentityResourceId string
@@ -74,6 +74,9 @@ param avdDomainJoinUserName string
 
 @description('Required, The service providing domain services for Azure Virtual Desktop.')
 param avdIdentityServiceProvider string
+
+@description('Required, Eronll session hosts on Intune.')
+param createIntuneEnrollment bool
 
 @description('Required. Name of keyvault that contains credentials.')
 param avdWrklKvName string
@@ -102,6 +105,9 @@ param fsLogixScript string
 @description('Configuration arguments for FSlogix.')
 param FsLogixScriptArguments string
 
+@description('Path for the FSlogix share.')
+param FslogixSharePath string
+
 @description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
 
@@ -119,7 +125,8 @@ var allAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', avd
 // =========== //
 // Deployments //
 // =========== //
-resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+// Get keyvault.
+resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = if (avdIdentityServiceProvider != 'AAD') {
     name: avdWrklKvName
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
 }
@@ -135,13 +142,14 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
         userAssignedIdentities: createAvdFslogixDeployment ? {
             '${fslogixManagedIdentityResourceId}': {}
         } : {}
+        systemAssignedIdentity: (avdIdentityServiceProvider == 'AAD') ? true: false
         availabilityZone: avdUseAvailabilityZones ? take(skip(allAvailabilityZones, i % length(allAvailabilityZones)), 1) : []
         encryptionAtHost: encryptionAtHost
         availabilitySetName: !avdUseAvailabilityZones ? '${avdAvailabilitySetNamePrefix}-${padLeft(((1 + (i + avdSessionHostCountIndex) / maxAvailabilitySetMembersCount)), 3, '0')}': ''
         osType: 'Windows'
         licenseType: 'Windows_Client'
         vmSize: avdSessionHostsSize
-        imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplataDefinitionId}\'}') : marketPlaceGalleryWindows
+        imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinitionId}\'}') : marketPlaceGalleryWindows
         osDisk: {
             createOption: 'fromImage'
             deleteOption: 'Delete'
@@ -171,11 +179,10 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
                 ]
             }
         ]
-        // Join domain.
-        allowExtensionOperations: true
+        // ADDS or AADDS domain join.
         extensionDomainJoinPassword: avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
         extensionDomainJoinConfig: {
-            enabled: true
+            enabled: (avdIdentityServiceProvider == 'AAD') ? false: true
             settings: {
                 name: avdIdentityDomainName
                 ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
@@ -184,6 +191,15 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
                 options: '3'
             }
         }
+        // Azure AD (AAD) Join.
+        extensionAadJoinConfig: createIntuneEnrollment ? {
+            enabled: (avdIdentityServiceProvider == 'AAD') ? true: false
+            settings: {
+                mdmId: '0000000a-0000-0000-c000-000000000000'
+            }
+            }: {
+                enabled: (avdIdentityServiceProvider == 'AAD') ? true: false
+            }
         // Enable and Configure Microsoft Malware.
         extensionAntiMalwareConfig: {
             enabled: true
@@ -198,7 +214,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
                 }
                 Exclusions: createAvdFslogixDeployment ? {
                     Extensions: '*.vhd;*.vhdx'
-                    Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;\\\\server\\share\\*\\*.VHD;\\\\server\\share\\*\\*.VHDX'
+                    Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${FslogixSharePath}\\*\\*.VHD;${FslogixSharePath}\\*\\*.VHDX'
                     Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
                 } : {}
             }
@@ -225,7 +241,7 @@ module addAvdHostsToHostPool '../../vm-custom-extensions/add-avd-session-hosts.b
 }]
 
 // Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
-module configureFsLogixForAvdHosts '../../vm-custom-extensions/configure-fslogix-session-hosts.bicep' = [for i in range(1, avdSessionHostsCount): if (createAvdFslogixDeployment) {
+module configureFsLogixForAvdHosts '../../vm-custom-extensions/configure-fslogix-session-hosts.bicep' = [for i in range(1, avdSessionHostsCount): if (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD')) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
     name: 'Configure-FsLogix-for-${padLeft((i + avdSessionHostCountIndex), 3, '0')}-${time}'
     params: {

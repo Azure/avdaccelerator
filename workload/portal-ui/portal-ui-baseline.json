@@ -88,18 +88,8 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
-                                "text": "AVD supported identities and authentication methods.",
+                                "text": "AVD landing zone accelerator deployment expects identity service to be already available in the current Azure estate.",
                                 "uri": "https://docs.microsoft.com/azure/virtual-desktop/authentication#identities",
-                                "style": "Info"
-                            }
-                        },
-                        {
-                            "name": "avdIdentityServiceProviderInfo",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "text": "Identity service provider must already exist, as they are a prerequisite for the AVD accelerator deployment.",
-                                "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started.md#prerequisites",
                                 "style": "Info"
                             }
                         },
@@ -107,7 +97,7 @@
                             "name": "avdIdentityDomainInformation",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
-                            "label": "Domain information",
+                            "label": "Domain to join",
                             "elements": [
                                 {
                                     "name": "avdIdentityServiceProvider",
@@ -120,6 +110,10 @@
                                         "required": true,
                                         "allowedValues": [
                                             {
+                                                "label": "Azure Active Directory (AAD)",
+                                                "value": "AAD"
+                                            },
+                                            {
                                                 "label": "Active Directory (AD DS)",
                                                 "value": "ADDS"
                                             },
@@ -131,13 +125,45 @@
                                     }
                                 },
                                 {
+                                    "name": "avdIdentityServiceProviderIntuneEnrollment",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "visible": "[equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD')]",
+                                    "label": "Enroll VM with Intune",
+                                    "defaultValue": "No",
+                                    "toolTip": "If Intune is configured in your Azure AD tenant, you can choose to have the VM automatically enrolled during the deployment by selecting Yes.",
+                                    "constraints": {
+                                        "required": false,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes",
+                                                "value": true
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": false
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
                                     "name": "avdIdentityDomainName",
                                     "type": "Microsoft.Common.TextBox",
+                                    "visible": "[not(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'))]",
                                     "label": "Domain name",
                                     "toolTip": "Provide identity service domain name.",
                                     "placeholder": "Example: contoso.com",
                                     "constraints": {
                                         "required": true
+                                    }
+                                },
+                                {
+                                    "name": "avdIdentityServiceProviderInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[not(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'))]",
+                                    "options": {
+                                        "text": "Identity service provider must already exist, as they are a prerequisite for the AVD accelerator deployment.",
+                                        "uri": "https://github.com/Azure/avdaccelerator/wiki/Getting-Started",
+                                        "style": "Info"
                                     }
                                 }
                             ]
@@ -145,7 +171,7 @@
                         {
                             "name": "avdIdentityDomainCredentials",
                             "type": "Microsoft.Common.Section",
-                            "visible": true,
+                            "visible": "[not(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'))]",
                             "label": "Domain join credentials",
                             "elements": [
                                 {
@@ -162,7 +188,6 @@
                                 {
                                     "name": "avdIdentityDomainJoinUserPassword",
                                     "type": "Microsoft.Common.PasswordBox",
-                                    "visible": true,
                                     "label": {
                                         "password": "Password"
                                     },
@@ -594,6 +619,7 @@
                                 {
                                     "name": "avdIdentityDomainOuPath",
                                     "type": "Microsoft.Common.TextBox",
+                                    "visible": "[not(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'))]",
                                     "label": "Session hosts OU path (Optional)",
                                     "toolTip": "Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU.",
                                     "placeholder": "Example: OU=session-hosts,OU=avd,DC=contoso,DC=com",
@@ -620,8 +646,18 @@
                                     }
                                 },
                                 {
+                                    "name": "avdFslogixDeploymentDisabledAad",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD')]",
+                                    "options": {
+                                        "text": "FSLogix for Azure AD joined session hosts is currently not globally available (GA).",
+                                        "style": "Info"
+                                    }
+                                },
+                                {
                                     "name": "avdFslogixDeployment",
                                     "type": "Microsoft.Common.OptionsGroup",
+                                    "visible": "[not(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'))]",
                                     "label": "Use FSLogix profile management",
                                     "defaultValue": "Yes",
                                     "toolTip": "Deploys FSLogix containers and session host setup for user's profiles.",
@@ -642,7 +678,7 @@
                                 {
                                     "name": "avdIdentityDomainOuPathBool",
                                     "type": "Microsoft.Common.OptionsGroup",
-                                    "visible": "[equals (steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true)]",
+                                    "visible": "[not(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'))]",
                                     "label": "Create OU for storage (fslogix)",
                                     "defaultValue": "No",
                                     "toolTip": "It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.",
@@ -819,7 +855,7 @@
                                     "visible": "[equals(steps('avdSessionHosts').avdSessionHostsSettingsSection.avdSessionHostEncryptionAtHost, true)]",
                                     "options": {
                                         "text": "Encryption at host requires feature EncryptionAtHost of resource provider Microsoft.Compute to be registered in the subscription.",
-                                        "uri": "https://docs.microsoft.com/en-us/azure/virtual-machines/disks-enable-host-based-encryption-portal?msclkid=31c2d29bbce111ec8bca8257221ab9d1",
+                                        "uri": "https://docs.microsoft.com/azure/virtual-machines/disks-enable-host-based-encryption-portal?msclkid=31c2d29bbce111ec8bca8257221ab9d1",
                                         "style": "Warning"
                                     }
                                 }
@@ -905,7 +941,7 @@
                         {
                             "name": "vnetInfoBox",
                             "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
+                            "visible": "[not(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'))]",
                             "options": {
                                 "text": "AVD landing zone accelerator requires connectivity to identity services (ADDS or AADDS).",
                                 "uri": "https://docs.microsoft.com/azure/virtual-desktop/authentication",
@@ -1035,6 +1071,16 @@
                             "label": "Existing hub vNet peering information",
                             "elements": [
                                 {
+                                    "name": "avdHubVnetPeeringInfoBox",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD')]",
+                                    "options": {
+                                        "text": "vNet peering to identity services is not required when joining VMs to Azure AD .",
+                                        "uri": "https://learn.microsoft.com/en-us/azure/architecture/example-scenario/wvd/azure-virtual-desktop-azure-active-directory-join",
+                                        "style": "info"
+                                    }
+                                },
+                                {
                                     "name": "avdHubVnetSubs",
                                     "type": "Microsoft.Solutions.ArmApiControl",
                                     "request": {
@@ -1045,6 +1091,7 @@
                                 {
                                     "name": "avdHubVnetSub",
                                     "type": "Microsoft.Common.DropDown",
+                                    "visible": "[not(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'))]",
                                     "label": "Hub vNet Subscription",
                                     "toolTip": "",
                                     "multiselect": false,
@@ -1052,7 +1099,6 @@
                                     "filter": true,
                                     "filterPlaceholder": "Filter items ...",
                                     "multiLine": true,
-                                    "visible": true,
                                     "constraints": {
                                         "allowedValues": "[map(steps('avdNetwork').avdHubVnetPeering.avdHubVnetSubs.value, (sub) => parse(concat('{\"label\":\"', sub.displayName, '\",\"description\":\"', sub.subscriptionId, '\",\"value\":\"', toLower(sub.subscriptionId), '\"}')) )]",
                                         "required": true
@@ -1069,6 +1115,7 @@
                                 {
                                     "name": "avdExistingHubVnet",
                                     "type": "Microsoft.Common.DropDown",
+                                    "visible": "[not(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'))]",
                                     "label": "Hub vNet",
                                     "toolTip": "",
                                     "multiselect": false,
@@ -1076,7 +1123,6 @@
                                     "filter": true,
                                     "filterPlaceholder": "Filter items ...",
                                     "multiLine": true,
-                                    "visible": true,
                                     "constraints": {
                                         "allowedValues": "[map(steps('avdNetwork').avdHubVnetPeering.avdExistingHubVnets.value, (vnet) => parse(concat('{\"label\":\"', vnet.name, '\",\"description\":\"', vnet.location, '\",\"value\":\"', toLower(vnet.id), '\"}')) )]",
                                         "required": true
@@ -1085,7 +1131,7 @@
                                 {
                                     "name": "avdHubVnetGateway",
                                     "type": "Microsoft.Common.OptionsGroup",
-                                    "visible": true,
+                                    "visible": "[not(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'))]",
                                     "label": "Gateway on hub",
                                     "defaultValue": "No",
                                     "toolTip": "This information will be used to set remote gateway settings on vNet peering.",
@@ -1816,17 +1862,18 @@
                 "avdPersonalAssignType": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.assignmentType, 'Automatic')]",
                 "avdDeployRappGroup": "[if(equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('avdManagementPlane').avdManagementPlaneAppGroupOptions.avdDeployRappGroup, false)]",
                 "avdIdentityServiceProvider": "[steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider]",
-                "avdIdentityDomainName": "[steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainName]",
-                "avdOuPath": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPath]",
-                "avdDomainJoinUserName": "[steps('avdIdentity').avdIdentityDomainCredentials.avdIdentityDomainJoinUserName]",
-                "avdDomainJoinUserPassword": "[steps('avdIdentity').avdIdentityDomainCredentials.avdIdentityDomainJoinUserPassword]",
+                "createIntuneEnrollment": "[if(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'), steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProviderIntuneEnrollment, false)]",
+                "avdIdentityDomainName": "[if(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'), 'none', steps('avdIdentity').avdIdentityDomainInformation.avdIdentityDomainName)]",
+                "avdOuPath": "[if(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'), 'none', steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPath)]",
+                "avdDomainJoinUserName": "[if(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'), 'none', steps('avdIdentity').avdIdentityDomainCredentials.avdIdentityDomainJoinUserName)]",
+                "avdDomainJoinUserPassword": "[if(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'), 'none', steps('avdIdentity').avdIdentityDomainCredentials.avdIdentityDomainJoinUserPassword)]",
                 "avdVmLocalUserName": "[steps('avdIdentity').avdIdentityLocalCredentials.avdIdentityLocalUserName]",
                 "avdVmLocalUserPassword": "[steps('avdIdentity').avdIdentityLocalCredentials.avdIdentityLocalUserPassword.password]",
                 "createAvdVnet": "[steps('avdNetwork').createAvdVnet]",
                 "avdVnetworkAddressPrefixes": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdVnetSize, '10.10.0.0/23')]",
                 "avdVnetworkSubnetAddressPrefix": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdVnetSubnetSize, '10.10.0.0/23')]",
                 "customDnsIps": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdVnetDns, 'none')]",
-                "existingHubVnetResourceId": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdHubVnetPeering.avdExistingHubVnet, 'none')]",
+                "existingHubVnetResourceId": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdHubVnetPeering.avdExistingHubVnet, '')]",
                 "vNetworkGatewayOnHub": "[if(equals(steps('avdNetwork').createAvdVnet, true), steps('avdNetwork').avdHubVnetPeering.avdHubVnetGateway, false)]",
                 "existingVnetSubnetResourceId": "[if(equals(steps('avdNetwork').createAvdVnet, false), steps('avdNetwork').avdVnetSubnetSelectorName, 'none')]",
                 "avdDeploySessionHosts": "[steps('avdSessionHosts').avdDeploySessionHosts]",
@@ -1838,7 +1885,7 @@
                 "avdDeploySessionHostsCount": "[if(equals(steps('avdSessionHosts').avdDeploySessionHosts, true), steps('avdSessionHosts').avdSessionHostsSettingsSection.avdSessionHostsCount, 1)]",
                 "useSharedImage": "[if(equals(steps('avdSessionHosts').avdDeploySessionHosts, true), steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsImageSource, false)]",
                 "avdOsImage": "[if(equals(steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsImageSource, false), steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsOsImage, 'win11_21h2')]",
-                "avdImageTemplataDefinitionId": "[if(equals(steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsImageSource, true), steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsComputeGalleryImage.id, 'none')]",
+                "avdImageTemplateDefinitionId": "[if(equals(steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsImageSource, true), steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsComputeGalleryImage.id, 'none')]",
                 "avdSessionHostDiskType": "[steps('avdSessionHosts').avdSessionHostsSettingsSection.avdSessionHostDiskType]",
                 "encryptionAtHost": "[steps('avdSessionHosts').avdSessionHostsSettingsSection.avdSessionHostEncryptionAtHost]",
                 "avdSessionHostsSize": "[if(equals(steps('avdSessionHosts').avdDeploySessionHosts, true), steps('avdSessionHosts').avdSessionHostsSettingsSection.element1, 'Standard_D2s_v4')]",
@@ -1846,7 +1893,7 @@
                 "avdVnetPrivateDnsZone": "[steps('avdNetwork').avdVnetPrivateDnsZone]",
                 "avdVnetPrivateDnsZoneFilesId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneSelection.avdVnetPrivateDnsZoneFilesSelector.id, '')]",
                 "avdVnetPrivateDnsZoneKeyvaultId": "[if(equals(steps('avdNetwork').avdVnetPrivateDnsZone, true), steps('avdNetwork').avdVnetPrivateDnsZoneSelection.avdVnetPrivateDnsZoneKeyvaultSelector.id, '')]",
-                "createAvdFslogixDeployment": "[steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment]",
+                "createAvdFslogixDeployment": "[if(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'), false, steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment)]",
                 "fslogixStorageSku": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdStorageAccountSku, 'Standard_LRS')]",
                 "avdFslogixFileShareQuotaSize": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdFslogixDeployment, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdSessionHostsFslogixFileShareQuota, 1 )]",
                 "storageOuPath": "[if(equals(steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathBool, true), steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathStorage, steps('avdSessionHosts').avdSessionHostsComputeStorageSection.avdIdentityDomainOuPathStorageExisting)]",

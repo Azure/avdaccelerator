@@ -460,7 +460,7 @@ module azureComputeGallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy
 }
 
 // Image Template Definition.
-module avdImageTemplataDefinition '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep' = {
+module avdImageTemplateDefinition '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep' = {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
     name: 'Deploy-AVD-Image-Template-Definition-${time}'
     params: {
@@ -491,7 +491,7 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
         userMsiResourceGroup: createAibManagedIdentity && useSharedImage ? imageBuilderManagedIdentity.outputs.resourceGroupName : avdSharedResourcesRgName
         location: aibLocation
         imageReplicationRegions: (avdSharedServicesLocation == aibLocation) ? array('${avdSharedServicesLocation}') : concat(array('${aibLocation}'), array('${avdSharedServicesLocation}'))
-        sigImageDefinitionId: useSharedImage ? avdImageTemplataDefinition.outputs.resourceId : ''
+        sigImageDefinitionId: useSharedImage ? avdImageTemplateDefinition.outputs.resourceId : ''
         vmSize: imageVmSize
         customizationSteps: [
             {
@@ -558,7 +558,7 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
         tags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
-        avdImageTemplataDefinition
+        avdImageTemplateDefinition
         azureComputeGallery
         avdSharedResourcesRg
         azureImageBuilderRoleAssign
