@@ -29,6 +29,9 @@
         "avdIdentityServiceProvider": {
             "value": "<<IdentityServiceProviderType>>"
         },     
+        "createIntuneEnrollment": {
+            "value": false
+        },            
         "avdIdentityDomainName": {
             "value": ""
         },
