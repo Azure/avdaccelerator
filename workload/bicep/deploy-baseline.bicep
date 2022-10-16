@@ -963,6 +963,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         avdSessionHostsSize: avdSessionHostsSize
         avdStorageObjectsRgName: avdStorageObjectsRgName
         avdSubnetId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
+        createAvdVnet: createAvdVnet
         avdVmLocalUserName: avdVmLocalUserName
         avdVnetPrivateDnsZone: avdVnetPrivateDnsZone
         avdVnetPrivateDnsZoneFilesId: avdVnetPrivateDnsZoneFilesId
@@ -1012,6 +1013,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         avdSessionHostNamePrefix: avdSessionHostNamePrefix
         avdSessionHostsSize: avdSessionHostsSize
         avdSubnetId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
+        createAvdVnet: createAvdVnet
         avdUseAvailabilityZones: avdUseAvailabilityZones
         avdVmLocalUserName: avdVmLocalUserName
         avdWorkloadSubsId: avdWorkloadSubsId
