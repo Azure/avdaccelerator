@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "12595680291421382474"
+      "templateHash": "10095892994835398542"
     }
   },
   "parameters": {
@@ -962,7 +962,8 @@
     "defaultStorageOuPath": "[if(equals(parameters('avdIdentityServiceProvider'), 'AADDS'), 'AADDC Computers', 'Computers')]",
     "storageCustomOuPath": "[if(not(empty(parameters('storageOuPath'))), 'true', 'false')]",
     "createOuForStorageString": "[string(parameters('createOuForStorage'))]",
-    "dnsServers": "[if(equals(parameters('customDnsIps'), 'none'), createArray(), split(parameters('customDnsIps'), ','))]",
+    "allDnsServers": "[format('{0},168.63.129.16', parameters('customDnsIps'))]",
+    "dnsServers": "[if(equals(parameters('customDnsIps'), 'none'), createArray(), split(variables('allDnsServers'), ','))]",
     "varCreateAvdFslogixDeployment": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), false(), parameters('createAvdFslogixDeployment'))]",
     "varAvdApplicationGropupIdentitiesIds": "[if(not(empty(parameters('avdApplicationGropupIdentitiesIds'))), split(parameters('avdApplicationGropupIdentitiesIds'), ','), createArray())]",
     "commonResourceTags": "[if(parameters('createResourceTags'), createObject('WorkloadName', parameters('workloadNameTag'), 'WorkloadType', parameters('workloadTypeTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('workloadCriticalityTag'), 'Custom'), parameters('workloadCriticalityCustomValueTag'), parameters('workloadCriticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'ServiceClass', parameters('workloadSlaTag'), 'OpsTeam', parameters('opsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag'), 'Environment', parameters('environmentTypeTag')), createObject())]",
