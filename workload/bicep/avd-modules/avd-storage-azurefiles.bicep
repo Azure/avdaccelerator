@@ -49,7 +49,7 @@ param marketPlaceGalleryWindows object
 param useSharedImage bool
 
 @description('Source custom image ID.')
-param avdImageTemplataDefinitionId string
+param avdImageTemplateDefinitionId string
 
 @description('Fslogix Managed Identity Resource ID.')
 param fslogixManagedIdentityResourceId string
@@ -199,7 +199,7 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
         osType: 'Windows'
         licenseType: 'Windows_Client'
         vmSize: avdSessionHostsSize
-        imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplataDefinitionId}\'}') : marketPlaceGalleryWindows
+        imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinitionId}\'}') : marketPlaceGalleryWindows
         osDisk: {
             createOption: 'fromImage'
             deleteOption: 'Delete'
