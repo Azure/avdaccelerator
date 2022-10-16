@@ -39,6 +39,17 @@ param avdIdentityServiceProvider string = 'ADDS'
 @description('Required, Eronll session hosts on Intune. (Defualt: false)')
 param createIntuneEnrollment bool = false
 
+@description('Optional, Identity ID to grant RBAC role to access AVD application group. (Defualt: "")')
+param avdApplicationGropupIdentitiesIds string = ''
+
+@allowed([
+    'Group'
+    'ServicePrincipal'
+    'User'
+])
+@description('Optional, Identity type to grant RBAC role to access AVD application group. (Defualt: "")')
+param avdApplicationGropupIdentityType string = 'Group'
+
 @description('Required. AD domain name.')
 param avdIdentityDomainName string = ''
 
@@ -620,6 +631,7 @@ var storageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAcc
 var createOuForStorageString = string(createOuForStorage)
 var dnsServers = (customDnsIps == 'none') ? []: (split(customDnsIps, ','))
 var varCreateAvdFslogixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: createAvdFslogixDeployment
+var varAvdApplicationGropupIdentitiesIds = !empty(avdApplicationGropupIdentitiesIds) ? (split(avdApplicationGropupIdentitiesIds, ',')): []
 // Resource tagging
 // Tag Exclude-${avdScalingPlanName} is used by scaling plans to exclude session hosts from scaling. Exmaple: Exclude-vdscal-eus2-app1-001
 var commonResourceTags = createResourceTags ? {
@@ -810,6 +822,8 @@ module avdManagementPLane 'avd-modules/avd-management-plane.bicep' = {
         avdStartVmOnConnect: avdStartVmOnConnect
         avdWorkloadSubsId: avdWorkloadSubsId
         avdIdentityServiceProvider: avdIdentityServiceProvider
+        avdApplicationGropupIdentitiesIds: varAvdApplicationGropupIdentitiesIds
+        avdApplicationGropupIdentityType: avdApplicationGropupIdentityType
         avdTags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
@@ -838,6 +852,7 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
         storageAccountContributorRoleId: storageAccountContributorRoleId
         avdVmPowerStateContributor: avdVmPowerStateContributor
         createAvdFslogixDeployment: varCreateAvdFslogixDeployment
+        avdApplicationGropupIdentitiesIds: varAvdApplicationGropupIdentitiesIds
         avdTags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
