@@ -629,7 +629,8 @@ var defaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? 'AADDC Comp
 var storageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
 var storageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -IdentityServiceProvider ${avdIdentityServiceProvider} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
 var createOuForStorageString = string(createOuForStorage)
-var dnsServers = (customDnsIps == 'none') ? []: (split(customDnsIps, ','))
+var allDnsServers = '${customDnsIps},168.63.129.16'
+var dnsServers = (customDnsIps == 'none') ? []: (split(allDnsServers, ','))
 var varCreateAvdFslogixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: createAvdFslogixDeployment
 var varAvdApplicationGropupIdentitiesIds = !empty(avdApplicationGropupIdentitiesIds) ? (split(avdApplicationGropupIdentitiesIds, ',')): []
 // Resource tagging
