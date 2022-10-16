@@ -27,16 +27,19 @@
             "value": "<<localUserPassword>>"
         },
         "avdIdentityServiceProvider": {
-            "value": "<<domainName>>"
+            "value": "<<IdentityServiceProviderType>>"
         },     
+        "createIntuneEnrollment": {
+            "value": false
+        },            
         "avdIdentityDomainName": {
-            "value": "<<domainName>>"
+            "value": ""
         },
         "avdDomainJoinUserName": {
-            "value": "<<domainJoinUserName>>"
+            "value": ""
         },
         "avdDomainJoinUserPassword": {
-            "value": "<<domainJoinUserPassword>>"
+            "value": ""
         },
         "avdOuPath": {
             "value": ""
@@ -71,11 +74,14 @@
         "createAvdVnet": {
             "value": true
         },
+        "createAvdVnetPeering": {
+            "value": true
+        },
         "existingVnetSubnetResourceId": {
             "value": ""
         },
         "existingHubVnetResourceId": {
-            "value": "<<hubVnetResourceId>>"
+            "value": ""
         },
         "avdVnetworkAddressPrefixes": {
             "value": "10.10.0.0/23"
@@ -84,7 +90,7 @@
             "value": "10.10.0.0/23"
         },
         "customDnsIps": {
-            "value": "<<customDnsIp>>"
+            "value": "none"
         },
         "avdVnetPrivateDnsZone": {
             "value": true
@@ -140,7 +146,7 @@
         "useSharedImage": {
             "value": false
         },
-        "avdImageTemplataDefinitionId": {
+        "avdImageTemplateDefinitionId": {
             "value": ""
         },
         "storageOuPath": {
