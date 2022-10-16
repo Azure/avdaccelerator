@@ -152,12 +152,12 @@ module scalingPlanRoleAssignServiceObjects '../../../carml/1.2.0/Microsoft.Autho
   dependsOn: []
 }
 
-module avdAadIdentityLoginAccess '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' =  [for avdApplicationGropupIdentitiesIds in avdApplicationGropupIdentitiesIds: if (avdIdentityServiceProvider == 'AAD' && !empty(avdApplicationGropupIdentitiesIds)) {
-  name: 'AAD-VM-Access-Role-Assign-${time}'
+module avdAadIdentityLoginAccess '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' =  [for avdApplicationGropupIdentityId in avdApplicationGropupIdentitiesIds: if (avdIdentityServiceProvider == 'AAD' && !empty(avdApplicationGropupIdentitiesIds)) {
+  name: 'AAD-VM-Role-Assign-${take('${avdApplicationGropupIdentityId}', 6)}-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
   params: {
     roleDefinitionIdOrName: 'Virtual Machine User Login' 
-    principalId: avdApplicationGropupIdentitiesIds
+    principalId: avdApplicationGropupIdentityId
   }
   dependsOn: []
 }]
