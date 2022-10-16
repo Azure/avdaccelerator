@@ -192,14 +192,15 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
             }
         }
         // Azure AD (AAD) Join.
-        extensionAadJoinConfig: createIntuneEnrollment ? {
+        extensionAadJoinConfig: {
             enabled: (avdIdentityServiceProvider == 'AAD') ? true: false
-            settings: {
+            settings: createIntuneEnrollment ? {
                 mdmId: '0000000a-0000-0000-c000-000000000000'
-            }
-            }: {
-                enabled: (avdIdentityServiceProvider == 'AAD') ? true: false
-            }
+            }: {}
+        }
+            //}: {
+            //    enabled: (avdIdentityServiceProvider == 'AAD') ? true: false
+            //}
         // Enable and Configure Microsoft Malware.
         extensionAntiMalwareConfig: {
             enabled: true
