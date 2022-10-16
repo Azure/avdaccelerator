@@ -42,6 +42,9 @@ param avdAsFaultDomainCount int
 @description('Optional. Sets the number of update domains for the availability set.')
 param avdAsUpdateDomainCount int
 
+@description('Optional. Create new virtual network.')
+param createAvdVnet bool
+
 @description('Required, The service providing domain services for Azure Virtual Desktop.')
 param avdIdentityServiceProvider string
 
@@ -176,6 +179,7 @@ module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, avdSessi
     avdSessionHostDiskType: avdSessionHostDiskType
     avdSessionHostLocation: avdSessionHostLocation
     avdSessionHostNamePrefix: avdSessionHostNamePrefix
+    createAvdVnet: createAvdVnet
     avdSessionHostsSize: avdSessionHostsSize
     avdSubnetId: avdSubnetId
     avdUseAvailabilityZones: avdUseAvailabilityZones
