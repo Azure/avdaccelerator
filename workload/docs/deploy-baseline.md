@@ -47,7 +47,7 @@
     - **Virtual network** - Enter the IP block in CIDR notation to allocate to the VNet
     - **VNet address range** - Enter IP block in CIDR notation for the new subnet
     - **VNet DNS servers** - Enter the DNS servers to be set for the VNet. These DNS server should have proper DNS resolution to your AD DS domain and internet
-  - **Azure Private DNS zone** - Select yes to select an existing private DNS zone for Azure File share and Key vault. Select No if you do not want to use private endpoints
+  - **Azure Private DNS zone** - Select yes to select an existing private DNS zone for Azure File share and Key vault. Select No if you do not want to use private endpoints (Private DNS for Azure files is required for FSLogix configuration to complete)
   - **Existing hub VNet peering**
     - **Virtual Network** - Select the hub VNet where this new VNet will be peered with
     - **VNet Gateway on hub** - Select Yes or No if you want to set the use remote gateway option for the VNet peering
