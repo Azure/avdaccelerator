@@ -76,7 +76,7 @@
                 },
                 {
                     "name": "avdIdentity",
-                    "label": "Identity provider",
+                    "label": "Identity",
                     "subLabel": {
                         "preValidation": "",
                         "postValidation": ""
@@ -166,6 +166,47 @@
                                         "style": "Info"
                                     }
                                 }
+                            ]
+                        },
+                        {
+                            "name": "avdIdentityAvdUserAccess",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "AVD users' role assignment",
+                            "elements": [
+                                {
+                                    "name": "avdIdentityAccessTypes",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "visible": true,
+                                    "label": "Identity type",
+                                    "defaultValue": "Groups",
+                                    "toolTip": "Select the type of identities that will be entered in the 'Identities ObjectIDs' field.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Groups",
+                                                "value": "Group"
+                                            },
+                                            {
+                                                "label": "Users",
+                                                "value": "User"
+                                            },
+                                            {
+                                                "label": "Service Principals",
+                                                "value": "ServicePrincipal"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "avdIdentityAccessIds",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Identities ObjectIDs",
+                                    "toolTip": "Comma separated list of identities (ObjectIDs) to be granted access to AVD published items and to create sessions on VMs and single sign-on (SSO) when using AAD as identity provider.",
+                                    "placeholder": "Example: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX,XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+                                }
+
                             ]
                         },
                         {
@@ -1929,7 +1970,9 @@
                 "opsTeamTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsOpsTeamTag, 'none')]",
                 "ownerTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsOwnerTag, 'none')]",
                 "costCenterTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsCostCenterTag, 'none')]",
-                "environmentTypeTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsEnvironmentTypeTag, 'Dev')]"
+                "environmentTypeTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsEnvironmentTypeTag, 'Dev')]",
+                "avdApplicationGropupIdentityType": "[steps('avdIdentity').avdIdentityAvdUserAccess.avdIdentityAccessTypes]",
+                "avdApplicationGropupIdentitiesIds": "[steps('avdIdentity').avdIdentityAvdUserAccess.avdIdentityAccessIds]"
             },
             "kind": "Subscription",
             "location": "[steps('basics').avdDeploymentScope.location.name]",
