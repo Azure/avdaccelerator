@@ -108,7 +108,7 @@
             "value": true
         },
         "avdFslogixFileShareQuotaSize": {
-            "value": 512
+            "value": 10
         },
         "avdDeploySessionHosts": {
             "value": true
