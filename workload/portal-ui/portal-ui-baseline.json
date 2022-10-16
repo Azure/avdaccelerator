@@ -1043,7 +1043,7 @@
                             "label": "Custom DNS Servers",
                             "defaultValue": "",
                             "placeholder": "Example: 10.10.100.4,10.10.100.5",
-                            "toolTip": "Enter multiple IPs separated by a comma, if not provided Azure provided DNS will be used.",
+                            "toolTip": "Enter multiple IPs separated by a comma, if not provided Azure provided DNS will be used. Azure default DNS server (168.63.129.16) will be added as a last resort.",
                             "constraints": {
                                 "regex": ""
                             }
