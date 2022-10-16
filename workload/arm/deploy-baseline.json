@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "3778223575238987122"
+      "templateHash": "10248029588619478503"
     }
   },
   "parameters": {
@@ -268,9 +268,9 @@
     },
     "avdFslogixFileShareQuotaSize": {
       "type": "int",
-      "defaultValue": 512,
+      "defaultValue": 10,
       "metadata": {
-        "description": "Optional. Fslogix file share size. (Default: 5TB)"
+        "description": "Optional. Fslogix file share size. (Default: ~1TB)"
       }
     },
     "avdDeploySessionHosts": {
@@ -12601,7 +12601,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "11682720547925777216"
+              "templateHash": "9301477501238452624"
             }
           },
           "parameters": {
@@ -16050,7 +16050,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "10648874788377133946"
+                      "templateHash": "15038019328835984123"
                     }
                   },
                   "parameters": {
@@ -16859,7 +16859,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.9.1.41621",
-                              "templateHash": "7206985858015871385"
+                              "templateHash": "5548632646116242518"
                             }
                           },
                           "parameters": {
@@ -16979,11 +16979,7 @@
                                           "id": "[parameters('ipConfigurationArray')[copyIndex('ipConfigurations')].subnetId]"
                                         },
                                         "loadBalancerBackendAddressPools": "[if(contains(parameters('ipConfigurationArray')[copyIndex('ipConfigurations')], 'loadBalancerBackendAddressPools'), parameters('ipConfigurationArray')[copyIndex('ipConfigurations')].loadBalancerBackendAddressPools, null())]",
-                                        "applicationSecurityGroups": [
-                                          {
-                                            "id": "[if(contains(parameters('ipConfigurationArray')[copyIndex('ipConfigurations')], 'applicationSecurityGroups'), parameters('ipConfigurationArray')[copyIndex('ipConfigurations')].applicationSecurityGroups, null())]"
-                                          }
-                                        ]
+                                        "applicationSecurityGroups": "[if(contains(parameters('ipConfigurationArray')[copyIndex('ipConfigurations')], 'applicationSecurityGroups'), createArray(createObject('id', parameters('ipConfigurationArray')[copyIndex('ipConfigurations')].applicationSecurityGroups)), null())]"
                                       }
                                     }
                                   }
@@ -20201,7 +20197,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "14538631991485938133"
+              "templateHash": "3333862920004930691"
             }
           },
           "parameters": {
@@ -21010,7 +21006,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "7384718238610896295"
+                      "templateHash": "6551672756041462198"
                     }
                   },
                   "parameters": {
@@ -21381,7 +21377,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.9.1.41621",
-                              "templateHash": "10648874788377133946"
+                              "templateHash": "15038019328835984123"
                             }
                           },
                           "parameters": {
@@ -22190,7 +22186,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.9.1.41621",
-                                      "templateHash": "7206985858015871385"
+                                      "templateHash": "5548632646116242518"
                                     }
                                   },
                                   "parameters": {
@@ -22310,11 +22306,7 @@
                                                   "id": "[parameters('ipConfigurationArray')[copyIndex('ipConfigurations')].subnetId]"
                                                 },
                                                 "loadBalancerBackendAddressPools": "[if(contains(parameters('ipConfigurationArray')[copyIndex('ipConfigurations')], 'loadBalancerBackendAddressPools'), parameters('ipConfigurationArray')[copyIndex('ipConfigurations')].loadBalancerBackendAddressPools, null())]",
-                                                "applicationSecurityGroups": [
-                                                  {
-                                                    "id": "[if(contains(parameters('ipConfigurationArray')[copyIndex('ipConfigurations')], 'applicationSecurityGroups'), parameters('ipConfigurationArray')[copyIndex('ipConfigurations')].applicationSecurityGroups, null())]"
-                                                  }
-                                                ]
+                                                "applicationSecurityGroups": "[if(contains(parameters('ipConfigurationArray')[copyIndex('ipConfigurations')], 'applicationSecurityGroups'), createArray(createObject('id', parameters('ipConfigurationArray')[copyIndex('ipConfigurations')].applicationSecurityGroups)), null())]"
                                               }
                                             }
                                           }
