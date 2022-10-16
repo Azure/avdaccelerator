@@ -9,11 +9,15 @@
   - **Region** – The desired Azure Region to be used for the deployment
   - **Deployment prefix** – A prefix of maximum 4 characters that will be appended to the names of Resource Groups and Azure resources within the Resource Groups
 - **Identity provider** blade
-  - **Identity Service Provider** - Identity service provider (AD DS or AAD DS) that already exists and will be used for Azure Virtual Desktop
+  - **Identity Service Provider** - Identity service provider (AD DS, AAD DS, AAD) that already exists and will be used for Azure Virtual Desktop
+    - Azure Active Directory (AAD)
     - Active Directory (AD DS)
     - Azure AD Domain Services (AAD DS)
-  - **Domain** - Your Active Directory domain like contoso.com
-  - **Domain join credentials** The Username and password with rights to join computers to the domain
+  - **When selecting AD DS or AAD DS:**
+    - Domain - Your Active Directory domain like contoso.com
+    - Domain join credentials The Username and password with rights to join computers to the domain
+  - **When selecting ADD:**
+    - Enroll VM with Intune: select to enroll session hosts on tenant Intune (Yes) or not (No)
   - **Session host local admin credentials** The Username and password to set for local administrator
 - **Management plane** blade
   - **Deployment location** - The Azure Region where management plane resources (workspace, host pool, application groups) will be deployed. These resources are not available in all locations but are globally replicated and they can share the same location as the session hosts or not
