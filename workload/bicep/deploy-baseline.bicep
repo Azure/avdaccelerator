@@ -127,8 +127,8 @@ param vNetworkGatewayOnHub bool = false
 @description('Optional. Deploy Fslogix setup. (Default: true)')
 param createAvdFslogixDeployment bool = true
 
-@description('Optional. Fslogix file share size. (Default: 5TB)')
-param avdFslogixFileShareQuotaSize int = 512
+@description('Optional. Fslogix file share size. (Default: ~1TB)')
+param avdFslogixFileShareQuotaSize int = 10
 
 @description('Optional. Deploy new session hosts. (Default: true)')
 param avdDeploySessionHosts bool = true
