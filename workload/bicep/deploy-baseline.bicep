@@ -703,7 +703,7 @@ module avdBaselineComputeResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
 }
 
 // Storage.
-module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD')) {
+module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (varCreateAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD')) {
     scope: subscription(avdWorkloadSubsId)
     name: 'Deploy-${avdStorageObjectsRgName}-${time}'
     params: {
@@ -837,7 +837,7 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
         avdIdentityServiceProvider: avdIdentityServiceProvider
         storageAccountContributorRoleId: storageAccountContributorRoleId
         avdVmPowerStateContributor: avdVmPowerStateContributor
-        createAvdFslogixDeployment: createAvdFslogixDeployment ? true: false
+        createAvdFslogixDeployment: varCreateAvdFslogixDeployment
         avdTags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
@@ -938,7 +938,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 }
 
 // Storage.
-module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (createAvdFslogixDeployment && avdDeploySessionHosts && (avdIdentityServiceProvider != 'AAD')) {
+module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (varCreateAvdFslogixDeployment && avdDeploySessionHosts && (avdIdentityServiceProvider != 'AAD')) {
     name: 'Deploy-AVD-Storage-AzureFiles-${time}'
     params: {
         avdIdentityServiceProvider: avdIdentityServiceProvider
@@ -969,7 +969,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         avdVnetPrivateDnsZoneFilesId: avdVnetPrivateDnsZoneFilesId
         avdWorkloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
-        fslogixManagedIdentityResourceId: createAvdFslogixDeployment ? deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId : ''
+        fslogixManagedIdentityResourceId: varCreateAvdFslogixDeployment ? deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId : ''
         avdFslogixFileShareMultichannel: (contains(fslogixStorageSku, 'Premium_LRS') || contains(fslogixStorageSku, 'Premium_ZRS')) ? true : false
         fslogixStorageSku: fslogixStorageSku
         marketPlaceGalleryWindows: marketPlaceGalleryWindows['win10_21h2']
@@ -1018,8 +1018,8 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         avdVmLocalUserName: avdVmLocalUserName
         avdWorkloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
-        createAvdFslogixDeployment: (avdIdentityServiceProvider == 'AAD') ? false: createAvdFslogixDeployment
-        fslogixManagedIdentityResourceId:  (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD'))  ? deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId : ''
+        createAvdFslogixDeployment: (avdIdentityServiceProvider != 'AAD') ? varCreateAvdFslogixDeployment: false
+        fslogixManagedIdentityResourceId:  (varCreateAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD'))  ? deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId : ''
         fsLogixScript: (avdIdentityServiceProvider != 'AAD') ? fsLogixScript: ''
         FsLogixScriptArguments: (avdIdentityServiceProvider != 'AAD') ? FsLogixScriptArguments: ''
         fslogixScriptUri: (avdIdentityServiceProvider != 'AAD') ? fslogixScriptUri: ''

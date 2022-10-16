@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "15306501512856802248"
+      "templateHash": "17056104910189986958"
     }
   },
   "parameters": {
@@ -2474,7 +2474,7 @@
       }
     },
     {
-      "condition": "[and(parameters('createAvdFslogixDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'AAD')))]",
+      "condition": "[and(variables('varCreateAvdFslogixDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'AAD')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('Deploy-{0}-{1}', variables('avdStorageObjectsRgName'), parameters('time'))]",
@@ -8037,7 +8037,7 @@
             "value": "[variables('avdVmPowerStateContributor')]"
           },
           "createAvdFslogixDeployment": {
-            "value": "[if(parameters('createAvdFslogixDeployment'), true(), false())]"
+            "value": "[variables('varCreateAvdFslogixDeployment')]"
           },
           "avdTags": {
             "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
@@ -12477,7 +12477,7 @@
       ]
     },
     {
-      "condition": "[and(and(parameters('createAvdFslogixDeployment'), parameters('avdDeploySessionHosts')), not(equals(parameters('avdIdentityServiceProvider'), 'AAD')))]",
+      "condition": "[and(and(variables('varCreateAvdFslogixDeployment'), parameters('avdDeploySessionHosts')), not(equals(parameters('avdIdentityServiceProvider'), 'AAD')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('Deploy-AVD-Storage-AzureFiles-{0}', parameters('time'))]",
@@ -12573,7 +12573,7 @@
             "value": "[parameters('encryptionAtHost')]"
           },
           "fslogixManagedIdentityResourceId": {
-            "value": "[if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))).outputs.fslogixManagedIdentityResourceId.value, '')]"
+            "value": "[if(variables('varCreateAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))).outputs.fslogixManagedIdentityResourceId.value, '')]"
           },
           "avdFslogixFileShareMultichannel": {
             "value": "[if(or(contains(parameters('fslogixStorageSku'), 'Premium_LRS'), contains(parameters('fslogixStorageSku'), 'Premium_ZRS')), true(), false())]"
@@ -20166,10 +20166,10 @@
             "value": "[parameters('encryptionAtHost')]"
           },
           "createAvdFslogixDeployment": {
-            "value": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), false(), parameters('createAvdFslogixDeployment'))]"
+            "value": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), variables('varCreateAvdFslogixDeployment'), false())]"
           },
           "fslogixManagedIdentityResourceId": {
-            "value": "[if(and(parameters('createAvdFslogixDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'AAD'))), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))).outputs.fslogixManagedIdentityResourceId.value, '')]"
+            "value": "[if(and(variables('varCreateAvdFslogixDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'AAD'))), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))).outputs.fslogixManagedIdentityResourceId.value, '')]"
           },
           "fsLogixScript": {
             "value": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), variables('fsLogixScript'), '')]"
