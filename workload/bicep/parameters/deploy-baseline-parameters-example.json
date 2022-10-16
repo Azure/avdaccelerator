@@ -32,6 +32,12 @@
         "createIntuneEnrollment": {
             "value": false
         },            
+        "avdApplicationGropupIdentitiesIds": {
+            "value": ""
+        },           
+        "avdApplicationGropupIdentityType": {
+            "value": "Group"
+        },       
         "avdIdentityDomainName": {
             "value": ""
         },
