@@ -122,7 +122,7 @@ var varCustomPolicySetDefinitions = {
 // Policy definitions.
 module avdPolicyDefinitions '../../../carml/1.2.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: {
   scope: subscription('${avdWorkloadSubsId}')
-  name: '${take(customPolicyDefinition.libDefinition.name, 46)}-${time}'
+  name: (length('${customPolicyDefinition.libDefinition.name}-${time}') > 64) ? take('${customPolicyDefinition.libDefinition.name}-${time}', 64) : '${customPolicyDefinition.libDefinition.name}-${time}'
   //name: customPolicyDefinition.libDefinition.properties.displayName
   params: {
     location: avdManagementPlaneLocation
@@ -164,7 +164,7 @@ module avdPolicySetassignment '../../../carml/1.2.0/Microsoft.Authorization/poli
   name: 'AVD-Policy-Set-Assignment-${time}'
   params: {
     location: avdManagementPlaneLocation
-    name: '${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}'
+    name: take('${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}', 64)
     description: varCustomPolicySetDefinitions.libSetDefinition.properties.description
     displayName: varCustomPolicySetDefinitions.libSetDefinition.properties.displayName
     metadata: varCustomPolicySetDefinitions.libSetDefinition.properties.metadata
