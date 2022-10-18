@@ -1971,8 +1971,8 @@
                 "ownerTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsOwnerTag, 'none')]",
                 "costCenterTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsCostCenterTag, 'none')]",
                 "environmentTypeTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsEnvironmentTypeTag, 'Dev')]",
-                "avdApplicationGropupIdentityType": "[steps('avdIdentity').avdIdentityAvdUserAccess.avdIdentityAccessTypes]",
-                "avdApplicationGropupIdentitiesIds": "[steps('avdIdentity').avdIdentityAvdUserAccess.avdIdentityAccessIds]"
+                "avdApplicationGroupIdentityType": "[steps('avdIdentity').avdIdentityAvdUserAccess.avdIdentityAccessTypes]",
+                "avdApplicationGroupIdentitiesIds": "[steps('avdIdentity').avdIdentityAvdUserAccess.avdIdentityAccessIds]"
             },
             "kind": "Subscription",
             "location": "[steps('basics').avdDeploymentScope.location.name]",
