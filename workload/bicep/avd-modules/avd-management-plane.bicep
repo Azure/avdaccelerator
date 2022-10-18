@@ -16,10 +16,10 @@ param avdTimeZone string
 param avdIdentityServiceProvider string
 
 @description('Required, Identity ID to grant RBAC role to access AVD application group.')
-param avdApplicationGropupIdentitiesIds array
+param avdApplicationGroupIdentitiesIds array
 
 @description('Optional, Identity type to grant RBAC role to access AVD application group. (Defualt: "")')
-param avdApplicationGropupIdentityType string
+param avdApplicationGroupIdentityType string
 
 @description('AVD Resource Group Name for the service objects.')
 param avdServiceObjectsRgName string
@@ -139,11 +139,11 @@ module avdApplicationGroups '../../../carml/1.2.0/Microsoft.DesktopVirtualizatio
     applicationGroupType: applicationGroup.applicationGroupType
     hostpoolName: avdHostPool.outputs.name
     tags: avdTags
-    roleAssignments: !empty(avdApplicationGropupIdentitiesIds) ? [
+    roleAssignments: !empty(avdApplicationGroupIdentitiesIds) ? [
       {
       roleDefinitionIdOrName: 'Desktop Virtualization User'
-      principalIds: avdApplicationGropupIdentitiesIds
-      principalType: avdApplicationGropupIdentityType
+      principalIds: avdApplicationGroupIdentitiesIds
+      principalType: avdApplicationGroupIdentityType
       }
     ]: []     
   }

@@ -34,7 +34,7 @@ param avdDeploySessionHosts bool
 param avdIdentityServiceProvider string
 
 @description('Required, Identity ID to grant RBAC role to access AVD application group.')
-param avdApplicationGropupIdentitiesIds array
+param avdApplicationGroupIdentitiesIds array
 
 @description('Deploy scaling plan.')
 param avdDeployScalingPlan bool
@@ -152,7 +152,7 @@ module scalingPlanRoleAssignServiceObjects '../../../carml/1.2.0/Microsoft.Autho
   dependsOn: []
 }
 
-module avdAadIdentityLoginAccess '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' =  [for avdApplicationGropupIdentityId in avdApplicationGropupIdentitiesIds: if (avdIdentityServiceProvider == 'AAD' && !empty(avdApplicationGropupIdentitiesIds)) {
+module avdAadIdentityLoginAccess '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' =  [for avdApplicationGropupIdentityId in avdApplicationGroupIdentitiesIds: if (avdIdentityServiceProvider == 'AAD' && !empty(avdApplicationGroupIdentitiesIds)) {
   name: 'AAD-VM-Role-Assign-${take('${avdApplicationGropupIdentityId}', 6)}-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
   params: {

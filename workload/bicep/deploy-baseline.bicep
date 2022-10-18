@@ -40,7 +40,7 @@ param avdIdentityServiceProvider string = 'ADDS'
 param createIntuneEnrollment bool = false
 
 @description('Optional, Identity ID to grant RBAC role to access AVD application group. (Defualt: "")')
-param avdApplicationGropupIdentitiesIds string = ''
+param avdApplicationGroupIdentitiesIds string = ''
 
 @allowed([
     'Group'
@@ -48,7 +48,7 @@ param avdApplicationGropupIdentitiesIds string = ''
     'User'
 ])
 @description('Optional, Identity type to grant RBAC role to access AVD application group. (Defualt: "")')
-param avdApplicationGropupIdentityType string = 'Group'
+param avdApplicationGroupIdentityType string = 'Group'
 
 @description('Required. AD domain name.')
 param avdIdentityDomainName string = ''
@@ -632,7 +632,7 @@ var createOuForStorageString = string(createOuForStorage)
 var allDnsServers = '${customDnsIps},168.63.129.16'
 var dnsServers = (customDnsIps == 'none') ? []: (split(allDnsServers, ','))
 var varCreateAvdFslogixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: createAvdFslogixDeployment
-var varAvdApplicationGropupIdentitiesIds = !empty(avdApplicationGropupIdentitiesIds) ? (split(avdApplicationGropupIdentitiesIds, ',')): []
+var varAvdApplicationGroupIdentitiesIds = !empty(avdApplicationGroupIdentitiesIds) ? (split(avdApplicationGroupIdentitiesIds, ',')): []
 // Resource tagging
 // Tag Exclude-${avdScalingPlanName} is used by scaling plans to exclude session hosts from scaling. Exmaple: Exclude-vdscal-eus2-app1-001
 var commonResourceTags = createResourceTags ? {
@@ -823,8 +823,8 @@ module avdManagementPLane 'avd-modules/avd-management-plane.bicep' = {
         avdStartVmOnConnect: avdStartVmOnConnect
         avdWorkloadSubsId: avdWorkloadSubsId
         avdIdentityServiceProvider: avdIdentityServiceProvider
-        avdApplicationGropupIdentitiesIds: varAvdApplicationGropupIdentitiesIds
-        avdApplicationGropupIdentityType: avdApplicationGropupIdentityType
+        avdApplicationGroupIdentitiesIds: varAvdApplicationGroupIdentitiesIds
+        avdApplicationGroupIdentityType: avdApplicationGroupIdentityType
         avdTags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
@@ -853,7 +853,7 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
         storageAccountContributorRoleId: storageAccountContributorRoleId
         avdVmPowerStateContributor: avdVmPowerStateContributor
         createAvdFslogixDeployment: varCreateAvdFslogixDeployment
-        avdApplicationGropupIdentitiesIds: varAvdApplicationGropupIdentitiesIds
+        avdApplicationGroupIdentitiesIds: varAvdApplicationGroupIdentitiesIds
         avdTags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
