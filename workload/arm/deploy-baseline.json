@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "10095892994835398542"
+      "templateHash": "13570512134705813307"
     }
   },
   "parameters": {
@@ -79,14 +79,14 @@
         "description": "Required, Eronll session hosts on Intune. (Defualt: false)"
       }
     },
-    "avdApplicationGropupIdentitiesIds": {
+    "avdApplicationGroupIdentitiesIds": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
         "description": "Optional, Identity ID to grant RBAC role to access AVD application group. (Defualt: \"\")"
       }
     },
-    "avdApplicationGropupIdentityType": {
+    "avdApplicationGroupIdentityType": {
       "type": "string",
       "defaultValue": "Group",
       "metadata": {
@@ -965,7 +965,7 @@
     "allDnsServers": "[format('{0},168.63.129.16', parameters('customDnsIps'))]",
     "dnsServers": "[if(equals(parameters('customDnsIps'), 'none'), createArray(), split(variables('allDnsServers'), ','))]",
     "varCreateAvdFslogixDeployment": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), false(), parameters('createAvdFslogixDeployment'))]",
-    "varAvdApplicationGropupIdentitiesIds": "[if(not(empty(parameters('avdApplicationGropupIdentitiesIds'))), split(parameters('avdApplicationGropupIdentitiesIds'), ','), createArray())]",
+    "varAvdApplicationGroupIdentitiesIds": "[if(not(empty(parameters('avdApplicationGroupIdentitiesIds'))), split(parameters('avdApplicationGroupIdentitiesIds'), ','), createArray())]",
     "commonResourceTags": "[if(parameters('createResourceTags'), createObject('WorkloadName', parameters('workloadNameTag'), 'WorkloadType', parameters('workloadTypeTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('workloadCriticalityTag'), 'Custom'), parameters('workloadCriticalityCustomValueTag'), parameters('workloadCriticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'ServiceClass', parameters('workloadSlaTag'), 'OpsTeam', parameters('opsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag'), 'Environment', parameters('environmentTypeTag')), createObject())]",
     "allComputeStorageTags": {
       "DomainName": "[parameters('avdIdentityDomainName')]",
@@ -5808,11 +5808,11 @@
           "avdIdentityServiceProvider": {
             "value": "[parameters('avdIdentityServiceProvider')]"
           },
-          "avdApplicationGropupIdentitiesIds": {
-            "value": "[variables('varAvdApplicationGropupIdentitiesIds')]"
+          "avdApplicationGroupIdentitiesIds": {
+            "value": "[variables('varAvdApplicationGroupIdentitiesIds')]"
           },
-          "avdApplicationGropupIdentityType": {
-            "value": "[parameters('avdApplicationGropupIdentityType')]"
+          "avdApplicationGroupIdentityType": {
+            "value": "[parameters('avdApplicationGroupIdentityType')]"
           },
           "avdTags": {
             "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
@@ -5825,7 +5825,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "15221164993902242859"
+              "templateHash": "15859344521229330439"
             }
           },
           "parameters": {
@@ -5853,13 +5853,13 @@
                 "description": "Required, The service providing domain services for Azure Virtual Desktop."
               }
             },
-            "avdApplicationGropupIdentitiesIds": {
+            "avdApplicationGroupIdentitiesIds": {
               "type": "array",
               "metadata": {
                 "description": "Required, Identity ID to grant RBAC role to access AVD application group."
               }
             },
-            "avdApplicationGropupIdentityType": {
+            "avdApplicationGroupIdentityType": {
               "type": "string",
               "metadata": {
                 "description": "Optional, Identity type to grant RBAC role to access AVD application group. (Defualt: \"\")"
@@ -6579,7 +6579,7 @@
                     "value": "[parameters('avdTags')]"
                   },
                   "roleAssignments": {
-                    "value": "[if(not(empty(parameters('avdApplicationGropupIdentitiesIds'))), createArray(createObject('roleDefinitionIdOrName', 'Desktop Virtualization User', 'principalIds', parameters('avdApplicationGropupIdentitiesIds'), 'principalType', parameters('avdApplicationGropupIdentityType'))), createArray())]"
+                    "value": "[if(not(empty(parameters('avdApplicationGroupIdentitiesIds'))), createArray(createObject('roleDefinitionIdOrName', 'Desktop Virtualization User', 'principalIds', parameters('avdApplicationGroupIdentitiesIds'), 'principalType', parameters('avdApplicationGroupIdentityType'))), createArray())]"
                   }
                 },
                 "template": {
@@ -8081,8 +8081,8 @@
           "createAvdFslogixDeployment": {
             "value": "[variables('varCreateAvdFslogixDeployment')]"
           },
-          "avdApplicationGropupIdentitiesIds": {
-            "value": "[variables('varAvdApplicationGropupIdentitiesIds')]"
+          "avdApplicationGroupIdentitiesIds": {
+            "value": "[variables('varAvdApplicationGroupIdentitiesIds')]"
           },
           "avdTags": {
             "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
@@ -8095,7 +8095,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "16678408841682865527"
+              "templateHash": "14934521531926449483"
             }
           },
           "parameters": {
@@ -8159,7 +8159,7 @@
                 "description": "Required, The service providing domain services for Azure Virtual Desktop."
               }
             },
-            "avdApplicationGropupIdentitiesIds": {
+            "avdApplicationGroupIdentitiesIds": {
               "type": "array",
               "metadata": {
                 "description": "Required, Identity ID to grant RBAC role to access AVD application group."
@@ -10990,14 +10990,14 @@
               }
             },
             {
-              "condition": "[and(equals(parameters('avdIdentityServiceProvider'), 'AAD'), not(empty(parameters('avdApplicationGropupIdentitiesIds'))))]",
+              "condition": "[and(equals(parameters('avdIdentityServiceProvider'), 'AAD'), not(empty(parameters('avdApplicationGroupIdentitiesIds'))))]",
               "copy": {
                 "name": "avdAadIdentityLoginAccess",
-                "count": "[length(parameters('avdApplicationGropupIdentitiesIds'))]"
+                "count": "[length(parameters('avdApplicationGroupIdentitiesIds'))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
-              "name": "[format('AAD-VM-Role-Assign-{0}-{1}', take(format('{0}', parameters('avdApplicationGropupIdentitiesIds')[copyIndex()]), 6), parameters('time'))]",
+              "name": "[format('AAD-VM-Role-Assign-{0}-{1}', take(format('{0}', parameters('avdApplicationGroupIdentitiesIds')[copyIndex()]), 6), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('avdWorkloadSubsId'))]",
               "resourceGroup": "[format('{0}', parameters('avdComputeObjectsRgName'))]",
               "properties": {
@@ -11010,7 +11010,7 @@
                     "value": "Virtual Machine User Login"
                   },
                   "principalId": {
-                    "value": "[parameters('avdApplicationGropupIdentitiesIds')[copyIndex()]]"
+                    "value": "[parameters('avdApplicationGroupIdentitiesIds')[copyIndex()]]"
                   }
                 },
                 "template": {
