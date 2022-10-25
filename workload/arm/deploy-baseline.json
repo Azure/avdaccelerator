@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.9.1.41621",
-      "templateHash": "17293176764256262328"
+      "version": "0.11.1.770",
+      "templateHash": "13274720040538875757"
     }
   },
   "parameters": {
@@ -68,8 +68,16 @@
       },
       "allowedValues": [
         "ADDS",
-        "AADDS"
+        "AADDS",
+        "AAD"
       ]
+    },
+    "createIntuneEnrollment": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Required, Eronll session hosts on Intune. (Defualt: false)"
+      }
     },
     "avdIdentityDomainName": {
       "type": "string",
@@ -179,6 +187,13 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Create new virtual network. (Default: true)"
+      }
+    },
+    "createAvdVnetPeering": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Create virtual network peering to hub. (Default: false)"
       }
     },
     "existingVnetSubnetResourceId": {
@@ -350,7 +365,7 @@
         "description": "Optional. Set to deploy image from Azure Compute Gallery. (Default: false)"
       }
     },
-    "avdImageTemplataDefinitionId": {
+    "avdImageTemplateDefinitionId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -643,7 +658,7 @@
       "allowedValues": [
         "Prod",
         "Dev",
-        "Staging "
+        "Staging "
       ]
     },
     "time": {
@@ -898,6 +913,18 @@
         "offer": "Windows-11",
         "sku": "win11-21h2-avd",
         "version": "latest"
+      },
+      "winServer_2022_Datacenter": {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2022-datacenter",
+        "version": "latest"
+      },
+      "winServer_2019_Datacenter": {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2019-datacenter",
+        "version": "latest"
       }
     },
     "baseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
@@ -917,6 +944,7 @@
     "storageCustomOuPath": "[if(not(empty(parameters('storageOuPath'))), 'true', 'false')]",
     "createOuForStorageString": "[string(parameters('createOuForStorage'))]",
     "dnsServers": "[if(equals(parameters('customDnsIps'), 'none'), createArray(), split(parameters('customDnsIps'), ','))]",
+    "varCreateAvdFslogixDeployment": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), false(), parameters('createAvdFslogixDeployment'))]",
     "commonResourceTags": "[if(parameters('createResourceTags'), createObject('WorkloadName', parameters('workloadNameTag'), 'WorkloadType', parameters('workloadTypeTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('workloadCriticalityTag'), 'Custom'), parameters('workloadCriticalityCustomValueTag'), parameters('workloadCriticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'ServiceClass', parameters('workloadSlaTag'), 'OpsTeam', parameters('opsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag'), 'Environment', parameters('environmentTypeTag')), createObject())]",
     "allComputeStorageTags": {
       "DomainName": "[parameters('avdIdentityDomainName')]",
@@ -973,8 +1001,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "4181870745959760880"
+              "version": "0.11.1.770",
+              "templateHash": "1015847305115212878"
             }
           },
           "parameters": {
@@ -1074,8 +1102,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "10450840011999083691"
+                      "version": "0.11.1.770",
+                      "templateHash": "18423331498261092198"
                     }
                   },
                   "parameters": {
@@ -1177,8 +1205,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "8881719082751791541"
+                      "version": "0.11.1.770",
+                      "templateHash": "5202743024849039800"
                     }
                   },
                   "parameters": {
@@ -1474,8 +1502,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "4181870745959760880"
+              "version": "0.11.1.770",
+              "templateHash": "1015847305115212878"
             }
           },
           "parameters": {
@@ -1575,8 +1603,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "10450840011999083691"
+                      "version": "0.11.1.770",
+                      "templateHash": "18423331498261092198"
                     }
                   },
                   "parameters": {
@@ -1678,8 +1706,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "8881719082751791541"
+                      "version": "0.11.1.770",
+                      "templateHash": "5202743024849039800"
                     }
                   },
                   "parameters": {
@@ -1975,8 +2003,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "4181870745959760880"
+              "version": "0.11.1.770",
+              "templateHash": "1015847305115212878"
             }
           },
           "parameters": {
@@ -2076,8 +2104,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "10450840011999083691"
+                      "version": "0.11.1.770",
+                      "templateHash": "18423331498261092198"
                     }
                   },
                   "parameters": {
@@ -2179,8 +2207,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "8881719082751791541"
+                      "version": "0.11.1.770",
+                      "templateHash": "5202743024849039800"
                     }
                   },
                   "parameters": {
@@ -2446,7 +2474,7 @@
       }
     },
     {
-      "condition": "[parameters('createAvdFslogixDeployment')]",
+      "condition": "[and(parameters('createAvdFslogixDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'AAD')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('Deploy-{0}-{1}', variables('avdStorageObjectsRgName'), parameters('time'))]",
@@ -2477,8 +2505,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "4181870745959760880"
+              "version": "0.11.1.770",
+              "templateHash": "1015847305115212878"
             }
           },
           "parameters": {
@@ -2578,8 +2606,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "10450840011999083691"
+                      "version": "0.11.1.770",
+                      "templateHash": "18423331498261092198"
                     }
                   },
                   "parameters": {
@@ -2681,8 +2709,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "8881719082751791541"
+                      "version": "0.11.1.770",
+                      "templateHash": "5202743024849039800"
                     }
                   },
                   "parameters": {
@@ -2981,7 +3009,7 @@
             "value": "[variables('avdVnetworkName')]"
           },
           "avdVnetworkPeeringName": {
-            "value": "[variables('avdVnetworkPeeringName')]"
+            "value": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), '', variables('avdVnetworkPeeringName'))]"
           },
           "avdVnetworkSubnetName": {
             "value": "[variables('avdVnetworkSubnetName')]"
@@ -2989,11 +3017,14 @@
           "createAvdVnet": {
             "value": "[parameters('createAvdVnet')]"
           },
+          "createAvdVnetPeering": {
+            "value": "[parameters('createAvdVnetPeering')]"
+          },
           "vNetworkGatewayOnHub": {
             "value": "[parameters('vNetworkGatewayOnHub')]"
           },
           "existingHubVnetResourceId": {
-            "value": "[parameters('existingHubVnetResourceId')]"
+            "value": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), '', parameters('existingHubVnetResourceId'))]"
           },
           "avdSessionHostLocation": {
             "value": "[parameters('avdSessionHostLocation')]"
@@ -3017,8 +3048,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "4291100200792982158"
+              "version": "0.11.1.770",
+              "templateHash": "3055241213183333945"
             }
           },
           "parameters": {
@@ -3086,6 +3117,12 @@
               "type": "string",
               "metadata": {
                 "description": "VNet peering name for AVD VNet to vHub."
+              }
+            },
+            "createAvdVnetPeering": {
+              "type": "bool",
+              "metadata": {
+                "description": "Optional. Create virtual network peering to hub."
               }
             },
             "avdVnetworkAddressPrefixes": {
@@ -3163,8 +3200,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "17950800406367354248"
+                      "version": "0.11.1.770",
+                      "templateHash": "1740895575586028024"
                     }
                   },
                   "parameters": {
@@ -3452,8 +3489,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "13205445083093971510"
+                              "version": "0.11.1.770",
+                              "templateHash": "5581620709608136845"
                             }
                           },
                           "parameters": {
@@ -3699,8 +3736,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "8040315301834522857"
+                              "version": "0.11.1.770",
+                              "templateHash": "8812685201203727264"
                             }
                           },
                           "parameters": {
@@ -3847,8 +3884,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "16981430557198923761"
+                      "version": "0.11.1.770",
+                      "templateHash": "14080845048854047058"
                     }
                   },
                   "parameters": {
@@ -3972,8 +4009,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "13459690677403299765"
+                              "version": "0.11.1.770",
+                              "templateHash": "861429849800992992"
                             }
                           },
                           "parameters": {
@@ -4122,8 +4159,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "137856698610724308"
+                      "version": "0.11.1.770",
+                      "templateHash": "2753852685281752461"
                     }
                   },
                   "parameters": {
@@ -4264,8 +4301,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "13801530740257393182"
+                              "version": "0.11.1.770",
+                              "templateHash": "13572825877571933697"
                             }
                           },
                           "parameters": {
@@ -4407,24 +4444,7 @@
                     "value": "[parameters('dnsServers')]"
                   },
                   "virtualNetworkPeerings": {
-                    "value": [
-                      {
-                        "remoteVirtualNetworkId": "[parameters('existingHubVnetResourceId')]",
-                        "name": "[parameters('avdVnetworkPeeringName')]",
-                        "allowForwardedTraffic": true,
-                        "allowGatewayTransit": false,
-                        "allowVirtualNetworkAccess": true,
-                        "doNotVerifyRemoteGateways": true,
-                        "useRemoteGateways": "[if(parameters('vNetworkGatewayOnHub'), true(), false())]",
-                        "remotePeeringEnabled": true,
-                        "remotePeeringName": "[parameters('avdVnetworkPeeringName')]",
-                        "remotePeeringAllowForwardedTraffic": true,
-                        "remotePeeringAllowGatewayTransit": "[if(parameters('vNetworkGatewayOnHub'), true(), false())]",
-                        "remotePeeringAllowVirtualNetworkAccess": true,
-                        "remotePeeringDoNotVerifyRemoteGateways": true,
-                        "remotePeeringUseRemoteGateways": false
-                      }
-                    ]
+                    "value": "[if(parameters('createAvdVnetPeering'), createArray(createObject('remoteVirtualNetworkId', parameters('existingHubVnetResourceId'), 'name', parameters('avdVnetworkPeeringName'), 'allowForwardedTraffic', true(), 'allowGatewayTransit', false(), 'allowVirtualNetworkAccess', true(), 'doNotVerifyRemoteGateways', true(), 'useRemoteGateways', if(parameters('vNetworkGatewayOnHub'), true(), false()), 'remotePeeringEnabled', true(), 'remotePeeringName', parameters('avdVnetworkPeeringName'), 'remotePeeringAllowForwardedTraffic', true(), 'remotePeeringAllowGatewayTransit', if(parameters('vNetworkGatewayOnHub'), true(), false()), 'remotePeeringAllowVirtualNetworkAccess', true(), 'remotePeeringDoNotVerifyRemoteGateways', true(), 'remotePeeringUseRemoteGateways', false())), createArray())]"
                   },
                   "subnets": {
                     "value": [
@@ -4448,8 +4468,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "17596686701741977692"
+                      "version": "0.11.1.770",
+                      "templateHash": "5088655466232702076"
                     }
                   },
                   "parameters": {
@@ -4791,8 +4811,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "17329225503948926205"
+                              "version": "0.11.1.770",
+                              "templateHash": "15914155510688731430"
                             }
                           },
                           "parameters": {
@@ -4986,8 +5006,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "11514489850855505860"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "18270784235710220826"
                                     }
                                   },
                                   "parameters": {
@@ -5182,8 +5202,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "8974602975581983453"
+                              "version": "0.11.1.770",
+                              "templateHash": "12162747783900122640"
                             }
                           },
                           "parameters": {
@@ -5360,8 +5380,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "8974602975581983453"
+                              "version": "0.11.1.770",
+                              "templateHash": "12162747783900122640"
                             }
                           },
                           "parameters": {
@@ -5523,8 +5543,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "176487837949779385"
+                              "version": "0.11.1.770",
+                              "templateHash": "1954240095100466759"
                             }
                           },
                           "parameters": {
@@ -5777,8 +5797,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "97466777917177362"
+              "version": "0.11.1.770",
+              "templateHash": "3478317250424953800"
             }
           },
           "parameters": {
@@ -5943,7 +5963,7 @@
                 "applicationGroupType": "RemoteApp"
               }
             ],
-            "avdHostPoolRdpPropertiesDomainServiceCheck": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), format('{0}targetisaadjoined:i:1', parameters('avdHostPoolRdpProperties')), parameters('avdHostPoolRdpProperties'))]",
+            "avdHostPoolRdpPropertiesDomainServiceCheck": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), format('{0};targetisaadjoined:i:1;enablerdsaadauth:i:1', parameters('avdHostPoolRdpProperties')), parameters('avdHostPoolRdpProperties'))]",
             "finalApplicationGroups": "[if(parameters('avdDeployRappGroup'), concat(variables('desktopApplicaitonGroups'), variables('applicationApplicationGroups')), variables('desktopApplicaitonGroups'))]"
           },
           "resources": [
@@ -5993,8 +6013,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "5350828962037622760"
+                      "version": "0.11.1.770",
+                      "templateHash": "15658807883165476583"
                     }
                   },
                   "parameters": {
@@ -6354,8 +6374,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "6369133284048070473"
+                              "version": "0.11.1.770",
+                              "templateHash": "6759677310619692218"
                             }
                           },
                           "parameters": {
@@ -6526,8 +6546,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "377465382670713583"
+                      "version": "0.11.1.770",
+                      "templateHash": "12105580699445696354"
                     }
                   },
                   "parameters": {
@@ -6805,8 +6825,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "1460529142628982142"
+                              "version": "0.11.1.770",
+                              "templateHash": "7537344579763953023"
                             }
                           },
                           "parameters": {
@@ -6985,8 +7005,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "13356468669279706816"
+                              "version": "0.11.1.770",
+                              "templateHash": "8452656218682014305"
                             }
                           },
                           "parameters": {
@@ -7141,8 +7161,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "12296574318361851925"
+                      "version": "0.11.1.770",
+                      "templateHash": "4363410405059145991"
                     }
                   },
                   "parameters": {
@@ -7386,8 +7406,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "6069447818572735339"
+                              "version": "0.11.1.770",
+                              "templateHash": "10969237888020472483"
                             }
                           },
                           "parameters": {
@@ -7558,8 +7578,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "2859562367887583845"
+                      "version": "0.11.1.770",
+                      "templateHash": "9144483008465075694"
                     }
                   },
                   "parameters": {
@@ -7818,8 +7838,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "6369133284048070473"
+                              "version": "0.11.1.770",
+                              "templateHash": "6759677310619692218"
                             }
                           },
                           "parameters": {
@@ -8007,6 +8027,9 @@
           "avdManagementPlaneLocation": {
             "value": "[parameters('avdManagementPlaneLocation')]"
           },
+          "avdIdentityServiceProvider": {
+            "value": "[parameters('avdIdentityServiceProvider')]"
+          },
           "storageAccountContributorRoleId": {
             "value": "[variables('storageAccountContributorRoleId')]"
           },
@@ -8026,8 +8049,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "16055027548936912508"
+              "version": "0.11.1.770",
+              "templateHash": "17403245784124818023"
             }
           },
           "parameters": {
@@ -8085,6 +8108,12 @@
                 "description": "Deploy new session hosts."
               }
             },
+            "avdIdentityServiceProvider": {
+              "type": "string",
+              "metadata": {
+                "description": "Required, The service providing domain services for Azure Virtual Desktop."
+              }
+            },
             "avdDeployScalingPlan": {
               "type": "bool",
               "metadata": {
@@ -8137,7 +8166,7 @@
           },
           "resources": [
             {
-              "condition": "[parameters('createAvdFslogixDeployment')]",
+              "condition": "[and(parameters('createAvdFslogixDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'AAD')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
               "name": "[format('fslogix-Managed-Identity-{0}', parameters('time'))]",
@@ -8165,8 +8194,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "4094344250108949026"
+                      "version": "0.11.1.770",
+                      "templateHash": "1821537595759503017"
                     }
                   },
                   "parameters": {
@@ -8290,8 +8319,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "8198101120071371118"
+                              "version": "0.11.1.770",
+                              "templateHash": "18434537513311871476"
                             }
                           },
                           "parameters": {
@@ -8463,8 +8492,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "15922035151624192733"
+                      "version": "0.11.1.770",
+                      "templateHash": "13640054824393863469"
                     }
                   },
                   "parameters": {
@@ -8626,8 +8655,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "9859371193324748216"
+                      "version": "0.11.1.770",
+                      "templateHash": "14700347637187874945"
                     }
                   },
                   "parameters": {
@@ -9064,7 +9093,7 @@
               ]
             },
             {
-              "condition": "[parameters('createAvdFslogixDeployment')]",
+              "condition": "[and(parameters('createAvdFslogixDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'AAD')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
               "name": "[format('fslogix-UserAIdentity-RoleAssign-{0}', parameters('time'))]",
@@ -9089,8 +9118,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "9859371193324748216"
+                      "version": "0.11.1.770",
+                      "templateHash": "14700347637187874945"
                     }
                   },
                   "parameters": {
@@ -9527,7 +9556,7 @@
               ]
             },
             {
-              "condition": "[parameters('createAvdFslogixDeployment')]",
+              "condition": "[and(parameters('createAvdFslogixDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'AAD')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
               "name": "[format('fslogix-UserAIdentity-ReaderRoleAssign-{0}', parameters('time'))]",
@@ -9552,8 +9581,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "9859371193324748216"
+                      "version": "0.11.1.770",
+                      "templateHash": "14700347637187874945"
                     }
                   },
                   "parameters": {
@@ -10015,8 +10044,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "9859371193324748216"
+                      "version": "0.11.1.770",
+                      "templateHash": "14700347637187874945"
                     }
                   },
                   "parameters": {
@@ -10475,8 +10504,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "9859371193324748216"
+                      "version": "0.11.1.770",
+                      "templateHash": "14700347637187874945"
                     }
                   },
                   "parameters": {
@@ -10913,11 +10942,11 @@
           "outputs": {
             "fslogixManagedIdentityResourceId": {
               "type": "string",
-              "value": "[if(parameters('createAvdFslogixDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value, '')]"
+              "value": "[if(and(parameters('createAvdFslogixDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'AAD'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value, '')]"
             },
             "fslogixManagedIdentityClientId": {
               "type": "string",
-              "value": "[if(parameters('createAvdFslogixDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.clientId.value, '')]"
+              "value": "[if(and(parameters('createAvdFslogixDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'AAD'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time'))), '2020-10-01').outputs.clientId.value, '')]"
             }
           }
         }
@@ -10968,28 +10997,7 @@
           },
           "secrets": {
             "value": {
-              "secureList": [
-                {
-                  "name": "avdVmLocalUserPassword",
-                  "value": "[parameters('avdVmLocalUserPassword')]",
-                  "contentType": "Session host local user credentials"
-                },
-                {
-                  "name": "avdVmLocalUserName",
-                  "value": "[parameters('avdVmLocalUserName')]",
-                  "contentType": "Session host local user credentials"
-                },
-                {
-                  "name": "avdDomainJoinUserName",
-                  "value": "[parameters('avdDomainJoinUserName')]",
-                  "contentType": "Domain join credentials"
-                },
-                {
-                  "name": "avdDomainJoinUserPassword",
-                  "value": "[parameters('avdDomainJoinUserPassword')]",
-                  "contentType": "Domain join credentials"
-                }
-              ]
+              "secureList": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createArray(createObject('name', 'avdVmLocalUserPassword', 'value', parameters('avdVmLocalUserPassword'), 'contentType', 'Session host local user credentials'), createObject('name', 'avdVmLocalUserName', 'value', parameters('avdVmLocalUserName'), 'contentType', 'Session host local user credentials'), createObject('name', 'avdDomainJoinUserName', 'value', parameters('avdDomainJoinUserName'), 'contentType', 'Domain join credentials'), createObject('name', 'avdDomainJoinUserPassword', 'value', parameters('avdDomainJoinUserPassword'), 'contentType', 'Domain join credentials')), createArray(createObject('name', 'avdVmLocalUserPassword', 'value', parameters('avdVmLocalUserPassword'), 'contentType', 'Session host local user credentials'), createObject('name', 'avdVmLocalUserName', 'value', parameters('avdVmLocalUserName'), 'contentType', 'Session host local user credentials'), createObject('name', 'avdDomainJoinUserName', 'value', 'AAD-Joined-Deployment-No-Domain-Credentials', 'contentType', 'Domain join credentials'), createObject('name', 'avdDomainJoinUserPassword', 'value', 'AAD-Joined-Deployment-No-Domain-Credentials', 'contentType', 'Domain join credentials')))]"
             }
           },
           "tags": {
@@ -11002,8 +11010,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "16126351869339624003"
+              "version": "0.11.1.770",
+              "templateHash": "17569109307074421679"
             }
           },
           "parameters": {
@@ -11407,8 +11415,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "8692609419351909305"
+                      "version": "0.11.1.770",
+                      "templateHash": "4899111293937979946"
                     }
                   },
                   "parameters": {
@@ -11558,8 +11566,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "12576912944868150655"
+                      "version": "0.11.1.770",
+                      "templateHash": "12378592700699910959"
                     }
                   },
                   "parameters": {
@@ -11697,8 +11705,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "16193189188992493393"
+                              "version": "0.11.1.770",
+                              "templateHash": "7451591722212551997"
                             }
                           },
                           "parameters": {
@@ -11878,8 +11886,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "8556618150517826917"
+                      "version": "0.11.1.770",
+                      "templateHash": "7902639627280414214"
                     }
                   },
                   "parameters": {
@@ -12055,8 +12063,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "7121495550389757335"
+                              "version": "0.11.1.770",
+                              "templateHash": "9361102511653688199"
                             }
                           },
                           "parameters": {
@@ -12213,8 +12221,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "13441151916302228592"
+                      "version": "0.11.1.770",
+                      "templateHash": "10889609638899872615"
                     }
                   },
                   "parameters": {
@@ -12334,8 +12342,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "15122157418220846743"
+                      "version": "0.11.1.770",
+                      "templateHash": "12345979765170983751"
                     }
                   },
                   "parameters": {
@@ -12469,7 +12477,7 @@
       ]
     },
     {
-      "condition": "[and(and(parameters('createAvdFslogixDeployment'), parameters('avdDeploySessionHosts')), or(equals(parameters('avdIdentityServiceProvider'), 'AADDS'), equals(parameters('avdIdentityServiceProvider'), 'ADDS')))]",
+      "condition": "[and(and(parameters('createAvdFslogixDeployment'), parameters('avdDeploySessionHosts')), not(equals(parameters('avdIdentityServiceProvider'), 'AAD')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('Deploy-AVD-Storage-AzureFiles-{0}', parameters('time'))]",
@@ -12525,8 +12533,8 @@
           "avdIdentityDomainName": {
             "value": "[parameters('avdIdentityDomainName')]"
           },
-          "avdImageTemplataDefinitionId": {
-            "value": "[parameters('avdImageTemplataDefinitionId')]"
+          "avdImageTemplateDefinitionId": {
+            "value": "[parameters('avdImageTemplateDefinitionId')]"
           },
           "sessionHostOuPath": {
             "value": "[parameters('avdOuPath')]"
@@ -12595,8 +12603,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "11903095974118404614"
+              "version": "0.11.1.770",
+              "templateHash": "6823669741188469545"
             }
           },
           "parameters": {
@@ -12690,7 +12698,7 @@
                 "description": "Set to deploy image from Azure. Compute Gallery"
               }
             },
-            "avdImageTemplataDefinitionId": {
+            "avdImageTemplateDefinitionId": {
               "type": "string",
               "metadata": {
                 "description": "Source custom image ID."
@@ -12890,8 +12898,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "5271197936158309215"
+                      "version": "0.11.1.770",
+                      "templateHash": "13115713991382865402"
                     }
                   },
                   "parameters": {
@@ -13306,8 +13314,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "579156534319241471"
+                              "version": "0.11.1.770",
+                              "templateHash": "11888365738051548768"
                             }
                           },
                           "parameters": {
@@ -13357,43 +13365,43 @@
                               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                              "Avere Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f8fab4f-1852-4a58-a46a-8eaf358af14a')]",
-                              "Avere Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c025889f-8102-4ebf-b32c-fc0c6f0c6bd9')]",
-                              "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
-                              "Backup Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')]",
-                              "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
-                              "Disk Snapshot Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
-                              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
-                              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
-                              "Logic App Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '87a39d53-fc1b-424a-814c-f7e04687dc9e')]",
-                              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
-                              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
-                              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
-                              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
-                              "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
-                              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
-                              "Reader and Data Access": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')]",
-                              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
-                              "Site Recovery Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6670b86e-a3f7-4917-ac9b-5d6ab1be4567')]",
-                              "Site Recovery Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '494ae006-db33-4328-bf46-533a6560a3ca')]",
-                              "Storage Account Backup Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
-                              "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
-                              "Storage Account Key Operator Service Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')]",
-                              "Storage Blob Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
-                              "Storage Blob Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
-                              "Storage Blob Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
-                              "Storage Blob Delegator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'db58b8e5-c6ad-4a2a-8342-4190687cbf4a')]",
-                              "Storage File Data SMB Share Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb')]",
-                              "Storage File Data SMB Share Elevated Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a7264617-510b-434b-a828-9731dc254ea7')]",
-                              "Storage File Data SMB Share Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aba4ae5f-2193-4029-9191-0cb91df5e314')]",
-                              "Storage Queue Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '974c5e8b-45b9-4653-ba55-5f855dd0fb88')]",
-                              "Storage Queue Data Message Processor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8a0f0c08-91a1-4084-bc3d-661d67233fed')]",
-                              "Storage Queue Data Message Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a')]",
-                              "Storage Queue Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '19e7f393-937e-4f77-808e-94535e297925')]",
-                              "Storage Table Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
-                              "Storage Table Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76199698-9eea-4c19-bc75-cec21354c6b6')]",
-                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
-                              "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]"
+                              "Avere Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f8fab4f-1852-4a58-a46a-8eaf358af14a')]",
+                              "Avere Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c025889f-8102-4ebf-b32c-fc0c6f0c6bd9')]",
+                              "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
+                              "Backup Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')]",
+                              "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
+                              "Disk Snapshot Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
+                              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+                              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
+                              "Logic App Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '87a39d53-fc1b-424a-814c-f7e04687dc9e')]",
+                              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
+                              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
+                              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
+                              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+                              "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
+                              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
+                              "Reader and Data Access": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')]",
+                              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+                              "Site Recovery Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6670b86e-a3f7-4917-ac9b-5d6ab1be4567')]",
+                              "Site Recovery Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '494ae006-db33-4328-bf46-533a6560a3ca')]",
+                              "Storage Account Backup Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
+                              "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
+                              "Storage Account Key Operator Service Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')]",
+                              "Storage Blob Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+                              "Storage Blob Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
+                              "Storage Blob Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
+                              "Storage Blob Delegator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'db58b8e5-c6ad-4a2a-8342-4190687cbf4a')]",
+                              "Storage File Data SMB Share Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb')]",
+                              "Storage File Data SMB Share Elevated Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a7264617-510b-434b-a828-9731dc254ea7')]",
+                              "Storage File Data SMB Share Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aba4ae5f-2193-4029-9191-0cb91df5e314')]",
+                              "Storage Queue Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '974c5e8b-45b9-4653-ba55-5f855dd0fb88')]",
+                              "Storage Queue Data Message Processor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8a0f0c08-91a1-4084-bc3d-661d67233fed')]",
+                              "Storage Queue Data Message Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a')]",
+                              "Storage Queue Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '19e7f393-937e-4f77-808e-94535e297925')]",
+                              "Storage Table Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
+                              "Storage Table Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76199698-9eea-4c19-bc75-cec21354c6b6')]",
+                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+                              "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]"
                             }
                           },
                           "resources": [
@@ -13454,8 +13462,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "14923668828077331147"
+                              "version": "0.11.1.770",
+                              "templateHash": "1534827605217321443"
                             }
                           },
                           "parameters": {
@@ -13565,8 +13573,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "11609610636617414204"
+                              "version": "0.11.1.770",
+                              "templateHash": "18318918053056532535"
                             }
                           },
                           "parameters": {
@@ -13711,8 +13719,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "7036039095335249330"
+                              "version": "0.11.1.770",
+                              "templateHash": "18313654900692919912"
                             }
                           },
                           "parameters": {
@@ -13954,8 +13962,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "420336751399658669"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "11909337243117026885"
                                     }
                                   },
                                   "parameters": {
@@ -14079,8 +14087,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.9.1.41621",
-                                              "templateHash": "10555500247886328078"
+                                              "version": "0.11.1.770",
+                                              "templateHash": "9441171886575655302"
                                             }
                                           },
                                           "parameters": {
@@ -14223,8 +14231,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.9.1.41621",
-                                              "templateHash": "17285266521058503884"
+                                              "version": "0.11.1.770",
+                                              "templateHash": "4744448837061948863"
                                             }
                                           },
                                           "parameters": {
@@ -14442,8 +14450,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "17434418229593117354"
+                              "version": "0.11.1.770",
+                              "templateHash": "4045387364380183617"
                             }
                           },
                           "parameters": {
@@ -14681,8 +14689,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "15710523424079177774"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "4915575030303347169"
                                     }
                                   },
                                   "parameters": {
@@ -14812,8 +14820,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.9.1.41621",
-                                              "templateHash": "8768404998223053296"
+                                              "version": "0.11.1.770",
+                                              "templateHash": "4344488880934989920"
                                             }
                                           },
                                           "parameters": {
@@ -14863,43 +14871,43 @@
                                               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                                               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                                               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                                              "Avere Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f8fab4f-1852-4a58-a46a-8eaf358af14a')]",
-                                              "Avere Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c025889f-8102-4ebf-b32c-fc0c6f0c6bd9')]",
-                                              "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
-                                              "Backup Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')]",
-                                              "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
-                                              "Disk Snapshot Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
-                                              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
-                                              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
-                                              "Logic App Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '87a39d53-fc1b-424a-814c-f7e04687dc9e')]",
-                                              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
-                                              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
-                                              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
-                                              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
-                                              "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
-                                              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
-                                              "Reader and Data Access": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')]",
-                                              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
-                                              "Site Recovery Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6670b86e-a3f7-4917-ac9b-5d6ab1be4567')]",
-                                              "Site Recovery Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '494ae006-db33-4328-bf46-533a6560a3ca')]",
-                                              "Storage Account Backup Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
-                                              "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
-                                              "Storage Account Key Operator Service Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')]",
-                                              "Storage Blob Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
-                                              "Storage Blob Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
-                                              "Storage Blob Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
-                                              "Storage Blob Delegator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'db58b8e5-c6ad-4a2a-8342-4190687cbf4a')]",
-                                              "Storage File Data SMB Share Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb')]",
-                                              "Storage File Data SMB Share Elevated Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a7264617-510b-434b-a828-9731dc254ea7')]",
-                                              "Storage File Data SMB Share Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aba4ae5f-2193-4029-9191-0cb91df5e314')]",
-                                              "Storage Queue Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '974c5e8b-45b9-4653-ba55-5f855dd0fb88')]",
-                                              "Storage Queue Data Message Processor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8a0f0c08-91a1-4084-bc3d-661d67233fed')]",
-                                              "Storage Queue Data Message Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a')]",
-                                              "Storage Queue Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '19e7f393-937e-4f77-808e-94535e297925')]",
-                                              "Storage Table Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
-                                              "Storage Table Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76199698-9eea-4c19-bc75-cec21354c6b6')]",
-                                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
-                                              "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]"
+                                              "Avere Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f8fab4f-1852-4a58-a46a-8eaf358af14a')]",
+                                              "Avere Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c025889f-8102-4ebf-b32c-fc0c6f0c6bd9')]",
+                                              "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
+                                              "Backup Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')]",
+                                              "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
+                                              "Disk Snapshot Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
+                                              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+                                              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
+                                              "Logic App Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '87a39d53-fc1b-424a-814c-f7e04687dc9e')]",
+                                              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
+                                              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
+                                              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
+                                              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+                                              "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
+                                              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
+                                              "Reader and Data Access": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c12c1c16-33a1-487b-954d-41c89c60f349')]",
+                                              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+                                              "Site Recovery Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6670b86e-a3f7-4917-ac9b-5d6ab1be4567')]",
+                                              "Site Recovery Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '494ae006-db33-4328-bf46-533a6560a3ca')]",
+                                              "Storage Account Backup Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
+                                              "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
+                                              "Storage Account Key Operator Service Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '81a9662b-bebf-436f-a333-f67b29880f12')]",
+                                              "Storage Blob Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+                                              "Storage Blob Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
+                                              "Storage Blob Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
+                                              "Storage Blob Delegator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'db58b8e5-c6ad-4a2a-8342-4190687cbf4a')]",
+                                              "Storage File Data SMB Share Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb')]",
+                                              "Storage File Data SMB Share Elevated Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a7264617-510b-434b-a828-9731dc254ea7')]",
+                                              "Storage File Data SMB Share Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aba4ae5f-2193-4029-9191-0cb91df5e314')]",
+                                              "Storage Queue Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '974c5e8b-45b9-4653-ba55-5f855dd0fb88')]",
+                                              "Storage Queue Data Message Processor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8a0f0c08-91a1-4084-bc3d-661d67233fed')]",
+                                              "Storage Queue Data Message Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a')]",
+                                              "Storage Queue Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '19e7f393-937e-4f77-808e-94535e297925')]",
+                                              "Storage Table Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
+                                              "Storage Table Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76199698-9eea-4c19-bc75-cec21354c6b6')]",
+                                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+                                              "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]"
                                             }
                                           },
                                           "resources": [
@@ -15034,8 +15042,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "11304716720310671101"
+                              "version": "0.11.1.770",
+                              "templateHash": "2019732993756254212"
                             }
                           },
                           "parameters": {
@@ -15247,8 +15255,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "12573667775029950931"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "10478891933418989620"
                                     }
                                   },
                                   "parameters": {
@@ -15353,8 +15361,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.9.1.41621",
-                                              "templateHash": "14097622015807739726"
+                                              "version": "0.11.1.770",
+                                              "templateHash": "122900310056433060"
                                             }
                                           },
                                           "parameters": {
@@ -15572,8 +15580,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "7558456178905270954"
+                              "version": "0.11.1.770",
+                              "templateHash": "7759208544554348338"
                             }
                           },
                           "parameters": {
@@ -15779,8 +15787,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "7156796144817145743"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "12532096727479409780"
                                     }
                                   },
                                   "parameters": {
@@ -15978,7 +15986,7 @@
                     "value": "[parameters('avdSessionHostsSize')]"
                   },
                   "imageReference": {
-                    "value": "[if(parameters('useSharedImage'), json(format('{{''id'': ''{0}''}}', parameters('avdImageTemplataDefinitionId'))), parameters('marketPlaceGalleryWindows'))]"
+                    "value": "[if(parameters('useSharedImage'), json(format('{{''id'': ''{0}''}}', parameters('avdImageTemplateDefinitionId'))), parameters('marketPlaceGalleryWindows'))]"
                   },
                   "osDisk": {
                     "value": {
@@ -16044,8 +16052,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "17094657261638733351"
+                      "version": "0.11.1.770",
+                      "templateHash": "3541341160333186196"
                     }
                   },
                   "parameters": {
@@ -16366,6 +16374,15 @@
                       },
                       "metadata": {
                         "description": "Optional. The configuration for the [Domain Join] extension. Must at least contain the [\"enabled\": true] property to be executed"
+                      }
+                    },
+                    "extensionAadJoinConfig": {
+                      "type": "object",
+                      "defaultValue": {
+                        "enabled": false
+                      },
+                      "metadata": {
+                        "description": "Optional. The configuration for the Azure AD Windows login extension. Must at least contain the [\"enabled\": true] property to be executed"
                       }
                     },
                     "extensionAntiMalwareConfig": {
@@ -16844,8 +16861,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "5548632646116242518"
+                              "version": "0.11.1.770",
+                              "templateHash": "13517100603816803115"
                             }
                           },
                           "parameters": {
@@ -17083,8 +17100,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "4844657301430438930"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "604152729774691198"
                                     }
                                   },
                                   "parameters": {
@@ -17257,8 +17274,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.9.1.41621",
-                                              "templateHash": "14986714380096369053"
+                                              "version": "0.11.1.770",
+                                              "templateHash": "17829959902875371146"
                                             }
                                           },
                                           "parameters": {
@@ -17415,8 +17432,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "17015881332236392932"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "517914994409939692"
                                     }
                                   },
                                   "parameters": {
@@ -17541,8 +17558,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "14224846953275565849"
+                              "version": "0.11.1.770",
+                              "templateHash": "16348749926984117828"
                             }
                           },
                           "parameters": {
@@ -17660,8 +17677,205 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "1436505676901364058"
+                              "version": "0.11.1.770",
+                              "templateHash": "3742628031148736684"
+                            }
+                          },
+                          "parameters": {
+                            "virtualMachineName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The name of the virtual machine that extension is provisioned for"
+                              }
+                            },
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The name of the virtual machine extension"
+                              }
+                            },
+                            "location": {
+                              "type": "string",
+                              "defaultValue": "[resourceGroup().location]",
+                              "metadata": {
+                                "description": "Optional. The location the extension is deployed to"
+                              }
+                            },
+                            "publisher": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The name of the extension handler publisher"
+                              }
+                            },
+                            "type": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. Specifies the type of the extension; an example is \"CustomScriptExtension\""
+                              }
+                            },
+                            "typeHandlerVersion": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. Specifies the version of the script handler"
+                              }
+                            },
+                            "autoUpgradeMinorVersion": {
+                              "type": "bool",
+                              "metadata": {
+                                "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true"
+                              }
+                            },
+                            "forceUpdateTag": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed"
+                              }
+                            },
+                            "settings": {
+                              "type": "object",
+                              "defaultValue": {},
+                              "metadata": {
+                                "description": "Optional. Any object that contains the extension specific settings"
+                              }
+                            },
+                            "protectedSettings": {
+                              "type": "secureObject",
+                              "defaultValue": {},
+                              "metadata": {
+                                "description": "Optional. Any object that contains the extension specific protected settings"
+                              }
+                            },
+                            "supressFailures": {
+                              "type": "bool",
+                              "defaultValue": false,
+                              "metadata": {
+                                "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false"
+                              }
+                            },
+                            "enableAutomaticUpgrade": {
+                              "type": "bool",
+                              "metadata": {
+                                "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available"
+                              }
+                            },
+                            "enableDefaultTelemetry": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
+                              }
+                            }
+                          },
+                          "resources": [
+                            {
+                              "condition": "[parameters('enableDefaultTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2021-04-01",
+                              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+                              "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": []
+                                }
+                              }
+                            },
+                            {
+                              "type": "Microsoft.Compute/virtualMachines/extensions",
+                              "apiVersion": "2021-07-01",
+                              "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
+                              "location": "[parameters('location')]",
+                              "properties": {
+                                "publisher": "[parameters('publisher')]",
+                                "type": "[parameters('type')]",
+                                "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
+                                "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
+                                "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
+                                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
+                                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
+                                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
+                                "suppressFailures": "[parameters('supressFailures')]"
+                              }
+                            }
+                          ],
+                          "outputs": {
+                            "name": {
+                              "type": "string",
+                              "value": "[parameters('name')]",
+                              "metadata": {
+                                "description": "The name of the extension"
+                              }
+                            },
+                            "resourceId": {
+                              "type": "string",
+                              "value": "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('virtualMachineName'), parameters('name'))]",
+                              "metadata": {
+                                "description": "The resource ID of the extension"
+                              }
+                            },
+                            "resourceGroupName": {
+                              "type": "string",
+                              "value": "[resourceGroup().name]",
+                              "metadata": {
+                                "description": "The name of the Resource Group the extension was created in."
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]"
+                      ]
+                    },
+                    {
+                      "condition": "[parameters('extensionAadJoinConfig').enabled]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2020-10-01",
+                      "name": "[format('{0}-VM-AADJoin', uniqueString(deployment().name, parameters('location')))]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "virtualMachineName": {
+                            "value": "[parameters('name')]"
+                          },
+                          "name": {
+                            "value": "AADLoginForWindows"
+                          },
+                          "publisher": {
+                            "value": "Microsoft.Azure.ActiveDirectory"
+                          },
+                          "type": {
+                            "value": "AADLoginForWindows"
+                          },
+                          "typeHandlerVersion": {
+                            "value": "[if(contains(parameters('extensionAadJoinConfig'), 'typeHandlerVersion'), parameters('extensionAadJoinConfig').typeHandlerVersion, '1.0')]"
+                          },
+                          "autoUpgradeMinorVersion": {
+                            "value": "[if(contains(parameters('extensionAadJoinConfig'), 'autoUpgradeMinorVersion'), parameters('extensionAadJoinConfig').autoUpgradeMinorVersion, true())]"
+                          },
+                          "enableAutomaticUpgrade": {
+                            "value": "[if(contains(parameters('extensionAadJoinConfig'), 'enableAutomaticUpgrade'), parameters('extensionAadJoinConfig').enableAutomaticUpgrade, false())]"
+                          },
+                          "settings": {
+                            "value": "[parameters('extensionAadJoinConfig').settings]"
+                          },
+                          "enableDefaultTelemetry": {
+                            "value": "[parameters('enableDefaultTelemetry')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.11.1.770",
+                              "templateHash": "3742628031148736684"
                             }
                           },
                           "parameters": {
@@ -17857,8 +18071,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "1436505676901364058"
+                              "version": "0.11.1.770",
+                              "templateHash": "3742628031148736684"
                             }
                           },
                           "parameters": {
@@ -18061,8 +18275,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "1436505676901364058"
+                              "version": "0.11.1.770",
+                              "templateHash": "3742628031148736684"
                             }
                           },
                           "parameters": {
@@ -18255,8 +18469,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "1436505676901364058"
+                              "version": "0.11.1.770",
+                              "templateHash": "3742628031148736684"
                             }
                           },
                           "parameters": {
@@ -18449,8 +18663,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "1436505676901364058"
+                              "version": "0.11.1.770",
+                              "templateHash": "3742628031148736684"
                             }
                           },
                           "parameters": {
@@ -18649,8 +18863,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "1436505676901364058"
+                              "version": "0.11.1.770",
+                              "templateHash": "3742628031148736684"
                             }
                           },
                           "parameters": {
@@ -18857,8 +19071,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "1436505676901364058"
+                              "version": "0.11.1.770",
+                              "templateHash": "3742628031148736684"
                             }
                           },
                           "parameters": {
@@ -19058,8 +19272,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "1436505676901364058"
+                              "version": "0.11.1.770",
+                              "templateHash": "3742628031148736684"
                             }
                           },
                           "parameters": {
@@ -19243,8 +19457,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "3055002396042079678"
+                              "version": "0.11.1.770",
+                              "templateHash": "14612740619338752948"
                             }
                           },
                           "parameters": {
@@ -19335,8 +19549,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "12840473635380099764"
+                              "version": "0.11.1.770",
+                              "templateHash": "9486612079767237947"
                             }
                           },
                           "parameters": {
@@ -19495,7 +19709,7 @@
                     "value": "PT10M"
                   },
                   "scriptContent": {
-                    "value": "        Write-Host \"Start\"\r\n        Get-Date\r\n        Start-Sleep -Seconds 120\r\n        Write-Host \"Stop\"\r\n        Get-Date\r\n        "
+                    "value": "        Write-Host \"Start\"\n        Get-Date\n        Start-Sleep -Seconds 120\n        Write-Host \"Stop\"\n        Get-Date\n        "
                   }
                 },
                 "template": {
@@ -19504,8 +19718,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "16430087813232254414"
+                      "version": "0.11.1.770",
+                      "templateHash": "3517089179642514722"
                     }
                   },
                   "parameters": {
@@ -19725,8 +19939,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "14219231684130369343"
+                              "version": "0.11.1.770",
+                              "templateHash": "1882150209236915071"
                             }
                           },
                           "resources": []
@@ -19797,8 +20011,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "14948058015537406129"
+                      "version": "0.11.1.770",
+                      "templateHash": "15832977846728844008"
                     }
                   },
                   "parameters": {
@@ -19885,6 +20099,9 @@
           "avdIdentityServiceProvider": {
             "value": "[parameters('avdIdentityServiceProvider')]"
           },
+          "createIntuneEnrollment": {
+            "value": "[parameters('createIntuneEnrollment')]"
+          },
           "avdAvailabilitySetNamePrefix": {
             "value": "[variables('avdAvailabilitySetNamePrefix')]"
           },
@@ -19912,8 +20129,8 @@
           "avdIdentityDomainName": {
             "value": "[parameters('avdIdentityDomainName')]"
           },
-          "avdImageTemplataDefinitionId": {
-            "value": "[parameters('avdImageTemplataDefinitionId')]"
+          "avdImageTemplateDefinitionId": {
+            "value": "[parameters('avdImageTemplateDefinitionId')]"
           },
           "sessionHostOuPath": {
             "value": "[parameters('avdOuPath')]"
@@ -19949,19 +20166,22 @@
             "value": "[parameters('encryptionAtHost')]"
           },
           "createAvdFslogixDeployment": {
-            "value": "[parameters('createAvdFslogixDeployment')]"
+            "value": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), false(), parameters('createAvdFslogixDeployment'))]"
           },
           "fslogixManagedIdentityResourceId": {
-            "value": "[if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))).outputs.fslogixManagedIdentityResourceId.value, 'none')]"
+            "value": "[if(and(parameters('createAvdFslogixDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'AAD'))), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Create-Managed-ID-RoleAssign-{0}', parameters('time')))).outputs.fslogixManagedIdentityResourceId.value, '')]"
           },
           "fsLogixScript": {
-            "value": "[variables('fsLogixScript')]"
+            "value": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), variables('fsLogixScript'), '')]"
           },
           "FsLogixScriptArguments": {
-            "value": "[variables('FsLogixScriptArguments')]"
+            "value": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), variables('FsLogixScriptArguments'), '')]"
           },
           "fslogixScriptUri": {
-            "value": "[variables('fslogixScriptUri')]"
+            "value": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), variables('fslogixScriptUri'), '')]"
+          },
+          "FslogixSharePath": {
+            "value": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), variables('fslogixSharePath'), '')]"
           },
           "hostPoolToken": {
             "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-HostPool-AppGroups-{0}', parameters('time')))).outputs.hostPooltoken.value]"
@@ -19982,8 +20202,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "4192071456090441320"
+              "version": "0.11.1.770",
+              "templateHash": "15200279583566911914"
             }
           },
           "parameters": {
@@ -20077,6 +20297,12 @@
                 "description": "Required, The service providing domain services for Azure Virtual Desktop."
               }
             },
+            "createIntuneEnrollment": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required, Eronll session hosts on Intune."
+              }
+            },
             "encryptionAtHost": {
               "type": "bool",
               "metadata": {
@@ -20107,7 +20333,7 @@
                 "description": "Set to deploy image from Azure Compute Gallery."
               }
             },
-            "avdImageTemplataDefinitionId": {
+            "avdImageTemplateDefinitionId": {
               "type": "string",
               "metadata": {
                 "description": "Source custom image ID."
@@ -20191,6 +20417,12 @@
                 "description": "Configuration arguments for FSlogix."
               }
             },
+            "FslogixSharePath": {
+              "type": "string",
+              "metadata": {
+                "description": "Path for the FSlogix share."
+              }
+            },
             "fslogixScriptUri": {
               "type": "string",
               "metadata": {
@@ -20266,8 +20498,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "11408258689728406843"
+                      "version": "0.11.1.770",
+                      "templateHash": "4112382840115339757"
                     }
                   },
                   "parameters": {
@@ -20366,8 +20598,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "16393297973013496057"
+                              "version": "0.11.1.770",
+                              "templateHash": "11015659474412081023"
                             }
                           },
                           "parameters": {
@@ -20395,7 +20627,7 @@
                               "type": "string",
                               "defaultValue": "Aligned",
                               "metadata": {
-                                "description": "Optional. SKU of the availability set.\r\n- Use \\'Aligned\\' for virtual machines with managed disks\r\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\r\n"
+                                "description": "Optional. SKU of the availability set.\n- Use \\'Aligned\\' for virtual machines with managed disks\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\n"
                               }
                             },
                             "proximityPlacementGroupId": {
@@ -20526,8 +20758,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "7007730368872710565"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "7049126891184928573"
                                     }
                                   },
                                   "parameters": {
@@ -20703,8 +20935,8 @@
                   "avdIdentityDomainName": {
                     "value": "[parameters('avdIdentityDomainName')]"
                   },
-                  "avdImageTemplataDefinitionId": {
-                    "value": "[parameters('avdImageTemplataDefinitionId')]"
+                  "avdImageTemplateDefinitionId": {
+                    "value": "[parameters('avdImageTemplateDefinitionId')]"
                   },
                   "sessionHostOuPath": {
                     "value": "[parameters('sessionHostOuPath')]"
@@ -20757,6 +20989,9 @@
                   "FsLogixScriptArguments": {
                     "value": "[parameters('FsLogixScriptArguments')]"
                   },
+                  "FslogixSharePath": {
+                    "value": "[parameters('FslogixSharePath')]"
+                  },
                   "fslogixScriptUri": {
                     "value": "[parameters('fslogixScriptUri')]"
                   },
@@ -20772,6 +21007,9 @@
                   "avdIdentityServiceProvider": {
                     "value": "[parameters('avdIdentityServiceProvider')]"
                   },
+                  "createIntuneEnrollment": {
+                    "value": "[parameters('createIntuneEnrollment')]"
+                  },
                   "avdTags": {
                     "value": "[parameters('avdTags')]"
                   }
@@ -20782,8 +21020,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "16048699801763979434"
+                      "version": "0.11.1.770",
+                      "templateHash": "11517225605235250031"
                     }
                   },
                   "parameters": {
@@ -20895,7 +21133,7 @@
                         "description": "Set to deploy image from Azure Compute Gallery."
                       }
                     },
-                    "avdImageTemplataDefinitionId": {
+                    "avdImageTemplateDefinitionId": {
                       "type": "string",
                       "metadata": {
                         "description": "Source custom image ID."
@@ -20929,6 +21167,12 @@
                       "type": "string",
                       "metadata": {
                         "description": "Required, The service providing domain services for Azure Virtual Desktop."
+                      }
+                    },
+                    "createIntuneEnrollment": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Required, Eronll session hosts on Intune."
                       }
                     },
                     "avdWrklKvName": {
@@ -20985,6 +21229,12 @@
                         "description": "Configuration arguments for FSlogix."
                       }
                     },
+                    "FslogixSharePath": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Path for the FSlogix share."
+                      }
+                    },
                     "fslogixScriptUri": {
                       "type": "string",
                       "metadata": {
@@ -21037,6 +21287,9 @@
                           "userAssignedIdentities": {
                             "value": "[if(parameters('createAvdFslogixDeployment'), createObject(format('{0}', parameters('fslogixManagedIdentityResourceId')), createObject()), createObject())]"
                           },
+                          "systemAssignedIdentity": {
+                            "value": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), true(), false())]"
+                          },
                           "availabilityZone": {
                             "value": "[if(parameters('avdUseAvailabilityZones'), take(skip(variables('allAvailabilityZones'), mod(range(1, parameters('avdSessionHostsCount'))[copyIndex()], length(variables('allAvailabilityZones')))), 1), createArray())]"
                           },
@@ -21056,7 +21309,7 @@
                             "value": "[parameters('avdSessionHostsSize')]"
                           },
                           "imageReference": {
-                            "value": "[if(parameters('useSharedImage'), json(format('{{''id'': ''{0}''}}', parameters('avdImageTemplataDefinitionId'))), parameters('marketPlaceGalleryWindows'))]"
+                            "value": "[if(parameters('useSharedImage'), json(format('{{''id'': ''{0}''}}', parameters('avdImageTemplateDefinitionId'))), parameters('marketPlaceGalleryWindows'))]"
                           },
                           "osDisk": {
                             "value": {
@@ -21089,9 +21342,6 @@
                               }
                             ]
                           },
-                          "allowExtensionOperations": {
-                            "value": true
-                          },
                           "extensionDomainJoinPassword": {
                             "reference": {
                               "keyVault": {
@@ -21102,7 +21352,7 @@
                           },
                           "extensionDomainJoinConfig": {
                             "value": {
-                              "enabled": true,
+                              "enabled": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), false(), true())]",
                               "settings": {
                                 "name": "[parameters('avdIdentityDomainName')]",
                                 "ouPath": "[if(not(empty(parameters('sessionHostOuPath'))), parameters('sessionHostOuPath'), null())]",
@@ -21111,6 +21361,9 @@
                                 "options": "3"
                               }
                             }
+                          },
+                          "extensionAadJoinConfig": {
+                            "value": "[if(parameters('createIntuneEnrollment'), createObject('enabled', if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), true(), false()), 'settings', createObject('mdmId', '0000000a-0000-0000-c000-000000000000')), createObject('enabled', if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), true(), false())))]"
                           },
                           "extensionAntiMalwareConfig": {
                             "value": {
@@ -21124,7 +21377,7 @@
                                   "time": "120",
                                   "scanType": "Quick"
                                 },
-                                "Exclusions": "[if(parameters('createAvdFslogixDeployment'), createObject('Extensions', '*.vhd;*.vhdx', 'Paths', '\"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;\\\\server\\share\\*\\*.VHD;\\\\server\\share\\*\\*.VHDX', 'Processes', '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'), createObject())]"
+                                "Exclusions": "[if(parameters('createAvdFslogixDeployment'), createObject('Extensions', '*.vhd;*.vhdx', 'Paths', format('\"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;{0}\\*\\*.VHD;{1}\\*\\*.VHDX', parameters('FslogixSharePath'), parameters('FslogixSharePath')), 'Processes', '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'), createObject())]"
                               }
                             }
                           },
@@ -21138,8 +21391,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "17094657261638733351"
+                              "version": "0.11.1.770",
+                              "templateHash": "3541341160333186196"
                             }
                           },
                           "parameters": {
@@ -21460,6 +21713,15 @@
                               },
                               "metadata": {
                                 "description": "Optional. The configuration for the [Domain Join] extension. Must at least contain the [\"enabled\": true] property to be executed"
+                              }
+                            },
+                            "extensionAadJoinConfig": {
+                              "type": "object",
+                              "defaultValue": {
+                                "enabled": false
+                              },
+                              "metadata": {
+                                "description": "Optional. The configuration for the Azure AD Windows login extension. Must at least contain the [\"enabled\": true] property to be executed"
                               }
                             },
                             "extensionAntiMalwareConfig": {
@@ -21938,8 +22200,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "5548632646116242518"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "13517100603816803115"
                                     }
                                   },
                                   "parameters": {
@@ -22177,8 +22439,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.9.1.41621",
-                                              "templateHash": "4844657301430438930"
+                                              "version": "0.11.1.770",
+                                              "templateHash": "604152729774691198"
                                             }
                                           },
                                           "parameters": {
@@ -22351,8 +22613,8 @@
                                                   "metadata": {
                                                     "_generator": {
                                                       "name": "bicep",
-                                                      "version": "0.9.1.41621",
-                                                      "templateHash": "14986714380096369053"
+                                                      "version": "0.11.1.770",
+                                                      "templateHash": "17829959902875371146"
                                                     }
                                                   },
                                                   "parameters": {
@@ -22509,8 +22771,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.9.1.41621",
-                                              "templateHash": "17015881332236392932"
+                                              "version": "0.11.1.770",
+                                              "templateHash": "517914994409939692"
                                             }
                                           },
                                           "parameters": {
@@ -22635,8 +22897,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "14224846953275565849"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "16348749926984117828"
                                     }
                                   },
                                   "parameters": {
@@ -22754,8 +23016,205 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "1436505676901364058"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "3742628031148736684"
+                                    }
+                                  },
+                                  "parameters": {
+                                    "virtualMachineName": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "Required. The name of the virtual machine that extension is provisioned for"
+                                      }
+                                    },
+                                    "name": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "Required. The name of the virtual machine extension"
+                                      }
+                                    },
+                                    "location": {
+                                      "type": "string",
+                                      "defaultValue": "[resourceGroup().location]",
+                                      "metadata": {
+                                        "description": "Optional. The location the extension is deployed to"
+                                      }
+                                    },
+                                    "publisher": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "Required. The name of the extension handler publisher"
+                                      }
+                                    },
+                                    "type": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "Required. Specifies the type of the extension; an example is \"CustomScriptExtension\""
+                                      }
+                                    },
+                                    "typeHandlerVersion": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "Required. Specifies the version of the script handler"
+                                      }
+                                    },
+                                    "autoUpgradeMinorVersion": {
+                                      "type": "bool",
+                                      "metadata": {
+                                        "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true"
+                                      }
+                                    },
+                                    "forceUpdateTag": {
+                                      "type": "string",
+                                      "defaultValue": "",
+                                      "metadata": {
+                                        "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed"
+                                      }
+                                    },
+                                    "settings": {
+                                      "type": "object",
+                                      "defaultValue": {},
+                                      "metadata": {
+                                        "description": "Optional. Any object that contains the extension specific settings"
+                                      }
+                                    },
+                                    "protectedSettings": {
+                                      "type": "secureObject",
+                                      "defaultValue": {},
+                                      "metadata": {
+                                        "description": "Optional. Any object that contains the extension specific protected settings"
+                                      }
+                                    },
+                                    "supressFailures": {
+                                      "type": "bool",
+                                      "defaultValue": false,
+                                      "metadata": {
+                                        "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false"
+                                      }
+                                    },
+                                    "enableAutomaticUpgrade": {
+                                      "type": "bool",
+                                      "metadata": {
+                                        "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available"
+                                      }
+                                    },
+                                    "enableDefaultTelemetry": {
+                                      "type": "bool",
+                                      "defaultValue": true,
+                                      "metadata": {
+                                        "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
+                                      }
+                                    }
+                                  },
+                                  "resources": [
+                                    {
+                                      "condition": "[parameters('enableDefaultTelemetry')]",
+                                      "type": "Microsoft.Resources/deployments",
+                                      "apiVersion": "2021-04-01",
+                                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+                                      "properties": {
+                                        "mode": "Incremental",
+                                        "template": {
+                                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                          "contentVersion": "1.0.0.0",
+                                          "resources": []
+                                        }
+                                      }
+                                    },
+                                    {
+                                      "type": "Microsoft.Compute/virtualMachines/extensions",
+                                      "apiVersion": "2021-07-01",
+                                      "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
+                                      "location": "[parameters('location')]",
+                                      "properties": {
+                                        "publisher": "[parameters('publisher')]",
+                                        "type": "[parameters('type')]",
+                                        "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
+                                        "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
+                                        "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
+                                        "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
+                                        "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
+                                        "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
+                                        "suppressFailures": "[parameters('supressFailures')]"
+                                      }
+                                    }
+                                  ],
+                                  "outputs": {
+                                    "name": {
+                                      "type": "string",
+                                      "value": "[parameters('name')]",
+                                      "metadata": {
+                                        "description": "The name of the extension"
+                                      }
+                                    },
+                                    "resourceId": {
+                                      "type": "string",
+                                      "value": "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('virtualMachineName'), parameters('name'))]",
+                                      "metadata": {
+                                        "description": "The resource ID of the extension"
+                                      }
+                                    },
+                                    "resourceGroupName": {
+                                      "type": "string",
+                                      "value": "[resourceGroup().name]",
+                                      "metadata": {
+                                        "description": "The name of the Resource Group the extension was created in."
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "dependsOn": [
+                                "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]"
+                              ]
+                            },
+                            {
+                              "condition": "[parameters('extensionAadJoinConfig').enabled]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2020-10-01",
+                              "name": "[format('{0}-VM-AADJoin', uniqueString(deployment().name, parameters('location')))]",
+                              "properties": {
+                                "expressionEvaluationOptions": {
+                                  "scope": "inner"
+                                },
+                                "mode": "Incremental",
+                                "parameters": {
+                                  "virtualMachineName": {
+                                    "value": "[parameters('name')]"
+                                  },
+                                  "name": {
+                                    "value": "AADLoginForWindows"
+                                  },
+                                  "publisher": {
+                                    "value": "Microsoft.Azure.ActiveDirectory"
+                                  },
+                                  "type": {
+                                    "value": "AADLoginForWindows"
+                                  },
+                                  "typeHandlerVersion": {
+                                    "value": "[if(contains(parameters('extensionAadJoinConfig'), 'typeHandlerVersion'), parameters('extensionAadJoinConfig').typeHandlerVersion, '1.0')]"
+                                  },
+                                  "autoUpgradeMinorVersion": {
+                                    "value": "[if(contains(parameters('extensionAadJoinConfig'), 'autoUpgradeMinorVersion'), parameters('extensionAadJoinConfig').autoUpgradeMinorVersion, true())]"
+                                  },
+                                  "enableAutomaticUpgrade": {
+                                    "value": "[if(contains(parameters('extensionAadJoinConfig'), 'enableAutomaticUpgrade'), parameters('extensionAadJoinConfig').enableAutomaticUpgrade, false())]"
+                                  },
+                                  "settings": {
+                                    "value": "[parameters('extensionAadJoinConfig').settings]"
+                                  },
+                                  "enableDefaultTelemetry": {
+                                    "value": "[parameters('enableDefaultTelemetry')]"
+                                  }
+                                },
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "metadata": {
+                                    "_generator": {
+                                      "name": "bicep",
+                                      "version": "0.11.1.770",
+                                      "templateHash": "3742628031148736684"
                                     }
                                   },
                                   "parameters": {
@@ -22951,8 +23410,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "1436505676901364058"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "3742628031148736684"
                                     }
                                   },
                                   "parameters": {
@@ -23155,8 +23614,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "1436505676901364058"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "3742628031148736684"
                                     }
                                   },
                                   "parameters": {
@@ -23349,8 +23808,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "1436505676901364058"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "3742628031148736684"
                                     }
                                   },
                                   "parameters": {
@@ -23543,8 +24002,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "1436505676901364058"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "3742628031148736684"
                                     }
                                   },
                                   "parameters": {
@@ -23743,8 +24202,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "1436505676901364058"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "3742628031148736684"
                                     }
                                   },
                                   "parameters": {
@@ -23951,8 +24410,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "1436505676901364058"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "3742628031148736684"
                                     }
                                   },
                                   "parameters": {
@@ -24152,8 +24611,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "1436505676901364058"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "3742628031148736684"
                                     }
                                   },
                                   "parameters": {
@@ -24337,8 +24796,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "3055002396042079678"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "14612740619338752948"
                                     }
                                   },
                                   "parameters": {
@@ -24429,8 +24888,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.9.1.41621",
-                                      "templateHash": "12840473635380099764"
+                                      "version": "0.11.1.770",
+                                      "templateHash": "9486612079767237947"
                                     }
                                   },
                                   "parameters": {
@@ -24596,8 +25055,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "5682191773010532839"
+                              "version": "0.11.1.770",
+                              "templateHash": "17738483670078007971"
                             }
                           },
                           "parameters": {
@@ -24652,7 +25111,7 @@
                       ]
                     },
                     {
-                      "condition": "[parameters('createAvdFslogixDeployment')]",
+                      "condition": "[and(parameters('createAvdFslogixDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'AAD')))]",
                       "copy": {
                         "name": "configureFsLogixForAvdHosts",
                         "count": "[length(range(1, parameters('avdSessionHostsCount')))]"
@@ -24690,8 +25149,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "11622218780665330831"
+                              "version": "0.11.1.770",
+                              "templateHash": "16112099621105041158"
                             }
                           },
                           "parameters": {
