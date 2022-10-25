@@ -27,6 +27,7 @@ terraform {
 }
 
 provider "azurerm" {
+  partner_id = "89c34160-547d-11ed-baa8-6fad1bf031a2"
   features {
     key_vault {
       purge_soft_deleted_secrets_on_destroy      = false
