@@ -105,9 +105,6 @@ param avdDeployScalingPlan bool = true
 @description('Optional. Create new virtual network. (Default: true)')
 param createAvdVnet bool = true
 
-@description('Optional. Create virtual network peering to hub. (Default: false)')
-param createAvdVnetPeering bool = false
-
 @description('Optional. Existing virtual network subnet. (Default: "")')
 param existingVnetSubnetResourceId string = ''
 
@@ -633,6 +630,7 @@ var allDnsServers = '${customDnsIps},168.63.129.16'
 var dnsServers = (customDnsIps == 'none') ? []: (split(allDnsServers, ','))
 var varCreateAvdFslogixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: createAvdFslogixDeployment
 var varAvdApplicationGroupIdentitiesIds = !empty(avdApplicationGroupIdentitiesIds) ? (split(avdApplicationGroupIdentitiesIds, ',')): []
+var varCreateAvdVnetPeering = !empty(existingHubVnetResourceId) ? true: false
 // Resource tagging
 // Tag Exclude-${avdScalingPlanName} is used by scaling plans to exclude session hosts from scaling. Exmaple: Exclude-vdscal-eus2-app1-001
 var commonResourceTags = createResourceTags ? {
@@ -785,7 +783,7 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
         avdVnetworkPeeringName: avdIdentityServiceProvider == 'AAD' ? '': avdVnetworkPeeringName
         avdVnetworkSubnetName: avdVnetworkSubnetName
         createAvdVnet: createAvdVnet
-        createAvdVnetPeering: createAvdVnetPeering
+        createAvdVnetPeering: varCreateAvdVnetPeering
         vNetworkGatewayOnHub: vNetworkGatewayOnHub
         existingHubVnetResourceId: avdIdentityServiceProvider == 'AAD' ? '': existingHubVnetResourceId
         avdSessionHostLocation: avdSessionHostLocation
