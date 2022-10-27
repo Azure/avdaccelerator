@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "13570512134705813307"
+      "templateHash": "431536228244219418"
     }
   },
   "parameters": {
@@ -206,13 +206,6 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Create new virtual network. (Default: true)"
-      }
-    },
-    "createAvdVnetPeering": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Create virtual network peering to hub. (Default: false)"
       }
     },
     "existingVnetSubnetResourceId": {
@@ -966,6 +959,7 @@
     "dnsServers": "[if(equals(parameters('customDnsIps'), 'none'), createArray(), split(variables('allDnsServers'), ','))]",
     "varCreateAvdFslogixDeployment": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), false(), parameters('createAvdFslogixDeployment'))]",
     "varAvdApplicationGroupIdentitiesIds": "[if(not(empty(parameters('avdApplicationGroupIdentitiesIds'))), split(parameters('avdApplicationGroupIdentitiesIds'), ','), createArray())]",
+    "varCreateAvdVnetPeering": "[if(not(empty(parameters('existingHubVnetResourceId'))), true(), false())]",
     "commonResourceTags": "[if(parameters('createResourceTags'), createObject('WorkloadName', parameters('workloadNameTag'), 'WorkloadType', parameters('workloadTypeTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('workloadCriticalityTag'), 'Custom'), parameters('workloadCriticalityCustomValueTag'), parameters('workloadCriticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'ServiceClass', parameters('workloadSlaTag'), 'OpsTeam', parameters('opsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag'), 'Environment', parameters('environmentTypeTag')), createObject())]",
     "allComputeStorageTags": {
       "DomainName": "[parameters('avdIdentityDomainName')]",
@@ -3039,7 +3033,7 @@
             "value": "[parameters('createAvdVnet')]"
           },
           "createAvdVnetPeering": {
-            "value": "[parameters('createAvdVnetPeering')]"
+            "value": "[variables('varCreateAvdVnetPeering')]"
           },
           "vNetworkGatewayOnHub": {
             "value": "[parameters('vNetworkGatewayOnHub')]"
