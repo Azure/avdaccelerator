@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "431536228244219418"
+      "templateHash": "11586218403395120455"
     }
   },
   "parameters": {
@@ -944,7 +944,7 @@
     "fsLogixScript": "./Set-FSLogixRegKeys.ps1",
     "fslogixSharePath": "[format('\\\\{0}.file.{1}\\{2}', variables('avdFslogixStorageName'), environment().suffixes.storage, variables('avdFslogixProfileContainerFileShareName'))]",
     "FsLogixScriptArguments": "[format('-volumeshare {0}', variables('fslogixSharePath'))]",
-    "avdAgentPackageLocation": "[format('https://wvdportalstorageblob.blob.{0}/galleryartifacts/Configuration_01-20-2022.zip', environment().suffixes.storage)]",
+    "avdAgentPackageLocation": "[format('https://wvdportalstorageblob.blob.{0}/galleryartifacts/Configuration_09-08-2022.zip', environment().suffixes.storage)]",
     "storageAccountContributorRoleId": "b24988ac-6180-42a0-ab88-20f7382dd24c",
     "readerRoleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
     "avdVmPowerStateContributor": "40c5ff49-9181-41f8-ae61-143b0e78555e",
