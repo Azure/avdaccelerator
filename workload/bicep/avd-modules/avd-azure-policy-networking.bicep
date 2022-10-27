@@ -54,7 +54,7 @@ var varCustomPolicySetDefinitions = {
 
 module deployStgAccountForFlowLogs '../../../carml/1.2.1/Microsoft.Storage/storageAccounts/deploy.bicep' = if (empty(stgAccountForFlowLogsId)) {
 scope: resourceGroup ('${avdMonitoringRgName}')
-name: length('Deploy-Stg-Account-for-Flow-Logs-${stgAccountForFlowLogsName}-${time}') > 64 ? substring('Deploy-Stg-Account-for-Flow-Logs-${stgAccountForFlowLogsName}-${time}',0,63) : 'Deploy-Stg-Account-for-Flow-Logs-${stgAccountForFlowLogsName}-${time}'
+name: (length('Deploy-Stg-Account-for-Flow-Logs-${stgAccountForFlowLogsName}-${time}') > 64) ? take('Deploy-Stg-Account-for-Flow-Logs-${stgAccountForFlowLogsName}-${time}',64) : 'Deploy-Stg-Account-for-Flow-Logs-${stgAccountForFlowLogsName}-${time}'
 params: {
   location: avdManagementPlaneLocation
   tags: avdTags
@@ -73,7 +73,7 @@ params: {
  
 module avdNetworkingPolicySetDefinition '../../../carml/1.2.0/Microsoft.Authorization/policySetDefinitions/subscription/deploy.bicep' = {
   scope: subscription('${avdWorkloadSubsId}')
-  name: length('AVD-Network-Policy-Set-Definition-${time}') > 64 ? substring('AVD-Network-Policy-Set-Definition-${time}',0,63) : 'AVD-Network-Policy-Set-Definition-${time}'
+  name: (length('AVD-Network-Policy-Set-Definition-${time}') > 64) ? take('AVD-Network-Policy-Set-Definition-${time}',64) : 'AVD-Network-Policy-Set-Definition-${time}'
   params: {
     location: avdManagementPlaneLocation
     name: varCustomPolicySetDefinitions.name
@@ -90,9 +90,9 @@ module avdNetworkingPolicySetDefinition '../../../carml/1.2.0/Microsoft.Authoriz
 // Policy set assignment.
 module avdNetworkingPolicySetDefinitionAssignment '../../../carml/1.2.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = {
   scope: subscription('${avdWorkloadSubsId}')
-  name: length('AVD-NetPolicySetAssign-${time}') > 64 ? substring('AVD-NetPolicySetAssign-${time}',0,63) : 'AVD-NetPolicySetAssign-${time}'
+  name: (length('AVD-NetPolicySetAssign-${time}') > 64) ? take('AVD-NetPolicySetAssign-${time}',64) : 'AVD-NetPolicySetAssign-${time}'
   params: {
-    name: length('${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}') > 64 ? substring('${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}',0,63) : '${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}'
+    name: (length('${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}') > 64) ? take('${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}',64) : '${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}'
     displayName: varCustomPolicySetDefinitions.libSetDefinition.properties.displayName
     description: varCustomPolicySetDefinitions.libSetDefinition.properties.description
     location: avdManagementPlaneLocation
@@ -107,8 +107,8 @@ module avdNetworkingPolicySetDefinitionAssignment '../../../carml/1.2.0/Microsof
       workspaceResourceId: { value: alaWorkspaceResourceId }
       workspaceRegion: { value: avdManagementPlaneLocation }
       workspaceId: { value: alaWorkspaceId }
-      networkWatcherRG: { value: avdMonitoringRgName }
-      networkWatcherName: { value: 'AVD-NetworkWatcher-${avdManagementPlaneLocation}' }
+      networkWatcherRG: { value: 'NetworkWatcherRG' }
+      networkWatcherName: { value: 'NetworkWatcher_${avdManagementPlaneLocation}' }
 
   }
       }

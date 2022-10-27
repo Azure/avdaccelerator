@@ -65,21 +65,11 @@ module avdAlaWorkspace '../../../carml/1.2.1/Microsoft.OperationalInsights/works
   ]
 }
 
-
-// Get log analytics workspace.
-/*
-resource avdAlaWorkspaceKey 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (deployAlaWorkspace)  {
-  name: avdAlaWorkspaceName
-  scope: resourceGroup('${avdWorkloadSubsId}', '${avdMonitoringRgName}')
-}
-
-output test string = avdAlaWorkspaceKey.apiVersion.
-*/
 // Policy definitions.
 
 module deployDiagnosticsAzurePolicyForAvd 'avd-azure-policy-monitoring.bicep' = if (deployCustomPolicyMonitoring) {
   scope: subscription('${avdWorkloadSubsId}')
-  name: 'Deploy-And-Assign-Custom-Polocy-Monitoring-${time}'
+  name: 'Custom-Policy-Monitoring-${time}'
   params: {
     alaWorkspaceId: deployAlaWorkspace ? avdAlaWorkspace.outputs.resourceId : alaWorkspaceId
     avdManagementPlaneLocation: avdManagementPlaneLocation
