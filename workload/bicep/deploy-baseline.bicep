@@ -896,9 +896,7 @@ module avdManagementPLane 'avd-modules/avd-management-plane.bicep' = {
         avdIdentityServiceProvider: avdIdentityServiceProvider
         avdApplicationGroupIdentitiesIds: varAvdApplicationGroupIdentitiesIds
         avdApplicationGroupIdentityType: avdApplicationGroupIdentityType
-        avdTags: createResourceTags ? varCommonResourceTags : {}
-        avdAlaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
-        avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
+        avdTags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
         avdBaselineResourceGroups
@@ -1094,7 +1092,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         fsLogixScript: (avdIdentityServiceProvider != 'AAD') ? fsLogixScript: ''
         FsLogixScriptArguments: (avdIdentityServiceProvider != 'AAD') ? FsLogixScriptArguments: ''
         fslogixScriptUri: (avdIdentityServiceProvider != 'AAD') ? fslogixScriptUri: ''
-        FslogixSharePath: (avdIdentityServiceProvider != 'AAD') ? fslogixSharePath: ''       
+        FslogixSharePath: (avdIdentityServiceProvider != 'AAD') ? fslogixSharePath: ''      
         hostPoolToken: avdManagementPLane.outputs.hostPooltoken
         marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
