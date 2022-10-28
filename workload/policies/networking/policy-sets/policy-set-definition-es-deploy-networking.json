@@ -1,0 +1,160 @@
+{
+    "name": "policy-set-deploy-avd-diagnostics-to-log-analytics",
+    "type": "Microsoft.Authorization/policySetDefinitions",
+    "apiVersion": "2021-06-01",
+    "scope": null,
+    "properties": {
+      "policyType": "Custom",
+      "displayName": "Custom - Flow logs should be configured and enabled for every network security group",
+      "description": "Audit for network security groups to verify if flow logs are configured and if flow log status is enabled. Enabling flow logs allows to log information about IP traffic flowing through network security group. It can be used for optimizing network flows, monitoring throughput, verifying compliance, detecting intrusions and more. ",
+      "metadata": {
+        "version": "1.1.0",
+        "category": "Network"
+      },
+      "parameters": {
+        "RemediateNsgFlowLogsEffect": {
+            "type": "String",
+            "defaultValue": "DeployIfNotExists",
+            "allowedValues": [
+              "DeployIfNotExists",
+              "Disabled"
+            ],
+            "metadata": {
+              "displayName": "Deploy NSG flow Logs to Log Analytics workspace and Storage Account",
+              "description": "If it already has traffic analytics enabled, then policy will overwrite its existing settings with the ones provided during policy creation. Traffic analytics is a cloud-based solution that provides visibility into user and application activity in cloud networks."
+            }
+        },
+        "nsgRegion": {
+          "metadata": {
+            "description": "Configures for network security groups in the selected region only.",
+            "displayName": "Network security group Region"
+          },
+          "type": "String"
+        },
+        "storageId": {
+          "type": "String",
+          "metadata": {
+            "displayName": "Storage Resource ID",
+            "description": "Resource ID of the storage account where the flow logs are written. Make sure this storage account is located in the selected network security group region. The format must be: '/subscriptions/{subscription id}/resourceGroups/{resourceGroup name}/providers/Microsoft.Storage/storageAccounts/{storage account name}",
+            "assignPermissions": true
+          }
+        },
+        "timeInterval": {
+            "type": "String",
+            "metadata": {
+              "displayName": "Traffic analytics processing interval in minutes",
+              "description": "Traffic analytics processes blobs at the selected frequency."
+            },
+            "allowedValues": [
+              "10",
+              "60"
+            ],
+            "defaultValue": "60"
+          },
+          "workspaceResourceId": {
+            "type": "String",
+            "metadata": {
+              "displayName": "Workspace resource ID",
+              "description": "Log Analytics workspace resource id",
+              "assignPermissions": true
+            }
+          },
+          "workspaceRegion": {
+            "type": "String",
+            "metadata": {
+              "displayName": "Workspace region",
+              "description": "Log Analytics workspace region",
+              "strongType": "location"
+            }
+          },
+          "workspaceId": {
+            "type": "String",
+            "metadata": {
+              "displayName": "Workspace ID",
+              "description": "Log Analytics workspace GUID"
+            }
+          },
+          "networkWatcherRG": {
+            "type": "String",
+            "metadata": {
+              "displayName": "Network Watcher resource group",
+              "description": "The Network Watcher regional instance is present in this resource group. The network security group flow logs resources are also created. This is used only if a deployment is required. By default, it is named 'NetworkWatcherRG'.",
+              "strongType": "existingResourceGroups"
+            }
+          },
+          "networkWatcherName": {
+            "type": "String",
+            "metadata": {
+              "displayName": "Network Watcher name",
+              "description": "The name of the network watcher under which the flow log resources are created. Make sure it belongs to the same region as the network security group."
+            }
+          },
+          "retentionDays": {
+            "type": "String",
+            "metadata": {
+              "displayName": "Number of days to retain flowlogs",
+              "description": "The number of days for which flowlog data will be retained in storage account. If you want to retain data forever and do not want to apply any retention policy, set retention (days) to 0."
+            },
+            "defaultValue": "30"
+          },
+        "AuditForFlowLogsEffect": {
+          "type": "String",
+          "defaultValue": "Audit",
+          "allowedValues": [
+            "Audit",
+            "Disabled"
+          ],
+          "metadata": {
+            "displayName": "Deploy Diagnostic Settings for Network Security Groups to Log Analytics workspace",
+            "description": "Deploys the diagnostic settings for Network Security Groups to stream to a Log Analytics workspace when any Network Security Groups which is missing this diagnostic settings is created or updated. The Policy will set the diagnostic with all metrics and category enabled"
+          }
+        }
+      },
+      "policyDefinitions": [
+        {
+          "policyDefinitionReferenceId": "AuditForFlowLogs",
+          "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/c251913d-7d24-4958-af87-478ed3b9ba41",
+          "parameters": {
+            "effect": {
+              "value": "[parameters('AuditForFlowLogsEffect')]"
+            }
+          },
+          "groupNames": [
+            "AUDIT"
+          ]
+        },
+        {
+            "policyDefinitionReferenceId": "RemediateNsgFlowLogs",
+            "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/5e1cd26a-5090-4fdb-9d6a-84a90335e22d",
+            "parameters":{
+              "effect": {
+                "value": "[parameters('RemediateNsgFlowLogsEffect')]"
+            },
+            "nsgRegion": { "value": "[parameters('nsgRegion')]" },
+            "storageId": { "value": "[parameters('storageId')]" },
+            "networkWatcherRG": { "value": "[parameters('networkWatcherRG')]" },
+            "networkWatcherName": { "value": "[parameters('networkWatcherName')]" },
+            "timeInterval": { "value": "[parameters('timeInterval')]" },
+            "workspaceResourceId": { "value": "[parameters('workspaceResourceId')]" },
+            "workspaceRegion": { "value": "[parameters('workspaceRegion')]" },
+            "workspaceId": { "value": "[parameters('workspaceId')]" },
+            "retentionDays":{ "value": "[parameters('retentionDays')]" }
+            },
+            "groupNames" :[
+                "REMEDIATE"
+            ]
+
+        }
+   ],
+      "policyDefinitionGroups": [
+        {
+            "name": "AUDIT",
+            "displayName": "Report on NSGs without the Flow Logs enabled"
+        },
+        {
+            "name": "REMEDIATE",
+            "displayName": "Remediate/Enable Flow Logs on NSGs"
+        }
+      ]
+    }
+  }

@@ -110,13 +110,13 @@ $DeploymentScriptOutputs["acceleratedNetworking"] = ($Sku.capabilities | Where-O
 # Availability Zone Validation
 if($Availability -eq 'AvailabilityZones' -and $Sku.locationInfo.zones.count -lt 3)
 {
-    Write-Error -Exception 'INVALID AVAILABILITY: The selected VM Size does not support availability zones in this Azure location. https://docs.microsoft.com/en-us/azure/virtual-machines/windows/create-powershell-availability-zone'
+    Write-Error -Exception 'INVALID AVAILABILITY: The selected VM Size does not support availability zones in this Azure location. https://docs.microsoft.com/azure/virtual-machines/windows/create-powershell-availability-zone'
 } 
 
 
 # AVD Object ID Output
 # This cannot be supported until a user-assigned identity can run Get-AzADServicePrincipal with Azure permissions
-# https://docs.microsoft.com/en-us/azure/virtual-desktop/start-virtual-machine-connect?tabs=azure-portal#assign-the-custom-role-with-the-azure-portal
+# https://docs.microsoft.com/azure/virtual-desktop/start-virtual-machine-connect?tabs=azure-portal#assign-the-custom-role-with-the-azure-portal
 <# if($StartVmOnConnect -eq 'true')
 {
     $AvdObjectId = (Get-AzADServicePrincipal -ApplicationId '9cdead84-a844-4324-93f2-b2e6bb768d07').Id
@@ -255,11 +255,11 @@ if(($StorageCount -ne $SecurityPrincipalIdsCount -or $StorageCount -ne $Security
 
 # vCPU Count Validation
 # Recommended range is 4 min, 24 max
-# https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/virtual-machine-recs?context=/azure/virtual-desktop/context/context
+# https://docs.microsoft.com/windows-server/remote/remote-desktop-services/virtual-machine-recs?context=/azure/virtual-desktop/context/context
 $vCPUs = [int]($Sku.capabilities | Where-Object {$_.name -eq 'vCPUs'}).value
 if($vCPUs -lt 4 -or $vCPUs -gt 24)
 {
-    Write-Error -Exception 'INVALID VCPU COUNT: The selected VM Size does not contain the appropriate amount of vCPUs for Azure Virtual Desktop. https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/virtual-machine-recs'
+    Write-Error -Exception 'INVALID VCPU COUNT: The selected VM Size does not contain the appropriate amount of vCPUs for Azure Virtual Desktop. https://docs.microsoft.com/windows-server/remote/remote-desktop-services/virtual-machine-recs'
 }
 
 

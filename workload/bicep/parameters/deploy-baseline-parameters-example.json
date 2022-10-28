@@ -14,6 +14,9 @@
         "avdManagementPlaneLocation": {
             "value": "eastus2"
         },
+        "avdDeployMonitoring": {
+            "value": true
+        },   
         "avdWorkloadSubsId": {
             "value": "<<subscriptionId>>"
         },
@@ -153,13 +156,25 @@
             "value": ""
         },
         "storageOuPath": {
-            "value": ""
+            "value": "<<ouPath>>"
         },
         "createOuForStorage": {
             "value": false
         },
         "createResourceTags": {
             "value": false
-        }        
+        },
+        "deployAlaWorkspace": {
+            "value": true
+        },   
+        "deployCustomPolicyMonitoring": {
+            "value": false
+        },  
+        "alaExistingWorkspaceResourceId": {
+            "value": "<<ExistingLogAnalyticsWorkspaceID>>"
+        },           
+        "avdAlaWorkspaceDataRetention": {
+            "value": 90
+        }    
     }
 }
