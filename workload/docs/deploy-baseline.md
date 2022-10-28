@@ -13,6 +13,9 @@
     - Azure Active Directory (AAD)
     - Active Directory (AD DS)
     - Azure AD Domain Services (AAD DS)
+  - **AVD users' role assignment** - This identities will be granted access to AVD application groups and when using AAD join VMs virtual machine user login role will be granted to compute resource group.
+    - Identity type - Select the type of identities that will be entered in the 'Identities ObjectIDs' field.
+    - Identities ObjectIDs - Comma separated list of identities (ObjectIDs) to be granted access to AVD published items and to create sessions on VMs and single sign-on (SSO) when using AAD as identity provider.
   - **When selecting AD DS or AAD DS:**
     - Domain - Your Active Directory domain like contoso.com
     - Domain join credentials The Username and password with rights to join computers to the domain
