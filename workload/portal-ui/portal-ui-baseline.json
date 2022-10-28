@@ -2042,7 +2042,6 @@
                 "environmentTypeTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsEnvironmentTypeTag, 'Dev')]",
                 "avdApplicationGroupIdentityType": "[steps('avdIdentity').avdIdentityAvdUserAccess.avdIdentityAccessTypes]",
                 "avdApplicationGroupIdentitiesIds": "[steps('avdIdentity').avdIdentityAvdUserAccess.avdIdentityAccessIds]"
-
             },
             "kind": "Subscription",
             "location": "[steps('basics').avdDeploymentScope.location.name]",
