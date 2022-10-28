@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "15029153636916044654"
+      "templateHash": "3206211182148834074"
     }
   },
   "parameters": {
@@ -294,14 +294,14 @@
     },
     "avdDeployMonitoring": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Deploy AVD monitoring resources and setings. (Default: true)"
       }
     },
     "deployAlaWorkspace": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Deploy AVD Azure log analytics workspace. (Default: true)"
       }
