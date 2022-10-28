@@ -147,7 +147,7 @@
             "value": false
         },
         "avdImageTemplateDefinitionId": {
-            "value": "<<imageID>>"
+            "value": ""
         },
         "storageOuPath": {
             "value": "<<ouPath>>"

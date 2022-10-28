@@ -131,7 +131,7 @@ var varNicDiagnosticMetricsToEnable = [
 // Deployments //
 // =========== //
 // Get key vault.
-resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = if (avdIdentityServiceProvider != 'AAD') {
     name: avdWrklKvName
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
 }
@@ -147,7 +147,8 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
         userAssignedIdentities: createAvdFslogixDeployment ? {
             '${fslogixManagedIdentityResourceId}': {}
         } : {}
-        availabilityZone: avdUseAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
+        systemAssignedIdentity: (avdIdentityServiceProvider == 'AAD') ? true: false
+        availabilityZone: avdUseAvailabilityZones ? take(skip(allAvailabilityZones, i % length(allAvailabilityZones)), 1) : []
         encryptionAtHost: encryptionAtHost
         availabilitySetName: !avdUseAvailabilityZones ? '${avdAvailabilitySetNamePrefix}-${padLeft(((1 + (i + avdSessionHostCountIndex) / maxAvailabilitySetMembersCount)), 3, '0')}': ''
         osType: 'Windows'
