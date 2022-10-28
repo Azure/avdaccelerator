@@ -2,7 +2,7 @@ resource "random_uuid" "example" {}
 
 # Create AVD workspace
 resource "azurerm_virtual_desktop_workspace" "workspace" {
-  name                = var.workspace
+  name                = "${var.workspace}-${substr(var.avdLocation, 0, 5)}-${var.prefix}" //var.workspace
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   friendly_name       = "${var.prefix} Workspace"
@@ -13,14 +13,19 @@ resource "azurerm_virtual_desktop_workspace" "workspace" {
 resource "azurerm_virtual_desktop_host_pool" "hostpool" {
   location                 = azurerm_resource_group.rg.location
   resource_group_name      = azurerm_resource_group.rg.name
-  name                     = var.hostpool
-  friendly_name            = var.hostpool
+  name                     = "${var.hostpool}-${substr(var.avdLocation, 0, 5)}-${var.prefix}" //var.hostpool
+  friendly_name            = "${var.hostpool}-${substr(var.avdLocation, 0, 5)}-${var.prefix}" //var.hostpool
   validate_environment     = true
   custom_rdp_properties    = "drivestoredirect:s:*;audiomode:i:0;videoplaybackmode:i:1;redirectclipboard:i:1;redirectprinters:i:1;devicestoredirect:s:*;redirectcomports:i:1;redirectsmartcards:i:1;usbdevicestoredirect:s:*;enablecredsspsupport:i:1;use multimon:i:1"
   description              = "${var.prefix} Pooled HostPool"
   type                     = "Pooled"
   maximum_sessions_allowed = 16
   load_balancer_type       = "DepthFirst" #[BreadthFirst DepthFirst]
+
+
+  depends_on = [
+    azurerm_resource_group.rg
+  ]
 }
 
 #Autoscale is currently only available in the public cloud.
@@ -29,7 +34,7 @@ data "azurerm_role_definition" "power_role" {
 }
 
 data "azuread_service_principal" "spn" {
-  display_name = "Azure Virtual Desktop"
+  application_id = "9cdead84-a844-4324-93f2-b2e6bb768d07"
 }
 
 resource "azurerm_role_assignment" "power" {
@@ -43,7 +48,7 @@ resource "azurerm_role_assignment" "power" {
 
 # autoscale settings scenario 1 https://docs.microsoft.com/azure/virtual-desktop/autoscale-scenarios
 resource "azurerm_virtual_desktop_scaling_plan" "scplan" {
-  name                = var.scplan
+  name                = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.scplan}" //var.scplan
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   friendly_name       = "Scaling Plan Example"
@@ -111,7 +116,7 @@ resource "azurerm_virtual_desktop_application_group" "dag" {
   resource_group_name = azurerm_resource_group.rg.name
   host_pool_id        = azurerm_virtual_desktop_host_pool.hostpool.id
   type                = "Desktop"
-  name                = var.dag
+  name                = "${var.dag}-${substr(var.avdLocation, 0, 5)}-${var.prefix}" //var.dag
   friendly_name       = "Desktop AppGroup"
   description         = "AVD Desktop application group"
   depends_on          = [azurerm_virtual_desktop_host_pool.hostpool, azurerm_virtual_desktop_workspace.workspace]
@@ -144,18 +149,9 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
   log_analytics_workspace_id = data.azurerm_log_analytics_workspace.lawksp.id
 
   depends_on = [
-    data.azurerm_log_analytics_workspace.lawksp
+    data.azurerm_log_analytics_workspace.lawksp,
+    azurerm_virtual_desktop_host_pool.hostpool
   ]
-
-  log {
-    category = "AgentHealthStatus"
-    enabled  = true
-
-    retention_policy {
-      days    = 7
-      enabled = true
-    }
-  }
 
   log {
     category = "Checkpoint"
@@ -166,8 +162,9 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
       enabled = true
     }
   }
+
   log {
-    category = "Connection"
+    category = "Error"
     enabled  = true
 
     retention_policy {
@@ -176,7 +173,17 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
     }
   }
   log {
-    category = "Error"
+    category = "Management"
+    enabled  = true
+
+    retention_policy {
+      days    = 7
+      enabled = true
+    }
+  }
+
+  log {
+    category = "Connection"
     enabled  = true
 
     retention_policy {
@@ -193,8 +200,9 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
       enabled = true
     }
   }
+
   log {
-    category = "Management"
+    category = "AgentHealthStatus"
     enabled  = true
 
     retention_policy {
@@ -223,9 +231,6 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
     }
   }
 }
-
-
-
 
 # Create Diagnostic Settings for AVD Desktop App Group
 resource "azurerm_monitor_diagnostic_setting" "avd-dag1" {

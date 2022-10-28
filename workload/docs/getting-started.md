@@ -8,14 +8,15 @@ This accelerator is to be used as starter kit and you can expand its functionali
 
 Prior to deploying, you need to ensure you have met the following prerequisites:
 
-- It is recommended to have already deployed an ALZ architecture (not mandatory) from a template reference implementation available. See [Deploying Enterprise-Scale Architecture in your own environment](https://github.com/Azure/Enterprise-Scale#deploying-enterprise-scale-architecture-in-your-own-environment).
-- Access to the AVD Azure subscription(s) with owner permissions.
+- It is recommended to have already deployed an ALZ architecture (not mandatory) from a template reference implementation available. See [Deploying Enterprise-Scale Architecture in your own environment](https://github.com/Azure/Enterprise-Scale#deploying-enterprise-scale-architecture-in-your-own-environment)
+- Access to the AVD Azure subscription(s) with owner permissions
 - Azure AD Connect is already configured and users are already synchronized from AD DS to Azure AD
-- The account used for the deployment and the Active Directory Domain Join account cannot have multi-factor authentication (MFA) enabled.
-- The Domain Controllers used for AD join purposes should be standard writable Domain Controllers, not Read Only Domain Controllers.
-- You have the appropriate [licenses](https://docs.microsoft.com/azure/virtual-desktop/prerequisites#operating-systems-and-licenses) for proper AVD entitlement.
-- If the new AVD workload will be connected (peered) with a Hub VNet, contributor permissions are required on the referenced Hub VNet.
-- If using existing Virtual Networks, the deployment will fail if Private Endpoint policies are enabled. See the following article on disabling them: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy )
+- The account used for the deployment and the Active Directory Domain Join account cannot have multi-factor authentication (MFA) enabled
+- The Domain Controllers used for AD join purposes should be standard writable Domain Controllers, not Read Only Domain Controllers
+- You have the appropriate [licenses](https://docs.microsoft.com/azure/virtual-desktop/prerequisites#operating-systems-and-licenses) for proper AVD entitlement
+- If the new AVD workload will be connected (peered) with a Hub VNet, contributor permissions are required on the referenced Hub VNet
+- If using existing Virtual Networks, the deployment will fail if Private Endpoint policies are enabled. See the following article on disabling them: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy)
+- Private DNS zones for Azure files (privatelink.file.core.windows.net) and keyvault private (privatelink.vaultcore.azure.net) endpoints resolution.
 
 ### Subscription requirements
 
@@ -23,7 +24,6 @@ Prior to deploying, you need to ensure you have met the following prerequisites:
 - The user or service principal must have rights at the tenant root as described here: [EnterpriseScale-Setup](https://github.com/Azure/Enterprise-Scale/blob/main/docs/EnterpriseScale-Setup-azure.md)
 - The [Microsoft.DesktopVirtualization](https://docs.microsoft.com/azure/virtual-desktop/create-host-pools-azure-marketplace?tabs=azure-portal#final-requirements) resource provider must be registered in subscription(s) to be used for deployment.
 - You will need the ObjectId of the **Windows Virtual Desktop** Enterprise Application (with Application Id **9cdead84-a844-4324-93f2-b2e6bb768d07**). This ObjectId is unique for each tenant and is used to give permissions for the [Start VM on Connect](https://docs.microsoft.com/azure/virtual-desktop/start-virtual-machine-connect) feature.
-
 
 ## Planning
 
@@ -43,14 +43,14 @@ In the Brownfield scenario, the automation framework will deploy the solution us
 
 ## Deployment Options
 
-The templates and scripts need to be executed from an execution environment, the currently available are:
+The templates and scripts need to be executed from an execution environment, the currently available options are:
 
-|                                      |                           |
-|:-------------------------------------|:------------------------: |
-|Azure portal UI - AVD Baseline        |[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json)      |
-|Azure portal UI - Custom Image (Optional)                   |[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json)   |
-|Command line (Bicep/ARM)              |[![Powershell/Azure CLI](./icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/readme.md)          |
-|Terraform                             |[![Terraform](./icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md)                  |
+| Deployment Type | Link |
+|:--|:--|
+| Azure portal UI - AVD Baseline |[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json) |
+| Azure portal UI - Custom Image (Optional) |[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json) |
+| Command line (Bicep/ARM) |[![Powershell/Azure CLI](./icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/readme.md) |
+| Terraform |[![Terraform](./icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md) |
 
 <!-- ## AVD Landing Zone: Greenfield Deployment
 
@@ -69,18 +69,18 @@ It is preferable to have a new subscriptions for each deployment respectively, a
 This [diagram](/workload/docs/diagrams/avd-accelerator-resource-organization-naming.png) is an example of the Azure resources and organization created with this reference implementation. The following input values were used in this example:
 
 - **AVD baseline deployment**:
-	- *avdWorkloadSubsId*: ID for Subscription name: Subscription AVD LZ
-	- *deploymentPrefix*: app1
-	- *avdManagementPlaneLocation*: East US 2
-	- *avdSessionHostLocation*: East US 2
-	- *avdUseCustomNaming*: false
-	- *Unique string*: a1b2c3 (6 characters string calculated by the deployment)
+  - `avdWorkloadSubsId`: ID for Subscription name: Subscription AVD LZ
+  - `deploymentPrefix`: app1
+  - `avdManagementPlaneLocation`: East US 2
+  - `avdSessionHostLocation`: East US 2
+  - `avdUseCustomNaming`: false
+  - `Unique string`: a1b2c3 (6 characters string calculated by the deployment)
 
 - **Custom image deployment**:
-	- *avdSharedServicesLocation*: East US 2
-	- *avdSharedServicesSubId*:  ID for Subscription name: Subscription AVD Shared Services
-	- *avdUseCustomNaming*: false
-	- *Unique string*: a1b2c3 (6 characters string calculated by the deployment)
+  - `avdSharedServicesLocation`: East US 2
+  - `avdSharedServicesSubId`:  ID for Subscription name: Subscription AVD Shared Services
+  - `avdUseCustomNaming`: false
+  - `Unique string`: a1b2c3 (6 characters string calculated by the deployment)
 
 ## Naming standard
 
@@ -90,6 +90,7 @@ To learn more about the resource naming used in this accelerator take a look at 
 
 ## Next Steps
 
-Continue with: 
-1. [Custom image deployment (optional)](./deploy-custom-image.md) to build an updated and optimized image or 
+Continue with:
+
+1. [Custom image deployment (optional)](./deploy-custom-image.md) to build an updated and optimized image; or
 2. [AVD accelerator baseline deployment](./deploy-baseline.md) if you are ready to deploy an AVD workload from the market place, an updated and optimized image previously created by the custom image deployment, or the the Azure market place or from an Azure Compute Gallery.

@@ -8,9 +8,6 @@
         "avdUseCustomNaming": {
             "value": false
         },
-        "avdServiceObjectsRgCustomName": {
-            "value": "<<avdServiceObjectsRgCustomName>>"
-        },
         "avdSessionHostLocation": {
             "value": "eastus2"
         },
@@ -33,16 +30,25 @@
             "value": "<<localUserPassword>>"
         },
         "avdIdentityServiceProvider": {
-            "value": "<<domainName>>"
+            "value": "<<IdentityServiceProviderType>>"
         },     
+        "createIntuneEnrollment": {
+            "value": false
+        },            
+        "avdApplicationGroupIdentitiesIds": {
+            "value": ""
+        },           
+        "avdApplicationGroupIdentityType": {
+            "value": "Group"
+        },       
         "avdIdentityDomainName": {
-            "value": "<<domainName>>"
+            "value": ""
         },
         "avdDomainJoinUserName": {
-            "value": "<<domainJoinUserName>>"
+            "value": ""
         },
         "avdDomainJoinUserPassword": {
-            "value": "<<domainJoinUserPassword>>"
+            "value": ""
         },
         "avdOuPath": {
             "value": ""
@@ -81,7 +87,7 @@
             "value": ""
         },
         "existingHubVnetResourceId": {
-            "value": "<<hubVnetResourceId>>"
+            "value": ""
         },
         "avdVnetworkAddressPrefixes": {
             "value": "10.10.0.0/23"
@@ -90,16 +96,16 @@
             "value": "10.10.0.0/23"
         },
         "customDnsIps": {
-            "value": "<<customDnsIp>>"
+            "value": "none"
         },
         "avdVnetPrivateDnsZone": {
-            "value": false
+            "value": true
         },
         "avdVnetPrivateDnsZoneFilesId": {
-            "value": ""
+            "value": "<<PrivateDnsZoneFilesId>>"
         },
         "avdVnetPrivateDnsZoneKeyvaultId": {
-            "value": ""
+            "value": "<<PrivateDnsZoneKeyvaultId>>"
         },
         "vNetworkGatewayOnHub": {
             "value": false
@@ -108,7 +114,7 @@
             "value": true
         },
         "avdFslogixFileShareQuotaSize": {
-            "value": 512
+            "value": 10
         },
         "avdDeploySessionHosts": {
             "value": true
