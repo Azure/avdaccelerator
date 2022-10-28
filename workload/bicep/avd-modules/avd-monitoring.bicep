@@ -65,6 +65,29 @@ module avdAlaWorkspace '../../../carml/1.2.1/Microsoft.OperationalInsights/works
   ]
 }
 
+// Introduce delay for management VM to be ready.
+module avdAlaWorkspaceDelay '../../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (deployAlaWorkspace) {
+  scope: resourceGroup('${avdWorkloadSubsId}', '${avdMonitoringRgName}')
+  name: 'AVD-ALA-Workspace-Delay-${time}'
+  params: {
+      name: 'AVD-avdAlaWorkspaceDelay-${time}'
+      location: avdManagementPlaneLocation
+      azPowerShellVersion: '6.2'
+      cleanupPreference: 'Always'
+      timeout: 'PT10M'
+      scriptContent: '''
+      Write-Host "Start"
+      Get-Date
+      Start-Sleep -Seconds 120
+      Write-Host "Stop"
+      Get-Date
+      '''
+  }
+  dependsOn: [
+    avdAlaWorkspace
+  ]
+}
+
 // Policy definitions.
 
 module deployDiagnosticsAzurePolicyForAvd 'avd-azure-policy-monitoring.bicep' = if (deployCustomPolicyMonitoring) {
