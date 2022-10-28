@@ -154,7 +154,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
             '${fslogixManagedIdentityResourceId}': {}
         } : {}
         systemAssignedIdentity: (avdIdentityServiceProvider == 'AAD') ? true: false
-        availabilityZone: avdUseAvailabilityZones ? take(skip(allAvailabilityZones, i % length(allAvailabilityZones)), 1) : []
+        availabilityZone: avdUseAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
         encryptionAtHost: encryptionAtHost
         availabilitySetName: !avdUseAvailabilityZones ? '${avdAvailabilitySetNamePrefix}-${padLeft(((1 + (i + avdSessionHostCountIndex) / maxAvailabilitySetMembersCount)), 3, '0')}': ''
         osType: 'Windows'
