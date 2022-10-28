@@ -68,7 +68,7 @@
                             "visible": true,
                             "options": {
                                 "text": "Azure AVD Landing Zones ARM deployment requires owner access at the subscription scope. Visit this link to get more information on RBAC permissions and scopes.",
-                                "uri": "https://docs.microsoft.com/en-us/azure/role-based-access-control/scope-overview",
+                                "uri": "https://docs.microsoft.com/azure/role-based-access-control/scope-overview",
                                 "style": "Warning"
                             }
                         }
@@ -380,7 +380,7 @@
                             "visible": true,
                             "options": {
                                 "text": "Select the location where management plane resources (workspace, host pool, application groups) will be deployed, this resources are not available in all locations but are globally replicated and they can share the same location as the session hosts or not.",
-                                "uri": "https://docs.microsoft.com/en-us/azure/virtual-desktop/data-locations",
+                                "uri": "https://docs.microsoft.com/azure/virtual-desktop/data-locations",
                                 "style": "Info"
                             }
                         },
@@ -421,7 +421,7 @@
                                     "options": {
                                         "icon": "Warning",
                                         "text": "Host pool type can not be changed after deployment.",
-                                        "uri": "https://docs.microsoft.com/en-us/azure/virtual-desktop/environment-setup"
+                                        "uri": "https://docs.microsoft.com/azure/virtual-desktop/environment-setup"
                                     }
                                 },
                                 {
@@ -602,7 +602,7 @@
                                     "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
                                     "options": {
                                         "text": "Session hosts can be excluded from the scaling plan by assigning the tag name Exclude-avdScalingPlanName, if not using custom resource naming and example of default tag name is Exclude-vdscaling-eus2-app1-001.",
-                                        "uri": "https://docs.microsoft.com/en-us/azure/virtual-desktop/autoscale-scenarios#scenario-4-how-do-exclusion-tags-work",
+                                        "uri": "https://docs.microsoft.com/azure/virtual-desktop/autoscale-scenarios#scenario-4-how-do-exclusion-tags-work",
                                         "style": "Info"
                                     }
                                 },
@@ -612,7 +612,7 @@
                                     "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneHostPoolScaling.createVmRole, false)]",
                                     "options": {
                                         "text": "Start VM on Connect will not work without a custom role definition. If you enable start on connect, but do not specify a custom role VM's will not start on-demand. Only select no if this custom role already exists and is assigned to your AVD subscription.",
-                                        "uri": "https://docs.microsoft.com/en-us/azure/virtual-desktop/start-virtual-machine-connect",
+                                        "uri": "https://docs.microsoft.com/azure/virtual-desktop/start-virtual-machine-connect",
                                         "style": "Warning"
                                     }
                                 }
@@ -1236,6 +1236,120 @@
                     ]
                 },
                 {
+                    "name": "avdMonitoring",
+                    "label": "Monitoring",
+                    "type": "Microsoft.Common.Section",
+                    "visible": true,
+                    "elements": [
+                        {
+                            "name": "avdDeployMonitoring",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": true,
+                            "label": "Deploy monitoring",
+                            "defaultValue": "Yes (Recommended)",
+                            "toolTip": "Deploy monitoring settings and if selected deploy Azure log analytics workspace.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "Yes (Recommended)",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "No",
+                                        "value": false
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "avdDeployMonitoringInfo1",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[equals(steps('avdMonitoring').avdDeployMonitoring, true)]",
+                            "options": {
+                                "text": "Azure Virtual Desktop monitoring requires an existing Azure Log Analytics Workspace or the creation of a new one.",
+                                "uri": "https://docs.microsoft.com/azure/virtual-desktop/azure-monitor",
+                                "style": "Info"
+                            }
+                        },
+                        {
+                            "name": "avdDeployMonitoringInfo2",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[equals(steps('avdMonitoring').avdDeployMonitoring, true)]",
+                            "options": {
+                                "text": "Deployment will configured all required settings to use the AVD insights workbook.",
+                                "uri": "https://learn.microsoft.com/azure/virtual-desktop/azure-monitor?WT.mc_id=Portal-AppInsightsExtension",
+                                "style": "Info"
+                            }
+                        },
+                        {
+                            "name": "avdDeployMonitoringAlaWorkspace",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": "[equals(steps('avdMonitoring').avdDeployMonitoring, true)]",
+                            "label": "Log analytics workspace",
+                            "defaultValue": "New",
+                            "toolTip": "Deploy monitoring settings and if selected deploy Azure log analytics workspace.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "New",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "Existing",
+                                        "value": false
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "avdDeployMonitoringNewAlaWorkspaceRetention",
+                            "type": "Microsoft.Common.TextBox",
+                            "visible": "[equals(steps('avdMonitoring').avdDeployMonitoringAlaWorkspace, true)]", 
+                            "label": "Retention policy (Days)",
+                            "toolTip": "Number of days data will be retained in the workspace.",
+                            "defaultValue": 90,
+                            "constraints": {
+                                "required": true,
+                                "regex": "^[a-z0-9A-Z-]{1,90}$",
+                                "validationMessage": "Value must be 1-90 characters."
+                            }
+                        },
+                        {
+                            "name": "avdAlaWorkspaceExistingWorkspacesSelection",
+                            "type": "Microsoft.Solutions.ResourceSelector",
+                            "visible": "[equals(steps('avdMonitoring').avdDeployMonitoringAlaWorkspace, false)]", 
+                            "label": "Existing workspace",
+                            "resourceType": "Microsoft.OperationalInsights/workspaces",
+                            "constraints": {
+                                "required": true
+                            }
+                        },
+                        {
+                            "name": "avdDeployMonitoringPolicies",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": "[equals(steps('avdMonitoring').avdDeployMonitoring, true)]",
+                            "label": "Deploy monitoring policies (subscription level)",
+                            "defaultValue": "No",
+                            "toolTip": "Deploy monitoring policy and policy set definitions to set diagnostic settings on new deployed resources.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "Yes",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "No",
+                                        "value": false
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
                     "name": "avdResourceNaming",
                     "label": "Resource naming",
                     "type": "Microsoft.Common.Section",
@@ -1278,7 +1392,7 @@
                             "visible": "[equals(steps('avdResourceNaming').avdResourceNamingSelection, true)]",
                             "options": {
                                 "text": "When using custom naming for resources, please make sure to follow naming rules and restrictions for Azure resources.",
-                                "uri": "https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules",
+                                "uri": "https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules",
                                 "style": "Warning"
                             }
                         },
@@ -1581,12 +1695,55 @@
                             ]
                         },
                         {
+                            "name": "avdResourceNamingMonitoring",
+                            "type": "Microsoft.Common.Section",
+                            "label": "Monitoring naming:",
+                            "visible": "[equals(steps('avdResourceNaming').avdResourceNamingSelection, true)]",
+                            "elements": [
+                                {
+                                    "name": "avdResourceNamingMonitoringInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('avdMonitoring').avdDeployMonitoring, false)]",
+                                    "options": {
+                                        "text": "Current deployment configuration is not creating monitoring resources.",
+                                        "style": "Info"
+                                    }
+                                },
+                                {
+                                    "name": "avdMonitoringObjectsRgCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Resource group",
+                                    "visible": "[equals(steps('avdMonitoring').avdDeployMonitoring, true)]",
+                                    "toolTip": "AVD monitoring resources (log analytics workspace) resource group custom name.",
+                                    "placeholder": "Example: rg-avd-use2-monitoring",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
+                                        "validationMessage": "Value must be 1-90 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdMonitoringLogAnalyticsWorkspaceName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Log analytics workspace name",
+                                    "visible": "[equals(steps('avdMonitoring').avdDeployMonitoring, true)]",
+                                    "toolTip": "AVD monitoring log analytics workspace custom name.",
+                                    "placeholder": "Example: log-avd-use2",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
+                                        "validationMessage": "Value must be 1-90 characters."
+                                    }
+                                }
+                            ]
+                        },
+                        {
                             "name": "avdResourceNamingInfo2",
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
                                 "text": "AVD accelerator has built-in resource naming automation based and best practices Microsoft Cloud Adoption Framework (CAF) naming convention.",
-                                "uri": "https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming",
+                                "uri": "https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming",
                                 "style": "Info"
                             }
                         },
@@ -1596,7 +1753,7 @@
                             "visible": true,
                             "options": {
                                 "text": "And abbreviations recommendations for Azure resource types.",
-                                "uri": "https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations",
+                                "uri": "https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations",
                                 "style": "Info"
                             }
                         }

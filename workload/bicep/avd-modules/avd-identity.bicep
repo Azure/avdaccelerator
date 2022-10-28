@@ -101,7 +101,7 @@ module startVMonConnectRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/
   name: 'Start-VM-OnConnect-RoleAssign-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
   params: {
-    roleDefinitionIdOrName: createStartVmOnConnectCustomRole ? startVMonConnectRole.outputs.resourceId : ''
+    roleDefinitionIdOrName: createStartVmOnConnectCustomRole ? startVMonConnectRole.outputs.resourceId : '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${avdVmPowerStateContributor}'
     principalId: avdEnterpriseAppObjectId
   }
   dependsOn: [
