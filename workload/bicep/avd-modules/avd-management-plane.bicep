@@ -15,6 +15,12 @@ param avdTimeZone string
 @description('Required, The service providing domain services for Azure Virtual Desktop.')
 param avdIdentityServiceProvider string
 
+@description('Required, Identity ID to grant RBAC role to access AVD application group.')
+param avdApplicationGroupIdentitiesIds array
+
+@description('Optional, Identity type to grant RBAC role to access AVD application group. (Defualt: "")')
+param avdApplicationGroupIdentityType string
+
 @description('AVD Resource Group Name for the service objects.')
 param avdServiceObjectsRgName string
 
@@ -133,6 +139,13 @@ module avdApplicationGroups '../../../carml/1.2.0/Microsoft.DesktopVirtualizatio
     applicationGroupType: applicationGroup.applicationGroupType
     hostpoolName: avdHostPool.outputs.name
     tags: avdTags
+    roleAssignments: !empty(avdApplicationGroupIdentitiesIds) ? [
+      {
+      roleDefinitionIdOrName: 'Desktop Virtualization User'
+      principalIds: avdApplicationGroupIdentitiesIds
+      principalType: avdApplicationGroupIdentityType
+      }
+    ]: []     
   }
   dependsOn: [
     avdHostPool
@@ -161,7 +174,7 @@ module avdWorkSpace '../../../carml/1.2.0/Microsoft.DesktopVirtualization/worksp
 }
 
 // Scaling plan.
-module avdScalingPlan '../../../carml/1.2.0/Microsoft.DesktopVirtualization/scalingplans/deploy.bicep' = if (avdDeployScalingPlan && (avdHostPoolType == 'Pooled'))  {
+module avdScalingPlan '../../../carml/1.2.0/Microsoft.DesktopVirtualization/scalingplans/deploy.bicep' =  if (avdDeployScalingPlan && (avdHostPoolType == 'Pooled'))  {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
   name: 'Deploy-AVD-ScalingPlan-${time}'
   params: {
