@@ -4,7 +4,7 @@ This guide is designed to help you get started with deploying Azure Virtual Desk
 
 This accelerator is to be used as starter kit and you can expand its functionality by developing your own deployments. This scenario deploys a new Azure Virtual Desktop workload, so it cannot be used to maintain, modify or add resources to an existing or already deployed Azure Virtual Desktop workload from this accelerator.
 
-***Note*** This terraform accelerator requires the Custom Image Build before deploying the Baseline. If you prefer to use the marketplace image with no customization [see](https://docs.microsoft.com/azure/developer/terraform/create-avd-session-host)
+***Note*** This terraform accelerator requires the Custom Image Build before deploying the Baseline. If you prefer to use the marketplace image with no customization [see](https://docs.microsoft.com/en-us/azure/developer/terraform/create-avd-session-host)
 
 ## Table of Contents
 
@@ -12,7 +12,6 @@ This accelerator is to be used as starter kit and you can expand its functionali
 - [Planning](#planning)
 - [AVD Spoke Network](#AVD-Network)
 - [AVD Baseline](#AVD-Baseline)   
-- [Custom Image Build](#Custom-Image-Build)    
 - [Backend Setup](#Backends)  
 - [Terraform file Structure](#Files)  
 
@@ -22,9 +21,10 @@ To get started with Terraform on Azure check out their [tutorial](https://learn.
 ## Prerequisites
 
 - Meet the prerequisites listed [here](https://github.com/Azure/avdaccelerator/wiki/Getting-Started#Getting-Started)
-- Current version of the [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli)
+- Current version of the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 - Current version of the Terraform CLI
-- An Azure Subscription(s) where you or an identity you manage has `Owner` [RBAC permissions](https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner)
+- An Azure Subscription(s) where you or an identity you manage has `Owner` [RBAC permissions](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#owner)
+- Ensure Encrption at Host feature is already enabled on the subscription. To enable: az feature register --name EncryptionAtHost  --namespace Microsoft.Compute. To validate: az feature show --name EncryptionAtHost --namespace Microsoft.Compute
 
 ## Planning
 
@@ -111,13 +111,6 @@ Validated on provider versions:
 
 ![AVD Baseline diagram](../../../docs/diagrams/avd-accelerator-terraform-baseline-image.png)
 
-
-## Custom-Image-Build
-
-Deploy a customer image based on the latest version of the Azure Marketplace image for Windows 11 21H2 with M365 using Azure Image Builder to an Azure Compute Gallery. The custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates.
-
-![Custom Image diagram](../../../docs/diagrams/avd-accelerator-terraform-aib-custom-image.png)
-
 ## Backends
 
 The default templates write a state file directly to disk locally to where you are executing terraform from. If you wish to AzureRM backend please see [AzureRM Backend](https://www.terraform.io/docs/language/settings/backends/azurerm.html). This deployment highlights using Azure Blog Storage to store state file and Key Vault
@@ -128,7 +121,7 @@ The default templates write a state file directly to disk locally to where you a
 <summary>Click to expand</summary>
 #### Using Azure CLI
 
-[Store state in Azure Storage](https://docs.microsoft.com/azure/developer/terraform/store-state-in-azure-storage)
+[Store state in Azure Storage](https://docs.microsoft.com/en-us/azure/developer/terraform/store-state-in-azure-storage)
 
 ```cli
 RESOURCE_GROUP_NAME=tstate
@@ -166,7 +159,7 @@ echo "access_key: $ACCOUNT_KEY"
 
 ### Create a key vault
 
-[Create Key Vault](https://docs.microsoft.com/azure/key-vault/secrets/quick-create-cli)
+[Create Key Vault](https://docs.microsoft.com/en-us/azure/key-vault/secrets/quick-create-cli)
 
 ```cli
 az keyvault create --name "<Azure Virtual Desktopkeyvaultdemo>" --resource-group $RESOURCE_GROUP_NAME --location "<East US>"
@@ -179,17 +172,6 @@ az keyvault secret set --vault-name "<Azure Virtual Desktopkeyvaultdemo>" --name
 ```
 
 </details>
-
-## Files
-
-The Custom Image Terraform files structure:
-| file Name           | Description                                                  |
-| ------------------- | ------------------------------------------------------------ |
-| aib.tf              | This file deploys Azure Image Builder and Compute Gallery |
-| outputs.tf          | This will contains the outputs post deployment |
-| variables.tf        | Variables have been created in all files for various properties and names, these are placeholders and are not required to be changed unless there is a need to. See below |
-| terraform.tfvars    | This file contains all variables to be changed from the defaults, you are only required to change these as per your requirements |
-
 ## Deployment Steps
 
 1. Modify the `terraform.tfvars` file to define the desired names, location, networking, and other variables
@@ -211,8 +193,8 @@ The Custom Image Terraform files structure:
 - [Powershell VS Code Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.PowerShell)
 - [HashiCorp Terraform VS Code Extension](https://marketplace.visualstudio.com/items?itemName=HashiCorp.terraform)
 - [Azure Terraform VS Code Extension Name](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azureterraform)
-- [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli-windows?tabs=azure-cli)
-- [Configure the Azure Terraform Visual Studio Code extension](https://docs.microsoft.com/azure/developer/terraform/configure-vs-code-extension-for-terraform)
+- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli)
+- [Configure the Azure Terraform Visual Studio Code extension](https://docs.microsoft.com/en-us/azure/developer/terraform/configure-vs-code-extension-for-terraform)
 - [Setup video](https://youtu.be/YmbmpGdhI6w)
 
 </details>
