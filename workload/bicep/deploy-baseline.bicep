@@ -531,7 +531,7 @@ var varAvdFslogixProfileContainerFileShareName = avdUseCustomNaming ? avdFslogix
 var varAvdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}' : 'stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}'
 var varAvdWrklStoragePrivateEndpointName = 'pe-stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}-file'
 var varManagementVmName = 'vm-mgmt-${varDeploymentPrefixLowercase}'
-var varAvdAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}' //'log-avd-${varAvdManagementPlaneLocationAcronym}'
+var varAvdAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${varAvdManagementPlaneLocationAcronym}' //'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
 var varStgAccountForFlowLogsName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}' : 'stavd${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}'
 //
 var varAvdScalingPlanSchedules = [
@@ -699,12 +699,14 @@ var varTelemetryId = 'pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-${avdManagementPl
 
 var resourceGroups = [
     {
+        purpose: 'Service-Objects'
         name: varAvdServiceObjectsRgName
         location: avdManagementPlaneLocation
         enableDefaultTelemetry: false
         tags: createResourceTags ? varCommonResourceTags : {}
     }
     {
+        purpose: 'Pool-Compute'
         name: varAvdComputeObjectsRgName
         location: avdSessionHostLocation
         enableDefaultTelemetry: false
@@ -750,7 +752,7 @@ module avdBaselineNetworkResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
 // Compute, service objects
 module avdBaselineResourceGroups '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = [for resourceGroup in resourceGroups: {
     scope: subscription(avdWorkloadSubsId)
-    name: 'Deploy-${substring(resourceGroup.name, 10)}-${time}'
+    name: 'Deploy-AVD-${resourceGroup.purpose}-${time}'
     params: {
         name: resourceGroup.name
         location: resourceGroup.location
