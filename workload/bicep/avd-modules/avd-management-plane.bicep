@@ -173,7 +173,7 @@ module avdApplicationGroups '../../../carml/1.2.0/Microsoft.DesktopVirtualizatio
       principalIds: avdApplicationGroupIdentitiesIds
       principalType: avdApplicationGroupIdentityType
       }
-    ]: []    
+    ]: []     
   }
   dependsOn: [
     avdHostPool
