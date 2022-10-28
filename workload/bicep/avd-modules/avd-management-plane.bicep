@@ -105,8 +105,10 @@ var varApplicationApplicationGroups = [
     applicationGroupType: 'RemoteApp'
   }
 ]
-var varAvdHostPoolRdpPropertiesDomainServiceCheck = (avdIdentityServiceProvider == 'AAD') ? '${avdHostPoolRdpProperties}targetisaadjoined:i:1' : avdHostPoolRdpProperties
-var varFinalApplicationGroups = avdDeployRappGroup ? concat(varDesktopApplicaitonGroups, varApplicationApplicationGroups) : varDesktopApplicaitonGroups
+//var varAvdHostPoolRdpPropertiesDomainServiceCheck = (avdIdentityServiceProvider == 'AAD') ? '${avdHostPoolRdpProperties}targetisaadjoined:i:1' : avdHostPoolRdpProperties
+var avdHostPoolRdpPropertiesDomainServiceCheck = (avdIdentityServiceProvider == 'AAD') ? '${avdHostPoolRdpProperties};targetisaadjoined:i:1;enablerdsaadauth:i:1' : avdHostPoolRdpProperties
+//var varFinalApplicationGroups = avdDeployRappGroup ? concat(varDesktopApplicaitonGroups, varApplicationApplicationGroups) : varDesktopApplicaitonGroups
+var finalApplicationGroups = avdDeployRappGroup ? concat(desktopApplicaitonGroups, applicationApplicationGroups) : desktopApplicaitonGroups
 var varAvdHostPoolDiagnostic = [
   'Checkpoint'
   'Error'
@@ -167,6 +169,13 @@ module avdApplicationGroups '../../../carml/1.2.0/Microsoft.DesktopVirtualizatio
     applicationGroupType: applicationGroup.applicationGroupType
     hostpoolName: avdHostPool.outputs.name
     tags: avdTags
+    roleAssignments: !empty(avdApplicationGroupIdentitiesIds) ? [
+      {
+      roleDefinitionIdOrName: 'Desktop Virtualization User'
+      principalIds: avdApplicationGroupIdentitiesIds
+      principalType: avdApplicationGroupIdentityType
+      }
+    ]: []    
     diagnosticWorkspaceId: avdAlaWorkspaceResourceId
     diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
     diagnosticLogCategoriesToEnable: varAvdApplicationGroupDiagnostic
