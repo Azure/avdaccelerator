@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "17306896440916283578"
+      "templateHash": "1258505622176026314"
     }
   },
   "parameters": {
@@ -21444,7 +21444,7 @@
             "value": "[parameters('fslogixStorageSku')]"
           },
           "marketPlaceGalleryWindowsManagementVm": {
-            "value": "[variables('varMarketPlaceGalleryWindows').winServer_2022_Datacenter]"
+            "value": "[variables('varMarketPlaceGalleryWindows')[parameters('avdOsImage')]]"
           },
           "subnetResourceId": {
             "value": "[if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time'))), '2020-10-01').outputs.avdVirtualNetworkResourceId.value, variables('varAvdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId'))]"
@@ -21472,7 +21472,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "14616703793424466306"
+              "templateHash": "5710016721833536576"
             }
           },
           "parameters": {
@@ -24882,7 +24882,7 @@
                     "value": "[parameters('avdSessionHostsSize')]"
                   },
                   "imageReference": {
-                    "value": "[parameters('marketPlaceGalleryWindowsManagementVm')]"
+                    "value": "[if(parameters('useSharedImage'), json(format('{{''id'': ''{0}''}}', parameters('avdImageTemplateDefinitionId'))), parameters('marketPlaceGalleryWindowsManagementVm'))]"
                   },
                   "osDisk": {
                     "value": {
