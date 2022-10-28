@@ -219,8 +219,7 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
         osType: 'Windows'
         //licenseType: 'Windows_Client'
         vmSize: avdSessionHostsSize
-        //imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinitionId}\'}') : marketPlaceGalleryWindows
-        imageReference: marketPlaceGalleryWindowsManagementVm
+        imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinitionId}\'}') : marketPlaceGalleryWindows
         osDisk: {
             createOption: 'fromImage'
             deleteOption: 'Delete'
