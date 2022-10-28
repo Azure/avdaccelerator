@@ -81,8 +81,14 @@ param avdStartVmOnConnect bool
 @description('Required. Tags to be applied to resources')
 param avdTags object
 
-@description('Required. Tag to exclude resources from scaling plan. ')
+@description('Required. Tag to exclude resources from scaling plan.')
 param avdScalingPlanExclusionTag string
+
+@description('Optional. Log analytics workspace for diagnostic logs.')
+param avdAlaWorkspaceResourceId string
+
+@description('Optional. Diagnostic logs retention.')
+param avdDiagnosticLogsRetentionInDays int
 
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
@@ -90,7 +96,7 @@ param time string = utcNow()
 // =========== //
 // Variable declaration //
 // =========== //
-var desktopApplicaitonGroups = [
+var varDesktopApplicaitonGroups = [
   {
     name: avdApplicationGroupNameDesktop
     location: avdManagementPlaneLocation
@@ -98,7 +104,7 @@ var desktopApplicaitonGroups = [
   }
 ]
 
-var applicationApplicationGroups = [
+var varApplicationApplicationGroups = [
   {
     name: avdApplicationGroupNameRapp
     location: avdManagementPlaneLocation
@@ -107,6 +113,31 @@ var applicationApplicationGroups = [
 ]
 var avdHostPoolRdpPropertiesDomainServiceCheck = (avdIdentityServiceProvider == 'AAD') ? '${avdHostPoolRdpProperties};targetisaadjoined:i:1;enablerdsaadauth:i:1' : avdHostPoolRdpProperties
 var finalApplicationGroups = avdDeployRappGroup ? concat(desktopApplicaitonGroups, applicationApplicationGroups) : desktopApplicaitonGroups
+var varAvdHostPoolDiagnostic = [
+  'Checkpoint'
+  'Error'
+  'Management'
+  'Connection'
+  'HostRegistration'
+  'AgentHealthStatus'
+  'NetworkData'
+  'ConnectionGraphicsData'
+  'SessionHostManagement'
+]
+var varAvdApplicationGroupDiagnostic = [
+  'Checkpoint'
+  'Error'
+  'Management'
+]
+var varAvdWorkspaceDiagnostic = [
+  'Checkpoint'
+  'Error'
+  'Management'
+  'Feed'
+]
+var varAvdScalingPlanDiagnostic = [
+  'Autoscale'
+]
 
 // =========== //
 // Deployments //
@@ -121,16 +152,19 @@ module avdHostPool '../../../carml/1.2.0/Microsoft.DesktopVirtualization/hostpoo
     location: avdManagementPlaneLocation
     hostpoolType: avdHostPoolType
     startVMOnConnect: avdStartVmOnConnect
-    customRdpProperty: avdHostPoolRdpPropertiesDomainServiceCheck
+    customRdpProperty: varAvdHostPoolRdpPropertiesDomainServiceCheck
     loadBalancerType: avdHostPoolLoadBalancerType
     maxSessionLimit: avhHostPoolMaxSessions
     personalDesktopAssignmentType: avdPersonalAssignType
     tags: avdTags
+    diagnosticWorkspaceId: avdAlaWorkspaceResourceId
+    diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
+    diagnosticLogCategoriesToEnable: varAvdHostPoolDiagnostic
   }
 }
 
 // Application groups.
-module avdApplicationGroups '../../../carml/1.2.0/Microsoft.DesktopVirtualization/applicationgroups/deploy.bicep' = [for applicationGroup in finalApplicationGroups: {
+module avdApplicationGroups '../../../carml/1.2.0/Microsoft.DesktopVirtualization/applicationgroups/deploy.bicep' = [for applicationGroup in varFinalApplicationGroups: {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
   name: 'Deploy-AppGroup-${applicationGroup.name}-${time}'
   params: {
@@ -166,6 +200,9 @@ module avdWorkSpace '../../../carml/1.2.0/Microsoft.DesktopVirtualization/worksp
         '/subscriptions/${avdWorkloadSubsId}/resourceGroups/${avdServiceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${avdApplicationGroupNameDesktop}'
       ]
       tags: avdTags
+      diagnosticWorkspaceId: avdAlaWorkspaceResourceId
+      diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
+      diagnosticLogCategoriesToEnable: varAvdWorkspaceDiagnostic
   }
   dependsOn: [
     avdHostPool
@@ -191,6 +228,9 @@ module avdScalingPlan '../../../carml/1.2.0/Microsoft.DesktopVirtualization/scal
         }
       ]
       tags: avdTags
+      diagnosticWorkspaceId: avdAlaWorkspaceResourceId
+      diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
+      logsToEnable: varAvdScalingPlanDiagnostic
   }
   dependsOn: [
     avdHostPool

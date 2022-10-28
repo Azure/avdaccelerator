@@ -43,7 +43,7 @@ param avdSessionHostsSize string
 param avdSessionHostDiskType string
 
 @description('Market Place OS image')
-param marketPlaceGalleryWindows object
+param marketPlaceGalleryWindowsManagementVm object
 
 @description('Set to deploy image from Azure. Compute Gallery')
 param useSharedImage bool
@@ -112,8 +112,26 @@ param storageToDomainScriptUri string
 @description('Required. Tags to be applied to resources')
 param avdTags object
 
+@description('Optional. Log analytics workspace for diagnostic logs.')
+param avdAlaWorkspaceResourceId string
+
+@description('Optional. Diagnostic logs retention.')
+param avdDiagnosticLogsRetentionInDays int
+
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
+
+// =========== //
+// Variable declaration //
+// =========== //
+var varAvdFileShareLogsDiagnostic = [
+    'StorageRead'
+    'StorageWrite'
+    'StorageDelete'
+]
+var varAvdFileShareMetricsDiagnostic = [
+    'Transaction'
+]
 
 // =========== //
 // Deployments //
@@ -161,6 +179,9 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
                     }
                 }
             } : {}
+            diagnosticWorkspaceId: avdAlaWorkspaceResourceId
+            diagnosticLogCategoriesToEnable: varAvdFileShareLogsDiagnostic
+            diagnosticMetricsToEnable: varAvdFileShareMetricsDiagnostic
         }
         privateEndpoints: avdVnetPrivateDnsZone ? [
             {
@@ -179,6 +200,8 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
             }
         ]
         tags: avdTags
+        diagnosticWorkspaceId: avdAlaWorkspaceResourceId
+        diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
     }
 }
 
@@ -197,7 +220,7 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
         encryptionAtHost: encryptionAtHost
         availabilityZone: []
         osType: 'Windows'
-        licenseType: 'Windows_Client'
+        //licenseType: 'Windows_Client'
         vmSize: avdSessionHostsSize
         imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinitionId}\'}') : marketPlaceGalleryWindows
         osDisk: {

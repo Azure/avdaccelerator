@@ -108,6 +108,9 @@ param roleAssignments array = []
   'Connection'
   'HostRegistration'
   'AgentHealthStatus'
+  'NetworkData'
+  'ConnectionGraphicsData'
+  'SessionHostManagement'
 ])
 param diagnosticLogCategoriesToEnable array = [
   'Checkpoint'
@@ -116,6 +119,9 @@ param diagnosticLogCategoriesToEnable array = [
   'Connection'
   'HostRegistration'
   'AgentHealthStatus'
+  'NetworkData'
+  'ConnectionGraphicsData'
+  'SessionHostManagement'
 ]
 
 @description('Optional. The name of the diagnostic setting, if deployed.')
