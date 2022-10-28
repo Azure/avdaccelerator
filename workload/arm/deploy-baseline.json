@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "3206211182148834074"
+      "templateHash": "17306896440916283578"
     }
   },
   "parameters": {
@@ -6966,7 +6966,7 @@
       }
     },
     {
-      "condition": "[parameters('deployCustomPolicyNetworking')]",
+      "condition": "[and(parameters('avdDeployMonitoring'), parameters('deployCustomPolicyNetworking'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[if(greater(length(format('Enable-Azure-Policy-for-Netwok-Security-{0}', parameters('time'))), 64), take(format('Enable-Azure-Policy-for-Netwok-Security-{0}', parameters('time')), 64), format('Enable-Azure-Policy-for-Netwok-Security-{0}', parameters('time')))]",
@@ -6978,10 +6978,10 @@
         "mode": "Incremental",
         "parameters": {
           "alaWorkspaceResourceId": {
-            "value": "[if(parameters('deployAlaWorkspace'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Monitoring-{0}', parameters('time'))), '2020-10-01').outputs.avdAlaWorkspaceResourceId.value, parameters('alaExistingWorkspaceResourceId'))]"
+            "value": "[if(and(parameters('avdDeployMonitoring'), parameters('deployAlaWorkspace')), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Monitoring-{0}', parameters('time'))), '2020-10-01').outputs.avdAlaWorkspaceResourceId.value, parameters('alaExistingWorkspaceResourceId'))]"
           },
           "alaWorkspaceId": {
-            "value": "[if(parameters('deployAlaWorkspace'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Monitoring-{0}', parameters('time'))), '2020-10-01').outputs.avdAlaWorkspaceId.value, parameters('alaExistingWorkspaceResourceId'))]"
+            "value": "[if(and(parameters('avdDeployMonitoring'), parameters('deployAlaWorkspace')), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Monitoring-{0}', parameters('time'))), '2020-10-01').outputs.avdAlaWorkspaceId.value, parameters('alaExistingWorkspaceResourceId'))]"
           },
           "avdManagementPlaneLocation": {
             "value": "[parameters('avdManagementPlaneLocation')]"
