@@ -531,7 +531,7 @@ var varAvdFslogixProfileContainerFileShareName = avdUseCustomNaming ? avdFslogix
 var varAvdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}' : 'stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}'
 var varAvdWrklStoragePrivateEndpointName = 'pe-stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}-file'
 var varManagementVmName = 'vm-mgmt-${varDeploymentPrefixLowercase}'
-var varAvdAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}' //'log-avd-${varAvdManagementPlaneLocationAcronym}' //
+var varAvdAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${varAvdManagementPlaneLocationAcronym}' //'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
 var varStgAccountForFlowLogsName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}' : 'stavd${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}'
 //
 var varAvdScalingPlanSchedules = [
@@ -744,9 +744,9 @@ module avdBaselineNetworkResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
         enableDefaultTelemetry: false
         tags: createResourceTags ? varCommonResourceTags : {}
     }
-    dependsOn: [
+    dependsOn: avdDeployMonitoring ? [
         deployMonitoringDiagnosticSettings
-    ]
+    ]: []
 }
 
 // Compute, service objects
@@ -771,9 +771,9 @@ module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
         enableDefaultTelemetry: false
         tags: createResourceTags ? varAllComputeStorageTags : {}
     }
-    dependsOn: [
+    dependsOn: avdDeployMonitoring ? [
         deployMonitoringDiagnosticSettings
-    ]
+    ]: []
 }
 
 /*
@@ -837,11 +837,11 @@ module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring.bicep' =
 
 // Azure Policies for network monitorig/security . New storage account/Reuse existing one if needed created for the NSG flow logs
 
-module deployAzurePolicyNetworking './avd-modules/avd-azure-policy-networking.bicep' = if (deployCustomPolicyNetworking) {
+module deployAzurePolicyNetworking './avd-modules/avd-azure-policy-networking.bicep' = if (avdDeployMonitoring && deployCustomPolicyNetworking) {
     name: (length('Enable-Azure-Policy-for-Netwok-Security-${time}') > 64) ? take('Enable-Azure-Policy-for-Netwok-Security-${time}',64) : 'Enable-Azure-Policy-for-Netwok-Security-${time}'
     params: {
-        alaWorkspaceResourceId: deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId
-        alaWorkspaceId: deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceId : alaExistingWorkspaceResourceId 
+        alaWorkspaceResourceId: (avdDeployMonitoring && deployAlaWorkspace) ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId
+        alaWorkspaceId: (avdDeployMonitoring && deployAlaWorkspace) ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceId : alaExistingWorkspaceResourceId 
         avdManagementPlaneLocation: avdManagementPlaneLocation
         avdWorkloadSubsId: avdWorkloadSubsId
         avdMonitoringRgName: varAvdMonitoringRgName
@@ -850,7 +850,6 @@ module deployAzurePolicyNetworking './avd-modules/avd-azure-policy-networking.bi
         avdTags: createResourceTags ? varAllResourceTags : {}
     }
     dependsOn: [
-        deployMonitoringDiagnosticSettings
     ]
 }
 
@@ -882,7 +881,6 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
     }
     dependsOn: [
         avdBaselineNetworkResourceGroup
-        deployMonitoringDiagnosticSettings
     ]
 }
 
@@ -1087,7 +1085,6 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
     }
     dependsOn: [
         avdBaselineStorageResourceGroup
-        deployMonitoringDiagnosticSettings
         avdNetworking
         avdWrklKeyVaultget
         avdWrklKeyVault
@@ -1143,7 +1140,6 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
     }
     dependsOn: [
         avdBaselineResourceGroups
-        deployMonitoringDiagnosticSettings
         avdNetworking
         avdWrklKeyVaultget
         avdWrklKeyVault
