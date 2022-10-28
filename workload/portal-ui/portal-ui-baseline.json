@@ -2108,7 +2108,16 @@
                 "costCenterTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsCostCenterTag, 'none')]",
                 "environmentTypeTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsEnvironmentTypeTag, 'Dev')]",
                 "avdApplicationGroupIdentityType": "[steps('avdIdentity').avdIdentityAvdUserAccess.avdIdentityAccessTypes]",
-                "avdApplicationGroupIdentitiesIds": "[steps('avdIdentity').avdIdentityAvdUserAccess.avdIdentityAccessIds]"
+                "avdApplicationGroupIdentitiesIds": "[steps('avdIdentity').avdIdentityAvdUserAccess.avdIdentityAccessIds]",
+                "avdDeployMonitoring": "[steps('avdMonitoring').avdDeployMonitoring]",
+                "deployAlaWorkspace": "[if(equals(steps('avdMonitoring').avdDeployMonitoring, true), steps('avdMonitoring').avdDeployMonitoringAlaWorkspace, false)]",
+                "avdAlaWorkspaceDataRetention": "[if(equals(steps('avdMonitoring').avdDeployMonitoringAlaWorkspace, true), steps('avdMonitoring').avdDeployMonitoringNewAlaWorkspaceRetention, 0)]",
+                "alaExistingWorkspaceResourceId": "[if(equals(steps('avdMonitoring').avdDeployMonitoringAlaWorkspace, false), steps('avdMonitoring').avdAlaWorkspaceExistingWorkspacesSelection.id, 'none')]",
+                "deployCustomPolicyMonitoring": "[if(equals(steps('avdMonitoring').avdDeployMonitoring, true), steps('avdMonitoring').avdDeployMonitoringPolicies, false)]",
+                "avdMonitoringRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingMonitoring.avdMonitoringObjectsRgCustomName, 'none')]",
+                "avdAlaWorkspaceCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingMonitoring.avdMonitoringLogAnalyticsWorkspaceName, 'none')]"
+
+
             },
             "kind": "Subscription",
             "location": "[steps('basics').avdDeploymentScope.location.name]",
