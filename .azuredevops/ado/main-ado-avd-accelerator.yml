@@ -5,7 +5,6 @@ pr:
   - none
 
 variables:
-  - group: AzMinLab-CanadaPubSecALZ
   - name: deploymentRegion
     value: canadacentral
   - name: serviceConnection
@@ -20,7 +19,33 @@ variables:
     value: ':'
   - name: var-bashPreInjectScript
     value: 'set -E; function catch { echo "##vso[task.logissue type=error]Caller: $(caller), LineNo: $LINENO, Command: $BASH_COMMAND" ; exit 1 ; } ; echo ; echo "Current working directory: $(pwd)" ; echo ; trap catch ERR'
- 
+  - name: avdShrdlSubsId
+    value: Enter your subscription ID
+  - name: avdWrklSubsId
+    value: Enter your subscription ID
+  - name: avdWrklSecretAccess
+    value: Enter your subscription ID
+  - name: createAvdVnet
+    value: false
+  - name: useSharedImage
+    value: false
+  - name: avdOsImage
+    #value: win11_21h2_office
+    #value: win10_21h2
+    value: win10_21h2_office
+    #value: win11_21h2
+  - name: avdIdentityDomainName
+    value: domain.com[Change this to your domain name]
+  - name: avdDomainJoinUserName
+    value: 'enter value as "user@domain.com"'[Change this to your domain alias]
+  - name: avdDomainJoinUserPassword
+    value: 'Enter your password'
+  - name: avdVmLocalUserName
+    value: azadmin
+  - name: avdVmLocalUserPassword
+    value: 'Enter your password'
+
+
 stages:
   - stage: Deploy_AVD_Accelerator
     displayName: Deploy AVD Accelerator
@@ -33,17 +58,17 @@ stages:
           workingDir: $(System.DefaultWorkingDirectory)/workload/bicep
           templateFile: deploy-baseline.bicep
           parameterArray:
-            - deploymentPrefix $(deploymentPrefix)
-            - avdDeploySessionHostsCount $(avdDeploySessionHostsCount)
+            - deploymentPrefix 'app1'
+            - avdDeploySessionHostsCount 1
             - avdWorkloadSubsId $(avdWrklSubsId)
-            - avdEnterpriseAppObjectId $(avdEnterpriseAppObjectId)
+            - avdEnterpriseAppObjectId '82205950-fef1-4f88-8801-86e60c2e9318'
             - avdManagementPlaneLocation $(deploymentRegion)
             - avdSessionHostLocation $(deploymentRegion)
-            - fslogixStorageSku $(fslogixStorageSku)
-            - createAvdFslogixDeployment $(createAvdFslogixDeployment)
+            - fslogixStorageSku 'Standard_LRS'
+            - createAvdFslogixDeployment true 
         #    - avdWrklSecretAccess $(avdWrklSecretAccess)
-            - existingVnetSubnetResourceId $(existingVnetSubnetResourceId)
-            - existingHubVnetResourceId $(existingHubVnetResourceId)
+            - existingVnetSubnetResourceId '/subscriptions/f013bc3f-1407-4b68-a977-9f22ef438677/resourceGroups/rg-avd-networking/providers/Microsoft.Network/virtualNetworks/avd-cacn-vnet/subnets/subnet1'
+            - existingHubVnetResourceId '/subscriptions/f013bc3f-1407-4b68-a977-9f22ef438677/resourceGroups/rg-hub-networking/providers/Microsoft.Network/virtualNetworks/hub-vnet'
             - useSharedImage $(useSharedImage)
             - avdOsImage $(avdOsImage)
             - createAvdVnet $(createAvdVnet)
@@ -52,15 +77,10 @@ stages:
             - avdDomainJoinUserPassword $(avdDomainJoinUserPassword)
             - avdVmLocalUserName $(avdVmLocalUserName)
             - avdVmLocalUserPassword $(avdVmLocalUserPassword)
-            - avdDeployRappGroup $(avdDeployRappGroup)
-            - avdDeploySessionHosts $(avdDeploySessionHosts)
-            - avdStartVmOnConnect $(avdStartVmOnConnect)
-            - createStartVmOnConnectCustomRole $(createStartVmOnConnectCustomRole)
-            - vNetworkGatewayOnHub $(vNetworkGatewayOnHub)
-            - createOuForStorage $(createOuForStorage)
-            - storageOuPath $(storageOuPath)
-            - deployCustomPolicyMonitoring $(deployCustomPolicyMonitoring)
-            - alaExistingWorkspaceResourceId $(alaExistingWorkspaceResourceId)
-            - deployCustomPolicyNetworking $(deployCustomPolicyNetworking)
-            - deployStgAccountForFlowLogs $(deployStgAccountForFlowLogs)
-            - stgAccountForFlowLogsId $(stgAccountForFlowLogsId)
+            - avdDeployRappGroup true
+            - avdDeploySessionHosts true
+            - avdStartVmOnConnect true
+            - createStartVmOnConnectCustomRole true
+            - vNetworkGatewayOnHub false
+            - createOuForStorage true
+            - storageOuName 'FsLogix User Profiles'
