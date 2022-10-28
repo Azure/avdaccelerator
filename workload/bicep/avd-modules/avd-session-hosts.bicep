@@ -33,10 +33,13 @@ param avdWorkloadSubsId string
 @description('Quantity of session hosts to deploy')
 param avdSessionHostsCount int
 
+@description('Optional. Create new virtual network.')
+param createAvdVnet bool
+
 @description('The session host number to begin with for the deployment.')
 param avdSessionHostCountIndex int
 
-@description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Defualt: true)')
+@description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set.')
 param avdUseAvailabilityZones bool
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
@@ -69,8 +72,11 @@ param avdIdentityDomainName string
 @description('Required. AVD session host domain join credentials.')
 param avdDomainJoinUserName string
 
-@description('Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)')
+@description('Required, The service providing domain services for Azure Virtual Desktop.')
 param avdIdentityServiceProvider string
+
+@description('Required, Eronll session hosts on Intune.')
+param createIntuneEnrollment bool
 
 @description('Required. Name of keyvault that contains credentials.')
 param avdWrklKvName string
@@ -78,7 +84,7 @@ param avdWrklKvName string
 @description('Optional. OU path to join AVd VMs')
 param sessionHostOuPath string
 
-@description('Application Security Group (ASG) for the session hosts.')
+@description('Application Security Group for the session hosts.')
 param avdApplicationSecurityGroupResourceId string
 
 @description('AVD host pool token.')
@@ -169,9 +175,14 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
             {
                 nicSuffix: 'nic-001-'
                 deleteOption: 'Delete'
-                asgId: !empty(avdApplicationSecurityGroupResourceId) ? avdApplicationSecurityGroupResourceId : null
                 enableAcceleratedNetworking: false
-                ipConfigurations: [
+                ipConfigurations: createAvdVnet ? [
+                    {
+                        name: 'ipconfig01'
+                        subnetId: avdSubnetId
+                        applicationSecurityGroups: avdApplicationSecurityGroupResourceId
+                    }
+                ] : [
                     {
                         name: 'ipconfig01'
                         subnetId: avdSubnetId
@@ -179,11 +190,10 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
                 ]
             }
         ]
-        // Join domain.
-        allowExtensionOperations: true
+        // ADDS or AADDS domain join.
         extensionDomainJoinPassword: avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
         extensionDomainJoinConfig: {
-            enabled: true
+            enabled: (avdIdentityServiceProvider == 'AAD') ? false: true
             settings: {
                 name: avdIdentityDomainName
                 ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
@@ -192,6 +202,16 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
                 options: '3'
             }
         }
+        // Azure AD (AAD) Join.
+        extensionAadJoinConfig: {
+            enabled: (avdIdentityServiceProvider == 'AAD') ? true: false
+            settings: createIntuneEnrollment ? {
+                mdmId: '0000000a-0000-0000-c000-000000000000'
+            }: {}
+        }
+            //}: {
+            //    enabled: (avdIdentityServiceProvider == 'AAD') ? true: false
+            //}
         // Enable and Configure Microsoft Malware.
         extensionAntiMalwareConfig: {
             enabled: true
@@ -241,7 +261,7 @@ module addAvdHostsToHostPool '../../vm-custom-extensions/add-avd-session-hosts.b
 }]
 
 // Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
-module configureFsLogixForAvdHosts '../../vm-custom-extensions/configure-fslogix-session-hosts.bicep' = [for i in range(1, avdSessionHostsCount): if (createAvdFslogixDeployment) {
+module configureFsLogixForAvdHosts '../../vm-custom-extensions/configure-fslogix-session-hosts.bicep' = [for i in range(1, avdSessionHostsCount): if (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD')) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
     name: 'Configure-FsLogix-for-${padLeft((i + avdSessionHostCountIndex), 3, '0')}-${time}'
     params: {

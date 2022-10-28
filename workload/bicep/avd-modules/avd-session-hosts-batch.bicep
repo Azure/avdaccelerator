@@ -30,7 +30,7 @@ param avdDeploySessionHostsCount int
 @description('The session host number to begin with for the deployment.')
 param avdSessionHostCountIndex int
 
-@description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Defualt: true)')
+@description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set.')
 param avdUseAvailabilityZones bool
 
 @description('Optional. Availablity Set name.')
@@ -42,8 +42,14 @@ param avdAsFaultDomainCount int
 @description('Optional. Sets the number of update domains for the availability set.')
 param avdAsUpdateDomainCount int
 
-@description('Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)')
+@description('Optional. Create new virtual network.')
+param createAvdVnet bool
+
+@description('Required, The service providing domain services for Azure Virtual Desktop.')
 param avdIdentityServiceProvider string
+
+@description('Required, Eronll session hosts on Intune.')
+param createIntuneEnrollment bool
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool
@@ -179,6 +185,7 @@ module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, varAvdSe
     avdSessionHostDiskType: avdSessionHostDiskType
     avdSessionHostLocation: avdSessionHostLocation
     avdSessionHostNamePrefix: avdSessionHostNamePrefix
+    createAvdVnet: createAvdVnet
     avdSessionHostsSize: avdSessionHostsSize
     avdSubnetId: avdSubnetId
     avdUseAvailabilityZones: avdUseAvailabilityZones
@@ -195,6 +202,7 @@ module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, varAvdSe
     marketPlaceGalleryWindows: marketPlaceGalleryWindows
     useSharedImage: useSharedImage
     avdIdentityServiceProvider: avdIdentityServiceProvider
+    createIntuneEnrollment: createIntuneEnrollment
     avdTags: avdTags
     avdDeployMonitoring: avdDeployMonitoring
     avdAlaWorkspaceResourceId: avdAlaWorkspaceResourceId

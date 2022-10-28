@@ -34,4 +34,4 @@
   terraform.rc
   *.tfvars
   .terraform
-
+ /.terraform/
