@@ -105,9 +105,7 @@ var varApplicationApplicationGroups = [
     applicationGroupType: 'RemoteApp'
   }
 ]
-//var varAvdHostPoolRdpPropertiesDomainServiceCheck = (avdIdentityServiceProvider == 'AAD') ? '${avdHostPoolRdpProperties}targetisaadjoined:i:1' : avdHostPoolRdpProperties
 var avdHostPoolRdpPropertiesDomainServiceCheck = (avdIdentityServiceProvider == 'AAD') ? '${avdHostPoolRdpProperties};targetisaadjoined:i:1;enablerdsaadauth:i:1' : avdHostPoolRdpProperties
-//var varFinalApplicationGroups = avdDeployRappGroup ? concat(varDesktopApplicaitonGroups, varApplicationApplicationGroups) : varDesktopApplicaitonGroups
 var finalApplicationGroups = avdDeployRappGroup ? concat(desktopApplicaitonGroups, applicationApplicationGroups) : desktopApplicaitonGroups
 var varAvdHostPoolDiagnostic = [
   'Checkpoint'
@@ -176,9 +174,6 @@ module avdApplicationGroups '../../../carml/1.2.0/Microsoft.DesktopVirtualizatio
       principalType: avdApplicationGroupIdentityType
       }
     ]: []    
-    diagnosticWorkspaceId: avdAlaWorkspaceResourceId
-    diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
-    diagnosticLogCategoriesToEnable: varAvdApplicationGroupDiagnostic
   }
   dependsOn: [
     avdHostPool
