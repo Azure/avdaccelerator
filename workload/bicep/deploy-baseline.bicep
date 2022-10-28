@@ -521,7 +521,7 @@ var varAvdAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'l
 var varStgAccountForFlowLogsName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}' : 'stavd${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}'
 //
 
-var varAvdScalingPlanSchedules = [
+var avdScalingPlanSchedules = [
     {
         daysOfWeek: [
             'Monday'
@@ -636,25 +636,28 @@ var varMarketPlaceGalleryWindows = {
     }
 }
 
-var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
-var varFslogixScriptUri = '${varBaseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
-var varFsLogixScript = './Set-FSLogixRegKeys.ps1'
-var varFslogixSharePath = '\\\\${varAvdFslogixStorageName}.file.${environment().suffixes.storage}\\${varAvdFslogixProfileContainerFileShareName}'
-var varFsLogixScriptArguments = '-volumeshare ${varFslogixSharePath}'
-var varAvdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
-var varStorageAccountContributorRoleId = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-var varReaderRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-var varAvdVmPowerStateContributor = '40c5ff49-9181-41f8-ae61-143b0e78555e'
-var varDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip'
-var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
-var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
-var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
-var varDefaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers': 'Computers'
-var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
-var varStorageToDomainScriptArgs = '-DscPath ${varDscAgentPackageLocation} -StorageAccountName ${varAvdFslogixStorageName} -StorageAccountRG ${varAvdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -IdentityServiceProvider ${avdIdentityServiceProvider} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -CustomOuPath ${varStorageCustomOuPath} -OUName ${varOuStgPath} -CreateNewOU ${varCreateOuForStorageString} -ShareName ${varAvdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
-var varCreateOuForStorageString = string(createOuForStorage)
-var varDnsServers = (customDnsIps == 'none') ? []: (split(customDnsIps, ','))
-
+var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
+var fslogixScriptUri = '${baseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
+var fsLogixScript = './Set-FSLogixRegKeys.ps1'
+var fslogixSharePath = '\\\\${avdFslogixStorageName}.file.${environment().suffixes.storage}\\${avdFslogixProfileContainerFileShareName}'
+var FsLogixScriptArguments = '-volumeshare ${fslogixSharePath}'
+var avdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
+var storageAccountContributorRoleId = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+var readerRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+var avdVmPowerStateContributor = '40c5ff49-9181-41f8-ae61-143b0e78555e'
+var dscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip'
+var storageToDomainScriptUri = '${baseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
+var storageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
+var ouStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${defaultStorageOuPath}"'
+var defaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers': 'Computers'
+var storageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
+var storageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${avdFslogixStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -IdentityServiceProvider ${avdIdentityServiceProvider} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -CreateNewOU ${createOuForStorageString} -ShareName ${avdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
+var createOuForStorageString = string(createOuForStorage)
+var allDnsServers = '${customDnsIps},168.63.129.16'
+var dnsServers = (customDnsIps == 'none') ? []: (split(allDnsServers, ','))
+var varCreateAvdFslogixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: createAvdFslogixDeployment
+var varAvdApplicationGroupIdentitiesIds = !empty(avdApplicationGroupIdentitiesIds) ? (split(avdApplicationGroupIdentitiesIds, ',')): []
+var varCreateAvdVnetPeering = !empty(existingHubVnetResourceId) ? true: false
 // Resource tagging
 // Tag Exclude-${varAvdScalingPlanName} is used by scaling plans to exclude session hosts from scaling. Exmaple: Exclude-vdscal-eus2-app1-001
 var varCommonResourceTags = createResourceTags ? {
@@ -847,9 +850,9 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
         avdNetworksecurityGroupName: varAvdNetworksecurityGroupName
         avdRouteTableName: varAvdRouteTableName
         avdVnetworkAddressPrefixes: avdVnetworkAddressPrefixes
-        avdVnetworkName: varAvdVnetworkName
-        avdVnetworkPeeringName: varAvdVnetworkPeeringName
-        avdVnetworkSubnetName: varAvdVnetworkSubnetName
+        avdVnetworkName: avdVnetworkName
+        avdVnetworkPeeringName: avdIdentityServiceProvider == 'AAD' ? '': avdVnetworkPeeringName
+        avdVnetworkSubnetName: avdVnetworkSubnetName
         createAvdVnet: createAvdVnet
         vNetworkGatewayOnHub: vNetworkGatewayOnHub
         existingHubVnetResourceId: existingHubVnetResourceId
@@ -891,6 +894,8 @@ module avdManagementPLane 'avd-modules/avd-management-plane.bicep' = {
         avdStartVmOnConnect: avdStartVmOnConnect
         avdWorkloadSubsId: avdWorkloadSubsId
         avdIdentityServiceProvider: avdIdentityServiceProvider
+        avdApplicationGroupIdentitiesIds: varAvdApplicationGroupIdentitiesIds
+        avdApplicationGroupIdentityType: avdApplicationGroupIdentityType
         avdTags: createResourceTags ? varCommonResourceTags : {}
         avdAlaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
@@ -917,10 +922,12 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
         fslogixManagedIdentityName: varFslogixManagedIdentityName
         readerRoleId: varReaderRoleId
         avdManagementPlaneLocation: avdManagementPlaneLocation
-        storageAccountContributorRoleId: varStorageAccountContributorRoleId
-        avdVmPowerStateContributor: varAvdVmPowerStateContributor
-        createAvdFslogixDeployment: createAvdFslogixDeployment ? true: false
-        avdTags: createResourceTags ? varCommonResourceTags : {}
+        avdIdentityServiceProvider: avdIdentityServiceProvider
+        storageAccountContributorRoleId: storageAccountContributorRoleId
+        avdVmPowerStateContributor: avdVmPowerStateContributor
+        createAvdFslogixDeployment: varCreateAvdFslogixDeployment
+        avdApplicationGroupIdentitiesIds: varAvdApplicationGroupIdentitiesIds
+        avdTags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
         avdBaselineResourceGroups
@@ -1022,8 +1029,9 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         avdSessionHostDiskType: avdSessionHostDiskType
         avdSessionHostLocation: avdSessionHostLocation
         avdSessionHostsSize: avdSessionHostsSize
-        avdStorageObjectsRgName: varAvdStorageObjectsRgName
-        avdSubnetId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${varAvdVnetworkSubnetName}' : existingVnetSubnetResourceId
+        avdStorageObjectsRgName: avdStorageObjectsRgName
+        avdSubnetId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
+        createAvdVnet: createAvdVnet
         avdVmLocalUserName: avdVmLocalUserName
         avdVnetPrivateDnsZone: avdVnetPrivateDnsZone
         avdVnetPrivateDnsZoneFilesId: avdVnetPrivateDnsZoneFilesId
@@ -1059,8 +1067,9 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         avdAsFaultDomainCount: avdAsFaultDomainCount
         avdAsUpdateDomainCount: avdAsUpdateDomainCount
         avdIdentityServiceProvider: avdIdentityServiceProvider
-        avdAvailabilitySetNamePrefix: varAvdAvailabilitySetNamePrefix
-        avdComputeObjectsRgName: varAvdComputeObjectsRgName
+        createIntuneEnrollment: createIntuneEnrollment
+        avdAvailabilitySetNamePrefix: avdAvailabilitySetNamePrefix
+        avdComputeObjectsRgName: avdComputeObjectsRgName
         avdDeploySessionHostsCount: avdDeploySessionHostsCount
         avdSessionHostCountIndex: avdSessionHostCountIndex
         avdDomainJoinUserName: avdDomainJoinUserName
@@ -1074,17 +1083,18 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         avdSessionHostLocation: avdSessionHostLocation
         avdSessionHostNamePrefix: varAvdSessionHostNamePrefix
         avdSessionHostsSize: avdSessionHostsSize
-        avdSubnetId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${varAvdVnetworkSubnetName}' : existingVnetSubnetResourceId
+        avdSubnetId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${avdVnetworkSubnetName}' : existingVnetSubnetResourceId
+        createAvdVnet: createAvdVnet
         avdUseAvailabilityZones: avdUseAvailabilityZones
         avdVmLocalUserName: avdVmLocalUserName
         avdWorkloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
-        createAvdFslogixDeployment: createAvdFslogixDeployment
-        fslogixManagedIdentityResourceId: createAvdFslogixDeployment ? deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId : 'none'
-        fsLogixScript: varFsLogixScript
-        FsLogixScriptArguments: varFsLogixScriptArguments
-        fslogixScriptUri: varFslogixScriptUri
-        FslogixSharePath: varFslogixSharePath
+        createAvdFslogixDeployment: (avdIdentityServiceProvider != 'AAD') ? varCreateAvdFslogixDeployment: false
+        fslogixManagedIdentityResourceId:  (varCreateAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD'))  ? deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId : ''
+        fsLogixScript: (avdIdentityServiceProvider != 'AAD') ? fsLogixScript: ''
+        FsLogixScriptArguments: (avdIdentityServiceProvider != 'AAD') ? FsLogixScriptArguments: ''
+        fslogixScriptUri: (avdIdentityServiceProvider != 'AAD') ? fslogixScriptUri: ''
+        FslogixSharePath: (avdIdentityServiceProvider != 'AAD') ? fslogixSharePath: ''       
         hostPoolToken: avdManagementPLane.outputs.hostPooltoken
         marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
