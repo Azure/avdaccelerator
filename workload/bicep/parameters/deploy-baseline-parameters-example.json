@@ -32,6 +32,12 @@
         "createIntuneEnrollment": {
             "value": false
         },            
+        "avdApplicationGroupIdentitiesIds": {
+            "value": ""
+        },           
+        "avdApplicationGroupIdentityType": {
+            "value": "Group"
+        },       
         "avdIdentityDomainName": {
             "value": ""
         },
@@ -72,9 +78,6 @@
             "value": true
         },
         "createAvdVnet": {
-            "value": true
-        },
-        "createAvdVnetPeering": {
             "value": true
         },
         "existingVnetSubnetResourceId": {
