@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "16580268830540639631"
+      "templateHash": "1188056422012085161"
     }
   },
   "parameters": {
@@ -907,7 +907,7 @@
     "varAvdFslogixStorageName": "[if(parameters('avdUseCustomNaming'), format('{0}{1}{2}', parameters('avdFslogixStoragePrefixCustomName'), variables('varDeploymentPrefixLowercase'), variables('varAvdNamingUniqueStringSixChar')), format('stavd{0}{1}', variables('varDeploymentPrefixLowercase'), variables('varAvdNamingUniqueStringSixChar')))]",
     "varAvdWrklStoragePrivateEndpointName": "[format('pe-stavd{0}{1}-file', variables('varDeploymentPrefixLowercase'), variables('varAvdNamingUniqueStringSixChar'))]",
     "varManagementVmName": "[format('vm-mgmt-{0}', variables('varDeploymentPrefixLowercase'))]",
-    "varAvdAlaWorkspaceName": "[if(parameters('avdUseCustomNaming'), parameters('avdAlaWorkspaceCustomName'), format('log-avd-{0}-{1}', variables('varAvdComputeStorageResourcesNamingStandard'), variables('varAvdNamingUniqueStringSixChar')))]",
+    "varAvdAlaWorkspaceName": "[if(parameters('avdUseCustomNaming'), parameters('avdAlaWorkspaceCustomName'), format('log-avd-{0}', variables('varAvdManagementPlaneLocationAcronym')))]",
     "varStgAccountForFlowLogsName": "[if(parameters('avdUseCustomNaming'), format('{0}{1}flowlogs{2}', parameters('avdFslogixStoragePrefixCustomName'), variables('varDeploymentPrefixLowercase'), variables('varAvdNamingUniqueStringSixChar')), format('stavd{0}flowlogs{1}', variables('varDeploymentPrefixLowercase'), variables('varAvdNamingUniqueStringSixChar')))]",
     "varAvdScalingPlanSchedules": [
       {
@@ -1052,12 +1052,14 @@
     "varTelemetryId": "[format('pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-{0}', parameters('avdManagementPlaneLocation'))]",
     "resourceGroups": [
       {
+        "purpose": "Service-Objects",
         "name": "[variables('varAvdServiceObjectsRgName')]",
         "location": "[parameters('avdManagementPlaneLocation')]",
         "enableDefaultTelemetry": false,
         "tags": "[if(parameters('createResourceTags'), variables('varCommonResourceTags'), createObject())]"
       },
       {
+        "purpose": "Pool-Compute",
         "name": "[variables('varAvdComputeObjectsRgName')]",
         "location": "[parameters('avdSessionHostLocation')]",
         "enableDefaultTelemetry": false,
@@ -1593,7 +1595,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('Deploy-{0}-{1}', substring(variables('resourceGroups')[copyIndex()].name, 10), parameters('time'))]",
+      "name": "[format('Deploy-AVD-{0}-{1}', variables('resourceGroups')[copyIndex()].purpose, parameters('time'))]",
       "subscriptionId": "[parameters('avdWorkloadSubsId')]",
       "location": "[deployment().location]",
       "properties": {
