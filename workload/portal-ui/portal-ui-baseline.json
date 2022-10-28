@@ -2116,8 +2116,6 @@
                 "deployCustomPolicyMonitoring": "[if(equals(steps('avdMonitoring').avdDeployMonitoring, true), steps('avdMonitoring').avdDeployMonitoringPolicies, false)]",
                 "avdMonitoringRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingMonitoring.avdMonitoringObjectsRgCustomName, 'none')]",
                 "avdAlaWorkspaceCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingMonitoring.avdMonitoringLogAnalyticsWorkspaceName, 'none')]"
-
-
             },
             "kind": "Subscription",
             "location": "[steps('basics').avdDeploymentScope.location.name]",
