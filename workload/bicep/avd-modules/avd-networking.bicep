@@ -37,6 +37,9 @@ param existingHubVnetResourceId string
 @description('VNet peering name for AVD VNet to vHub.')
 param avdVnetworkPeeringName string
 
+@description('Optional. Create virtual network peering to hub.')
+param createAvdVnetPeering bool
+
 @description('AVD VNet address prefixes.')
 param avdVnetworkAddressPrefixes string
 
@@ -130,7 +133,7 @@ module avdVirtualNetwork '../../../carml/1.2.0/Microsoft.Network/virtualNetworks
         location: avdSessionHostLocation
         addressPrefixes: array(avdVnetworkAddressPrefixes)
         dnsServers: dnsServers
-        virtualNetworkPeerings: [
+        virtualNetworkPeerings: createAvdVnetPeering ? [
             {
                 remoteVirtualNetworkId: existingHubVnetResourceId
                 name: avdVnetworkPeeringName
@@ -147,7 +150,7 @@ module avdVirtualNetwork '../../../carml/1.2.0/Microsoft.Network/virtualNetworks
                 remotePeeringDoNotVerifyRemoteGateways: true
                 remotePeeringUseRemoteGateways: false
             }
-        ]
+        ]: []
         subnets: [
             {
                 name: avdVnetworkSubnetName

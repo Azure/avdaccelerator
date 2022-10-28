@@ -17,8 +17,8 @@ resource "azurerm_virtual_desktop_workspace" "ragworkspace" {
 resource "azurerm_virtual_desktop_host_pool" "raghostpool" {
   resource_group_name      = azurerm_resource_group.sh.name
   location                 = azurerm_resource_group.sh.location
-  name                     = var.raghostpool
-  friendly_name            = var.raghostpool
+  name                     = "${var.raghostpool}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-remoteapp-${count.index + 1}" //var.raghostpool
+  friendly_name            = "${var.raghostpool}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-remoteapp-${count.index + 1}" //var.raghostpool
   validate_environment     = true
   custom_rdp_properties    = "drivestoredirect:s:*;audiomode:i:0;videoplaybackmode:i:1;redirectclipboard:i:1;redirectprinters:i:1;devicestoredirect:s:*;redirectcomports:i:1;redirectsmartcards:i:1;usbdevicestoredirect:s:*;enablecredsspsupport:i:1;use multimon:i:1"
   description              = "${var.prefix} Pooled HostPool"

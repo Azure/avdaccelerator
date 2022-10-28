@@ -56,6 +56,21 @@ variable "prefix" {
   description = "Prefix of the name of the AVD machine(s)"
 }
 
+variable "hub_subscription_id" {
+  type        = string
+  description = "Hub Subscription id"
+}
+
+variable "spoke_subscription_id" {
+  type        = string
+  description = "Spoke Subscription id"
+}
+
+# variable "tenant_id" {
+#   type        = string
+#   description = "Tenant id"
+# }
+
 variable "tags" {
   type = map(any)
   default = {
