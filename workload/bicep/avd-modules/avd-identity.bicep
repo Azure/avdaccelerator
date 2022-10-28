@@ -33,6 +33,9 @@ param avdDeploySessionHosts bool
 @description('Required, The service providing domain services for Azure Virtual Desktop.')
 param avdIdentityServiceProvider string
 
+@description('Required, Identity ID to grant RBAC role to access AVD application group.')
+param avdApplicationGroupIdentitiesIds array
+
 @description('Deploy scaling plan.')
 param avdDeployScalingPlan bool
 
@@ -148,6 +151,16 @@ module scalingPlanRoleAssignServiceObjects '../../../carml/1.2.0/Microsoft.Autho
   }
   dependsOn: []
 }
+
+module avdAadIdentityLoginAccess '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' =  [for avdApplicationGropupIdentityId in avdApplicationGroupIdentitiesIds: if (avdIdentityServiceProvider == 'AAD' && !empty(avdApplicationGroupIdentitiesIds)) {
+  name: 'AAD-VM-Role-Assign-${take('${avdApplicationGropupIdentityId}', 6)}-${time}'
+  scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
+  params: {
+    roleDefinitionIdOrName: 'Virtual Machine User Login' 
+    principalId: avdApplicationGropupIdentityId
+  }
+  dependsOn: []
+}]
 //
 
 // =========== //
