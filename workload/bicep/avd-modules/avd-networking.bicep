@@ -58,8 +58,28 @@ param avdSessionHostLocation string = deployment().location
 @description('Required. Tags to be applied to resources')
 param avdTags object
 
+@description('Optional. Log analytics workspace for diagnostic logs.')
+param avdAlaWorkspaceResourceId string
+
+@description('Optional. Diagnostic logs retention.')
+param avdDiagnosticLogsRetentionInDays int
+
 @description('Do not modify, used to set unique value for resource deployment')
 param time string = utcNow()
+
+// =========== //
+// Variable declaration //
+// =========== //
+param varAvdNetworkSecurityGroupDiagnostic array = [
+    'NetworkSecurityGroupEvent'
+    'NetworkSecurityGroupRuleCounter'
+]
+param varAvdVirtualNetworkLogsDiagnostic array = [
+    'VMProtectionAlerts'
+]
+param varAvdVirtualNetworkMetricsDiagnostic array = [
+    'AllMetrics'
+]
 
 // =========== //
 // Deployments //
@@ -73,6 +93,9 @@ module avdNetworksecurityGroup '../../../carml/1.2.0/Microsoft.Network/networkSe
         name: avdNetworksecurityGroupName
         location: avdSessionHostLocation
         tags: avdTags
+        diagnosticWorkspaceId: avdAlaWorkspaceResourceId
+        diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
+        diagnosticLogCategoriesToEnable: varAvdNetworkSecurityGroupDiagnostic
     }
     dependsOn: []
 }
@@ -139,6 +162,10 @@ module avdVirtualNetwork '../../../carml/1.2.0/Microsoft.Network/virtualNetworks
             }
         ]
         tags: avdTags
+        diagnosticWorkspaceId: avdAlaWorkspaceResourceId
+        diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
+        diagnosticLogCategoriesToEnable: varAvdVirtualNetworkLogsDiagnostic
+        diagnosticMetricsToEnable: varAvdVirtualNetworkMetricsDiagnostic
     }
     dependsOn: [
         avdNetworksecurityGroup
