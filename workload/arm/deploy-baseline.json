@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "1258505622176026314"
+      "templateHash": "15838401526406926050"
     }
   },
   "parameters": {
@@ -29322,7 +29322,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "4750244449234742913"
+              "templateHash": "8274284048369462333"
             }
           },
           "parameters": {
@@ -29585,7 +29585,7 @@
             "varDivisionValue": "[div(parameters('avdDeploySessionHostsCount'), variables('varAvdMaxSessionHostsPerTemplateDeployment'))]",
             "varDivisionRemainderValue": "[mod(parameters('avdDeploySessionHostsCount'), variables('varAvdMaxSessionHostsPerTemplateDeployment'))]",
             "varAvdSessionHostBatchCount": "[if(greater(variables('varDivisionRemainderValue'), 0), add(variables('varDivisionValue'), 1), variables('varDivisionValue'))]",
-            "maxAvailabilitySetMembersCount": 20,
+            "maxAvailabilitySetMembersCount": 199,
             "divisionAvSetValue": "[div(parameters('avdDeploySessionHostsCount'), variables('maxAvailabilitySetMembersCount'))]",
             "divisionAvSetRemainderValue": "[mod(parameters('avdDeploySessionHostsCount'), variables('maxAvailabilitySetMembersCount'))]",
             "availabilitySetCount": "[if(greater(variables('divisionAvSetRemainderValue'), 0), add(variables('divisionAvSetValue'), 1), variables('divisionAvSetValue'))]"
