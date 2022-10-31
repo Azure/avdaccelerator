@@ -1427,11 +1427,35 @@
                                     }
                                 },
                                 {
+                                    "name": "avdWorkSpaceCustomFriendlyName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Workspace (Friendly name)",
+                                    "toolTip": "AVD workspace custom friendly name.",
+                                    "placeholder": "Example: East US - 001",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
+                                        "validationMessage": "Value must be 1-64 characters."
+                                    }
+                                },
+                                {
                                     "name": "avdHostPoolCustomName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Host pool",
                                     "toolTip": "AVD host pool custom name.",
                                     "placeholder": "Example: vdpool-use2-app1-001",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
+                                        "validationMessage": "Value must be 1-64 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdHostPoolCustomFriendlyName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Host pool (Friendly name)",
+                                    "toolTip": "AVD host pool custom friendly name.",
+                                    "placeholder": "Example: App1 - East US - 001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1463,12 +1487,37 @@
                                     }
                                 },
                                 {
+                                    "name": "avdApplicationGroupCustomFriendlyNameDesktop",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Application group (Desktop, Friendly name)",
+                                    "toolTip": "AVD desktop application group custom name.",
+                                    "placeholder": "Example: Desktops - App1 - East US - 001",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
+                                        "validationMessage": "Value must be 1-64 characters."
+                                    }
+                                },
+                                {
                                     "name": "avdApplicationGroupCustomNameRapp",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Application group (Remote App)",
                                     "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneAppGroupOptions.avdDeployRappGroup, true)]",
                                     "toolTip": "AVD remote application group custom name.",
                                     "placeholder": "Example: vdag-rapp-use2-app1-001",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
+                                        "validationMessage": "Value must be 1-64 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdApplicationGroupCustomFriendlyNameRapp",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Application group (Remote App, Friendly name)",
+                                    "visible": "[equals(steps('avdManagementPlane').avdManagementPlaneAppGroupOptions.avdDeployRappGroup, true)]",
+                                    "toolTip": "AVD remote application group custom name.",
+                                    "placeholder": "Example: Remote apps - App1 - East US - 001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -2085,10 +2134,14 @@
                 "avdRouteTableCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingNetwork.avdRouteTableCustomName, 'none')]",
                 "avdApplicationSecurityGroupCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingCompute.avdApplicationSecurityGroupCustomName, 'none')]",
                 "avdWorkSpaceCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdWorkSpaceCustomName, 'none')]",
+                "avdWorkSpaceCustomFriendlyName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdWorkSpaceCustomFriendlyName, 'none')]",
                 "avdHostPoolCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdHostPoolCustomName, 'none')]",
+                "avdHostPoolCustomFriendlyName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdHostPoolCustomFriendlyName, 'none')]",
                 "avdScalingPlanCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdScalingPlanCustomName, 'none')]",
                 "avdApplicationGroupCustomNameDesktop": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdApplicationGroupCustomNameDesktop, 'none')]",
+                "avdApplicationGroupCustomFriendlyName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdApplicationGroupCustomFriendlyNameDesktop, 'none')]",
                 "avdApplicationGroupCustomNameRapp": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdApplicationGroupCustomNameRapp, 'none')]",
+                "avdApplicationGroupCustomFriendlyNameRapp": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingAvdManagementPlane.avdApplicationGroupCustomFriendlyNameRapp, 'none')]",
                 "avdSessionHostCustomNamePrefix": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingCompute.avdSessionHostCustomNamePrefix, 'none')]",
                 "avdAvailabilitySetCustomNamePrefix": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingCompute.avdAvailabilitySetCustomNamePrefix, 'none')]",
                 "avdFslogixStoragePrefixCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdResourceNamingStorage.avdFslogixStorageCustomName, 'none')]",
