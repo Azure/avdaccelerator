@@ -272,8 +272,7 @@
                                     },
                                     "constraints": {
                                         "required": true,
-                                        "customPasswordRegex": "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=_!*<>()])(?=\\S+$).{12,123}$",
-                                        "customValidationMessage": "Password must include 1 special character."
+                                        "customPasswordRegex": "^((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])|(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=_!*<>()])(?=\\S+$)|(?=.*[0-9])(?=.*[a-z])(?=.*[@#$%^&+=_!*<>()])(?=\\S+$)).{12,123}$"
                                     },
                                     "options": {
                                         "hideConfirmation": false
