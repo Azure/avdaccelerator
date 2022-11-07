@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "17481447099121074380"
+      "templateHash": "1918637105823355395"
     }
   },
   "parameters": {
@@ -517,14 +517,6 @@
       },
       "maxLength": 64
     },
-    "avdStgAccountForFlowLogsCustomName": {
-      "type": "string",
-      "defaultValue": "stavduse2flowlogs001",
-      "metadata": {
-        "description": "Optional. Azure Storage Account custom name for NSG flow logs. (Default: stavduse2flowlogs001)"
-      },
-      "maxLength": 24
-    },
     "avdVnetworkSubnetCustomName": {
       "type": "string",
       "defaultValue": "snet-avd-use2-app1-001",
@@ -565,11 +557,27 @@
       },
       "maxLength": 64
     },
+    "avdWorkSpaceCustomFriendlyName": {
+      "type": "string",
+      "defaultValue": "East US - 001",
+      "metadata": {
+        "description": "Optional. AVD workspace custom friendly (Display) name. (Default: App1 - East US - 001)"
+      },
+      "maxLength": 64
+    },
     "avdHostPoolCustomName": {
       "type": "string",
       "defaultValue": "vdpool-use2-app1-001",
       "metadata": {
         "description": "Optional. AVD host pool custom name. (Default: vdpool-use2-app1-001)"
+      },
+      "maxLength": 64
+    },
+    "avdHostPoolCustomFriendlyName": {
+      "type": "string",
+      "defaultValue": "App1 - East US - 001",
+      "metadata": {
+        "description": "Optional. AVD host pool custom friendly (Display) name. (Default: App1 - East US - 001)"
       },
       "maxLength": 64
     },
@@ -589,11 +597,27 @@
       },
       "maxLength": 64
     },
+    "avdApplicationGroupCustomFriendlyName": {
+      "type": "string",
+      "defaultValue": "Desktops - App1 - East US - 001",
+      "metadata": {
+        "description": "Optional. AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - 001)"
+      },
+      "maxLength": 64
+    },
     "avdApplicationGroupCustomNameRapp": {
       "type": "string",
       "defaultValue": "vdag-rapp-use2-app1-001",
       "metadata": {
         "description": "Optional. AVD remote application group custom name. (Default: vdag-rapp-use2-app1-001)"
+      },
+      "maxLength": 64
+    },
+    "avdApplicationGroupCustomFriendlyNameRapp": {
+      "type": "string",
+      "defaultValue": "Remote apps - App1 - East US - 001",
+      "metadata": {
+        "description": "Optional. AVD remote application group custom name. (Default: Remote apps - App1 - East US - 001)"
       },
       "maxLength": 64
     },
@@ -891,9 +915,14 @@
     "varAvdApplicationSecurityGroupName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationSecurityGroupCustomName'), format('asg-avd-{0}-001', variables('varAvdComputeStorageResourcesNamingStandard')))]",
     "varAvdVnetworkPeeringName": "[format('peer-avd-{0}-{1}', variables('varAvdComputeStorageResourcesNamingStandard'), variables('varAvdNamingUniqueStringSixChar'))]",
     "varAvdWorkSpaceName": "[if(parameters('avdUseCustomNaming'), parameters('avdWorkSpaceCustomName'), format('vdws-{0}-001', variables('varAvdManagementPlaneNamingStandard')))]",
+    "varAvdWorkSpaceFriendlyName": "[if(parameters('avdUseCustomNaming'), parameters('avdWorkSpaceCustomFriendlyName'), format('{0} - 001', parameters('avdManagementPlaneLocation')))]",
     "varAvdHostPoolName": "[if(parameters('avdUseCustomNaming'), parameters('avdHostPoolCustomName'), format('vdpool-{0}-001', variables('varAvdManagementPlaneNamingStandard')))]",
+    "varAvdHostFriendlyName": "[if(parameters('avdUseCustomNaming'), parameters('avdHostPoolCustomFriendlyName'), format('{0} - {1} - 001', parameters('deploymentPrefix'), parameters('avdManagementPlaneLocation')))]",
     "varAvdApplicationGroupNameDesktop": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomNameDesktop'), format('vdag-desktop-{0}-001', variables('varAvdManagementPlaneNamingStandard')))]",
+    "varAvdApplicationGroupFriendlyName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomFriendlyName'), format('Desktops - {0} - {1} - 001', parameters('deploymentPrefix'), parameters('avdManagementPlaneLocation')))]",
+    "varAvdApplicationGroupAppFriendlyName": "[format('Session Desktops - {0} ', parameters('deploymentPrefix'))]",
     "varAvdApplicationGroupNameRapp": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomNameRapp'), format('vdag-rapp-{0}-001', variables('varAvdManagementPlaneNamingStandard')))]",
+    "varAvdApplicationGroupFriendlyNameRapp": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomFriendlyNameRapp'), format('Remote apps - {0} - {1} - 001', parameters('deploymentPrefix'), parameters('avdManagementPlaneLocation')))]",
     "varAvdScalingPlanName": "[if(parameters('avdUseCustomNaming'), parameters('avdScalingPlanCustomName'), format('vdscaling-{0}-001', variables('varAvdManagementPlaneNamingStandard')))]",
     "varAvdScalingPlanExclusionTag": "[format('Exclude-{0}', variables('varAvdScalingPlanName'))]",
     "varAvdScalingPlanWeekdaysScheduleName": "[format('weekdays-{0}', variables('varAvdManagementPlaneNamingStandard'))]",
@@ -14012,11 +14041,23 @@
           "avdApplicationGroupNameDesktop": {
             "value": "[variables('varAvdApplicationGroupNameDesktop')]"
           },
+          "avdApplicationGroupFriendlyNameDesktop": {
+            "value": "[variables('varAvdApplicationGroupFriendlyName')]"
+          },
+          "avdApplicationGroupAppFriendlyNameDesktop": {
+            "value": "[variables('varAvdApplicationGroupAppFriendlyName')]"
+          },
           "avdWorkSpaceName": {
             "value": "[variables('varAvdWorkSpaceName')]"
           },
+          "avdWorkSpaceFriendlyName": {
+            "value": "[variables('varAvdWorkSpaceFriendlyName')]"
+          },
           "avdApplicationGroupNameRapp": {
             "value": "[variables('varAvdApplicationGroupNameRapp')]"
+          },
+          "avdApplicationGroupFriendlyNameRapp": {
+            "value": "[variables('varAvdApplicationGroupFriendlyNameRapp')]"
           },
           "avdDeployRappGroup": {
             "value": "[parameters('avdDeployRappGroup')]"
@@ -14026,6 +14067,9 @@
           },
           "avdHostPoolName": {
             "value": "[variables('varAvdHostPoolName')]"
+          },
+          "avdHostPoolFriendlyName": {
+            "value": "[variables('varAvdHostFriendlyName')]"
           },
           "avdHostPoolRdpProperties": {
             "value": "[parameters('avdHostPoolRdpProperties')]"
@@ -14092,7 +14136,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "11850829106961876853"
+              "templateHash": "14170050569293883331"
             }
           },
           "parameters": {
@@ -14144,10 +14188,28 @@
                 "description": "Optional. AVD Application Group Name for the applications."
               }
             },
+            "avdApplicationGroupFriendlyNameRapp": {
+              "type": "string",
+              "metadata": {
+                "description": "Optional. AVD Application Group friendly Name for the applications."
+              }
+            },
             "avdApplicationGroupNameDesktop": {
               "type": "string",
               "metadata": {
                 "description": "AVD Application group for the session hosts. Desktop type."
+              }
+            },
+            "avdApplicationGroupFriendlyNameDesktop": {
+              "type": "string",
+              "metadata": {
+                "description": "AVD Application group for the session hosts. Desktop type (friendly name)."
+              }
+            },
+            "avdApplicationGroupAppFriendlyNameDesktop": {
+              "type": "string",
+              "metadata": {
+                "description": "AVD Application group app for the session hosts. Desktop type (friendly name)."
               }
             },
             "avdDeployRappGroup": {
@@ -14168,6 +14230,12 @@
                 "description": "AVD Host Pool Name"
               }
             },
+            "avdHostPoolFriendlyName": {
+              "type": "string",
+              "metadata": {
+                "description": "AVD Host Pool friendly Name"
+              }
+            },
             "avdScalingPlanName": {
               "type": "string",
               "metadata": {
@@ -14184,6 +14252,12 @@
               "type": "string",
               "metadata": {
                 "description": "AVD workspace name."
+              }
+            },
+            "avdWorkSpaceFriendlyName": {
+              "type": "string",
+              "metadata": {
+                "description": "AVD workspace friendly name."
               }
             },
             "avdHostPoolRdpProperties": {
@@ -14270,6 +14344,7 @@
             "varDesktopApplicaitonGroups": [
               {
                 "name": "[parameters('avdApplicationGroupNameDesktop')]",
+                "friendlyName": "[parameters('avdApplicationGroupFriendlyNameDesktop')]",
                 "location": "[parameters('avdManagementPlaneLocation')]",
                 "applicationGroupType": "Desktop"
               }
@@ -14277,6 +14352,7 @@
             "varApplicationApplicationGroups": [
               {
                 "name": "[parameters('avdApplicationGroupNameRapp')]",
+                "friendlyName": "[parameters('avdApplicationGroupFriendlyNameRapp')]",
                 "location": "[parameters('avdManagementPlaneLocation')]",
                 "applicationGroupType": "RemoteApp"
               }
@@ -14324,6 +14400,9 @@
                 "parameters": {
                   "name": {
                     "value": "[parameters('avdHostPoolName')]"
+                  },
+                  "hostpoolFriendlyName": {
+                    "value": "[parameters('avdHostPoolFriendlyName')]"
                   },
                   "location": {
                     "value": "[parameters('avdManagementPlaneLocation')]"
@@ -14884,6 +14963,9 @@
                 "parameters": {
                   "name": {
                     "value": "[variables('varFinalApplicationGroups')[copyIndex()].name]"
+                  },
+                  "friendlyName": {
+                    "value": "[variables('varFinalApplicationGroups')[copyIndex()].friendlyName]"
                   },
                   "location": {
                     "value": "[variables('varFinalApplicationGroups')[copyIndex()].location]"
@@ -15514,6 +15596,9 @@
                 "parameters": {
                   "name": {
                     "value": "[parameters('avdWorkSpaceName')]"
+                  },
+                  "workspaceFriendlyName": {
+                    "value": "[parameters('avdWorkSpaceFriendlyName')]"
                   },
                   "location": {
                     "value": "[parameters('avdManagementPlaneLocation')]"
