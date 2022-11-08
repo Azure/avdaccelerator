@@ -235,7 +235,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
         extensionMonitoringAgentConfig:{
             enabled: avdDeployMonitoring
         }
-        monitoringWorkspaceId: avdAlaWorkspaceResourceId
+        monitoringWorkspaceId: avdDeployMonitoring ? avdAlaWorkspaceResourceId: ''
         tags: avdTags
         nicdiagnosticMetricsToEnable: varNicDiagnosticMetricsToEnable
         diagnosticWorkspaceId: avdAlaWorkspaceResourceId
