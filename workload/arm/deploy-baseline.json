@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "1918637105823355395"
+      "templateHash": "12760827641044785751"
     }
   },
   "parameters": {
@@ -29407,7 +29407,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "4750244449234742913"
+              "templateHash": "16383076697837538418"
             }
           },
           "parameters": {
@@ -30252,7 +30252,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "7953296689033513663"
+                      "templateHash": "12447329491246646088"
                     }
                   },
                   "parameters": {
@@ -30642,7 +30642,7 @@
                             }
                           },
                           "monitoringWorkspaceId": {
-                            "value": "[parameters('avdAlaWorkspaceResourceId')]"
+                            "value": "[if(parameters('avdDeployMonitoring'), parameters('avdAlaWorkspaceResourceId'), '')]"
                           },
                           "tags": {
                             "value": "[parameters('avdTags')]"
