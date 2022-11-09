@@ -40,7 +40,7 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   admin_username             = var.local_admin_username
   admin_password             = var.local_admin_password
   encryption_at_host_enabled = true //'Microsoft.Compute/EncryptionAtHost' feature is must be enabled in the subscription for this setting to work https://learn.microsoft.com/en-us/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell
-  os_disk {
+
   os_disk {
     name                 = "${lower(var.prefix)}-${count.index + 1}"
     caching              = "ReadWrite"
