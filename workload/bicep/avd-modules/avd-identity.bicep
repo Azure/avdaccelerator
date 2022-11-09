@@ -76,7 +76,7 @@ module fslogixManagedIdentity '../../../carml/1.2.0/Microsoft.ManagedIdentity/us
 }
 
 // Introduce delay for management VM to be ready.
-module fslogixManagedIdentityDelay '../../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
+module fslogixManagedIdentityDelay '../../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD')) {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
   name: 'AVD-FSLogix-Identity-Delay-${time}'
   params: {
@@ -140,7 +140,9 @@ module fslogixRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/roleAssig
     roleDefinitionIdOrName: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${storageAccountContributorRoleId}'
     principalId: createAvdFslogixDeployment ? fslogixManagedIdentity.outputs.principalId: ''
   }
-  dependsOn: []
+  dependsOn: [
+    fslogixManagedIdentityDelay
+  ]
 }
 //FSLogix reader.
 module fslogixReaderRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD')) {
@@ -150,7 +152,9 @@ module fslogixReaderRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/rol
     roleDefinitionIdOrName: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${readerRoleId}'
     principalId: createAvdFslogixDeployment ? fslogixManagedIdentity.outputs.principalId: ''
   }
-  dependsOn: []
+  dependsOn: [
+    fslogixManagedIdentityDelay
+  ]
 }
 
 //Scaling plan compute RG.
