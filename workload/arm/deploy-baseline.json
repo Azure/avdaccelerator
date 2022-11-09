@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "5654160366896242460"
+      "templateHash": "9010686875904363504"
     }
   },
   "parameters": {
@@ -16527,7 +16527,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.12.40.16777",
-              "templateHash": "15883094269028597226"
+              "templateHash": "13319328389180204581"
             }
           },
           "parameters": {
@@ -16933,6 +16933,7 @@
               }
             },
             {
+              "condition": "[and(parameters('createAvdFslogixDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'AAD')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
               "name": "[format('AVD-FSLogix-Identity-Delay-{0}', parameters('time'))]",
@@ -18331,7 +18332,8 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time')))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time')))]",
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-FSLogix-Identity-Delay-{0}', parameters('time')))]"
               ]
             },
             {
@@ -18794,7 +18796,8 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time')))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('fslogix-Managed-Identity-{0}', parameters('time')))]",
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-FSLogix-Identity-Delay-{0}', parameters('time')))]"
               ]
             },
             {
