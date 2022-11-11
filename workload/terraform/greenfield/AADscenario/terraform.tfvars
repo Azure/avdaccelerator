@@ -42,9 +42,9 @@ snet          = "snet-avd"  #snet-avd-<azure region>-<prefix>-<nnn>
 vnet_range    = ["10.18.0.0/23"]
 subnet_range  = ["10.18.0.0/23"]
 allow_list_ip = ["10.18.0.0/23"]
-dns_servers   = ["10.0.1.6", "168.63.129.16"]
-ad_vnet       = "infra-network"
-ad_rg         = "infra-rg"
+dns_servers   = ["10.254.0.4", "168.63.129.16"]
+ad_vnet       = "Domaincontroller-vnet"
+ad_rg         = "DOMAINCONTROLLER-RG"
 
 //object_name              = ["Logical Disk"] //, "Memory", "Physical Disk", "Processor", "System"]
 //counter_name             = ["% Free Space"] //, "Avg. Disk Queue Length", "Avg. Disk sec/Transfe", "Current Disk Queue Length", "Available Mbytes", "Page Faults/sec", "Page/sec"]
@@ -56,13 +56,13 @@ local_admin_password = "ChangeMe123!" # Your AVD VM login id to manage password
 vm_size              = "Standard_D8s_v5"
 rdsh_count           = 2
 image_name           = "avdImage-microsoftwindowsdesktop-office-365-win11-21h2-avd-m365"
-image_rg             = "rg-eastus-avd-AIBdemoAVD-shared-resources"
-gallery_name         = "avdgallery_eastus_AIBdemoAVD"
+image_rg             = "rg-eastus-avd-AIBdemo-shared-resources"
+gallery_name         = "avdgallery_eastus_AIBdemo"
 
-aad_group_name = "avdusersgrp" #user group must pre-created on your AD server and sync to Azure AD
+aad_group_name = "AVDInfra" #user group must pre-created on your AD server and sync to Azure AD
 
-spoke_subscription_id = "b0aeeba8-4430-4cf1-acbc-6e24cadf86c9"
-hub_subscription_id   = "b0aeeba8-4430-4cf1-acbc-6e24cadf86c9"
+spoke_subscription_id = "46ff3a32-ad72-40d6-ae7c-c019a0340292"
+hub_subscription_id   = "46ff3a32-ad72-40d6-ae7c-c019a0340292"
 
 
 
