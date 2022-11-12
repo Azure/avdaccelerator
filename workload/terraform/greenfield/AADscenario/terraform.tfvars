@@ -61,8 +61,8 @@ gallery_name         = "avdgallery_eastus_AIBdemo"
 
 aad_group_name = "AVDInfra" #user group must pre-created on your AD server and sync to Azure AD
 
-spoke_subscription_id = "46ff3a32-ad72-40d6-ae7c-c019a0340292"
-hub_subscription_id   = "46ff3a32-ad72-40d6-ae7c-c019a0340292"
+spoke_subscription_id = "Your Spoke Subscription ID"
+hub_subscription_id   = "Your Hub Subscription ID"
 
 
 
