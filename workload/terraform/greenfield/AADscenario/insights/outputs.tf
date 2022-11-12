@@ -4,6 +4,7 @@ output "log_analytics_workspace_id" {
 
 output "log_analytics_workspace_key" {
   value = azurerm_log_analytics_workspace.lawksp.primary_shared_key
+  sensitive =  true
 }
 
 output "log_analytics_workspace_name" {
