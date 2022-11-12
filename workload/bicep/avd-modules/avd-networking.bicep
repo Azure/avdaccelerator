@@ -157,8 +157,8 @@ module avdVirtualNetwork '../../../carml/1.2.0/Microsoft.Network/virtualNetworks
                 addressPrefix: avdVnetworkSubnetAddressPrefix
                 privateEndpointNetworkPolicies: 'Disabled'
                 privateLinkServiceNetworkPolicies: 'Enabled'
-                networkSecurityGroupName: avdNetworksecurityGroupName
-                routeTableName: avdRouteTableName
+                networkSecurityGroupId: avdNetworksecurityGroup.outputs.resourceId
+                routeTableId: avdRouteTable.outputs.resourceId
             }
         ]
         tags: avdTags
