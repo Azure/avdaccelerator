@@ -39,7 +39,6 @@ Azure Virtual Desktop resources and dependent services for establishing the Azur
 
 - Network Security group
 - New VNet and subnet
-- Peering to the hub virtual network
 - Baseline NSG
 - Route table
 
