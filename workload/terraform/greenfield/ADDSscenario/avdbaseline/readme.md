@@ -64,7 +64,7 @@ Validated on provider versions:
 
 - hashicorp/azurerm v3.22.0
 
-![AVD Network Spoke Image diagram](../../../docs/diagrams/avd-accelerator-terraform-spoke-network.png)
+![AVD Network Spoke Image diagram](../../../../docs/diagrams/avd-accelerator-terraform-spoke-network.png)
 
 ## AVD-Baseline  
 
@@ -109,7 +109,7 @@ Validated on provider versions:
 - hashicorp/azurerm v3.22.0
 
 
-![AVD Baseline diagram](../../../docs/diagrams/avd-accelerator-terraform-baseline-image.png)
+![AVD Baseline diagram](../../../../docs/diagrams/avd-accelerator-terraform-baseline-image.png)
 
 ## Backends
 
