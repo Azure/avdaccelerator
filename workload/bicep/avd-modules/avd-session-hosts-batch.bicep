@@ -132,11 +132,11 @@ param time string = utcNow()
 // =========== //
 // Variable declaration //
 // =========== //
-var varAvdMaxSessionHostsPerTemplateDeployment = 30 //50 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
+var varAvdMaxSessionHostsPerTemplateDeployment = 30 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
 var varDivisionValue = avdDeploySessionHostsCount / varAvdMaxSessionHostsPerTemplateDeployment // This determines if any full batches are required.
 var varDivisionRemainderValue = avdDeploySessionHostsCount % varAvdMaxSessionHostsPerTemplateDeployment // This determines if any partial batches are required.
 var varAvdSessionHostBatchCount = varDivisionRemainderValue > 0 ? varDivisionValue + 1 : varDivisionValue // This determines the total number of batches needed, whether full and / or partial.
-var maxAvailabilitySetMembersCount = 20 //200 // This is the max number of session hosts that can be deployed in an availability set.
+var maxAvailabilitySetMembersCount = 199 // This is the max number of session hosts that can be deployed in an availability set.
 var divisionAvSetValue = avdDeploySessionHostsCount / maxAvailabilitySetMembersCount // This determines if any full availability sets are required.
 var divisionAvSetRemainderValue = avdDeploySessionHostsCount % maxAvailabilitySetMembersCount // This determines if any partial availability sets are required.
 var availabilitySetCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue + 1 : divisionAvSetValue // This determines the total number of availability sets needed, whether full and / or partial.
