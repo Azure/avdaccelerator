@@ -142,10 +142,10 @@ param avdFslogixFileShareQuotaSize int = 10
 param avdDeploySessionHosts bool = true
 
 @description('Optional. Deploy AVD monitoring resources and setings. (Default: true)')
-param avdDeployMonitoring bool = true
+param avdDeployMonitoring bool = false
 
 @description('Optional. Deploy AVD Azure log analytics workspace. (Default: true)')
-param deployAlaWorkspace bool = true
+param deployAlaWorkspace bool = false
 
 @description('Required. Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace.')
 param deployCustomPolicyMonitoring bool = false
