@@ -75,6 +75,29 @@ module fslogixManagedIdentity '../../../carml/1.2.0/Microsoft.ManagedIdentity/us
   }
 }
 
+// Introduce delay for management VM to be ready.
+module fslogixManagedIdentityDelay '../../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD')) {
+  scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
+  name: 'AVD-FSLogix-Identity-Delay-${time}'
+  params: {
+      name: 'AVD-fslogixManagedIdentityDelay-${time}'
+      location: avdSessionHostLocation
+      azPowerShellVersion: '6.2'
+      cleanupPreference: 'Always'
+      timeout: 'PT10M'
+      scriptContent: '''
+      Write-Host "Start"
+      Get-Date
+      Start-Sleep -Seconds 60
+      Write-Host "Stop"
+      Get-Date
+      '''
+  }
+  dependsOn: [
+    fslogixManagedIdentity
+  ]
+}
+
 // RBAC Roles.
 // Start VM on connect.
 module startVMonConnectRole '../../../carml/1.2.0/Microsoft.Authorization/roleDefinitions/subscription/deploy.bicep' = if (createStartVmOnConnectCustomRole) {
@@ -117,7 +140,9 @@ module fslogixRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/roleAssig
     roleDefinitionIdOrName: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${storageAccountContributorRoleId}'
     principalId: createAvdFslogixDeployment ? fslogixManagedIdentity.outputs.principalId: ''
   }
-  dependsOn: []
+  dependsOn: [
+    fslogixManagedIdentityDelay
+  ]
 }
 //FSLogix reader.
 module fslogixReaderRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD')) {
@@ -127,7 +152,9 @@ module fslogixReaderRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/rol
     roleDefinitionIdOrName: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${readerRoleId}'
     principalId: createAvdFslogixDeployment ? fslogixManagedIdentity.outputs.principalId: ''
   }
-  dependsOn: []
+  dependsOn: [
+    fslogixManagedIdentityDelay
+  ]
 }
 
 //Scaling plan compute RG.
