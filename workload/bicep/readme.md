@@ -22,6 +22,8 @@ az deployment create \
   --parameters avdVnetPrivateDnsZone=true \
   --parameters avdVnetPrivateDnsZoneFilesId="<PrivateDnsZoneFilesId>" \
   --parameters avdVnetPrivateDnsZoneKeyvaultId="<PrivateDnsZoneKeyvaultId>" \
+  --avdDeployMonitoring=true \
+  --deployAlaWorkspace=true \
   --location "eastus"
 ```
 
@@ -47,6 +49,8 @@ New-AzSubscriptionDeployment `
   -avdVnetPrivateDnsZone $true `
   -avdVnetPrivateDnsZoneFilesId "<PrivateDnsZoneFilesId>" `
   -avdVnetPrivateDnsZoneKeyvaultId "<PrivateDnsZoneKeyvaultId>" `
+  -avdDeployMonitoring $true `
+  -deployAlaWorkspace $true `
   -Location "eastus2"
 ```
 
