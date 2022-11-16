@@ -271,9 +271,7 @@
                                         "password": "The password must be alphanumeric, contain at least 12 characters, have at least 1 letter,1 number and 1 special character."
                                     },
                                     "constraints": {
-                                        "required": true,
-                                        "customPasswordRegex": "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=_!*<>()])(?=\\S+$).{12,123}$",
-                                        "customValidationMessage": "Password must include 1 special character."
+                                        "required": true
                                     },
                                     "options": {
                                         "hideConfirmation": false
