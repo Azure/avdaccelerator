@@ -27,8 +27,17 @@ param avdServiceObjectsRgName string
 @description('Optional. AVD Application Group Name for the applications.')
 param avdApplicationGroupNameRapp string
 
+@description('Optional. AVD Application Group friendly Name for the applications.')
+param avdApplicationGroupFriendlyNameRapp string
+
 @description('AVD Application group for the session hosts. Desktop type.')
 param avdApplicationGroupNameDesktop string
+
+@description('AVD Application group for the session hosts. Desktop type (friendly name).')
+param avdApplicationGroupFriendlyNameDesktop string
+
+@description('AVD Application group app for the session hosts. Desktop type (friendly name).')
+param avdApplicationGroupAppFriendlyNameDesktop string
 
 @description('Optional. AVD deploy remote app application group.')
 param avdDeployRappGroup bool
@@ -39,6 +48,9 @@ param avdDeployScalingPlan bool
 @description('AVD Host Pool Name')
 param avdHostPoolName string
 
+@description('AVD Host Pool friendly Name')
+param avdHostPoolFriendlyName string
+
 @description('AVD scaling plan name')
 param avdScalingPlanName string
 
@@ -47,6 +59,9 @@ param avdScalingPlanSchedules array
 
 @description('AVD workspace name.')
 param avdWorkSpaceName string
+
+@description('AVD workspace friendly name.')
+param avdWorkSpaceFriendlyName string
 
 @description('Optional. AVD host pool Custom RDP properties.')
 param avdHostPoolRdpProperties string
@@ -99,6 +114,7 @@ param time string = utcNow()
 var varDesktopApplicaitonGroups = [
   {
     name: avdApplicationGroupNameDesktop
+    friendlyName: avdApplicationGroupFriendlyNameDesktop
     location: avdManagementPlaneLocation
     applicationGroupType: 'Desktop'
   }
@@ -106,6 +122,7 @@ var varDesktopApplicaitonGroups = [
 var varApplicationApplicationGroups = [
   {
     name: avdApplicationGroupNameRapp
+    friendlyName: avdApplicationGroupFriendlyNameRapp
     location: avdManagementPlaneLocation
     applicationGroupType: 'RemoteApp'
   }
@@ -148,6 +165,7 @@ module avdHostPool '../../../carml/1.2.0/Microsoft.DesktopVirtualization/hostpoo
   name: 'AVD-HostPool-${time}'
   params: {
     name: avdHostPoolName
+    hostpoolFriendlyName: avdHostPoolFriendlyName
     location: avdManagementPlaneLocation
     hostpoolType: avdHostPoolType
     startVMOnConnect: avdStartVmOnConnect
@@ -168,6 +186,7 @@ module avdApplicationGroups '../../../carml/1.2.0/Microsoft.DesktopVirtualizatio
   name: 'Deploy-AppGroup-${applicationGroup.name}-${time}'
   params: {
     name: applicationGroup.name
+    friendlyName: applicationGroup.friendlyName
     location: applicationGroup.location
     applicationGroupType: applicationGroup.applicationGroupType
     hostpoolName: avdHostPool.outputs.name
@@ -194,6 +213,7 @@ module avdWorkSpace '../../../carml/1.2.0/Microsoft.DesktopVirtualization/worksp
   name: 'Deploy-AVD-WorkSpace-${time}'
   params: {
       name: avdWorkSpaceName
+      workspaceFriendlyName: avdWorkSpaceFriendlyName
       location: avdManagementPlaneLocation
       appGroupResourceIds: avdDeployRappGroup ? [
         '/subscriptions/${avdWorkloadSubsId}/resourceGroups/${avdServiceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${avdApplicationGroupNameDesktop}'
