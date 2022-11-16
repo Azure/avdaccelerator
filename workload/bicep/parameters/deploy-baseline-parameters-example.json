@@ -15,7 +15,7 @@
             "value": "eastus2"
         },
         "avdDeployMonitoring": {
-            "value": true
+            "value": false
         },   
         "avdWorkloadSubsId": {
             "value": "<<subscriptionId>>"
