@@ -58,6 +58,10 @@
   - **Existing hub VNet peering**
     - **Virtual Network** - Select the hub VNet where this new VNet will be peered with
     - **VNet Gateway on hub** - Select Yes or No if you want to set the use remote gateway option for the VNet peering
+- **Monitoring** blade
+  - **Deploy monitoring** - When set 'Yes', all required diagnostic configurations will be applied to all AVD resources, also events and performance stats will be pushed from session hosts to a log analytics workspace.
+    - **Log analytics workspace** - select if creating a new workspace or if using and existing one.
+    - **Deploy monitoring policies (subscription level)** - when set to 'Yes', custom policies and policy sets will be created and assigned to the subscription to enforce deployIfNotExist rules to future AVD resources.
 - **Resource naming** blade
   - **Custom Resource Naming** - When set 'Yes', the information provided will be used to name resources. When set to 'No' deployment will use the AVD accelerator naming standard
 - **Resource tagging** blade
