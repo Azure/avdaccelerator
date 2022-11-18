@@ -50,7 +50,7 @@ resource "azurerm_role_assignment" "power" {
 
 # autoscale settings scenario 1 https://docs.microsoft.com/azure/virtual-desktop/autoscale-scenarios
 resource "azurerm_virtual_desktop_scaling_plan" "scplan" {
-  name                = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.scplan}"
+  name                = "${var.scplan}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   friendly_name       = "Scaling Plan Example"
