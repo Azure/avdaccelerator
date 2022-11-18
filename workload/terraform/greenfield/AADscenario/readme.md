@@ -75,37 +75,42 @@ A "Prefix" which will be included in all the deployed resources name. Resource G
 
 Azure platform landing zone has already been deployed in accordance with the [CAF](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/landing-zone/)
 
-
 [(Back to top)](#table-of-contents)
 
 ## Implementation
 
 1. Clone your repo with the following git command:
-bash
-git clone <https://github.com/Azure/avdaccelerator.git>  
+
+```bash
+  git clone <https://github.com/Azure/avdaccelerator.git>
+```  
+
 2. Change your terminal into that new subdirectory:
-bash
-cd workload/terraform/greenfield/AADscenario
-bash
-az account list --output table
-az account set --subscription 'Your subscription ID'
-1. Rename terraform.tfvars.example and to remove the .copy TFVAR File
-2. Set configuration variables:
-avdLocation          = "Your region"
-prefix               = "your prefix"
-local_admin_username = "your local admin name"  # Your AVD VM login id to manage username
-local_admin_password = "your local admin password"  # Your AVD VM login id to manage password
-vm_size              = "Standard_D8s_v5"
-vnet_range           = ["your.ip.address.range/16"]
-subnet_range         = ["your.ip.address.range/24"]
-allow_list_ip        = ["your.ip.address.range/23"]
-aad_group_name       = "Desktop Virtualization User"  #user group must pre-created in Azure AD
-rdsh_count           = 2
-image_name           = "yourimagename-microsoftwindowsdesktop-office-365-win11-21h2-avd-m365"
-image_rg             = "yourimageresourcegroup-WestEurope-avd-AIBdemo-shared-resources"
-gallery_name         = "yourimagegalleryname_WestEurope"
-spoke_subscription_id = "Your spoke subscription ID"
-hub_subscription_id = "Your hub subscription ID
+
+```bash
+  cd workload/terraform/greenfield/AADscenario
+  az account list --output table
+  az account set --subscription 'Your subscription ID'
+```
+
+3. Rename terraform.tfvars.example and to remove the .copy TFVAR File
+4. Set configuration variables:
+
+- avdLocation          = "Your region"
+- prefix               = "your prefix"
+- local_admin_username = "your local admin name"  # Your AVD VM login id to manage username
+- local_admin_password = "your local admin password"  # Your AVD VM login id to manage password
+- vm_size              = "Standard_D8s_v5"
+- vnet_range           = ["your.ip.address.range/16"]
+- subnet_range         = ["your.ip.address.range/24"]
+- allow_list_ip        = ["your.ip.address.range/23"]
+- aad_group_name       = "Desktop Virtualization User"  #user group must pre-created in Azure AD
+- rdsh_count           = 2
+- image_name           = "yourimagename-microsoftwindowsdesktop-office-365-win11-21h2-avd-m365"
+- image_rg             = "yourimageresourcegroup-WestEurope-avd-AIBdemo-shared-resources"
+- gallery_name         = "yourimagegalleryname_WestEurope"
+- spoke_subscription_id = "Your spoke subscription ID"
+- hub_subscription_id = "Your hub subscription ID
 
 ## Deployment Steps
 
@@ -117,7 +122,6 @@ hub_subscription_id = "Your hub subscription ID
 5. Run `terraform apply` to confirm the deployment
 
 [(Back to top)](#table-of-contents)
-
 
 ## Reporting issues
 
