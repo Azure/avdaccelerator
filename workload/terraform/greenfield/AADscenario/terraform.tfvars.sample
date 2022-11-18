@@ -1,21 +1,20 @@
 /*tested on
-Terraform v1.2.8
+Terraform v1.3.3
 on windows_amd64
-+ provider registry.terraform.io/azure/azapi v0.5.0
++ provider registry.terraform.io/azure/azapi v1.0.0
 + provider registry.terraform.io/hashicorp/azuread v2.25.0
-+ provider registry.terraform.io/hashicorp/azurerm v3.21.1
++ provider registry.terraform.io/hashicorp/azurerm v3.22.0
 + provider registry.terraform.io/hashicorp/local v2.2.3
 + provider registry.terraform.io/hashicorp/random v3.3.2
 + provider registry.terraform.io/hashicorp/time v0.8.0
 */
+
 
 avdLocation          = "westeurope"
 rg_shared_name       = "shared-resources"  #rg-avd-<location>-<prefix>-shared-resources
 rg_network           = "network"           #rg-avd-<location>-<prefix>-network
 rg_stor              = "storage"           #rg-avd-<location>-<prefix>-storage
 rg_pool              = "pool-compute"      #rg-avd-<location>-<prefix>-pool-compute
-rg_personal          = "personal-compute"  #rg-avd-<location>-<prefix>-pool-compute
-rg_remoteapp         = "remoteapp-compute" #rg-avd-<location>-<prefix>-pool-compute
 rg_so                = "service-objects"   #rg-avd-<azure Region>-<prefix>-service-objects
 rg_image_name        = "image-resources"
 
@@ -30,7 +29,7 @@ dag                  = "vdag" #vdag-desktop-<azure region>-<prefix>-<nnn>
 rag                  = "vrag" #vdag-rapp-<azure region>-<prefix>-<nnn>
 rt                   = "route-avd" #route-avd-<azure region>-<prefix>-<nnn>
 nsg                  = "nsg-avd"   #nsg-avd-<azure region>-<prefix>-<nnn>
-scplan               = "scaling-plan" #avd-<location>-<prefix>-scaling-plan
+scplan       = "vdscaling" #avd-<location>-<prefix>-scaling-plan
 vnet                 = "vnet-avd" #vnet-avd-<azure region>-<prefix>-<nnn>
 snet                 = "snet-avd" #snet-avd-<azure region>-<prefix>-<nnn>
 
@@ -38,7 +37,7 @@ snet                 = "snet-avd" #snet-avd-<azure region>-<prefix>-<nnn>
 prefix               = "demo"
 local_admin_username = "localadmin"  # Your AVD VM login id to manage username
 local_admin_password = "ChangeMe123!"  # Your AVD VM login id to manage password
-ou_path              = "OU=AVD,OU=AAD,DC=contoso,DC=net" #optional 
+
 vm_size              = "Standard_D8s_v5"
 vnet_range           = ["10.21.0.0/23"]
 subnet_range         = ["10.21.0.0/23"]
