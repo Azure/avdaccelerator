@@ -248,9 +248,9 @@ param avdVnetworkCustomName string = 'vnet-avd-use2-app1-001'
 @description('Optional. AVD Azure log analytics workspace custom name. (Default: log-avd-use2-app1-001)')
 param avdAlaWorkspaceCustomName string = 'log-avd-use2-app1-001'
 
-@maxLength(24)
-@description('Optional. Azure Storage Account custom name for NSG flow logs. (Default: stavduse2flowlogs001)')
-param avdStgAccountForFlowLogsCustomName string = 'stavduse2flowlogs001'
+//@maxLength(24)
+//@description('Optional. Azure Storage Account custom name for NSG flow logs. (Default: stavduse2flowlogs001)')
+//param avdStgAccountForFlowLogsCustomName string = 'stavduse2flowlogs001'
 
 @maxLength(80)
 @description('Optional. AVD virtual network subnet custom name. (Default: snet-avd-use2-app1-001)')
@@ -273,8 +273,16 @@ param avdApplicationSecurityGroupCustomName string = 'asg-avd-use2-app1-001'
 param avdWorkSpaceCustomName string = 'vdws-use2-app1-001'
 
 @maxLength(64)
+@description('Optional. AVD workspace custom friendly (Display) name. (Default: App1 - East US - 001)')
+param avdWorkSpaceCustomFriendlyName string = 'East US - 001'
+
+@maxLength(64)
 @description('Optional. AVD host pool custom name. (Default: vdpool-use2-app1-001)')
 param avdHostPoolCustomName string = 'vdpool-use2-app1-001'
+
+@maxLength(64)
+@description('Optional. AVD host pool custom friendly (Display) name. (Default: App1 - East US - 001)')
+param avdHostPoolCustomFriendlyName string = 'App1 - East US - 001'
 
 @maxLength(64)
 @description('Optional. AVD scaling plan custom name. (Default: vdscaling-use2-app1-001)')
@@ -285,8 +293,16 @@ param avdScalingPlanCustomName string = 'vdscaling-use2-app1-001'
 param avdApplicationGroupCustomNameDesktop string = 'vdag-desktop-use2-app1-001'
 
 @maxLength(64)
+@description('Optional. AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - 001)')
+param avdApplicationGroupCustomFriendlyName string = 'Desktops - App1 - East US - 001'
+
+@maxLength(64)
 @description('Optional. AVD remote application group custom name. (Default: vdag-rapp-use2-app1-001)')
 param avdApplicationGroupCustomNameRapp string = 'vdag-rapp-use2-app1-001'
+
+@maxLength(64)
+@description('Optional. AVD remote application group custom name. (Default: Remote apps - App1 - East US - 001)')
+param avdApplicationGroupCustomFriendlyNameRapp string = 'Remote apps - App1 - East US - 001'
 
 @maxLength(11)
 @description('Optional. AVD session host prefix custom name. (Default: vm-avd-app1)')
@@ -514,9 +530,14 @@ var varAvdRouteTableName = avdUseCustomNaming ? avdRouteTableCustomName : 'route
 var varAvdApplicationSecurityGroupName = avdUseCustomNaming ? avdApplicationSecurityGroupCustomName : 'asg-avd-${varAvdComputeStorageResourcesNamingStandard}-001'
 var varAvdVnetworkPeeringName = 'peer-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
 var varAvdWorkSpaceName = avdUseCustomNaming ? avdWorkSpaceCustomName : 'vdws-${varAvdManagementPlaneNamingStandard}-001'
+var varAvdWorkSpaceFriendlyName = avdUseCustomNaming ? avdWorkSpaceCustomFriendlyName : '${avdManagementPlaneLocation} - 001'
 var varAvdHostPoolName = avdUseCustomNaming ? avdHostPoolCustomName : 'vdpool-${varAvdManagementPlaneNamingStandard}-001'
+var varAvdHostFriendlyName = avdUseCustomNaming ? avdHostPoolCustomFriendlyName : '${deploymentPrefix} - ${avdManagementPlaneLocation} - 001'
 var varAvdApplicationGroupNameDesktop = avdUseCustomNaming ? avdApplicationGroupCustomNameDesktop : 'vdag-desktop-${varAvdManagementPlaneNamingStandard}-001'
+var varAvdApplicationGroupFriendlyName = avdUseCustomNaming ? avdApplicationGroupCustomFriendlyName : 'Desktops - ${deploymentPrefix} - ${avdManagementPlaneLocation} - 001'
+var varAvdApplicationGroupAppFriendlyName = 'Session Desktops - ${deploymentPrefix} '
 var varAvdApplicationGroupNameRapp = avdUseCustomNaming ? avdApplicationGroupCustomNameRapp : 'vdag-rapp-${varAvdManagementPlaneNamingStandard}-001'
+var varAvdApplicationGroupFriendlyNameRapp = avdUseCustomNaming ? avdApplicationGroupCustomFriendlyNameRapp : 'Remote apps - ${deploymentPrefix} - ${avdManagementPlaneLocation} - 001'
 var varAvdScalingPlanName = avdUseCustomNaming ? avdScalingPlanCustomName : 'vdscaling-${varAvdManagementPlaneNamingStandard}-001'
 var varAvdScalingPlanExclusionTag = 'Exclude-${varAvdScalingPlanName}'
 var varAvdScalingPlanWeekdaysScheduleName = 'weekdays-${varAvdManagementPlaneNamingStandard}'
@@ -531,7 +552,7 @@ var varAvdFslogixProfileContainerFileShareName = avdUseCustomNaming ? avdFslogix
 var varAvdFslogixStorageName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}' : 'stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}'
 var varAvdWrklStoragePrivateEndpointName = 'pe-stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}-file'
 var varManagementVmName = 'vm-mgmt-${varDeploymentPrefixLowercase}'
-var varAvdAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${varAvdManagementPlaneLocationAcronym}' //'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
+var varAvdAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName :  'log-avd-${varAvdManagementPlaneLocationAcronym}' //'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
 var varStgAccountForFlowLogsName = avdUseCustomNaming ? '${avdFslogixStoragePrefixCustomName}${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}' : 'stavd${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}'
 //
 var varAvdScalingPlanSchedules = [
@@ -836,7 +857,6 @@ module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring.bicep' =
 }
 
 // Azure Policies for network monitorig/security . New storage account/Reuse existing one if needed created for the NSG flow logs
-
 module deployAzurePolicyNetworking './avd-modules/avd-azure-policy-networking.bicep' = if (avdDeployMonitoring && deployCustomPolicyNetworking) {
     name: (length('Enable-Azure-Policy-for-Netwok-Security-${time}') > 64) ? take('Enable-Azure-Policy-for-Netwok-Security-${time}',64) : 'Enable-Azure-Policy-for-Netwok-Security-${time}'
     params: {
@@ -889,11 +909,16 @@ module avdManagementPLane 'avd-modules/avd-management-plane.bicep' = {
     name: 'Deploy-AVD-HostPool-AppGroups-${time}'
     params: {
         avdApplicationGroupNameDesktop: varAvdApplicationGroupNameDesktop
+        avdApplicationGroupFriendlyNameDesktop: varAvdApplicationGroupFriendlyName
+        avdApplicationGroupAppFriendlyNameDesktop: varAvdApplicationGroupAppFriendlyName
         avdWorkSpaceName: varAvdWorkSpaceName
+        avdWorkSpaceFriendlyName: varAvdWorkSpaceFriendlyName
         avdApplicationGroupNameRapp: varAvdApplicationGroupNameRapp
+        avdApplicationGroupFriendlyNameRapp: varAvdApplicationGroupFriendlyNameRapp
         avdDeployRappGroup: avdDeployRappGroup
         avdTimeZone: varTimeZones[avdSessionHostLocation]
         avdHostPoolName: varAvdHostPoolName
+        avdHostPoolFriendlyName: varAvdHostFriendlyName
         avdHostPoolRdpProperties: avdHostPoolRdpProperties
         avdHostPoolLoadBalancerType: avdHostPoolLoadBalancerType
         avdHostPoolType: avdHostPoolType
