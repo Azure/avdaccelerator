@@ -11,7 +11,7 @@ This accelerator is to be used as starter kit and you can expand its functionali
 - [Scenario Overview](#scenario-details)
 - [Prerequisites](#prerequisites)  
 - [Implementation](#implementation)
-- [Backend Setup](#Backends)  
+- [Deployment Steps](#deploymentsteps)  
 
 ## Scenario Overview
 
