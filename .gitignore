@@ -6,6 +6,7 @@ workload/terraform/greenfield/avdbaseline/.terraform/providers/registry.terrafor
 workload/terraform/greenfield/avdbaseline/.terraform/providers/registry.terraform.io/hashicorp/time/0.8.0/linux_amd64/terraform-provider-time_v0.8.0_x5
 workload/terraform/greenfield/avdbaseline/terraform.tfstate
 workload/terraform/greenfield/avdbaseline/terraform.tfvars
+workload/terraform/greenfield/avdbaseline/AADscenario/terraform.tfvars
 workload/terraform/greenfield/avdbaseline/terraform.tfstate.backup
 workload/terraform/greenfield/avdbaseline/.terraform.lock.hcl
 
