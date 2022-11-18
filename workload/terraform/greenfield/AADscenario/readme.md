@@ -119,7 +119,7 @@ Azure platform landing zone has already been deployed in accordance with the [CA
 3. Change directory to the Terraform folder
 4. Run `terraform init` to initialize this directory
 5. Run `terraform plan` to view the planned deployment
-5. Run `terraform apply` to confirm the deployment
+6. Run `terraform apply` to confirm the deployment
 
 [(Back to top)](#table-of-contents)
 
