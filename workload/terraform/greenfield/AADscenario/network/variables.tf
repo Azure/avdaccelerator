@@ -40,17 +40,6 @@ variable "subnet_range" {
   description = "Address range for session host subnet"
 }
 
-# variable "ad_rg" {
-#   type        = string
-#   description = "The resource group for AD VM"
-# }
-
-# variable "ad_vnet" {
-#   type        = string
-#   description = "Name of domain controller vnet"
-# }
-
-
 variable "prefix" {
   type        = string
   description = "Prefix of the name of the AVD machine(s)"
@@ -65,11 +54,6 @@ variable "spoke_subscription_id" {
   type        = string
   description = "Spoke Subscription id"
 }
-
-# variable "tenant_id" {
-#   type        = string
-#   description = "Tenant id"
-# }
 
 variable "tags" {
   type = map(any)

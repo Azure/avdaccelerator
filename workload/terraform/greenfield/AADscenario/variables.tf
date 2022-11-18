@@ -46,21 +46,6 @@ variable "dag" {
   description = "Name of the Azure Virtual Desktop desktop application group"
 }
 
-variable "rag" {
-  type        = string
-  description = "Name of the Azure Virtual Desktop remote application group"
-}
-
-variable "pag" {
-  type        = string
-  description = "Name of the Azure Virtual Desktop remote application group"
-}
-
-variable "raghostpool" {
-  type        = string
-  description = "Name of the Azure Virtual Desktop remote app group"
-}
-
 variable "scplan" {
   type        = string
   description = "Name of the session host scaling plan"
@@ -81,29 +66,9 @@ variable "workspace" {
   description = "Name of the Azure Virtual Desktop workspace"
 }
 
-variable "pworkspace" {
-  type        = string
-  description = "Name of the Azure Virtual Desktop Personal workspace"
-}
-
 variable "hostpool" {
   type        = string
   description = "Name of the Azure Virtual Desktop host pool"
-}
-
-variable "personalpool" {
-  type        = string
-  description = "Name of the Azure Virtual Desktop host pool"
-}
-
-variable "ragworkspace" {
-  type        = string
-  description = "Name of the Azure Virtual Desktop workspace"
-}
-
-variable "ad_vnet" {
-  type        = string
-  description = "Name of domain controller vnet"
 }
 
 variable "dns_servers" {
@@ -118,11 +83,6 @@ variable "vnet_range" {
 variable "subnet_range" {
   type        = list(string)
   description = "Address range for session host subnet"
-}
-
-variable "ad_rg" {
-  type        = string
-  description = "The resource group for AD VM"
 }
 
 variable "aad_group_name" {
