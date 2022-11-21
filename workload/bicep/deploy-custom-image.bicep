@@ -60,8 +60,11 @@ param existingAibManagedIdentityId string = ''
 @description('Optional. Select existing azure image Builder managed identity. (Default: "")')
 param existingAibManagedIdentityName string = ''
 
-@description('Optional. Select existing subnet for the network interfaces on the build virtual machines. (Default: "")')
-param existingSubnetId string = ''
+@description('Optional. Input the resource ID for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: "")')
+param existingVirtualNetworkResourceId string = ''
+
+@description('Optional. Input the name of the subnet for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: "")')
+param existingSubnetName string = ''
 
 // Custom Naming
 // Input must followe resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
@@ -549,7 +552,7 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
     name: 'AVD-Deploy-Image-Template-${time}'
     params: {
         name: imageDefinitionsTemSpecName
-        subnetId: !empty(existingSubnetId) ? existingSubnetId : ''
+        subnetId: !empty(existingVirtualNetworkResourceId) && !empty(existingSubnetName) ? '${existingVirtualNetworkResourceId}/subnets/${existingSubnetName}' : ''
         userMsiName: createAibManagedIdentity && useSharedImage ? imageBuilderManagedIdentity.outputs.name : existingAibManagedIdentityName
         userMsiResourceGroup: createAibManagedIdentity && useSharedImage ? imageBuilderManagedIdentity.outputs.resourceGroupName : avdSharedResourcesRgName
         location: aibLocation
