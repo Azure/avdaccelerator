@@ -329,7 +329,27 @@
                             "options": {
 
                             }
-                        }
+                        },
+                        {
+                            "name": "subnetsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                              "method": "GET",
+                              "path": "[concat('/subscriptions/', steps('basics').avdDeploymentScope.subscription.subscriptionId, '/resourceGroups/', split(steps('avdCustomImageAib').vnetSelector.id, '/')[4], '/providers/Microsoft.Network/virtualNetworks/', steps('avdCustomImageAib').vnetSelector.name, '/subnets?api-version=2022-05-01')]"
+                            }
+                        },
+                        {
+                            "name": "aibExistingSubnet",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Existing subnet",
+                            "defaultValue": "",
+                            "toolTip": "Select an existing subnet for AIB build virtual machines. This enables the use of Private Link and prevents the deployment of public IP addresses.",
+                            "constraints": {
+                              "allowedValues": "[map(steps('avdCustomImageAib').subnetsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.name, '\"}')))]",
+                              "required": true
+                            },
+                            "visible": true
+                          }
                     ]
                 },
                 {
@@ -738,7 +758,8 @@
                 "createAibManagedIdentity": "[steps('avdCustomImageAib').avdCustomImageIdentityAibCreateManagedIdentity]",
                 "existingAibManagedIdentityId": "[if(equals(steps('avdCustomImageAib').avdCustomImageIdentityAibCreateManagedIdentity, false), steps('avdCustomImageAib').avdCustomImageIdentityAibSelectManagedIdentity.id, 'none')]",
                 "existingAibManagedIdentityName": "[if(equals(steps('avdCustomImageAib').avdCustomImageIdentityAibCreateManagedIdentity, false), steps('avdCustomImageAib').avdCustomImageIdentityAibSelectManagedIdentity.name, 'none')]",
-                "existingSubnetId": "[if(equals(steps('avdCustomImageAib').aibExistingVirtualNetwork, true), steps('avdCustomImageAib').vnetSelector.id, '')]",
+                "existingVirtualNetworkResourceId": "[if(equals(steps('avdCustomImageAib').aibExistingVirtualNetwork, true), steps('avdCustomImageAib').vnetSelector.id, '')]",
+                "existingSubnetName": "[if(equals(steps('avdCustomImageAib').aibExistingVirtualNetwork, true), steps('avdCustomImageAib').aibExistingSubnet, '')]",
                 "createAibCustomRole": "[steps('avdCustomImageAib').avdCustomImageIdentityAibCreateRole]",
                 "aibLocation": "[steps('avdCustomImageAib').avdCustomImageLocation]",
                 "avdOsImage": "[steps('avdCustomImage').avdCustomImageOsSelection.avdCustomImageOsImage]",
