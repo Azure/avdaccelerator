@@ -348,7 +348,69 @@
                             "constraints": {
                               "allowedValues": "[map(steps('avdCustomImageAib').subnetsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.name, '\"}')))]"
                             }
-                          }
+                        },
+                        {
+                            "name": "aibRdpShortPathInfo",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                                "text": "RDP Short Path for Managed Networks is beneficial under specific conditions.",
+                                "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/rdp-shortpath",
+                                "style": "Info"
+                            }
+                        },
+                        {
+                            "name": "aibEnableRdpShortPath",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": true,
+                            "label": "Enable RDP Short Path for Managed Networks",
+                            "defaultValue": "No",
+                            "toolTip": "Determine whether to enable RDP short path for managed networks on the AVD session hosts.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "Yes",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "No",
+                                        "value": false
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "aibScreenCaptureProtectionInfo",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                                "text": "Screen Capture Protection is beneficial under specific conditions. Click here for more information.",
+                                "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/screen-capture-protection",
+                                "style": "Info"
+                            }
+                        },
+                        {
+                            "name": "aibEnableScreenCaptureProtection",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": true,
+                            "label": "Enable Screen Capture Protection",
+                            "defaultValue": "No",
+                            "toolTip": "Determine whether to enable Screen Capture Protection for the AVD session hosts.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "Yes",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "No",
+                                        "value": false
+                                    }
+                                ]
+                            }
+                        }
                     ]
                 },
                 {
@@ -759,6 +821,8 @@
                 "existingAibManagedIdentityName": "[if(equals(steps('avdCustomImageAib').avdCustomImageIdentityAibCreateManagedIdentity, false), steps('avdCustomImageAib').avdCustomImageIdentityAibSelectManagedIdentity.name, 'none')]",
                 "existingVirtualNetworkResourceId": "[if(equals(steps('avdCustomImageAib').aibExistingVirtualNetwork, true), steps('avdCustomImageAib').vnetSelector.id, '')]",
                 "existingSubnetName": "[if(equals(steps('avdCustomImageAib').aibExistingVirtualNetwork, true), steps('avdCustomImageAib').aibExistingSubnet, '')]",
+                "enableRdpShortPath": "[steps('avdCustomImageAib').aibEnableRdpShortPath]",
+                "enableScreenCaptureProtection": "[steps('avdCustomImageAib').aibExistingVirtualNetwork]",
                 "createAibCustomRole": "[steps('avdCustomImageAib').avdCustomImageIdentityAibCreateRole]",
                 "aibLocation": "[steps('avdCustomImageAib').avdCustomImageLocation]",
                 "avdOsImage": "[steps('avdCustomImage').avdCustomImageOsSelection.avdCustomImageOsImage]",
