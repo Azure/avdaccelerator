@@ -354,7 +354,7 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
-                                "text": "RDP Short Path for Managed Networks is beneficial under specific conditions.",
+                                "text": "RDP Short Path for Managed Networks is beneficial under specific conditions. Click here for more information.",
                                 "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/rdp-shortpath",
                                 "style": "Info"
                             }
