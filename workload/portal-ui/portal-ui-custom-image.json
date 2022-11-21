@@ -327,10 +327,7 @@
                             "label": "Select subnet for AIB build VMs",
                             "resourceType": "Microsoft.Network/virtualNetworks/subnets",
                             "options": {
-                                "filter": {
-                                    "subscription": "onBasics",
-                                    "location": "onBasics"
-                                }
+
                             }
                         }
                     ]
