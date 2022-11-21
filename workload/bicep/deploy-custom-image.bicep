@@ -66,9 +66,11 @@ param existingVirtualNetworkResourceId string = ''
 @description('Optional. Input the name of the subnet for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: "")')
 param existingSubnetName string = ''
 
-param enableRdpShortPath bool
+@description('Optional. Determine whether to enable RDP Short Path for Managed Networks. (Default: false)')
+param enableRdpShortPath bool = false
 
-param enableScreenCaptureProtection bool
+@description('Optional. Determine whether to enable Screen Capture Protection. (Default: false)')
+param enableScreenCaptureProtection bool =  false
 
 // Custom Naming
 // Input must followe resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
