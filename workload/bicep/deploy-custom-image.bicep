@@ -66,6 +66,10 @@ param existingVirtualNetworkResourceId string = ''
 @description('Optional. Input the name of the subnet for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: "")')
 param existingSubnetName string = ''
 
+param enableRdpShortPath bool
+
+param enableScreenCaptureProtection bool
+
 // Custom Naming
 // Input must followe resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
 @description('Optional. AVD resources custom naming. (Default: false)')
@@ -347,8 +351,87 @@ var avdOsImageDefinitions = {
         hyperVGeneration: 'V2'
     }
 }
-var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
+// Change back before Pull Request
+// var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
+var baseScriptUri = 'https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/'
 var telemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${avdSharedServicesLocation}'
+
+// Customization Steps
+var RdpShortPath = enableRdpShortPath ? [ 
+    {
+        type: 'PowerShell'
+        name: 'RDPShortPath'
+        runElevated: true
+        runAsSystem: true
+        scriptUri: '${baseScriptUri}scripts/Set-RdpShortpath.ps1'
+    }
+] : []
+var ScreenCaptureProtection = enableScreenCaptureProtection ? [ 
+    {
+        type: 'PowerShell'
+        name: 'ScreenCaptureProtection'
+        runElevated: true
+        runAsSystem: true
+        scriptUri: '${baseScriptUri}scripts/Set-ScreenCaptureProtection.ps1'
+    } 
+] : []
+var VDOT = [
+    {
+        type: 'PowerShell'
+        name: 'VirtualDesktopOptimizationTool'
+        runElevated: true
+        runAsSystem: true
+        scriptUri: '${baseScriptUri}scripts/Set-VirtualDesktopOptimizations.ps1'
+    }
+]
+var ScriptSteps = union(RdpShortPath, ScreenCaptureProtection, VDOT)
+var RemainingSteps = [
+    {
+        type: 'WindowsRestart'
+        restartCheckCommand: 'Write-Host "Restarting post script customizers"'
+        restartTimeout: '10m'
+    }
+    {
+        type: 'WindowsUpdate'
+        searchCriteria: 'IsInstalled=0'
+        filters: [
+            'exclude:$_.Title -like \'*Preview*\''
+            'include:$true'
+        ]
+        updateLimit: 40
+    }
+    {
+        type: 'PowerShell'
+        name: 'Sleep for a min'
+        runElevated: true
+        runAsSystem: true
+        inline: [
+            'Write-Host "Sleep for a 5 min"'
+            'Start-Sleep -Seconds 300'
+        ]
+    }
+    {
+        type: 'WindowsRestart'
+        restartCheckCommand: 'Write-Host "restarting post Windows updates"'
+        restartTimeout: '10m'
+    }
+    {
+        type: 'PowerShell'
+        name: 'Sleep for a min'
+        runElevated: true
+        runAsSystem: true
+        inline: [
+            'Write-Host "Sleep for a min"'
+            'Start-Sleep -Seconds 60'
+        ]
+    }
+    {
+        type: 'WindowsRestart'
+        restartTimeout: '10m'
+    }
+]
+var CustomizationSteps = union(ScriptSteps, RemainingSteps)
+//
 
 // =========== //
 // Deployments //
@@ -559,58 +642,7 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
         imageReplicationRegions: (avdSharedServicesLocation == aibLocation) ? array('${avdSharedServicesLocation}') : concat(array('${aibLocation}'), array('${avdSharedServicesLocation}'))
         sigImageDefinitionId: useSharedImage ? avdImageTemplateDefinition.outputs.resourceId : ''
         vmSize: imageVmSize
-        customizationSteps: [
-            {
-                type: 'PowerShell'
-                name: 'OptimizeOS'
-                runElevated: true
-                runAsSystem: true
-                scriptUri: '${baseScriptUri}scripts/Optimize_OS_for_AVD.ps1' // need to update value to accelerator github after
-            }
-            {
-                type: 'WindowsRestart'
-                restartCheckCommand: 'write-host "restarting post Optimizations"'
-                restartTimeout: '10m'
-            }
-            {
-                type: 'WindowsUpdate'
-                searchCriteria: 'IsInstalled=0'
-                filters: [
-                    'exclude:$_.Title -like \'*Preview*\''
-                    'include:$true'
-                ]
-                updateLimit: 40
-            }
-            {
-                type: 'PowerShell'
-                name: 'Sleep for a min'
-                runElevated: true
-                runAsSystem: true
-                inline: [
-                    'Write-Host "Sleep for a 5 min" '
-                    'Start-Sleep -Seconds 300'
-                ]
-            }
-            {
-                type: 'WindowsRestart'
-                restartCheckCommand: 'write-host "restarting post Windows updates"'
-                restartTimeout: '10m'
-            }
-            {
-                type: 'PowerShell'
-                name: 'Sleep for a min'
-                runElevated: true
-                runAsSystem: true
-                inline: [
-                    'Write-Host "Sleep for a min" '
-                    'Start-Sleep -Seconds 60'
-                ]
-            }
-            {
-                type: 'WindowsRestart'
-                restartTimeout: '10m'
-            }
-        ]
+        customizationSteps: CustomizationSteps
         imageSource: {
             type: 'PlatformImage'
             publisher: avdOsImageDefinitions[avdOsImage].publisher
