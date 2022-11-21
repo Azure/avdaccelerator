@@ -304,7 +304,7 @@
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
                             "label": "Existing virtual network",
-                            "defaultValue": "Yes",
+                            "defaultValue": "No",
                             "toolTip": "Select an existing virtual network for AIB build virtual machines. This enables the use of Private Link and prevents the deployment of public IP addresses.",
                             "constraints": {
                                 "required": true,
