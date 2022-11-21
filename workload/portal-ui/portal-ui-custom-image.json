@@ -335,7 +335,7 @@
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
                               "method": "GET",
-                              "path": "[concat('/subscriptions/', steps('basics').avdDeploymentScope.subscription.subscriptionId, '/resourceGroups/', split(steps('avdCustomImageAib').vnetSelector.id, '/')[4], '/providers/Microsoft.Network/virtualNetworks/', steps('avdCustomImageAib').vnetSelector.name, '/subnets?api-version=2022-05-01')]"
+                              "path": "[concat(steps('avdCustomImageAib').vnetSelector.id, '/subnets?api-version=2022-05-01')]"
                             }
                         },
                         {
