@@ -341,14 +341,14 @@
                         {
                             "name": "aibExistingSubnet",
                             "type": "Microsoft.Common.DropDown",
+                            "visible": "[equals(steps('avdCustomImageAib').aibExistingVirtualNetwork, true)]",
                             "label": "Existing subnet",
                             "defaultValue": "",
                             "toolTip": "Select an existing subnet for AIB build virtual machines. This enables the use of Private Link and prevents the deployment of public IP addresses.",
                             "constraints": {
                               "allowedValues": "[map(steps('avdCustomImageAib').subnetsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.name, '\"}')))]",
                               "required": true
-                            },
-                            "visible": true
+                            }
                           }
                     ]
                 },
