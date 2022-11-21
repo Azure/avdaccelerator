@@ -60,6 +60,9 @@ param existingAibManagedIdentityId string = ''
 @description('Optional. Select existing azure image Builder managed identity. (Default: "")')
 param existingAibManagedIdentityName string = ''
 
+@description('Optional. Select existing subnet for the network interfaces on the build virtual machines. (Default: "")')
+param existingSubnetId string = ''
+
 // Custom Naming
 // Input must followe resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
 @description('Optional. AVD resources custom naming. (Default: false)')
@@ -171,6 +174,7 @@ var imageGalleryName = avdUseCustomNaming ? imageGalleryCustomName : 'gal_avd_${
 var aibManagedIdentityName = 'id-avd-imagebuilder-${avdSharedServicesLocationAcronym}'
 var deployScriptManagedIdentityName = 'id-avd-deployscript-${avdSharedServicesLocationAcronym}'
 var imageDefinitionsTemSpecName = avdUseCustomNaming ? imageDefinitionsTemSpecCustomName : 'avd_image_definition_${avdOsImage}'
+var avdSharedResourcesAutomationAccount = avdUseCustomNaming ? imageDefinitionsTemSpecCustomName : 'aa-avd-${avdSharedResourcesNamingStandard}-auto-build'
 var avdSharedSResourcesStorageName = avdUseCustomNaming ? avdSharedSResourcesStorageCustomName : 'stavdshar${avdNamingUniqueStringSixChar}'
 var avdSharedSResourcesAibContainerName = avdUseCustomNaming ? avdSharedSResourcesAibContainerCustomName : 'avd-imagebuilder-${deploymentPrefixLowercase}'
 var avdSharedSResourcesScriptsContainerName = avdUseCustomNaming ? avdSharedSResourcesScriptsContainerCustomName : 'avd-scripts-${deploymentPrefixLowercase}'
@@ -220,6 +224,64 @@ var locationAcronyms = {
     brazilsoutheast: 'brse'
     westus3: 'wus3'
     swedencentral: 'sec'
+}
+var TimeZone = TimeZones[aibLocation]
+var TimeZones = {
+    australiacentral: 'AUS Eastern Standard Time'
+    australiacentral2: 'AUS Eastern Standard Time'
+    australiaeast: 'AUS Eastern Standard Time'
+    australiasoutheast: 'AUS Eastern Standard Time'
+    brazilsouth: 'E. South America Standard Time'
+    brazilsoutheast: 'E. South America Standard Time'
+    canadacentral: 'Eastern Standard Time'
+    canadaeast: 'Eastern Standard Time'
+    centralindia: 'India Standard Time'
+    centralus: 'Central Standard Time'
+    chinaeast: 'China Standard Time'
+    chinaeast2: 'China Standard Time'
+    chinanorth: 'China Standard Time'
+    chinanorth2: 'China Standard Time'
+    eastasia: 'China Standard Time'
+    eastus: 'Eastern Standard Time'
+    eastus2: 'Eastern Standard Time'
+    francecentral: 'Central Europe Standard Time'
+    francesouth: 'Central Europe Standard Time'
+    germanynorth: 'Central Europe Standard Time'
+    germanywestcentral: 'Central Europe Standard Time'
+    japaneast: 'Tokyo Standard Time'
+    japanwest: 'Tokyo Standard Time'
+    jioindiacentral: 'India Standard Time'
+    jioindiawest: 'India Standard Time'
+    koreacentral: 'Korea Standard Time'
+    koreasouth: 'Korea Standard Time'
+    northcentralus: 'Central Standard Time'
+    northeurope: 'GMT Standard Time'
+    norwayeast: 'Central Europe Standard Time'
+    norwaywest: 'Central Europe Standard Time'
+    southafricanorth: 'South Africa Standard Time'
+    southafricawest: 'South Africa Standard Time'
+    southcentralus: 'Central Standard Time'
+    southindia: 'India Standard Time'
+    southeastasia: 'Singapore Standard Time'
+    swedencentral: 'Central Europe Standard Time'
+    switzerlandnorth: 'Central Europe Standard Time'
+    switzerlandwest: 'Central Europe Standard Time'
+    uaecentral: 'Arabian Standard Time'
+    uaenorth: 'Arabian Standard Time'
+    uksouth: 'GMT Standard Time'
+    ukwest: 'GMT Standard Time'
+    usdodcentral: 'Central Standard Time'
+    usdodeast: 'Eastern Standard Time'
+    usgovarizona: 'Mountain Standard Time'
+    usgoviowa: 'Central Standard Time'
+    usgovtexas: 'Central Standard Time'
+    usgovvirginia: 'Eastern Standard Time'
+    westcentralus: 'Mountain Standard Time'
+    westeurope: 'Central Europe Standard Time'
+    westindia: 'India Standard Time'
+    westus: 'Pacific Standard Time'
+    westus2: 'Pacific Standard Time'
+    westus3: 'Mountain Standard Time'
 }
 //
 
@@ -487,6 +549,7 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
     name: 'AVD-Deploy-Image-Template-${time}'
     params: {
         name: imageDefinitionsTemSpecName
+        subnetId: !empty(existingSubnetId) ? existingSubnetId : ''
         userMsiName: createAibManagedIdentity && useSharedImage ? imageBuilderManagedIdentity.outputs.name : existingAibManagedIdentityName
         userMsiResourceGroup: createAibManagedIdentity && useSharedImage ? imageBuilderManagedIdentity.outputs.resourceGroupName : avdSharedResourcesRgName
         location: aibLocation
@@ -501,13 +564,11 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
                 runAsSystem: true
                 scriptUri: '${baseScriptUri}scripts/Optimize_OS_for_AVD.ps1' // need to update value to accelerator github after
             }
-
             {
                 type: 'WindowsRestart'
                 restartCheckCommand: 'write-host "restarting post Optimizations"'
                 restartTimeout: '10m'
             }
-
             {
                 type: 'WindowsUpdate'
                 searchCriteria: 'IsInstalled=0'
@@ -565,82 +626,71 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
     ]
 }
 
-// Build Image Template.
-module imageTemplateBuild '../../carml/1.2.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
+// Image Template Build Automation.
+module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccounts/deploy.bicep' = {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
-    name: 'AVD-Build-Image-Template-${time}'
+    name: 'AVD-Deploy-Automation-Account-${time}'
     params: {
-        name: 'imageTemplateBuildName-${avdOsImage}'
-        location: aibLocation
-        azPowerShellVersion: '6.2'
-        cleanupPreference: 'Always'
-        timeout: 'PT2H'
-        tags: createResourceTags ? commonResourceTags : {}
-        containerGroupName: 'imageTemplateBuildName-${avdOsImage}-aci'
-        userAssignedIdentities: createAibManagedIdentity ? {
-            '${imageBuilderManagedIdentity.outputs.resourceId}': {}
-        } : {
-            '${existingAibManagedIdentityId}': {}
-        }
-        arguments: '-subscriptionId \'${avdSharedServicesSubId}\' -resourceGroupName \'${avdSharedResourcesRgName}\' -imageTemplateName \'${(useSharedImage ? imageTemplate.outputs.name : null)}\''
-        scriptContent: useSharedImage ? '''
-        param(
-            [string] [Parameter(Mandatory=$true)] $resourceGroupName,
-            [string] [Parameter(Mandatory=$true)] $imageTemplateName,
-            [string] [Parameter(Mandatory=$true)] $subscriptionId
-            )
-                $ErrorActionPreference = "Stop"
-                Install-Module -Name Az.ImageBuilder -Force
-                # Kick off the Azure Image Build 
-                Write-Host "Kick off Image buld for $imageTemplateName"
-                Invoke-AzResourceAction -ResourceName $imageTemplateName -ResourceGroupName $resourceGroupName -ResourceType "Microsoft.VirtualMachineImages/imageTemplates" -Action Run -Force              
-                $DeploymentScriptOutputs = @{}
-            $getStatus=$(Get-AzImageBuilderTemplate -ResourceGroupName $resourceGroupName -Name $imageTemplateName)
-            $status=$getStatus.LastRunStatusRunState
-            $statusMessage=$getStatus.LastRunStatusMessage
-            $startTime=Get-Date
-            $reset=$startTime + (New-TimeSpan -Minutes 40)
-            Write-Host "Script will time out in $reset"
-                do {
-                $now=Get-Date
-                Write-Host "Getting the current time: $now"
-                if (($now -eq $reset) -or ($now -gt $reset)) {
-                    break
+        diagnosticLogCategoriesToEnable: [
+            'JobLogs'
+            'JobStreams'
+        ]
+        diagnosticLogsRetentionInDays: 30
+        diagnosticWorkspaceId: '' // TO DO
+        name: avdSharedResourcesAutomationAccount
+        jobSchedules: [
+            {
+                parameters: {
+                    EnvironmentName: environment().name
+                    ImageOffer: avdOsImageDefinitions[avdOsImage].offer
+                    ImagePublisher: avdOsImageDefinitions[avdOsImage].publisher
+                    ImageSku: avdOsImageDefinitions[avdOsImage].sku
+                    Location: aibLocation
+                    SubscriptionId: avdSharedServicesSubId
+                    TemplateName: imageDefinitionsTemSpecName
+                    TemplateResourceGroupName: avdSharedResourcesRgName
+                    TenantId: subscription().tenantId
                 }
-                $getStatus=$(Get-AzImageBuilderTemplate -ResourceGroupName $resourceGroupName -Name $imageTemplateName)
-                $status=$getStatus.LastRunStatusRunState
-                Write-Host "Current status of the image build $imageTemplateName is: $status"
-                Write-Host "Script will time out in $reset"
-                $DeploymentScriptOutputs=$now
-                $DeploymentScriptOutputs=$status
-                if ($status -eq "Failed") {
-                    Write-Host "Build failed for image template: $imageTemplateName. Check the Packer logs"
-                    $DeploymentScriptOutputs="Build Failed"
-                    throw "Build Failed"
-                }
-                if (($status -eq "Canceled") -or ($status -eq "Canceling") ) {
-                    Write-Host "User canceled the build. Delete the Image template definition: $imageTemplateName"
-                    throw "User canceled the build."
-                }
-                if ($status -eq "Succeeded") {
-                    Write-Host "Success. Image template definition: $imageTemplateName is finished "
-                    break
-                }
+                runbookName: 'AIB-Build-Automation'
+                scheduleName: 'AIB-Build-Automation'
             }
-            until (($now -eq $reset) -or ($now -gt $reset))
-            Write-Host "Finished check for image build status at $now"
-
-
-        ''' : ''
+        ]
+        location: avdSharedServicesLocation
+        modules: [
+            {
+                name: 'Az.Accounts'
+                uri: 'https://www.powershellgallery.com/api/v2/package/Az.Accounts'
+                version: null
+            }
+            {
+                name: 'Az.ImageBuilder'
+                uri: 'https://www.powershellgallery.com/api/v2/package/Az.ImageBuilder'
+                version: null
+            }
+        ]
+        runbooks: [
+            {
+                name: 'AIB-Build-Automation'
+                description: 'When this runbook is triggered, last build date is checked on the AIB image template.  If a new marketplace image has been released since that date, a new build is initiated. If a build has never been initiated then it will be start one.'
+                runbookType: 'PowerShell'
+                // ToDo: Update URL before PR submission
+                uri: 'https://raw.githubusercontent.com/jamasten/Azure/main/solutions/imageBuilder/scripts/New-AzureImageBuilderBuild_Schedule.ps1'
+                version: '1.0.0.0'
+            }
+        ]
+        schedules: [
+            {
+                name: 'AIB-Build-Automation'
+                frequency: 'Day'
+                interval: 1
+                startTime: dateTimeAdd(time, 'PT15M')
+                timeZone: TimeZone
+            }
+        ]
+        skuName: 'Free'
+        tags: createResourceTags ? commonResourceTags : {}
     }
-    dependsOn: [
-        imageTemplate
-        avdSharedResourcesRg
-        azureImageBuilderRoleAssign
-        avdSharedServicesKeyVault
-    ]
 }
-//
 
 // Key vaults.
 module avdSharedServicesKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
