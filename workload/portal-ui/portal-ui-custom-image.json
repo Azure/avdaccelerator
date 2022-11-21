@@ -305,7 +305,7 @@
                             "visible": true,
                             "label": "Existing virtual network",
                             "defaultValue": "No",
-                            "toolTip": "Select an existing virtual network for AIB build virtual machines. This enables the use of Private Link and prevents the deployment of public IP addresses.",
+                            "toolTip": "Select an existing virtual network and subnet for AIB build virtual machines. This enables the use of Private Link and prevents the deployment of public IP addresses.",
                             "constraints": {
                                 "required": true,
                                 "allowedValues": [
@@ -324,7 +324,7 @@
                             "name": "vnetSelector",
                             "type": "Microsoft.Solutions.ResourceSelector",
                             "visible": "[equals(steps('avdCustomImageAib').aibExistingVirtualNetwork, true)]",
-                            "label": "Select virtual network for AIB build VMs",
+                            "label": "Select virtual network",
                             "resourceType": "Microsoft.Network/virtualNetworks",
                             "options": {
 
@@ -342,7 +342,7 @@
                             "name": "aibExistingSubnet",
                             "type": "Microsoft.Common.DropDown",
                             "visible": "[equals(steps('avdCustomImageAib').aibExistingVirtualNetwork, true)]",
-                            "label": "Existing subnet",
+                            "label": "Select subnet",
                             "defaultValue": "",
                             "toolTip": "Select an existing subnet for AIB build virtual machines. This enables the use of Private Link and prevents the deployment of public IP addresses.",
                             "constraints": {
