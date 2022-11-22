@@ -70,10 +70,19 @@ param existingSubnetName string = ''
 param enableRdpShortPath bool = false
 
 @description('Optional. Determine whether to enable Screen Capture Protection. (Default: false)')
-param enableScreenCaptureProtection bool =  false
+param enableScreenCaptureProtection bool = false
+
+@description('Required.  Azure log analytics workspace name data retention.')
+param avdAlaWorkspaceDataRetention int = 30
 
 // Custom Naming
 // Input must followe resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
+@description('Optional. Azure automation account name.')
+param automationAccountCustomName string = 'aa-avd'
+
+@description('Optional. Azure log analytics workspace name.')
+param avdAlaWorkspaceCustomName string = 'log-avd'
+
 @description('Optional. AVD resources custom naming. (Default: false)')
 param avdUseCustomNaming bool = false
 
@@ -181,9 +190,10 @@ var avdSharedServicesLocationLowercase = toLower(avdSharedServicesLocation)
 var avdSharedResourcesRgName = avdUseCustomNaming ? avdSharedResourcesRgCustomName : 'rg-avd-${avdSharedResourcesNamingStandard}-shared-services' // max length limit 90 characters
 var imageGalleryName = avdUseCustomNaming ? imageGalleryCustomName : 'gal_avd_${avdSharedServicesLocationAcronym}_001'
 var aibManagedIdentityName = 'id-avd-imagebuilder-${avdSharedServicesLocationAcronym}'
+var avdLogAnalyticsWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${avdSharedServicesLocationAcronym}'
 var deployScriptManagedIdentityName = 'id-avd-deployscript-${avdSharedServicesLocationAcronym}'
 var imageDefinitionsTemSpecName = avdUseCustomNaming ? imageDefinitionsTemSpecCustomName : 'avd_image_definition_${avdOsImage}'
-var avdSharedResourcesAutomationAccount = avdUseCustomNaming ? imageDefinitionsTemSpecCustomName : 'aa-avd-${avdSharedResourcesNamingStandard}-auto-build'
+var avdSharedResourcesAutomationAccount = avdUseCustomNaming ? automationAccountCustomName : 'aa-avd-${avdSharedResourcesNamingStandard}'
 var avdSharedSResourcesStorageName = avdUseCustomNaming ? avdSharedSResourcesStorageCustomName : 'stavdshar${avdNamingUniqueStringSixChar}'
 var avdSharedSResourcesAibContainerName = avdUseCustomNaming ? avdSharedSResourcesAibContainerCustomName : 'avd-imagebuilder-${deploymentPrefixLowercase}'
 var avdSharedSResourcesScriptsContainerName = avdUseCustomNaming ? avdSharedSResourcesScriptsContainerCustomName : 'avd-scripts-${deploymentPrefixLowercase}'
@@ -359,7 +369,7 @@ var baseScriptUri = 'https://raw.githubusercontent.com/jamasten/avdaccelerator/m
 var telemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${avdSharedServicesLocation}'
 
 // Customization Steps
-var RdpShortPath = enableRdpShortPath ? [ 
+var RdpShortPath = enableRdpShortPath ? [
     {
         type: 'PowerShell'
         name: 'RDPShortPath'
@@ -368,14 +378,14 @@ var RdpShortPath = enableRdpShortPath ? [
         scriptUri: '${baseScriptUri}scripts/Set-RdpShortpath.ps1'
     }
 ] : []
-var ScreenCaptureProtection = enableScreenCaptureProtection ? [ 
+var ScreenCaptureProtection = enableScreenCaptureProtection ? [
     {
         type: 'PowerShell'
         name: 'ScreenCaptureProtection'
         runElevated: true
         runAsSystem: true
         scriptUri: '${baseScriptUri}scripts/Set-ScreenCaptureProtection.ps1'
-    } 
+    }
 ] : []
 var VDOT = [
     {
@@ -663,6 +673,22 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
     ]
 }
 
+// Azure log analytics workspace.
+module avdAlaWorkspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = {
+    scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
+    name: 'AVD-Log-Analytics-Workspace-${time}'
+    params: {
+        location: aibLocation
+        name: avdLogAnalyticsWorkspaceName
+        dataRetention: avdAlaWorkspaceDataRetention
+        useResourcePermissions: true
+        tags: createResourceTags ? commonResourceTags : {}
+    }
+    dependsOn: [
+        avdSharedResourcesRg
+    ]
+}
+
 // Image Template Build Automation.
 module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccounts/deploy.bicep' = {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
@@ -673,7 +699,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
             'JobStreams'
         ]
         diagnosticLogsRetentionInDays: 30
-        diagnosticWorkspaceId: '' // TO DO
+        diagnosticWorkspaceId: avdAlaWorkspace.outputs.resourceId
         name: avdSharedResourcesAutomationAccount
         jobSchedules: [
             {
@@ -697,12 +723,12 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
             {
                 name: 'Az.Accounts'
                 uri: 'https://www.powershellgallery.com/api/v2/package/Az.Accounts'
-                version: null
+                version: 'latest'
             }
             {
                 name: 'Az.ImageBuilder'
                 uri: 'https://www.powershellgallery.com/api/v2/package/Az.ImageBuilder'
-                version: null
+                version: 'latest'
             }
         ]
         runbooks: [
@@ -722,11 +748,15 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
                 interval: 1
                 startTime: dateTimeAdd(time, 'PT15M')
                 timeZone: TimeZone
+                advancedSchedule: {}
             }
         ]
         skuName: 'Free'
         tags: createResourceTags ? commonResourceTags : {}
     }
+    dependsOn: [
+        avdAlaWorkspace
+    ]
 }
 
 // Key vaults.
