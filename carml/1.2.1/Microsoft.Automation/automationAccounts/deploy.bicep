@@ -199,6 +199,7 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2021-06-22' 
   }
 }
 
+@batchSize(1)
 module automationAccount_modules 'modules/deploy.bicep' = [for (module, index) in modules: {
   name: '${uniqueString(deployment().name, location)}-AutoAccount-Module-${index}'
   params: {
