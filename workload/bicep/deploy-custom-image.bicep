@@ -541,7 +541,7 @@ module userAssignedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/userAss
 
 module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for i in range(0, length(Roles)): {
     name: 'AIB_Role-Assignment_${i}_${time}'
-    scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
+    scope: resourceGroup('${avdSharedServicesSubId}', Roles[i].resourceGroup)
     params: {
         roleDefinitionIdOrName: roleDefinitions[i].outputs.resourceId
         principalId: userAssignedIdentity.outputs.principalId
@@ -688,6 +688,10 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
         ]
         skuName: 'Free'
         tags: createResourceTags ? commonResourceTags : {}
+        systemAssignedIdentity: false
+        userAssignedIdentities: {
+            '${userAssignedIdentity.outputs.principalId}': {}
+        }
     }
 }
 
