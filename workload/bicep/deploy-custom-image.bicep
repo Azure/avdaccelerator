@@ -431,7 +431,18 @@ var RemainingSteps = [
 ]
 var CustomizationSteps = union(ScriptSteps, RemainingSteps)
 //
-
+var Modules = [
+    {
+        name: 'Az.Accounts'
+        uri: 'https://www.powershellgallery.com/api/v2/package/Az.Accounts'
+        version: 'latest'
+    }
+    {
+        name: 'Az.ImageBuilder'
+        uri: 'https://www.powershellgallery.com/api/v2/package/Az.ImageBuilder'
+        version: 'latest'
+    }
+]
 var Roles = [
     {
         resourceGroup: split(existingVirtualNetworkResourceId, '/')[4]
@@ -664,18 +675,6 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
             }
         ]
         location: avdSharedServicesLocation
-        modules: [
-            {
-                name: 'Az.Accounts'
-                uri: 'https://www.powershellgallery.com/api/v2/package/Az.Accounts'
-                version: 'latest'
-            }
-            {
-                name: 'Az.ImageBuilder'
-                uri: 'https://www.powershellgallery.com/api/v2/package/Az.ImageBuilder'
-                version: 'latest'
-            }
-        ]
         runbooks: [
             {
                 name: 'AIB-Build-Automation'
@@ -700,6 +699,19 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
         tags: createResourceTags ? commonResourceTags : {}
     }
 }
+
+@batchSize(1)
+module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/modules/deploy.bicep' = [for i in range(0, length(Modules)): {
+    name: 'AIB_Automation-Module_${i}_${time}'
+    scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
+    params: {
+        name: Modules[i].name
+        location: avdSharedServicesLocation
+        automationAccountName: automationAccount.outputs.name
+        uri: Modules[i].uri
+        version: Modules[i].version
+    }
+}]
 
 module vault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
