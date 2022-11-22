@@ -55,7 +55,7 @@ try
 
     Write-Host 'Virtual Desktop Optimization Tool (VDOT): Completed Prerequisites'
     Write-Host 'Virtual Desktop Optimization Tool (VDOT): Begin Tool Execution'
-    .\Windows_VDOT.ps1 -Optimizations 'All' -Verbose -AcceptEULA
+    .\Windows_VDOT.ps1 -Optimizations 'All'-AdvancedOptimizations 'All' -AcceptEULA -Verbose
     Write-Host 'Virtual Desktop Optimization Tool (VDOT): Completed Tool Execution'  
 }
 catch 
