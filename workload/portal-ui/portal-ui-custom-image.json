@@ -853,7 +853,7 @@
                 "avdSharedResourcesRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedServicesRgCustomName, 'none')]",
                 "imageGalleryCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdComputeGalleryCustomName, 'none')]",
                 "imageDefinitionsTemSpecCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdComputeGalleryImageDefinitionCustomName, 'none')]",
-                "automationAccountCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.automationAccountCustomName, 'none')]",
+                "automationAccountCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdAutomationAccountCustomName, 'none')]",
                 "avdAlaWorkspaceCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdAlaWorkspaceCustomName, 'none')]",
                 "avdSharedSResourcesStorageCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedStorageAccountCustomName, 'none')]",
                 "avdSharedSResourcesAibContainerCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedStorageAccountAibContainerCustomName, 'none')]",
