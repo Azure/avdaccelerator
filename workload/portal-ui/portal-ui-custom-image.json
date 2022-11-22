@@ -234,72 +234,6 @@
                             }
                         },
                         {
-                            "name": "avdCustomImageIdentityAibCreateManagedIdentity",
-                            "type": "Microsoft.Common.OptionsGroup",
-                            "visible": true,
-                            "label": "Create AIB managed identity",
-                            "defaultValue": "Yes",
-                            "toolTip": "Create managed identity for Azure Image Builder custom role.",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label": "Yes",
-                                        "value": true
-                                    },
-                                    {
-                                        "label": "No",
-                                        "value": false
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "name": "avdCustomImageIdentityAibSelectManagedIdentity",
-                            "type": "Microsoft.Solutions.ResourceSelector",
-                            "visible": "[equals(steps('avdCustomImageAib').avdCustomImageIdentityAibCreateManagedIdentity, false)]",
-                            "label": "Existing managed identity",
-                            "resourceType": "Microsoft.ManagedIdentity/userAssignedIdentities",
-                            "constraints": {
-                                "required": true
-                            },
-                            "options": {
-                                "filter": {
-                                    "subscription": "onBasics"
-                                }
-                            }
-                        },
-                        {
-                            "name": "avdCustomImageIdentityAibCreateRole",
-                            "type": "Microsoft.Common.OptionsGroup",
-                            "visible": true,
-                            "label": "Create AIB role",
-                            "defaultValue": "Yes",
-                            "toolTip": "Create Azure Image Builder custom role.",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label": "Yes",
-                                        "value": true
-                                    },
-                                    {
-                                        "label": "No",
-                                        "value": false
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            "name": "roleinfo",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": "[equals(steps('avdCustomImageAib').avdCustomImageIdentityAibCreateRole, false)]",
-                            "options": {
-                                "text": "A role with the name AzureImageBuilder-AVD must already exist.",
-                                "style": "Warning"
-                            }
-                        },
-                        {
                             "name": "aibExistingVirtualNetwork",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
@@ -840,14 +774,10 @@
                 "avdSharedServicesLocation": "[steps('basics').avdDeploymentScope.location.name]",
                 "avdSharedServicesSubId": "[steps('basics').avdDeploymentScope.subscription.subscriptionId]",
                 "avdUseAvailabilityZones": "[steps('avdCustomImage').avdCustomImageStorageSelection.avdCustomImageStorageAvailability]",
-                "createAibManagedIdentity": "[steps('avdCustomImageAib').avdCustomImageIdentityAibCreateManagedIdentity]",
-                "existingAibManagedIdentityId": "[if(equals(steps('avdCustomImageAib').avdCustomImageIdentityAibCreateManagedIdentity, false), steps('avdCustomImageAib').avdCustomImageIdentityAibSelectManagedIdentity.id, 'none')]",
-                "existingAibManagedIdentityName": "[if(equals(steps('avdCustomImageAib').avdCustomImageIdentityAibCreateManagedIdentity, false), steps('avdCustomImageAib').avdCustomImageIdentityAibSelectManagedIdentity.name, 'none')]",
                 "existingVirtualNetworkResourceId": "[if(equals(steps('avdCustomImageAib').aibExistingVirtualNetwork, true), steps('avdCustomImageAib').vnetSelector.id, '')]",
                 "existingSubnetName": "[if(equals(steps('avdCustomImageAib').aibExistingVirtualNetwork, true), steps('avdCustomImageAib').aibExistingSubnet, '')]",
                 "enableRdpShortPath": "[steps('avdCustomImageAib').aibEnableRdpShortPath]",
                 "enableScreenCaptureProtection": "[steps('avdCustomImageAib').aibExistingVirtualNetwork]",
-                "createAibCustomRole": "[steps('avdCustomImageAib').avdCustomImageIdentityAibCreateRole]",
                 "aibLocation": "[steps('avdCustomImageAib').avdCustomImageLocation]",
                 "avdOsImage": "[steps('avdCustomImage').avdCustomImageOsSelection.avdCustomImageOsImage]",
                 "avdSharedResourcesRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedServicesRgCustomName, 'none')]",
