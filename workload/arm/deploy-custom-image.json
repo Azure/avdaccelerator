@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "10202243792602935225"
+      "templateHash": "9396302435249824299"
     }
   },
   "parameters": {
@@ -1455,7 +1455,7 @@
       "apiVersion": "2020-10-01",
       "name": "[format('AIB_Role-Assignment_{0}_{1}', range(0, length(variables('Roles')))[copyIndex()], parameters('time'))]",
       "subscriptionId": "[format('{0}', parameters('avdSharedServicesSubId'))]",
-      "resourceGroup": "[format('{0}', variables('avdSharedResourcesRgName'))]",
+      "resourceGroup": "[variables('Roles')[range(0, length(variables('Roles')))[copyIndex()]].resourceGroup]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -5320,6 +5320,14 @@
           },
           "tags": {
             "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
+          },
+          "systemAssignedIdentity": {
+            "value": false
+          },
+          "userAssignedIdentities": {
+            "value": {
+              "[format('{0}', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('time'))), '2020-10-01').outputs.principalId.value)]": {}
+            }
           }
         },
         "template": {
@@ -8117,6 +8125,7 @@
         }
       },
       "dependsOn": [
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AIB_Log-Analytics-Workspace_{0}', parameters('time')))]"
       ]
     },
