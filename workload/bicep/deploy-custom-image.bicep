@@ -36,9 +36,6 @@ param avdUseAvailabilityZones bool = false
 @description('Optional. Azure image builder location. (Default: eastus2)')
 param aibLocation string = 'eastus2'
 
-@description('Optional. Create custom azure image builder role. (Default: true)')
-param createAibCustomRole bool = true
-
 @allowed([
     'win10_21h2_office'
     'win10_21h2'
@@ -50,15 +47,6 @@ param avdOsImage string = 'win10_21h2'
 
 @description('Optional. Set to deploy image from Azure Compute Gallery. (Default: true)')
 param useSharedImage bool = true
-
-@description('Optional. Create azure image Builder managed identity. (Default: true)')
-param createAibManagedIdentity bool = true
-
-@description('Optional. Select existing azure image Builder managed identity. (Default: "")')
-param existingAibManagedIdentityId string = ''
-
-@description('Optional. Select existing azure image Builder managed identity. (Default: "")')
-param existingAibManagedIdentityName string = ''
 
 @description('Optional. Input the resource ID for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: "")')
 param existingVirtualNetworkResourceId string = ''
@@ -191,7 +179,6 @@ var avdSharedResourcesRgName = avdUseCustomNaming ? avdSharedResourcesRgCustomNa
 var imageGalleryName = avdUseCustomNaming ? imageGalleryCustomName : 'gal_avd_${avdSharedServicesLocationAcronym}_001'
 var aibManagedIdentityName = 'id-avd-imagebuilder-${avdSharedServicesLocationAcronym}'
 var avdLogAnalyticsWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${avdSharedServicesLocationAcronym}'
-var deployScriptManagedIdentityName = 'id-avd-deployscript-${avdSharedServicesLocationAcronym}'
 var imageDefinitionsTemSpecName = avdUseCustomNaming ? imageDefinitionsTemSpecCustomName : 'avd_image_definition_${avdOsImage}'
 var avdSharedResourcesAutomationAccount = avdUseCustomNaming ? automationAccountCustomName : 'aa-avd-${avdSharedResourcesNamingStandard}'
 var avdSharedSResourcesStorageName = avdUseCustomNaming ? avdSharedSResourcesStorageCustomName : 'stavdshar${avdNamingUniqueStringSixChar}'
@@ -445,6 +432,55 @@ var RemainingSteps = [
 var CustomizationSteps = union(ScriptSteps, RemainingSteps)
 //
 
+var Roles = [
+    {
+        resourceGroup: split(existingVirtualNetworkResourceId, '/')[4]
+        name: 'Virtual Network Join'
+        description: 'Allow resources to join a subnet'
+        permissions: [
+            {
+                actions: [
+                    'Microsoft.Network/virtualNetworks/read'
+                    'Microsoft.Network/virtualNetworks/subnets/read'
+                    'Microsoft.Network/virtualNetworks/subnets/join/action'
+                    'Microsoft.Network/virtualNetworks/subnets/write' // Required to update the private link network policy
+                ]
+            }
+        ]
+    }
+    {
+        resourceGroup: avdSharedResourcesRgName
+        name: 'Image Template Contributor'
+        description: 'Allow the creation and management of images'
+        permissions: [
+            {
+                actions: [
+                    'Microsoft.Compute/galleries/read'
+                    'Microsoft.Compute/galleries/images/read'
+                    'Microsoft.Compute/galleries/images/versions/read'
+                    'Microsoft.Compute/galleries/images/versions/write'
+                    'Microsoft.Compute/images/read'
+                    'Microsoft.Compute/images/write'
+                    'Microsoft.Compute/images/delete'
+                ]
+            }
+        ]
+    }
+    {
+        resourceGroup: avdSharedResourcesRgName
+        name: 'Image Template Build Automation'
+        description: 'Allow Image Template build automation using a Managed Identity on an Automation Account.'
+        actions: [
+            'Microsoft.VirtualMachineImages/imageTemplates/run/action'
+            'Microsoft.VirtualMachineImages/imageTemplates/read'
+            'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/versions/read'
+            'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/read'
+            'Microsoft.Compute/locations/publishers/artifacttypes/offers/read'
+            'Microsoft.Compute/locations/publishers/read'
+        ]
+    }
+]
+
 // =========== //
 // Deployments //
 // =========== //
@@ -463,10 +499,10 @@ resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (
     }
 }
 
-// Resource groups (AVD shared services subscription RG).
+// AVD Shared Services Resource Group
 module avdSharedResourcesRg '../../carml/1.0.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
     scope: subscription(avdSharedServicesSubId)
-    name: 'AVD-RG-Shared-Resources-${time}'
+    name: 'AIB_Resource-Group_${time}'
     params: {
         name: avdSharedResourcesRgName
         location: avdSharedServicesLocation
@@ -474,52 +510,23 @@ module avdSharedResourcesRg '../../carml/1.0.0/Microsoft.Resources/resourceGroup
     }
 }
 
-// RBAC Roles.
-module azureImageBuilderRole '../../carml/1.0.0/Microsoft.Authorization/roleDefinitions/subscription/deploy.bicep' = if (createAibCustomRole) {
+module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinitions/subscription/deploy.bicep' = [for i in range(0, length(Roles)): {
     scope: subscription(avdSharedServicesSubId)
-    name: 'Azure-Image-Builder-Role-${time}'
+    name: 'AIB_Role-Definition_${i}_${time}'
     params: {
         subscriptionId: avdSharedServicesSubId
-        description: 'Azure Image Builder AVD'
-        roleName: 'AzureImageBuilder-AVD'
-        actions: [
-            'Microsoft.Authorization/*/read'
-            'Microsoft.Compute/images/write'
-            'Microsoft.Compute/images/read'
-            'Microsoft.Compute/images/delete'
-            'Microsoft.Compute/galleries/read'
-            'Microsoft.Compute/galleries/images/read'
-            'Microsoft.Compute/galleries/images/versions/read'
-            'Microsoft.Compute/galleries/images/versions/write'
-            'Microsoft.Storage/storageAccounts/blobServices/containers/read'
-            'Microsoft.Storage/storageAccounts/blobServices/containers/write'
-            'Microsoft.Storage/storageAccounts/blobServices/read'
-            'Microsoft.ContainerInstance/containerGroups/read'
-            'Microsoft.ContainerInstance/containerGroups/write'
-            'Microsoft.ContainerInstance/containerGroups/start/action'
-            'Microsoft.ManagedIdentity/userAssignedIdentities/*/read'
-            'Microsoft.ManagedIdentity/userAssignedIdentities/*/assign/action'
-            'Microsoft.Authorization/*/read'
-            'Microsoft.Resources/deployments/*'
-            'Microsoft.Resources/deploymentScripts/read'
-            'Microsoft.Resources/deploymentScripts/write'
-            'Microsoft.Resources/subscriptions/resourceGroups/read'
-            'Microsoft.VirtualMachineImages/imageTemplates/run/action'
-            'Microsoft.VirtualMachineImages/imageTemplates/read'
-            'Microsoft.Network/virtualNetworks/read'
-            'Microsoft.Network/virtualNetworks/subnets/join/action'
-        ]
+        description: Roles[i].description
+        roleName: Roles[i].name
+        actions: Roles[i].actions
         assignableScopes: [
             '/subscriptions/${avdSharedServicesSubId}'
         ]
     }
-}
+}]
 
-// Managed identities.
-// Image builder.
-module imageBuilderManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = if (createAibManagedIdentity) {
+module userAssignedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
-    name: 'image-Builder-Managed-Identity-${time}'
+    name: 'AIB_User-Assigned-Identity_${time}'
     params: {
         name: aibManagedIdentityName
         location: avdSharedServicesLocation
@@ -530,84 +537,23 @@ module imageBuilderManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/
     ]
 }
 
-// Script deployment.
-module deployScriptManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
-    scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
-    name: 'deployment-Script-Managed-Identity-${time}'
-    params: {
-        name: deployScriptManagedIdentityName
-        location: avdSharedServicesLocation
-        tags: createResourceTags ? commonResourceTags : {}
-    }
-    dependsOn: [
-        avdSharedResourcesRg
-    ]
-}
-//
-
-// Introduce delay for User Managed Assigned Identity to propagate through the system.
-module userManagedIdentityDelay '../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (createAibManagedIdentity) {
-    scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
-    name: 'AVD-userManagedIdentityDelay-${time}'
-    params: {
-        name: 'AVD-userManagedIdentityDelay-${time}'
-        location: avdSharedServicesLocation
-        azPowerShellVersion: '6.2'
-        cleanupPreference: 'Always'
-        timeout: 'PT10M'
-        scriptContent: useSharedImage || createAibManagedIdentity ? '''
-        Write-Host "Start"
-        Get-Date
-        Start-Sleep -Seconds 60
-        Write-Host "Stop"
-        Get-Date
-        ''' : ''
-    }
-    dependsOn: [
-        //imageBuilderManagedIdentity
-        deployScriptManagedIdentity
-    ]
-}
-
-// Enterprise applications.
-// RBAC role Assignments image builder.
-resource azureImageBuilderExistingRole 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = if (!createAibCustomRole) {
-    name: 'AzureImageBuilder-AVD'
-    scope: subscription(avdSharedServicesSubId)
-}
-
-// RBAC role Assignments image builder.
-module azureImageBuilderRoleAssign '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = {
-    name: 'Azure-Image-Builder-RoleAssign-${time}'
+module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for i in range(0, length(Roles)): {
+    name: 'AIB_Role-Assignment_${i}_${time}'
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
     params: {
-        roleDefinitionIdOrName: createAibCustomRole ? azureImageBuilderRole.outputs.resourceId : azureImageBuilderExistingRole.id
-        principalId: createAibManagedIdentity ? imageBuilderManagedIdentity.outputs.principalId : existingAibManagedIdentityId
+        roleDefinitionIdOrName: roleDefinitions[i].outputs.resourceId
+        principalId: userAssignedIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
     }
     dependsOn: [
-        userManagedIdentityDelay
+        
     ]
-}
+}]
 
-// RBAC role Assignments deployment script.
-module deployScriptRoleAssign '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = {
-    name: 'deploy-script-RoleAssign-${time}'
+// Compute Gallery
+module gallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy.bicep' = {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
-    params: {
-        roleDefinitionIdOrName: createAibCustomRole ? azureImageBuilderRole.outputs.resourceId : '/subscriptions/${avdSharedServicesSubId}/providers/Microsoft.Authorization/roleDefinitions/f1a07417-d97a-45cb-824c-7a7467783830'
-        principalId: useSharedImage ? deployScriptManagedIdentity.outputs.principalId : ''
-    }
-    dependsOn: [
-        userManagedIdentityDelay
-    ]
-}
-//
-
-// Custom images: Azure Image Builder deployment. Azure Compute Gallery --> Image Template Definition --> Image Template --> Build and Publish Template --> Create VMs.
-// Azure Compute Gallery.
-module azureComputeGallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy.bicep' = {
-    scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
-    name: 'Deploy-Azure-Compute-Gallery-${time}'
+    name: 'AIB_Gallery_${time}'
     params: {
         name: imageGalleryName
         location: avdSharedServicesLocation
@@ -619,12 +565,12 @@ module azureComputeGallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy
     ]
 }
 
-// Image Template Definition.
-module avdImageTemplateDefinition '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep' = {
+// Image Definition
+module image '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep' = {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
-    name: 'Deploy-AVD-Image-Template-Definition-${time}'
+    name: 'AIB_Image-Definition_${time}'
     params: {
-        galleryName: useSharedImage ? azureComputeGallery.outputs.name : ''
+        galleryName: useSharedImage ? gallery.outputs.name : ''
         name: imageDefinitionsTemSpecName
         osState: avdOsImageDefinitions[avdOsImage].osState
         osType: avdOsImageDefinitions[avdOsImage].osType
@@ -636,23 +582,23 @@ module avdImageTemplateDefinition '../../carml/1.2.0/Microsoft.Compute/galleries
         tags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
-        azureComputeGallery
+        gallery
         avdSharedResourcesRg
     ]
 }
 
-// Create Image Template.
+// Image Template
 module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemplates/deploy.bicep' = {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
-    name: 'AVD-Deploy-Image-Template-${time}'
+    name: 'AIB_Image-Template_${time}'
     params: {
         name: imageDefinitionsTemSpecName
         subnetId: !empty(existingVirtualNetworkResourceId) && !empty(existingSubnetName) ? '${existingVirtualNetworkResourceId}/subnets/${existingSubnetName}' : ''
-        userMsiName: createAibManagedIdentity && useSharedImage ? imageBuilderManagedIdentity.outputs.name : existingAibManagedIdentityName
-        userMsiResourceGroup: createAibManagedIdentity && useSharedImage ? imageBuilderManagedIdentity.outputs.resourceGroupName : avdSharedResourcesRgName
+        userMsiName: userAssignedIdentity.outputs.name
+        userMsiResourceGroup: userAssignedIdentity.outputs.resourceGroupName
         location: aibLocation
         imageReplicationRegions: (avdSharedServicesLocation == aibLocation) ? array('${avdSharedServicesLocation}') : concat(array('${aibLocation}'), array('${avdSharedServicesLocation}'))
-        sigImageDefinitionId: useSharedImage ? avdImageTemplateDefinition.outputs.resourceId : ''
+        sigImageDefinitionId: useSharedImage ? image.outputs.resourceId : ''
         vmSize: imageVmSize
         customizationSteps: CustomizationSteps
         imageSource: {
@@ -666,17 +612,17 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
         tags: createResourceTags ? commonResourceTags : {}
     }
     dependsOn: [
-        avdImageTemplateDefinition
-        azureComputeGallery
+        image
+        gallery
         avdSharedResourcesRg
-        azureImageBuilderRoleAssign
+        roleAssignments
     ]
 }
 
-// Azure log analytics workspace.
-module avdAlaWorkspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = {
+// Log Analytics Workspace
+module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
-    name: 'AVD-Log-Analytics-Workspace-${time}'
+    name: 'AIB_Log-Analytics-Workspace_${time}'
     params: {
         location: aibLocation
         name: avdLogAnalyticsWorkspaceName
@@ -689,17 +635,16 @@ module avdAlaWorkspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspac
     ]
 }
 
-// Image Template Build Automation.
 module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccounts/deploy.bicep' = {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
-    name: 'AVD-Deploy-Automation-Account-${time}'
+    name: 'AIB_Automation-Account_${time}'
     params: {
         diagnosticLogCategoriesToEnable: [
             'JobLogs'
             'JobStreams'
         ]
         diagnosticLogsRetentionInDays: 30
-        diagnosticWorkspaceId: avdAlaWorkspace.outputs.resourceId
+        diagnosticWorkspaceId: workspace.outputs.resourceId
         name: avdSharedResourcesAutomationAccount
         jobSchedules: [
             {
@@ -754,15 +699,11 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
         skuName: 'Free'
         tags: createResourceTags ? commonResourceTags : {}
     }
-    dependsOn: [
-        avdAlaWorkspace
-    ]
 }
 
-// Key vaults.
-module avdSharedServicesKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
+module vault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
-    name: 'AVD-Shared-Services-KeyVault-${time}'
+    name: 'AIB_Key-Vault_${time}'
     params: {
         name: avdSharedServicesKvName
         location: avdSharedServicesLocation
@@ -782,10 +723,9 @@ module avdSharedServicesKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/de
     ]
 }
 
-// Storage.
-module avdSharedServicesStorage '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
+module storageAccount '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
     scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
-    name: 'AVD-Shared-Services-Storage-${time}'
+    name: 'AIB_Storage-Account_${time}'
     params: {
         name: avdSharedSResourcesStorageName
         location: avdSharedServicesLocation
