@@ -503,6 +503,30 @@
                                     }
                                 },
                                 {
+                                    "name": "avdAutomationAccountCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Azure automation account",
+                                    "toolTip": "AVD shared services automation account custom name.",
+                                    "placeholder": "Example: aa-avd",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{6,50}$",
+                                        "validationMessage": "Value must be 6-50 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdAlaWorkspaceCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Azure log analytics workspace",
+                                    "toolTip": "AVD shared services log analytics workspace custom name.",
+                                    "placeholder": "Example: log-avd",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{4,63}$",
+                                        "validationMessage": "Value must be 4-63 characters."
+                                    }
+                                },
+                                {
                                     "name": "avdSharedStorageAccountCustomName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Storage account prefix",
@@ -829,6 +853,8 @@
                 "avdSharedResourcesRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedServicesRgCustomName, 'none')]",
                 "imageGalleryCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdComputeGalleryCustomName, 'none')]",
                 "imageDefinitionsTemSpecCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdComputeGalleryImageDefinitionCustomName, 'none')]",
+                "automationAccountCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.automationAccountCustomName, 'none')]",
+                "avdAlaWorkspaceCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdAlaWorkspaceCustomName, 'none')]",
                 "avdSharedSResourcesStorageCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedStorageAccountCustomName, 'none')]",
                 "avdSharedSResourcesAibContainerCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedStorageAccountAibContainerCustomName, 'none')]",
                 "avdSharedSResourcesScriptsContainerCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedStorageAccountScriptsContainerCustomName, 'none')]",
