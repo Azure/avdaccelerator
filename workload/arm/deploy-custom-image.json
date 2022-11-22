@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "9133507549843349654"
+      "templateHash": "10202243792602935225"
     }
   },
   "parameters": {
@@ -552,33 +552,24 @@
         "resourceGroup": "[split(parameters('existingVirtualNetworkResourceId'), '/')[4]]",
         "name": "Virtual Network Join",
         "description": "Allow resources to join a subnet",
-        "permissions": [
-          {
-            "actions": [
-              "Microsoft.Network/virtualNetworks/read",
-              "Microsoft.Network/virtualNetworks/subnets/read",
-              "Microsoft.Network/virtualNetworks/subnets/join/action",
-              "Microsoft.Network/virtualNetworks/subnets/write"
-            ]
-          }
+        "actions": [
+          "Microsoft.Network/virtualNetworks/read",
+          "Microsoft.Network/virtualNetworks/subnets/read",
+          "Microsoft.Network/virtualNetworks/subnets/join/action"
         ]
       },
       {
         "resourceGroup": "[variables('avdSharedResourcesRgName')]",
         "name": "Image Template Contributor",
         "description": "Allow the creation and management of images",
-        "permissions": [
-          {
-            "actions": [
-              "Microsoft.Compute/galleries/read",
-              "Microsoft.Compute/galleries/images/read",
-              "Microsoft.Compute/galleries/images/versions/read",
-              "Microsoft.Compute/galleries/images/versions/write",
-              "Microsoft.Compute/images/read",
-              "Microsoft.Compute/images/write",
-              "Microsoft.Compute/images/delete"
-            ]
-          }
+        "actions": [
+          "Microsoft.Compute/galleries/read",
+          "Microsoft.Compute/galleries/images/read",
+          "Microsoft.Compute/galleries/images/versions/read",
+          "Microsoft.Compute/galleries/images/versions/write",
+          "Microsoft.Compute/images/read",
+          "Microsoft.Compute/images/write",
+          "Microsoft.Compute/images/delete"
         ]
       },
       {
