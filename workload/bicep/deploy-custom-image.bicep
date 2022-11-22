@@ -448,33 +448,24 @@ var Roles = [
         resourceGroup: split(existingVirtualNetworkResourceId, '/')[4]
         name: 'Virtual Network Join'
         description: 'Allow resources to join a subnet'
-        permissions: [
-            {
-                actions: [
-                    'Microsoft.Network/virtualNetworks/read'
-                    'Microsoft.Network/virtualNetworks/subnets/read'
-                    'Microsoft.Network/virtualNetworks/subnets/join/action'
-                    'Microsoft.Network/virtualNetworks/subnets/write' // Required to update the private link network policy
-                ]
-            }
+        actions: [
+            'Microsoft.Network/virtualNetworks/read'
+            'Microsoft.Network/virtualNetworks/subnets/read'
+            'Microsoft.Network/virtualNetworks/subnets/join/action'
         ]
     }
     {
         resourceGroup: avdSharedResourcesRgName
         name: 'Image Template Contributor'
         description: 'Allow the creation and management of images'
-        permissions: [
-            {
-                actions: [
-                    'Microsoft.Compute/galleries/read'
-                    'Microsoft.Compute/galleries/images/read'
-                    'Microsoft.Compute/galleries/images/versions/read'
-                    'Microsoft.Compute/galleries/images/versions/write'
-                    'Microsoft.Compute/images/read'
-                    'Microsoft.Compute/images/write'
-                    'Microsoft.Compute/images/delete'
-                ]
-            }
+        actions: [
+            'Microsoft.Compute/galleries/read'
+            'Microsoft.Compute/galleries/images/read'
+            'Microsoft.Compute/galleries/images/versions/read'
+            'Microsoft.Compute/galleries/images/versions/write'
+            'Microsoft.Compute/images/read'
+            'Microsoft.Compute/images/write'
+            'Microsoft.Compute/images/delete'
         ]
     }
     {
@@ -557,7 +548,7 @@ module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignment
         principalType: 'ServicePrincipal'
     }
     dependsOn: [
-        
+
     ]
 }]
 
