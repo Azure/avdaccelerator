@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "14309876263756934770"
+      "templateHash": "216792125399647880"
     }
   },
   "parameters": {
@@ -5382,7 +5382,7 @@
                 "name": "AIB-Build-Automation",
                 "description": "When this runbook is triggered, last build date is checked on the AIB image template.  If a new marketplace image has been released since that date, a new build is initiated. If a build has never been initiated then it will be start one.",
                 "runbookType": "PowerShell",
-                "uri": "https://raw.githubusercontent.com/jamasten/Azure/main/solutions/imageBuilder/scripts/New-AzureImageBuilderBuild_Schedule.ps1",
+                "uri": "https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/scripts/New-AzureImageBuilderBuild.ps1",
                 "version": "1.0.0.0"
               }
             ]

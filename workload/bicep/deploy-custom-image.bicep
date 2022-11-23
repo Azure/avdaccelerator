@@ -752,7 +752,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
                 description: 'When this runbook is triggered, last build date is checked on the AIB image template.  If a new marketplace image has been released since that date, a new build is initiated. If a build has never been initiated then it will be start one.'
                 runbookType: 'PowerShell'
                 // ToDo: Update URL before PR submission
-                uri: 'https://raw.githubusercontent.com/jamasten/Azure/main/solutions/imageBuilder/scripts/New-AzureImageBuilderBuild_Schedule.ps1'
+                uri: 'https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/scripts/New-AzureImageBuilderBuild.ps1'
                 version: '1.0.0.0'
             }
         ]
