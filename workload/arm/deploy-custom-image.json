@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "14841829710405798004"
+      "templateHash": "5461529641535108546"
     }
   },
   "parameters": {
@@ -5410,7 +5410,7 @@
           },
           "userAssignedIdentities": {
             "value": {
-              "[format('{0}', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('time'))), '2020-10-01').outputs.principalId.value)]": {}
+              "[format('{0}', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value)]": {}
             }
           }
         },
