@@ -770,7 +770,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
         tags: createResourceTags ? commonResourceTags : {}
         systemAssignedIdentity: false
         userAssignedIdentities: {
-            '${userAssignedIdentity.outputs.principalId}': {}
+            '${userAssignedIdentity.outputs.resourceId}': {}
         }
     }
 }
