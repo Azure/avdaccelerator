@@ -344,6 +344,40 @@
                                     }
                                 ]
                             }
+                        },
+                        {
+                            "name": "aibEnableMonitoringAndAlerting",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": true,
+                            "label": "Enable Monitoring & Alerting",
+                            "defaultValue": "No",
+                            "toolTip": "Determine whether to enable monitoring and alerting for the AIB builds.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "Yes",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "No",
+                                        "value": false
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "distributionGroup",
+                            "type": "Microsoft.Common.TextBox",
+                            "visible": "[equals(steps('avdCustomImageAib').aibEnableMonitoringAndAlerting, true)]",
+                            "label": "Distribution Group",
+                            "toolTip": "Input the distribution group for receiving alerts on build status.",
+                            "placeholder": "Example: engineers@contoso.com",
+                            "constraints": {
+                                "required": true,
+                                "regex": "^[a-z0-9A-Z-]+@[a-z0-9A-Z]\\.[a-z]$",
+                                "validationMessage": "The value must be a valid email address."
+                            }
                         }
                     ]
                 },
@@ -776,6 +810,7 @@
                 "avdUseAvailabilityZones": "[steps('avdCustomImage').avdCustomImageStorageSelection.avdCustomImageStorageAvailability]",
                 "existingVirtualNetworkResourceId": "[if(equals(steps('avdCustomImageAib').aibExistingVirtualNetwork, true), steps('avdCustomImageAib').vnetSelector.id, '')]",
                 "existingSubnetName": "[if(equals(steps('avdCustomImageAib').aibExistingVirtualNetwork, true), steps('avdCustomImageAib').aibExistingSubnet, '')]",
+                "distributionGroup": "[if(equals(steps('avdCustomImageAib').aibEnableMonitoringAndAlerting, true), steps('avdCustomImageAib').distributionGroup, '')]",
                 "enableRdpShortPath": "[steps('avdCustomImageAib').aibEnableRdpShortPath]",
                 "enableScreenCaptureProtection": "[steps('avdCustomImageAib').aibExistingVirtualNetwork]",
                 "aibLocation": "[steps('avdCustomImageAib').avdCustomImageLocation]",
