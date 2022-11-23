@@ -36,6 +36,19 @@
                             }
                         },
                         {
+                            "name": "avdDeploymentPrefix",
+                            "type": "Microsoft.Common.TextBox",
+                            "visible": true,
+                            "label": "Deployment prefix",
+                            "toolTip": "Provide a prefix (max 4 characters) for the resource groups and resources created as part of AVD landing zones.",
+                            "placeholder": "Example: App1",
+                            "constraints": {
+                                "required": true,
+                                "regex": "^[a-z0-9A-Z-]{1,4}$",
+                                "validationMessage": "The prefix must be 1-4 characters."
+                            }
+                        },
+                        {
                             "name": "roleinfo",
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
@@ -794,6 +807,7 @@
         },
         "outputs": {
             "parameters": {
+                "deploymentPrefix": "[steps('basics').avdDeploymentPrefix]",
                 "avdSharedServicesLocation": "[steps('basics').avdDeploymentScope.location.name]",
                 "avdSharedServicesSubId": "[steps('basics').avdDeploymentScope.subscription.subscriptionId]",
                 "avdUseAvailabilityZones": "[steps('avdCustomImage').avdCustomImageStorageSelection.avdCustomImageStorageAvailability]",
