@@ -63,6 +63,9 @@ param enableScreenCaptureProtection bool = false
 @description('Required.  Azure log analytics workspace name data retention.')
 param avdAlaWorkspaceDataRetention int = 30
 
+@description('Optional. Input the email distribution list for alert notifications when AIB builds succeed or fail.')
+param distributionGroup string = ''
+
 // Custom Naming
 // Input must followe resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
 @description('Optional. Azure automation account name.')
@@ -431,16 +434,92 @@ var RemainingSteps = [
 ]
 var CustomizationSteps = union(ScriptSteps, RemainingSteps)
 //
+var Alerts = [
+    {
+        name: 'Azure Image Builder: Build Failure'
+        description: 'Sends an error alert when a build fails on an image template for Azure Image Builder.'
+        queryTimeRange: 'PT25M'
+        severity: 0
+        evaluationFrequency: 'PT5M'
+        windowSize: 'PT5M'
+        criterias: {
+            allOf: [
+                {
+                    query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| extend ImageTemplate = split(ResultDescription, " | ")[0]\n| extend ResourceGroup = split(ResultDescription, " | ")[1]\n| extend Output = split(ResultDescription, " | ")[2]\n| project TimeGenerated, ImageTemplate, ResourceGroup, Output\n| where Output has "Image Template build failed"'
+                    timeAggregation: 'Count'
+                    dimensions: [
+                        {
+                            name: 'ImageTemplate'
+                            operator: 'Include'
+                            values: [
+                                '*'
+                            ]
+                        }
+                        {
+                            name: 'ResourceGroup'
+                            operator: 'Include'
+                            values: [
+                                '*'
+                            ]
+                        }
+                    ]
+                    operator: 'GreaterThanOrEqual'
+                    threshold: 1
+                    failingPeriods: {
+                        numberOfEvaluationPeriods: 1
+                        minFailingPeriodsToAlert: 1
+                    }
+                }
+            ]
+        }
+    }
+    {
+        name: 'Azure Image Builder: Build Success'
+        description: 'Sends an informational alert when a build succeeds on an image template for Azure Image Builder.'
+        queryTimeRange: 'PT25M'
+        severity: 4
+        evaluationFrequency: 'PT5M'
+        windowSize: 'PT5M'
+        criterias: {
+            allOf: [
+                {
+                    query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| extend ImageTemplate = split(ResultDescription, " | ")[0]\n| extend ResourceGroup = split(ResultDescription, " | ")[1]\n| extend Output = split(ResultDescription, " | ")[2]\n| project TimeGenerated, ImageTemplate, ResourceGroup, Output\n| where Output has "Image Template build succeeded"'
+                    timeAggregation: 'Count'
+                    dimensions: [
+                        {
+                            name: 'ImageTemplate'
+                            operator: 'Include'
+                            values: [
+                                '*'
+                            ]
+                        }
+                        {
+                            name: 'ResourceGroup'
+                            operator: 'Include'
+                            values: [
+                                '*'
+                            ]
+                        }
+                    ]
+                    operator: 'GreaterThanOrEqual'
+                    threshold: 1
+                    failingPeriods: {
+                        numberOfEvaluationPeriods: 1
+                        minFailingPeriodsToAlert: 1
+                    }
+                }
+            ]
+        }
+    }
+]
 var Modules = [
     {
         name: 'Az.Accounts'
-        uri: 'https://www.powershellgallery.com/api/v2/package/Az.Accounts'
-        version: 'latest'
+        uri: 'https://www.powershellgallery.com/api/v2/package'
     }
     {
         name: 'Az.ImageBuilder'
-        uri: 'https://www.powershellgallery.com/api/v2/package/Az.ImageBuilder'
-        version: 'latest'
+        uri: 'https://www.powershellgallery.com/api/v2/package'
     }
 ]
 var Roles = [
@@ -527,7 +606,7 @@ module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinition
 }]
 
 module userAssignedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
-    scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
+    scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
     name: 'AIB_User-Assigned-Identity_${time}'
     params: {
         name: aibManagedIdentityName
@@ -554,7 +633,7 @@ module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignment
 
 // Compute Gallery
 module gallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy.bicep' = {
-    scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
+    scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
     name: 'AIB_Gallery_${time}'
     params: {
         name: imageGalleryName
@@ -569,7 +648,7 @@ module gallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy.bicep' = {
 
 // Image Definition
 module image '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep' = {
-    scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
+    scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
     name: 'AIB_Image-Definition_${time}'
     params: {
         galleryName: useSharedImage ? gallery.outputs.name : ''
@@ -591,7 +670,7 @@ module image '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep'
 
 // Image Template
 module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemplates/deploy.bicep' = {
-    scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
+    scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
     name: 'AIB_Image-Template_${time}'
     params: {
         name: imageDefinitionsTemSpecName
@@ -623,7 +702,7 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
 
 // Log Analytics Workspace
 module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = {
-    scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
+    scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
     name: 'AIB_Log-Analytics-Workspace_${time}'
     params: {
         location: aibLocation
@@ -638,7 +717,7 @@ module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/dep
 }
 
 module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccounts/deploy.bicep' = {
-    scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
+    scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
     name: 'AIB_Automation-Account_${time}'
     params: {
         diagnosticLogCategoriesToEnable: [
@@ -651,6 +730,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
         jobSchedules: [
             {
                 parameters: {
+                    ClientId: userAssignedIdentity.outputs.clientId
                     EnvironmentName: environment().name
                     ImageOffer: avdOsImageDefinitions[avdOsImage].offer
                     ImagePublisher: avdOsImageDefinitions[avdOsImage].publisher
@@ -697,19 +777,18 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
 
 @batchSize(1)
 module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/modules/deploy.bicep' = [for i in range(0, length(Modules)): {
+    scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
     name: 'AIB_Automation-Module_${i}_${time}'
-    scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
     params: {
         name: Modules[i].name
         location: avdSharedServicesLocation
         automationAccountName: automationAccount.outputs.name
         uri: Modules[i].uri
-        version: Modules[i].version
     }
 }]
 
 module vault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
-    scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
+    scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
     name: 'AIB_Key-Vault_${time}'
     params: {
         name: avdSharedServicesKvName
@@ -731,7 +810,7 @@ module vault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
 }
 
 module storageAccount '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
-    scope: resourceGroup('${avdSharedServicesSubId}', '${avdSharedResourcesRgName}')
+    scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
     name: 'AIB_Storage-Account_${time}'
     params: {
         name: avdSharedSResourcesStorageName
@@ -756,3 +835,45 @@ module storageAccount '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deplo
         avdSharedResourcesRg
     ]
 }
+
+module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bicep' = {
+    scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
+    name: 'AIB_Action-Group_${time}'
+    params: {
+        location: avdSharedServicesLocation
+        groupShortName: 'ImageBuilder'
+        name: 'AzureImageBuilderEmailNotifications'
+        emailReceivers: [
+            distributionGroup
+        ]
+        tags: createResourceTags ? commonResourceTags : {}
+    }
+}
+
+module scheduledQueryRules '../../carml/1.0.0/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(Alerts)): {
+    scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
+    name: 'AIB_Scheduled-Query-Rule_${i}_${time}'
+    params: {
+        location: avdSharedServicesLocation
+        name: Alerts[i].name
+        alertDescription: Alerts[i].description
+        enabled: true
+        kind: 'LogAlert'
+        autoMitigate: true
+        queryTimeRange: Alerts[i].queryTimeRange
+        skipQueryValidation: false
+        targetResourceTypes: []
+        roleAssignments: []
+        scopes: [
+            workspace.outputs.resourceId
+        ]
+        severity: Alerts[i].severity
+        evaluationFrequency: Alerts[i].evaluationFrequency
+        windowSize: Alerts[i].windowSize
+        actions: [
+            actionGroup.outputs.resourceId
+        ]
+        criterias: Alerts[i].criterias
+        tags: createResourceTags ? commonResourceTags : {}
+    }
+}]

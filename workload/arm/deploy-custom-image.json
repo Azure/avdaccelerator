@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "9396302435249824299"
+      "templateHash": "14309876263756934770"
     }
   },
   "parameters": {
@@ -115,6 +115,13 @@
       "defaultValue": 30,
       "metadata": {
         "description": "Required.  Azure log analytics workspace name data retention."
+      }
+    },
+    "distributionGroup": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Input the email distribution list for alert notifications when AIB builds succeed or fail."
       }
     },
     "automationAccountCustomName": {
@@ -535,16 +542,92 @@
       }
     ],
     "CustomizationSteps": "[union(variables('ScriptSteps'), variables('RemainingSteps'))]",
+    "Alerts": [
+      {
+        "name": "Azure Image Builder: Build Failure",
+        "description": "Sends an error alert when a build fails on an image template for Azure Image Builder.",
+        "queryTimeRange": "PT25M",
+        "severity": 0,
+        "evaluationFrequency": "PT5M",
+        "windowSize": "PT5M",
+        "criterias": {
+          "allOf": [
+            {
+              "query": "AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| extend ImageTemplate = split(ResultDescription, \" | \")[0]\n| extend ResourceGroup = split(ResultDescription, \" | \")[1]\n| extend Output = split(ResultDescription, \" | \")[2]\n| project TimeGenerated, ImageTemplate, ResourceGroup, Output\n| where Output has \"Image Template build failed\"",
+              "timeAggregation": "Count",
+              "dimensions": [
+                {
+                  "name": "ImageTemplate",
+                  "operator": "Include",
+                  "values": [
+                    "*"
+                  ]
+                },
+                {
+                  "name": "ResourceGroup",
+                  "operator": "Include",
+                  "values": [
+                    "*"
+                  ]
+                }
+              ],
+              "operator": "GreaterThanOrEqual",
+              "threshold": 1,
+              "failingPeriods": {
+                "numberOfEvaluationPeriods": 1,
+                "minFailingPeriodsToAlert": 1
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "Azure Image Builder: Build Success",
+        "description": "Sends an informational alert when a build succeeds on an image template for Azure Image Builder.",
+        "queryTimeRange": "PT25M",
+        "severity": 4,
+        "evaluationFrequency": "PT5M",
+        "windowSize": "PT5M",
+        "criterias": {
+          "allOf": [
+            {
+              "query": "AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| extend ImageTemplate = split(ResultDescription, \" | \")[0]\n| extend ResourceGroup = split(ResultDescription, \" | \")[1]\n| extend Output = split(ResultDescription, \" | \")[2]\n| project TimeGenerated, ImageTemplate, ResourceGroup, Output\n| where Output has \"Image Template build succeeded\"",
+              "timeAggregation": "Count",
+              "dimensions": [
+                {
+                  "name": "ImageTemplate",
+                  "operator": "Include",
+                  "values": [
+                    "*"
+                  ]
+                },
+                {
+                  "name": "ResourceGroup",
+                  "operator": "Include",
+                  "values": [
+                    "*"
+                  ]
+                }
+              ],
+              "operator": "GreaterThanOrEqual",
+              "threshold": 1,
+              "failingPeriods": {
+                "numberOfEvaluationPeriods": 1,
+                "minFailingPeriodsToAlert": 1
+              }
+            }
+          ]
+        }
+      }
+    ],
     "Modules": [
       {
         "name": "Az.Accounts",
-        "uri": "https://www.powershellgallery.com/api/v2/package/Az.Accounts",
-        "version": "latest"
+        "uri": "https://www.powershellgallery.com/api/v2/package"
       },
       {
         "name": "Az.ImageBuilder",
-        "uri": "https://www.powershellgallery.com/api/v2/package/Az.ImageBuilder",
-        "version": "latest"
+        "uri": "https://www.powershellgallery.com/api/v2/package"
       }
     ],
     "Roles": [
@@ -1192,8 +1275,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('AIB_User-Assigned-Identity_{0}', parameters('time'))]",
-      "subscriptionId": "[format('{0}', parameters('avdSharedServicesSubId'))]",
-      "resourceGroup": "[format('{0}', variables('avdSharedResourcesRgName'))]",
+      "subscriptionId": "[parameters('avdSharedServicesSubId')]",
+      "resourceGroup": "[variables('avdSharedResourcesRgName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1466,7 +1549,7 @@
             "value": "[reference(subscriptionResourceId(parameters('avdSharedServicesSubId'), 'Microsoft.Resources/deployments', format('AIB_Role-Definition_{0}_{1}', range(0, length(variables('Roles')))[range(0, length(variables('Roles')))[copyIndex()]], parameters('time'))), '2020-10-01').outputs.resourceId.value]"
           },
           "principalId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('time'))), '2020-10-01').outputs.principalId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('time'))), '2020-10-01').outputs.principalId.value]"
           },
           "principalType": {
             "value": "ServicePrincipal"
@@ -1913,15 +1996,15 @@
       },
       "dependsOn": [
         "[subscriptionResourceId(parameters('avdSharedServicesSubId'), 'Microsoft.Resources/deployments', format('AIB_Role-Definition_{0}_{1}', range(0, length(variables('Roles')))[range(0, length(variables('Roles')))[copyIndex()]], parameters('time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('time')))]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('AIB_Gallery_{0}', parameters('time'))]",
-      "subscriptionId": "[format('{0}', parameters('avdSharedServicesSubId'))]",
-      "resourceGroup": "[format('{0}', variables('avdSharedResourcesRgName'))]",
+      "subscriptionId": "[parameters('avdSharedServicesSubId')]",
+      "resourceGroup": "[variables('avdSharedResourcesRgName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2718,8 +2801,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('AIB_Image-Definition_{0}', parameters('time'))]",
-      "subscriptionId": "[format('{0}', parameters('avdSharedServicesSubId'))]",
-      "resourceGroup": "[format('{0}', variables('avdSharedResourcesRgName'))]",
+      "subscriptionId": "[parameters('avdSharedServicesSubId')]",
+      "resourceGroup": "[variables('avdSharedResourcesRgName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2727,7 +2810,7 @@
         "mode": "Incremental",
         "parameters": {
           "galleryName": {
-            "value": "[if(parameters('useSharedImage'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AIB_Gallery_{0}', parameters('time'))), '2020-10-01').outputs.name.value, '')]"
+            "value": "[if(parameters('useSharedImage'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_Gallery_{0}', parameters('time'))), '2020-10-01').outputs.name.value, '')]"
           },
           "name": {
             "value": "[variables('imageDefinitionsTemSpecName')]"
@@ -3173,15 +3256,15 @@
       },
       "dependsOn": [
         "[subscriptionResourceId(parameters('avdSharedServicesSubId'), 'Microsoft.Resources/deployments', format('AIB_Resource-Group_{0}', parameters('time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AIB_Gallery_{0}', parameters('time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_Gallery_{0}', parameters('time')))]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('AIB_Image-Template_{0}', parameters('time'))]",
-      "subscriptionId": "[format('{0}', parameters('avdSharedServicesSubId'))]",
-      "resourceGroup": "[format('{0}', variables('avdSharedResourcesRgName'))]",
+      "subscriptionId": "[parameters('avdSharedServicesSubId')]",
+      "resourceGroup": "[variables('avdSharedResourcesRgName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3195,10 +3278,10 @@
             "value": "[if(and(not(empty(parameters('existingVirtualNetworkResourceId'))), not(empty(parameters('existingSubnetName')))), format('{0}/subnets/{1}', parameters('existingVirtualNetworkResourceId'), parameters('existingSubnetName')), '')]"
           },
           "userMsiName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('time'))), '2020-10-01').outputs.name.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('time'))), '2020-10-01').outputs.name.value]"
           },
           "userMsiResourceGroup": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('time'))), '2020-10-01').outputs.resourceGroupName.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('time'))), '2020-10-01').outputs.resourceGroupName.value]"
           },
           "location": {
             "value": "[parameters('aibLocation')]"
@@ -3207,7 +3290,7 @@
             "value": "[if(equals(parameters('avdSharedServicesLocation'), parameters('aibLocation')), array(format('{0}', parameters('avdSharedServicesLocation'))), concat(array(format('{0}', parameters('aibLocation'))), array(format('{0}', parameters('avdSharedServicesLocation')))))]"
           },
           "sigImageDefinitionId": {
-            "value": "[if(parameters('useSharedImage'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AIB_Image-Definition_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value, '')]"
+            "value": "[if(parameters('useSharedImage'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_Image-Definition_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value, '')]"
           },
           "vmSize": {
             "value": "[variables('imageVmSize')]"
@@ -3653,18 +3736,18 @@
       },
       "dependsOn": [
         "[subscriptionResourceId(parameters('avdSharedServicesSubId'), 'Microsoft.Resources/deployments', format('AIB_Resource-Group_{0}', parameters('time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AIB_Gallery_{0}', parameters('time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AIB_Image-Definition_{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_Gallery_{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_Image-Definition_{0}', parameters('time')))]",
         "roleAssignments",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('time')))]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('AIB_Log-Analytics-Workspace_{0}', parameters('time'))]",
-      "subscriptionId": "[format('{0}', parameters('avdSharedServicesSubId'))]",
-      "resourceGroup": "[format('{0}', variables('avdSharedResourcesRgName'))]",
+      "subscriptionId": "[parameters('avdSharedServicesSubId')]",
+      "resourceGroup": "[variables('avdSharedResourcesRgName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -5247,8 +5330,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('AIB_Automation-Account_{0}', parameters('time'))]",
-      "subscriptionId": "[format('{0}', parameters('avdSharedServicesSubId'))]",
-      "resourceGroup": "[format('{0}', variables('avdSharedResourcesRgName'))]",
+      "subscriptionId": "[parameters('avdSharedServicesSubId')]",
+      "resourceGroup": "[variables('avdSharedResourcesRgName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -5265,7 +5348,7 @@
             "value": 30
           },
           "diagnosticWorkspaceId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AIB_Log-Analytics-Workspace_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_Log-Analytics-Workspace_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value]"
           },
           "name": {
             "value": "[variables('avdSharedResourcesAutomationAccount')]"
@@ -5274,6 +5357,7 @@
             "value": [
               {
                 "parameters": {
+                  "ClientId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('time'))), '2020-10-01').outputs.clientId.value]",
                   "EnvironmentName": "[environment().name]",
                   "ImageOffer": "[variables('avdOsImageDefinitions')[parameters('avdOsImage')].offer]",
                   "ImagePublisher": "[variables('avdOsImageDefinitions')[parameters('avdOsImage')].publisher]",
@@ -5326,7 +5410,7 @@
           },
           "userAssignedIdentities": {
             "value": {
-              "[format('{0}', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('time'))), '2020-10-01').outputs.principalId.value)]": {}
+              "[format('{0}', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('time'))), '2020-10-01').outputs.principalId.value)]": {}
             }
           }
         },
@@ -8125,8 +8209,8 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AIB_Log-Analytics-Workspace_{0}', parameters('time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_Log-Analytics-Workspace_{0}', parameters('time')))]"
       ]
     },
     {
@@ -8139,8 +8223,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('AIB_Automation-Module_{0}_{1}', range(0, length(variables('Modules')))[copyIndex()], parameters('time'))]",
-      "subscriptionId": "[format('{0}', parameters('avdSharedServicesSubId'))]",
-      "resourceGroup": "[format('{0}', variables('avdSharedResourcesRgName'))]",
+      "subscriptionId": "[parameters('avdSharedServicesSubId')]",
+      "resourceGroup": "[variables('avdSharedResourcesRgName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -8154,13 +8238,10 @@
             "value": "[parameters('avdSharedServicesLocation')]"
           },
           "automationAccountName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AIB_Automation-Account_{0}', parameters('time'))), '2020-10-01').outputs.name.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_Automation-Account_{0}', parameters('time'))), '2020-10-01').outputs.name.value]"
           },
           "uri": {
             "value": "[variables('Modules')[range(0, length(variables('Modules')))[copyIndex()]].uri]"
-          },
-          "version": {
-            "value": "[variables('Modules')[range(0, length(variables('Modules')))[copyIndex()]].version]"
           }
         },
         "template": {
@@ -8283,15 +8364,15 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdSharedServicesSubId')), format('{0}', variables('avdSharedResourcesRgName'))), 'Microsoft.Resources/deployments', format('AIB_Automation-Account_{0}', parameters('time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_Automation-Account_{0}', parameters('time')))]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('AIB_Key-Vault_{0}', parameters('time'))]",
-      "subscriptionId": "[format('{0}', parameters('avdSharedServicesSubId'))]",
-      "resourceGroup": "[format('{0}', variables('avdSharedResourcesRgName'))]",
+      "subscriptionId": "[parameters('avdSharedServicesSubId')]",
+      "resourceGroup": "[variables('avdSharedResourcesRgName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -9800,8 +9881,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('AIB_Storage-Account_{0}', parameters('time'))]",
-      "subscriptionId": "[format('{0}', parameters('avdSharedServicesSubId'))]",
-      "resourceGroup": "[format('{0}', variables('avdSharedResourcesRgName'))]",
+      "subscriptionId": "[parameters('avdSharedServicesSubId')]",
+      "resourceGroup": "[variables('avdSharedResourcesRgName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -12888,6 +12969,719 @@
       },
       "dependsOn": [
         "[subscriptionResourceId(parameters('avdSharedServicesSubId'), 'Microsoft.Resources/deployments', format('AIB_Resource-Group_{0}', parameters('time')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('AIB_Action-Group_{0}', parameters('time'))]",
+      "subscriptionId": "[parameters('avdSharedServicesSubId')]",
+      "resourceGroup": "[variables('avdSharedResourcesRgName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('avdSharedServicesLocation')]"
+          },
+          "groupShortName": {
+            "value": "ImageBuilder"
+          },
+          "name": {
+            "value": "AzureImageBuilderEmailNotifications"
+          },
+          "emailReceivers": {
+            "value": [
+              "[parameters('distributionGroup')]"
+            ]
+          },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.12.40.16777",
+              "templateHash": "1661863640781598734"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the action group."
+              }
+            },
+            "groupShortName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The short name of the action group."
+              }
+            },
+            "enabled": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Indicates whether this action group is enabled. If an action group is not enabled, then none of its receivers will receive communications."
+              }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'"
+              }
+            },
+            "emailReceivers": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The list of email receivers that are part of this action group."
+              }
+            },
+            "smsReceivers": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The list of SMS receivers that are part of this action group."
+              }
+            },
+            "webhookReceivers": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The list of webhook receivers that are part of this action group."
+              }
+            },
+            "itsmReceivers": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The list of ITSM receivers that are part of this action group."
+              }
+            },
+            "azureAppPushReceivers": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The list of AzureAppPush receivers that are part of this action group."
+              }
+            },
+            "automationRunbookReceivers": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The list of AutomationRunbook receivers that are part of this action group."
+              }
+            },
+            "voiceReceivers": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The list of voice receivers that are part of this action group."
+              }
+            },
+            "logicAppReceivers": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The list of logic app receivers that are part of this action group."
+              }
+            },
+            "azureFunctionReceivers": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The list of function receivers that are part of this action group."
+              }
+            },
+            "armRoleReceivers": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The list of ARM role receivers that are part of this action group. Roles are Azure RBAC roles and only built-in roles are supported."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            },
+            "cuaId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Customer Usage Attribution ID (GUID). This GUID must be previously registered"
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "global",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "microsoft.insights/actionGroups",
+              "apiVersion": "2019-06-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "groupShortName": "[parameters('groupShortName')]",
+                "enabled": "[parameters('enabled')]",
+                "emailReceivers": "[if(empty(parameters('emailReceivers')), null(), parameters('emailReceivers'))]",
+                "smsReceivers": "[if(empty(parameters('smsReceivers')), null(), parameters('smsReceivers'))]",
+                "webhookReceivers": "[if(empty(parameters('webhookReceivers')), null(), parameters('webhookReceivers'))]",
+                "itsmReceivers": "[if(empty(parameters('itsmReceivers')), null(), parameters('itsmReceivers'))]",
+                "azureAppPushReceivers": "[if(empty(parameters('azureAppPushReceivers')), null(), parameters('azureAppPushReceivers'))]",
+                "automationRunbookReceivers": "[if(empty(parameters('automationRunbookReceivers')), null(), parameters('automationRunbookReceivers'))]",
+                "voiceReceivers": "[if(empty(parameters('voiceReceivers')), null(), parameters('voiceReceivers'))]",
+                "logicAppReceivers": "[if(empty(parameters('logicAppReceivers')), null(), parameters('logicAppReceivers'))]",
+                "azureFunctionReceivers": "[if(empty(parameters('azureFunctionReceivers')), null(), parameters('azureFunctionReceivers'))]",
+                "armRoleReceivers": "[if(empty(parameters('armRoleReceivers')), null(), parameters('armRoleReceivers'))]"
+              }
+            },
+            {
+              "condition": "[not(empty(parameters('cuaId')))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "[format('pid-{0}', parameters('cuaId'))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {},
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.12.40.16777",
+                      "templateHash": "17666925374910611943"
+                    }
+                  },
+                  "resources": []
+                }
+              }
+            },
+            {
+              "copy": {
+                "name": "actionGroup_rbac",
+                "count": "[length(parameters('roleAssignments'))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "[format('{0}-ActionGroup-Rbac-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "principalIds": {
+                    "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
+                  },
+                  "roleDefinitionIdOrName": {
+                    "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
+                  },
+                  "resourceId": {
+                    "value": "[resourceId('microsoft.insights/actionGroups', parameters('name'))]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.12.40.16777",
+                      "templateHash": "8493921122479350298"
+                    }
+                  },
+                  "parameters": {
+                    "principalIds": {
+                      "type": "array"
+                    },
+                    "roleDefinitionIdOrName": {
+                      "type": "string"
+                    },
+                    "resourceId": {
+                      "type": "string"
+                    }
+                  },
+                  "variables": {
+                    "builtInRoleNames": {
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                      "Automation Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f353d9bd-d4a6-484e-a77a-8050b599b867')]",
+                      "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+                      "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
+                      "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
+                      "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
+                      "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
+                      "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+                      "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
+                      "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
+                      "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "copy": {
+                        "name": "roleAssignment",
+                        "count": "[length(parameters('principalIds'))]"
+                      },
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2021-04-01-preview",
+                      "scope": "[format('microsoft.insights/actionGroups/{0}', last(split(parameters('resourceId'), '/')))]",
+                      "name": "[guid(last(split(parameters('resourceId'), '/')), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+                      "properties": {
+                        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
+                        "principalId": "[parameters('principalIds')[copyIndex()]]"
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('microsoft.insights/actionGroups', parameters('name'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "value": "[resourceGroup().name]",
+              "metadata": {
+                "description": "The resource group the action group was deployed into"
+              }
+            },
+            "name": {
+              "type": "string",
+              "value": "[parameters('name')]",
+              "metadata": {
+                "description": "The name of the action group "
+              }
+            },
+            "resourceId": {
+              "type": "string",
+              "value": "[resourceId('microsoft.insights/actionGroups', parameters('name'))]",
+              "metadata": {
+                "description": "The resource ID of the action group "
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "copy": {
+        "name": "scheduledQueryRules",
+        "count": "[length(range(0, length(variables('Alerts'))))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('AIB_Scheduled-Query-Rule_{0}_{1}', range(0, length(variables('Alerts')))[copyIndex()], parameters('time'))]",
+      "subscriptionId": "[parameters('avdSharedServicesSubId')]",
+      "resourceGroup": "[variables('avdSharedResourcesRgName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('avdSharedServicesLocation')]"
+          },
+          "name": {
+            "value": "[variables('Alerts')[range(0, length(variables('Alerts')))[copyIndex()]].name]"
+          },
+          "alertDescription": {
+            "value": "[variables('Alerts')[range(0, length(variables('Alerts')))[copyIndex()]].description]"
+          },
+          "enabled": {
+            "value": true
+          },
+          "kind": {
+            "value": "LogAlert"
+          },
+          "autoMitigate": {
+            "value": true
+          },
+          "queryTimeRange": {
+            "value": "[variables('Alerts')[range(0, length(variables('Alerts')))[copyIndex()]].queryTimeRange]"
+          },
+          "skipQueryValidation": {
+            "value": false
+          },
+          "targetResourceTypes": {
+            "value": []
+          },
+          "roleAssignments": {
+            "value": []
+          },
+          "scopes": {
+            "value": [
+              "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_Log-Analytics-Workspace_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value]"
+            ]
+          },
+          "severity": {
+            "value": "[variables('Alerts')[range(0, length(variables('Alerts')))[copyIndex()]].severity]"
+          },
+          "evaluationFrequency": {
+            "value": "[variables('Alerts')[range(0, length(variables('Alerts')))[copyIndex()]].evaluationFrequency]"
+          },
+          "windowSize": {
+            "value": "[variables('Alerts')[range(0, length(variables('Alerts')))[copyIndex()]].windowSize]"
+          },
+          "actions": {
+            "value": [
+              "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_Action-Group_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value]"
+            ]
+          },
+          "criterias": {
+            "value": "[variables('Alerts')[range(0, length(variables('Alerts')))[copyIndex()]].criterias]"
+          },
+          "tags": {
+            "value": "[if(parameters('createResourceTags'), variables('commonResourceTags'), createObject())]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.12.40.16777",
+              "templateHash": "9261605289154496407"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Alert."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "alertDescription": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The description of the scheduled query rule."
+              }
+            },
+            "enabled": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. The flag which indicates whether this scheduled query rule is enabled."
+              }
+            },
+            "kind": {
+              "type": "string",
+              "defaultValue": "LogAlert",
+              "allowedValues": [
+                "LogAlert",
+                "LogToMetric"
+              ],
+              "metadata": {
+                "description": "Optional. Indicates the type of scheduled query rule."
+              }
+            },
+            "autoMitigate": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert."
+              }
+            },
+            "queryTimeRange": {
+              "type": "string",
+              "metadata": {
+                "description": "Optional. If specified (in ISO 8601 duration format) then overrides the query time range. Relevant only for rules of the kind LogAlert."
+              }
+            },
+            "skipQueryValidation": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. The flag which indicates whether the provided query should be validated or not. Relevant only for rules of the kind LogAlert."
+              }
+            },
+            "targetResourceTypes": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. List of resource type of the target resource(s) on which the alert is created/updated. For example if the scope is a resource group and targetResourceTypes is Microsoft.Compute/virtualMachines, then a different alert will be fired for each virtual machine in the resource group which meet the alert criteria. Relevant only for rules of the kind LogAlert"
+              }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'"
+              }
+            },
+            "scopes": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Required. The list of resource IDs that this scheduled query rule is scoped to."
+              }
+            },
+            "severity": {
+              "type": "int",
+              "defaultValue": 3,
+              "allowedValues": [
+                0,
+                1,
+                2,
+                3,
+                4
+              ],
+              "metadata": {
+                "description": "Optional. Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kind LogAlert."
+              }
+            },
+            "evaluationFrequency": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. How often the scheduled query rule is evaluated represented in ISO 8601 duration format. Relevant and required only for rules of the kind LogAlert."
+              }
+            },
+            "windowSize": {
+              "type": "string",
+              "metadata": {
+                "description": "Optional. The period of time (in ISO 8601 duration format) on which the Alert query will be executed (bin size). Relevant and required only for rules of the kind LogAlert."
+              }
+            },
+            "actions": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. Actions to invoke when the alert fires."
+              }
+            },
+            "criterias": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. The rule criteria that defines the conditions of the scheduled query rule."
+              }
+            },
+            "suppressForMinutes": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled.Relevant only for rules of the kind LogAlert."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            },
+            "cuaId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Customer Usage Attribution ID (GUID). This GUID must be previously registered"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Insights/scheduledQueryRules",
+              "apiVersion": "2021-02-01-preview",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "kind": "[parameters('kind')]",
+              "properties": {
+                "actions": {
+                  "actionGroups": "[parameters('actions')]",
+                  "customProperties": {}
+                },
+                "autoMitigate": "[if(equals(parameters('kind'), 'LogAlert'), parameters('autoMitigate'), null())]",
+                "criteria": "[parameters('criterias')]",
+                "description": "[parameters('alertDescription')]",
+                "displayName": "[parameters('name')]",
+                "enabled": "[parameters('enabled')]",
+                "evaluationFrequency": "[if(equals(parameters('kind'), 'LogAlert'), parameters('evaluationFrequency'), null())]",
+                "muteActionsDuration": "[if(equals(parameters('kind'), 'LogAlert'), parameters('suppressForMinutes'), null())]",
+                "overrideQueryTimeRange": "[if(equals(parameters('kind'), 'LogAlert'), parameters('queryTimeRange'), null())]",
+                "scopes": "[parameters('scopes')]",
+                "severity": "[if(equals(parameters('kind'), 'LogAlert'), parameters('severity'), null())]",
+                "skipQueryValidation": "[if(equals(parameters('kind'), 'LogAlert'), parameters('skipQueryValidation'), null())]",
+                "targetResourceTypes": "[if(equals(parameters('kind'), 'LogAlert'), parameters('targetResourceTypes'), null())]",
+                "windowSize": "[if(equals(parameters('kind'), 'LogAlert'), parameters('windowSize'), null())]"
+              }
+            },
+            {
+              "condition": "[not(empty(parameters('cuaId')))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "[format('pid-{0}', parameters('cuaId'))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {},
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.12.40.16777",
+                      "templateHash": "17666925374910611943"
+                    }
+                  },
+                  "resources": []
+                }
+              }
+            },
+            {
+              "copy": {
+                "name": "queryRule_rbac",
+                "count": "[length(parameters('roleAssignments'))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "[format('{0}-QueryRule-Rbac-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "principalIds": {
+                    "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
+                  },
+                  "roleDefinitionIdOrName": {
+                    "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
+                  },
+                  "resourceId": {
+                    "value": "[resourceId('Microsoft.Insights/scheduledQueryRules', parameters('name'))]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.12.40.16777",
+                      "templateHash": "14053741098130505638"
+                    }
+                  },
+                  "parameters": {
+                    "principalIds": {
+                      "type": "array"
+                    },
+                    "roleDefinitionIdOrName": {
+                      "type": "string"
+                    },
+                    "resourceId": {
+                      "type": "string"
+                    }
+                  },
+                  "variables": {
+                    "builtInRoleNames": {
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                      "Application Insights Component Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ae349356-3a1b-4a5e-921d-050484c6347e')]",
+                      "Automation Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f353d9bd-d4a6-484e-a77a-8050b599b867')]",
+                      "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+                      "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
+                      "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
+                      "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
+                      "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
+                      "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+                      "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
+                      "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
+                      "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "copy": {
+                        "name": "roleAssignment",
+                        "count": "[length(parameters('principalIds'))]"
+                      },
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2021-04-01-preview",
+                      "scope": "[format('Microsoft.Insights/scheduledQueryRules/{0}', last(split(parameters('resourceId'), '/')))]",
+                      "name": "[guid(last(split(parameters('resourceId'), '/')), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+                      "properties": {
+                        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
+                        "principalId": "[parameters('principalIds')[copyIndex()]]"
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Insights/scheduledQueryRules', parameters('name'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "value": "[parameters('name')]",
+              "metadata": {
+                "description": "The Name of the created query rule."
+              }
+            },
+            "resourceId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Insights/scheduledQueryRules', parameters('name'))]",
+              "metadata": {
+                "description": "The resource ID of the created query rule."
+              }
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "value": "[resourceGroup().name]",
+              "metadata": {
+                "description": "The Resource Group of the created query rule."
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_Action-Group_{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_Log-Analytics-Workspace_{0}', parameters('time')))]"
       ]
     }
   ]
