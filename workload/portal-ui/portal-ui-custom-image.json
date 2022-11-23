@@ -248,7 +248,10 @@
                             "label": "Select virtual network",
                             "resourceType": "Microsoft.Network/virtualNetworks",
                             "options": {
-
+                                "filter": {
+                                    "subscription": "onBasics",
+                                    "location": "onBasics"
+                                }
                             }
                         },
                         {
