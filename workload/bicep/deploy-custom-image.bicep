@@ -840,7 +840,7 @@ module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bic
     scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
     name: 'AIB_Action-Group_${time}'
     params: {
-        location: avdSharedServicesLocation
+        location: 'global'
         groupShortName: 'ImageBuilder'
         name: 'AzureImageBuilderEmailNotifications'
         emailReceivers: [
