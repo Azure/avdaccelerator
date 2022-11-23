@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "216792125399647880"
+      "templateHash": "14841829710405798004"
     }
   },
   "parameters": {
@@ -12984,7 +12984,7 @@
         "mode": "Incremental",
         "parameters": {
           "location": {
-            "value": "[parameters('avdSharedServicesLocation')]"
+            "value": "global"
           },
           "groupShortName": {
             "value": "ImageBuilder"
