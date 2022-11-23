@@ -365,7 +365,7 @@
                             "placeholder": "Example: engineers@contoso.com",
                             "constraints": {
                                 "required": true,
-                                "regex": "^[a-z0-9A-Z-]+@[a-z0-9A-Z]\\.[a-z]$",
+                                "regex": "^[a-z0-9A-Z_.-]+@(?:[a-z0-9]+\\.)+[a-z]+$",
                                 "validationMessage": "The value must be a valid email address."
                             }
                         }
