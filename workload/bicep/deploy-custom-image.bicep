@@ -855,7 +855,7 @@ module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bic
     }
 }
 
-module scheduledQueryRules '../../carml/1.0.0/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(Alerts)): {
+module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(Alerts)): {
     scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
     name: 'AIB_Scheduled-Query-Rule_${i}_${time}'
     params: {
