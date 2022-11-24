@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "4933587966829822341"
+      "templateHash": "6046472834128173206"
     }
   },
   "parameters": {
@@ -12998,7 +12998,7 @@
             "value": "global"
           },
           "groupShortName": {
-            "value": "AIB Email"
+            "value": "aib-email"
           },
           "name": {
             "value": "[variables('avdSharedServicesActionGroup')]"
@@ -13008,7 +13008,11 @@
           },
           "emailReceivers": {
             "value": [
-              "[parameters('distributionGroup')]"
+              {
+                "name": "[parameters('distributionGroup')]",
+                "emailAddress": "[parameters('distributionGroup')]",
+                "useCommonAlertSchema": true
+              }
             ]
           },
           "tags": {
