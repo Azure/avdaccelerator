@@ -741,7 +741,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
                     ImageSku: avdOsImageDefinitions[avdOsImage].sku
                     Location: aibLocation
                     SubscriptionId: avdSharedServicesSubId
-                    TemplateName: imageDefinitionsTemSpecName
+                    TemplateName: imageTemplate.outputs.name
                     TemplateResourceGroupName: avdSharedResourcesRgName
                     TenantId: subscription().tenantId
                 }
@@ -858,7 +858,7 @@ module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bic
     ]
 }
 
-module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(Alerts)): if(!empty(distributionGroup)) {
+module scheduledQueryRules '../../carml/1.0.0/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(Alerts)): if(!empty(distributionGroup)) {
     scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
     name: 'AIB_Scheduled-Query-Rule_${i}_${time}'
     params: {
