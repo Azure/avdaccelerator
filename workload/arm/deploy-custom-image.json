@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "7857557699712773168"
+      "templateHash": "6097772808661835994"
     }
   },
   "parameters": {
@@ -3751,6 +3751,7 @@
       ]
     },
     {
+      "condition": "[not(empty(parameters('distributionGroup')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('AIB_Log-Analytics-Workspace_{0}', parameters('time'))]",
@@ -5356,7 +5357,7 @@
             "value": 30
           },
           "diagnosticWorkspaceId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_Log-Analytics-Workspace_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value]"
+            "value": "[if(empty(parameters('distributionGroup')), '', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('avdSharedServicesSubId'), variables('avdSharedResourcesRgName')), 'Microsoft.Resources/deployments', format('AIB_Log-Analytics-Workspace_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value)]"
           },
           "name": {
             "value": "[variables('avdSharedResourcesAutomationAccount')]"
@@ -12980,6 +12981,7 @@
       ]
     },
     {
+      "condition": "[not(empty(parameters('distributionGroup')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('AIB_Action-Group_{0}', parameters('time'))]",
@@ -13304,6 +13306,7 @@
       ]
     },
     {
+      "condition": "[not(empty(parameters('distributionGroup')))]",
       "copy": {
         "name": "scheduledQueryRules",
         "count": "[length(range(0, length(variables('Alerts'))))]"
