@@ -541,6 +541,18 @@
                                     "placeholder": "Example: kv-avd",
                                     "constraints": {
                                         "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,60}$",
+                                        "validationMessage": "Value must be 1-60 characters."
+                                    }
+                                },
+                                {
+                                    "name": "avdActionGroupCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Action group prefix",
+                                    "toolTip": "AVD shared services action group custom name.",
+                                    "placeholder": "Example: ag-aib",
+                                    "constraints": {
+                                        "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,6}$",
                                         "validationMessage": "Value must be 1-6 characters."
                                     }
@@ -808,6 +820,7 @@
         "outputs": {
             "parameters": {
                 "deploymentPrefix": "[steps('basics').avdDeploymentPrefix]",
+                "actionGroupCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdActionGroupCustomName, 'none')]",
                 "avdSharedServicesLocation": "[steps('basics').avdDeploymentScope.location.name]",
                 "avdSharedServicesSubId": "[steps('basics').avdDeploymentScope.subscription.subscriptionId]",
                 "avdUseAvailabilityZones": "[steps('avdCustomImage').avdCustomImageStorageSelection.avdCustomImageStorageAvailability]",
