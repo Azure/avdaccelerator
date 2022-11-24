@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "13936681871265989043"
+      "templateHash": "28475845478500929"
     }
   },
   "parameters": {
@@ -562,7 +562,15 @@
             {
               "query": "AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| where ResultDescription has \"Image Template build failed\"",
               "timeAggregation": "Count",
-              "dimensions": [],
+              "dimensions": [
+                {
+                  "name": "ResultDescription",
+                  "operator": "Include",
+                  "values": [
+                    "*"
+                  ]
+                }
+              ],
               "operator": "GreaterThanOrEqual",
               "threshold": 1,
               "failingPeriods": {
@@ -584,7 +592,15 @@
             {
               "query": "AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| where ResultDescription has \"Image Template build succeeded\"",
               "timeAggregation": "Count",
-              "dimensions": [],
+              "dimensions": [
+                {
+                  "name": "ResultDescription",
+                  "operator": "Include",
+                  "values": [
+                    "*"
+                  ]
+                }
+              ],
               "operator": "GreaterThanOrEqual",
               "threshold": 1,
               "failingPeriods": {
@@ -13311,7 +13327,7 @@
             "value": "LogAlert"
           },
           "autoMitigate": {
-            "value": true
+            "value": false
           },
           "skipQueryValidation": {
             "value": false
