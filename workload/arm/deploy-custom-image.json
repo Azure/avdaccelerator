@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "14978320245326361254"
+      "templateHash": "7240124077409546063"
     }
   },
   "parameters": {
@@ -560,7 +560,7 @@
         "criterias": {
           "allOf": [
             {
-              "query": "AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| extend ImageTemplate = split(ResultDescription, \" | \")[0]\n| extend ResourceGroup = split(ResultDescription, \" | \")[1]\n| extend Output = split(ResultDescription, \" | \")[2]\n| project TimeGenerated, ImageTemplate, ResourceGroup, Output\n| where Output has \"Image Template build failed\"",
+              "query": "AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| where ResultDescription has \"Image Template build failed\"",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -590,7 +590,7 @@
         "criterias": {
           "allOf": [
             {
-              "query": "AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| extend ImageTemplate = split(ResultDescription, \" | \")[0]\n| extend ResourceGroup = split(ResultDescription, \" | \")[1]\n| extend Output = split(ResultDescription, \" | \")[2]\n| project TimeGenerated, ImageTemplate, ResourceGroup, Output\n| where Output has \"Image Template build succeeded\"",
+              "query": "AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| where ResultDescription has \"Image Template build succeeded\"",
               "timeAggregation": "Count",
               "dimensions": [
                 {

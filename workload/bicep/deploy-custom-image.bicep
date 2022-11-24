@@ -448,7 +448,7 @@ var Alerts = [
         criterias: {
             allOf: [
                 {
-                    query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| extend ImageTemplate = split(ResultDescription, " | ")[0]\n| extend ResourceGroup = split(ResultDescription, " | ")[1]\n| extend Output = split(ResultDescription, " | ")[2]\n| project TimeGenerated, ImageTemplate, ResourceGroup, Output\n| where Output has "Image Template build failed"'
+                    query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| where ResultDescription has "Image Template build failed"'
                     timeAggregation: 'Count'
                     dimensions: [
                         {
@@ -478,7 +478,7 @@ var Alerts = [
         criterias: {
             allOf: [
                 {
-                    query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| extend ImageTemplate = split(ResultDescription, " | ")[0]\n| extend ResourceGroup = split(ResultDescription, " | ")[1]\n| extend Output = split(ResultDescription, " | ")[2]\n| project TimeGenerated, ImageTemplate, ResourceGroup, Output\n| where Output has "Image Template build succeeded"'
+                    query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| where ResultDescription has "Image Template build succeeded"'
                     timeAggregation: 'Count'
                     dimensions: [
                         {
