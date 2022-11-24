@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "14474442742673495669"
+      "templateHash": "7857557699712773168"
     }
   },
   "parameters": {
@@ -13298,7 +13298,10 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId(parameters('avdSharedServicesSubId'), 'Microsoft.Resources/deployments', format('AIB_Resource-Group_{0}', parameters('time')))]"
+      ]
     },
     {
       "copy": {
