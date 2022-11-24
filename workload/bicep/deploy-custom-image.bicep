@@ -853,6 +853,9 @@ module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bic
         ]
         tags: createResourceTags ? commonResourceTags : {}
     }
+    dependsOn: [
+        avdSharedResourcesRg
+    ]
 }
 
 module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(Alerts)): {
@@ -881,7 +884,4 @@ module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryR
         criterias: Alerts[i].criterias
         tags: createResourceTags ? commonResourceTags : {}
     }
-    dependsOn: [
-        actionGroup
-    ]
 }]
