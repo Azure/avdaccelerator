@@ -450,7 +450,15 @@ var Alerts = [
                 {
                     query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| where ResultDescription has "Image Template build failed"'
                     timeAggregation: 'Count'
-                    dimensions: []
+                    dimensions: [
+                        {
+                            name: 'ResultDescription'
+                            operator: 'Include'
+                            values: [
+                                '*'
+                            ]
+                        }
+                    ]
                     operator: 'GreaterThanOrEqual'
                     threshold: 1
                     failingPeriods: {
@@ -472,7 +480,15 @@ var Alerts = [
                 {
                     query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| where ResultDescription has "Image Template build succeeded"'
                     timeAggregation: 'Count'
-                    dimensions: []
+                    dimensions: [
+                        {
+                            name: 'ResultDescription'
+                            operator: 'Include'
+                            values: [
+                                '*'
+                            ]
+                        }
+                    ]
                     operator: 'GreaterThanOrEqual'
                     threshold: 1
                     failingPeriods: {
@@ -839,7 +855,7 @@ module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryR
         alertDescription: Alerts[i].description
         enabled: true
         kind: 'LogAlert'
-        autoMitigate: true
+        autoMitigate: false
         skipQueryValidation: false
         targetResourceTypes: []
         roleAssignments: []
