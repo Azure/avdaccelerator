@@ -450,15 +450,7 @@ var Alerts = [
                 {
                     query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| where ResultDescription has "Image Template build failed"'
                     timeAggregation: 'Count'
-                    dimensions: [
-                        {
-                            name: 'ResultDescription'
-                            operator: 'Include'
-                            values: [
-                                '*'
-                            ]
-                        }
-                    ]
+                    dimensions: []
                     operator: 'GreaterThanOrEqual'
                     threshold: 1
                     failingPeriods: {
@@ -472,7 +464,7 @@ var Alerts = [
     {
         name: 'Azure Image Builder - Build Success'
         description: 'Sends an informational alert when a build succeeds on an image template for Azure Image Builder.'
-        severity: 4
+        severity: 3
         evaluationFrequency: 'PT5M'
         windowSize: 'PT5M'
         criterias: {
@@ -480,15 +472,7 @@ var Alerts = [
                 {
                     query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| where ResultDescription has "Image Template build succeeded"'
                     timeAggregation: 'Count'
-                    dimensions: [
-                        {
-                            name: 'ResultDescription'
-                            operator: 'Include'
-                            values: [
-                                '*'
-                            ]
-                        }
-                    ]
+                    dimensions: []
                     operator: 'GreaterThanOrEqual'
                     threshold: 1
                     failingPeriods: {
