@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "5461529641535108546"
+      "templateHash": "17930635006087861198"
     }
   },
   "parameters": {
@@ -122,6 +122,13 @@
       "defaultValue": "",
       "metadata": {
         "description": "Optional. Input the email distribution list for alert notifications when AIB builds succeed or fail."
+      }
+    },
+    "actionGroupCustomName": {
+      "type": "string",
+      "defaultValue": "ag-aib-email",
+      "metadata": {
+        "description": "Optional. Azure action group name."
       }
     },
     "automationAccountCustomName": {
@@ -322,16 +329,17 @@
   "variables": {
     "deploymentPrefixLowercase": "[toLower(parameters('deploymentPrefix'))]",
     "avdNamingUniqueStringSixChar": "[take(format('{0}', uniqueString(parameters('avdSharedServicesSubId'), variables('deploymentPrefixLowercase'), parameters('time'))), 6)]",
+    "avdSharedServicesActionGroup": "[if(parameters('avdUseCustomNaming'), parameters('actionGroupCustomName'), format('ag-aib-email-{0}', variables('avdSharedServicesLocationAcronym')))]",
     "avdSharedResourcesNamingStandard": "[format('{0}', variables('avdSharedServicesLocationAcronym'))]",
     "avdSharedServicesLocationLowercase": "[toLower(parameters('avdSharedServicesLocation'))]",
     "avdSharedResourcesRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdSharedResourcesRgCustomName'), format('rg-avd-{0}-shared-services', variables('avdSharedResourcesNamingStandard')))]",
     "imageGalleryName": "[if(parameters('avdUseCustomNaming'), parameters('imageGalleryCustomName'), format('gal_avd_{0}_001', variables('avdSharedServicesLocationAcronym')))]",
     "aibManagedIdentityName": "[format('id-avd-imagebuilder-{0}', variables('avdSharedServicesLocationAcronym'))]",
-    "avdLogAnalyticsWorkspaceName": "[if(parameters('avdUseCustomNaming'), parameters('avdAlaWorkspaceCustomName'), format('log-avd-{0}', variables('avdSharedServicesLocationAcronym')))]",
+    "avdLogAnalyticsWorkspaceName": "[if(parameters('avdUseCustomNaming'), parameters('avdAlaWorkspaceCustomName'), format('log-aib-{0}', variables('avdSharedServicesLocationAcronym')))]",
     "imageDefinitionsTemSpecName": "[if(parameters('avdUseCustomNaming'), parameters('imageDefinitionsTemSpecCustomName'), format('avd_image_definition_{0}', parameters('avdOsImage')))]",
-    "avdSharedResourcesAutomationAccount": "[if(parameters('avdUseCustomNaming'), parameters('automationAccountCustomName'), format('aa-avd-{0}', variables('avdSharedResourcesNamingStandard')))]",
+    "avdSharedResourcesAutomationAccount": "[if(parameters('avdUseCustomNaming'), parameters('automationAccountCustomName'), format('aa-aib-{0}', variables('avdSharedResourcesNamingStandard')))]",
     "avdSharedSResourcesStorageName": "[if(parameters('avdUseCustomNaming'), parameters('avdSharedSResourcesStorageCustomName'), format('stavdshar{0}', variables('avdNamingUniqueStringSixChar')))]",
-    "avdSharedSResourcesAibContainerName": "[if(parameters('avdUseCustomNaming'), parameters('avdSharedSResourcesAibContainerCustomName'), format('avd-imagebuilder-{0}', variables('deploymentPrefixLowercase')))]",
+    "avdSharedSResourcesAibContainerName": "[if(parameters('avdUseCustomNaming'), parameters('avdSharedSResourcesAibContainerCustomName'), format('aib-artifacts-{0}', variables('deploymentPrefixLowercase')))]",
     "avdSharedSResourcesScriptsContainerName": "[if(parameters('avdUseCustomNaming'), parameters('avdSharedSResourcesScriptsContainerCustomName'), format('avd-scripts-{0}', variables('deploymentPrefixLowercase')))]",
     "avdSharedServicesKvName": "[if(parameters('avdUseCustomNaming'), parameters('avdSharedServicesKvCustomName'), format('kv-avd-{0}-{1}', variables('avdSharedResourcesNamingStandard'), variables('avdNamingUniqueStringSixChar')))]",
     "avdSharedServicesLocationAcronym": "[variables('locationAcronyms')[variables('avdSharedServicesLocationLowercase')]]",
@@ -12987,10 +12995,13 @@
             "value": "global"
           },
           "groupShortName": {
-            "value": "ImageBuilder"
+            "value": "AIB Email"
           },
           "name": {
-            "value": "AzureImageBuilderEmailNotifications"
+            "value": "[variables('avdSharedServicesActionGroup')]"
+          },
+          "enabled": {
+            "value": true
           },
           "emailReceivers": {
             "value": [

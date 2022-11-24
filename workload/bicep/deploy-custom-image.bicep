@@ -881,4 +881,7 @@ module scheduledQueryRules '../../carml/1.0.0/Microsoft.Insights/scheduledQueryR
         criterias: Alerts[i].criterias
         tags: createResourceTags ? commonResourceTags : {}
     }
+    dependsOn: [
+        actionGroup
+    ]
 }]
