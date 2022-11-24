@@ -68,6 +68,9 @@ param distributionGroup string = ''
 
 // Custom Naming
 // Input must followe resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
+@description('Optional. Azure action group name.')
+param actionGroupCustomName string = 'ag-aib-email'
+
 @description('Optional. Azure automation account name.')
 param automationAccountCustomName string = 'aa-avd'
 
@@ -176,16 +179,17 @@ param enableTelemetry bool = true
 // Resouce Naming.
 var deploymentPrefixLowercase = toLower(deploymentPrefix)
 var avdNamingUniqueStringSixChar = take('${uniqueString(avdSharedServicesSubId, deploymentPrefixLowercase, time)}', 6)
+var avdSharedServicesActionGroup = avdUseCustomNaming ? actionGroupCustomName : 'ag-aib-email-${avdSharedServicesLocationAcronym}'
 var avdSharedResourcesNamingStandard = '${avdSharedServicesLocationAcronym}'
 var avdSharedServicesLocationLowercase = toLower(avdSharedServicesLocation)
 var avdSharedResourcesRgName = avdUseCustomNaming ? avdSharedResourcesRgCustomName : 'rg-avd-${avdSharedResourcesNamingStandard}-shared-services' // max length limit 90 characters
 var imageGalleryName = avdUseCustomNaming ? imageGalleryCustomName : 'gal_avd_${avdSharedServicesLocationAcronym}_001'
 var aibManagedIdentityName = 'id-avd-imagebuilder-${avdSharedServicesLocationAcronym}'
-var avdLogAnalyticsWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${avdSharedServicesLocationAcronym}'
+var avdLogAnalyticsWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-aib-${avdSharedServicesLocationAcronym}'
 var imageDefinitionsTemSpecName = avdUseCustomNaming ? imageDefinitionsTemSpecCustomName : 'avd_image_definition_${avdOsImage}'
-var avdSharedResourcesAutomationAccount = avdUseCustomNaming ? automationAccountCustomName : 'aa-avd-${avdSharedResourcesNamingStandard}'
+var avdSharedResourcesAutomationAccount = avdUseCustomNaming ? automationAccountCustomName : 'aa-aib-${avdSharedResourcesNamingStandard}'
 var avdSharedSResourcesStorageName = avdUseCustomNaming ? avdSharedSResourcesStorageCustomName : 'stavdshar${avdNamingUniqueStringSixChar}'
-var avdSharedSResourcesAibContainerName = avdUseCustomNaming ? avdSharedSResourcesAibContainerCustomName : 'avd-imagebuilder-${deploymentPrefixLowercase}'
+var avdSharedSResourcesAibContainerName = avdUseCustomNaming ? avdSharedSResourcesAibContainerCustomName : 'aib-artifacts-${deploymentPrefixLowercase}'
 var avdSharedSResourcesScriptsContainerName = avdUseCustomNaming ? avdSharedSResourcesScriptsContainerCustomName : 'avd-scripts-${deploymentPrefixLowercase}'
 var avdSharedServicesKvName = avdUseCustomNaming ? avdSharedServicesKvCustomName : 'kv-avd-${avdSharedResourcesNamingStandard}-${avdNamingUniqueStringSixChar}' // max length limit 24 characters
 var avdSharedServicesLocationAcronym = locationAcronyms[avdSharedServicesLocationLowercase]
@@ -841,8 +845,9 @@ module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bic
     name: 'AIB_Action-Group_${time}'
     params: {
         location: 'global'
-        groupShortName: 'ImageBuilder'
-        name: 'AzureImageBuilderEmailNotifications'
+        groupShortName: 'AIB Email'
+        name: avdSharedServicesActionGroup
+        enabled: true
         emailReceivers: [
             distributionGroup
         ]
