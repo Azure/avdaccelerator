@@ -845,11 +845,15 @@ module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bic
     name: 'AIB_Action-Group_${time}'
     params: {
         location: 'global'
-        groupShortName: 'AIB Email'
+        groupShortName: 'aib-email'
         name: avdSharedServicesActionGroup
         enabled: true
         emailReceivers: [
-            distributionGroup
+            {
+                name: distributionGroup
+                emailAddress: distributionGroup
+                useCommonAlertSchema: true
+            }
         ]
         tags: createResourceTags ? commonResourceTags : {}
     }
