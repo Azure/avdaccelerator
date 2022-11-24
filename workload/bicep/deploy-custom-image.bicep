@@ -442,7 +442,6 @@ var Alerts = [
     {
         name: 'Azure Image Builder: Build Failure'
         description: 'Sends an error alert when a build fails on an image template for Azure Image Builder.'
-        queryTimeRange: 'PT25M'
         severity: 0
         evaluationFrequency: 'PT5M'
         windowSize: 'PT5M'
@@ -480,7 +479,6 @@ var Alerts = [
     {
         name: 'Azure Image Builder: Build Success'
         description: 'Sends an informational alert when a build succeeds on an image template for Azure Image Builder.'
-        queryTimeRange: 'PT25M'
         severity: 4
         evaluationFrequency: 'PT5M'
         windowSize: 'PT5M'
@@ -862,7 +860,7 @@ module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bic
     ]
 }
 
-module scheduledQueryRules '../../carml/1.0.0/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(Alerts)): if(!empty(distributionGroup)) {
+module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(Alerts)): if(!empty(distributionGroup)) {
     scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
     name: 'AIB_Scheduled-Query-Rule_${i}_${time}'
     params: {
@@ -872,7 +870,6 @@ module scheduledQueryRules '../../carml/1.0.0/Microsoft.Insights/scheduledQueryR
         enabled: true
         kind: 'LogAlert'
         autoMitigate: true
-        queryTimeRange: Alerts[i].queryTimeRange
         skipQueryValidation: false
         targetResourceTypes: []
         roleAssignments: []
