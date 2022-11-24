@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "8058325999690761473"
+      "templateHash": "13646520194054568868"
     }
   },
   "parameters": {
@@ -552,7 +552,7 @@
     "CustomizationSteps": "[union(variables('ScriptSteps'), variables('RemainingSteps'))]",
     "Alerts": [
       {
-        "name": "Azure Image Builder: Build Failure",
+        "name": "Azure Image Builder - Build Failure",
         "description": "Sends an error alert when a build fails on an image template for Azure Image Builder.",
         "severity": 0,
         "evaluationFrequency": "PT5M",
@@ -589,7 +589,7 @@
         }
       },
       {
-        "name": "Azure Image Builder: Build Success",
+        "name": "Azure Image Builder - Build Success",
         "description": "Sends an informational alert when a build succeeds on an image template for Azure Image Builder.",
         "severity": 4,
         "evaluationFrequency": "PT5M",

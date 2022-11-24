@@ -440,7 +440,7 @@ var CustomizationSteps = union(ScriptSteps, RemainingSteps)
 //
 var Alerts = [
     {
-        name: 'Azure Image Builder: Build Failure'
+        name: 'Azure Image Builder - Build Failure'
         description: 'Sends an error alert when a build fails on an image template for Azure Image Builder.'
         severity: 0
         evaluationFrequency: 'PT5M'
@@ -477,7 +477,7 @@ var Alerts = [
         }
     }
     {
-        name: 'Azure Image Builder: Build Success'
+        name: 'Azure Image Builder - Build Success'
         description: 'Sends an informational alert when a build succeeds on an image template for Azure Image Builder.'
         severity: 4
         evaluationFrequency: 'PT5M'
