@@ -459,7 +459,6 @@ var Alerts = [
                             ]
                         }
                     ]
-                    resourceIdColumn: '_ResourceId'
                     operator: 'GreaterThanOrEqual'
                     threshold: 1
                     failingPeriods: {
@@ -490,7 +489,6 @@ var Alerts = [
                             ]
                         }
                     ]
-                    resourceIdColumn: '_ResourceId'
                     operator: 'GreaterThanOrEqual'
                     threshold: 1
                     failingPeriods: {
