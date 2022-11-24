@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "13646520194054568868"
+      "templateHash": "4560474153590937099"
     }
   },
   "parameters": {
@@ -564,20 +564,14 @@
               "timeAggregation": "Count",
               "dimensions": [
                 {
-                  "name": "ImageTemplate",
-                  "operator": "Include",
-                  "values": [
-                    "*"
-                  ]
-                },
-                {
-                  "name": "ResourceGroup",
+                  "name": "ResultDescription",
                   "operator": "Include",
                   "values": [
                     "*"
                   ]
                 }
               ],
+              "resourceIdColumn": "_ResourceId",
               "operator": "GreaterThanOrEqual",
               "threshold": 1,
               "failingPeriods": {
@@ -601,20 +595,14 @@
               "timeAggregation": "Count",
               "dimensions": [
                 {
-                  "name": "ImageTemplate",
-                  "operator": "Include",
-                  "values": [
-                    "*"
-                  ]
-                },
-                {
-                  "name": "ResourceGroup",
+                  "name": "ResultDescription",
                   "operator": "Include",
                   "values": [
                     "*"
                   ]
                 }
               ],
+              "resourceIdColumn": "_ResourceId",
               "operator": "GreaterThanOrEqual",
               "threshold": 1,
               "failingPeriods": {

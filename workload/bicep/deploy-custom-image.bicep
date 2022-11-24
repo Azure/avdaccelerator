@@ -452,20 +452,14 @@ var Alerts = [
                     timeAggregation: 'Count'
                     dimensions: [
                         {
-                            name: 'ImageTemplate'
-                            operator: 'Include'
-                            values: [
-                                '*'
-                            ]
-                        }
-                        {
-                            name: 'ResourceGroup'
+                            name: 'ResultDescription'
                             operator: 'Include'
                             values: [
                                 '*'
                             ]
                         }
                     ]
+                    resourceIdColumn: '_ResourceId'
                     operator: 'GreaterThanOrEqual'
                     threshold: 1
                     failingPeriods: {
@@ -489,20 +483,14 @@ var Alerts = [
                     timeAggregation: 'Count'
                     dimensions: [
                         {
-                            name: 'ImageTemplate'
-                            operator: 'Include'
-                            values: [
-                                '*'
-                            ]
-                        }
-                        {
-                            name: 'ResourceGroup'
+                            name: 'ResultDescription'
                             operator: 'Include'
                             values: [
                                 '*'
                             ]
                         }
                     ]
+                    resourceIdColumn: '_ResourceId'
                     operator: 'GreaterThanOrEqual'
                     threshold: 1
                     failingPeriods: {
@@ -703,7 +691,7 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
 }
 
 // Log Analytics Workspace
-module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if(!empty(distributionGroup)) {
+module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (!empty(distributionGroup)) {
     scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
     name: 'AIB_Log-Analytics-Workspace_${time}'
     params: {
@@ -838,7 +826,7 @@ module storageAccount '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deplo
     ]
 }
 
-module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bicep' = if(!empty(distributionGroup)) {
+module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bicep' = if (!empty(distributionGroup)) {
     scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
     name: 'AIB_Action-Group_${time}'
     params: {
@@ -860,7 +848,7 @@ module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bic
     ]
 }
 
-module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(Alerts)): if(!empty(distributionGroup)) {
+module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(Alerts)): if (!empty(distributionGroup)) {
     scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
     name: 'AIB_Scheduled-Query-Rule_${i}_${time}'
     params: {
