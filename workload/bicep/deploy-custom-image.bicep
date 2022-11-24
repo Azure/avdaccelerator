@@ -705,7 +705,7 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
 }
 
 // Log Analytics Workspace
-module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = {
+module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if(!empty(distributionGroup)) {
     scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
     name: 'AIB_Log-Analytics-Workspace_${time}'
     params: {
@@ -729,7 +729,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
             'JobStreams'
         ]
         diagnosticLogsRetentionInDays: 30
-        diagnosticWorkspaceId: workspace.outputs.resourceId
+        diagnosticWorkspaceId: empty(distributionGroup) ? '' : workspace.outputs.resourceId
         name: avdSharedResourcesAutomationAccount
         jobSchedules: [
             {
@@ -840,7 +840,7 @@ module storageAccount '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deplo
     ]
 }
 
-module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bicep' = {
+module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bicep' = if(!empty(distributionGroup)) {
     scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
     name: 'AIB_Action-Group_${time}'
     params: {
@@ -858,7 +858,7 @@ module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bic
     ]
 }
 
-module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(Alerts)): {
+module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(Alerts)): if(!empty(distributionGroup)) {
     scope: resourceGroup(avdSharedServicesSubId, avdSharedResourcesRgName)
     name: 'AIB_Scheduled-Query-Rule_${i}_${time}'
     params: {
