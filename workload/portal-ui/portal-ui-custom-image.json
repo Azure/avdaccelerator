@@ -4,52 +4,29 @@
         "kind": "Form",
         "properties": {
             "isWizard": false,
-            "title": "AVD landing zone accelerator - Custom Image Build",
+            "title": "AVD Landing Zone Accelerator - Custom Image Build",
             "steps": [
                 {
                     "name": "basics",
-                    "label": "Azure core setup",
-                    "subLabel": "",
-                    "bladeTitle": "avdBasics",
+                    "label": "Basics",
                     "elements": [
                         {
-                            "name": "avdSharedServices",
-                            "type": "Microsoft.Common.Section",
-                            "visible": true,
-                            "label": "Shared services baseline deployment",
-                            "elements": [
-                                {
-                                    "name": "info",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "options": {
-                                        "text": "Subscription and location selected in this step, will be used to deploy AVD Shared Services Landing Zone resources (compute gallery, key vaults, storage, AIB etc.).",
-                                        "style": "Info"
-                                    }
-                                }
-                            ]
+                            "name": "deploymentInfo",
+                            "type": "Microsoft.Common.InfoBox",
+                            "options": {
+                                "text": "The subscription and location selected in this step, will be used to deploy AVD Shared Services Landing Zone resources (compute gallery, key vaults, storage, image template, etc.).",
+                                "style": "Info"
+                            }     
                         },
                         {
-                            "name": "avdDeploymentScope",
+                            "name": "resourceScope",
                             "type": "Microsoft.Common.ResourceScope",
                             "location": {
                                 "resourceTypes": []
                             }
                         },
                         {
-                            "name": "avdDeploymentPrefix",
-                            "type": "Microsoft.Common.TextBox",
-                            "visible": true,
-                            "label": "Deployment prefix",
-                            "toolTip": "Provide a prefix (max 4 characters) for the resource groups and resources created as part of AVD landing zones.",
-                            "placeholder": "Example: App1",
-                            "constraints": {
-                                "required": true,
-                                "regex": "^[a-z0-9A-Z-]{1,4}$",
-                                "validationMessage": "The prefix must be 1-4 characters."
-                            }
-                        },
-                        {
-                            "name": "roleinfo",
+                            "name": "roleInfo",
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
@@ -61,45 +38,40 @@
                     ]
                 },
                 {
-                    "name": "avdCustomImage",
-                    "label": "Image management",
-                    "subLabel": {
-                        "preValidation": "",
-                        "postValidation": ""
-                    },
-                    "bladeTitle": "avdCustomImage",
+                    "name": "imageManagement",
+                    "label": "Image Management",
                     "elements": [
                         {
-                            "name": "avdCustomImageInfo",
+                            "name": "info",
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
-                                "text": "Custom image automation will deploy a compute gallery, images, storage, identity and run an Azure image Builder job.",
+                                "text": "This solution will deploy a compute gallery, image definition, image version, managed identity and execute an Azure Image Builder build.",
                                 "style": "Info"
                             }
                         },
                         {
-                            "name": "avdCustomImageStorageSelection",
+                            "name": "storageAccount",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
-                            "label": "Storage",
+                            "label": "Storage Account",
                             "elements": [
                                 {
-                                    "name": "avdCustomImageStorageAvailability",
+                                    "name": "redundancy",
                                     "type": "Microsoft.Common.OptionsGroup",
-                                    "label": "Use availability zones",
+                                    "label": "Redundancy",
                                     "defaultValue": "No",
-                                    "toolTip": "Distribute storage resources across availability zones.",
+                                    "toolTip": "Determine the redundancy for the Storage Account.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Yes (When available)",
-                                                "value": true
+                                                "label": "Zone-Redundant Storage",
+                                                "value": "Standard_ZRS"
                                             },
                                             {
-                                                "label": "No",
-                                                "value": false
+                                                "label": "Locally-Redundant Storage",
+                                                "value": "Standard_LRS"
                                             }
                                         ]
                                     }
@@ -107,18 +79,18 @@
                             ]
                         },
                         {
-                            "name": "avdCustomImageOsSelection",
+                            "name": "operatingSystem",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
-                            "label": "OS",
+                            "label": "Operating System",
                             "elements": [
                                 {
-                                    "name": "avdCustomImageOsImage",
+                                    "name": "versionSelection",
                                     "type": "Microsoft.Common.DropDown",
                                     "label": "Version",
                                     "filter": true,
                                     "defaultValue": "Windows 11",
-                                    "toolTip": "Select OS version to be used as source for the image.",
+                                    "toolTip": "Select the operating system version for the source image.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
@@ -146,29 +118,24 @@
                     ]
                 },
                 {
-                    "name": "avdCustomImageAib",
+                    "name": "aib",
                     "label": "Azure Image Builder (AIB)",
-                    "subLabel": {
-                        "preValidation": "",
-                        "postValidation": ""
-                    },
-                    "bladeTitle": "avdCustomImageAibInfo",
                     "elements": [
                         {
-                            "name": "avdCustomImageInfo",
+                            "name": "locationInfo",
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
-                                "text": "Azure Image Builder is not available on all locations.",
+                                "text": "Azure Image Builder is not available in all locations. Click here for more information.",
                                 "uri": "https://docs.microsoft.com/azure/virtual-machines/image-builder-overview?msclkid=06a023c8ac4c11ecb3c259d74812c2c6",
                                 "style": "Info"
                             }
                         },
                         {
-                            "name": "avdCustomImageLocation",
+                            "name": "locationSelection",
                             "type": "Microsoft.Common.DropDown",
                             "visible": true,
-                            "label": "Deployment location",
+                            "label": "Deployment Location",
                             "defaultValue": "equals(steps('basics').avdDeploymentScope.location.displayName)",
                             "toolTip": "Select the location where Azure Image Builder will run to create the image.",
                             "constraints": {
@@ -234,12 +201,12 @@
                             }
                         },
                         {
-                            "name": "aibExistingVirtualNetwork",
+                            "name": "virtualNetwork",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
-                            "label": "Existing virtual network",
+                            "label": "Existing Virtual Network",
                             "defaultValue": "No",
-                            "toolTip": "Select an existing virtual network and subnet for AIB build virtual machines. This enables the use of Private Link and prevents the deployment of public IP addresses.",
+                            "toolTip": "Select an existing virtual network and subnet for the AIB build virtual machines. This enables the use of Private Link and prevents the deployment of public IP addresses.",
                             "constraints": {
                                 "required": true,
                                 "allowedValues": [
@@ -255,10 +222,10 @@
                             }
                         },
                         {
-                            "name": "vnetSelector",
+                            "name": "virtualNetworkSelection",
                             "type": "Microsoft.Solutions.ResourceSelector",
-                            "visible": "[equals(steps('avdCustomImageAib').aibExistingVirtualNetwork, true)]",
-                            "label": "Select virtual network",
+                            "visible": "[equals(steps('aib').virtualNetwork, true)]",
+                            "label": "Select Virtual Network",
                             "resourceType": "Microsoft.Network/virtualNetworks",
                             "options": {
                                 "filter": {
@@ -272,32 +239,32 @@
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
                               "method": "GET",
-                              "path": "[concat(steps('avdCustomImageAib').vnetSelector.id, '/subnets?api-version=2022-05-01')]"
+                              "path": "[concat(steps('aib').virtualNetworkSelection.id, '/subnets?api-version=2022-05-01')]"
                             }
                         },
                         {
-                            "name": "aibExistingSubnet",
+                            "name": "subnet",
                             "type": "Microsoft.Common.DropDown",
-                            "visible": "[equals(steps('avdCustomImageAib').aibExistingVirtualNetwork, true)]",
-                            "label": "Select subnet",
+                            "visible": "[equals(steps('aib').virtualNetwork, true)]",
+                            "label": "Select Subnet",
                             "defaultValue": "",
                             "toolTip": "Select an existing subnet for AIB build virtual machines. This enables the use of Private Link and prevents the deployment of public IP addresses.",
                             "constraints": {
-                              "allowedValues": "[map(steps('avdCustomImageAib').subnetsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.name, '\"}')))]"
+                              "allowedValues": "[map(steps('aib').subnetsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.name, '\"}')))]"
                             }
                         },
                         {
-                            "name": "aibRdpShortPathInfo",
+                            "name": "rdpShortPathInfo",
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
-                                "text": "RDP Short Path for Managed Networks is beneficial under specific conditions. Click here for more information.",
+                                "text": "RDP Short Path for Managed Networks is a beneficial feature under specific conditions. Click here for more information.",
                                 "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/rdp-shortpath",
                                 "style": "Info"
                             }
                         },
                         {
-                            "name": "aibEnableRdpShortPath",
+                            "name": "rdpShortPathSelection",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
                             "label": "Enable RDP Short Path for Managed Networks",
@@ -318,17 +285,17 @@
                             }
                         },
                         {
-                            "name": "aibScreenCaptureProtectionInfo",
+                            "name": "screenCaptureProtectionInfo",
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
-                                "text": "Screen Capture Protection is beneficial under specific conditions. Click here for more information.",
+                                "text": "Screen Capture Protection is a beneficial feature under specific conditions. Click here for more information.",
                                 "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/screen-capture-protection",
                                 "style": "Info"
                             }
                         },
                         {
-                            "name": "aibEnableScreenCaptureProtection",
+                            "name": "screenCaptureProtectionSelection",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
                             "label": "Enable Screen Capture Protection",
@@ -349,12 +316,12 @@
                             }
                         },
                         {
-                            "name": "aibEnableMonitoringAndAlerting",
+                            "name": "monitoringAndAlerting",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
                             "label": "Enable Monitoring & Alerting",
                             "defaultValue": "No",
-                            "toolTip": "Determine whether to enable monitoring and alerting for the AIB builds.",
+                            "toolTip": "Determine whether to enable monitoring and alerting for the Azure Image Builder builds.",
                             "constraints": {
                                 "required": true,
                                 "allowedValues": [
@@ -374,8 +341,8 @@
                             "type": "Microsoft.Common.TextBox",
                             "visible": "[equals(steps('avdCustomImageAib').aibEnableMonitoringAndAlerting, true)]",
                             "label": "Distribution Group",
-                            "toolTip": "Input the distribution group for receiving alerts on build status.",
-                            "placeholder": "Example: engineers@contoso.com",
+                            "toolTip": "Input the distribution group for receiving alerts on the build status.",
+                            "placeholder": "Example: operations@contoso.com",
                             "constraints": {
                                 "required": true,
                                 "regex": "^[a-z0-9A-Z_.-]+@(?:[a-z0-9]+\\.)+[a-z]+$",
@@ -385,13 +352,13 @@
                     ]
                 },
                 {
-                    "name": "avdResourceNaming",
-                    "label": "Resource naming",
+                    "name": "naming",
+                    "label": "Resource Naming",
                     "type": "Microsoft.Common.Section",
                     "visible": true,
                     "elements": [
                         {
-                            "name": "avdResourceNamingInfo1",
+                            "name": "info1",
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
@@ -401,12 +368,12 @@
                             }
                         },
                         {
-                            "name": "avdResourceNamingSelection",
+                            "name": "customNamingSelection",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
-                            "label": "Custom resource naming",
+                            "label": "Custom Resource Naming",
                             "defaultValue": "No",
-                            "toolTip": "When set 'Yes', the information will be used to name resources. When set to 'No' deployment will use the AVD accelerator naming standard.",
+                            "toolTip": "When set to 'Yes', the information will be used to name resources. When set to 'No', the deployment will use the AVD accelerator naming standard.",
                             "constraints": {
                                 "required": true,
                                 "allowedValues": [
@@ -422,145 +389,178 @@
                             }
                         },
                         {
-                            "name": "avdResourceNamingWarning",
+                            "name": "namingWarning",
                             "type": "Microsoft.Common.InfoBox",
-                            "visible": "[equals(steps('avdResourceNaming').avdResourceNamingSelection, true)]",
+                            "visible": "[equals(steps('naming').customNamingSelection, true)]",
                             "options": {
-                                "text": "When using custom naming for resources, please make sure to follow naming rules and restrictions for Azure resources.",
+                                "text": "When using custom names, please follow the guidance on the Naming Rules and Restrictions for Azure Resources webpage.",
                                 "uri": "https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules",
                                 "style": "Warning"
                             }
                         },
                         {
-                            "name": "avdCustomImageNaming",
+                            "name": "customNaming",
                             "type": "Microsoft.Common.Section",
-                            "label": "AVD custom image naming:",
-                            "visible": "[equals(steps('avdResourceNaming').avdResourceNamingSelection, true)]",
+                            "label": "Custom Names:",
+                            "visible": "[equals(steps('naming').customNamingSelection, true)]",
                             "elements": [
                                 {
-                                    "name": "avdSharedServicesRgCustomName",
+                                    "name": "resourceGroup",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Resource group",
-                                    "toolTip": "AVD shared services resources resource group custom name.",
+                                    "toolTip": "Input a custom name for the shared services resource group.",
                                     "placeholder": "Example: rg-avd-use2-shared-services",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
-                                        "validationMessage": "Value must be 1-90 characters."
+                                        "regex": "^(?!.*[\\.]$)[a-zA-Z0-9_\\.()-]{1,90}$",
+                                        "validationMessage": "The value must be alphanumerics, underscores, hyphens, periods, and parentheses. The value must not end with a period. The length must be 1 to 90 characters."
                                     }
                                 },
                                 {
-                                    "name": "avdComputeGalleryCustomName",
+                                    "name": "computeGallery",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Azure compute gallery",
-                                    "toolTip": "AVD Azure compute gallery custom name.",
+                                    "label": "Compute Gallery",
+                                    "toolTip": "Input a custom name for the Azure Compute Gallery.",
                                     "placeholder": "Example: gal_avd_use2_001",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z_0-9_A-Z-]{1,64}$",
-                                        "validationMessage": "Value must be 1-64 characters."
+                                        "regex": "^(?:[a-zA-Z0-9]|[a-z0-9A-Z][a-z0-9A-Z_\\.-]{0,78}[a-z0-9A-Z])$",
+                                        "validationMessage": "The value must be alphanumerics, underscores, and periods. The value must begin and end with alphanumerics. The length must be 1 to 80 characters."
                                     }
                                 },
                                 {
-                                    "name": "avdComputeGalleryImageDefinitionCustomName",
+                                    "name": "imageDefinition",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Image definition template spec",
-                                    "toolTip": "AVD Azure compute gallery image template custom name.",
+                                    "label": "Image Definition",
+                                    "toolTip": "Input a custom name for the Image Definition in the Compute Gallery.",
                                     "placeholder": "Example: avd_image_definition_win11_21h2",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z_0-9_A-Z-]{1,64}$",
+                                        "regex": "^(?:[a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9_\\.-]{0,78}[a-zA-Z0-9])$",
+                                        "validationMessage": "The value must be alphanumerics, underscores, hyphens, and periods. The value must start and end with an alphanumeric. The length must be 1 to 80 characters."
+                                    }
+                                },
+                                {
+                                    "name": "imageTemplate",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Image Template",
+                                    "toolTip": "Input a custom name for the AIB Image Template.",
+                                    "placeholder": "Example: it-avd-win11-21h2",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
                                         "validationMessage": "Value must be 1-64 characters."
                                     }
                                 },
                                 {
-                                    "name": "avdAutomationAccountCustomName",
+                                    "name": "automationAccount",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Azure automation account",
-                                    "toolTip": "AVD shared services automation account custom name.",
+                                    "label": "Automation Account",
+                                    "toolTip": "Input a custom name for the Automation Account.",
                                     "placeholder": "Example: aa-avd",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{6,50}$",
-                                        "validationMessage": "Value must be 6-50 characters."
+                                        "regex": "[a-zA-Z][a-zA-Z0-9-]{4,48}[a-zA-Z0-9]$",
+                                        "validationMessage": "The value must be alphanumerics and hyphens. The value must start with a letter and end with an alphanumeric. The length must be 6 to 50 characters."
                                     }
                                 },
                                 {
-                                    "name": "avdAlaWorkspaceCustomName",
+                                    "name": "logAnalyticsWorkspace",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Azure log analytics workspace",
-                                    "toolTip": "AVD shared services log analytics workspace custom name.",
+                                    "label": "Log Analytics Workspace",
+                                    "toolTip": "Input a custom name for the Log Analytics Workspace.",
                                     "placeholder": "Example: log-avd",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{4,63}$",
-                                        "validationMessage": "Value must be 4-63 characters."
+                                        "regex": "^[a-z0-9A-Z][a-z0-9A-Z-]{4,61}[a-z0-9A-Z]$",
+                                        "validationMessage": "The value must be alphanumerics and hyphens. The value must start and end with an alphanumeric. The length must be 4 to 63 characters."
                                     }
                                 },
                                 {
-                                    "name": "avdSharedStorageAccountCustomName",
+                                    "name": "storageAccount_checkNameAvailability",
+                                    "type": "Microsoft.Solutions.ArmApiControl",
+                                    "request": {
+                                        "method": "POST",
+                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Storage/checkNameAvailability?api-version=2016-01-01')]",
+                                        "body": {
+                                            "name": "[steps('naming').customNaming.storageAccount]",
+                                            "type": "Microsoft.Storage/storageAccounts"
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "storageAccount",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Storage account prefix",
-                                    "toolTip": "AVD shared services storage account custom name prefix.",
+                                    "label": "Storage Account",
+                                    "toolTip": "Input a custom name for the Storage Account.",
                                     "placeholder": "Example: stavdshar",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,9}$",
-                                        "validationMessage": "Value must be 1-9 characters."
-                                    }
+                                        "validations": [
+                                            {
+                                                "regex": "^[a-z0-9]{3,24}$",
+                                                "message": "The value must be lowercase letters and numbers. The length must be 3 to 24 characters."
+                                            },
+                                            {
+                                                "isValid": "[or(steps('naming').customNaming.storageAccount_checkNameAvailability.nameAvailable,equals(steps('naming').customNaming.storageAccount_checkNameAvailability.reason,'AlreadyExists'))]",
+                                                "message": "[steps('naming').customNaming.storageAccount_checkNameAvailability.message]"
+                                            }
+                                        ]
+                                    },
+                                    "visible": true
                                 },
                                 {
-                                    "name": "avdSharedStorageAccountAibContainerCustomName",
+                                    "name": "aibContainer",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Azure image builder container",
-                                    "toolTip": "AVD shared services storage account Azure image builder container custom name.",
-                                    "placeholder": "Example: avd-imagebuilder-app1",
+                                    "label": "AIB Artifacts Container",
+                                    "toolTip": "Input a custom name for the AIB container in the Storage Account.",
+                                    "placeholder": "Example: aib-artifacts",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,60}$",
-                                        "validationMessage": "Value must be 1-60 characters."
+                                        "regex": "^(?!.*-{2}.*)[a-z0-9][a-z0-9-]{2,62}$",
+                                        "validationMessage": "The value must be lowercase letters, numbers, and hyphens. The value must start with a lowercase letter or number. The value must not contain consecutive hyphens. The length must be 3 to 63 characters."
                                     }
                                 },
                                 {
-                                    "name": "avdSharedStorageAccountScriptsContainerCustomName",
+                                    "name": "avdContainer",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Scripts container",
-                                    "toolTip": "AVD shared services storage account scripts container custom name.",
-                                    "placeholder": "Example: avd-scripts-app1",
+                                    "label": "AVD Artifacts Container",
+                                    "toolTip": "Input a custom name for the AVD container in the Storage Account.",
+                                    "placeholder": "Example: avd-artifacts",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,60}$",
-                                        "validationMessage": "Value must be 1-60 characters."
+                                        "regex": "^(?!.*-{2}.*)[a-z0-9][a-z0-9-]{2,62}$",
+                                        "validationMessage": "The value must be lowercase letters, numbers, and hyphens. The value must start with a lowercase letter or number. The value must not contain consecutive hyphens. The length must be 3 to 63 characters."
                                     }
                                 },
                                 {
-                                    "name": "avdSharedKvCustomName",
+                                    "name": "keyVault",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Key vault prefix",
-                                    "toolTip": "AVD shared services storage account scripts container custom name.",
+                                    "label": "Key Vault Prefix",
+                                    "toolTip": "Input a custom name for the Key Vault.",
                                     "placeholder": "Example: kv-avd",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,60}$",
-                                        "validationMessage": "Value must be 1-60 characters."
+                                        "regex": "^(?!.*-{2}.*)([a-zA-Z]|[a-zA-Z][a-zA-Z0-9-]{0,125}[a-zA-Z0-9])$",
+                                        "validationMessage": "The value must be alphanumerics and hyphens. The value must start with a letter and end with a letter or number. The length must be 3 to 24 characters."
                                     }
                                 },
                                 {
-                                    "name": "avdActionGroupCustomName",
+                                    "name": "actionGroup",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Action group prefix",
-                                    "toolTip": "AVD shared services action group custom name.",
+                                    "label": "Action Group",
+                                    "toolTip": "Input a custom name for the Action Group.",
                                     "placeholder": "Example: ag-aib",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,6}$",
-                                        "validationMessage": "Value must be 1-6 characters."
+                                        "regex": "^(?!.*[\\.]$)(?!.* $)[^:<>+/&%\\?]{1,260}$",
+                                        "validationMessage": "The value must not contain: :<>+/&%\\?. The value must not end with a space or period. The length must be 1 to 260 characters."
                                     }
                                 }
                             ]
                         },
                         {
-                            "name": "avdResourceNamingInfo2",
+                            "name": "info2",
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
@@ -570,7 +570,7 @@
                             }
                         },
                         {
-                            "name": "avdResourceNamingInfo3",
+                            "name": "info3",
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
@@ -582,16 +582,16 @@
                     ]
                 },
                 {
-                    "name": "avdResourceTagging",
-                    "label": "Resource tagging",
+                    "name": "tags",
+                    "label": "Resource Tags",
                     "type": "Microsoft.Common.Section",
                     "visible": true,
                     "elements": [
                         {
-                            "name": "avdResourceTaggingSelection",
+                            "name": "selection",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
-                            "label": "Create resource tags",
+                            "label": "Custom Resource Tags",
                             "defaultValue": "No",
                             "toolTip": "When set 'Yes', the information provided will be used to create tags on resources and resource groups.",
                             "constraints": {
@@ -609,16 +609,16 @@
                             }
                         },
                         {
-                            "name": "avdResourceTags",
+                            "name": "customTags",
                             "type": "Microsoft.Common.Section",
-                            "label": "Resources tags:",
-                            "visible": "[equals(steps('avdResourceTagging').avdResourceTaggingSelection, true)]",
+                            "label": "Custom Tags:",
+                            "visible": "[equals(steps('tagging').taggingSelection, true)]",
                             "elements": [
                                 {
-                                    "name": "avdTagsImageBuildName",
+                                    "name": "imageBuild",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Image build name:",
-                                    "toolTip": "This input will be the value of a tag named ImageBuildName.",
+                                    "label": "Image Build",
+                                    "toolTip": "Input the value for the tag key 'ImageBuildName'.",
                                     "placeholder": "Example: AVD-Image",
                                     "constraints": {
                                         "required": true,
@@ -627,10 +627,10 @@
                                     }
                                 },
                                 {
-                                    "name": "avdTagsWorkloadName",
+                                    "name": "workload",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Workload name:",
-                                    "toolTip": "This input will be the value of a tag named WorkloadName.",
+                                    "label": "Workload",
+                                    "toolTip": "Input the value for the tag key 'WorkloadName'.",
                                     "placeholder": "Example: AVD",
                                     "constraints": {
                                         "required": true,
@@ -639,12 +639,12 @@
                                     }
                                 },
                                 {
-                                    "name": "avdTagsDataClassificationTag",
+                                    "name": "dataClassification",
                                     "type": "Microsoft.Common.DropDown",
-                                    "label": "Data classification:",
+                                    "label": "Data Classification",
                                     "filter": true,
                                     "defaultValue": "Non-business",
-                                    "toolTip": "This input will be the value of a tag named DataClassification, reference to the sensitivity of data hosted.",
+                                    "toolTip": "Select the value for the tag key 'DataClassification', in reference to the sensitivity of the data hosted.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
@@ -677,10 +677,10 @@
                                     }
                                 },
                                 {
-                                    "name": "avdTagsDepartmentTag",
+                                    "name": "department",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Department:",
-                                    "toolTip": "This input will be the value of a tag named Department, reference the department that owns the deployment.",
+                                    "label": "Department",
+                                    "toolTip": "Input the value for the tag key 'Department', in reference to the department that owns the deployment.",
                                     "placeholder": "Example: Contoso-AVD",
                                     "constraints": {
                                         "required": true,
@@ -689,12 +689,12 @@
                                     }
                                 },
                                 {
-                                    "name": "avdTagsCriticalityTag",
+                                    "name": "criticality",
                                     "type": "Microsoft.Common.DropDown",
-                                    "label": "Workload criticality:",
+                                    "label": "Criticality",
                                     "filter": true,
                                     "defaultValue": "Low",
-                                    "toolTip": "This input will be the value of a tag named Criticality, reference to the criticality of the workload.",
+                                    "toolTip": "Select the value for the tag key named 'Criticality', in reference to the criticality of the workload.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
@@ -727,11 +727,11 @@
                                     }
                                 },
                                 {
-                                    "name": "avdTagsCustomWorkloadCriticality",
+                                    "name": "customCriticality",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Custom workload criticality:",
-                                    "visible": "[equals(steps('avdResourceTagging').avdResourceTags.avdTagsCriticalityTag, 'Custom')]",
-                                    "toolTip": "This input will be the value of a tag named Criticality, reference to a custom criticality for the workload.",
+                                    "label": "Custom Criticality",
+                                    "visible": "[equals(steps('tags').customTags.criticality, 'Custom')]",
+                                    "toolTip": "Input the value for the tag key 'Criticality', in reference to a custom criticality for the workload.",
                                     "placeholder": "Example: Contoso-Criticality",
                                     "constraints": {
                                         "required": true,
@@ -740,10 +740,10 @@
                                     }
                                 },
                                 {
-                                    "name": "avdTagsApplicationNameTag",
+                                    "name": "application",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Application name:",
-                                    "toolTip": "This input will be the value of a tag named ApplicationName, reference details about the application.",
+                                    "label": "Application Name",
+                                    "toolTip": "Input the value for the tag key 'ApplicationName', in reference to the details about the application.",
                                     "placeholder": "Example: Contoso-App",
                                     "constraints": {
                                         "required": true,
@@ -752,30 +752,30 @@
                                     }
                                 },
                                 {
-                                    "name": "avdTagsOpsTeamTag",
+                                    "name": "operationsTeam",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Operations team:",
-                                    "toolTip": "This input will be the value of a tag named OpsTeam, reference to the team accountable for day-to-day operations.",
+                                    "label": "Operations Team",
+                                    "toolTip": "Input the value for the tag key 'OpsTeam', in reference to the team accountable for day-to-day operations.",
                                     "placeholder": "Example: workload-admins@Contoso.com",
                                     "constraints": {
                                         "required": true
                                     }
                                 },
                                 {
-                                    "name": "avdTagsOwnerTag",
+                                    "name": "owner",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Owner:",
-                                    "toolTip": "This input will be the value of a tag named Owner, reference to the organizational owner of the AVD deployment.",
+                                    "label": "Owner",
+                                    "toolTip": "Input the value for the tag key 'Owner', in reference to the organizational owner of the AVD deployment.",
                                     "placeholder": "Example: workload-owner@Contoso.com",
                                     "constraints": {
                                         "required": true
                                     }
                                 },
                                 {
-                                    "name": "avdTagsCostCenterTag",
+                                    "name": "costCenter",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Cost center:",
-                                    "toolTip": "This input will be the value of a tag named CostCenter, reference to the cost center of owner team.",
+                                    "label": "Cost Center",
+                                    "toolTip": "Input the value for the tag key 'CostCenter', in reference to the cost center of the owning team.",
                                     "placeholder": "Example: Contoso-CC",
                                     "constraints": {
                                         "required": true,
@@ -784,12 +784,12 @@
                                     }
                                 },
                                 {
-                                    "name": "avdTagsEnvironmentTypeTag",
+                                    "name": "environment",
                                     "type": "Microsoft.Common.DropDown",
-                                    "label": "Environment type:",
+                                    "label": "Environment",
                                     "filter": true,
                                     "defaultValue": "Dev",
-                                    "toolTip": "This input will be the value of a tag named Environment, reference to the environment type of the workload.",
+                                    "toolTip": "Select the value for the tag key 'Environment', in reference to the environment type of the workload.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
@@ -819,43 +819,43 @@
         },
         "outputs": {
             "parameters": {
-                "deploymentPrefix": "[steps('basics').avdDeploymentPrefix]",
-                "actionGroupCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdActionGroupCustomName, 'none')]",
-                "avdSharedServicesLocation": "[steps('basics').avdDeploymentScope.location.name]",
-                "avdSharedServicesSubId": "[steps('basics').avdDeploymentScope.subscription.subscriptionId]",
-                "avdUseAvailabilityZones": "[steps('avdCustomImage').avdCustomImageStorageSelection.avdCustomImageStorageAvailability]",
-                "existingVirtualNetworkResourceId": "[if(equals(steps('avdCustomImageAib').aibExistingVirtualNetwork, true), steps('avdCustomImageAib').vnetSelector.id, '')]",
-                "existingSubnetName": "[if(equals(steps('avdCustomImageAib').aibExistingVirtualNetwork, true), steps('avdCustomImageAib').aibExistingSubnet, '')]",
-                "distributionGroup": "[if(equals(steps('avdCustomImageAib').aibEnableMonitoringAndAlerting, true), steps('avdCustomImageAib').distributionGroup, '')]",
-                "enableRdpShortPath": "[steps('avdCustomImageAib').aibEnableRdpShortPath]",
-                "enableScreenCaptureProtection": "[steps('avdCustomImageAib').aibExistingVirtualNetwork]",
-                "aibLocation": "[steps('avdCustomImageAib').avdCustomImageLocation]",
-                "avdOsImage": "[steps('avdCustomImage').avdCustomImageOsSelection.avdCustomImageOsImage]",
-                "avdSharedResourcesRgCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedServicesRgCustomName, 'none')]",
-                "imageGalleryCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdComputeGalleryCustomName, 'none')]",
-                "imageDefinitionsTemSpecCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdComputeGalleryImageDefinitionCustomName, 'none')]",
-                "automationAccountCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdAutomationAccountCustomName, 'none')]",
-                "avdAlaWorkspaceCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdAlaWorkspaceCustomName, 'none')]",
-                "avdSharedSResourcesStorageCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedStorageAccountCustomName, 'none')]",
-                "avdSharedSResourcesAibContainerCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedStorageAccountAibContainerCustomName, 'none')]",
-                "avdSharedSResourcesScriptsContainerCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedStorageAccountScriptsContainerCustomName, 'none')]",
-                "avdSharedServicesKvCustomName": "[if(equals(steps('avdResourceNaming').avdResourceNamingSelection, true), steps('avdResourceNaming').avdCustomImageNaming.avdSharedKvCustomName, 'none')]",
-                "createResourceTags": "[steps('avdResourceTagging').avdResourceTaggingSelection]",
-                "imageBuildNameTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsImageBuildName, 'none')]",
-                "workloadNameTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsWorkloadName, 'none')]",
-                "dataClassificationTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsDataClassificationTag, 'Non-business')]",
-                "departmentTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsDepartmentTag, 'none')]",
-                "workloadCriticalityTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsCriticalityTag, 'Low')]",
-                "workloadCriticalityCustomValueTag": "[if(equals(steps('avdResourceTagging').avdResourceTags.avdTagsCriticalityTag, 'Custom'), steps('avdResourceTagging').avdResourceTags.avdTagsCustomWorkloadCriticality, 'Low')]",
-                "applicationNameTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsApplicationNameTag, 'none')]",
-                "opsTeamTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsOpsTeamTag, 'none')]",
-                "ownerTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsOwnerTag, 'none')]",
-                "costCenterTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsCostCenterTag, 'none')]",
-                "environmentTypeTag": "[if(equals(steps('avdResourceTagging').avdResourceTaggingSelection, true), steps('avdResourceTagging').avdResourceTags.avdTagsEnvironmentTypeTag, 'Dev')]"
+                "ActionGroupCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.actionGroup, 'none')]",
+                "AIBContainerCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.aibContainer, 'none')]",
+                "AIBLocation": "[steps('aib').locationSelection]",
+                "ApplicationNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.application, 'none')]",
+                "AutomationAccountCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.automationAccount, 'none')]",
+                "StorageAccountSKU": "[steps('imageManagement').storageAccount.redundancy]",
+                "AVDContainerCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.avdContainer, 'none')]",
+                "CostCenterTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.costCenter, 'none')]",
+                "CriticalityCustomTag": "[if(equals(steps('tags').customTags.criticality, 'Custom'), steps('tags').customTags.customCriticality, 'Low')]",
+                "CriticalityTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.criticality, 'Low')]",
+                "DataClassificationTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.dataClassification, 'Non-business')]",
+                "DepartmentTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.department, 'none')]",
+                "DistributionGroup": "[if(equals(steps('aib').monitoringAndAlerting, true), steps('aib').distributionGroup, '')]",
+                "EnvironmentTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.environment, 'Dev')]",
+                "ImageBuildNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.imageBuild, 'none')]",
+                "ImageDefinitionCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.imageDefinition, 'none')]",
+                "ImageGalleryCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.computeGallery, 'none')]",
+                "ImageTemplateCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.imageTemplate, 'none')]",
+                "KeyVaultCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.keyVault, 'none')]",
+                "LogAnalyticsWorkspaceCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.logAnalyticsWorkspace, 'none')]",
+                "OperatingSystemImage": "[steps('imageManagement').operatingSystem.versionSelection]",
+                "OperationsTeamTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.operationsTeam, 'none')]",
+                "OwnerTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.owner, 'none')]",
+                "RDPShortPath": "[steps('aib').rdpShortPathSelection]",
+                "ResourceGroupCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.resourceGroup, 'none')]",
+                "ResourceTags": "[steps('avdResourceTagging').avdResourceTaggingSelection]",
+                "ScreenCaptureProtection": "[steps('aib').screenCaptureProtectionSelection]",
+                "SharedServicesLocation": "[steps('basics').avdDeploymentScope.location.name]",
+                "SharedServicesSubId": "[steps('basics').avdDeploymentScope.subscription.subscriptionId]",
+                "StorageAccountCustomPrefix": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.storageAccount, 'none')]",
+                "SubnetName": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').subnet, '')]",
+                "VirtualNetworkResourceId": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').virtualNetworkSelection.id, '')]",
+                "WorkloadNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.workload, 'none')]"
             },
             "kind": "Subscription",
-            "location": "[steps('basics').avdDeploymentScope.location.name]",
-            "subscriptionId": "[steps('basics').avdDeploymentScope.subscription.id]"
+            "location": "[steps('basics').resourceScope.location.name]",
+            "subscriptionId": "[steps('basics').resourceScope.subscription.id]"
         }
     }
 }
