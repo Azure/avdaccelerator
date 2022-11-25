@@ -58,7 +58,7 @@
                             "elements": [
                                 {
                                     "name": "redundancy",
-                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "type": "Microsoft.Common.DropDown",
                                     "label": "Redundancy",
                                     "defaultValue": "Locally-Redundant Storage",
                                     "toolTip": "Determine the redundancy for the Storage Account.",
