@@ -536,7 +536,7 @@
                                 {
                                     "name": "keyVault",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Key Vault Prefix",
+                                    "label": "Key Vault",
                                     "toolTip": "Input a custom name for the Key Vault.",
                                     "placeholder": "Example: kv-avd",
                                     "constraints": {
