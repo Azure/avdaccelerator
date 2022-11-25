@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "7732961405585329705"
+      "templateHash": "5129983446118734056"
     }
   },
   "parameters": {
@@ -185,8 +185,7 @@
       "metadata": {
         "description": "Optional. AVD shared services storage account custom name prefix. (Default: stavdshar)"
       },
-      "maxLength": 24,
-      "minLength": 3
+      "maxLength": 24
     },
     "AIBContainerCustomName": {
       "type": "string",
@@ -210,8 +209,7 @@
       "metadata": {
         "description": "Optional. AVD shared services storage account scripts container custom name. (Default: kv-avd)"
       },
-      "maxLength": 24,
-      "minLength": 3
+      "maxLength": 24
     },
     "ResourceTags": {
       "type": "bool",

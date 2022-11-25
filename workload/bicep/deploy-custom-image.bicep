@@ -95,7 +95,6 @@ param ImageDefinitionCustomName string = 'avd-win11-21h2'
 @description('Optional. AVD Azure image template custom name. (Default: it-avd-win11-21h2)')
 param ImageTemplateCustomName string = 'it-avd-win11-21h2'
 
-@minLength(3)
 @maxLength(24)
 @description('Optional. AVD shared services storage account custom name prefix. (Default: stavdshar)')
 param StorageAccountCustomName string = ''
@@ -108,7 +107,6 @@ param AIBContainerCustomName string = 'aib-artifacts'
 @description('Optional. AVD shared services storage account scripts container custom name. (Default: avd-scripts-app1)')
 param AVDContainerCustomName string = 'avd-artifacts'
 
-@minLength(3)
 @maxLength(24)
 @description('Optional. AVD shared services storage account scripts container custom name. (Default: kv-avd)')
 param KeyVaultCustomName string = ''
