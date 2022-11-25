@@ -60,7 +60,7 @@
                                     "name": "redundancy",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "label": "Redundancy",
-                                    "defaultValue": "No",
+                                    "defaultValue": "Locally-Redundant Storage",
                                     "toolTip": "Determine the redundancy for the Storage Account.",
                                     "constraints": {
                                         "required": true,
