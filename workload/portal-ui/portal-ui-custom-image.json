@@ -612,7 +612,7 @@
                             "name": "customTags",
                             "type": "Microsoft.Common.Section",
                             "label": "Custom Tags:",
-                            "visible": "[equals(steps('tagging').taggingSelection, true)]",
+                            "visible": "[equals(steps('tags').selection, true)]",
                             "elements": [
                                 {
                                     "name": "imageBuild",
