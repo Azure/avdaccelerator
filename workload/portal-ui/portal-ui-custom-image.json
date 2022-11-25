@@ -481,7 +481,7 @@
                                     "type": "Microsoft.Solutions.ArmApiControl",
                                     "request": {
                                         "method": "POST",
-                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Storage/checkNameAvailability?api-version=2016-01-01')]",
+                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Storage/checkNameAvailability?api-version=2022-05-01')]",
                                         "body": {
                                             "name": "[steps('naming').customNaming.storageAccount]",
                                             "type": "Microsoft.Storage/storageAccounts"
@@ -498,11 +498,7 @@
                                         "required": true,
                                         "validations": [
                                             {
-                                                "regex": "^[a-z0-9]{3,24}$",
-                                                "message": "The value must be lowercase letters and numbers. The length must be 3 to 24 characters."
-                                            },
-                                            {
-                                                "isValid": "[or(steps('naming').customNaming.storageAccount_checkNameAvailability.nameAvailable,equals(steps('naming').customNaming.storageAccount_checkNameAvailability.reason,'AlreadyExists'))]",
+                                                "isValid": "[steps('naming').customNaming.storageAccount_checkNameAvailability.nameAvailable]",
                                                 "message": "[steps('naming').customNaming.storageAccount_checkNameAvailability.message]"
                                             }
                                         ]
@@ -555,11 +551,7 @@
                                         "required": true,
                                         "validations": [
                                             {
-                                                "regex": "^[a-zA-Z][a-zA-Z0-9-]{1,22}[a-zA-Z0-9]$",
-                                                "message": "The value must be alphanumerics and hyphens. The value must start with a letter and end with a letter or number. The length must be 3 to 24 characters."
-                                            },
-                                            {
-                                                "isValid": "[or(steps('naming').customNaming.keyVault_checkNameAvailability.nameAvailable,equals(steps('naming').customNaming.keyVault_checkNameAvailability.reason,'AlreadyExists'))]",
+                                                "isValid": "[steps('naming').customNaming.keyVault_checkNameAvailability.nameAvailable]",
                                                 "message": "[steps('naming').customNaming.keyVault_checkNameAvailability.message]"
                                             }
                                         ]
