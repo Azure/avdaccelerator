@@ -534,6 +534,18 @@
                                     }
                                 },
                                 {
+                                    "name": "keyVault_checkNameAvailability",
+                                    "type": "Microsoft.Solutions.ArmApiControl",
+                                    "request": {
+                                        "method": "POST",
+                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.KeyVault/checkNameAvailability?api-version=2022-07-01')]",
+                                        "body": {
+                                            "name": "[steps('naming').customNaming.keyVault]",
+                                            "type": "Microsoft.KeyVault/vaults"
+                                        }
+                                    }
+                                },
+                                {
                                     "name": "keyVault",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Key Vault",
@@ -541,8 +553,16 @@
                                     "placeholder": "Example: kv-avd",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^(?!.*-{2}.*)([a-zA-Z]|[a-zA-Z][a-zA-Z0-9-]{0,125}[a-zA-Z0-9])$",
-                                        "validationMessage": "The value must be alphanumerics and hyphens. The value must start with a letter and end with a letter or number. The length must be 3 to 24 characters."
+                                        "validations": [
+                                            {
+                                                "regex": "^[a-zA-Z][a-zA-Z0-9-]{1,22}[a-zA-Z0-9]$",
+                                                "message": "The value must be alphanumerics and hyphens. The value must start with a letter and end with a letter or number. The length must be 3 to 24 characters."
+                                            },
+                                            {
+                                                "isValid": "[or(steps('naming').customNaming.keyVault_checkNameAvailability.nameAvailable,equals(steps('naming').customNaming.keyVault_checkNameAvailability.reason,'AlreadyExists'))]",
+                                                "message": "[steps('naming').customNaming.keyVault_checkNameAvailability.message]"
+                                            }
+                                        ]
                                     }
                                 },
                                 {
