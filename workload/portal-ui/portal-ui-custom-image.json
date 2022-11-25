@@ -339,7 +339,7 @@
                         {
                             "name": "distributionGroup",
                             "type": "Microsoft.Common.TextBox",
-                            "visible": "[equals(steps('avdCustomImageAib').aibEnableMonitoringAndAlerting, true)]",
+                            "visible": "[equals(steps('aib').monitoringAndAlerting, true)]",
                             "label": "Distribution Group",
                             "toolTip": "Input the distribution group for receiving alerts on the build status.",
                             "placeholder": "Example: operations@contoso.com",
