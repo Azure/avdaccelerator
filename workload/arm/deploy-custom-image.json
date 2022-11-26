@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "5129983446118734056"
+      "templateHash": "4374990101980684973"
     }
   },
   "parameters": {
@@ -177,7 +177,7 @@
       "metadata": {
         "description": "Optional. AVD Azure image template custom name. (Default: it-avd-win11-21h2)"
       },
-      "maxLength": 64
+      "maxLength": 260
     },
     "StorageAccountCustomName": {
       "type": "string",
@@ -625,17 +625,8 @@
         "uri": "https://www.powershellgallery.com/api/v2/package"
       }
     ],
-    "Roles": [
-      {
-        "resourceGroup": "[split(parameters('VirtualNetworkResourceId'), '/')[4]]",
-        "name": "Virtual Network Join",
-        "description": "Allow resources to join a subnet",
-        "actions": [
-          "Microsoft.Network/virtualNetworks/read",
-          "Microsoft.Network/virtualNetworks/subnets/read",
-          "Microsoft.Network/virtualNetworks/subnets/join/action"
-        ]
-      },
+    "DistributionGroupRole": "[if(not(empty(parameters('DistributionGroup'))), createArray(createObject('resourceGroup', split(parameters('VirtualNetworkResourceId'), '/')[4], 'name', 'Virtual Network Join', 'description', 'Allow resources to join a subnet', 'actions', createArray('Microsoft.Network/virtualNetworks/read', 'Microsoft.Network/virtualNetworks/subnets/read', 'Microsoft.Network/virtualNetworks/subnets/join/action'))), createArray())]",
+    "ImageTemplateRoles": [
       {
         "resourceGroup": "[variables('ResourceGroupName')]",
         "name": "Image Template Contributor",
@@ -663,7 +654,8 @@
           "Microsoft.Compute/locations/publishers/read"
         ]
       }
-    ]
+    ],
+    "Roles": "[union(variables('DistributionGroupRole'), variables('ImageTemplateRoles'))]"
   },
   "resources": [
     {
@@ -1532,7 +1524,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('AIB_Role-Assignment_{0}_{1}', range(0, length(variables('Roles')))[copyIndex()], parameters('Time'))]",
-      "subscriptionId": "[format('{0}', parameters('SharedServicesSubId'))]",
+      "subscriptionId": "[parameters('SharedServicesSubId')]",
       "resourceGroup": "[variables('Roles')[range(0, length(variables('Roles')))[copyIndex()]].resourceGroup]",
       "properties": {
         "expressionEvaluationOptions": {
