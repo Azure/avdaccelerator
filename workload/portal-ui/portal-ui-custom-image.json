@@ -409,7 +409,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Resource group",
                                     "toolTip": "Input a custom name for the shared services resource group.",
-                                    "placeholder": "Example: rg-avd-use2-shared-services",
+                                    "placeholder": "Example: rg-avd-shared-services",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^(?!.*[\\.]$)[a-zA-Z0-9_\\.()-]{1,90}$",
@@ -421,7 +421,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Compute Gallery",
                                     "toolTip": "Input a custom name for the Azure Compute Gallery.",
-                                    "placeholder": "Example: gal_avd_use2_001",
+                                    "placeholder": "Example: gal_avd",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^(?:[a-zA-Z0-9]|[a-z0-9A-Z][a-z0-9A-Z_\\.]{0,78}[a-z0-9A-Z])$",
@@ -433,7 +433,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Image Definition",
                                     "toolTip": "Input a custom name for the Image Definition in the Compute Gallery.",
-                                    "placeholder": "Example: avd_image_definition_win11_21h2",
+                                    "placeholder": "Example: avd_win11_21h2",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^(?:[a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9_\\.-]{0,78}[a-zA-Z0-9])$",
@@ -457,7 +457,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Automation Account",
                                     "toolTip": "Input a custom name for the Automation Account.",
-                                    "placeholder": "Example: aa-avd",
+                                    "placeholder": "Example: aa-aib",
                                     "constraints": {
                                         "required": true,
                                         "regex": "[a-zA-Z][a-zA-Z0-9-]{4,48}[a-zA-Z0-9]$",
@@ -493,7 +493,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Storage Account",
                                     "toolTip": "Input a custom name for the Storage Account.",
-                                    "placeholder": "Example: stavdshar",
+                                    "placeholder": "Example: stavd",
                                     "constraints": {
                                         "required": true,
                                         "validations": [
@@ -567,6 +567,18 @@
                                         "required": true,
                                         "regex": "^(?!.*[\\.]$)(?!.* $)[^:<>+/&%\\?]{1,260}$",
                                         "validationMessage": "The value must not contain: :<>+/&%\\?. The value must not end with a space or period. The length must be 1 to 260 characters."
+                                    }
+                                },
+                                {
+                                    "name": "userAssignedIdentity",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "User Assigned Identity",
+                                    "toolTip": "Input a custom name for the User Assigned Identity.",
+                                    "placeholder": "Example: id-aib",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-zA-Z0-9][a-zA-Z0-9_-]{2,127}$",
+                                        "validationMessage": "The value must contain alphanumerics, hyphens, and underscores. The value must start with a letter or number. The length must be 3 to 128 characters."
                                     }
                                 }
                             ]
@@ -863,6 +875,7 @@
                 "SharedServicesSubId": "[steps('basics').resourceScope.subscription.subscriptionId]",
                 "StorageAccountCustomPrefix": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.storageAccount, 'none')]",
                 "SubnetName": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').subnet, '')]",
+                "UserAssignedIdentityCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.userAssignedIdentity, 'none')]",
                 "VirtualNetworkResourceId": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').virtualNetworkSelection.id, '')]",
                 "WorkloadNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.workload, 'none')]"
             },
