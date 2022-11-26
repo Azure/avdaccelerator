@@ -513,6 +513,8 @@ var Modules = [
         uri: 'https://www.powershellgallery.com/api/v2/package'
     }
 ]
+
+// Role Definitions & Assignments
 var DistributionGroupRole = !empty(DistributionGroup) ? [
     {
         resourceGroup: split(VirtualNetworkResourceId, '/')[4]
@@ -555,6 +557,7 @@ var ImageTemplateRoles = [
     }
 ]
 var Roles = union(DistributionGroupRole, ImageTemplateRoles)
+//
 
 // =========== //
 // Deployments //
