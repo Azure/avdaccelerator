@@ -577,7 +577,7 @@ resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (
 // AVD Shared Services Resource Group
 module avdSharedResourcesRg '../../carml/1.0.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
     scope: subscription(SharedServicesSubId)
-    name: 'AIB_Resource-Group_${Time}'
+    name: 'Resource-Group_${Time}'
     params: {
         name: ResourceGroupName
         location: SharedServicesLocation
@@ -587,7 +587,7 @@ module avdSharedResourcesRg '../../carml/1.0.0/Microsoft.Resources/resourceGroup
 
 module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinitions/subscription/deploy.bicep' = [for i in range(0, length(Roles)): {
     scope: subscription(SharedServicesSubId)
-    name: 'AIB_Role-Definition_${i}_${Time}'
+    name: 'Role-Definition_${i}_${Time}'
     params: {
         subscriptionId: SharedServicesSubId
         description: Roles[i].description
@@ -601,7 +601,7 @@ module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinition
 
 module userAssignedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
     scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'AIB_User-Assigned-Identity_${Time}'
+    name: 'User-Assigned-Identity_${Time}'
     params: {
         name: UserAssignedIdentityName
         location: SharedServicesLocation
@@ -613,7 +613,7 @@ module userAssignedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/userAss
 }
 
 module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for i in range(0, length(Roles)): {
-    name: 'AIB_Role-Assignment_${i}_${Time}'
+    name: 'Role-Assignment_${i}_${Time}'
     scope: resourceGroup(SharedServicesSubId, Roles[i].resourceGroup)
     params: {
         roleDefinitionIdOrName: roleDefinitions[i].outputs.resourceId
@@ -628,7 +628,7 @@ module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignment
 // Compute Gallery
 module gallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy.bicep' = {
     scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'AIB_Gallery_${Time}'
+    name: 'Gallery_${Time}'
     params: {
         name: ImageGalleryName
         location: SharedServicesLocation
@@ -643,7 +643,7 @@ module gallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy.bicep' = {
 // Image Definition
 module image '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep' = {
     scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'AIB_Image-Definition_${Time}'
+    name: 'Image-Definition_${Time}'
     params: {
         galleryName: SharedImage ? gallery.outputs.name : ''
         name: ImageDefinitionName
@@ -665,7 +665,7 @@ module image '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep'
 // Image Template
 module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemplates/deploy.bicep' = {
     scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'AIB_Image-Template_${Time}'
+    name: 'Image-Template_${Time}'
     params: {
         name: ImageTemplateName
         subnetId: !empty(VirtualNetworkResourceId) && !empty(SubnetName) ? '${VirtualNetworkResourceId}/subnets/${SubnetName}' : ''
@@ -697,7 +697,7 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
 // Log Analytics Workspace
 module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (!empty(DistributionGroup)) {
     scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'AIB_Log-Analytics-Workspace_${Time}'
+    name: 'Log-Analytics-Workspace_${Time}'
     params: {
         location: AIBLocation
         name: LogAnalyticsWorkspaceName
@@ -712,7 +712,7 @@ module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/dep
 
 module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccounts/deploy.bicep' = {
     scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'AIB_Automation-Account_${Time}'
+    name: 'Automation-Account_${Time}'
     params: {
         diagnosticLogCategoriesToEnable: [
             'JobLogs'
@@ -772,7 +772,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
 @batchSize(1)
 module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/modules/deploy.bicep' = [for i in range(0, length(Modules)): {
     scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'AIB_Automation-Module_${i}_${Time}'
+    name: 'Automation-Module_${i}_${Time}'
     params: {
         name: Modules[i].name
         location: SharedServicesLocation
@@ -783,7 +783,7 @@ module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/module
 
 module vault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
     scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'AIB_Key-Vault_${Time}'
+    name: 'Key-Vault_${Time}'
     params: {
         name: KeyVaultName
         location: SharedServicesLocation
@@ -805,7 +805,7 @@ module vault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
 
 module storageAccount '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
     scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'AIB_Storage-Account_${Time}'
+    name: 'Storage-Account_${Time}'
     params: {
         name: StorageAccountName
         location: SharedServicesLocation
@@ -832,7 +832,7 @@ module storageAccount '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deplo
 
 module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bicep' = if (!empty(DistributionGroup)) {
     scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'AIB_Action-Group_${Time}'
+    name: 'Action-Group_${Time}'
     params: {
         location: 'global'
         groupShortName: 'aib-email'
@@ -854,7 +854,7 @@ module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bic
 
 module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(Alerts)): if (!empty(DistributionGroup)) {
     scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'AIB_Scheduled-Query-Rule_${i}_${Time}'
+    name: 'Scheduled-Query-Rule_${i}_${Time}'
     params: {
         location: SharedServicesLocation
         name: Alerts[i].name
@@ -865,15 +865,15 @@ module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryR
         skipQueryValidation: false
         targetResourceTypes: []
         roleAssignments: []
-        scopes: [
+        scopes: !empty(DistributionGroup) ? [
             workspace.outputs.resourceId
-        ]
+        ] : []
         severity: Alerts[i].severity
         evaluationFrequency: Alerts[i].evaluationFrequency
         windowSize: Alerts[i].windowSize
-        actions: [
+        actions: !empty(DistributionGroup) ? [
             actionGroup.outputs.resourceId
-        ]
+        ] : []
         criterias: Alerts[i].criterias
         tags: ResourceTags ? commonResourceTags : {}
     }
