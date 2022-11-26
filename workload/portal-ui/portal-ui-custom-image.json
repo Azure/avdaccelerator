@@ -726,9 +726,9 @@
                                                 "value": "High"
                                             },
                                             {
-                                                "label": "Missin-critical",
+                                                "label": "Mission-critical",
                                                 "description": "",
-                                                "value": "Missin-critical"
+                                                "value": "Mission-critical"
                                             },
                                             {
                                                 "label": "Custom",
