@@ -448,8 +448,8 @@
                                     "placeholder": "Example: it-avd-win11-21h2",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
-                                        "validationMessage": "Value must be 1-64 characters."
+                                        "regex": "^(?!.*[\\. ]).{1,260}$",
+                                        "validationMessage": "The must not end with a period or space. The length must be 1 to 260 characters."
                                     }
                                 },
                                 {
