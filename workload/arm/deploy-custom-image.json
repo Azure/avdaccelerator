@@ -5,15 +5,15 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "3607332704851766005"
+      "templateHash": "12090154152704667737"
     }
   },
   "parameters": {
     "SharedServicesLocation": {
       "type": "string",
-      "defaultValue": "eastus2",
+      "defaultValue": "eastus",
       "metadata": {
-        "description": "Optional. Location where to deploy compute services. (Default: eastus2)"
+        "description": "Optional. Location where to deploy compute services. (Default: eastus)"
       }
     },
     "SharedServicesSubId": {
@@ -36,9 +36,9 @@
     },
     "AIBLocation": {
       "type": "string",
-      "defaultValue": "eastus2",
+      "defaultValue": "eastus",
       "metadata": {
-        "description": "Optional. Azure Image Builder location. (Default: eastus2)"
+        "description": "Optional. Azure Image Builder location. (Default: eastus)"
       },
       "allowedValues": [
         "eastus",
@@ -121,37 +121,37 @@
     },
     "ActionGroupCustomName": {
       "type": "string",
-      "defaultValue": "ag-aib-email",
+      "defaultValue": "ag-aib",
       "metadata": {
-        "description": "Optional. Azure action group name."
+        "description": "Optional. Custom name for Action Group."
       }
     },
     "AutomationAccountCustomName": {
       "type": "string",
       "defaultValue": "aa-avd",
       "metadata": {
-        "description": "Optional. Azure automation account name."
+        "description": "Optional. Custom name for the Automation Account."
       }
     },
     "LogAnalyticsWorkspaceCustomName": {
       "type": "string",
       "defaultValue": "log-avd",
       "metadata": {
-        "description": "Optional. Azure log analytics workspace name."
+        "description": "Optional. Custom name for the Log Analytics Workspace."
       }
     },
     "CustomNaming": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. AVD resources custom naming. (Default: false)"
+        "description": "Optional. Determine whether to enable custom naming for the Azure resources. (Default: false)"
       }
     },
     "ResourceGroupCustomName": {
       "type": "string",
       "defaultValue": "rg-avd-use2-shared-services",
       "metadata": {
-        "description": "Optional. AVD shared services resources resource group custom name. (Default: rg-avd-use2-shared-services)"
+        "description": "Optional. Custom name for Resource Group. (Default: rg-avd-use2-shared-services)"
       },
       "maxLength": 90
     },
@@ -159,7 +159,7 @@
       "type": "string",
       "defaultValue": "gal_avd_use2_001",
       "metadata": {
-        "description": "Optional. AVD Azure compute gallery custom name. (Default: gal_avd_use2_001)"
+        "description": "Optional. Custom name for Image Gallery. (Default: gal_avd_use2_001)"
       },
       "maxLength": 64
     },
@@ -167,7 +167,7 @@
       "type": "string",
       "defaultValue": "avd-win11-21h2",
       "metadata": {
-        "description": "Optional. AVD Azure compute gallery image definition custom name. (Default: avd-win11-21h2)"
+        "description": "Optional. Custom name for Image Definition. (Default: avd-win11-21h2)"
       },
       "maxLength": 64
     },
@@ -175,7 +175,7 @@
       "type": "string",
       "defaultValue": "it-avd-win11-21h2",
       "metadata": {
-        "description": "Optional. AVD Azure image template custom name. (Default: it-avd-win11-21h2)"
+        "description": "Optional. Custom name for Image Template. (Default: it-avd-win11-21h2)"
       },
       "maxLength": 260
     },
@@ -183,7 +183,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. AVD shared services storage account custom name prefix. (Default: stavdshar)"
+        "description": "Optional. Custom name for Storage Account. (Default: stavdshar)"
       },
       "maxLength": 24
     },
@@ -191,7 +191,7 @@
       "type": "string",
       "defaultValue": "aib-artifacts",
       "metadata": {
-        "description": "Optional. AVD shared services storage account Azure image builder container custom name. (Default: avd-imagebuilder-app1)"
+        "description": "Optional. Custom name for container storing AIB artifacts. (Default: avd-artifacts)"
       },
       "maxLength": 60
     },
@@ -199,7 +199,7 @@
       "type": "string",
       "defaultValue": "avd-artifacts",
       "metadata": {
-        "description": "Optional. AVD shared services storage account scripts container custom name. (Default: avd-scripts-app1)"
+        "description": "Optional. Custom name for container storing AVD artifacts. (Default: avd-artifacts)"
       },
       "maxLength": 60
     },
@@ -207,9 +207,17 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. AVD shared services storage account scripts container custom name. (Default: kv-avd)"
+        "description": "Optional. Custom name for Key Vault. (Default: kv-avd)"
       },
       "maxLength": 24
+    },
+    "UserAssignedIdentityCustomName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Custom name for User Assigned Identity. (Default: id-avd)"
+      },
+      "maxLength": 128
     },
     "ResourceTags": {
       "type": "bool",
@@ -331,22 +339,22 @@
   },
   "variables": {
     "UniqueStringSixChar": "[take(format('{0}', uniqueString(parameters('SharedServicesSubId'), parameters('Time'))), 6)]",
-    "ActionGroupName": "[if(parameters('CustomNaming'), parameters('ActionGroupCustomName'), format('ag-aib-email-{0}', variables('NamingStandard')))]",
+    "ActionGroupName": "[if(parameters('CustomNaming'), parameters('ActionGroupCustomName'), format('ag-aib-{0}', variables('NamingStandard')))]",
     "NamingStandard": "[format('{0}', variables('LocationAcronym'))]",
     "LocationLowercase": "[toLower(parameters('SharedServicesLocation'))]",
     "ResourceGroupName": "[if(parameters('CustomNaming'), parameters('ResourceGroupCustomName'), format('rg-avd-{0}-shared-services', variables('NamingStandard')))]",
     "ImageGalleryName": "[if(parameters('CustomNaming'), parameters('ImageGalleryCustomName'), format('gal_avd_{0}', variables('NamingStandard')))]",
-    "UserAssignedIdentityName": "[format('id-avd-imagebuilder-{0}', variables('NamingStandard'))]",
-    "LogAnalyticsWorkspaceName": "[if(parameters('CustomNaming'), parameters('LogAnalyticsWorkspaceCustomName'), format('log-aib-{0}', variables('NamingStandard')))]",
+    "UserAssignedIdentityName": "[if(parameters('CustomNaming'), parameters('UserAssignedIdentityCustomName'), format('id-aib-{0}', variables('NamingStandard')))]",
+    "LogAnalyticsWorkspaceName": "[if(parameters('CustomNaming'), parameters('LogAnalyticsWorkspaceCustomName'), format('log-avd-{0}', variables('NamingStandard')))]",
     "ImageDefinitionName": "[if(parameters('CustomNaming'), parameters('ImageDefinitionCustomName'), format('avd-{0}', parameters('OperatingSystemImage')))]",
     "ImageTemplateName": "[if(parameters('CustomNaming'), parameters('ImageTemplateCustomName'), format('it-avd-{0}', parameters('OperatingSystemImage')))]",
     "AutomationAccountName": "[if(parameters('CustomNaming'), parameters('AutomationAccountCustomName'), format('aa-aib-{0}', variables('NamingStandard')))]",
-    "StorageAccountName": "[if(parameters('CustomNaming'), parameters('StorageAccountCustomName'), format('stavdshar{0}', variables('UniqueStringSixChar')))]",
+    "StorageAccountName": "[if(parameters('CustomNaming'), parameters('StorageAccountCustomName'), format('stavd{0}{1}', variables('NamingStandard'), variables('UniqueStringSixChar')))]",
     "AIBContainerName": "[if(parameters('CustomNaming'), parameters('AIBContainerCustomName'), 'aib-artifacts')]",
     "AVDContainerName": "[if(parameters('CustomNaming'), parameters('AVDContainerCustomName'), 'avd-artifacts')]",
     "KeyVaultName": "[if(parameters('CustomNaming'), parameters('KeyVaultCustomName'), format('kv-avd-{0}-{1}', variables('NamingStandard'), variables('UniqueStringSixChar')))]",
-    "LocationAcronym": "[variables('locationAcronyms')[variables('LocationLowercase')]]",
-    "locationAcronyms": {
+    "LocationAcronym": "[variables('LocationAcronyms')[variables('LocationLowercase')]]",
+    "LocationAcronyms": {
       "eastasia": "eas",
       "southeastasia": "seas",
       "centralus": "cus",
