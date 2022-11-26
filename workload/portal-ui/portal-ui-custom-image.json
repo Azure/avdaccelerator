@@ -424,7 +424,7 @@
                                     "placeholder": "Example: gal_avd_use2_001",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^(?:[a-zA-Z0-9]|[a-z0-9A-Z][a-z0-9A-Z_\\.-]{0,78}[a-z0-9A-Z])$",
+                                        "regex": "^(?:[a-zA-Z0-9]|[a-z0-9A-Z][a-z0-9A-Z_\\.]{0,78}[a-z0-9A-Z])$",
                                         "validationMessage": "The value must be alphanumerics, underscores, and periods. The value must begin and end with alphanumerics. The length must be 1 to 80 characters."
                                     }
                                 },
