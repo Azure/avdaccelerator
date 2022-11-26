@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "12327345327848334461"
+      "templateHash": "3607332704851766005"
     }
   },
   "parameters": {
@@ -5357,7 +5357,7 @@
                   "TenantId": "[subscription().tenantId]"
                 },
                 "runbookName": "AIB-Build-Automation",
-                "scheduleName": "AIB-Build-Automation"
+                "scheduleName": "[variables('ImageTemplateName')]"
               }
             ]
           },
@@ -5378,7 +5378,7 @@
           "schedules": {
             "value": [
               {
-                "name": "AIB-Build-Automation",
+                "name": "[variables('ImageTemplateName')]",
                 "frequency": "Day",
                 "interval": 1,
                 "startTime": "[dateTimeAdd(parameters('Time'), 'PT15M')]",
