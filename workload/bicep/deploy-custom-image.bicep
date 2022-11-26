@@ -739,7 +739,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
                     TenantId: subscription().tenantId
                 }
                 runbookName: 'AIB-Build-Automation'
-                scheduleName: 'AIB-Build-Automation'
+                scheduleName: ImageTemplateName
             }
         ]
         location: SharedServicesLocation
@@ -755,7 +755,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
         ]
         schedules: [
             {
-                name: 'AIB-Build-Automation'
+                name: ImageTemplateName
                 frequency: 'Day'
                 interval: 1
                 startTime: dateTimeAdd(Time, 'PT15M')
