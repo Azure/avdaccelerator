@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "4374990101980684973"
+      "templateHash": "12327345327848334461"
     }
   },
   "parameters": {
@@ -676,7 +676,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('AIB_Resource-Group_{0}', parameters('Time'))]",
+      "name": "[format('Resource-Group_{0}', parameters('Time'))]",
       "subscriptionId": "[parameters('SharedServicesSubId')]",
       "location": "[deployment().location]",
       "properties": {
@@ -1117,7 +1117,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('AIB_Role-Definition_{0}_{1}', range(0, length(variables('Roles')))[copyIndex()], parameters('Time'))]",
+      "name": "[format('Role-Definition_{0}_{1}', range(0, length(variables('Roles')))[copyIndex()], parameters('Time'))]",
       "subscriptionId": "[parameters('SharedServicesSubId')]",
       "location": "[deployment().location]",
       "properties": {
@@ -1261,7 +1261,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('AIB_User-Assigned-Identity_{0}', parameters('Time'))]",
+      "name": "[format('User-Assigned-Identity_{0}', parameters('Time'))]",
       "subscriptionId": "[parameters('SharedServicesSubId')]",
       "resourceGroup": "[variables('ResourceGroupName')]",
       "properties": {
@@ -1513,7 +1513,7 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('AIB_Resource-Group_{0}', parameters('Time')))]"
+        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('Time')))]"
       ]
     },
     {
@@ -1523,7 +1523,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('AIB_Role-Assignment_{0}_{1}', range(0, length(variables('Roles')))[copyIndex()], parameters('Time'))]",
+      "name": "[format('Role-Assignment_{0}_{1}', range(0, length(variables('Roles')))[copyIndex()], parameters('Time'))]",
       "subscriptionId": "[parameters('SharedServicesSubId')]",
       "resourceGroup": "[variables('Roles')[range(0, length(variables('Roles')))[copyIndex()]].resourceGroup]",
       "properties": {
@@ -1533,10 +1533,10 @@
         "mode": "Incremental",
         "parameters": {
           "roleDefinitionIdOrName": {
-            "value": "[reference(subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('AIB_Role-Definition_{0}_{1}', range(0, length(variables('Roles')))[range(0, length(variables('Roles')))[copyIndex()]], parameters('Time'))), '2020-10-01').outputs.resourceId.value]"
+            "value": "[reference(subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Role-Definition_{0}_{1}', range(0, length(variables('Roles')))[range(0, length(variables('Roles')))[copyIndex()]], parameters('Time'))), '2020-10-01').outputs.resourceId.value]"
           },
           "principalId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('Time'))), '2020-10-01').outputs.principalId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Identity_{0}', parameters('Time'))), '2020-10-01').outputs.principalId.value]"
           },
           "principalType": {
             "value": "ServicePrincipal"
@@ -1982,14 +1982,14 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('AIB_Role-Definition_{0}_{1}', range(0, length(variables('Roles')))[range(0, length(variables('Roles')))[copyIndex()]], parameters('Time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('Time')))]"
+        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Role-Definition_{0}_{1}', range(0, length(variables('Roles')))[range(0, length(variables('Roles')))[copyIndex()]], parameters('Time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Identity_{0}', parameters('Time')))]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('AIB_Gallery_{0}', parameters('Time'))]",
+      "name": "[format('Gallery_{0}', parameters('Time'))]",
       "subscriptionId": "[parameters('SharedServicesSubId')]",
       "resourceGroup": "[variables('ResourceGroupName')]",
       "properties": {
@@ -2781,13 +2781,13 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('AIB_Resource-Group_{0}', parameters('Time')))]"
+        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('Time')))]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('AIB_Image-Definition_{0}', parameters('Time'))]",
+      "name": "[format('Image-Definition_{0}', parameters('Time'))]",
       "subscriptionId": "[parameters('SharedServicesSubId')]",
       "resourceGroup": "[variables('ResourceGroupName')]",
       "properties": {
@@ -2797,7 +2797,7 @@
         "mode": "Incremental",
         "parameters": {
           "galleryName": {
-            "value": "[if(parameters('SharedImage'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_Gallery_{0}', parameters('Time'))), '2020-10-01').outputs.name.value, '')]"
+            "value": "[if(parameters('SharedImage'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Gallery_{0}', parameters('Time'))), '2020-10-01').outputs.name.value, '')]"
           },
           "name": {
             "value": "[variables('ImageDefinitionName')]"
@@ -3242,14 +3242,14 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('AIB_Resource-Group_{0}', parameters('Time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_Gallery_{0}', parameters('Time')))]"
+        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('Time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Gallery_{0}', parameters('Time')))]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('AIB_Image-Template_{0}', parameters('Time'))]",
+      "name": "[format('Image-Template_{0}', parameters('Time'))]",
       "subscriptionId": "[parameters('SharedServicesSubId')]",
       "resourceGroup": "[variables('ResourceGroupName')]",
       "properties": {
@@ -3265,10 +3265,10 @@
             "value": "[if(and(not(empty(parameters('VirtualNetworkResourceId'))), not(empty(parameters('SubnetName')))), format('{0}/subnets/{1}', parameters('VirtualNetworkResourceId'), parameters('SubnetName')), '')]"
           },
           "userMsiName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('Time'))), '2020-10-01').outputs.name.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Identity_{0}', parameters('Time'))), '2020-10-01').outputs.name.value]"
           },
           "userMsiResourceGroup": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('Time'))), '2020-10-01').outputs.resourceGroupName.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Identity_{0}', parameters('Time'))), '2020-10-01').outputs.resourceGroupName.value]"
           },
           "location": {
             "value": "[parameters('AIBLocation')]"
@@ -3277,7 +3277,7 @@
             "value": "[if(equals(parameters('SharedServicesLocation'), parameters('AIBLocation')), array(format('{0}', parameters('SharedServicesLocation'))), concat(array(format('{0}', parameters('AIBLocation'))), array(format('{0}', parameters('SharedServicesLocation')))))]"
           },
           "sigImageDefinitionId": {
-            "value": "[if(parameters('SharedImage'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_Image-Definition_{0}', parameters('Time'))), '2020-10-01').outputs.resourceId.value, '')]"
+            "value": "[if(parameters('SharedImage'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Definition_{0}', parameters('Time'))), '2020-10-01').outputs.resourceId.value, '')]"
           },
           "vmSize": {
             "value": "[variables('VMSize')]"
@@ -3722,18 +3722,18 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('AIB_Resource-Group_{0}', parameters('Time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_Gallery_{0}', parameters('Time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_Image-Definition_{0}', parameters('Time')))]",
+        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('Time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Gallery_{0}', parameters('Time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Definition_{0}', parameters('Time')))]",
         "roleAssignments",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('Time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Identity_{0}', parameters('Time')))]"
       ]
     },
     {
       "condition": "[not(empty(parameters('DistributionGroup')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('AIB_Log-Analytics-Workspace_{0}', parameters('Time'))]",
+      "name": "[format('Log-Analytics-Workspace_{0}', parameters('Time'))]",
       "subscriptionId": "[parameters('SharedServicesSubId')]",
       "resourceGroup": "[variables('ResourceGroupName')]",
       "properties": {
@@ -5311,13 +5311,13 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('AIB_Resource-Group_{0}', parameters('Time')))]"
+        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('Time')))]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('AIB_Automation-Account_{0}', parameters('Time'))]",
+      "name": "[format('Automation-Account_{0}', parameters('Time'))]",
       "subscriptionId": "[parameters('SharedServicesSubId')]",
       "resourceGroup": "[variables('ResourceGroupName')]",
       "properties": {
@@ -5336,7 +5336,7 @@
             "value": 30
           },
           "diagnosticWorkspaceId": {
-            "value": "[if(empty(parameters('DistributionGroup')), '', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_Log-Analytics-Workspace_{0}', parameters('Time'))), '2020-10-01').outputs.resourceId.value)]"
+            "value": "[if(empty(parameters('DistributionGroup')), '', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace_{0}', parameters('Time'))), '2020-10-01').outputs.resourceId.value)]"
           },
           "name": {
             "value": "[variables('AutomationAccountName')]"
@@ -5345,14 +5345,14 @@
             "value": [
               {
                 "parameters": {
-                  "ClientId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('Time'))), '2020-10-01').outputs.clientId.value]",
+                  "ClientId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Identity_{0}', parameters('Time'))), '2020-10-01').outputs.clientId.value]",
                   "EnvironmentName": "[environment().name]",
                   "ImageOffer": "[variables('OperatingSystemImageDefinitions')[parameters('OperatingSystemImage')].offer]",
                   "ImagePublisher": "[variables('OperatingSystemImageDefinitions')[parameters('OperatingSystemImage')].publisher]",
                   "ImageSku": "[variables('OperatingSystemImageDefinitions')[parameters('OperatingSystemImage')].sku]",
                   "Location": "[parameters('AIBLocation')]",
                   "SubscriptionId": "[parameters('SharedServicesSubId')]",
-                  "TemplateName": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_Image-Template_{0}', parameters('Time'))), '2020-10-01').outputs.name.value]",
+                  "TemplateName": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Template_{0}', parameters('Time'))), '2020-10-01').outputs.name.value]",
                   "TemplateResourceGroupName": "[variables('ResourceGroupName')]",
                   "TenantId": "[subscription().tenantId]"
                 },
@@ -5398,7 +5398,7 @@
           },
           "userAssignedIdentities": {
             "value": {
-              "[format('{0}', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('Time'))), '2020-10-01').outputs.resourceId.value)]": {}
+              "[format('{0}', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Identity_{0}', parameters('Time'))), '2020-10-01').outputs.resourceId.value)]": {}
             }
           }
         },
@@ -8197,9 +8197,9 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_Image-Template_{0}', parameters('Time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_User-Assigned-Identity_{0}', parameters('Time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_Log-Analytics-Workspace_{0}', parameters('Time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Template_{0}', parameters('Time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Identity_{0}', parameters('Time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace_{0}', parameters('Time')))]"
       ]
     },
     {
@@ -8211,7 +8211,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('AIB_Automation-Module_{0}_{1}', range(0, length(variables('Modules')))[copyIndex()], parameters('Time'))]",
+      "name": "[format('Automation-Module_{0}_{1}', range(0, length(variables('Modules')))[copyIndex()], parameters('Time'))]",
       "subscriptionId": "[parameters('SharedServicesSubId')]",
       "resourceGroup": "[variables('ResourceGroupName')]",
       "properties": {
@@ -8227,7 +8227,7 @@
             "value": "[parameters('SharedServicesLocation')]"
           },
           "automationAccountName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_Automation-Account_{0}', parameters('Time'))), '2020-10-01').outputs.name.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Automation-Account_{0}', parameters('Time'))), '2020-10-01').outputs.name.value]"
           },
           "uri": {
             "value": "[variables('Modules')[range(0, length(variables('Modules')))[copyIndex()]].uri]"
@@ -8353,13 +8353,13 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_Automation-Account_{0}', parameters('Time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Automation-Account_{0}', parameters('Time')))]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('AIB_Key-Vault_{0}', parameters('Time'))]",
+      "name": "[format('Key-Vault_{0}', parameters('Time'))]",
       "subscriptionId": "[parameters('SharedServicesSubId')]",
       "resourceGroup": "[variables('ResourceGroupName')]",
       "properties": {
@@ -9863,13 +9863,13 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('AIB_Resource-Group_{0}', parameters('Time')))]"
+        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('Time')))]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('AIB_Storage-Account_{0}', parameters('Time'))]",
+      "name": "[format('Storage-Account_{0}', parameters('Time'))]",
       "subscriptionId": "[parameters('SharedServicesSubId')]",
       "resourceGroup": "[variables('ResourceGroupName')]",
       "properties": {
@@ -12957,14 +12957,14 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('AIB_Resource-Group_{0}', parameters('Time')))]"
+        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('Time')))]"
       ]
     },
     {
       "condition": "[not(empty(parameters('DistributionGroup')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('AIB_Action-Group_{0}', parameters('Time'))]",
+      "name": "[format('Action-Group_{0}', parameters('Time'))]",
       "subscriptionId": "[parameters('SharedServicesSubId')]",
       "resourceGroup": "[variables('ResourceGroupName')]",
       "properties": {
@@ -13286,7 +13286,7 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('AIB_Resource-Group_{0}', parameters('Time')))]"
+        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('Time')))]"
       ]
     },
     {
@@ -13297,7 +13297,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('AIB_Scheduled-Query-Rule_{0}_{1}', range(0, length(variables('Alerts')))[copyIndex()], parameters('Time'))]",
+      "name": "[format('Scheduled-Query-Rule_{0}_{1}', range(0, length(variables('Alerts')))[copyIndex()], parameters('Time'))]",
       "subscriptionId": "[parameters('SharedServicesSubId')]",
       "resourceGroup": "[variables('ResourceGroupName')]",
       "properties": {
@@ -13334,9 +13334,7 @@
             "value": []
           },
           "scopes": {
-            "value": [
-              "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_Log-Analytics-Workspace_{0}', parameters('Time'))), '2020-10-01').outputs.resourceId.value]"
-            ]
+            "value": "[if(not(empty(parameters('DistributionGroup'))), createArray(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace_{0}', parameters('Time'))), '2020-10-01').outputs.resourceId.value), createArray())]"
           },
           "severity": {
             "value": "[variables('Alerts')[range(0, length(variables('Alerts')))[copyIndex()]].severity]"
@@ -13348,9 +13346,7 @@
             "value": "[variables('Alerts')[range(0, length(variables('Alerts')))[copyIndex()]].windowSize]"
           },
           "actions": {
-            "value": [
-              "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_Action-Group_{0}', parameters('Time'))), '2020-10-01').outputs.resourceId.value]"
-            ]
+            "value": "[if(not(empty(parameters('DistributionGroup'))), createArray(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Action-Group_{0}', parameters('Time'))), '2020-10-01').outputs.resourceId.value), createArray())]"
           },
           "criterias": {
             "value": "[variables('Alerts')[range(0, length(variables('Alerts')))[copyIndex()]].criterias]"
@@ -13748,8 +13744,8 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_Action-Group_{0}', parameters('Time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('AIB_Log-Analytics-Workspace_{0}', parameters('Time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Action-Group_{0}', parameters('Time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace_{0}', parameters('Time')))]"
       ]
     }
   ]
