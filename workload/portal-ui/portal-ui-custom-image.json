@@ -841,6 +841,7 @@
                 "CostCenterTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.costCenter, 'none')]",
                 "CriticalityCustomTag": "[if(equals(steps('tags').customTags.criticality, 'Custom'), steps('tags').customTags.customCriticality, 'Low')]",
                 "CriticalityTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.criticality, 'Low')]",
+                "CustomNaming": "[steps('naming').customNamingSelection]",
                 "DataClassificationTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.dataClassification, 'Non-business')]",
                 "DepartmentTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.department, 'none')]",
                 "DistributionGroup": "[if(equals(steps('aib').monitoringAndAlerting, true), steps('aib').distributionGroup, '')]",
