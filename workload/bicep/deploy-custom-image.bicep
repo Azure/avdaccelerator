@@ -91,7 +91,7 @@ param ImageGalleryCustomName string = 'gal_avd_use2_001'
 @description('Optional. AVD Azure compute gallery image definition custom name. (Default: avd-win11-21h2)')
 param ImageDefinitionCustomName string = 'avd-win11-21h2'
 
-@maxLength(64)
+@maxLength(260)
 @description('Optional. AVD Azure image template custom name. (Default: it-avd-win11-21h2)')
 param ImageTemplateCustomName string = 'it-avd-win11-21h2'
 
@@ -513,7 +513,7 @@ var Modules = [
         uri: 'https://www.powershellgallery.com/api/v2/package'
     }
 ]
-var Roles = [
+var DistributionGroupRole = !empty(DistributionGroup) ? [
     {
         resourceGroup: split(VirtualNetworkResourceId, '/')[4]
         name: 'Virtual Network Join'
@@ -524,6 +524,8 @@ var Roles = [
             'Microsoft.Network/virtualNetworks/subnets/join/action'
         ]
     }
+] : []
+var ImageTemplateRoles = [
     {
         resourceGroup: ResourceGroupName
         name: 'Image Template Contributor'
@@ -552,6 +554,7 @@ var Roles = [
         ]
     }
 ]
+var Roles = union(DistributionGroupRole, ImageTemplateRoles)
 
 // =========== //
 // Deployments //
@@ -611,7 +614,7 @@ module userAssignedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/userAss
 
 module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for i in range(0, length(Roles)): {
     name: 'AIB_Role-Assignment_${i}_${Time}'
-    scope: resourceGroup('${SharedServicesSubId}', Roles[i].resourceGroup)
+    scope: resourceGroup(SharedServicesSubId, Roles[i].resourceGroup)
     params: {
         roleDefinitionIdOrName: roleDefinitions[i].outputs.resourceId
         principalId: userAssignedIdentity.outputs.principalId
