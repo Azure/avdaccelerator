@@ -3,8 +3,8 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
-@description('Optional. Location where to deploy compute services. (Default: eastus2)')
-param SharedServicesLocation string = 'eastus2'
+@description('Optional. Location where to deploy compute services. (Default: eastus)')
+param SharedServicesLocation string = 'eastus'
 
 @description('Required. AVD shared services subscription ID, multiple subscriptions scenario.')
 param SharedServicesSubId string = ''
@@ -32,8 +32,8 @@ param StorageAccountSKU string = 'Standard_LRS'
     'uksouth'
     'ukwest'
 ])
-@description('Optional. Azure Image Builder location. (Default: eastus2)')
-param AIBLocation string = 'eastus2'
+@description('Optional. Azure Image Builder location. (Default: eastus)')
+param AIBLocation string = 'eastus'
 
 @allowed([
     'win10_21h2_office'
@@ -67,53 +67,57 @@ param DistributionGroup string = ''
 
 // Custom Naming
 // Input must followe resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
-@description('Optional. Azure action group name.')
-param ActionGroupCustomName string = 'ag-aib-email'
+@description('Optional. Custom name for Action Group.')
+param ActionGroupCustomName string = 'ag-aib'
 
-@description('Optional. Azure automation account name.')
+@description('Optional. Custom name for the Automation Account.')
 param AutomationAccountCustomName string = 'aa-avd'
 
-@description('Optional. Azure log analytics workspace name.')
+@description('Optional. Custom name for the Log Analytics Workspace.')
 param LogAnalyticsWorkspaceCustomName string = 'log-avd'
 
-@description('Optional. AVD resources custom naming. (Default: false)')
+@description('Optional. Determine whether to enable custom naming for the Azure resources. (Default: false)')
 param CustomNaming bool = false
 
 @maxLength(90)
-@description('Optional. AVD shared services resources resource group custom name. (Default: rg-avd-use2-shared-services)')
+@description('Optional. Custom name for Resource Group. (Default: rg-avd-use2-shared-services)')
 param ResourceGroupCustomName string = 'rg-avd-use2-shared-services'
 
 @maxLength(64)
-@description('Optional. AVD Azure compute gallery custom name. (Default: gal_avd_use2_001)')
+@description('Optional. Custom name for Image Gallery. (Default: gal_avd_use2_001)')
 param ImageGalleryCustomName string = 'gal_avd_use2_001'
 
 @maxLength(64)
-@description('Optional. AVD Azure compute gallery image definition custom name. (Default: avd-win11-21h2)')
+@description('Optional. Custom name for Image Definition. (Default: avd-win11-21h2)')
 param ImageDefinitionCustomName string = 'avd-win11-21h2'
 
 @maxLength(260)
-@description('Optional. AVD Azure image template custom name. (Default: it-avd-win11-21h2)')
+@description('Optional. Custom name for Image Template. (Default: it-avd-win11-21h2)')
 param ImageTemplateCustomName string = 'it-avd-win11-21h2'
 
 @maxLength(24)
-@description('Optional. AVD shared services storage account custom name prefix. (Default: stavdshar)')
+@description('Optional. Custom name for Storage Account. (Default: stavdshar)')
 param StorageAccountCustomName string = ''
 
 @maxLength(60)
-@description('Optional. AVD shared services storage account Azure image builder container custom name. (Default: avd-imagebuilder-app1)')
+@description('Optional. Custom name for container storing AIB artifacts. (Default: avd-artifacts)')
 param AIBContainerCustomName string = 'aib-artifacts'
 
 @maxLength(60)
-@description('Optional. AVD shared services storage account scripts container custom name. (Default: avd-scripts-app1)')
+@description('Optional. Custom name for container storing AVD artifacts. (Default: avd-artifacts)')
 param AVDContainerCustomName string = 'avd-artifacts'
 
 @maxLength(24)
-@description('Optional. AVD shared services storage account scripts container custom name. (Default: kv-avd)')
+@description('Optional. Custom name for Key Vault. (Default: kv-avd)')
 param KeyVaultCustomName string = ''
+
+@maxLength(128)
+@description('Optional. Custom name for User Assigned Identity. (Default: id-avd)')
+param UserAssignedIdentityCustomName string = ''
 //
 
-// Resource tagging
-// 
+
+// TAGS //
 @description('Optional. Apply tags on resources and resource groups. (Default: false)')
 param ResourceTags bool = false
 
@@ -181,22 +185,22 @@ param Telemetry bool = true
 // =========== //
 // Resouce Naming.
 var UniqueStringSixChar = take('${uniqueString(SharedServicesSubId, Time)}', 6)
-var ActionGroupName = CustomNaming ? ActionGroupCustomName : 'ag-aib-email-${NamingStandard}'
+var ActionGroupName = CustomNaming ? ActionGroupCustomName : 'ag-aib-${NamingStandard}'
 var NamingStandard = '${LocationAcronym}'
 var LocationLowercase = toLower(SharedServicesLocation)
-var ResourceGroupName = CustomNaming ? ResourceGroupCustomName : 'rg-avd-${NamingStandard}-shared-services' // max length limit 90 characters
+var ResourceGroupName = CustomNaming ? ResourceGroupCustomName : 'rg-avd-${NamingStandard}-shared-services'
 var ImageGalleryName = CustomNaming ? ImageGalleryCustomName : 'gal_avd_${NamingStandard}'
-var UserAssignedIdentityName = 'id-avd-imagebuilder-${NamingStandard}'
-var LogAnalyticsWorkspaceName = CustomNaming ? LogAnalyticsWorkspaceCustomName : 'log-aib-${NamingStandard}'
+var UserAssignedIdentityName = CustomNaming ? UserAssignedIdentityCustomName : 'id-aib-${NamingStandard}'
+var LogAnalyticsWorkspaceName = CustomNaming ? LogAnalyticsWorkspaceCustomName : 'log-avd-${NamingStandard}'
 var ImageDefinitionName = CustomNaming ? ImageDefinitionCustomName : 'avd-${OperatingSystemImage}'
 var ImageTemplateName = CustomNaming ? ImageTemplateCustomName : 'it-avd-${OperatingSystemImage}'
 var AutomationAccountName = CustomNaming ? AutomationAccountCustomName : 'aa-aib-${NamingStandard}'
-var StorageAccountName = CustomNaming ? StorageAccountCustomName : 'stavdshar${UniqueStringSixChar}'
+var StorageAccountName = CustomNaming ? StorageAccountCustomName : 'stavd${NamingStandard}${UniqueStringSixChar}'
 var AIBContainerName = CustomNaming ? AIBContainerCustomName : 'aib-artifacts'
 var AVDContainerName = CustomNaming ? AVDContainerCustomName : 'avd-artifacts'
-var KeyVaultName = CustomNaming ? KeyVaultCustomName : 'kv-avd-${NamingStandard}-${UniqueStringSixChar}' // max length limit 24 characters
-var LocationAcronym = locationAcronyms[LocationLowercase]
-var locationAcronyms = {
+var KeyVaultName = CustomNaming ? KeyVaultCustomName : 'kv-avd-${NamingStandard}-${UniqueStringSixChar}'
+var LocationAcronym = LocationAcronyms[LocationLowercase]
+var LocationAcronyms = {
     eastasia: 'eas'
     southeastasia: 'seas'
     centralus: 'cus'
