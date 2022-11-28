@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "12090154152704667737"
+      "templateHash": "10331837926546001721"
     }
   },
   "parameters": {
@@ -339,7 +339,7 @@
   },
   "variables": {
     "UniqueStringSixChar": "[take(format('{0}', uniqueString(parameters('SharedServicesSubId'), parameters('Time'))), 6)]",
-    "ActionGroupName": "[if(parameters('CustomNaming'), parameters('ActionGroupCustomName'), format('ag-aib-{0}', variables('NamingStandard')))]",
+    "ActionGroupName": "[if(parameters('CustomNaming'), parameters('ActionGroupCustomName'), format('ag-avd-{0}', variables('NamingStandard')))]",
     "NamingStandard": "[format('{0}', variables('LocationAcronym'))]",
     "LocationLowercase": "[toLower(parameters('SharedServicesLocation'))]",
     "ResourceGroupName": "[if(parameters('CustomNaming'), parameters('ResourceGroupCustomName'), format('rg-avd-{0}-shared-services', variables('NamingStandard')))]",
@@ -348,7 +348,7 @@
     "LogAnalyticsWorkspaceName": "[if(parameters('CustomNaming'), parameters('LogAnalyticsWorkspaceCustomName'), format('log-avd-{0}', variables('NamingStandard')))]",
     "ImageDefinitionName": "[if(parameters('CustomNaming'), parameters('ImageDefinitionCustomName'), format('avd-{0}', parameters('OperatingSystemImage')))]",
     "ImageTemplateName": "[if(parameters('CustomNaming'), parameters('ImageTemplateCustomName'), format('it-avd-{0}', parameters('OperatingSystemImage')))]",
-    "AutomationAccountName": "[if(parameters('CustomNaming'), parameters('AutomationAccountCustomName'), format('aa-aib-{0}', variables('NamingStandard')))]",
+    "AutomationAccountName": "[if(parameters('CustomNaming'), parameters('AutomationAccountCustomName'), format('aa-avd-{0}', variables('NamingStandard')))]",
     "StorageAccountName": "[if(parameters('CustomNaming'), parameters('StorageAccountCustomName'), format('stavd{0}{1}', variables('NamingStandard'), variables('UniqueStringSixChar')))]",
     "AIBContainerName": "[if(parameters('CustomNaming'), parameters('AIBContainerCustomName'), 'aib-artifacts')]",
     "AVDContainerName": "[if(parameters('CustomNaming'), parameters('AVDContainerCustomName'), 'avd-artifacts')]",
