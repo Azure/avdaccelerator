@@ -185,7 +185,7 @@ param Telemetry bool = true
 // =========== //
 // Resouce Naming.
 var UniqueStringSixChar = take('${uniqueString(SharedServicesSubId, Time)}', 6)
-var ActionGroupName = CustomNaming ? ActionGroupCustomName : 'ag-aib-${NamingStandard}'
+var ActionGroupName = CustomNaming ? ActionGroupCustomName : 'ag-avd-${NamingStandard}'
 var NamingStandard = '${LocationAcronym}'
 var LocationLowercase = toLower(SharedServicesLocation)
 var ResourceGroupName = CustomNaming ? ResourceGroupCustomName : 'rg-avd-${NamingStandard}-shared-services'
@@ -194,7 +194,7 @@ var UserAssignedIdentityName = CustomNaming ? UserAssignedIdentityCustomName : '
 var LogAnalyticsWorkspaceName = CustomNaming ? LogAnalyticsWorkspaceCustomName : 'log-avd-${NamingStandard}'
 var ImageDefinitionName = CustomNaming ? ImageDefinitionCustomName : 'avd-${OperatingSystemImage}'
 var ImageTemplateName = CustomNaming ? ImageTemplateCustomName : 'it-avd-${OperatingSystemImage}'
-var AutomationAccountName = CustomNaming ? AutomationAccountCustomName : 'aa-aib-${NamingStandard}'
+var AutomationAccountName = CustomNaming ? AutomationAccountCustomName : 'aa-avd-${NamingStandard}'
 var StorageAccountName = CustomNaming ? StorageAccountCustomName : 'stavd${NamingStandard}${UniqueStringSixChar}'
 var AIBContainerName = CustomNaming ? AIBContainerCustomName : 'aib-artifacts'
 var AVDContainerName = CustomNaming ? AVDContainerCustomName : 'avd-artifacts'
