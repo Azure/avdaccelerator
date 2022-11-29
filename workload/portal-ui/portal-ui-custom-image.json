@@ -16,7 +16,7 @@
                             "options": {
                                 "text": "The subscription and location selected in this step, will be used to deploy AVD Shared Services Landing Zone resources (compute gallery, key vaults, storage, image template, etc.).",
                                 "style": "Info"
-                            }     
+                            }
                         },
                         {
                             "name": "resourceScope",
@@ -142,6 +142,34 @@
                                 "required": true,
                                 "allowedValues": [
                                     {
+                                        "label": "Australia East",
+                                        "value": "australiaeast"
+                                    },
+                                    {
+                                        "label": "Australia Southeast",
+                                        "value": "australiasoutheast"
+                                    },
+                                    {
+                                        "label": "Brazil South",
+                                        "value": "brazilsouth"
+                                    },
+                                    {
+                                        "label": "Canada Central",
+                                        "value": "canadacentral"
+                                    },
+                                    {
+                                        "label": "Central India",
+                                        "value": "centralindia"
+                                    },
+                                    {
+                                        "label": "Central US",
+                                        "value": "centralus"
+                                    },
+                                    {
+                                        "label": "East Asia",
+                                        "value": "eastasia"
+                                    },
+                                    {
                                         "label": "East US",
                                         "value": "eastus"
                                     },
@@ -150,8 +178,84 @@
                                         "value": "eastus2"
                                     },
                                     {
+                                        "label": "France Central",
+                                        "value": "francecentral"
+                                    },
+                                    {
+                                        "label": "Germany West Central",
+                                        "value": "germanywestcentral"
+                                    },
+                                    {
+                                        "label": "Japan East",
+                                        "value": "japaneast"
+                                    },
+                                    {
+                                        "label": "Jio India West",
+                                        "value": "jioindiawest"
+                                    },
+                                    {
+                                        "label": "Korea Central",
+                                        "value": "koreacentral"
+                                    },
+                                    {
+                                        "label": "North Central US",
+                                        "value": "northcentralus"
+                                    },
+                                    {
+                                        "label": "North Europe",
+                                        "value": "northeurope"
+                                    },
+                                    {
+                                        "label": "Norway East",
+                                        "value": "norwayeast"
+                                    },
+                                    {
+                                        "label": "Qatar Central",
+                                        "value": "qatarcentral"
+                                    },
+                                    {
+                                        "label": "South Africa North",
+                                        "value": "southafricanorth"
+                                    },
+                                    {
+                                        "label": "South Central US",
+                                        "value": "southcentralus"
+                                    },
+                                    {
+                                        "label": "South East Asia",
+                                        "value": "southeastasia"
+                                    },
+                                    {
+                                        "label": "Switzerland North",
+                                        "value": "switzerlandnorth"
+                                    },
+                                    {
+                                        "label": "UAE North",
+                                        "value": "uaenorth"
+                                    },
+                                    {
+                                        "label": "UK South",
+                                        "value": "uksouth"
+                                    },
+                                    {
+                                        "label": "UK West",
+                                        "value": "ukwest"
+                                    },
+                                    {
+                                        "label": "USGov Arizona (Public Preview)",
+                                        "value": "usgovarizona"
+                                    },
+                                    {
+                                        "label": "USGov Virginia (Public Preview)",
+                                        "value": "usgovvirginia"
+                                    },
+                                    {
                                         "label": "West Central US",
                                         "value": "westcentralus"
+                                    },
+                                    {
+                                        "label": "West Europe",
+                                        "value": "westeurope"
                                     },
                                     {
                                         "label": "West US",
@@ -164,38 +268,6 @@
                                     {
                                         "label": "West US 3",
                                         "value": "westus3"
-                                    },
-                                    {
-                                        "label": "South Central US",
-                                        "value": "southcentralus"
-                                    },
-                                    {
-                                        "label": "North Europe",
-                                        "value": "northeurope"
-                                    },
-                                    {
-                                        "label": "West Europe",
-                                        "value": "westeurope"
-                                    },
-                                    {
-                                        "label": "UK South",
-                                        "value": "uksouth"
-                                    },
-                                    {
-                                        "label": "UK West",
-                                        "value": "ukwest"
-                                    },
-                                    {
-                                        "label": "South East Asia",
-                                        "value": "southeastasia"
-                                    },
-                                    {
-                                        "label": "Australia South East",
-                                        "value": "australiasoutheast"
-                                    },
-                                    {
-                                        "label": "Australia East",
-                                        "value": "australiaeast"
                                     }
                                 ]
                             }
@@ -238,8 +310,8 @@
                             "name": "subnetsApi",
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
-                              "method": "GET",
-                              "path": "[concat(steps('aib').virtualNetworkSelection.id, '/subnets?api-version=2022-05-01')]"
+                                "method": "GET",
+                                "path": "[concat(steps('aib').virtualNetworkSelection.id, '/subnets?api-version=2022-05-01')]"
                             }
                         },
                         {
@@ -250,7 +322,7 @@
                             "defaultValue": "",
                             "toolTip": "Select an existing subnet for AIB build virtual machines. This enables the use of Private Link and prevents the deployment of public IP addresses.",
                             "constraints": {
-                              "allowedValues": "[map(steps('aib').subnetsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.name, '\"}')))]"
+                                "allowedValues": "[map(steps('aib').subnetsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.name, '\"}')))]"
                             }
                         },
                         {
