@@ -1833,6 +1833,15 @@
                                 ]
                             }
                         },
+			    {
+    				"name": "avdResourceTaggingParentCostInfo",
+    				"type": "Microsoft.Common.InfoBox",
+    				"options": {
+        				"text": "By default, all resources will be tagged with parent resource cost management tag (cm-resource-parent). This will group all costs under the hostpool resource.",
+        				"uri": "https://learn.microsoft.com/azure/virtual-desktop/tag-virtual-desktop-resources#use-the-cm-resource-parent-tag-to-automatically-group-costs-by-host-pool",
+        				"style": "Info"
+    				}
+			},
                         {
                             "name": "avdResourceTags",
                             "type": "Microsoft.Common.Section",
