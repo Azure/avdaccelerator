@@ -2,26 +2,23 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "= 3.22.0"
+      version = "= 3.33.0"
     }
     azuread = {
       source  = "hashicorp/azuread"
       version = "~> 2.25.0"
     }
     random = {
-      source  = "hashicorp/random"
-      version = "~> 3.3.2"
+      source = "hashicorp/random"
     }
     local = {
-      source  = "hashicorp/local"
-      version = "~> 2.2.3"
+      source = "hashicorp/local"
     }
     azapi = {
       source = "Azure/azapi"
     }
     time = {
-      source  = "hashicorp/time"
-      version = "~> 0.8.0"
+      source = "hashicorp/time"
     }
   }
 }
@@ -43,4 +40,16 @@ provider "azurerm" {
     }
   }
   skip_provider_registration = true
+}
+
+provider "azurerm" {
+  features {}
+  alias           = "hub"
+  subscription_id = var.hub_subscription_id
+}
+
+provider "azurerm" {
+  features {}
+  alias           = "spoke"
+  subscription_id = var.spoke_subscription_id
 }
