@@ -1,9 +1,3 @@
-resource "azurerm_user_assigned_identity" "mi" {
-  name                = "id-avd-fslogix-eus-${var.prefix}"
-  resource_group_name = azurerm_resource_group.rg_storage.name
-  location            = azurerm_resource_group.rg_storage.location
-}
-
 ## Azure Storage Accounts requires a globally unique names
 ## https://docs.microsoft.com/azure/storage/common/storage-account-overview
 ## Create a File Storage Account 
@@ -17,19 +11,17 @@ resource "azurerm_storage_account" "storage" {
   account_kind              = "FileStorage"
   enable_https_traffic_only = true
 
+
   identity {
     type = "SystemAssigned"
   }
 }
 
 resource "azurerm_storage_share" "FSShare" {
-  name             = "fslogix"
-  quota            = "100"
-  enabled_protocol = "SMB"
-
-
+  name                 = "fslogix"
+  quota                = "100"
+  enabled_protocol     = "SMB"
   storage_account_name = azurerm_storage_account.storage.name
-  depends_on           = [azurerm_storage_account.storage]
 }
 
 
@@ -63,3 +55,12 @@ resource "azurerm_private_endpoint" "afpe" {
   }
 }
 
+resource "azurerm_storage_account_network_rules" "stfw" {
+  storage_account_id = azurerm_storage_account.storage.id
+  default_action     = "Deny"
+  bypass             = ["AzureServices"]
+
+  depends_on = [
+    azurerm_storage_share.FSShare
+  ]
+}

@@ -21,13 +21,13 @@ output "location" {
 output "azure_virtual_desktop_keyvault_secret_domainjoinerpassword" {
   description = "Domain joiner password"
   value       = azurerm_key_vault_secret.domainjoinerpassword.value
-  sensitive = true
+  sensitive   = true
 }
 
 output "azure_virtual_desktop_keyvault_secret_vmlocalpassword" {
   description = "Admin password"
   value       = azurerm_key_vault_secret.vmlocalpassword.value
-  sensitive = true
+  sensitive   = true
 }
 
 output "vault_uri" {
