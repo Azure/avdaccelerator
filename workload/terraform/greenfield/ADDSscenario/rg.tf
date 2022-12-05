@@ -16,6 +16,12 @@ resource "azurerm_resource_group" "shrg" {
   location = var.avdLocation
 }
 
+# Create a Resource Group for FSLogix temp Hosts
+resource "azurerm_resource_group" "rg_fslogix" {
+  name     = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_fslogix}"
+  location = var.avdLocation
+}
+
 /*
 # Create a Resource Group for Personal Session Hosts
 resource "azurerm_resource_group" "shp" {

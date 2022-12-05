@@ -1,7 +1,7 @@
 variable "avdLocation" {
   description = "Location of the resource group."
 }
-
+# Resource Groups
 variable "rg_so" {
   type        = string
   description = "Name of the Resource group in which to deploy service objects"
@@ -21,12 +21,27 @@ variable "rg_pool" {
   description = "Resource group AVD machines will be deployed to"
 }
 
+variable "rg_avdi" {
+  type        = string
+  description = "Name of the Resource group in which to deploy avd service objects"
+}
+
+
+variable "rg_fslogix" {
+  description = "Resource group FSLogix VM"
+}
+
 variable "vnet" {
   type        = string
   description = "Name of avd vnet"
 }
 
 variable "snet" {
+  type        = string
+  description = "Name of subnet"
+}
+
+variable "pesnet" {
   type        = string
   description = "Name of subnet"
 }
@@ -120,6 +135,11 @@ variable "subnet_range" {
   description = "Address range for session host subnet"
 }
 
+variable "pesubnet_range" {
+  type        = list(string)
+  description = "Address range for private endpoints subnet"
+}
+
 variable "ad_rg" {
   type        = string
   description = "The resource group for AD VM"
@@ -211,4 +231,65 @@ variable "hub_subscription_id" {
 variable "spoke_subscription_id" {
   type        = string
   description = "Spoke Subscription id"
+}
+
+
+variable "file_name" {
+  description = "The name of the PowerShell script that the CustomScriptExtention runs"
+}
+
+variable "file_url" {
+  description = "The URL for the file_name"
+}
+
+variable "dsc_path" {
+  description = "Path to download the dsc script from"
+}
+
+variable "id_provider" {
+  description = "The Identity Provider for FsLogix."
+  validation {
+    condition     = contains(["ADDS", "AAD, AADDS"], var.id_provider)
+    error_message = "Valid values are ADDS, AAD or AADDS."
+  }
+}
+
+variable "azure_cloud_environment" {
+  description = "The Azure Cloud Environment"
+  validation {
+    condition     = contains(["AzureCloud", "AzureGovCloud"], var.azure_cloud_environment)
+    error_message = "Valid values are AzureCloud or AzureGovCloud."
+  }
+}
+
+variable "domain_admin_user" {
+  description = "The name of the user to join the FSLogix Storage Account to the domain. Format: User@domain.TLD"
+}
+
+variable "domain_admin_password" {
+  description = "The password of the user to join the FsLogix Storage Account to the domain. "
+}
+
+variable "custom_ou" {
+  description = "If false, the storage account will be joined to the default computer OU"
+  default     = "true"
+  validation {
+    condition     = contains(["true", "false"], var.custom_ou)
+    error_message = "Valid values: true or false."
+
+  }
+}
+
+variable "create_new_ou" {
+  description = "If true, the OU in the OU_name variable will be created"
+  default     = "false"
+  validation {
+    condition     = contains(["true", "false"], var.create_new_ou)
+    error_message = "Valid values: true or false."
+  }
+
+}
+
+variable "fslogix_sharename" {
+  description = "The name of the FsLogix File share name"
 }
