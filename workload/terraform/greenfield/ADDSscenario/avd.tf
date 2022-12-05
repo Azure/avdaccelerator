@@ -26,6 +26,9 @@ resource "azurerm_virtual_desktop_host_pool" "hostpool" {
   depends_on = [
     azurerm_resource_group.rg
   ]
+    lifecycle {
+    ignore_changes = all
+  }
 }
 
 #Autoscale is currently only available in the public cloud.
@@ -131,14 +134,13 @@ resource "azurerm_virtual_desktop_workspace_application_group_association" "ws-d
 # Get Log Analytics Workspace data
 data "azurerm_log_analytics_workspace" "lawksp" {
   name                = lower(replace("law-avd-${var.prefix}", "-", ""))
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_avdi}"
 
   depends_on = [
     azurerm_virtual_desktop_workspace.workspace,
     azurerm_virtual_desktop_host_pool.hostpool,
     azurerm_virtual_desktop_application_group.dag,
-    azurerm_virtual_desktop_workspace_application_group_association.ws-dag,
-    data.azurerm_log_analytics_workspace.lawksp
+    azurerm_virtual_desktop_workspace_application_group_association.ws-dag
   ]
 }
 
