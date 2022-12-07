@@ -26,7 +26,7 @@ resource "azurerm_virtual_desktop_host_pool" "hostpool" {
   depends_on = [
     azurerm_resource_group.rg
   ]
-    lifecycle {
+  lifecycle {
     ignore_changes = all
   }
 }

@@ -35,6 +35,16 @@ resource "azurerm_network_interface" "avd_vm_nic" {
   ]
 }
 
+# Availability Set
+resource "azurerm_availability_set" "aset" {
+  name                         = "avail-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
+  resource_group_name          = azurerm_resource_group.shrg.name
+  location                     = azurerm_resource_group.shrg.location
+  platform_fault_domain_count  = 2
+  platform_update_domain_count = 5
+  managed                      = true
+}
+
 resource "azurerm_windows_virtual_machine" "avd_vm" {
   count                      = var.rdsh_count
   name                       = "avd-vm-${var.prefix}-${count.index + 1}"
@@ -43,6 +53,7 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   size                       = var.vm_size
   network_interface_ids      = ["${azurerm_network_interface.avd_vm_nic.*.id[count.index]}"]
   provision_vm_agent         = true
+  availability_set_id        = azurerm_availability_set.aset.id
   admin_username             = var.local_admin_username
   admin_password             = var.local_admin_password
   encryption_at_host_enabled = true
@@ -185,3 +196,4 @@ resource "azurerm_virtual_machine_extension" "mal" {
     azurerm_virtual_machine_extension.mma
   ]
 }
+
