@@ -142,3 +142,46 @@ PROTECTED_SETTINGS
   ]
 }
 
+# MMA agent
+resource "azurerm_virtual_machine_extension" "mma" {
+  name                       = "MicrosoftMonitoringAgent"
+  count                      = var.rdsh_count
+  virtual_machine_id         = azurerm_windows_virtual_machine.avd_vm.*.id[count.index]
+  publisher                  = "Microsoft.EnterpriseCloud.Monitoring"
+  type                       = "MicrosoftMonitoringAgent"
+  type_handler_version       = "1.0"
+  auto_upgrade_minor_version = true
+  settings                   = <<SETTINGS
+    {
+      "workspaceId": "${data.azurerm_log_analytics_workspace.lawksp.workspace_id}"
+    }
+      SETTINGS
+
+  protected_settings = <<PROTECTED_SETTINGS
+  {
+   "workspaceKey": "${data.azurerm_log_analytics_workspace.lawksp.primary_shared_key}"
+  }
+PROTECTED_SETTINGS
+
+  depends_on = [
+    azurerm_virtual_machine_extension.domain_join,
+    azurerm_virtual_machine_extension.vmext_dsc
+  ]
+}
+
+# Microsoft Antimalware
+resource "azurerm_virtual_machine_extension" "mal" {
+  name                       = "IaaSAntimalware"
+  count                      = var.rdsh_count
+  virtual_machine_id         = azurerm_windows_virtual_machine.avd_vm.*.id[count.index]
+  publisher                  = "Microsoft.Azure.Security"
+  type                       = "IaaSAntimalware"
+  type_handler_version       = "1.3"
+  auto_upgrade_minor_version = "true"
+
+  depends_on = [
+    azurerm_virtual_machine_extension.domain_join,
+    azurerm_virtual_machine_extension.vmext_dsc,
+    azurerm_virtual_machine_extension.mma
+  ]
+}
