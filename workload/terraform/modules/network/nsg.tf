@@ -28,6 +28,7 @@ resource "azurerm_network_security_group" "res-0" {
     source_port_range          = "*"
   }
 
+/*
   security_rule {
     access                     = "Deny"
     destination_address_prefix = "*"
@@ -39,7 +40,7 @@ resource "azurerm_network_security_group" "res-0" {
     source_address_prefix      = "*"
     source_port_range          = "*"
   }
-
+*/
   security_rule {
     access                     = "Allow"
     destination_address_prefix = "Internet"
