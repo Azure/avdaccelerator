@@ -180,6 +180,7 @@ PROTECTED_SETTINGS
     azurerm_virtual_machine_extension.domain_join,
     azurerm_virtual_machine_extension.vmext_dsc
   ]
+
 }
 
 # Microsoft Antimalware
