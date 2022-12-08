@@ -43,6 +43,7 @@ resource "azurerm_availability_set" "aset" {
   platform_fault_domain_count  = 2
   platform_update_domain_count = 5
   managed                      = true
+  tags                         = local.tags
 }
 
 resource "azurerm_windows_virtual_machine" "avd_vm" {
@@ -57,6 +58,7 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   admin_username             = var.local_admin_username
   admin_password             = var.local_admin_password
   encryption_at_host_enabled = true
+  tags                       = local.tags
   os_disk {
     name                 = "${lower(var.prefix)}-${count.index + 1}"
     caching              = "ReadWrite"
