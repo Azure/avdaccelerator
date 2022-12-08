@@ -10,6 +10,7 @@ resource "azurerm_storage_account" "storage" {
   account_replication_type  = "LRS"
   account_kind              = "FileStorage"
   enable_https_traffic_only = true
+  tags                      = local.tags
 
 
   identity {
