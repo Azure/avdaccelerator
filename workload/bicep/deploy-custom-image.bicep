@@ -61,7 +61,7 @@ param existingAibManagedIdentityId string = ''
 param existingAibManagedIdentityName string = ''
 
 // Custom Naming
-// Input must followe resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
+// Input must follow resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
 @description('Optional. AVD resources custom naming. (Default: false)')
 param avdUseCustomNaming bool = false
 
@@ -95,7 +95,7 @@ param avdSharedServicesKvCustomName string = 'kv-avd'
 //
 
 // Resource tagging
-// 
+//
 @description('Optional. Apply tags on resources and resource groups. (Default: false)')
 param createResourceTags bool = false
 
@@ -591,9 +591,9 @@ module imageTemplateBuild '../../carml/1.2.0/Microsoft.Resources/deploymentScrip
             )
                 $ErrorActionPreference = "Stop"
                 Install-Module -Name Az.ImageBuilder -Force
-                # Kick off the Azure Image Build 
+                # Kick off the Azure Image Build
                 Write-Host "Kick off Image buld for $imageTemplateName"
-                Invoke-AzResourceAction -ResourceName $imageTemplateName -ResourceGroupName $resourceGroupName -ResourceType "Microsoft.VirtualMachineImages/imageTemplates" -Action Run -Force              
+                Invoke-AzResourceAction -ResourceName $imageTemplateName -ResourceGroupName $resourceGroupName -ResourceType "Microsoft.VirtualMachineImages/imageTemplates" -Action Run -Force
                 $DeploymentScriptOutputs = @{}
             $getStatus=$(Get-AzImageBuilderTemplate -ResourceGroupName $resourceGroupName -Name $imageTemplateName)
             $status=$getStatus.LastRunStatusRunState
