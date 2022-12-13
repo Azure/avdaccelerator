@@ -70,7 +70,7 @@ param useSharedImage bool
 param avdImageTemplateDefinitionId string
 
 @description('Fslogix Managed Identity Resource ID.')
-param fslogixManagedIdentityResourceId string
+param avdManagedIdentityResourceId string
 
 @description('Local administrator username.')
 param avdVmLocalUserName string
@@ -193,7 +193,7 @@ module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, varAvdSe
     avdWorkloadSubsId: avdWorkloadSubsId
     encryptionAtHost: encryptionAtHost
     createAvdFslogixDeployment: createAvdFslogixDeployment
-    fslogixManagedIdentityResourceId: fslogixManagedIdentityResourceId
+    avdManagedIdentityResourceId: avdManagedIdentityResourceId
     fsLogixScript: fsLogixScript
     FsLogixScriptArguments: FsLogixScriptArguments
     FslogixSharePath: FslogixSharePath
