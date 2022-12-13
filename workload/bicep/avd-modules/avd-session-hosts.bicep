@@ -61,7 +61,7 @@ param useSharedImage bool
 param avdImageTemplateDefinitionId string
 
 @description('Fslogix Managed Identity Resource ID.')
-param fslogixManagedIdentityResourceId string
+param avdManagedIdentityResourceId string
 
 @description('Local administrator username.')
 param avdVmLocalUserName string
@@ -151,7 +151,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
         location: avdSessionHostLocation
         timeZone: avdTimeZone
         userAssignedIdentities: createAvdFslogixDeployment ? {
-            '${fslogixManagedIdentityResourceId}': {}
+            '${avdManagedIdentityResourceId}': {}
         } : {}
         systemAssignedIdentity: (avdIdentityServiceProvider == 'AAD') ? true: false
         availabilityZone: avdUseAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
