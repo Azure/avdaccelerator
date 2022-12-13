@@ -51,11 +51,11 @@ param useSharedImage bool
 @description('Source custom image ID.')
 param avdImageTemplateDefinitionId string
 
-@description('Fslogix Managed Identity Resource ID.')
-param fslogixManagedIdentityResourceId string
+@description('*Managed Identity Resource ID.')
+param ManagedIdentityResourceId string
 
-@description('Fslogix file share SMB multichannel.')
-param avdFslogixFileShareMultichannel bool
+@description('*File share SMB multichannel.')
+param avdFileShareMultichannel bool
 
 @description('Subnet resource ID for the Azure Files private endpoint.')
 param subnetResourceId string
@@ -78,17 +78,17 @@ param sessionHostOuPath string
 @description('Application Security Group (ASG) for the session hosts.')
 param avdApplicationSecurityGroupResourceId string
 
-@description('Azure Fies storage account name.')
-param avdFslogixStorageName string
+@description('*Azure Files storage account name.')
+param avdStorageName string
 
-@description('Azure Files share name.')
-param avdFslogixProfileContainerFileShareName string
+@description('*Azure Files share name.')
+param avdContainerFileShareName string
 
-@description('Azure Files storage account SKU.')
-param fslogixStorageSku string
+@description('*Azure Files storage account SKU.')
+param StorageSku string
 
-@description('Azure File share quota')
-param avdFslogixFileShareQuotaSize int
+@description('*Azure File share quota')
+param avdFileShareQuotaSize int
 
 @description('Use Azure private DNS zones for private endpoints.')
 param avdVnetPrivateDnsZone bool
@@ -121,6 +121,12 @@ param avdDiagnosticLogsRetentionInDays int
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
+param storagePurpose string
+
+/*@description('The name being applied to the storage account')
+param stName string
+*/
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -133,6 +139,7 @@ var varAvdFileShareMetricsDiagnostic = [
     'Transaction'
 ]
 
+
 // =========== //
 // Deployments //
 // =========== //
@@ -144,15 +151,15 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 }
 
 // Provision the storage account and Azure Files.
-module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
+module storageAndFile '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
-    name: 'AVD-Fslogix-Storage-${time}'
+    name: 'AVD-${storagePurpose}-${time}'
     params: {
-        name: avdFslogixStorageName
+        name: avdStorageName
         location: avdSessionHostLocation
-        storageAccountSku: fslogixStorageSku
+        storageAccountSku: StorageSku
         allowBlobPublicAccess: false
-        storageAccountKind: ((fslogixStorageSku =~ 'Premium_LRS') || (fslogixStorageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
+        storageAccountKind: ((StorageSku =~ 'Premium_LRS') || (StorageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
         azureFilesIdentityBasedAuthentication: (avdIdentityServiceProvider == 'AADDS') ? {
             directoryServiceOptions: 'AADDS'
         }: {
@@ -168,14 +175,14 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
         fileServices: {
             shares: [
                 {
-                    name: avdFslogixProfileContainerFileShareName
-                    sharedQuota: avdFslogixFileShareQuotaSize * 100 //Portal UI steps scale
+                    name: avdContainerFileShareName
+                    sharedQuota: avdFileShareQuotaSize * 100 //Portal UI steps scale
                 }
             ]
-            protocolSettings: avdFslogixFileShareMultichannel ? {
+            protocolSettings: avdFileShareMultichannel ? {
                 smb: {
                     multichannel: {
-                        enabled: avdFslogixFileShareMultichannel
+                        enabled: avdFileShareMultichannel
                     }
                 }
             } : {}
@@ -206,16 +213,17 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
 }
 
 // Provision temporary VM and add it to domain.
+//delete this..add storageaccountname?
 module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.bicep' = {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
-    name: 'Deploy-Mgmt-VM-${time}'
+    name: 'Deploy-Mgmt-VM-${storagePurpose}-${time}'
     params: {
         name: managementVmName
         location: avdSessionHostLocation
         timeZone: avdTimeZone
         systemAssignedIdentity: false
         userAssignedIdentities: {
-            '${fslogixManagedIdentityResourceId}': {}
+            '${ManagedIdentityResourceId}': {}
         }
         encryptionAtHost: encryptionAtHost
         availabilityZone: []
@@ -269,14 +277,14 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
         tags: avdTags
     }
     dependsOn: [
-        fslogixStorage
+        storageAndFile
     ]
 }
 
 // Introduce delay for management VM to be ready.
 module managementVmDelay '../../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
-    name: 'AVD-Management-VM-Delay-${time}'
+    name: 'AVD-Management-VM-${storagePurpose}-Delay-${time}'
     params: {
         name: 'AVD-userManagedIdentityDelay-${time}'
         location: avdSessionHostLocation
@@ -294,12 +302,12 @@ module managementVmDelay '../../../carml/1.0.0/Microsoft.Resources/deploymentScr
     dependsOn: [
         managementVM
     ]
-}
+} 
 
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
-module addFslogixShareToDomainSript '../../vm-custom-extensions/add-azure-files-to-domain-script.bicep' = { //if(avdIdentityServiceProvider == 'ADDS')  {
+module addShareToDomainScript '../../vm-custom-extensions/add-azure-files-to-domain-script.bicep' = { //if(avdIdentityServiceProvider == 'ADDS')  {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
-    name: 'Add-FslogixStorage-Setup-${time}'
+    name: 'Add-${storagePurpose}Storage-Setup-${time}'
     params: {
         location: avdSessionHostLocation
         name: managementVM.outputs.name
@@ -308,7 +316,7 @@ module addFslogixShareToDomainSript '../../vm-custom-extensions/add-azure-files-
         baseScriptUri: storageToDomainScriptUri
     }
     dependsOn: [
-        fslogixStorage
+        storageAndFile
         managementVmDelay
     ]
 }
