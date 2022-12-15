@@ -195,11 +195,12 @@ param avdSessionHostsSize string = 'Standard_D2s_v3'
 param avdSessionHostDiskType string = 'Standard_LRS'
 
 @allowed([
+    'Standard'
     'TrustedLaunch'
     'ConfidentialVM'
 ])
-@description('Optional. Specifies the securityType of the virtual machine. Requires a Gen2 Image.')
-param securityType string 
+@description('Optional. Specifies the securityType of the virtual machine. "ConfidentialVM" and "TrustedLaunch" require a Gen2 Image.')
+param securityType string = 'Standard'
 
 @description('Optional. Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings.')
 param secureBootEnabled bool = false
@@ -1177,7 +1178,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         avdSessionHostLocation: avdSessionHostLocation
         avdSessionHostNamePrefix: varAvdSessionHostNamePrefix
         avdSessionHostsSize: avdSessionHostsSize
-        securityType: securityType
+        securityType: securityType == 'Standard' ? '' : securityType
         secureBootEnabled: secureBootEnabled
         vTPMEnabled: vTPMEnabled
         avdSubnetId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${varAvdVnetworkSubnetName}' : existingVnetSubnetResourceId
