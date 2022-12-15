@@ -2212,7 +2212,7 @@
                 "avdOsImage": "[if(equals(steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsImageSource, false), steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsOsImage, 'win11_21h2')]",
                 "securityType": "[steps('avdSessionHosts').avdSessionHostsSecuritySection.securityType]",
                 "secureBootEnabled": "[steps('avdSessionHosts').avdSessionHostsSecuritySection.secureBootEnabled]",
-                "vTPMEnabled": "[steps('avdSessionHosts').avdSessionHostsSecuritySection.vTPMEnabled]",
+                "vTPMEnabled": "[steps('avdSessionHosts').avdSessionHostsSecuritySection.vTpmEnabled]",
                 "avdImageTemplateDefinitionId": "[if(equals(steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsImageSource, true), steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsComputeGalleryImage.id, 'none')]",
                 "avdSessionHostDiskType": "[steps('avdSessionHosts').avdSessionHostsSettingsSection.avdSessionHostDiskType]",
                 "avdSessionHostsSize": "[if(equals(steps('avdSessionHosts').avdDeploySessionHosts, true), steps('avdSessionHosts').avdSessionHostsSettingsSection.element1, 'Standard_D2s_v4')]",
