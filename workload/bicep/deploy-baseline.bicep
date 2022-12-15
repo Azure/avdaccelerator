@@ -195,10 +195,26 @@ param avdSessionHostsSize string = 'Standard_D2s_v3'
 param avdSessionHostDiskType string = 'Standard_LRS'
 
 @allowed([
+    'TrustedLaunch'
+    'ConfidentialVM'
+])
+@description('Optional. Specifies the securityType of the virtual machine. Requires a Gen2 Image.')
+param securityType string 
+
+@description('Optional. Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings.')
+param secureBootEnabled bool = false
+
+@description('Optional. Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings.')
+param vTPMEnabled bool = false
+@allowed([
     'win10_21h2_office'
     'win10_21h2'
+    'win10_22h2_office_g2'
+    'win10_22h2_g2'
     'win11_21h2_office'
     'win11_21h2'
+    'win11_22h2_office'
+    'win11_22h2'
 ])
 @description('Optional. AVD OS image source. (Default: win10-21h2)')
 param avdOsImage string = 'win10_21h2'
@@ -644,6 +660,18 @@ var varMarketPlaceGalleryWindows = {
         sku: 'win10-21h2-avd'
         version: 'latest'
     }
+    win10_22h2_office_g2: {
+        publisher: 'MicrosoftWindowsDesktop'
+        offer: 'office-365'
+        sku: 'win10-21h2-avd-m365-g2'
+        version: 'latest'
+    }
+    win10_21h2_g2: {
+        publisher: 'MicrosoftWindowsDesktop'
+        offer: 'windows-10'
+        sku: 'win10-21h2-avd-g2'
+        version: 'latest'
+    }
     win11_21h2_office: {
         publisher: 'MicrosoftWindowsDesktop'
         offer: 'office-365'
@@ -656,16 +684,16 @@ var varMarketPlaceGalleryWindows = {
         sku: 'win11-21h2-avd'
         version: 'latest'
     }
-    winServer_2022_Datacenter: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2022-datacenter'
+    win11_22h2_office: {
+        publisher: 'MicrosoftWindowsDesktop'
+        offer: 'office-365'
+        sku: 'win11-22h2-avd-m365'
         version: 'latest'
     }
-    winServer_2019_Datacenter: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2019-datacenter'
+    win11_22h2: {
+        publisher: 'MicrosoftWindowsDesktop'
+        offer: 'Windows-11'
+        sku: 'win11-22h2-avd'
         version: 'latest'
     }
 }
@@ -1149,6 +1177,9 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         avdSessionHostLocation: avdSessionHostLocation
         avdSessionHostNamePrefix: varAvdSessionHostNamePrefix
         avdSessionHostsSize: avdSessionHostsSize
+        securityType: securityType
+        secureBootEnabled: secureBootEnabled
+        vTPMEnabled: vTPMEnabled
         avdSubnetId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${varAvdVnetworkSubnetName}' : existingVnetSubnetResourceId
         createAvdVnet: createAvdVnet
         avdUseAvailabilityZones: avdUseAvailabilityZones
