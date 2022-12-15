@@ -919,12 +919,20 @@
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Windows 10",
+                                                "label": "Windows 10 21H2",
                                                 "value": "win10_21h2"
                                             },
                                             {
-                                                "label": "Windows 10 - Office 365",
+                                                "label": "Windows 10 21H2 - Office 365",
                                                 "value": "win10_21h2_office"
+                                            },
+                                            {
+                                                "label": "Windows 10 22H2 (Gen2)",
+                                                "value": "win10_22h2_g2"
+                                            },
+                                            {
+                                                "label": "Windows 10 22H2 - Office 365 (Gen2)",
+                                                "value": "win10_22h2_office"
                                             },
                                             {
                                                 "label": "Windows 11",
@@ -933,6 +941,14 @@
                                             {
                                                 "label": "Windows 11 - Office 365",
                                                 "value": "win11_21h2_office"
+                                            },
+                                            {
+                                                "label": "Windows 11 22H2 (Gen2)",
+                                                "value": "win11_22h2"
+                                            },
+                                            {
+                                                "label": "Windows 11 22H2 - Office 365 (Gen2",
+                                                "value": "win11_22h2_office"
                                             }
                                         ]
                                     }
@@ -945,6 +961,81 @@
                                     "resourceType": "Microsoft.Compute/galleries/images",
                                     "constraints": {
                                         "required": true
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "avdSessionHostsSecuritySection",
+                            "type": "Microsoft.Common.Section",
+                            "visible": "[equals(steps('avdSessionHosts').avdDeploySessionHosts, true)]",
+                            "label": "Security Profile",
+                            "elements": [
+                                {
+                                    "name": "securityType",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "Security Type",
+                                    "filter": true,
+                                    "defaultValue": "Standard",
+                                    "toolTip": "Choose a type of security that matches your needs: Standard includes basic protections at no additional cost. Trusted launch virtual machines provide additional security features on Gen2 virtual machines to protect against persistent and advanced attacks.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Standard",
+                                                "value": null
+                                            },
+                                            {
+                                                "label": "Trusted Launch Virtual Machines",
+                                                "value": "TrustedLaunch"
+                                            },
+                                            {
+                                                "label": "Confidential Virtual Machines",
+                                                "value": "ConfidentialVM"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "secureBootEnabled",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "visible": "[not(empty(steps('avdSessionHosts').avdSessionHostsSecuritySection.securityType))]",
+                                    "label": "Enable secure boot",
+                                    "defaultValue": "No",
+                                    "toolTip": "Secure boot helps protect your VMs against boot kits, rootkits, and kernel-level malware.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes",
+                                                "value": true
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": false
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "vTpmEnabled",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "visible": "[not(empty(steps('avdSessionHosts').avdSessionHostsSecuritySection.securityType))]",
+                                    "label": "Enable vTPM",
+                                    "defaultValue": "No",
+                                    "toolTip": "Virtual Trusted Platform Module (vTPM) is TPM2.0 compliant and validates your VM boot integrity apart from securely storing keys and secrets.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes",
+                                                "value": true
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": false
+                                            }
+                                        ]
                                     }
                                 }
                             ]
