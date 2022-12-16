@@ -642,7 +642,7 @@
                                     }
                                 },
                                 {
-                                    "name": "userAssignedIdentity",
+                                    "name": "userAssignedManagedIdentity",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "User Assigned Identity",
                                     "toolTip": "Input a custom name for the User Assigned Identity.",
@@ -947,7 +947,7 @@
                 "sharedServicesSubId": "[steps('basics').resourceScope.subscription.subscriptionId]",
                 "storageAccountCustomPrefix": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.storageAccount, 'none')]",
                 "subnetName": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').subnet, '')]",
-                "userAssignedIdentityCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.userAssignedIdentity, 'none')]",
+                "userAssignedManagedIdentityCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.userAssignedManagedIdentity, 'none')]",
                 "existingVirtualNetworkResourceId": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').virtualNetworkSelection.id, '')]",
                 "workloadNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.workload, 'none')]"
             },
