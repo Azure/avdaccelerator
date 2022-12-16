@@ -245,8 +245,8 @@ var varLocationAcronyms = {
     westus3: 'wus3'
     swedencentral: 'sec'
 }
-var timeZone = timeZones[aibLocation]
-var timeZones = {
+var varTimeZone = varTimeZones[aibLocation]
+var varTimeZones = {
     australiacentral: 'AUS Eastern Standard time'
     australiacentral2: 'AUS Eastern Standard time'
     australiaeast: 'AUS Eastern Standard time'
@@ -306,7 +306,7 @@ var timeZones = {
 //
 
 // Resource tagging
-var commonresourceTags = resourceTags ? {
+var varCommonresourceTags = resourceTags ? {
     ImageBuildName: imageBuildNameTag
     WorkloadName: workloadNameTag
     DataClassification: dataClassificationTag
@@ -321,8 +321,8 @@ var commonresourceTags = resourceTags ? {
 } : {}
 //
 
-var VMSize = 'Standard_D4s_v3'
-var operatingSystemImageDefinitions = {
+var varVmSize = 'Standard_D4s_v3'
+var varOperatingSystemImageDefinitions = {
     win10_21h2_office: {
         name: 'Windows10_21H2_Office'
         osType: 'Windows'
@@ -365,40 +365,40 @@ var operatingSystemImageDefinitions = {
     }
 }
 // Change back before Pull Request
-// var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
-var baseScriptUri = 'https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/'
-var telemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${sharedServicesLocation}'
+// var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
+var varBaseScriptUri = 'https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/'
+var varTelemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${sharedServicesLocation}'
 
 // Customization Steps
-var rdpShortPathCustomizer = rdpShortPath ? [
+var varRdpShortPathCustomizer = rdpShortPath ? [
     {
         type: 'PowerShell'
         name: 'rdpShortPath'
         runElevated: true
         runAsSystem: true
-        scriptUri: '${baseScriptUri}scripts/Set-rdpShortPath.ps1'
+        scriptUri: '${varBaseScriptUri}scripts/Set-rdpShortPath.ps1'
     }
 ] : []
-var screenCaptureProtectionCustomizer = screenCaptureProtection ? [
+var varScreenCaptureProtectionCustomizer = screenCaptureProtection ? [
     {
         type: 'PowerShell'
         name: 'screenCaptureProtection'
         runElevated: true
         runAsSystem: true
-        scriptUri: '${baseScriptUri}scripts/Set-screenCaptureProtection.ps1'
+        scriptUri: '${varBaseScriptUri}scripts/Set-screenCaptureProtection.ps1'
     }
 ] : []
-var VDOTCustomizer = [
+var varVdotCustomizer = [
     {
         type: 'PowerShell'
         name: 'VirtualDesktopOptimizationTool'
         runElevated: true
         runAsSystem: true
-        scriptUri: '${baseScriptUri}scripts/Set-VirtualDesktopOptimizations.ps1'
+        scriptUri: '${varBaseScriptUri}scripts/Set-VirtualDesktopOptimizations.ps1'
     }
 ]
-var ScriptCustomizers = union(rdpShortPathCustomizer, screenCaptureProtectionCustomizer, VDOTCustomizer)
-var RemainingCustomizers = [
+var varScriptCustomizers = union(varRdpShortPathCustomizer, varScreenCaptureProtectionCustomizer, varVdotCustomizer)
+var varRemainingCustomizers = [
     {
         type: 'WindowsRestart'
         restartCheckCommand: 'Write-Host "Restarting post script customizers"'
@@ -443,9 +443,9 @@ var RemainingCustomizers = [
         restarttimeout: '10m'
     }
 ]
-var CustomizationSteps = union(ScriptCustomizers, RemainingCustomizers)
+var varCustomizationSteps = union(varScriptCustomizers, varRemainingCustomizers)
 //
-var Alerts = [
+var varAlerts = [
     {
         name: 'Azure Image Builder - Build Failure'
         description: 'Sends an error alert when a build fails on an image template for Azure Image Builder.'
@@ -507,7 +507,7 @@ var Alerts = [
         }
     }
 ]
-var Modules = [
+var varModules = [
     {
         name: 'Az.Accounts'
         uri: 'https://www.powershellgallery.com/api/v2/package'
@@ -519,7 +519,7 @@ var Modules = [
 ]
 
 // Role Definitions & Assignments
-var distributionGroupRole = !empty(distributionGroup) ? [
+var varDistributionGroupRole = !empty(distributionGroup) ? [
     {
         resourceGroup: split(virtualNetworkResourceId, '/')[4]
         name: 'Virtual Network Join'
@@ -531,7 +531,7 @@ var distributionGroupRole = !empty(distributionGroup) ? [
         ]
     }
 ] : []
-var ImageTemplateRoles = [
+var varImageTemplateRoles = [
     {
         resourceGroup: varResourceGroupName
         name: 'Image Template Contributor'
@@ -560,7 +560,7 @@ var ImageTemplateRoles = [
         ]
     }
 ]
-var Roles = union(distributionGroupRole, ImageTemplateRoles)
+var varRoles = union(varDistributionGroupRole, varImageTemplateRoles)
 //
 
 // =========== //
@@ -569,7 +569,7 @@ var Roles = union(distributionGroupRole, ImageTemplateRoles)
 
 //  telemetry Deployment.
 resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (telemetry) {
-    name: telemetryId
+    name: varTelemetryId
     location: sharedServicesLocation
     properties: {
         mode: 'Incremental'
@@ -588,18 +588,18 @@ module avdSharedResourcesRg '../../carml/1.0.0/Microsoft.Resources/resourceGroup
     params: {
         name: varResourceGroupName
         location: sharedServicesLocation
-        tags: resourceTags ? commonresourceTags : {}
+        tags: resourceTags ? varCommonresourceTags : {}
     }
 }
 
-module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinitions/subscription/deploy.bicep' = [for i in range(0, length(Roles)): {
+module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinitions/subscription/deploy.bicep' = [for i in range(0, length(varRoles)): {
     scope: subscription(sharedServicesSubId)
     name: 'Role-Definition_${i}_${time}'
     params: {
         subscriptionId: sharedServicesSubId
-        description: Roles[i].description
-        roleName: Roles[i].name
-        actions: Roles[i].actions
+        description: varRoles[i].description
+        roleName: varRoles[i].name
+        actions: varRoles[i].actions
         assignableScopes: [
             '/subscriptions/${sharedServicesSubId}'
         ]
@@ -612,16 +612,16 @@ module userAssignedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/userAss
     params: {
         name: varUserAssignedIdentityName
         location: sharedServicesLocation
-        tags: resourceTags ? commonresourceTags : {}
+        tags: resourceTags ? varCommonresourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
     ]
 }
 
-module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for i in range(0, length(Roles)): {
+module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for i in range(0, length(varRoles)): {
     name: 'Role-Assignment_${i}_${time}'
-    scope: resourceGroup(sharedServicesSubId, Roles[i].resourceGroup)
+    scope: resourceGroup(sharedServicesSubId, varRoles[i].resourceGroup)
     params: {
         roleDefinitionIdOrName: roleDefinitions[i].outputs.resourceId
         principalId: userAssignedIdentity.outputs.principalId
@@ -640,7 +640,7 @@ module gallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy.bicep' = {
         name: varImageGalleryName
         location: sharedServicesLocation
         galleryDescription: 'Azure Virtual Desktops Images'
-        tags: resourceTags ? commonresourceTags : {}
+        tags: resourceTags ? varCommonresourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
@@ -654,14 +654,14 @@ module image '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep'
     params: {
         galleryName: sharedImage ? gallery.outputs.name : ''
         name: varImageDefinitionName
-        osState: operatingSystemImageDefinitions[operatingSystemImage].osState
-        osType: operatingSystemImageDefinitions[operatingSystemImage].osType
-        publisher: operatingSystemImageDefinitions[operatingSystemImage].publisher
-        offer: operatingSystemImageDefinitions[operatingSystemImage].offer
-        sku: operatingSystemImageDefinitions[operatingSystemImage].sku
+        osState: varOperatingSystemImageDefinitions[operatingSystemImage].osState
+        osType: varOperatingSystemImageDefinitions[operatingSystemImage].osType
+        publisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
+        offer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
+        sku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
         location: aibLocation
-        hyperVGeneration: operatingSystemImageDefinitions[operatingSystemImage].hyperVGeneration
-        tags: resourceTags ? commonresourceTags : {}
+        hyperVGeneration: varOperatingSystemImageDefinitions[operatingSystemImage].hyperVGeneration
+        tags: resourceTags ? varCommonresourceTags : {}
     }
     dependsOn: [
         gallery
@@ -681,17 +681,17 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
         location: aibLocation
         imageReplicationRegions: (sharedServicesLocation == aibLocation) ? array('${sharedServicesLocation}') : concat(array('${aibLocation}'), array('${sharedServicesLocation}'))
         sigImageDefinitionId: sharedImage ? image.outputs.resourceId : ''
-        vmSize: VMSize
-        customizationSteps: CustomizationSteps
+        vmSize: varVmSize
+        customizationSteps: varCustomizationSteps
         imageSource: {
             type: 'PlatformImage'
-            publisher: operatingSystemImageDefinitions[operatingSystemImage].publisher
-            offer: operatingSystemImageDefinitions[operatingSystemImage].offer
-            sku: operatingSystemImageDefinitions[operatingSystemImage].sku
-            osAccountType: operatingSystemImageDefinitions[operatingSystemImage].osAccountType
+            publisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
+            offer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
+            sku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
+            osAccountType: varOperatingSystemImageDefinitions[operatingSystemImage].osAccountType
             version: 'latest'
         }
-        tags: resourceTags ? commonresourceTags : {}
+        tags: resourceTags ? varCommonresourceTags : {}
     }
     dependsOn: [
         image
@@ -710,7 +710,7 @@ module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/dep
         name: varLogAnalyticsWorkspaceName
         dataRetention: logAnalyticsWorkspaceDataRetention
         useResourcePermissions: true
-        tags: resourceTags ? commonresourceTags : {}
+        tags: resourceTags ? varCommonresourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
@@ -733,9 +733,9 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
                 parameters: {
                     ClientId: userAssignedIdentity.outputs.clientId
                     EnvironmentName: environment().name
-                    ImageOffer: operatingSystemImageDefinitions[operatingSystemImage].offer
-                    ImagePublisher: operatingSystemImageDefinitions[operatingSystemImage].publisher
-                    ImageSku: operatingSystemImageDefinitions[operatingSystemImage].sku
+                    ImageOffer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
+                    ImagePublisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
+                    ImageSku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
                     Location: aibLocation
                     SubscriptionId: sharedServicesSubId
                     TemplateName: imageTemplate.outputs.name
@@ -763,12 +763,12 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
                 frequency: 'Day'
                 interval: 1
                 starttime: dateTimeAdd(time, 'PT15M')
-                timeZone: timeZone
+                varTimeZone: varTimeZone
                 advancedSchedule: {}
             }
         ]
         skuName: 'Free'
-        tags: resourceTags ? commonresourceTags : {}
+        tags: resourceTags ? varCommonresourceTags : {}
         systemAssignedIdentity: false
         userAssignedIdentities: {
             '${userAssignedIdentity.outputs.resourceId}': {}
@@ -777,14 +777,14 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
 }
 
 @batchSize(1)
-module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/modules/deploy.bicep' = [for i in range(0, length(Modules)): {
+module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/modules/deploy.bicep' = [for i in range(0, length(varModules)): {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Automation-Module_${i}_${time}'
     params: {
-        name: Modules[i].name
+        name: varModules[i].name
         location: sharedServicesLocation
         automationAccountName: automationAccount.outputs.name
-        uri: Modules[i].uri
+        uri: varModules[i].uri
     }
 }]
 
@@ -803,7 +803,7 @@ module vault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
             virtualNetworkRules: []
             ipRules: []
         }
-        tags: resourceTags ? commonresourceTags : {}
+        tags: resourceTags ? varCommonresourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
@@ -830,7 +830,7 @@ module storageAccount '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deplo
                 }
             ]
         }
-        tags: resourceTags ? commonresourceTags : {}
+        tags: resourceTags ? varCommonresourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
@@ -849,23 +849,23 @@ module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bic
             {
                 name: distributionGroup
                 emailAddress: distributionGroup
-                useCommonAlertSchema: true
+                useCommonvarAlertschema: true
             }
         ]
-        tags: resourceTags ? commonresourceTags : {}
+        tags: resourceTags ? varCommonresourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
     ]
 }
 
-module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(Alerts)): if (!empty(distributionGroup)) {
+module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(varAlerts)): if (!empty(distributionGroup)) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Scheduled-Query-Rule_${i}_${time}'
     params: {
         location: sharedServicesLocation
-        name: Alerts[i].name
-        alertDescription: Alerts[i].description
+        name: varAlerts[i].name
+        alertDescription: varAlerts[i].description
         enabled: true
         kind: 'LogAlert'
         autoMitigate: false
@@ -875,13 +875,13 @@ module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryR
         scopes: !empty(distributionGroup) ? [
             workspace.outputs.resourceId
         ] : []
-        severity: Alerts[i].severity
-        evaluationFrequency: Alerts[i].evaluationFrequency
-        windowSize: Alerts[i].windowSize
+        severity: varAlerts[i].severity
+        evaluationFrequency: varAlerts[i].evaluationFrequency
+        windowSize: varAlerts[i].windowSize
         actions: !empty(distributionGroup) ? [
             actionGroup.outputs.resourceId
         ] : []
-        criterias: Alerts[i].criterias
-        tags: resourceTags ? commonresourceTags : {}
+        criterias: varAlerts[i].criterias
+        tags: resourceTags ? varCommonresourceTags : {}
     }
 }]
