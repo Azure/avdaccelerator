@@ -948,7 +948,7 @@
                 "storageAccountCustomPrefix": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.storageAccount, 'none')]",
                 "subnetName": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').subnet, '')]",
                 "userAssignedIdentityCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.userAssignedIdentity, 'none')]",
-                "virtualNetworkResourceId": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').virtualNetworkSelection.id, '')]",
+                "existingVirtualNetworkResourceId": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').virtualNetworkSelection.id, '')]",
                 "workloadNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.workload, 'none')]"
             },
             "kind": "Subscription",
