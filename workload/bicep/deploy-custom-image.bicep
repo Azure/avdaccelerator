@@ -13,7 +13,7 @@ param sharedServicesSubId string = ''
     'Standard_LRS'
     'Standard_ZRS'
 ])
-@description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Default: false)')
+@description('Optional. Determine the Storage Account SKU for local or zonal redundancy. (Default: Standard_LRS)')
 param storageAccountSku string = 'Standard_LRS'
 
 @allowed([
