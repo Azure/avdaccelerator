@@ -64,7 +64,7 @@ Validated on provider versions:
 
 - hashicorp/azurerm v3.33.0
 
-![AVD Network Spoke Image diagram](../../../../docs/diagrams/avd-accelerator-terraform-spoke-network.png)
+![AVD Network Spoke Image diagram](../../docs/diagrams/avd-accelerator-terraform-spoke-network.png)
 
 ## AVD-Baseline  
 
@@ -106,10 +106,9 @@ The Azure Virtual Desktop Baseline Terraform files are all written as individual
 Validated on provider versions:
 - hashicorp/random v3.3.2
 - hashicorp/azuread v2.26.1
-- hashicorp/azurerm v3.22.0
+- hashicorp/azurerm v3.33.0
 
-
-![AVD Baseline diagram](../../../../docs/diagrams/avd-accelerator-terraform-baseline-image.png)
+![AVD Baseline diagram](../../docs/diagrams/avd-accelerator-terraform-baseline-image.png)
 
 ## Backends
 
