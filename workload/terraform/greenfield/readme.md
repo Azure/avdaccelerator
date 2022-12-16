@@ -74,8 +74,8 @@ Azure Virtual Desktop resources and dependent services for establishing the base
   - 1 Host Pools – pooled
   - 1 Desktop application group
   - 1 Workspaces – 1 pooled
-  - Options to add personal and remote app host pools, workspaces, desktop application groups
-  - 2 Session host VMs domain join (options to use custom image or marketplace image)
+  - Options to add personal and remote app host pools, workspaces, desktop application groups can be found in the modules folder
+  - 2 Session host VMs domain join default to use custom image with 2 scenarios for Active Directory Domain Service (ADDS) or Azure Active Directory (AAD) join session hosts
   - AVD Monitoring, log analytics workspace and diagnostic logs enabled
   - AVD Scaling plan
   - Associated Desktop Application Group for personal
