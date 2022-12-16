@@ -208,7 +208,7 @@ var varNamingStandard = '${varLocationAcronym}'
 var varLocationLowercase = toLower(sharedServicesLocation)
 var varResourceGroupName = customNaming ? resourceGroupCustomName : 'rg-avd-${varNamingStandard}-shared-services'
 var varImageGalleryName = customNaming ? imageGalleryCustomName : 'gal_avd_${varNamingStandard}'
-var varuserAssignedManagedIdentityName = customNaming ? userAssignedManagedIdentityCustomName : 'id-aib-${varNamingStandard}'
+var varUserAssignedManagedIdentityName = customNaming ? userAssignedManagedIdentityCustomName : 'id-aib-${varNamingStandard}'
 var varLogAnalyticsWorkspaceName = customNaming ? logAnalyticsWorkspaceCustomName : 'log-avd-${varNamingStandard}'
 var varImageDefinitionName = customNaming ? imageDefinitionCustomName : 'avd-${operatingSystemImage}'
 var varImageTemplateName = customNaming ? imageTemplateCustomName : 'it-avd-${operatingSystemImage}'
@@ -324,7 +324,7 @@ var varTimeZones = {
 //
 
 // Resource tagging
-var varCommonresourceTags = enableResourceTags ? {
+var varCommonResourceTags = enableResourceTags ? {
     ImageBuildName: imageBuildNameTag
     WorkloadName: workloadNameTag
     DataClassification: dataClassificationTag
@@ -606,7 +606,7 @@ module avdSharedResourcesRg '../../carml/1.0.0/Microsoft.Resources/resourceGroup
     params: {
         name: varResourceGroupName
         location: sharedServicesLocation
-        tags: enableResourceTags ? varCommonresourceTags : {}
+        tags: enableResourceTags ? varCommonResourceTags : {}
     }
 }
 
@@ -628,9 +628,9 @@ module userAssignedManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'User-Assigned-Managed-Identity_${time}'
     params: {
-        name: varuserAssignedManagedIdentityName
+        name: varUserAssignedManagedIdentityName
         location: sharedServicesLocation
-        tags: enableResourceTags ? varCommonresourceTags : {}
+        tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
@@ -658,7 +658,7 @@ module gallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy.bicep' = {
         name: varImageGalleryName
         location: sharedServicesLocation
         galleryDescription: 'Azure Virtual Desktops Images'
-        tags: enableResourceTags ? varCommonresourceTags : {}
+        tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
@@ -679,7 +679,7 @@ module image '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep'
         sku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
         location: aibLocation
         hyperVGeneration: varOperatingSystemImageDefinitions[operatingSystemImage].hyperVGeneration
-        tags: enableResourceTags ? varCommonresourceTags : {}
+        tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
         gallery
@@ -709,7 +709,7 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
             osAccountType: varOperatingSystemImageDefinitions[operatingSystemImage].osAccountType
             version: 'latest'
         }
-        tags: enableResourceTags ? varCommonresourceTags : {}
+        tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
         image
@@ -728,7 +728,7 @@ module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/dep
         name: varLogAnalyticsWorkspaceName
         dataRetention: logAnalyticsWorkspaceDataRetention
         useResourcePermissions: true
-        tags: enableResourceTags ? varCommonresourceTags : {}
+        tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
@@ -786,7 +786,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
             }
         ]
         skuName: 'Free'
-        tags: enableResourceTags ? varCommonresourceTags : {}
+        tags: enableResourceTags ? varCommonResourceTags : {}
         systemAssignedIdentity: false
         userAssignedIdentities: {
             '${userAssignedManagedIdentity.outputs.resourceId}': {}
@@ -821,7 +821,7 @@ module vault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
             virtualNetworkRules: []
             ipRules: []
         }
-        tags: enableResourceTags ? varCommonresourceTags : {}
+        tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
@@ -848,7 +848,7 @@ module storageAccount '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deplo
                 }
             ]
         }
-        tags: enableResourceTags ? varCommonresourceTags : {}
+        tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
@@ -870,7 +870,7 @@ module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bic
                 useCommonvarAlertschema: true
             }
         ]
-        tags: enableResourceTags ? varCommonresourceTags : {}
+        tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
@@ -900,6 +900,6 @@ module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryR
             actionGroup.outputs.resourceId
         ] : []
         criterias: varAlerts[i].criterias
-        tags: enableResourceTags ? varCommonresourceTags : {}
+        tags: enableResourceTags ? varCommonResourceTags : {}
     }
 }]
