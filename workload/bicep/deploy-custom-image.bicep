@@ -626,7 +626,7 @@ module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinition
 
 module userAssignedManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'User-Assigned-Identity_${time}'
+    name: 'User-Assigned-Managed-Identity_${time}'
     params: {
         name: varuserAssignedManagedIdentityName
         location: sharedServicesLocation
@@ -653,7 +653,7 @@ module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignment
 // Compute Gallery
 module gallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'Gallery_${time}'
+    name: 'Compute-Gallery_${time}'
     params: {
         name: varImageGalleryName
         location: sharedServicesLocation
@@ -797,7 +797,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
 @batchSize(1)
 module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/modules/deploy.bicep' = [for i in range(0, length(varModules)): {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'Automation-Module_${i}_${time}'
+    name: 'Automation-Account-Module_${i}_${time}'
     params: {
         name: varModules[i].name
         location: sharedServicesLocation
