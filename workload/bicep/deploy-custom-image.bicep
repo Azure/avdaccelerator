@@ -4,17 +4,17 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 @description('Optional. Location where to deploy compute services. (Default: eastus)')
-param SharedServicesLocation string = 'eastus'
+param sharedServicesLocation string = 'eastus'
 
 @description('Required. AVD shared services subscription ID, multiple subscriptions scenario.')
-param SharedServicesSubId string = ''
+param sharedServicesSubId string = ''
 
 @allowed([
     'Standard_LRS'
     'Standard_ZRS'
 ])
 @description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Default: false)')
-param StorageAccountSKU string = 'Standard_LRS'
+param storageAccountSku string = 'Standard_LRS'
 
 @allowed([
     'eastus'
@@ -33,7 +33,7 @@ param StorageAccountSKU string = 'Standard_LRS'
     'ukwest'
 ])
 @description('Optional. Azure Image Builder location. (Default: eastus)')
-param AIBLocation string = 'eastus'
+param aibLocation string = 'eastus'
 
 @allowed([
     'win10_21h2_office'
@@ -42,90 +42,90 @@ param AIBLocation string = 'eastus'
     'win11_21h2'
 ])
 @description('Optional. AVD OS image source. (Default: win10-21h2)')
-param OperatingSystemImage string = 'win10_21h2'
+param operatingSystemImage string = 'win10_21h2'
 
 @description('Optional. Set to deploy image from Azure Compute Gallery. (Default: true)')
-param SharedImage bool = true
+param sharedImage bool = true
 
 @description('Optional. Input the resource ID for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: "")')
-param VirtualNetworkResourceId string = ''
+param virtualNetworkResourceId string = ''
 
 @description('Optional. Input the name of the subnet for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: "")')
-param SubnetName string = ''
+param subnetName string = ''
 
 @description('Optional. Determine whether to enable RDP Short Path for Managed Networks. (Default: false)')
-param RDPShortPath bool = false
+param rdpShortPath bool = false
 
 @description('Optional. Determine whether to enable Screen Capture Protection. (Default: false)')
-param ScreenCaptureProtection bool = false
+param screenCaptureProtection bool = false
 
 @description('Required.  Azure log analytics workspace name data retention.')
-param LogAnalyticsWorkspaceDataRetention int = 30
+param logAnalyticsWorkspaceDataRetention int = 30
 
 @description('Optional. Input the email distribution list for alert notifications when AIB builds succeed or fail.')
-param DistributionGroup string = ''
+param distributionGroup string = ''
 
 // Custom Naming
 // Input must followe resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
 @description('Optional. Custom name for Action Group.')
-param ActionGroupCustomName string = 'ag-aib'
+param actionGroupCustomName string = 'ag-aib'
 
 @description('Optional. Custom name for the Automation Account.')
-param AutomationAccountCustomName string = 'aa-avd'
+param automationAccountCustomName string = 'aa-avd'
 
 @description('Optional. Custom name for the Log Analytics Workspace.')
-param LogAnalyticsWorkspaceCustomName string = 'log-avd'
+param logAnalyticsWorkspaceCustomName string = 'log-avd'
 
 @description('Optional. Determine whether to enable custom naming for the Azure resources. (Default: false)')
-param CustomNaming bool = false
+param customNaming bool = false
 
 @maxLength(90)
 @description('Optional. Custom name for Resource Group. (Default: rg-avd-use2-shared-services)')
-param ResourceGroupCustomName string = 'rg-avd-use2-shared-services'
+param resourceGroupCustomName string = 'rg-avd-use2-shared-services'
 
 @maxLength(64)
 @description('Optional. Custom name for Image Gallery. (Default: gal_avd_use2_001)')
-param ImageGalleryCustomName string = 'gal_avd_use2_001'
+param imageGalleryCustomName string = 'gal_avd_use2_001'
 
 @maxLength(64)
 @description('Optional. Custom name for Image Definition. (Default: avd-win11-21h2)')
-param ImageDefinitionCustomName string = 'avd-win11-21h2'
+param imageDefinitionCustomName string = 'avd-win11-21h2'
 
 @maxLength(260)
 @description('Optional. Custom name for Image Template. (Default: it-avd-win11-21h2)')
-param ImageTemplateCustomName string = 'it-avd-win11-21h2'
+param imageTemplateCustomName string = 'it-avd-win11-21h2'
 
 @maxLength(24)
 @description('Optional. Custom name for Storage Account. (Default: stavdshar)')
-param StorageAccountCustomName string = ''
+param storageAccountCustomName string = ''
 
 @maxLength(60)
 @description('Optional. Custom name for container storing AIB artifacts. (Default: avd-artifacts)')
-param AIBContainerCustomName string = 'aib-artifacts'
+param aibContainerCustomName string = 'aib-artifacts'
 
 @maxLength(60)
 @description('Optional. Custom name for container storing AVD artifacts. (Default: avd-artifacts)')
-param AVDContainerCustomName string = 'avd-artifacts'
+param avdContainerCustomName string = 'avd-artifacts'
 
 @maxLength(24)
 @description('Optional. Custom name for Key Vault. (Default: kv-avd)')
-param KeyVaultCustomName string = ''
+param keyVaultCustomName string = ''
 
 @maxLength(128)
 @description('Optional. Custom name for User Assigned Identity. (Default: id-avd)')
-param UserAssignedIdentityCustomName string = ''
+param userAssignedIdentityCustomName string = ''
 //
 
 
 // TAGS //
 @description('Optional. Apply tags on resources and resource groups. (Default: false)')
-param ResourceTags bool = false
+param resourceTags bool = false
 
 @description('Optional. The name of workload for tagging purposes. (Default: AVD-Image)')
-param ImageBuildNameTag string = 'AVD-Image'
+param imageBuildNameTag string = 'AVD-Image'
 
 @description('Optional. Reference to the size of the VM for your workloads (Default: Contoso-Workload)')
-param WorkloadNameTag string = 'Contoso-Workload'
+param workloadNameTag string = 'Contoso-Workload'
 
 @allowed([
     'Non-business'
@@ -135,10 +135,10 @@ param WorkloadNameTag string = 'Contoso-Workload'
     'Highly confidential'
 ])
 @description('Optional. Sensitivity of data hosted (Default: Non-business)')
-param DataClassificationTag string = 'Non-business'
+param dataClassificationTag string = 'Non-business'
 
 @description('Optional. Department that owns the deployment, (Dafult: Contoso-AVD)')
-param DepartmentTag string = 'Contoso-AVD'
+param departmentTag string = 'Contoso-AVD'
 
 @allowed([
     'Low'
@@ -148,22 +148,22 @@ param DepartmentTag string = 'Contoso-AVD'
     'custom'
 ])
 @description('Optional. criticality of each workload. (Default: Low)')
-param CriticalityTag string = 'Low'
+param criticalityTag string = 'Low'
 
 @description('Optional. Tag value for custom criticality value. (Default: Contoso-Critical)')
-param CriticalityCustomTag string = 'Contoso-Critical'
+param criticalityCustomTag string = 'Contoso-Critical'
 
 @description('Optional. Details about the application.')
-param ApplicationNameTag string = 'Contoso-App'
+param applicationNameTag string = 'Contoso-App'
 
 @description('Optional. Team accountable for day-to-day operations. (Contoso-Ops)')
-param OperationsTeamTag string = 'workload-admins@Contoso.com'
+param operationsTeamTag string = 'workload-admins@Contoso.com'
 
 @description('Optional. Organizational owner of the AVD deployment. (Default: Contoso-Owner)')
-param OwnerTag string = 'workload-owner@Contoso.com'
+param ownerTag string = 'workload-owner@Contoso.com'
 
 @description('Optional. Cost center of owner team. (Defualt: Contoso-CC)')
-param CostCenterTag string = 'Contoso-CC'
+param costCenterTag string = 'Contoso-CC'
 
 @allowed([
     'Prod'
@@ -171,36 +171,36 @@ param CostCenterTag string = 'Contoso-CC'
     'Staging '
 ])
 @description('Optional. Deployment environment of the application, workload. (Default: Dev)')
-param EnvironmentTag string = 'Dev'
+param environmentTag string = 'Dev'
 //
 
 @description('Do not modify, used to set unique value for resource deployment.')
-param Time string = utcNow()
+param time string = utcNow()
 
 @description('Enable usage and telemetry feedback to Microsoft.')
-param Telemetry bool = true
+param telemetry bool = true
 
 // =========== //
 // Variable declaration //
 // =========== //
 // Resouce Naming.
-var UniqueStringSixChar = take('${uniqueString(SharedServicesSubId, Time)}', 6)
-var ActionGroupName = CustomNaming ? ActionGroupCustomName : 'ag-avd-${NamingStandard}'
-var NamingStandard = '${LocationAcronym}'
-var LocationLowercase = toLower(SharedServicesLocation)
-var ResourceGroupName = CustomNaming ? ResourceGroupCustomName : 'rg-avd-${NamingStandard}-shared-services'
-var ImageGalleryName = CustomNaming ? ImageGalleryCustomName : 'gal_avd_${NamingStandard}'
-var UserAssignedIdentityName = CustomNaming ? UserAssignedIdentityCustomName : 'id-aib-${NamingStandard}'
-var LogAnalyticsWorkspaceName = CustomNaming ? LogAnalyticsWorkspaceCustomName : 'log-avd-${NamingStandard}'
-var ImageDefinitionName = CustomNaming ? ImageDefinitionCustomName : 'avd-${OperatingSystemImage}'
-var ImageTemplateName = CustomNaming ? ImageTemplateCustomName : 'it-avd-${OperatingSystemImage}'
-var AutomationAccountName = CustomNaming ? AutomationAccountCustomName : 'aa-avd-${NamingStandard}'
-var StorageAccountName = CustomNaming ? StorageAccountCustomName : 'stavd${NamingStandard}${UniqueStringSixChar}'
-var AIBContainerName = CustomNaming ? AIBContainerCustomName : 'aib-artifacts'
-var AVDContainerName = CustomNaming ? AVDContainerCustomName : 'avd-artifacts'
-var KeyVaultName = CustomNaming ? KeyVaultCustomName : 'kv-avd-${NamingStandard}-${UniqueStringSixChar}'
-var LocationAcronym = LocationAcronyms[LocationLowercase]
-var LocationAcronyms = {
+var varUniqueStringSixChar = take('${uniqueString(sharedServicesSubId, time)}', 6)
+var varActionGroupName = customNaming ? actionGroupCustomName : 'ag-avd-${varNamingStandard}'
+var varNamingStandard = '${varLocationAcronym}'
+var varLocationLowercase = toLower(sharedServicesLocation)
+var varResourceGroupName = customNaming ? resourceGroupCustomName : 'rg-avd-${varNamingStandard}-shared-services'
+var varImageGalleryName = customNaming ? imageGalleryCustomName : 'gal_avd_${varNamingStandard}'
+var varUserAssignedIdentityName = customNaming ? userAssignedIdentityCustomName : 'id-aib-${varNamingStandard}'
+var varLogAnalyticsWorkspaceName = customNaming ? logAnalyticsWorkspaceCustomName : 'log-avd-${varNamingStandard}'
+var varImageDefinitionName = customNaming ? imageDefinitionCustomName : 'avd-${operatingSystemImage}'
+var varImageTemplateName = customNaming ? imageTemplateCustomName : 'it-avd-${operatingSystemImage}'
+var varAutomationAccountName = customNaming ? automationAccountCustomName : 'aa-avd-${varNamingStandard}'
+var varStorageAccountName = customNaming ? storageAccountCustomName : 'stavd${varNamingStandard}${varUniqueStringSixChar}'
+var varAibContainerName = customNaming ? aibContainerCustomName : 'aib-artifacts'
+var varAvdContainerName = customNaming ? avdContainerCustomName : 'avd-artifacts'
+var varKeyVaultName = customNaming ? keyVaultCustomName : 'kv-avd-${varNamingStandard}-${varUniqueStringSixChar}'
+var varLocationAcronym = varLocationAcronyms[varLocationLowercase]
+var varLocationAcronyms = {
     eastasia: 'eas'
     southeastasia: 'seas'
     centralus: 'cus'
@@ -245,84 +245,84 @@ var LocationAcronyms = {
     westus3: 'wus3'
     swedencentral: 'sec'
 }
-var TimeZone = TimeZones[AIBLocation]
-var TimeZones = {
-    australiacentral: 'AUS Eastern Standard Time'
-    australiacentral2: 'AUS Eastern Standard Time'
-    australiaeast: 'AUS Eastern Standard Time'
-    australiasoutheast: 'AUS Eastern Standard Time'
-    brazilsouth: 'E. South America Standard Time'
-    brazilsoutheast: 'E. South America Standard Time'
-    canadacentral: 'Eastern Standard Time'
-    canadaeast: 'Eastern Standard Time'
-    centralindia: 'India Standard Time'
-    centralus: 'Central Standard Time'
-    chinaeast: 'China Standard Time'
-    chinaeast2: 'China Standard Time'
-    chinanorth: 'China Standard Time'
-    chinanorth2: 'China Standard Time'
-    eastasia: 'China Standard Time'
-    eastus: 'Eastern Standard Time'
-    eastus2: 'Eastern Standard Time'
-    francecentral: 'Central Europe Standard Time'
-    francesouth: 'Central Europe Standard Time'
-    germanynorth: 'Central Europe Standard Time'
-    germanywestcentral: 'Central Europe Standard Time'
-    japaneast: 'Tokyo Standard Time'
-    japanwest: 'Tokyo Standard Time'
-    jioindiacentral: 'India Standard Time'
-    jioindiawest: 'India Standard Time'
-    koreacentral: 'Korea Standard Time'
-    koreasouth: 'Korea Standard Time'
-    northcentralus: 'Central Standard Time'
-    northeurope: 'GMT Standard Time'
-    norwayeast: 'Central Europe Standard Time'
-    norwaywest: 'Central Europe Standard Time'
-    southafricanorth: 'South Africa Standard Time'
-    southafricawest: 'South Africa Standard Time'
-    southcentralus: 'Central Standard Time'
-    southindia: 'India Standard Time'
-    southeastasia: 'Singapore Standard Time'
-    swedencentral: 'Central Europe Standard Time'
-    switzerlandnorth: 'Central Europe Standard Time'
-    switzerlandwest: 'Central Europe Standard Time'
-    uaecentral: 'Arabian Standard Time'
-    uaenorth: 'Arabian Standard Time'
-    uksouth: 'GMT Standard Time'
-    ukwest: 'GMT Standard Time'
-    usdodcentral: 'Central Standard Time'
-    usdodeast: 'Eastern Standard Time'
-    usgovarizona: 'Mountain Standard Time'
-    usgoviowa: 'Central Standard Time'
-    usgovtexas: 'Central Standard Time'
-    usgovvirginia: 'Eastern Standard Time'
-    westcentralus: 'Mountain Standard Time'
-    westeurope: 'Central Europe Standard Time'
-    westindia: 'India Standard Time'
-    westus: 'Pacific Standard Time'
-    westus2: 'Pacific Standard Time'
-    westus3: 'Mountain Standard Time'
+var timeZone = timeZones[aibLocation]
+var timeZones = {
+    australiacentral: 'AUS Eastern Standard time'
+    australiacentral2: 'AUS Eastern Standard time'
+    australiaeast: 'AUS Eastern Standard time'
+    australiasoutheast: 'AUS Eastern Standard time'
+    brazilsouth: 'E. South America Standard time'
+    brazilsoutheast: 'E. South America Standard time'
+    canadacentral: 'Eastern Standard time'
+    canadaeast: 'Eastern Standard time'
+    centralindia: 'India Standard time'
+    centralus: 'Central Standard time'
+    chinaeast: 'China Standard time'
+    chinaeast2: 'China Standard time'
+    chinanorth: 'China Standard time'
+    chinanorth2: 'China Standard time'
+    eastasia: 'China Standard time'
+    eastus: 'Eastern Standard time'
+    eastus2: 'Eastern Standard time'
+    francecentral: 'Central Europe Standard time'
+    francesouth: 'Central Europe Standard time'
+    germanynorth: 'Central Europe Standard time'
+    germanywestcentral: 'Central Europe Standard time'
+    japaneast: 'Tokyo Standard time'
+    japanwest: 'Tokyo Standard time'
+    jioindiacentral: 'India Standard time'
+    jioindiawest: 'India Standard time'
+    koreacentral: 'Korea Standard time'
+    koreasouth: 'Korea Standard time'
+    northcentralus: 'Central Standard time'
+    northeurope: 'GMT Standard time'
+    norwayeast: 'Central Europe Standard time'
+    norwaywest: 'Central Europe Standard time'
+    southafricanorth: 'South Africa Standard time'
+    southafricawest: 'South Africa Standard time'
+    southcentralus: 'Central Standard time'
+    southindia: 'India Standard time'
+    southeastasia: 'Singapore Standard time'
+    swedencentral: 'Central Europe Standard time'
+    switzerlandnorth: 'Central Europe Standard time'
+    switzerlandwest: 'Central Europe Standard time'
+    uaecentral: 'Arabian Standard time'
+    uaenorth: 'Arabian Standard time'
+    uksouth: 'GMT Standard time'
+    ukwest: 'GMT Standard time'
+    usdodcentral: 'Central Standard time'
+    usdodeast: 'Eastern Standard time'
+    usgovarizona: 'Mountain Standard time'
+    usgoviowa: 'Central Standard time'
+    usgovtexas: 'Central Standard time'
+    usgovvirginia: 'Eastern Standard time'
+    westcentralus: 'Mountain Standard time'
+    westeurope: 'Central Europe Standard time'
+    westindia: 'India Standard time'
+    westus: 'Pacific Standard time'
+    westus2: 'Pacific Standard time'
+    westus3: 'Mountain Standard time'
 }
 //
 
 // Resource tagging
-var commonResourceTags = ResourceTags ? {
-    ImageBuildName: ImageBuildNameTag
-    WorkloadName: WorkloadNameTag
-    DataClassification: DataClassificationTag
-    Department: DepartmentTag
-    Criticality: (CriticalityTag == 'Custom') ? CriticalityCustomTag : CriticalityTag
-    ApplicationName: ApplicationNameTag
-    OpsTeam: OperationsTeamTag
-    Owner: OwnerTag
-    CostCenter: CostCenterTag
-    Environment: EnvironmentTag
+var commonresourceTags = resourceTags ? {
+    ImageBuildName: imageBuildNameTag
+    WorkloadName: workloadNameTag
+    DataClassification: dataClassificationTag
+    Department: departmentTag
+    Criticality: (criticalityTag == 'Custom') ? criticalityCustomTag : criticalityTag
+    ApplicationName: applicationNameTag
+    OpsTeam: operationsTeamTag
+    Owner: ownerTag
+    CostCenter: costCenterTag
+    Environment: environmentTag
 
 } : {}
 //
 
 var VMSize = 'Standard_D4s_v3'
-var OperatingSystemImageDefinitions = {
+var operatingSystemImageDefinitions = {
     win10_21h2_office: {
         name: 'Windows10_21H2_Office'
         osType: 'Windows'
@@ -367,25 +367,25 @@ var OperatingSystemImageDefinitions = {
 // Change back before Pull Request
 // var baseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var baseScriptUri = 'https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/'
-var telemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${SharedServicesLocation}'
+var telemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${sharedServicesLocation}'
 
 // Customization Steps
-var RDPShortPathCustomizer = RDPShortPath ? [
+var rdpShortPathCustomizer = rdpShortPath ? [
     {
         type: 'PowerShell'
-        name: 'RDPShortPath'
+        name: 'rdpShortPath'
         runElevated: true
         runAsSystem: true
-        scriptUri: '${baseScriptUri}scripts/Set-RdpShortpath.ps1'
+        scriptUri: '${baseScriptUri}scripts/Set-rdpShortPath.ps1'
     }
 ] : []
-var ScreenCaptureProtectionCustomizer = ScreenCaptureProtection ? [
+var screenCaptureProtectionCustomizer = screenCaptureProtection ? [
     {
         type: 'PowerShell'
-        name: 'ScreenCaptureProtection'
+        name: 'screenCaptureProtection'
         runElevated: true
         runAsSystem: true
-        scriptUri: '${baseScriptUri}scripts/Set-ScreenCaptureProtection.ps1'
+        scriptUri: '${baseScriptUri}scripts/Set-screenCaptureProtection.ps1'
     }
 ] : []
 var VDOTCustomizer = [
@@ -397,12 +397,12 @@ var VDOTCustomizer = [
         scriptUri: '${baseScriptUri}scripts/Set-VirtualDesktopOptimizations.ps1'
     }
 ]
-var ScriptCustomizers = union(RDPShortPathCustomizer, ScreenCaptureProtectionCustomizer, VDOTCustomizer)
+var ScriptCustomizers = union(rdpShortPathCustomizer, screenCaptureProtectionCustomizer, VDOTCustomizer)
 var RemainingCustomizers = [
     {
         type: 'WindowsRestart'
         restartCheckCommand: 'Write-Host "Restarting post script customizers"'
-        restartTimeout: '10m'
+        restarttimeout: '10m'
     }
     {
         type: 'WindowsUpdate'
@@ -426,7 +426,7 @@ var RemainingCustomizers = [
     {
         type: 'WindowsRestart'
         restartCheckCommand: 'Write-Host "restarting post Windows updates"'
-        restartTimeout: '10m'
+        restarttimeout: '10m'
     }
     {
         type: 'PowerShell'
@@ -440,7 +440,7 @@ var RemainingCustomizers = [
     }
     {
         type: 'WindowsRestart'
-        restartTimeout: '10m'
+        restarttimeout: '10m'
     }
 ]
 var CustomizationSteps = union(ScriptCustomizers, RemainingCustomizers)
@@ -456,7 +456,7 @@ var Alerts = [
             allOf: [
                 {
                     query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| where ResultDescription has "Image Template build failed"'
-                    TimeAggregation: 'Count'
+                    timeAggregation: 'Count'
                     dimensions: [
                         {
                             name: 'ResultDescription'
@@ -486,7 +486,7 @@ var Alerts = [
             allOf: [
                 {
                     query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| where ResultDescription has "Image Template build succeeded"'
-                    TimeAggregation: 'Count'
+                    timeAggregation: 'Count'
                     dimensions: [
                         {
                             name: 'ResultDescription'
@@ -519,9 +519,9 @@ var Modules = [
 ]
 
 // Role Definitions & Assignments
-var DistributionGroupRole = !empty(DistributionGroup) ? [
+var distributionGroupRole = !empty(distributionGroup) ? [
     {
-        resourceGroup: split(VirtualNetworkResourceId, '/')[4]
+        resourceGroup: split(virtualNetworkResourceId, '/')[4]
         name: 'Virtual Network Join'
         description: 'Allow resources to join a subnet'
         actions: [
@@ -533,7 +533,7 @@ var DistributionGroupRole = !empty(DistributionGroup) ? [
 ] : []
 var ImageTemplateRoles = [
     {
-        resourceGroup: ResourceGroupName
+        resourceGroup: varResourceGroupName
         name: 'Image Template Contributor'
         description: 'Allow the creation and management of images'
         actions: [
@@ -547,7 +547,7 @@ var ImageTemplateRoles = [
         ]
     }
     {
-        resourceGroup: ResourceGroupName
+        resourceGroup: varResourceGroupName
         name: 'Image Template Build Automation'
         description: 'Allow Image Template build automation using a Managed Identity on an Automation Account.'
         actions: [
@@ -560,17 +560,17 @@ var ImageTemplateRoles = [
         ]
     }
 ]
-var Roles = union(DistributionGroupRole, ImageTemplateRoles)
+var Roles = union(distributionGroupRole, ImageTemplateRoles)
 //
 
 // =========== //
 // Deployments //
 // =========== //
 
-//  Telemetry Deployment.
-resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (Telemetry) {
+//  telemetry Deployment.
+resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (telemetry) {
     name: telemetryId
-    location: SharedServicesLocation
+    location: sharedServicesLocation
     properties: {
         mode: 'Incremental'
         template: {
@@ -583,36 +583,36 @@ resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (
 
 // AVD Shared Services Resource Group
 module avdSharedResourcesRg '../../carml/1.0.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
-    scope: subscription(SharedServicesSubId)
-    name: 'Resource-Group_${Time}'
+    scope: subscription(sharedServicesSubId)
+    name: 'Resource-Group_${time}'
     params: {
-        name: ResourceGroupName
-        location: SharedServicesLocation
-        tags: ResourceTags ? commonResourceTags : {}
+        name: varResourceGroupName
+        location: sharedServicesLocation
+        tags: resourceTags ? commonresourceTags : {}
     }
 }
 
 module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinitions/subscription/deploy.bicep' = [for i in range(0, length(Roles)): {
-    scope: subscription(SharedServicesSubId)
-    name: 'Role-Definition_${i}_${Time}'
+    scope: subscription(sharedServicesSubId)
+    name: 'Role-Definition_${i}_${time}'
     params: {
-        subscriptionId: SharedServicesSubId
+        subscriptionId: sharedServicesSubId
         description: Roles[i].description
         roleName: Roles[i].name
         actions: Roles[i].actions
         assignableScopes: [
-            '/subscriptions/${SharedServicesSubId}'
+            '/subscriptions/${sharedServicesSubId}'
         ]
     }
 }]
 
 module userAssignedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
-    scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'User-Assigned-Identity_${Time}'
+    scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
+    name: 'User-Assigned-Identity_${time}'
     params: {
-        name: UserAssignedIdentityName
-        location: SharedServicesLocation
-        tags: ResourceTags ? commonResourceTags : {}
+        name: varUserAssignedIdentityName
+        location: sharedServicesLocation
+        tags: resourceTags ? commonresourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
@@ -620,8 +620,8 @@ module userAssignedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/userAss
 }
 
 module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for i in range(0, length(Roles)): {
-    name: 'Role-Assignment_${i}_${Time}'
-    scope: resourceGroup(SharedServicesSubId, Roles[i].resourceGroup)
+    name: 'Role-Assignment_${i}_${time}'
+    scope: resourceGroup(sharedServicesSubId, Roles[i].resourceGroup)
     params: {
         roleDefinitionIdOrName: roleDefinitions[i].outputs.resourceId
         principalId: userAssignedIdentity.outputs.principalId
@@ -634,13 +634,13 @@ module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignment
 
 // Compute Gallery
 module gallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy.bicep' = {
-    scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'Gallery_${Time}'
+    scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
+    name: 'Gallery_${time}'
     params: {
-        name: ImageGalleryName
-        location: SharedServicesLocation
+        name: varImageGalleryName
+        location: sharedServicesLocation
         galleryDescription: 'Azure Virtual Desktops Images'
-        tags: ResourceTags ? commonResourceTags : {}
+        tags: resourceTags ? commonresourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
@@ -649,19 +649,19 @@ module gallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy.bicep' = {
 
 // Image Definition
 module image '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep' = {
-    scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'Image-Definition_${Time}'
+    scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
+    name: 'Image-Definition_${time}'
     params: {
-        galleryName: SharedImage ? gallery.outputs.name : ''
-        name: ImageDefinitionName
-        osState: OperatingSystemImageDefinitions[OperatingSystemImage].osState
-        osType: OperatingSystemImageDefinitions[OperatingSystemImage].osType
-        publisher: OperatingSystemImageDefinitions[OperatingSystemImage].publisher
-        offer: OperatingSystemImageDefinitions[OperatingSystemImage].offer
-        sku: OperatingSystemImageDefinitions[OperatingSystemImage].sku
-        location: AIBLocation
-        hyperVGeneration: OperatingSystemImageDefinitions[OperatingSystemImage].hyperVGeneration
-        tags: ResourceTags ? commonResourceTags : {}
+        galleryName: sharedImage ? gallery.outputs.name : ''
+        name: varImageDefinitionName
+        osState: operatingSystemImageDefinitions[operatingSystemImage].osState
+        osType: operatingSystemImageDefinitions[operatingSystemImage].osType
+        publisher: operatingSystemImageDefinitions[operatingSystemImage].publisher
+        offer: operatingSystemImageDefinitions[operatingSystemImage].offer
+        sku: operatingSystemImageDefinitions[operatingSystemImage].sku
+        location: aibLocation
+        hyperVGeneration: operatingSystemImageDefinitions[operatingSystemImage].hyperVGeneration
+        tags: resourceTags ? commonresourceTags : {}
     }
     dependsOn: [
         gallery
@@ -671,27 +671,27 @@ module image '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep'
 
 // Image Template
 module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemplates/deploy.bicep' = {
-    scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'Image-Template_${Time}'
+    scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
+    name: 'Image-Template_${time}'
     params: {
-        name: ImageTemplateName
-        subnetId: !empty(VirtualNetworkResourceId) && !empty(SubnetName) ? '${VirtualNetworkResourceId}/subnets/${SubnetName}' : ''
+        name: varImageTemplateName
+        subnetId: !empty(virtualNetworkResourceId) && !empty(subnetName) ? '${virtualNetworkResourceId}/subnets/${subnetName}' : ''
         userMsiName: userAssignedIdentity.outputs.name
         userMsiResourceGroup: userAssignedIdentity.outputs.resourceGroupName
-        location: AIBLocation
-        imageReplicationRegions: (SharedServicesLocation == AIBLocation) ? array('${SharedServicesLocation}') : concat(array('${AIBLocation}'), array('${SharedServicesLocation}'))
-        sigImageDefinitionId: SharedImage ? image.outputs.resourceId : ''
+        location: aibLocation
+        imageReplicationRegions: (sharedServicesLocation == aibLocation) ? array('${sharedServicesLocation}') : concat(array('${aibLocation}'), array('${sharedServicesLocation}'))
+        sigImageDefinitionId: sharedImage ? image.outputs.resourceId : ''
         vmSize: VMSize
         customizationSteps: CustomizationSteps
         imageSource: {
             type: 'PlatformImage'
-            publisher: OperatingSystemImageDefinitions[OperatingSystemImage].publisher
-            offer: OperatingSystemImageDefinitions[OperatingSystemImage].offer
-            sku: OperatingSystemImageDefinitions[OperatingSystemImage].sku
-            osAccountType: OperatingSystemImageDefinitions[OperatingSystemImage].osAccountType
+            publisher: operatingSystemImageDefinitions[operatingSystemImage].publisher
+            offer: operatingSystemImageDefinitions[operatingSystemImage].offer
+            sku: operatingSystemImageDefinitions[operatingSystemImage].sku
+            osAccountType: operatingSystemImageDefinitions[operatingSystemImage].osAccountType
             version: 'latest'
         }
-        tags: ResourceTags ? commonResourceTags : {}
+        tags: resourceTags ? commonresourceTags : {}
     }
     dependsOn: [
         image
@@ -702,15 +702,15 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
 }
 
 // Log Analytics Workspace
-module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (!empty(DistributionGroup)) {
-    scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'Log-Analytics-Workspace_${Time}'
+module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (!empty(distributionGroup)) {
+    scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
+    name: 'Log-Analytics-Workspace_${time}'
     params: {
-        location: AIBLocation
-        name: LogAnalyticsWorkspaceName
-        dataRetention: LogAnalyticsWorkspaceDataRetention
+        location: aibLocation
+        name: varLogAnalyticsWorkspaceName
+        dataRetention: logAnalyticsWorkspaceDataRetention
         useResourcePermissions: true
-        tags: ResourceTags ? commonResourceTags : {}
+        tags: resourceTags ? commonresourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
@@ -718,35 +718,35 @@ module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/dep
 }
 
 module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccounts/deploy.bicep' = {
-    scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'Automation-Account_${Time}'
+    scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
+    name: 'Automation-Account_${time}'
     params: {
         diagnosticLogCategoriesToEnable: [
             'JobLogs'
             'JobStreams'
         ]
         diagnosticLogsRetentionInDays: 30
-        diagnosticWorkspaceId: empty(DistributionGroup) ? '' : workspace.outputs.resourceId
-        name: AutomationAccountName
+        diagnosticWorkspaceId: empty(distributionGroup) ? '' : workspace.outputs.resourceId
+        name: varAutomationAccountName
         jobSchedules: [
             {
                 parameters: {
                     ClientId: userAssignedIdentity.outputs.clientId
                     EnvironmentName: environment().name
-                    ImageOffer: OperatingSystemImageDefinitions[OperatingSystemImage].offer
-                    ImagePublisher: OperatingSystemImageDefinitions[OperatingSystemImage].publisher
-                    ImageSku: OperatingSystemImageDefinitions[OperatingSystemImage].sku
-                    Location: AIBLocation
-                    SubscriptionId: SharedServicesSubId
+                    ImageOffer: operatingSystemImageDefinitions[operatingSystemImage].offer
+                    ImagePublisher: operatingSystemImageDefinitions[operatingSystemImage].publisher
+                    ImageSku: operatingSystemImageDefinitions[operatingSystemImage].sku
+                    Location: aibLocation
+                    SubscriptionId: sharedServicesSubId
                     TemplateName: imageTemplate.outputs.name
-                    TemplateResourceGroupName: ResourceGroupName
+                    TemplatevarResourceGroupName: varResourceGroupName
                     TenantId: subscription().tenantId
                 }
                 runbookName: 'AIB-Build-Automation'
-                scheduleName: ImageTemplateName
+                scheduleName: varImageTemplateName
             }
         ]
-        location: SharedServicesLocation
+        location: sharedServicesLocation
         runbooks: [
             {
                 name: 'AIB-Build-Automation'
@@ -759,16 +759,16 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
         ]
         schedules: [
             {
-                name: ImageTemplateName
+                name: varImageTemplateName
                 frequency: 'Day'
                 interval: 1
-                startTime: dateTimeAdd(Time, 'PT15M')
-                TimeZone: TimeZone
+                starttime: dateTimeAdd(time, 'PT15M')
+                timeZone: timeZone
                 advancedSchedule: {}
             }
         ]
         skuName: 'Free'
-        tags: ResourceTags ? commonResourceTags : {}
+        tags: resourceTags ? commonresourceTags : {}
         systemAssignedIdentity: false
         userAssignedIdentities: {
             '${userAssignedIdentity.outputs.resourceId}': {}
@@ -778,22 +778,22 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
 
 @batchSize(1)
 module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/modules/deploy.bicep' = [for i in range(0, length(Modules)): {
-    scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'Automation-Module_${i}_${Time}'
+    scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
+    name: 'Automation-Module_${i}_${time}'
     params: {
         name: Modules[i].name
-        location: SharedServicesLocation
+        location: sharedServicesLocation
         automationAccountName: automationAccount.outputs.name
         uri: Modules[i].uri
     }
 }]
 
 module vault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
-    scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'Key-Vault_${Time}'
+    scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
+    name: 'Key-Vault_${time}'
     params: {
-        name: KeyVaultName
-        location: SharedServicesLocation
+        name: varKeyVaultName
+        location: sharedServicesLocation
         enableRbacAuthorization: false
         enablePurgeProtection: true
         softDeleteRetentionInDays: 7
@@ -803,7 +803,7 @@ module vault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
             virtualNetworkRules: []
             ipRules: []
         }
-        tags: ResourceTags ? commonResourceTags : {}
+        tags: resourceTags ? commonresourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
@@ -811,59 +811,59 @@ module vault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
 }
 
 module storageAccount '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
-    scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'Storage-Account_${Time}'
+    scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
+    name: 'Storage-Account_${time}'
     params: {
-        name: StorageAccountName
-        location: SharedServicesLocation
-        storageAccountSku: StorageAccountSKU
+        name: varStorageAccountName
+        location: sharedServicesLocation
+        storageAccountSku: storageAccountSku
         storageAccountKind: 'StorageV2'
         blobServices: {
             containers: [
                 {
-                    name: AIBContainerName
+                    name: varAibContainerName
                     publicAccess: 'None'
                 }
                 {
-                    name: AVDContainerName
+                    name: varAvdContainerName
                     publicAccess: 'None'
                 }
             ]
         }
-        tags: ResourceTags ? commonResourceTags : {}
+        tags: resourceTags ? commonresourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
     ]
 }
 
-module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bicep' = if (!empty(DistributionGroup)) {
-    scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'Action-Group_${Time}'
+module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bicep' = if (!empty(distributionGroup)) {
+    scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
+    name: 'Action-Group_${time}'
     params: {
         location: 'global'
         groupShortName: 'aib-email'
-        name: ActionGroupName
+        name: varActionGroupName
         enabled: true
         emailReceivers: [
             {
-                name: DistributionGroup
-                emailAddress: DistributionGroup
+                name: distributionGroup
+                emailAddress: distributionGroup
                 useCommonAlertSchema: true
             }
         ]
-        tags: ResourceTags ? commonResourceTags : {}
+        tags: resourceTags ? commonresourceTags : {}
     }
     dependsOn: [
         avdSharedResourcesRg
     ]
 }
 
-module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(Alerts)): if (!empty(DistributionGroup)) {
-    scope: resourceGroup(SharedServicesSubId, ResourceGroupName)
-    name: 'Scheduled-Query-Rule_${i}_${Time}'
+module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(Alerts)): if (!empty(distributionGroup)) {
+    scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
+    name: 'Scheduled-Query-Rule_${i}_${time}'
     params: {
-        location: SharedServicesLocation
+        location: sharedServicesLocation
         name: Alerts[i].name
         alertDescription: Alerts[i].description
         enabled: true
@@ -872,16 +872,16 @@ module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryR
         skipQueryValidation: false
         targetResourceTypes: []
         roleAssignments: []
-        scopes: !empty(DistributionGroup) ? [
+        scopes: !empty(distributionGroup) ? [
             workspace.outputs.resourceId
         ] : []
         severity: Alerts[i].severity
         evaluationFrequency: Alerts[i].evaluationFrequency
         windowSize: Alerts[i].windowSize
-        actions: !empty(DistributionGroup) ? [
+        actions: !empty(distributionGroup) ? [
             actionGroup.outputs.resourceId
         ] : []
         criterias: Alerts[i].criterias
-        tags: ResourceTags ? commonResourceTags : {}
+        tags: resourceTags ? commonresourceTags : {}
     }
 }]
