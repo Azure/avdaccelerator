@@ -10,10 +10,9 @@ This accelerator is to be used as starter kit and you can expand its functionali
 
 - [Prerequisites](#prerequisites)  
 - [Planning](#planning)
-- [AVD Spoke Network](#AVD-Network)
-- [AVD Baseline](#AVD-Baseline)
-- [Backend Setup](#Backends)  
-- [Terraform file Structure](#Files)  
+- [Terraform Implementation](#terraform-implementation)
+- [Backend Setup](#backends)  
+- [Deployment Steps](#deployment-steps)  
 
 This guide describes how to deploy Azure Virtual Desktop Accelerator using the [Terraform](https://www.terraform.io/).
 To get started with Terraform on Azure check out their [tutorial](https://learn.hashicorp.com/collections/terraform/azure-get-started/).
@@ -33,83 +32,22 @@ To get started with Terraform on Azure check out their [tutorial](https://learn.
 The deployments will require a "Prefix" which will be included in all the deployed resources name.
 Resource Groups and resource names are derived from the `Prefix` parameter. Pick a unique resource prefix that is 3-5 alphanumeric characters in length without whitespaces.
 
-## AVD-Network
+## Terraform Implementation
 
-Azure Virtual Desktop resources and dependent services for establishing the Azure Virtual Desktop spoke network:
+This folder contains more advanced Terraform modules for deploying AVD Landing Zone. It is expected that users will have a strong understanding of Terraform concepts and will make any necessary modifications to fit their environment when using these modules.
 
-- Network Security group
-- New VNet and subnet
-- Peering to the hub virtual network
-- Baseline NSG
-- Route table
+## Terraform Folder Structure
 
-## Files
+This folder is laid out hierarchically so that different levels of modules may be used as needed for your purpose.  A summary of each level of the folder structure follows.
 
-The Azure Virtual Desktop Network Terraform files are all written as individual files each having a specific function. Variables have been created in all files for consistency, all changes to defaults are to be changed from the terraform.tfvars.sample file. The structure is as follows:
-| file Name                  | Description                                                  |
-| ---------------------------| ------------------------------------------------------------ |
-| data.tf                    | This file has data lookup |
-| dns_zones.tf               | This file creates the private DNS zone and links |
-| output.tf                  | This will contains the outputs post deployment |
-| rg.tf                      | Creates the resource groups |
-| routetable.tf              | Creates a routetable |
-| locals.tf                  | This file is for locals |
-| main.tf                    | This file contains the Terraform provider settings and version |
-| nsg.tf                     | Creates the network security group with required URLs |
-| variables.tf               | Variables have been created in all files for various properties and names |
-| networking.tf              | Creates the AVD spoke virtual network, subnet and peering to the hub network |
-| terraform.tfvars.sample    | This file contains the values for the variables change per your requirements |
+| Folder Name         | Description                                                  |
+| ------------------- | ------------------------------------------------------------ |
+| [modules](./modules)            | This folder contains re-usable modules that create infrastructure components that are used to compose more complex scenarios |
+| [ADDS scenarios](./ADDSscenario/readme.md)  | This folder contains scenario root modules that deploy AVD with ADDS join session host. |
+| [AAD scenarios](./AADscenario/readme.md)  | This folder contains scenario root modules that deploy AVD with Azure Active Directory join session host. |
 
-Validated on provider versions:
-
-- hashicorp/azurerm v3.33.0
-
-![AVD Network Spoke Image diagram](../../docs/diagrams/avd-accelerator-terraform-spoke-network.png)
-
-## AVD-Baseline  
-
-Azure Virtual Desktop resources and dependent services for establishing the baseline.
-
-- Azure Virtual Desktop resources:
-  - 1 Host Pools – pooled
-  - 1 Desktop application group
-  - 1 Workspaces – 1 pooled
-  - Options to add personal and remote app host pools, workspaces, desktop application groups can be found in the modules folder
-  - 2 Session host VMs domain join default to use custom image with 2 scenarios for Active Directory Domain Service (ADDS) or Azure Active Directory (AAD) join session hosts
-  - AVD Monitoring, log analytics workspace and diagnostic logs enabled
-  - AVD Scaling plan
-  - Associated Desktop Application Group for personal
-  - Associated Desktop Application Group and Remote Application Group for pooled
-- Azure Files Storage with FSLogix share, RBAC role assignment and private endpoint
-- Application Security group
-- Key Vault and private endpoint
-
-The Azure Virtual Desktop Baseline Terraform files are all written as individual files each having a specific function. Variables have been created in all files for consistency, all changes to defaults are to be changed from the terraform.tfvars.sample file. The structure is as follows:
-
-| file Name                  | Description                                                  |
-| ---------------------------| ------------------------------------------------------------ |
-| main.tf                    | This file deploys Azure Virtual Desktop |
-| data.tf                    | This file has data lookup |
-| locals.tf                  | This file is for locals |
-| host.tf                    | This file deploys session host using the custom image in the Azure Compute Gallery |
-| provider.tf                | This file contains the Terraform provider settings and version |
-| afstorage.tf               | This file creates the Storage account and Azure files shares with RBAC |
-| keyvault.tf                | This file creates the Key Vault to be used     |
-| appsecgrp.tf               | This file creates the Application security group to be used     |
-| avd.tf                     | This file creates the a Azure Virtual Desktop service objects     |
-| rbac.tf                    | This will creates the rbac permissions |
-| output.tf                  | This will contains the outputs post deployment |
-| variables.tf               | Variables have been created in all files for various properties and names |
-| rg.tf                      | Creates the resources group for the deployment |
-| terraform.tfvars.sample    | This file contains the values for the variables change per your requirements |
-
-Validated on provider versions:
-
-- hashicorp/random v3.3.2
-- hashicorp/azuread v2.26.1
-- hashicorp/azurerm v3.33.0
-
-![AVD Baseline diagram](../../docs/diagrams/avd-accelerator-terraform-baseline-image.png)
+<details>
+<summary>Click to expand</summary>
 
 ## Backends
 
@@ -117,8 +55,6 @@ The default templates write a state file directly to disk locally to where you a
 
 ### Backends using Azure Blob Storage
 
-<details>
-<summary>Click to expand</summary>
 #### Using Azure CLI
 
 [Store state in Azure Storage](https://docs.microsoft.com/en-us/azure/developer/terraform/store-state-in-azure-storage)
@@ -172,6 +108,7 @@ az keyvault secret set --vault-name "<Azure Virtual Desktopkeyvaultdemo>" --name
 ```
 
 </details>
+
 ## Deployment Steps
 
 1. Modify the `terraform.tfvars` file to define the desired names, location, networking, and other variables
