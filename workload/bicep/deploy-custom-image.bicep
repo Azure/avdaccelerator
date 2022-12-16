@@ -131,7 +131,7 @@ param keyVaultCustomName string = ''
 
 @maxLength(128)
 @description('Optional. Custom name for User Assigned Identity. (Default: id-avd)')
-param userAssignedIdentityCustomName string = ''
+param userAssignedManagedIdentityCustomName string = ''
 //
 
 
@@ -208,7 +208,7 @@ var varNamingStandard = '${varLocationAcronym}'
 var varLocationLowercase = toLower(sharedServicesLocation)
 var varResourceGroupName = customNaming ? resourceGroupCustomName : 'rg-avd-${varNamingStandard}-shared-services'
 var varImageGalleryName = customNaming ? imageGalleryCustomName : 'gal_avd_${varNamingStandard}'
-var varUserAssignedIdentityName = customNaming ? userAssignedIdentityCustomName : 'id-aib-${varNamingStandard}'
+var varuserAssignedManagedIdentityName = customNaming ? userAssignedManagedIdentityCustomName : 'id-aib-${varNamingStandard}'
 var varLogAnalyticsWorkspaceName = customNaming ? logAnalyticsWorkspaceCustomName : 'log-avd-${varNamingStandard}'
 var varImageDefinitionName = customNaming ? imageDefinitionCustomName : 'avd-${operatingSystemImage}'
 var varImageTemplateName = customNaming ? imageTemplateCustomName : 'it-avd-${operatingSystemImage}'
@@ -624,11 +624,11 @@ module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinition
     }
 }]
 
-module userAssignedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
+module userAssignedManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'User-Assigned-Identity_${time}'
     params: {
-        name: varUserAssignedIdentityName
+        name: varuserAssignedManagedIdentityName
         location: sharedServicesLocation
         tags: resourceTags ? varCommonresourceTags : {}
     }
@@ -642,7 +642,7 @@ module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignment
     scope: resourceGroup(sharedServicesSubId, varRoles[i].resourceGroup)
     params: {
         roleDefinitionIdOrName: roleDefinitions[i].outputs.resourceId
-        principalId: userAssignedIdentity.outputs.principalId
+        principalId: userAssignedManagedIdentity.outputs.principalId
         principalType: 'ServicePrincipal'
     }
     dependsOn: [
@@ -694,8 +694,8 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
     params: {
         name: varImageTemplateName
         subnetId: !empty(existingVirtualNetworkResourceId) && !empty(subnetName) ? '${existingVirtualNetworkResourceId}/subnets/${subnetName}' : ''
-        userMsiName: userAssignedIdentity.outputs.name
-        userMsiResourceGroup: userAssignedIdentity.outputs.resourceGroupName
+        userMsiName: userAssignedManagedIdentity.outputs.name
+        userMsiResourceGroup: userAssignedManagedIdentity.outputs.resourceGroupName
         location: aibLocation
         imageReplicationRegions: (sharedServicesLocation == aibLocation) ? array('${sharedServicesLocation}') : concat(array('${aibLocation}'), array('${sharedServicesLocation}'))
         sigImageDefinitionId: sharedImage ? image.outputs.resourceId : ''
@@ -749,7 +749,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
         jobSchedules: [
             {
                 parameters: {
-                    ClientId: userAssignedIdentity.outputs.clientId
+                    ClientId: userAssignedManagedIdentity.outputs.clientId
                     EnvironmentName: environment().name
                     ImageOffer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
                     ImagePublisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
@@ -789,7 +789,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
         tags: resourceTags ? varCommonresourceTags : {}
         systemAssignedIdentity: false
         userAssignedIdentities: {
-            '${userAssignedIdentity.outputs.resourceId}': {}
+            '${userAssignedManagedIdentity.outputs.resourceId}': {}
         }
     }
 }
