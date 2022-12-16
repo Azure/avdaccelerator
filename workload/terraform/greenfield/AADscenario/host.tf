@@ -139,7 +139,8 @@ PROTECTED_SETTINGS
 
   depends_on = [
     azurerm_virtual_machine_extension.aadjoin,
-    azurerm_virtual_machine_extension.vmext_dsc
+    azurerm_virtual_machine_extension.vmext_dsc,
+    data.azurerm_log_analytics_workspace.lawksp
   ]
 }
 
