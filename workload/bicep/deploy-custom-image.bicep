@@ -66,7 +66,7 @@ param operatingSystemImage string = 'win10_21h2'
 param sharedImage bool = true
 
 @description('Optional. Input the resource ID for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: "")')
-param virtualNetworkResourceId string = ''
+param existingVirtualNetworkResourceId string = ''
 
 @description('Optional. Input the name of the subnet for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: "")')
 param subnetName string = ''
@@ -539,7 +539,7 @@ var varModules = [
 // Role Definitions & Assignments
 var varDistributionGroupRole = !empty(distributionGroup) ? [
     {
-        resourceGroup: split(virtualNetworkResourceId, '/')[4]
+        resourceGroup: split(existingVirtualNetworkResourceId, '/')[4]
         name: 'Virtual Network Join'
         description: 'Allow resources to join a subnet'
         actions: [
@@ -693,7 +693,7 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
     name: 'Image-Template_${time}'
     params: {
         name: varImageTemplateName
-        subnetId: !empty(virtualNetworkResourceId) && !empty(subnetName) ? '${virtualNetworkResourceId}/subnets/${subnetName}' : ''
+        subnetId: !empty(existingVirtualNetworkResourceId) && !empty(subnetName) ? '${existingVirtualNetworkResourceId}/subnets/${subnetName}' : ''
         userMsiName: userAssignedIdentity.outputs.name
         userMsiResourceGroup: userAssignedIdentity.outputs.resourceGroupName
         location: aibLocation
