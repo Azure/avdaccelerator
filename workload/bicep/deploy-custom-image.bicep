@@ -196,7 +196,7 @@ param environmentTag string = 'Dev'
 param time string = utcNow()
 
 @description('Enable usage and telemetry feedback to Microsoft.')
-param telemetry bool = true
+param enableTelemetry bool = true
 
 // =========== //
 // Variable declaration //
@@ -586,7 +586,7 @@ var varRoles = union(varDistributionGroupRole, varImageTemplateRoles)
 // =========== //
 
 //  telemetry Deployment.
-resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (telemetry) {
+resource telemetryDeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
     name: varTelemetryId
     location: sharedServicesLocation
     properties: {
