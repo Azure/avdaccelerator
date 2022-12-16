@@ -34,7 +34,7 @@ Resource Groups and resource names are derived from the `Prefix` parameter. Pick
 
 ## Terraform Implementation
 
-This folder contains more advanced Terraform modules for deploying AVD Landing Zone. It is expected that users will have a strong understanding of Terraform concepts and will make any necessary modifications to fit their environment when using these modules.
+This folder contains Terraform modules for deploying AVD Landing Zone. It is expected that users will have a strong understanding of Terraform concepts and will make any necessary modifications to fit their environment when using these modules.
 
 ## Terraform Folder Structure
 
