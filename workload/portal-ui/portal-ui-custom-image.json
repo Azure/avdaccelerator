@@ -941,7 +941,7 @@
                 "ownerTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.owner, 'none')]",
                 "rdpShortPath": "[steps('aib').rdpShortPathSelection]",
                 "resourceGroupCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.resourceGroup, 'none')]",
-                "resourceTags": "[steps('tags').selection]",
+                "enableResourceTags": "[steps('tags').selection]",
                 "screenCaptureProtection": "[steps('aib').screenCaptureProtectionSelection]",
                 "sharedServicesLocation": "[steps('basics').resourceScope.location.name]",
                 "sharedServicesSubId": "[steps('basics').resourceScope.subscription.subscriptionId]",
