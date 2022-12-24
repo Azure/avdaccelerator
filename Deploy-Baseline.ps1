@@ -12,5 +12,4 @@ New-AzSubscriptionDeployment `
   -avdEnterpriseAppObjectId "1d978fb9-d52d-4afb-b129-e2e38b59e5ea" `
   -avdDeployMonitoring $true `
   -deployAlaWorkspace $true `
-  -Location "eastus2" `
-  -verbose
+  -Location "eastus2"
