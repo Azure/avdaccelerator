@@ -189,7 +189,7 @@
             "value": "win11_22h2"
         },
         "useSharedImage": {
-            "value": false
+            "value": true
         },
         "avdImageTemplateDefinitionId": {
             "value": ""
