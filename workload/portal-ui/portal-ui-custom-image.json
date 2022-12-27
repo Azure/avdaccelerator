@@ -966,7 +966,7 @@
                 "sharedServicesLocation": "[steps('basics').resourceScope.location.name]",
                 "sharedServicesSubId": "[steps('basics').resourceScope.subscription.subscriptionId]",
                 "storageAccountCustomPrefix": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.storageAccount, 'none')]",
-                "useExistingVirtualNetwork": "steps('aib').virtualNetwork",
+                "useExistingVirtualNetwork": "[steps('aib').virtualNetwork]",
                 "existingVirtualNetworkResourceId": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').virtualNetworkSelection.id, '')]",
                 "subnetName": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').subnet, '')]",
                 "userAssignedManagedIdentityCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.userAssignedManagedIdentity, 'none')]",
