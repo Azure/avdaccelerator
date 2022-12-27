@@ -396,7 +396,15 @@
                                     }
                                 ]
                             }
-                        },
+                        }
+                    ]
+                },
+                {
+                    "name": "monitoring",
+                    "label": "Monitoring",
+                    "type": "Microsoft.Common.Section",
+                    "visible": true,
+                    "elements": [
                         {
                             "name": "monitoringAndAlerting",
                             "type": "Microsoft.Common.OptionsGroup",
@@ -421,7 +429,7 @@
                         {
                             "name": "distributionGroup",
                             "type": "Microsoft.Common.TextBox",
-                            "visible": "[equals(steps('aib').monitoringAndAlerting, true)]",
+                            "visible": "[equals(steps('monitoring').monitoringAndAlerting, true)]",
                             "label": "Distribution Group",
                             "toolTip": "Input the distribution group for receiving alerts on the build status.",
                             "placeholder": "Example: operations@contoso.com",
@@ -938,7 +946,7 @@
                 "customNaming": "[steps('naming').customNamingSelection]",
                 "dataClassificationTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.dataClassification, 'Non-business')]",
                 "departmentTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.department, 'none')]",
-                "distributionGroup": "[if(equals(steps('aib').monitoringAndAlerting, true), steps('aib').distributionGroup, '')]",
+                "distributionGroup": "[if(equals(steps('monitoring').monitoringAndAlerting, true), steps('monitoring').distributionGroup, '')]",
                 "environmentTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.environment, 'Dev')]",
                 "imageBuildNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.imageBuild, 'none')]",
                 "imageDefinitionCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.imageDefinition, 'none')]",
