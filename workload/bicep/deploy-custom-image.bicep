@@ -65,7 +65,7 @@ param operatingSystemImage string = 'win10_21h2'
 @description('Optional. Set to deploy image from Azure Compute Gallery. (Default: true)')
 param sharedImage bool = true
 
-@description('Optional. Set to deploy Azure Image Builder to existing virtual network.. (Default: false)')
+@description('Optional. Set to deploy Azure Image Builder to existing virtual network. (Default: false)')
 param useExistingVirtualNetwork bool = false
 
 @description('Optional. Input the resource ID for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: "")')
