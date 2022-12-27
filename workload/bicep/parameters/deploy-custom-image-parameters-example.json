@@ -40,6 +40,12 @@
         },
         "createResourceTags": {
             "value": false
+        },
+        "useExistingVirtualNetwork": {
+            "value": false
+        },
+        "enableMonitoringAlerts": {
+            "value": false
         }
     }
 }
