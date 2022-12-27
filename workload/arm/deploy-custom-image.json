@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "7075216105174955307"
+      "templateHash": "18062243882653365662"
     }
   },
   "parameters": {
@@ -99,7 +99,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Set to deploy Azure Image Builder to existing virtual network.. (Default: false)"
+        "description": "Optional. Set to deploy Azure Image Builder to existing virtual network. (Default: false)"
       }
     },
     "existingVirtualNetworkResourceId": {
@@ -634,7 +634,7 @@
         ]
       }
     ],
-    "varRoles": "[union(variables('varDistributionGroupRole'), variables('varImageTemplateRoles'))]"
+    "varRoles": "[if(parameters('enableMonitoringAlerts'), union(variables('varDistributionGroupRole'), variables('varImageTemplateRoles')), variables('varImageTemplateRoles'))]"
   },
   "resources": [
     {
@@ -1090,7 +1090,6 @@
       }
     },
     {
-      "condition": "[parameters('useExistingVirtualNetwork')]",
       "copy": {
         "name": "roleDefinitions",
         "count": "[length(range(0, length(variables('varRoles'))))]"
@@ -1497,7 +1496,6 @@
       ]
     },
     {
-      "condition": "[parameters('useExistingVirtualNetwork')]",
       "copy": {
         "name": "roleAssignments",
         "count": "[length(range(0, length(variables('varRoles'))))]"
