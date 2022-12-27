@@ -469,7 +469,7 @@ var varRemainingCustomizers = [
 ]
 var varCustomizationSteps = union(varScriptCustomizers, varRemainingCustomizers)
 //
-var varAlerts = [
+var varAlerts = enableMonitoringAlerts ? [
     {
         name: 'Azure Image Builder - Build Failure'
         description: 'Sends an error alert when a build fails on an image template for Azure Image Builder.'
@@ -530,7 +530,7 @@ var varAlerts = [
             ]
         }
     }
-]
+]: []
 var varModules = [
     {
         name: 'Az.Accounts'
@@ -616,7 +616,7 @@ module avdSharedResourcesRg '../../carml/1.0.0/Microsoft.Resources/resourceGroup
     }
 }
 
-module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinitions/subscription/deploy.bicep' = [for i in range(0, length(varRoles)): {
+module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinitions/subscription/deploy.bicep' = [for i in range(0, length(varRoles)): if (useExistingVirtualNetwork) {
     scope: subscription(sharedServicesSubId)
     name: 'Role-Definition_${i}_${time}'
     params: {
@@ -643,7 +643,7 @@ module userAssignedManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/
     ]
 }
 
-module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for i in range(0, length(varRoles)): {
+module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for i in range(0, length(varRoles)): if (useExistingVirtualNetwork) {
     name: 'Role-Assignment_${i}_${time}'
     scope: resourceGroup(sharedServicesSubId, varRoles[i].resourceGroup)
     params: {
@@ -726,7 +726,7 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
 }
 
 // Log Analytics Workspace
-module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (!empty(distributionGroup)) {
+module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (enableMonitoringAlerts) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Log-Analytics-Workspace_${time}'
     params: {
@@ -741,7 +741,7 @@ module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/dep
     ]
 }
 
-module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccounts/deploy.bicep' = {
+module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccounts/deploy.bicep' = if (enableMonitoringAlerts) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Automation-Account_${time}'
     params: {
@@ -801,7 +801,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
 }
 
 @batchSize(1)
-module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/modules/deploy.bicep' = [for i in range(0, length(varModules)): {
+module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/modules/deploy.bicep' = [for i in range(0, length(varModules)): if (enableMonitoringAlerts) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Automation-Account-Module_${i}_${time}'
     params: {
@@ -861,7 +861,7 @@ module storageAccount '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deplo
     ]
 }
 
-module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bicep' = if (!empty(distributionGroup)) {
+module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bicep' = if (enableMonitoringAlerts) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Action-Group_${time}'
     params: {
@@ -883,7 +883,7 @@ module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bic
     ]
 }
 
-module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(varAlerts)): if (!empty(distributionGroup)) {
+module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(varAlerts)): if (enableMonitoringAlerts) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Scheduled-Query-Rule_${i}_${time}'
     params: {
