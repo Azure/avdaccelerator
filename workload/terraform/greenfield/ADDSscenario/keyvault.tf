@@ -51,3 +51,15 @@ resource "azurerm_private_endpoint" "kvpe" {
   }
 }
 
+# Generate VM local password
+resource "random_password" "vmpass" {
+  length  = 20
+  special = true
+}
+# Create Key Vault Secret
+resource "azurerm_key_vault_secret" "localpassword" {
+  name            = "vmlocalpassword"
+  value           = random_password.vmpass.result
+  key_vault_id    = azurerm_key_vault.kv.id
+  content_type    = "Password"
+}
