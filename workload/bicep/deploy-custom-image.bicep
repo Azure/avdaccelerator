@@ -400,7 +400,7 @@ var varRdpShortPathCustomizer = rdpShortPath ? [
         name: 'rdpShortPath'
         runElevated: true
         runAsSystem: true
-        scriptUri: '${varBaseScriptUri}scripts/Set-rdpShortPath.ps1'
+        scriptUri: '${varBaseScriptUri}scripts/Set-RdpShortpath.ps1'
     }
 ] : []
 var varScreenCaptureProtectionCustomizer = screenCaptureProtection ? [
