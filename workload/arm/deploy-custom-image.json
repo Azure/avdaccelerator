@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "9901234021863314469"
+      "templateHash": "7075216105174955307"
     }
   },
   "parameters": {
@@ -593,68 +593,7 @@
       }
     ],
     "varCustomizationSteps": "[union(variables('varScriptCustomizers'), variables('varRemainingCustomizers'))]",
-    "varAlerts": [
-      {
-        "name": "Azure Image Builder - Build Failure",
-        "description": "Sends an error alert when a build fails on an image template for Azure Image Builder.",
-        "severity": 0,
-        "evaluationFrequency": "PT5M",
-        "windowSize": "PT5M",
-        "criterias": {
-          "allOf": [
-            {
-              "query": "AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| where ResultDescription has \"Image Template build failed\"",
-              "timeAggregation": "Count",
-              "dimensions": [
-                {
-                  "name": "ResultDescription",
-                  "operator": "Include",
-                  "values": [
-                    "*"
-                  ]
-                }
-              ],
-              "operator": "GreaterThanOrEqual",
-              "threshold": 1,
-              "failingPeriods": {
-                "numberOfEvaluationPeriods": 1,
-                "minFailingPeriodsToAlert": 1
-              }
-            }
-          ]
-        }
-      },
-      {
-        "name": "Azure Image Builder - Build Success",
-        "description": "Sends an informational alert when a build succeeds on an image template for Azure Image Builder.",
-        "severity": 3,
-        "evaluationFrequency": "PT5M",
-        "windowSize": "PT5M",
-        "criterias": {
-          "allOf": [
-            {
-              "query": "AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| where ResultDescription has \"Image Template build succeeded\"",
-              "timeAggregation": "Count",
-              "dimensions": [
-                {
-                  "name": "ResultDescription",
-                  "operator": "Include",
-                  "values": [
-                    "*"
-                  ]
-                }
-              ],
-              "operator": "GreaterThanOrEqual",
-              "threshold": 1,
-              "failingPeriods": {
-                "numberOfEvaluationPeriods": 1,
-                "minFailingPeriodsToAlert": 1
-              }
-            }
-          ]
-        }
-      }
-    ],
+    "varAlerts": "[if(parameters('enableMonitoringAlerts'), createArray(createObject('name', 'Azure Image Builder - Build Failure', 'description', 'Sends an error alert when a build fails on an image template for Azure Image Builder.', 'severity', 0, 'evaluationFrequency', 'PT5M', 'windowSize', 'PT5M', 'criterias', createObject('allOf', createArray(createObject('query', 'AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| where ResultDescription has \"Image Template build failed\"', 'timeAggregation', 'Count', 'dimensions', createArray(createObject('name', 'ResultDescription', 'operator', 'Include', 'values', createArray('*'))), 'operator', 'GreaterThanOrEqual', 'threshold', 1, 'failingPeriods', createObject('numberOfEvaluationPeriods', 1, 'minFailingPeriodsToAlert', 1))))), createObject('name', 'Azure Image Builder - Build Success', 'description', 'Sends an informational alert when a build succeeds on an image template for Azure Image Builder.', 'severity', 3, 'evaluationFrequency', 'PT5M', 'windowSize', 'PT5M', 'criterias', createObject('allOf', createArray(createObject('query', 'AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| where ResultDescription has \"Image Template build succeeded\"', 'timeAggregation', 'Count', 'dimensions', createArray(createObject('name', 'ResultDescription', 'operator', 'Include', 'values', createArray('*'))), 'operator', 'GreaterThanOrEqual', 'threshold', 1, 'failingPeriods', createObject('numberOfEvaluationPeriods', 1, 'minFailingPeriodsToAlert', 1)))))), createArray())]",
     "varModules": [
       {
         "name": "Az.Accounts",
@@ -1151,6 +1090,7 @@
       }
     },
     {
+      "condition": "[parameters('useExistingVirtualNetwork')]",
       "copy": {
         "name": "roleDefinitions",
         "count": "[length(range(0, length(variables('varRoles'))))]"
@@ -1557,6 +1497,7 @@
       ]
     },
     {
+      "condition": "[parameters('useExistingVirtualNetwork')]",
       "copy": {
         "name": "roleAssignments",
         "count": "[length(range(0, length(variables('varRoles'))))]"
@@ -3770,7 +3711,7 @@
       ]
     },
     {
-      "condition": "[not(empty(parameters('distributionGroup')))]",
+      "condition": "[parameters('enableMonitoringAlerts')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('Log-Analytics-Workspace_{0}', parameters('time'))]",
@@ -5355,6 +5296,7 @@
       ]
     },
     {
+      "condition": "[parameters('enableMonitoringAlerts')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('Automation-Account_{0}', parameters('time'))]",
@@ -8243,6 +8185,7 @@
       ]
     },
     {
+      "condition": "[parameters('enableMonitoringAlerts')]",
       "copy": {
         "name": "modules",
         "count": "[length(range(0, length(variables('varModules'))))]",
@@ -13001,7 +12944,7 @@
       ]
     },
     {
-      "condition": "[not(empty(parameters('distributionGroup')))]",
+      "condition": "[parameters('enableMonitoringAlerts')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('Action-Group_{0}', parameters('time'))]",
@@ -13330,7 +13273,7 @@
       ]
     },
     {
-      "condition": "[not(empty(parameters('distributionGroup')))]",
+      "condition": "[parameters('enableMonitoringAlerts')]",
       "copy": {
         "name": "scheduledQueryRules",
         "count": "[length(range(0, length(variables('varAlerts'))))]"
