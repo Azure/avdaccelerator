@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "18062243882653365662"
+      "templateHash": "12793020041034307181"
     }
   },
   "parameters": {
@@ -5294,7 +5294,6 @@
       ]
     },
     {
-      "condition": "[parameters('enableMonitoringAlerts')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('Automation-Account_{0}', parameters('time'))]",
@@ -8183,7 +8182,6 @@
       ]
     },
     {
-      "condition": "[parameters('enableMonitoringAlerts')]",
       "copy": {
         "name": "modules",
         "count": "[length(range(0, length(variables('varModules'))))]",
