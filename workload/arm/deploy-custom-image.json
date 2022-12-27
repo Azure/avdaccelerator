@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "17735166199963636797"
+      "templateHash": "9901234021863314469"
     }
   },
   "parameters": {
@@ -95,6 +95,13 @@
         "description": "Optional. Set to deploy image from Azure Compute Gallery. (Default: true)"
       }
     },
+    "useExistingVirtualNetwork": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Set to deploy Azure Image Builder to existing virtual network.. (Default: false)"
+      }
+    },
     "existingVirtualNetworkResourceId": {
       "type": "string",
       "defaultValue": "",
@@ -128,6 +135,13 @@
       "defaultValue": 30,
       "metadata": {
         "description": "Required.  Azure log analytics workspace name data retention."
+      }
+    },
+    "enableMonitoringAlerts": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Set to deploy monitoring and alerst for image nuilder process (Defualt: false)."
       }
     },
     "distributionGroup": {
@@ -651,7 +665,7 @@
         "uri": "https://www.powershellgallery.com/api/v2/package"
       }
     ],
-    "varDistributionGroupRole": "[if(not(empty(parameters('distributionGroup'))), createArray(createObject('resourceGroup', split(parameters('existingVirtualNetworkResourceId'), '/')[4], 'name', 'Virtual Network Join', 'description', 'Allow resources to join a subnet', 'actions', createArray('Microsoft.Network/virtualNetworks/read', 'Microsoft.Network/virtualNetworks/subnets/read', 'Microsoft.Network/virtualNetworks/subnets/join/action'))), createArray())]",
+    "varDistributionGroupRole": "[if(and(parameters('enableMonitoringAlerts'), parameters('useExistingVirtualNetwork')), createArray(createObject('resourceGroup', split(parameters('existingVirtualNetworkResourceId'), '/')[4], 'name', 'Virtual Network Join', 'description', 'Allow resources to join a subnet', 'actions', createArray('Microsoft.Network/virtualNetworks/read', 'Microsoft.Network/virtualNetworks/subnets/read', 'Microsoft.Network/virtualNetworks/subnets/join/action'))), createArray())]",
     "varImageTemplateRoles": [
       {
         "resourceGroup": "[variables('varResourceGroupName')]",
