@@ -763,7 +763,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
                     Location: aibLocation
                     SubscriptionId: sharedServicesSubId
                     TemplateName: imageTemplate.outputs.name
-                    TemplatevarResourceGroupName: varResourceGroupName
+                    TemplateResourceGroupName: varResourceGroupName
                     TenantId: subscription().tenantId
                 }
                 runbookName: 'AIB-Build-Automation'
