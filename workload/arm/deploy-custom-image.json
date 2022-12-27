@@ -536,7 +536,7 @@
     "varBaseScriptUri": "https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/",
     "varTelemetryId": "[format('pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-{0}', parameters('sharedServicesLocation'))]",
     "varRdpShortPathCustomizer": "[if(parameters('rdpShortPath'), createArray(createObject('type', 'PowerShell', 'name', 'rdpShortPath', 'runElevated', true(), 'runAsSystem', true(), 'scriptUri', format('{0}scripts/Set-RdpShortpath.ps1', variables('varBaseScriptUri')))), createArray())]",
-    "varScreenCaptureProtectionCustomizer": "[if(parameters('screenCaptureProtection'), createArray(createObject('type', 'PowerShell', 'name', 'screenCaptureProtection', 'runElevated', true(), 'runAsSystem', true(), 'scriptUri', format('{0}scripts/Set-screenCaptureProtection.ps1', variables('varBaseScriptUri')))), createArray())]",
+    "varScreenCaptureProtectionCustomizer": "[if(parameters('screenCaptureProtection'), createArray(createObject('type', 'PowerShell', 'name', 'screenCaptureProtection', 'runElevated', true(), 'runAsSystem', true(), 'scriptUri', format('{0}scripts/Set-ScreenCaptureProtection.ps1', variables('varBaseScriptUri')))), createArray())]",
     "varVdotCustomizer": [
       {
         "type": "PowerShell",
