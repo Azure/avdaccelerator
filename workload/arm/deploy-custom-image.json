@@ -5,59 +5,77 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "10331837926546001721"
+      "templateHash": "17735166199963636797"
     }
   },
   "parameters": {
-    "SharedServicesLocation": {
+    "sharedServicesLocation": {
       "type": "string",
       "defaultValue": "eastus",
       "metadata": {
         "description": "Optional. Location where to deploy compute services. (Default: eastus)"
       }
     },
-    "SharedServicesSubId": {
+    "sharedServicesSubId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
         "description": "Required. AVD shared services subscription ID, multiple subscriptions scenario."
       }
     },
-    "StorageAccountSKU": {
+    "storageAccountSku": {
       "type": "string",
       "defaultValue": "Standard_LRS",
       "metadata": {
-        "description": "Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Default: false)"
+        "description": "Optional. Determine the Storage Account SKU for local or zonal redundancy. (Default: Standard_LRS)"
       },
       "allowedValues": [
         "Standard_LRS",
         "Standard_ZRS"
       ]
     },
-    "AIBLocation": {
+    "aibLocation": {
       "type": "string",
       "defaultValue": "eastus",
       "metadata": {
         "description": "Optional. Azure Image Builder location. (Default: eastus)"
       },
       "allowedValues": [
+        "australiaeast",
+        "australiasoutheast",
+        "brazilsouth",
+        "canadacentral",
+        "centralindia",
+        "centralus",
+        "eastasia",
         "eastus",
         "eastus2",
+        "francecentral",
+        "germanywestcentral",
+        "japaneast",
+        "jioindiawest",
+        "koreacentral",
+        "northcentralus",
+        "northeurope",
+        "norwayeast",
+        "qatarcentral",
+        "southafricanorth",
+        "southcentralus",
+        "southeastasia",
+        "switzerlandnorth",
+        "uaenorth",
+        "uksouth",
+        "ukwest",
+        "usgovarizona",
+        "usgovvirginia",
         "westcentralus",
+        "westeurope",
         "westus",
         "westus2",
-        "westus3",
-        "southcentralus",
-        "northeurope",
-        "westeurope",
-        "southeastasia",
-        "australiasoutheast",
-        "australiaeast",
-        "uksouth",
-        "ukwest"
+        "westus3"
       ]
     },
-    "OperatingSystemImage": {
+    "operatingSystemImage": {
       "type": "string",
       "defaultValue": "win10_21h2",
       "metadata": {
@@ -70,84 +88,84 @@
         "win11_21h2"
       ]
     },
-    "SharedImage": {
+    "sharedImage": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Set to deploy image from Azure Compute Gallery. (Default: true)"
       }
     },
-    "VirtualNetworkResourceId": {
+    "existingVirtualNetworkResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
         "description": "Optional. Input the resource ID for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: \"\")"
       }
     },
-    "SubnetName": {
+    "subnetName": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
         "description": "Optional. Input the name of the subnet for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: \"\")"
       }
     },
-    "RDPShortPath": {
+    "rdpShortPath": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
         "description": "Optional. Determine whether to enable RDP Short Path for Managed Networks. (Default: false)"
       }
     },
-    "ScreenCaptureProtection": {
+    "screenCaptureProtection": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
         "description": "Optional. Determine whether to enable Screen Capture Protection. (Default: false)"
       }
     },
-    "LogAnalyticsWorkspaceDataRetention": {
+    "logAnalyticsWorkspaceDataRetention": {
       "type": "int",
       "defaultValue": 30,
       "metadata": {
         "description": "Required.  Azure log analytics workspace name data retention."
       }
     },
-    "DistributionGroup": {
+    "distributionGroup": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
         "description": "Optional. Input the email distribution list for alert notifications when AIB builds succeed or fail."
       }
     },
-    "ActionGroupCustomName": {
+    "actionGroupCustomName": {
       "type": "string",
       "defaultValue": "ag-aib",
       "metadata": {
         "description": "Optional. Custom name for Action Group."
       }
     },
-    "AutomationAccountCustomName": {
+    "automationAccountCustomName": {
       "type": "string",
       "defaultValue": "aa-avd",
       "metadata": {
         "description": "Optional. Custom name for the Automation Account."
       }
     },
-    "LogAnalyticsWorkspaceCustomName": {
+    "logAnalyticsWorkspaceCustomName": {
       "type": "string",
       "defaultValue": "log-avd",
       "metadata": {
         "description": "Optional. Custom name for the Log Analytics Workspace."
       }
     },
-    "CustomNaming": {
+    "customNaming": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
         "description": "Optional. Determine whether to enable custom naming for the Azure resources. (Default: false)"
       }
     },
-    "ResourceGroupCustomName": {
+    "resourceGroupCustomName": {
       "type": "string",
       "defaultValue": "rg-avd-use2-shared-services",
       "metadata": {
@@ -155,7 +173,7 @@
       },
       "maxLength": 90
     },
-    "ImageGalleryCustomName": {
+    "imageGalleryCustomName": {
       "type": "string",
       "defaultValue": "gal_avd_use2_001",
       "metadata": {
@@ -163,7 +181,7 @@
       },
       "maxLength": 64
     },
-    "ImageDefinitionCustomName": {
+    "imageDefinitionCustomName": {
       "type": "string",
       "defaultValue": "avd-win11-21h2",
       "metadata": {
@@ -171,7 +189,7 @@
       },
       "maxLength": 64
     },
-    "ImageTemplateCustomName": {
+    "imageTemplateCustomName": {
       "type": "string",
       "defaultValue": "it-avd-win11-21h2",
       "metadata": {
@@ -179,7 +197,7 @@
       },
       "maxLength": 260
     },
-    "StorageAccountCustomName": {
+    "storageAccountCustomName": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -187,7 +205,7 @@
       },
       "maxLength": 24
     },
-    "AIBContainerCustomName": {
+    "aibContainerCustomName": {
       "type": "string",
       "defaultValue": "aib-artifacts",
       "metadata": {
@@ -195,7 +213,7 @@
       },
       "maxLength": 60
     },
-    "AVDContainerCustomName": {
+    "avdContainerCustomName": {
       "type": "string",
       "defaultValue": "avd-artifacts",
       "metadata": {
@@ -203,7 +221,7 @@
       },
       "maxLength": 60
     },
-    "KeyVaultCustomName": {
+    "keyVaultCustomName": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -211,7 +229,7 @@
       },
       "maxLength": 24
     },
-    "UserAssignedIdentityCustomName": {
+    "userAssignedManagedIdentityCustomName": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -219,28 +237,28 @@
       },
       "maxLength": 128
     },
-    "ResourceTags": {
+    "enableResourceTags": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
         "description": "Optional. Apply tags on resources and resource groups. (Default: false)"
       }
     },
-    "ImageBuildNameTag": {
+    "imageBuildNameTag": {
       "type": "string",
       "defaultValue": "AVD-Image",
       "metadata": {
         "description": "Optional. The name of workload for tagging purposes. (Default: AVD-Image)"
       }
     },
-    "WorkloadNameTag": {
+    "workloadNameTag": {
       "type": "string",
       "defaultValue": "Contoso-Workload",
       "metadata": {
         "description": "Optional. Reference to the size of the VM for your workloads (Default: Contoso-Workload)"
       }
     },
-    "DataClassificationTag": {
+    "dataClassificationTag": {
       "type": "string",
       "defaultValue": "Non-business",
       "metadata": {
@@ -254,14 +272,14 @@
         "Highly confidential"
       ]
     },
-    "DepartmentTag": {
+    "departmentTag": {
       "type": "string",
       "defaultValue": "Contoso-AVD",
       "metadata": {
         "description": "Optional. Department that owns the deployment, (Dafult: Contoso-AVD)"
       }
     },
-    "CriticalityTag": {
+    "criticalityTag": {
       "type": "string",
       "defaultValue": "Low",
       "metadata": {
@@ -275,42 +293,42 @@
         "custom"
       ]
     },
-    "CriticalityCustomTag": {
+    "criticalityCustomTag": {
       "type": "string",
       "defaultValue": "Contoso-Critical",
       "metadata": {
         "description": "Optional. Tag value for custom criticality value. (Default: Contoso-Critical)"
       }
     },
-    "ApplicationNameTag": {
+    "applicationNameTag": {
       "type": "string",
       "defaultValue": "Contoso-App",
       "metadata": {
         "description": "Optional. Details about the application."
       }
     },
-    "OperationsTeamTag": {
+    "operationsTeamTag": {
       "type": "string",
       "defaultValue": "workload-admins@Contoso.com",
       "metadata": {
         "description": "Optional. Team accountable for day-to-day operations. (Contoso-Ops)"
       }
     },
-    "OwnerTag": {
+    "ownerTag": {
       "type": "string",
       "defaultValue": "workload-owner@Contoso.com",
       "metadata": {
         "description": "Optional. Organizational owner of the AVD deployment. (Default: Contoso-Owner)"
       }
     },
-    "CostCenterTag": {
+    "costCenterTag": {
       "type": "string",
       "defaultValue": "Contoso-CC",
       "metadata": {
         "description": "Optional. Cost center of owner team. (Defualt: Contoso-CC)"
       }
     },
-    "EnvironmentTag": {
+    "environmentTag": {
       "type": "string",
       "defaultValue": "Dev",
       "metadata": {
@@ -322,14 +340,14 @@
         "Staging "
       ]
     },
-    "Time": {
+    "time": {
       "type": "string",
       "defaultValue": "[utcNow()]",
       "metadata": {
         "description": "Do not modify, used to set unique value for resource deployment."
       }
     },
-    "Telemetry": {
+    "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
@@ -338,23 +356,23 @@
     }
   },
   "variables": {
-    "UniqueStringSixChar": "[take(format('{0}', uniqueString(parameters('SharedServicesSubId'), parameters('Time'))), 6)]",
-    "ActionGroupName": "[if(parameters('CustomNaming'), parameters('ActionGroupCustomName'), format('ag-avd-{0}', variables('NamingStandard')))]",
-    "NamingStandard": "[format('{0}', variables('LocationAcronym'))]",
-    "LocationLowercase": "[toLower(parameters('SharedServicesLocation'))]",
-    "ResourceGroupName": "[if(parameters('CustomNaming'), parameters('ResourceGroupCustomName'), format('rg-avd-{0}-shared-services', variables('NamingStandard')))]",
-    "ImageGalleryName": "[if(parameters('CustomNaming'), parameters('ImageGalleryCustomName'), format('gal_avd_{0}', variables('NamingStandard')))]",
-    "UserAssignedIdentityName": "[if(parameters('CustomNaming'), parameters('UserAssignedIdentityCustomName'), format('id-aib-{0}', variables('NamingStandard')))]",
-    "LogAnalyticsWorkspaceName": "[if(parameters('CustomNaming'), parameters('LogAnalyticsWorkspaceCustomName'), format('log-avd-{0}', variables('NamingStandard')))]",
-    "ImageDefinitionName": "[if(parameters('CustomNaming'), parameters('ImageDefinitionCustomName'), format('avd-{0}', parameters('OperatingSystemImage')))]",
-    "ImageTemplateName": "[if(parameters('CustomNaming'), parameters('ImageTemplateCustomName'), format('it-avd-{0}', parameters('OperatingSystemImage')))]",
-    "AutomationAccountName": "[if(parameters('CustomNaming'), parameters('AutomationAccountCustomName'), format('aa-avd-{0}', variables('NamingStandard')))]",
-    "StorageAccountName": "[if(parameters('CustomNaming'), parameters('StorageAccountCustomName'), format('stavd{0}{1}', variables('NamingStandard'), variables('UniqueStringSixChar')))]",
-    "AIBContainerName": "[if(parameters('CustomNaming'), parameters('AIBContainerCustomName'), 'aib-artifacts')]",
-    "AVDContainerName": "[if(parameters('CustomNaming'), parameters('AVDContainerCustomName'), 'avd-artifacts')]",
-    "KeyVaultName": "[if(parameters('CustomNaming'), parameters('KeyVaultCustomName'), format('kv-avd-{0}-{1}', variables('NamingStandard'), variables('UniqueStringSixChar')))]",
-    "LocationAcronym": "[variables('LocationAcronyms')[variables('LocationLowercase')]]",
-    "LocationAcronyms": {
+    "varUniqueStringSixChar": "[take(format('{0}', uniqueString(parameters('sharedServicesSubId'), parameters('time'))), 6)]",
+    "varActionGroupName": "[if(parameters('customNaming'), parameters('actionGroupCustomName'), format('ag-avd-{0}', variables('varNamingStandard')))]",
+    "varNamingStandard": "[format('{0}', variables('varLocationAcronym'))]",
+    "varLocationLowercase": "[toLower(parameters('sharedServicesLocation'))]",
+    "varResourceGroupName": "[if(parameters('customNaming'), parameters('resourceGroupCustomName'), format('rg-avd-{0}-shared-services', variables('varNamingStandard')))]",
+    "varImageGalleryName": "[if(parameters('customNaming'), parameters('imageGalleryCustomName'), format('gal_avd_{0}', variables('varNamingStandard')))]",
+    "varUserAssignedManagedIdentityName": "[if(parameters('customNaming'), parameters('userAssignedManagedIdentityCustomName'), format('id-aib-{0}', variables('varNamingStandard')))]",
+    "varLogAnalyticsWorkspaceName": "[if(parameters('customNaming'), parameters('logAnalyticsWorkspaceCustomName'), format('log-avd-{0}', variables('varNamingStandard')))]",
+    "varImageDefinitionName": "[if(parameters('customNaming'), parameters('imageDefinitionCustomName'), format('avd-{0}', parameters('operatingSystemImage')))]",
+    "varImageTemplateName": "[if(parameters('customNaming'), parameters('imageTemplateCustomName'), format('it-avd-{0}', parameters('operatingSystemImage')))]",
+    "varAutomationAccountName": "[if(parameters('customNaming'), parameters('automationAccountCustomName'), format('aa-avd-{0}', variables('varNamingStandard')))]",
+    "varStorageAccountName": "[if(parameters('customNaming'), parameters('storageAccountCustomName'), format('stavd{0}{1}', variables('varNamingStandard'), variables('varUniqueStringSixChar')))]",
+    "varAibContainerName": "[if(parameters('customNaming'), parameters('aibContainerCustomName'), 'aib-artifacts')]",
+    "varAvdContainerName": "[if(parameters('customNaming'), parameters('avdContainerCustomName'), 'avd-artifacts')]",
+    "varKeyVaultName": "[if(parameters('customNaming'), parameters('keyVaultCustomName'), format('kv-avd-{0}-{1}', variables('varNamingStandard'), variables('varUniqueStringSixChar')))]",
+    "varLocationAcronym": "[variables('varLocationAcronyms')[variables('varLocationLowercase')]]",
+    "varLocationAcronyms": {
       "eastasia": "eas",
       "southeastasia": "seas",
       "centralus": "cus",
@@ -399,67 +417,67 @@
       "westus3": "wus3",
       "swedencentral": "sec"
     },
-    "TimeZone": "[variables('TimeZones')[parameters('AIBLocation')]]",
-    "TimeZones": {
-      "australiacentral": "AUS Eastern Standard Time",
-      "australiacentral2": "AUS Eastern Standard Time",
-      "australiaeast": "AUS Eastern Standard Time",
-      "australiasoutheast": "AUS Eastern Standard Time",
-      "brazilsouth": "E. South America Standard Time",
-      "brazilsoutheast": "E. South America Standard Time",
-      "canadacentral": "Eastern Standard Time",
-      "canadaeast": "Eastern Standard Time",
-      "centralindia": "India Standard Time",
-      "centralus": "Central Standard Time",
-      "chinaeast": "China Standard Time",
-      "chinaeast2": "China Standard Time",
-      "chinanorth": "China Standard Time",
-      "chinanorth2": "China Standard Time",
-      "eastasia": "China Standard Time",
-      "eastus": "Eastern Standard Time",
-      "eastus2": "Eastern Standard Time",
-      "francecentral": "Central Europe Standard Time",
-      "francesouth": "Central Europe Standard Time",
-      "germanynorth": "Central Europe Standard Time",
-      "germanywestcentral": "Central Europe Standard Time",
-      "japaneast": "Tokyo Standard Time",
-      "japanwest": "Tokyo Standard Time",
-      "jioindiacentral": "India Standard Time",
-      "jioindiawest": "India Standard Time",
-      "koreacentral": "Korea Standard Time",
-      "koreasouth": "Korea Standard Time",
-      "northcentralus": "Central Standard Time",
-      "northeurope": "GMT Standard Time",
-      "norwayeast": "Central Europe Standard Time",
-      "norwaywest": "Central Europe Standard Time",
-      "southafricanorth": "South Africa Standard Time",
-      "southafricawest": "South Africa Standard Time",
-      "southcentralus": "Central Standard Time",
-      "southindia": "India Standard Time",
-      "southeastasia": "Singapore Standard Time",
-      "swedencentral": "Central Europe Standard Time",
-      "switzerlandnorth": "Central Europe Standard Time",
-      "switzerlandwest": "Central Europe Standard Time",
-      "uaecentral": "Arabian Standard Time",
-      "uaenorth": "Arabian Standard Time",
-      "uksouth": "GMT Standard Time",
-      "ukwest": "GMT Standard Time",
-      "usdodcentral": "Central Standard Time",
-      "usdodeast": "Eastern Standard Time",
-      "usgovarizona": "Mountain Standard Time",
-      "usgoviowa": "Central Standard Time",
-      "usgovtexas": "Central Standard Time",
-      "usgovvirginia": "Eastern Standard Time",
-      "westcentralus": "Mountain Standard Time",
-      "westeurope": "Central Europe Standard Time",
-      "westindia": "India Standard Time",
-      "westus": "Pacific Standard Time",
-      "westus2": "Pacific Standard Time",
-      "westus3": "Mountain Standard Time"
+    "varTimeZone": "[variables('varTimeZones')[parameters('aibLocation')]]",
+    "varTimeZones": {
+      "australiacentral": "AUS Eastern Standard time",
+      "australiacentral2": "AUS Eastern Standard time",
+      "australiaeast": "AUS Eastern Standard time",
+      "australiasoutheast": "AUS Eastern Standard time",
+      "brazilsouth": "E. South America Standard time",
+      "brazilsoutheast": "E. South America Standard time",
+      "canadacentral": "Eastern Standard time",
+      "canadaeast": "Eastern Standard time",
+      "centralindia": "India Standard time",
+      "centralus": "Central Standard time",
+      "chinaeast": "China Standard time",
+      "chinaeast2": "China Standard time",
+      "chinanorth": "China Standard time",
+      "chinanorth2": "China Standard time",
+      "eastasia": "China Standard time",
+      "eastus": "Eastern Standard time",
+      "eastus2": "Eastern Standard time",
+      "francecentral": "Central Europe Standard time",
+      "francesouth": "Central Europe Standard time",
+      "germanynorth": "Central Europe Standard time",
+      "germanywestcentral": "Central Europe Standard time",
+      "japaneast": "Tokyo Standard time",
+      "japanwest": "Tokyo Standard time",
+      "jioindiacentral": "India Standard time",
+      "jioindiawest": "India Standard time",
+      "koreacentral": "Korea Standard time",
+      "koreasouth": "Korea Standard time",
+      "northcentralus": "Central Standard time",
+      "northeurope": "GMT Standard time",
+      "norwayeast": "Central Europe Standard time",
+      "norwaywest": "Central Europe Standard time",
+      "southafricanorth": "South Africa Standard time",
+      "southafricawest": "South Africa Standard time",
+      "southcentralus": "Central Standard time",
+      "southindia": "India Standard time",
+      "southeastasia": "Singapore Standard time",
+      "swedencentral": "Central Europe Standard time",
+      "switzerlandnorth": "Central Europe Standard time",
+      "switzerlandwest": "Central Europe Standard time",
+      "uaecentral": "Arabian Standard time",
+      "uaenorth": "Arabian Standard time",
+      "uksouth": "GMT Standard time",
+      "ukwest": "GMT Standard time",
+      "usdodcentral": "Central Standard time",
+      "usdodeast": "Eastern Standard time",
+      "usgovarizona": "Mountain Standard time",
+      "usgoviowa": "Central Standard time",
+      "usgovtexas": "Central Standard time",
+      "usgovvirginia": "Eastern Standard time",
+      "westcentralus": "Mountain Standard time",
+      "westeurope": "Central Europe Standard time",
+      "westindia": "India Standard time",
+      "westus": "Pacific Standard time",
+      "westus2": "Pacific Standard time",
+      "westus3": "Mountain Standard time"
     },
-    "commonResourceTags": "[if(parameters('ResourceTags'), createObject('ImageBuildName', parameters('ImageBuildNameTag'), 'WorkloadName', parameters('WorkloadNameTag'), 'DataClassification', parameters('DataClassificationTag'), 'Department', parameters('DepartmentTag'), 'Criticality', if(equals(parameters('CriticalityTag'), 'Custom'), parameters('CriticalityCustomTag'), parameters('CriticalityTag')), 'ApplicationName', parameters('ApplicationNameTag'), 'OpsTeam', parameters('OperationsTeamTag'), 'Owner', parameters('OwnerTag'), 'CostCenter', parameters('CostCenterTag'), 'Environment', parameters('EnvironmentTag')), createObject())]",
-    "VMSize": "Standard_D4s_v3",
-    "OperatingSystemImageDefinitions": {
+    "varCommonResourceTags": "[if(parameters('enableResourceTags'), createObject('ImageBuildName', parameters('imageBuildNameTag'), 'WorkloadName', parameters('workloadNameTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('criticalityTag'), 'Custom'), parameters('criticalityCustomTag'), parameters('criticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'OpsTeam', parameters('operationsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag'), 'Environment', parameters('environmentTag')), createObject())]",
+    "varVmSize": "Standard_D4s_v3",
+    "varOperatingSystemImageDefinitions": {
       "win10_21h2_office": {
         "name": "Windows10_21H2_Office",
         "osType": "Windows",
@@ -501,25 +519,25 @@
         "hyperVGeneration": "V2"
       }
     },
-    "baseScriptUri": "https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/",
-    "telemetryId": "[format('pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-{0}', parameters('SharedServicesLocation'))]",
-    "RDPShortPathCustomizer": "[if(parameters('RDPShortPath'), createArray(createObject('type', 'PowerShell', 'name', 'RDPShortPath', 'runElevated', true(), 'runAsSystem', true(), 'scriptUri', format('{0}scripts/Set-RdpShortpath.ps1', variables('baseScriptUri')))), createArray())]",
-    "ScreenCaptureProtectionCustomizer": "[if(parameters('ScreenCaptureProtection'), createArray(createObject('type', 'PowerShell', 'name', 'ScreenCaptureProtection', 'runElevated', true(), 'runAsSystem', true(), 'scriptUri', format('{0}scripts/Set-ScreenCaptureProtection.ps1', variables('baseScriptUri')))), createArray())]",
-    "VDOTCustomizer": [
+    "varBaseScriptUri": "https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/",
+    "varTelemetryId": "[format('pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-{0}', parameters('sharedServicesLocation'))]",
+    "varRdpShortPathCustomizer": "[if(parameters('rdpShortPath'), createArray(createObject('type', 'PowerShell', 'name', 'rdpShortPath', 'runElevated', true(), 'runAsSystem', true(), 'scriptUri', format('{0}scripts/Set-rdpShortPath.ps1', variables('varBaseScriptUri')))), createArray())]",
+    "varScreenCaptureProtectionCustomizer": "[if(parameters('screenCaptureProtection'), createArray(createObject('type', 'PowerShell', 'name', 'screenCaptureProtection', 'runElevated', true(), 'runAsSystem', true(), 'scriptUri', format('{0}scripts/Set-screenCaptureProtection.ps1', variables('varBaseScriptUri')))), createArray())]",
+    "varVdotCustomizer": [
       {
         "type": "PowerShell",
         "name": "VirtualDesktopOptimizationTool",
         "runElevated": true,
         "runAsSystem": true,
-        "scriptUri": "[format('{0}scripts/Set-VirtualDesktopOptimizations.ps1', variables('baseScriptUri'))]"
+        "scriptUri": "[format('{0}scripts/Set-VirtualDesktopOptimizations.ps1', variables('varBaseScriptUri'))]"
       }
     ],
-    "ScriptCustomizers": "[union(variables('RDPShortPathCustomizer'), variables('ScreenCaptureProtectionCustomizer'), variables('VDOTCustomizer'))]",
-    "RemainingCustomizers": [
+    "varScriptCustomizers": "[union(variables('varRdpShortPathCustomizer'), variables('varScreenCaptureProtectionCustomizer'), variables('varVdotCustomizer'))]",
+    "varRemainingCustomizers": [
       {
         "type": "WindowsRestart",
         "restartCheckCommand": "Write-Host \"Restarting post script customizers\"",
-        "restartTimeout": "10m"
+        "restarttimeout": "10m"
       },
       {
         "type": "WindowsUpdate",
@@ -543,7 +561,7 @@
       {
         "type": "WindowsRestart",
         "restartCheckCommand": "Write-Host \"restarting post Windows updates\"",
-        "restartTimeout": "10m"
+        "restarttimeout": "10m"
       },
       {
         "type": "PowerShell",
@@ -557,11 +575,11 @@
       },
       {
         "type": "WindowsRestart",
-        "restartTimeout": "10m"
+        "restarttimeout": "10m"
       }
     ],
-    "CustomizationSteps": "[union(variables('ScriptCustomizers'), variables('RemainingCustomizers'))]",
-    "Alerts": [
+    "varCustomizationSteps": "[union(variables('varScriptCustomizers'), variables('varRemainingCustomizers'))]",
+    "varAlerts": [
       {
         "name": "Azure Image Builder - Build Failure",
         "description": "Sends an error alert when a build fails on an image template for Azure Image Builder.",
@@ -572,7 +590,7 @@
           "allOf": [
             {
               "query": "AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| where ResultDescription has \"Image Template build failed\"",
-              "TimeAggregation": "Count",
+              "timeAggregation": "Count",
               "dimensions": [
                 {
                   "name": "ResultDescription",
@@ -602,7 +620,7 @@
           "allOf": [
             {
               "query": "AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| where ResultDescription has \"Image Template build succeeded\"",
-              "TimeAggregation": "Count",
+              "timeAggregation": "Count",
               "dimensions": [
                 {
                   "name": "ResultDescription",
@@ -623,7 +641,7 @@
         }
       }
     ],
-    "Modules": [
+    "varModules": [
       {
         "name": "Az.Accounts",
         "uri": "https://www.powershellgallery.com/api/v2/package"
@@ -633,10 +651,10 @@
         "uri": "https://www.powershellgallery.com/api/v2/package"
       }
     ],
-    "DistributionGroupRole": "[if(not(empty(parameters('DistributionGroup'))), createArray(createObject('resourceGroup', split(parameters('VirtualNetworkResourceId'), '/')[4], 'name', 'Virtual Network Join', 'description', 'Allow resources to join a subnet', 'actions', createArray('Microsoft.Network/virtualNetworks/read', 'Microsoft.Network/virtualNetworks/subnets/read', 'Microsoft.Network/virtualNetworks/subnets/join/action'))), createArray())]",
-    "ImageTemplateRoles": [
+    "varDistributionGroupRole": "[if(not(empty(parameters('distributionGroup'))), createArray(createObject('resourceGroup', split(parameters('existingVirtualNetworkResourceId'), '/')[4], 'name', 'Virtual Network Join', 'description', 'Allow resources to join a subnet', 'actions', createArray('Microsoft.Network/virtualNetworks/read', 'Microsoft.Network/virtualNetworks/subnets/read', 'Microsoft.Network/virtualNetworks/subnets/join/action'))), createArray())]",
+    "varImageTemplateRoles": [
       {
-        "resourceGroup": "[variables('ResourceGroupName')]",
+        "resourceGroup": "[variables('varResourceGroupName')]",
         "name": "Image Template Contributor",
         "description": "Allow the creation and management of images",
         "actions": [
@@ -650,7 +668,7 @@
         ]
       },
       {
-        "resourceGroup": "[variables('ResourceGroupName')]",
+        "resourceGroup": "[variables('varResourceGroupName')]",
         "name": "Image Template Build Automation",
         "description": "Allow Image Template build automation using a Managed Identity on an Automation Account.",
         "actions": [
@@ -663,15 +681,15 @@
         ]
       }
     ],
-    "Roles": "[union(variables('DistributionGroupRole'), variables('ImageTemplateRoles'))]"
+    "varRoles": "[union(variables('varDistributionGroupRole'), variables('varImageTemplateRoles'))]"
   },
   "resources": [
     {
-      "condition": "[parameters('Telemetry')]",
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2021-04-01",
-      "name": "[variables('telemetryId')]",
-      "location": "[parameters('SharedServicesLocation')]",
+      "name": "[variables('varTelemetryId')]",
+      "location": "[parameters('sharedServicesLocation')]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -684,8 +702,8 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('Resource-Group_{0}', parameters('Time'))]",
-      "subscriptionId": "[parameters('SharedServicesSubId')]",
+      "name": "[format('Resource-Group_{0}', parameters('time'))]",
+      "subscriptionId": "[parameters('sharedServicesSubId')]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -694,13 +712,13 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('ResourceGroupName')]"
+            "value": "[variables('varResourceGroupName')]"
           },
           "location": {
-            "value": "[parameters('SharedServicesLocation')]"
+            "value": "[parameters('sharedServicesLocation')]"
           },
           "tags": {
-            "value": "[if(parameters('ResourceTags'), variables('commonResourceTags'), createObject())]"
+            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -1121,12 +1139,12 @@
     {
       "copy": {
         "name": "roleDefinitions",
-        "count": "[length(range(0, length(variables('Roles'))))]"
+        "count": "[length(range(0, length(variables('varRoles'))))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('Role-Definition_{0}_{1}', range(0, length(variables('Roles')))[copyIndex()], parameters('Time'))]",
-      "subscriptionId": "[parameters('SharedServicesSubId')]",
+      "name": "[format('Role-Definition_{0}_{1}', range(0, length(variables('varRoles')))[copyIndex()], parameters('time'))]",
+      "subscriptionId": "[parameters('sharedServicesSubId')]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1135,20 +1153,20 @@
         "mode": "Incremental",
         "parameters": {
           "subscriptionId": {
-            "value": "[parameters('SharedServicesSubId')]"
+            "value": "[parameters('sharedServicesSubId')]"
           },
           "description": {
-            "value": "[variables('Roles')[range(0, length(variables('Roles')))[copyIndex()]].description]"
+            "value": "[variables('varRoles')[range(0, length(variables('varRoles')))[copyIndex()]].description]"
           },
           "roleName": {
-            "value": "[variables('Roles')[range(0, length(variables('Roles')))[copyIndex()]].name]"
+            "value": "[variables('varRoles')[range(0, length(variables('varRoles')))[copyIndex()]].name]"
           },
           "actions": {
-            "value": "[variables('Roles')[range(0, length(variables('Roles')))[copyIndex()]].actions]"
+            "value": "[variables('varRoles')[range(0, length(variables('varRoles')))[copyIndex()]].actions]"
           },
           "assignableScopes": {
             "value": [
-              "[format('/subscriptions/{0}', parameters('SharedServicesSubId'))]"
+              "[format('/subscriptions/{0}', parameters('sharedServicesSubId'))]"
             ]
           }
         },
@@ -1269,9 +1287,9 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('User-Assigned-Identity_{0}', parameters('Time'))]",
-      "subscriptionId": "[parameters('SharedServicesSubId')]",
-      "resourceGroup": "[variables('ResourceGroupName')]",
+      "name": "[format('User-Assigned-Managed-Identity_{0}', parameters('time'))]",
+      "subscriptionId": "[parameters('sharedServicesSubId')]",
+      "resourceGroup": "[variables('varResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1279,13 +1297,13 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('UserAssignedIdentityName')]"
+            "value": "[variables('varUserAssignedManagedIdentityName')]"
           },
           "location": {
-            "value": "[parameters('SharedServicesLocation')]"
+            "value": "[parameters('sharedServicesLocation')]"
           },
           "tags": {
-            "value": "[if(parameters('ResourceTags'), variables('commonResourceTags'), createObject())]"
+            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -1521,19 +1539,19 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('Time')))]"
+        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('time')))]"
       ]
     },
     {
       "copy": {
         "name": "roleAssignments",
-        "count": "[length(range(0, length(variables('Roles'))))]"
+        "count": "[length(range(0, length(variables('varRoles'))))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('Role-Assignment_{0}_{1}', range(0, length(variables('Roles')))[copyIndex()], parameters('Time'))]",
-      "subscriptionId": "[parameters('SharedServicesSubId')]",
-      "resourceGroup": "[variables('Roles')[range(0, length(variables('Roles')))[copyIndex()]].resourceGroup]",
+      "name": "[format('Role-Assignment_{0}_{1}', range(0, length(variables('varRoles')))[copyIndex()], parameters('time'))]",
+      "subscriptionId": "[parameters('sharedServicesSubId')]",
+      "resourceGroup": "[variables('varRoles')[range(0, length(variables('varRoles')))[copyIndex()]].resourceGroup]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1541,10 +1559,10 @@
         "mode": "Incremental",
         "parameters": {
           "roleDefinitionIdOrName": {
-            "value": "[reference(subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Role-Definition_{0}_{1}', range(0, length(variables('Roles')))[range(0, length(variables('Roles')))[copyIndex()]], parameters('Time'))), '2020-10-01').outputs.resourceId.value]"
+            "value": "[reference(subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Role-Definition_{0}_{1}', range(0, length(variables('varRoles')))[range(0, length(variables('varRoles')))[copyIndex()]], parameters('time'))), '2020-10-01').outputs.resourceId.value]"
           },
           "principalId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Identity_{0}', parameters('Time'))), '2020-10-01').outputs.principalId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time'))), '2020-10-01').outputs.principalId.value]"
           },
           "principalType": {
             "value": "ServicePrincipal"
@@ -1990,16 +2008,16 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Role-Definition_{0}_{1}', range(0, length(variables('Roles')))[range(0, length(variables('Roles')))[copyIndex()]], parameters('Time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Identity_{0}', parameters('Time')))]"
+        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Role-Definition_{0}_{1}', range(0, length(variables('varRoles')))[range(0, length(variables('varRoles')))[copyIndex()]], parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time')))]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('Gallery_{0}', parameters('Time'))]",
-      "subscriptionId": "[parameters('SharedServicesSubId')]",
-      "resourceGroup": "[variables('ResourceGroupName')]",
+      "name": "[format('Compute-Gallery_{0}', parameters('time'))]",
+      "subscriptionId": "[parameters('sharedServicesSubId')]",
+      "resourceGroup": "[variables('varResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2007,16 +2025,16 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('ImageGalleryName')]"
+            "value": "[variables('varImageGalleryName')]"
           },
           "location": {
-            "value": "[parameters('SharedServicesLocation')]"
+            "value": "[parameters('sharedServicesLocation')]"
           },
           "galleryDescription": {
             "value": "Azure Virtual Desktops Images"
           },
           "tags": {
-            "value": "[if(parameters('ResourceTags'), variables('commonResourceTags'), createObject())]"
+            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -2789,15 +2807,15 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('Time')))]"
+        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('time')))]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('Image-Definition_{0}', parameters('Time'))]",
-      "subscriptionId": "[parameters('SharedServicesSubId')]",
-      "resourceGroup": "[variables('ResourceGroupName')]",
+      "name": "[format('Image-Definition_{0}', parameters('time'))]",
+      "subscriptionId": "[parameters('sharedServicesSubId')]",
+      "resourceGroup": "[variables('varResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2805,34 +2823,34 @@
         "mode": "Incremental",
         "parameters": {
           "galleryName": {
-            "value": "[if(parameters('SharedImage'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Gallery_{0}', parameters('Time'))), '2020-10-01').outputs.name.value, '')]"
+            "value": "[if(parameters('sharedImage'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Compute-Gallery_{0}', parameters('time'))), '2020-10-01').outputs.name.value, '')]"
           },
           "name": {
-            "value": "[variables('ImageDefinitionName')]"
+            "value": "[variables('varImageDefinitionName')]"
           },
           "osState": {
-            "value": "[variables('OperatingSystemImageDefinitions')[parameters('OperatingSystemImage')].osState]"
+            "value": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].osState]"
           },
           "osType": {
-            "value": "[variables('OperatingSystemImageDefinitions')[parameters('OperatingSystemImage')].osType]"
+            "value": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].osType]"
           },
           "publisher": {
-            "value": "[variables('OperatingSystemImageDefinitions')[parameters('OperatingSystemImage')].publisher]"
+            "value": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].publisher]"
           },
           "offer": {
-            "value": "[variables('OperatingSystemImageDefinitions')[parameters('OperatingSystemImage')].offer]"
+            "value": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].offer]"
           },
           "sku": {
-            "value": "[variables('OperatingSystemImageDefinitions')[parameters('OperatingSystemImage')].sku]"
+            "value": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].sku]"
           },
           "location": {
-            "value": "[parameters('AIBLocation')]"
+            "value": "[parameters('aibLocation')]"
           },
           "hyperVGeneration": {
-            "value": "[variables('OperatingSystemImageDefinitions')[parameters('OperatingSystemImage')].hyperVGeneration]"
+            "value": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].hyperVGeneration]"
           },
           "tags": {
-            "value": "[if(parameters('ResourceTags'), variables('commonResourceTags'), createObject())]"
+            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -3250,16 +3268,16 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('Time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Gallery_{0}', parameters('Time')))]"
+        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Compute-Gallery_{0}', parameters('time')))]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('Image-Template_{0}', parameters('Time'))]",
-      "subscriptionId": "[parameters('SharedServicesSubId')]",
-      "resourceGroup": "[variables('ResourceGroupName')]",
+      "name": "[format('Image-Template_{0}', parameters('time'))]",
+      "subscriptionId": "[parameters('sharedServicesSubId')]",
+      "resourceGroup": "[variables('varResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3267,44 +3285,44 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('ImageTemplateName')]"
+            "value": "[variables('varImageTemplateName')]"
           },
           "subnetId": {
-            "value": "[if(and(not(empty(parameters('VirtualNetworkResourceId'))), not(empty(parameters('SubnetName')))), format('{0}/subnets/{1}', parameters('VirtualNetworkResourceId'), parameters('SubnetName')), '')]"
+            "value": "[if(and(not(empty(parameters('existingVirtualNetworkResourceId'))), not(empty(parameters('subnetName')))), format('{0}/subnets/{1}', parameters('existingVirtualNetworkResourceId'), parameters('subnetName')), '')]"
           },
           "userMsiName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Identity_{0}', parameters('Time'))), '2020-10-01').outputs.name.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time'))), '2020-10-01').outputs.name.value]"
           },
           "userMsiResourceGroup": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Identity_{0}', parameters('Time'))), '2020-10-01').outputs.resourceGroupName.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time'))), '2020-10-01').outputs.resourceGroupName.value]"
           },
           "location": {
-            "value": "[parameters('AIBLocation')]"
+            "value": "[parameters('aibLocation')]"
           },
           "imageReplicationRegions": {
-            "value": "[if(equals(parameters('SharedServicesLocation'), parameters('AIBLocation')), array(format('{0}', parameters('SharedServicesLocation'))), concat(array(format('{0}', parameters('AIBLocation'))), array(format('{0}', parameters('SharedServicesLocation')))))]"
+            "value": "[if(equals(parameters('sharedServicesLocation'), parameters('aibLocation')), array(format('{0}', parameters('sharedServicesLocation'))), concat(array(format('{0}', parameters('aibLocation'))), array(format('{0}', parameters('sharedServicesLocation')))))]"
           },
           "sigImageDefinitionId": {
-            "value": "[if(parameters('SharedImage'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Definition_{0}', parameters('Time'))), '2020-10-01').outputs.resourceId.value, '')]"
+            "value": "[if(parameters('sharedImage'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Definition_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value, '')]"
           },
           "vmSize": {
-            "value": "[variables('VMSize')]"
+            "value": "[variables('varVmSize')]"
           },
           "customizationSteps": {
-            "value": "[variables('CustomizationSteps')]"
+            "value": "[variables('varCustomizationSteps')]"
           },
           "imageSource": {
             "value": {
               "type": "PlatformImage",
-              "publisher": "[variables('OperatingSystemImageDefinitions')[parameters('OperatingSystemImage')].publisher]",
-              "offer": "[variables('OperatingSystemImageDefinitions')[parameters('OperatingSystemImage')].offer]",
-              "sku": "[variables('OperatingSystemImageDefinitions')[parameters('OperatingSystemImage')].sku]",
-              "osAccountType": "[variables('OperatingSystemImageDefinitions')[parameters('OperatingSystemImage')].osAccountType]",
+              "publisher": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].publisher]",
+              "offer": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].offer]",
+              "sku": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].sku]",
+              "osAccountType": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].osAccountType]",
               "version": "latest"
             }
           },
           "tags": {
-            "value": "[if(parameters('ResourceTags'), variables('commonResourceTags'), createObject())]"
+            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -3730,20 +3748,20 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('Time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Gallery_{0}', parameters('Time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Definition_{0}', parameters('Time')))]",
+        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Compute-Gallery_{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Definition_{0}', parameters('time')))]",
         "roleAssignments",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Identity_{0}', parameters('Time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time')))]"
       ]
     },
     {
-      "condition": "[not(empty(parameters('DistributionGroup')))]",
+      "condition": "[not(empty(parameters('distributionGroup')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('Log-Analytics-Workspace_{0}', parameters('Time'))]",
-      "subscriptionId": "[parameters('SharedServicesSubId')]",
-      "resourceGroup": "[variables('ResourceGroupName')]",
+      "name": "[format('Log-Analytics-Workspace_{0}', parameters('time'))]",
+      "subscriptionId": "[parameters('sharedServicesSubId')]",
+      "resourceGroup": "[variables('varResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3751,19 +3769,19 @@
         "mode": "Incremental",
         "parameters": {
           "location": {
-            "value": "[parameters('AIBLocation')]"
+            "value": "[parameters('aibLocation')]"
           },
           "name": {
-            "value": "[variables('LogAnalyticsWorkspaceName')]"
+            "value": "[variables('varLogAnalyticsWorkspaceName')]"
           },
           "dataRetention": {
-            "value": "[parameters('LogAnalyticsWorkspaceDataRetention')]"
+            "value": "[parameters('logAnalyticsWorkspaceDataRetention')]"
           },
           "useResourcePermissions": {
             "value": true
           },
           "tags": {
-            "value": "[if(parameters('ResourceTags'), variables('commonResourceTags'), createObject())]"
+            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -5319,15 +5337,15 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('Time')))]"
+        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('time')))]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('Automation-Account_{0}', parameters('Time'))]",
-      "subscriptionId": "[parameters('SharedServicesSubId')]",
-      "resourceGroup": "[variables('ResourceGroupName')]",
+      "name": "[format('Automation-Account_{0}', parameters('time'))]",
+      "subscriptionId": "[parameters('sharedServicesSubId')]",
+      "resourceGroup": "[variables('varResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -5344,33 +5362,33 @@
             "value": 30
           },
           "diagnosticWorkspaceId": {
-            "value": "[if(empty(parameters('DistributionGroup')), '', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace_{0}', parameters('Time'))), '2020-10-01').outputs.resourceId.value)]"
+            "value": "[if(empty(parameters('distributionGroup')), '', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value)]"
           },
           "name": {
-            "value": "[variables('AutomationAccountName')]"
+            "value": "[variables('varAutomationAccountName')]"
           },
           "jobSchedules": {
             "value": [
               {
                 "parameters": {
-                  "ClientId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Identity_{0}', parameters('Time'))), '2020-10-01').outputs.clientId.value]",
+                  "ClientId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time'))), '2020-10-01').outputs.clientId.value]",
                   "EnvironmentName": "[environment().name]",
-                  "ImageOffer": "[variables('OperatingSystemImageDefinitions')[parameters('OperatingSystemImage')].offer]",
-                  "ImagePublisher": "[variables('OperatingSystemImageDefinitions')[parameters('OperatingSystemImage')].publisher]",
-                  "ImageSku": "[variables('OperatingSystemImageDefinitions')[parameters('OperatingSystemImage')].sku]",
-                  "Location": "[parameters('AIBLocation')]",
-                  "SubscriptionId": "[parameters('SharedServicesSubId')]",
-                  "TemplateName": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Template_{0}', parameters('Time'))), '2020-10-01').outputs.name.value]",
-                  "TemplateResourceGroupName": "[variables('ResourceGroupName')]",
+                  "ImageOffer": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].offer]",
+                  "ImagePublisher": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].publisher]",
+                  "ImageSku": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].sku]",
+                  "Location": "[parameters('aibLocation')]",
+                  "SubscriptionId": "[parameters('sharedServicesSubId')]",
+                  "TemplateName": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Template_{0}', parameters('time'))), '2020-10-01').outputs.name.value]",
+                  "TemplatevarResourceGroupName": "[variables('varResourceGroupName')]",
                   "TenantId": "[subscription().tenantId]"
                 },
                 "runbookName": "AIB-Build-Automation",
-                "scheduleName": "[variables('ImageTemplateName')]"
+                "scheduleName": "[variables('varImageTemplateName')]"
               }
             ]
           },
           "location": {
-            "value": "[parameters('SharedServicesLocation')]"
+            "value": "[parameters('sharedServicesLocation')]"
           },
           "runbooks": {
             "value": [
@@ -5386,11 +5404,11 @@
           "schedules": {
             "value": [
               {
-                "name": "[variables('ImageTemplateName')]",
+                "name": "[variables('varImageTemplateName')]",
                 "frequency": "Day",
                 "interval": 1,
-                "startTime": "[dateTimeAdd(parameters('Time'), 'PT15M')]",
-                "TimeZone": "[variables('TimeZone')]",
+                "starttime": "[dateTimeAdd(parameters('time'), 'PT15M')]",
+                "varTimeZone": "[variables('varTimeZone')]",
                 "advancedSchedule": {}
               }
             ]
@@ -5399,14 +5417,14 @@
             "value": "Free"
           },
           "tags": {
-            "value": "[if(parameters('ResourceTags'), variables('commonResourceTags'), createObject())]"
+            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
           },
           "systemAssignedIdentity": {
             "value": false
           },
           "userAssignedIdentities": {
             "value": {
-              "[format('{0}', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Identity_{0}', parameters('Time'))), '2020-10-01').outputs.resourceId.value)]": {}
+              "[format('{0}', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value)]": {}
             }
           }
         },
@@ -8205,23 +8223,23 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Template_{0}', parameters('Time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Identity_{0}', parameters('Time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace_{0}', parameters('Time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Template_{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace_{0}', parameters('time')))]"
       ]
     },
     {
       "copy": {
         "name": "modules",
-        "count": "[length(range(0, length(variables('Modules'))))]",
+        "count": "[length(range(0, length(variables('varModules'))))]",
         "mode": "serial",
         "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('Automation-Module_{0}_{1}', range(0, length(variables('Modules')))[copyIndex()], parameters('Time'))]",
-      "subscriptionId": "[parameters('SharedServicesSubId')]",
-      "resourceGroup": "[variables('ResourceGroupName')]",
+      "name": "[format('Automation-Account-Module_{0}_{1}', range(0, length(variables('varModules')))[copyIndex()], parameters('time'))]",
+      "subscriptionId": "[parameters('sharedServicesSubId')]",
+      "resourceGroup": "[variables('varResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -8229,16 +8247,16 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('Modules')[range(0, length(variables('Modules')))[copyIndex()]].name]"
+            "value": "[variables('varModules')[range(0, length(variables('varModules')))[copyIndex()]].name]"
           },
           "location": {
-            "value": "[parameters('SharedServicesLocation')]"
+            "value": "[parameters('sharedServicesLocation')]"
           },
           "automationAccountName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Automation-Account_{0}', parameters('Time'))), '2020-10-01').outputs.name.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Automation-Account_{0}', parameters('time'))), '2020-10-01').outputs.name.value]"
           },
           "uri": {
-            "value": "[variables('Modules')[range(0, length(variables('Modules')))[copyIndex()]].uri]"
+            "value": "[variables('varModules')[range(0, length(variables('varModules')))[copyIndex()]].uri]"
           }
         },
         "template": {
@@ -8361,15 +8379,15 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Automation-Account_{0}', parameters('Time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Automation-Account_{0}', parameters('time')))]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('Key-Vault_{0}', parameters('Time'))]",
-      "subscriptionId": "[parameters('SharedServicesSubId')]",
-      "resourceGroup": "[variables('ResourceGroupName')]",
+      "name": "[format('Key-Vault_{0}', parameters('time'))]",
+      "subscriptionId": "[parameters('sharedServicesSubId')]",
+      "resourceGroup": "[variables('varResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -8377,10 +8395,10 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('KeyVaultName')]"
+            "value": "[variables('varKeyVaultName')]"
           },
           "location": {
-            "value": "[parameters('SharedServicesLocation')]"
+            "value": "[parameters('sharedServicesLocation')]"
           },
           "enableRbacAuthorization": {
             "value": false
@@ -8400,7 +8418,7 @@
             }
           },
           "tags": {
-            "value": "[if(parameters('ResourceTags'), variables('commonResourceTags'), createObject())]"
+            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -9871,15 +9889,15 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('Time')))]"
+        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('time')))]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('Storage-Account_{0}', parameters('Time'))]",
-      "subscriptionId": "[parameters('SharedServicesSubId')]",
-      "resourceGroup": "[variables('ResourceGroupName')]",
+      "name": "[format('Storage-Account_{0}', parameters('time'))]",
+      "subscriptionId": "[parameters('sharedServicesSubId')]",
+      "resourceGroup": "[variables('varResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -9887,13 +9905,13 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('StorageAccountName')]"
+            "value": "[variables('varStorageAccountName')]"
           },
           "location": {
-            "value": "[parameters('SharedServicesLocation')]"
+            "value": "[parameters('sharedServicesLocation')]"
           },
           "storageAccountSku": {
-            "value": "[parameters('StorageAccountSKU')]"
+            "value": "[parameters('storageAccountSku')]"
           },
           "storageAccountKind": {
             "value": "StorageV2"
@@ -9902,18 +9920,18 @@
             "value": {
               "containers": [
                 {
-                  "name": "[variables('AIBContainerName')]",
+                  "name": "[variables('varAibContainerName')]",
                   "publicAccess": "None"
                 },
                 {
-                  "name": "[variables('AVDContainerName')]",
+                  "name": "[variables('varAvdContainerName')]",
                   "publicAccess": "None"
                 }
               ]
             }
           },
           "tags": {
-            "value": "[if(parameters('ResourceTags'), variables('commonResourceTags'), createObject())]"
+            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -12965,16 +12983,16 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('Time')))]"
+        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('time')))]"
       ]
     },
     {
-      "condition": "[not(empty(parameters('DistributionGroup')))]",
+      "condition": "[not(empty(parameters('distributionGroup')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('Action-Group_{0}', parameters('Time'))]",
-      "subscriptionId": "[parameters('SharedServicesSubId')]",
-      "resourceGroup": "[variables('ResourceGroupName')]",
+      "name": "[format('Action-Group_{0}', parameters('time'))]",
+      "subscriptionId": "[parameters('sharedServicesSubId')]",
+      "resourceGroup": "[variables('varResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -12988,7 +13006,7 @@
             "value": "aib-email"
           },
           "name": {
-            "value": "[variables('ActionGroupName')]"
+            "value": "[variables('varActionGroupName')]"
           },
           "enabled": {
             "value": true
@@ -12996,14 +13014,14 @@
           "emailReceivers": {
             "value": [
               {
-                "name": "[parameters('DistributionGroup')]",
-                "emailAddress": "[parameters('DistributionGroup')]",
-                "useCommonAlertSchema": true
+                "name": "[parameters('distributionGroup')]",
+                "emailAddress": "[parameters('distributionGroup')]",
+                "useCommonvarAlertschema": true
               }
             ]
           },
           "tags": {
-            "value": "[if(parameters('ResourceTags'), variables('commonResourceTags'), createObject())]"
+            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -13294,20 +13312,20 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('SharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('Time')))]"
+        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group_{0}', parameters('time')))]"
       ]
     },
     {
-      "condition": "[not(empty(parameters('DistributionGroup')))]",
+      "condition": "[not(empty(parameters('distributionGroup')))]",
       "copy": {
         "name": "scheduledQueryRules",
-        "count": "[length(range(0, length(variables('Alerts'))))]"
+        "count": "[length(range(0, length(variables('varAlerts'))))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('Scheduled-Query-Rule_{0}_{1}', range(0, length(variables('Alerts')))[copyIndex()], parameters('Time'))]",
-      "subscriptionId": "[parameters('SharedServicesSubId')]",
-      "resourceGroup": "[variables('ResourceGroupName')]",
+      "name": "[format('Scheduled-Query-Rule_{0}_{1}', range(0, length(variables('varAlerts')))[copyIndex()], parameters('time'))]",
+      "subscriptionId": "[parameters('sharedServicesSubId')]",
+      "resourceGroup": "[variables('varResourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -13315,13 +13333,13 @@
         "mode": "Incremental",
         "parameters": {
           "location": {
-            "value": "[parameters('SharedServicesLocation')]"
+            "value": "[parameters('sharedServicesLocation')]"
           },
           "name": {
-            "value": "[variables('Alerts')[range(0, length(variables('Alerts')))[copyIndex()]].name]"
+            "value": "[variables('varAlerts')[range(0, length(variables('varAlerts')))[copyIndex()]].name]"
           },
           "alertDescription": {
-            "value": "[variables('Alerts')[range(0, length(variables('Alerts')))[copyIndex()]].description]"
+            "value": "[variables('varAlerts')[range(0, length(variables('varAlerts')))[copyIndex()]].description]"
           },
           "enabled": {
             "value": true
@@ -13342,25 +13360,25 @@
             "value": []
           },
           "scopes": {
-            "value": "[if(not(empty(parameters('DistributionGroup'))), createArray(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace_{0}', parameters('Time'))), '2020-10-01').outputs.resourceId.value), createArray())]"
+            "value": "[if(not(empty(parameters('distributionGroup'))), createArray(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value), createArray())]"
           },
           "severity": {
-            "value": "[variables('Alerts')[range(0, length(variables('Alerts')))[copyIndex()]].severity]"
+            "value": "[variables('varAlerts')[range(0, length(variables('varAlerts')))[copyIndex()]].severity]"
           },
           "evaluationFrequency": {
-            "value": "[variables('Alerts')[range(0, length(variables('Alerts')))[copyIndex()]].evaluationFrequency]"
+            "value": "[variables('varAlerts')[range(0, length(variables('varAlerts')))[copyIndex()]].evaluationFrequency]"
           },
           "windowSize": {
-            "value": "[variables('Alerts')[range(0, length(variables('Alerts')))[copyIndex()]].windowSize]"
+            "value": "[variables('varAlerts')[range(0, length(variables('varAlerts')))[copyIndex()]].windowSize]"
           },
           "actions": {
-            "value": "[if(not(empty(parameters('DistributionGroup'))), createArray(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Action-Group_{0}', parameters('Time'))), '2020-10-01').outputs.resourceId.value), createArray())]"
+            "value": "[if(not(empty(parameters('distributionGroup'))), createArray(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Action-Group_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value), createArray())]"
           },
           "criterias": {
-            "value": "[variables('Alerts')[range(0, length(variables('Alerts')))[copyIndex()]].criterias]"
+            "value": "[variables('varAlerts')[range(0, length(variables('varAlerts')))[copyIndex()]].criterias]"
           },
           "tags": {
-            "value": "[if(parameters('ResourceTags'), variables('commonResourceTags'), createObject())]"
+            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
           }
         },
         "template": {
@@ -13752,8 +13770,8 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Action-Group_{0}', parameters('Time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('SharedServicesSubId'), variables('ResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace_{0}', parameters('Time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Action-Group_{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace_{0}', parameters('time')))]"
       ]
     }
   ]
