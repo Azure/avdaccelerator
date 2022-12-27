@@ -741,7 +741,7 @@ module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/dep
     ]
 }
 
-module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccounts/deploy.bicep' = if (enableMonitoringAlerts) {
+module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccounts/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Automation-Account_${time}'
     params: {
@@ -801,7 +801,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
 }
 
 @batchSize(1)
-module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/modules/deploy.bicep' = [for i in range(0, length(varModules)): if (enableMonitoringAlerts) {
+module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/modules/deploy.bicep' = [for i in range(0, length(varModules)): {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Automation-Account-Module_${i}_${time}'
     params: {
