@@ -65,6 +65,9 @@ param operatingSystemImage string = 'win10_21h2'
 @description('Optional. Set to deploy image from Azure Compute Gallery. (Default: true)')
 param sharedImage bool = true
 
+@description('Optional. Set to deploy Azure Image Builder to existing virtual network.. (Default: false)')
+param useExistingVirtualNetwork bool = false
+
 @description('Optional. Input the resource ID for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: "")')
 param existingVirtualNetworkResourceId string = ''
 
@@ -79,6 +82,9 @@ param screenCaptureProtection bool = false
 
 @description('Required.  Azure log analytics workspace name data retention.')
 param logAnalyticsWorkspaceDataRetention int = 30
+
+@description('Optional. Set to deploy monitoring and alerst for image nuilder process (Defualt: false).')
+param enableMonitoringAlerts bool = false
 
 @description('Optional. Input the email distribution list for alert notifications when AIB builds succeed or fail.')
 param distributionGroup string = ''
@@ -537,7 +543,7 @@ var varModules = [
 ]
 
 // Role Definitions & Assignments
-var varDistributionGroupRole = !empty(distributionGroup) ? [
+var varDistributionGroupRole = (enableMonitoringAlerts && useExistingVirtualNetwork) ? [
     {
         resourceGroup: split(existingVirtualNetworkResourceId, '/')[4]
         name: 'Virtual Network Join'
