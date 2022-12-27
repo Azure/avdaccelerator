@@ -409,7 +409,7 @@ var varScreenCaptureProtectionCustomizer = screenCaptureProtection ? [
         name: 'screenCaptureProtection'
         runElevated: true
         runAsSystem: true
-        scriptUri: '${varBaseScriptUri}scripts/Set-screenCaptureProtection.ps1'
+        scriptUri: '${varBaseScriptUri}scripts/Set-ScreenCaptureProtection.ps1'
     }
 ] : []
 var varVdotCustomizer = [
