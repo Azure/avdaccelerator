@@ -135,13 +135,13 @@ variable "local_admin_username" {
   description = "local admin username"
 }
 
-
+/*
 variable "local_admin_password" {
   type        = string
   description = "local admin password"
   sensitive   = true
 }
-
+*/
 
 variable "image_name" {
   type        = string

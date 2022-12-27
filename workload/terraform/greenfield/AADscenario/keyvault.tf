@@ -6,6 +6,7 @@ resource "azurerm_key_vault" "kv" {
   sku_name                 = "standard"
   purge_protection_enabled = true
   tags                     = local.tags
+  enabled_for_deployment   = true
 
   depends_on = [
     azurerm_resource_group.rg,
@@ -19,7 +20,8 @@ resource "azurerm_key_vault" "kv" {
 
   network_acls {
     default_action = "Deny"
-    bypass         = "None"
+    bypass         = "AzureServices"
+    ip_rules       = local.allow_list_ip
   }
 }
 
@@ -49,18 +51,19 @@ resource "azurerm_private_endpoint" "kvpe" {
     is_manual_connection           = false
     subresource_names              = ["Vault"]
   }
+  depends_on = [
+    azurerm_key_vault_secret.localpassword
+  ]
 }
-/*
-#Create KeyVault VM password
-resource "random_password" "localpassword" {
+# Generate VM local password
+resource "random_password" "vmpass" {
   length  = 20
   special = true
 }
-#Create Key Vault Secret
+# Create Key Vault Secret
 resource "azurerm_key_vault_secret" "localpassword" {
-  name         = "localassword"
-  value        = random_password.localpassword.result
+  name         = "vmlocalpassword"
+  value        = random_password.vmpass.result
   key_vault_id = azurerm_key_vault.kv.id
-  depends_on   = [azurerm_key_vault_access_policy.deploy]
+  content_type = "Password"
 }
-*/
