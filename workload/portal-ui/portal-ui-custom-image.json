@@ -51,21 +51,21 @@
                             }
                         },
                         {
-                            "name": "info2",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "text": "Storage accounts support different redundancy options. Click here for more information.",
-                                "uri": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy",
-                                "style": "Info"
-                            }
-                        },
-                        {
                             "name": "storageAccount",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
                             "label": "Storage Account",
                             "elements": [
+                                {
+                                    "name": "info2",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": true,
+                                    "options": {
+                                        "text": "Storage accounts support different redundancy options. Click here for more information.",
+                                        "uri": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy",
+                                        "style": "Info"
+                                    }
+                                },
                                 {
                                     "name": "redundancy",
                                     "type": "Microsoft.Common.DropDown",
@@ -84,16 +84,6 @@
                                                 "value": "Standard_LRS"
                                             }
                                         ]
-                                    },
-                                    {
-                                        "name": "info2",
-                                        "type": "Microsoft.Common.InfoBox",
-                                        "visible": true,
-                                        "options": {
-                                            "text": "Storage accounts support different redundancy options. Click here for more information.",
-                                            "uri": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy",
-                                            "style": "Info"
-                                        }
                                     }
                                 }
                             ]
