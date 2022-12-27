@@ -584,7 +584,7 @@ var varImageTemplateRoles = [
         ]
     }
 ]
-var varRoles = union(varDistributionGroupRole, varImageTemplateRoles)
+var varRoles = enableMonitoringAlerts? union(varDistributionGroupRole, varImageTemplateRoles): varImageTemplateRoles
 //
 
 // =========== //
@@ -616,7 +616,7 @@ module avdSharedResourcesRg '../../carml/1.0.0/Microsoft.Resources/resourceGroup
     }
 }
 
-module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinitions/subscription/deploy.bicep' = [for i in range(0, length(varRoles)): if (useExistingVirtualNetwork) {
+module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinitions/subscription/deploy.bicep' = [for i in range(0, length(varRoles)): {
     scope: subscription(sharedServicesSubId)
     name: 'Role-Definition_${i}_${time}'
     params: {
@@ -643,7 +643,7 @@ module userAssignedManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/
     ]
 }
 
-module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for i in range(0, length(varRoles)): if (useExistingVirtualNetwork) {
+module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for i in range(0, length(varRoles)): {
     name: 'Role-Assignment_${i}_${time}'
     scope: resourceGroup(sharedServicesSubId, varRoles[i].resourceGroup)
     params: {
