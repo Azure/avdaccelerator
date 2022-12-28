@@ -26,9 +26,10 @@ resource "azurerm_key_vault" "kv" {
 }
 
 resource "azurerm_key_vault_access_policy" "deploy" {
-  key_vault_id = azurerm_key_vault.kv.id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azurerm_client_config.current.object_id
+  key_vault_id   = azurerm_key_vault.kv.id
+  tenant_id      = data.azurerm_client_config.current.tenant_id
+  object_id      = data.azurerm_client_config.current.object_id
+  application_id = data.azurerm_client_config.current.client_id
 
   key_permissions         = ["Get", "List", "Update", "Create", "Import", "Delete", "Recover", ]
   secret_permissions      = ["Get", "List", "Set", "Delete", "Purge", "Recover", ]
