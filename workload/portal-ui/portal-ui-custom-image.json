@@ -443,7 +443,7 @@
                         {
                             "name": "existingLogAnalyticsWorkspace",
                             "type": "Microsoft.Common.OptionsGroup",
-                            "visible": true,
+                            "visible": "[equals(steps('monitoring').monitoringAndAlerting, true)]",
                             "label": "Existing Log Analytics Workspace",
                             "defaultValue": "No",
                             "toolTip": "Determine whether to select an existing Log Analytics Workspace to capture the monitoring data.",
