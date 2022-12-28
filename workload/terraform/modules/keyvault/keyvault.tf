@@ -18,7 +18,7 @@ resource "azurerm_key_vault" "kv" {
     bypass         = "AzureServices"
 
     # The list of allowed ip addresses.
-    ip_rules = ["136.28.83.128"]
+    ip_rules = ["0.0.0.0"]
   }
 }
 
