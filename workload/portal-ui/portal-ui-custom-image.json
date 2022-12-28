@@ -439,6 +439,35 @@
                                 "regex": "^[a-z0-9A-Z_.-]+@(?:[a-z0-9]+\\.)+[a-z]+$",
                                 "validationMessage": "The value must be a valid email address."
                             }
+                        },
+                        {
+                            "name": "existingLogAnalyticsWorkspace",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": true,
+                            "label": "Existing Log Analytics Workspace",
+                            "defaultValue": "No",
+                            "toolTip": "Determine whether to select an existing Log Analytics Workspace to capture the monitoring data.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "Yes",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "No",
+                                        "value": false
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "logAnalyticsWorkspaceSelection",
+                            "type": "Microsoft.Solutions.ResourceSelector",
+                            "visible": "[equals(steps('monitoring').existingLogAnalyticsWorkspace, true)]",
+                            "label": "Select Virtual Network",
+                            "resourceType": "Microsoft.OperationalInsights/workspaces",
+                            "options": {}
                         }
                     ]
                 },
@@ -967,6 +996,7 @@
                 "sharedServicesSubId": "[steps('basics').resourceScope.subscription.subscriptionId]",
                 "storageAccountCustomPrefix": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.storageAccount, 'none')]",
                 "useExistingVirtualNetwork": "[steps('aib').virtualNetwork]",
+                "existingLogAnalyticsWorkspaceResourceId": "[if(equals(steps('monitoring').existingLogAnalyticsWorkspace, true), steps('monitoring').logAnalyticsWorkspaceSelection.id, '')]",
                 "existingVirtualNetworkResourceId": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').virtualNetworkSelection.id, '')]",
                 "subnetName": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').subnet, '')]",
                 "userAssignedManagedIdentityCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.userAssignedManagedIdentity, 'none')]",
