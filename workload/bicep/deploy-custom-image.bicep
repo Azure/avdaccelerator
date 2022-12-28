@@ -837,7 +837,8 @@ module vault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
     ]
 }
 
-module storageAccount '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
+// Commenting out for future feature release
+/* module storageAccount '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Storage-Account_${time}'
     params: {
@@ -862,7 +863,7 @@ module storageAccount '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deplo
     dependsOn: [
         avdSharedResourcesRg
     ]
-}
+} */
 
 module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bicep' = if (enableMonitoringAlerts) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
