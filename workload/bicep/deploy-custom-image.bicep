@@ -68,6 +68,9 @@ param sharedImage bool = true
 @description('Optional. Set to deploy Azure Image Builder to existing virtual network. (Default: false)')
 param useExistingVirtualNetwork bool = false
 
+@description('Optional. Existing Azure log analytics workspace resource ID to capture build logs. (Default: )')
+param existingLogAnalyticsWorkspaceResourceId string = ''
+
 @description('Optional. Input the resource ID for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: "")')
 param existingVirtualNetworkResourceId string = ''
 
@@ -726,7 +729,7 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
 }
 
 // Log Analytics Workspace
-module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (enableMonitoringAlerts) {
+module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Log-Analytics-Workspace_${time}'
     params: {
@@ -750,7 +753,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
             'JobStreams'
         ]
         diagnosticLogsRetentionInDays: 30
-        diagnosticWorkspaceId: empty(distributionGroup) ? '' : workspace.outputs.resourceId
+        diagnosticWorkspaceId: empty(distributionGroup) ? '' : empty(existingLogAnalyticsWorkspaceResourceId) ? workspace.outputs.resourceId : existingLogAnalyticsWorkspaceResourceId
         name: varAutomationAccountName
         jobSchedules: [
             {
@@ -776,7 +779,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
                 name: 'AIB-Build-Automation'
                 description: 'When this runbook is triggered, last build date is checked on the AIB image template.  If a new marketplace image has been released since that date, a new build is initiated. If a build has never been initiated then it will be start one.'
                 runbookType: 'PowerShell'
-                // ToDo: Update URL before PR submission
+                // ToDo: Update URL before PR merge
                 uri: 'https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/scripts/New-AzureImageBuilderBuild.ps1'
                 version: '1.0.0.0'
             }
@@ -896,9 +899,11 @@ module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryR
         skipQueryValidation: false
         targetResourceTypes: []
         roleAssignments: []
-        scopes: !empty(distributionGroup) ? [
+        scopes: empty(distributionGroup) ? [] : empty(existingLogAnalyticsWorkspaceResourceId) ? [
             workspace.outputs.resourceId
-        ] : []
+        ] : [
+            existingLogAnalyticsWorkspaceResourceId
+        ]
         severity: varAlerts[i].severity
         evaluationFrequency: varAlerts[i].evaluationFrequency
         windowSize: varAlerts[i].windowSize
