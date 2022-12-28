@@ -465,7 +465,7 @@
                             "name": "logAnalyticsWorkspaceSelection",
                             "type": "Microsoft.Solutions.ResourceSelector",
                             "visible": "[equals(steps('monitoring').existingLogAnalyticsWorkspace, true)]",
-                            "label": "Select Log Analytics Workspace",
+                            "label": "Log Analytics Workspace",
                             "resourceType": "Microsoft.OperationalInsights/workspaces",
                             "options": {}
                         }
