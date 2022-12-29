@@ -51,44 +51,6 @@
                             }
                         },
                         {
-                            "name": "storageAccount",
-                            "type": "Microsoft.Common.Section",
-                            "visible": true,
-                            "label": "Storage Account",
-                            "elements": [
-                                {
-                                    "name": "info2",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": true,
-                                    "options": {
-                                        "text": "Storage accounts support different redundancy options. Click here for more information.",
-                                        "uri": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy",
-                                        "style": "Info"
-                                    }
-                                },
-                                {
-                                    "name": "redundancy",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "label": "Redundancy",
-                                    "defaultValue": "Locally-Redundant Storage",
-                                    "toolTip": "Determine the redundancy for the Storage Account.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Zone-Redundant Storage",
-                                                "value": "Standard_ZRS"
-                                            },
-                                            {
-                                                "label": "Locally-Redundant Storage",
-                                                "value": "Standard_LRS"
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
-                        },
-                        {
                             "name": "operatingSystem",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
@@ -147,7 +109,7 @@
                             "visible": true,
                             "filter": true,
                             "label": "Deployment Location",
-                            "defaultValue": "[equals(steps('basics').resourceScope.location.displayName)]",
+                            "defaultValue": "[steps('basics').resourceScope.location.displayName]",
                             "toolTip": "Select the location where Azure Image Builder will run to create the image.",
                             "constraints": {
                                 "required": true,
@@ -284,6 +246,27 @@
                             }
                         },
                         {
+                            "name": "buildSchedule",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": true,
+                            "label": "Build Schedule",
+                            "defaultValue": "Recurring",
+                            "toolTip": "Select a schedule for the image template builds. A recurring schedule will check for a new marketplace image daily and will initiate a new build when found.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "OneTime",
+                                        "value": "OneTime"
+                                    },
+                                    {
+                                        "label": "Recurring",
+                                        "value": "Recurring"
+                                    }
+                                ]
+                            }
+                        },
+                        {
                             "name": "virtualNetwork",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
@@ -308,7 +291,7 @@
                             "name": "virtualNetworkSelection",
                             "type": "Microsoft.Solutions.ResourceSelector",
                             "visible": "[equals(steps('aib').virtualNetwork, true)]",
-                            "label": "Select Virtual Network",
+                            "label": "Virtual Network",
                             "resourceType": "Microsoft.Network/virtualNetworks",
                             "options": {
                                 "filter": {
@@ -329,7 +312,7 @@
                             "name": "subnet",
                             "type": "Microsoft.Common.DropDown",
                             "visible": "[equals(steps('aib').virtualNetwork, true)]",
-                            "label": "Select Subnet",
+                            "label": "Subnet",
                             "defaultValue": "",
                             "toolTip": "Select an existing subnet for AIB build virtual machines. This enables the use of Private Link and prevents the deployment of public IP addresses.",
                             "constraints": {
@@ -594,87 +577,6 @@
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z][a-z0-9A-Z-]{4,61}[a-z0-9A-Z]$",
                                         "validationMessage": "The value must be alphanumerics and hyphens. The value must start and end with an alphanumeric. The length must be 4 to 63 characters."
-                                    }
-                                },
-                                {
-                                    "name": "storageAccount_checkNameAvailability",
-                                    "type": "Microsoft.Solutions.ArmApiControl",
-                                    "request": {
-                                        "method": "POST",
-                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Storage/checkNameAvailability?api-version=2022-05-01')]",
-                                        "body": {
-                                            "name": "[steps('naming').customNaming.storageAccount]",
-                                            "type": "Microsoft.Storage/storageAccounts"
-                                        }
-                                    }
-                                },
-                                {
-                                    "name": "storageAccount",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Storage Account",
-                                    "toolTip": "Input a custom name for the Storage Account.",
-                                    "placeholder": "Example: stavd",
-                                    "constraints": {
-                                        "required": true,
-                                        "validations": [
-                                            {
-                                                "isValid": "[steps('naming').customNaming.storageAccount_checkNameAvailability.nameAvailable]",
-                                                "message": "[steps('naming').customNaming.storageAccount_checkNameAvailability.message]"
-                                            }
-                                        ]
-                                    },
-                                    "visible": true
-                                },
-                                {
-                                    "name": "aibContainer",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "AIB Artifacts Container",
-                                    "toolTip": "Input a custom name for the AIB container in the Storage Account.",
-                                    "placeholder": "Example: aib-artifacts",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^(?!.*-{2}.*)[a-z0-9][a-z0-9-]{2,62}$",
-                                        "validationMessage": "The value must be lowercase letters, numbers, and hyphens. The value must start with a lowercase letter or number. The value must not contain consecutive hyphens. The length must be 3 to 63 characters."
-                                    }
-                                },
-                                {
-                                    "name": "avdContainer",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "AVD Artifacts Container",
-                                    "toolTip": "Input a custom name for the AVD container in the Storage Account.",
-                                    "placeholder": "Example: avd-artifacts",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^(?!.*-{2}.*)[a-z0-9][a-z0-9-]{2,62}$",
-                                        "validationMessage": "The value must be lowercase letters, numbers, and hyphens. The value must start with a lowercase letter or number. The value must not contain consecutive hyphens. The length must be 3 to 63 characters."
-                                    }
-                                },
-                                {
-                                    "name": "keyVault_checkNameAvailability",
-                                    "type": "Microsoft.Solutions.ArmApiControl",
-                                    "request": {
-                                        "method": "POST",
-                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.KeyVault/checkNameAvailability?api-version=2022-07-01')]",
-                                        "body": {
-                                            "name": "[steps('naming').customNaming.keyVault]",
-                                            "type": "Microsoft.KeyVault/vaults"
-                                        }
-                                    }
-                                },
-                                {
-                                    "name": "keyVault",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Key Vault",
-                                    "toolTip": "Input a custom name for the Key Vault.",
-                                    "placeholder": "Example: kv-avd",
-                                    "constraints": {
-                                        "required": true,
-                                        "validations": [
-                                            {
-                                                "isValid": "[steps('naming').customNaming.keyVault_checkNameAvailability.nameAvailable]",
-                                                "message": "[steps('naming').customNaming.keyVault_checkNameAvailability.message]"
-                                            }
-                                        ]
                                     }
                                 },
                                 {
@@ -964,12 +866,10 @@
         "outputs": {
             "parameters": {
                 "actionGroupCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.actionGroup, 'none')]",
-                "aibContainerCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.aibContainer, 'none')]",
                 "aibLocation": "[steps('aib').locationSelection]",
+                "buildSchedule": "[steps('aib').buildSchedule]",
                 "applicationNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.application, 'none')]",
                 "automationAccountCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.automationAccount, 'none')]",
-                "storageAccountSku": "[steps('imageManagement').storageAccount.redundancy]",
-                "avdContainerCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.avdContainer, 'none')]",
                 "costCenterTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.costCenter, 'none')]",
                 "criticalityCustomTag": "[if(equals(steps('tags').customTags.criticality, 'Custom'), steps('tags').customTags.customCriticality, 'Low')]",
                 "criticalityTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.criticality, 'Low')]",
@@ -983,7 +883,6 @@
                 "imageDefinitionCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.imageDefinition, 'none')]",
                 "imageGalleryCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.computeGallery, 'none')]",
                 "imageTemplateCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.imageTemplate, 'none')]",
-                "keyVaultCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.keyVault, 'none')]",
                 "logAnalyticsWorkspaceCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.logAnalyticsWorkspace, 'none')]",
                 "operatingSystemImage": "[steps('imageManagement').operatingSystem.versionSelection]",
                 "operationsTeamTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.operationsTeam, 'none')]",
@@ -994,7 +893,6 @@
                 "screenCaptureProtection": "[steps('aib').screenCaptureProtectionSelection]",
                 "sharedServicesLocation": "[steps('basics').resourceScope.location.name]",
                 "sharedServicesSubId": "[steps('basics').resourceScope.subscription.subscriptionId]",
-                "storageAccountCustomPrefix": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.storageAccount, 'none')]",
                 "useExistingVirtualNetwork": "[steps('aib').virtualNetwork]",
                 "existingLogAnalyticsWorkspaceResourceId": "[if(equals(steps('monitoring').existingLogAnalyticsWorkspace, true), steps('monitoring').logAnalyticsWorkspaceSelection.id, '')]",
                 "existingVirtualNetworkResourceId": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').virtualNetworkSelection.id, '')]",

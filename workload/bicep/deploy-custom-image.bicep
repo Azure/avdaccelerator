@@ -9,12 +9,13 @@ param sharedServicesLocation string = 'eastus'
 @description('Required. AVD shared services subscription ID, multiple subscriptions scenario.')
 param sharedServicesSubId string = ''
 
-@allowed([
+// Placeholder for future release
+/* @allowed([
     'Standard_LRS'
     'Standard_ZRS'
 ])
 @description('Optional. Determine the Storage Account SKU for local or zonal redundancy. (Default: Standard_LRS)')
-param storageAccountSku string = 'Standard_LRS'
+param storageAccountSku string = 'Standard_LRS' */
 
 @allowed([
     'australiaeast'
@@ -52,6 +53,13 @@ param storageAccountSku string = 'Standard_LRS'
 ])
 @description('Optional. Azure Image Builder location. (Default: eastus)')
 param aibLocation string = 'eastus'
+
+@allowed([
+    'OneTime'
+    'Recurring'
+])
+@description('Optional. Determine whether to build the image template one time or check daily for a new marketplace image and auto build when found. (Default: Recurring)')
+param buildSchedule string = 'Recurring'
 
 @allowed([
     'win10_21h2_office'
@@ -122,7 +130,8 @@ param imageDefinitionCustomName string = 'avd-win11-21h2'
 @description('Optional. Custom name for Image Template. (Default: it-avd-win11-21h2)')
 param imageTemplateCustomName string = 'it-avd-win11-21h2'
 
-@maxLength(24)
+// Placeholders for future release
+/* @maxLength(24)
 @description('Optional. Custom name for Storage Account. (Default: stavdshar)')
 param storageAccountCustomName string = ''
 
@@ -132,11 +141,7 @@ param aibContainerCustomName string = 'aib-artifacts'
 
 @maxLength(60)
 @description('Optional. Custom name for container storing AVD artifacts. (Default: avd-artifacts)')
-param avdContainerCustomName string = 'avd-artifacts'
-
-@maxLength(24)
-@description('Optional. Custom name for Key Vault. (Default: kv-avd)')
-param keyVaultCustomName string = ''
+param avdContainerCustomName string = 'avd-artifacts' */
 
 @maxLength(128)
 @description('Optional. Custom name for User Assigned Identity. (Default: id-avd)')
@@ -211,7 +216,6 @@ param enableTelemetry bool = true
 // Variable declaration //
 // =========== //
 // Resouce Naming.
-var varUniqueStringSixChar = take('${uniqueString(sharedServicesSubId, time)}', 6)
 var varActionGroupName = customNaming ? actionGroupCustomName : 'ag-avd-${varNamingStandard}'
 var varNamingStandard = '${varLocationAcronym}'
 var varLocationLowercase = toLower(sharedServicesLocation)
@@ -222,10 +226,11 @@ var varLogAnalyticsWorkspaceName = customNaming ? logAnalyticsWorkspaceCustomNam
 var varImageDefinitionName = customNaming ? imageDefinitionCustomName : 'avd-${operatingSystemImage}'
 var varImageTemplateName = customNaming ? imageTemplateCustomName : 'it-avd-${operatingSystemImage}'
 var varAutomationAccountName = customNaming ? automationAccountCustomName : 'aa-avd-${varNamingStandard}'
-var varStorageAccountName = customNaming ? storageAccountCustomName : 'stavd${varNamingStandard}${varUniqueStringSixChar}'
-var varAibContainerName = customNaming ? aibContainerCustomName : 'aib-artifacts'
-var varAvdContainerName = customNaming ? avdContainerCustomName : 'avd-artifacts'
-var varKeyVaultName = customNaming ? keyVaultCustomName : 'kv-avd-${varNamingStandard}-${varUniqueStringSixChar}'
+// Placeholders for future feature
+// var varUniqueStringSixChar = take('${uniqueString(sharedServicesSubId, time)}', 6)
+// var varStorageAccountName = customNaming ? storageAccountCustomName : 'stavd${varNamingStandard}${varUniqueStringSixChar}'
+// var varAibContainerName = customNaming ? aibContainerCustomName : 'aib-artifacts'
+// var varAvdContainerName = customNaming ? avdContainerCustomName : 'avd-artifacts'
 var varLocationAcronym = varLocationAcronyms[varLocationLowercase]
 var varLocationAcronyms = {
     eastasia: 'eas'
@@ -696,7 +701,6 @@ module image '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep'
     ]
 }
 
-// Image Template
 module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemplates/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Image-Template_${time}'
@@ -787,11 +791,11 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
         schedules: [
             {
                 name: varImageTemplateName
-                frequency: 'Day'
-                interval: 1
+                frequency: buildSchedule == 'OneTime' ? 'OneTime' : 'Day'
+                interval: buildSchedule == 'OneTime' ? 0 : 1
                 starttime: dateTimeAdd(time, 'PT15M')
                 varTimeZone: varTimeZone
-                advancedSchedule: {}
+                advancedSchedule: {} // required to prevent deployment failure
             }
         ]
         skuName: 'Free'
@@ -814,28 +818,6 @@ module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/module
         uri: varModules[i].uri
     }
 }]
-
-module vault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
-    scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'Key-Vault_${time}'
-    params: {
-        name: varKeyVaultName
-        location: sharedServicesLocation
-        enableRbacAuthorization: false
-        enablePurgeProtection: true
-        softDeleteRetentionInDays: 7
-        networkAcls: {
-            bypass: 'AzureServices'
-            defaultAction: 'Deny'
-            virtualNetworkRules: []
-            ipRules: []
-        }
-        tags: enableResourceTags ? varCommonResourceTags : {}
-    }
-    dependsOn: [
-        avdSharedResourcesRg
-    ]
-}
 
 // Commenting out for future feature release
 /* module storageAccount '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
