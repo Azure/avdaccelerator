@@ -246,6 +246,27 @@
                             }
                         },
                         {
+                            "name": "buildSchedule",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": true,
+                            "label": "Build Schedule",
+                            "defaultValue": "Recurring",
+                            "toolTip": "Select a schedule for the image template builds. A recurring schedule will check for a new marketplace image daily and will initiate a new build when found.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "OneTime",
+                                        "value": "OneTime"
+                                    },
+                                    {
+                                        "label": "Recurring",
+                                        "value": "Recurring"
+                                    }
+                                ]
+                            }
+                        },
+                        {
                             "name": "virtualNetwork",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
@@ -846,6 +867,7 @@
             "parameters": {
                 "actionGroupCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.actionGroup, 'none')]",
                 "aibLocation": "[steps('aib').locationSelection]",
+                "buildSchedule": "[steps('aib').buildSchedule]",
                 "applicationNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.application, 'none')]",
                 "automationAccountCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.automationAccount, 'none')]",
                 "costCenterTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.costCenter, 'none')]",

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "6007726220141760528"
+      "templateHash": "13005750280606161424"
     }
   },
   "parameters": {
@@ -62,6 +62,17 @@
         "westus",
         "westus2",
         "westus3"
+      ]
+    },
+    "buildSchedule": {
+      "type": "string",
+      "defaultValue": "Recurring",
+      "metadata": {
+        "description": "Optional. Determine whether to build the image template one time or check daily for a new marketplace image and auto build when found. (Default: Recurring)"
+      },
+      "allowedValues": [
+        "OneTime",
+        "Recurring"
       ]
     },
     "operatingSystemImage": {
@@ -5317,11 +5328,10 @@
             "value": [
               {
                 "name": "[variables('varImageTemplateName')]",
-                "frequency": "Day",
-                "interval": 1,
+                "frequency": "[if(equals(parameters('buildSchedule'), 'OneTime'), 'OneTime', 'Day')]",
+                "interval": "[if(equals(parameters('buildSchedule'), 'OneTime'), 0, 1)]",
                 "starttime": "[dateTimeAdd(parameters('time'), 'PT15M')]",
-                "varTimeZone": "[variables('varTimeZone')]",
-                "advancedSchedule": {}
+                "varTimeZone": "[variables('varTimeZone')]"
               }
             ]
           },
