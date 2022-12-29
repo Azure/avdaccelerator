@@ -109,7 +109,7 @@
                             "visible": true,
                             "filter": true,
                             "label": "Deployment Location",
-                            "defaultValue": "[equals(steps('basics').resourceScope.location.displayName)]",
+                            "defaultValue": "[steps('basics').resourceScope.location.displayName]",
                             "toolTip": "Select the location where Azure Image Builder will run to create the image.",
                             "constraints": {
                                 "required": true,
