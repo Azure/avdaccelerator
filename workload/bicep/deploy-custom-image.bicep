@@ -795,6 +795,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
                 interval: buildSchedule == 'OneTime' ? 0 : 1
                 starttime: dateTimeAdd(time, 'PT15M')
                 varTimeZone: varTimeZone
+                advancedSchedule: {} // required to prevent deployment failure
             }
         ]
         skuName: 'Free'
