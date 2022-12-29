@@ -291,7 +291,7 @@
                             "name": "virtualNetworkSelection",
                             "type": "Microsoft.Solutions.ResourceSelector",
                             "visible": "[equals(steps('aib').virtualNetwork, true)]",
-                            "label": "Select Virtual Network",
+                            "label": "Virtual Network",
                             "resourceType": "Microsoft.Network/virtualNetworks",
                             "options": {
                                 "filter": {
@@ -312,7 +312,7 @@
                             "name": "subnet",
                             "type": "Microsoft.Common.DropDown",
                             "visible": "[equals(steps('aib').virtualNetwork, true)]",
-                            "label": "Select Subnet",
+                            "label": "Subnet",
                             "defaultValue": "",
                             "toolTip": "Select an existing subnet for AIB build virtual machines. This enables the use of Private Link and prevents the deployment of public IP addresses.",
                             "constraints": {
