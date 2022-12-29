@@ -55,6 +55,13 @@ param storageAccountSku string = 'Standard_LRS' */
 param aibLocation string = 'eastus'
 
 @allowed([
+    'OneTime'
+    'Recurring'
+])
+@description('Optional. Determine whether to build the image template one time or check daily for a new marketplace image and auto build when found. (Default: Recurring)')
+param buildSchedule string = 'Recurring'
+
+@allowed([
     'win10_21h2_office'
     'win10_21h2'
     'win11_21h2_office'
@@ -784,11 +791,10 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
         schedules: [
             {
                 name: varImageTemplateName
-                frequency: 'Day'
-                interval: 1
+                frequency: buildSchedule == 'OneTime' ? 'OneTime' : 'Day'
+                interval: buildSchedule == 'OneTime' ? 0 : 1
                 starttime: dateTimeAdd(time, 'PT15M')
                 varTimeZone: varTimeZone
-                advancedSchedule: {}
             }
         ]
         skuName: 'Free'
