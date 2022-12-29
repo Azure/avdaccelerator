@@ -51,44 +51,6 @@
                             }
                         },
                         {
-                            "name": "storageAccount",
-                            "type": "Microsoft.Common.Section",
-                            "visible": true,
-                            "label": "Storage Account",
-                            "elements": [
-                                {
-                                    "name": "info2",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": true,
-                                    "options": {
-                                        "text": "Storage accounts support different redundancy options. Click here for more information.",
-                                        "uri": "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy",
-                                        "style": "Info"
-                                    }
-                                },
-                                {
-                                    "name": "redundancy",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "label": "Redundancy",
-                                    "defaultValue": "Locally-Redundant Storage",
-                                    "toolTip": "Determine the redundancy for the Storage Account.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Zone-Redundant Storage",
-                                                "value": "Standard_ZRS"
-                                            },
-                                            {
-                                                "label": "Locally-Redundant Storage",
-                                                "value": "Standard_LRS"
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
-                        },
-                        {
                             "name": "operatingSystem",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
@@ -597,59 +559,6 @@
                                     }
                                 },
                                 {
-                                    "name": "storageAccount_checkNameAvailability",
-                                    "type": "Microsoft.Solutions.ArmApiControl",
-                                    "request": {
-                                        "method": "POST",
-                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Storage/checkNameAvailability?api-version=2022-05-01')]",
-                                        "body": {
-                                            "name": "[steps('naming').customNaming.storageAccount]",
-                                            "type": "Microsoft.Storage/storageAccounts"
-                                        }
-                                    }
-                                },
-                                {
-                                    "name": "storageAccount",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Storage Account",
-                                    "toolTip": "Input a custom name for the Storage Account.",
-                                    "placeholder": "Example: stavd",
-                                    "constraints": {
-                                        "required": true,
-                                        "validations": [
-                                            {
-                                                "isValid": "[steps('naming').customNaming.storageAccount_checkNameAvailability.nameAvailable]",
-                                                "message": "[steps('naming').customNaming.storageAccount_checkNameAvailability.message]"
-                                            }
-                                        ]
-                                    },
-                                    "visible": true
-                                },
-                                {
-                                    "name": "aibContainer",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "AIB Artifacts Container",
-                                    "toolTip": "Input a custom name for the AIB container in the Storage Account.",
-                                    "placeholder": "Example: aib-artifacts",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^(?!.*-{2}.*)[a-z0-9][a-z0-9-]{2,62}$",
-                                        "validationMessage": "The value must be lowercase letters, numbers, and hyphens. The value must start with a lowercase letter or number. The value must not contain consecutive hyphens. The length must be 3 to 63 characters."
-                                    }
-                                },
-                                {
-                                    "name": "avdContainer",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "AVD Artifacts Container",
-                                    "toolTip": "Input a custom name for the AVD container in the Storage Account.",
-                                    "placeholder": "Example: avd-artifacts",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^(?!.*-{2}.*)[a-z0-9][a-z0-9-]{2,62}$",
-                                        "validationMessage": "The value must be lowercase letters, numbers, and hyphens. The value must start with a lowercase letter or number. The value must not contain consecutive hyphens. The length must be 3 to 63 characters."
-                                    }
-                                },
-                                {
                                     "name": "keyVault_checkNameAvailability",
                                     "type": "Microsoft.Solutions.ArmApiControl",
                                     "request": {
@@ -964,12 +873,9 @@
         "outputs": {
             "parameters": {
                 "actionGroupCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.actionGroup, 'none')]",
-                "aibContainerCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.aibContainer, 'none')]",
                 "aibLocation": "[steps('aib').locationSelection]",
                 "applicationNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.application, 'none')]",
                 "automationAccountCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.automationAccount, 'none')]",
-                "storageAccountSku": "[steps('imageManagement').storageAccount.redundancy]",
-                "avdContainerCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.avdContainer, 'none')]",
                 "costCenterTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.costCenter, 'none')]",
                 "criticalityCustomTag": "[if(equals(steps('tags').customTags.criticality, 'Custom'), steps('tags').customTags.customCriticality, 'Low')]",
                 "criticalityTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.criticality, 'Low')]",
@@ -994,7 +900,6 @@
                 "screenCaptureProtection": "[steps('aib').screenCaptureProtectionSelection]",
                 "sharedServicesLocation": "[steps('basics').resourceScope.location.name]",
                 "sharedServicesSubId": "[steps('basics').resourceScope.subscription.subscriptionId]",
-                "storageAccountCustomPrefix": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.storageAccount, 'none')]",
                 "useExistingVirtualNetwork": "[steps('aib').virtualNetwork]",
                 "existingLogAnalyticsWorkspaceResourceId": "[if(equals(steps('monitoring').existingLogAnalyticsWorkspace, true), steps('monitoring').logAnalyticsWorkspaceSelection.id, '')]",
                 "existingVirtualNetworkResourceId": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').virtualNetworkSelection.id, '')]",
