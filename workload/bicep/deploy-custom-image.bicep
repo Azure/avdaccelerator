@@ -136,10 +136,6 @@ param aibContainerCustomName string = 'aib-artifacts'
 @description('Optional. Custom name for container storing AVD artifacts. (Default: avd-artifacts)')
 param avdContainerCustomName string = 'avd-artifacts' */
 
-@maxLength(24)
-@description('Optional. Custom name for Key Vault. (Default: kv-avd)')
-param keyVaultCustomName string = ''
-
 @maxLength(128)
 @description('Optional. Custom name for User Assigned Identity. (Default: id-avd)')
 param userAssignedManagedIdentityCustomName string = ''
@@ -213,7 +209,6 @@ param enableTelemetry bool = true
 // Variable declaration //
 // =========== //
 // Resouce Naming.
-var varUniqueStringSixChar = take('${uniqueString(sharedServicesSubId, time)}', 6)
 var varActionGroupName = customNaming ? actionGroupCustomName : 'ag-avd-${varNamingStandard}'
 var varNamingStandard = '${varLocationAcronym}'
 var varLocationLowercase = toLower(sharedServicesLocation)
@@ -225,10 +220,10 @@ var varImageDefinitionName = customNaming ? imageDefinitionCustomName : 'avd-${o
 var varImageTemplateName = customNaming ? imageTemplateCustomName : 'it-avd-${operatingSystemImage}'
 var varAutomationAccountName = customNaming ? automationAccountCustomName : 'aa-avd-${varNamingStandard}'
 // Placeholders for future feature
+// var varUniqueStringSixChar = take('${uniqueString(sharedServicesSubId, time)}', 6)
 // var varStorageAccountName = customNaming ? storageAccountCustomName : 'stavd${varNamingStandard}${varUniqueStringSixChar}'
 // var varAibContainerName = customNaming ? aibContainerCustomName : 'aib-artifacts'
 // var varAvdContainerName = customNaming ? avdContainerCustomName : 'avd-artifacts'
-var varKeyVaultName = customNaming ? keyVaultCustomName : 'kv-avd-${varNamingStandard}-${varUniqueStringSixChar}'
 var varLocationAcronym = varLocationAcronyms[varLocationLowercase]
 var varLocationAcronyms = {
     eastasia: 'eas'
@@ -699,7 +694,6 @@ module image '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep'
     ]
 }
 
-// Image Template
 module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemplates/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Image-Template_${time}'
@@ -817,28 +811,6 @@ module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/module
         uri: varModules[i].uri
     }
 }]
-
-module vault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
-    scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'Key-Vault_${time}'
-    params: {
-        name: varKeyVaultName
-        location: sharedServicesLocation
-        enableRbacAuthorization: false
-        enablePurgeProtection: true
-        softDeleteRetentionInDays: 7
-        networkAcls: {
-            bypass: 'AzureServices'
-            defaultAction: 'Deny'
-            virtualNetworkRules: []
-            ipRules: []
-        }
-        tags: enableResourceTags ? varCommonResourceTags : {}
-    }
-    dependsOn: [
-        avdSharedResourcesRg
-    ]
-}
 
 // Commenting out for future feature release
 /* module storageAccount '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
