@@ -9,12 +9,13 @@ param sharedServicesLocation string = 'eastus'
 @description('Required. AVD shared services subscription ID, multiple subscriptions scenario.')
 param sharedServicesSubId string = ''
 
-@allowed([
+// Placeholder for future release
+/* @allowed([
     'Standard_LRS'
     'Standard_ZRS'
 ])
 @description('Optional. Determine the Storage Account SKU for local or zonal redundancy. (Default: Standard_LRS)')
-param storageAccountSku string = 'Standard_LRS'
+param storageAccountSku string = 'Standard_LRS' */
 
 @allowed([
     'australiaeast'
@@ -122,7 +123,8 @@ param imageDefinitionCustomName string = 'avd-win11-21h2'
 @description('Optional. Custom name for Image Template. (Default: it-avd-win11-21h2)')
 param imageTemplateCustomName string = 'it-avd-win11-21h2'
 
-@maxLength(24)
+// Placeholders for future release
+/* @maxLength(24)
 @description('Optional. Custom name for Storage Account. (Default: stavdshar)')
 param storageAccountCustomName string = ''
 
@@ -132,7 +134,7 @@ param aibContainerCustomName string = 'aib-artifacts'
 
 @maxLength(60)
 @description('Optional. Custom name for container storing AVD artifacts. (Default: avd-artifacts)')
-param avdContainerCustomName string = 'avd-artifacts'
+param avdContainerCustomName string = 'avd-artifacts' */
 
 @maxLength(24)
 @description('Optional. Custom name for Key Vault. (Default: kv-avd)')
@@ -222,9 +224,10 @@ var varLogAnalyticsWorkspaceName = customNaming ? logAnalyticsWorkspaceCustomNam
 var varImageDefinitionName = customNaming ? imageDefinitionCustomName : 'avd-${operatingSystemImage}'
 var varImageTemplateName = customNaming ? imageTemplateCustomName : 'it-avd-${operatingSystemImage}'
 var varAutomationAccountName = customNaming ? automationAccountCustomName : 'aa-avd-${varNamingStandard}'
-var varStorageAccountName = customNaming ? storageAccountCustomName : 'stavd${varNamingStandard}${varUniqueStringSixChar}'
-var varAibContainerName = customNaming ? aibContainerCustomName : 'aib-artifacts'
-var varAvdContainerName = customNaming ? avdContainerCustomName : 'avd-artifacts'
+// Placeholders for future feature
+// var varStorageAccountName = customNaming ? storageAccountCustomName : 'stavd${varNamingStandard}${varUniqueStringSixChar}'
+// var varAibContainerName = customNaming ? aibContainerCustomName : 'aib-artifacts'
+// var varAvdContainerName = customNaming ? avdContainerCustomName : 'avd-artifacts'
 var varKeyVaultName = customNaming ? keyVaultCustomName : 'kv-avd-${varNamingStandard}-${varUniqueStringSixChar}'
 var varLocationAcronym = varLocationAcronyms[varLocationLowercase]
 var varLocationAcronyms = {
