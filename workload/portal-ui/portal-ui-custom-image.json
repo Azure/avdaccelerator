@@ -118,11 +118,11 @@
                                     }
                                 },
                                 {
-                                    "name": "locationApi",
+                                    "name": "locationsApi",
                                     "type": "Microsoft.Solutions.ArmApiControl",
                                     "request": {
                                         "method": "GET",
-                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/locations?api-version=2020-01-01')]"
+                                        "path": "[concat(subscription().id,'/locations?api-version=2020-01-01')]"
                                     }
                                 },
                                 {
@@ -132,7 +132,7 @@
                                     "defaultValue": "",
                                     "toolTip": "Choose the desired disaster recovery location for the Image Version.",
                                     "constraints": {
-                                        "allowedValues": "[map(steps('imageManagement').imageVersion.locationApi, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.name, '\"}')))]",
+                                        "allowedValues": "[map(steps('imageManagement').imageVersion.locationsApi, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.name, '\"}')))]",
                                         "required": true
                                     },
                                     "visible": "[equals(steps('imageManagement').imageVersion.replication, true)]"
