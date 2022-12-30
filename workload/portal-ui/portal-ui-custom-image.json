@@ -921,7 +921,7 @@
                 "imageDefinitionCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.imageDefinition, 'none')]",
                 "imageGalleryCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.computeGallery, 'none')]",
                 "imageTemplateCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.imageTemplate, 'none')]",
-                "imageVersionStorageAccountType": "[steps('imageManagement').imageVersion.redundancy]",
+                "imageVersionStorageAccountType": "[steps('imageManagement').imageVersion.storageAccountType]",
                 "logAnalyticsWorkspaceCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.logAnalyticsWorkspace, 'none')]",
                 "operatingSystemImage": "[steps('imageManagement').operatingSystem.versionSelection]",
                 "operationsTeamTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.operationsTeam, 'none')]",
