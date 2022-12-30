@@ -3,11 +3,18 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
-@description('Optional. Location where to deploy compute services. (Default: eastus)')
+@description('Optional. Location to deploy the resources in this solution, except the image template. (Default: eastus)')
 param sharedServicesLocation string = 'eastus'
 
 @description('Required. AVD shared services subscription ID, multiple subscriptions scenario.')
-param sharedServicesSubId string = ''
+param sharedServicesSubId string
+
+@allowed([
+    'Standard_LRS'
+    'Standard_ZRS'
+])
+@description('Optional. Determine the Storage Account Type for the Image Version distributed by the Image Template. (Default: Standard_LRS)')
+param imageVersionStorageAccountType string = 'Standard_LRS'
 
 // Placeholder for future release
 /* @allowed([
@@ -91,10 +98,10 @@ param rdpShortPath bool = false
 @description('Optional. Determine whether to enable Screen Capture Protection. (Default: false)')
 param screenCaptureProtection bool = false
 
-@description('Required.  Azure log analytics workspace name data retention.')
+@description('Optional. Set the data retention in the number of days for the Log Analytics Workspace. (Default: 30)')
 param logAnalyticsWorkspaceDataRetention int = 30
 
-@description('Optional. Set to deploy monitoring and alerst for image nuilder process (Defualt: false).')
+@description('Optional. Set to deploy monitoring and alerts for the build automation (Default: false).')
 param enableMonitoringAlerts bool = false
 
 @description('Optional. Input the email distribution list for alert notifications when AIB builds succeed or fail.')
@@ -701,7 +708,7 @@ module image '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep'
     ]
 }
 
-module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemplates/deploy.bicep' = {
+module imageTemplate '../../carml/1.3.0/Microsoft.VirtualMachineImages/imageTemplates/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Image-Template_${time}'
     params: {
@@ -711,6 +718,7 @@ module imageTemplate '../../carml/1.2.0/Microsoft.VirtualMachineImages/imageTemp
         userMsiResourceGroup: userAssignedManagedIdentity.outputs.resourceGroupName
         location: aibLocation
         imageReplicationRegions: (sharedServicesLocation == aibLocation) ? array('${sharedServicesLocation}') : concat(array('${aibLocation}'), array('${sharedServicesLocation}'))
+        storageAccountType: imageVersionStorageAccountType
         sigImageDefinitionId: sharedImage ? image.outputs.resourceId : ''
         vmSize: varVmSize
         customizationSteps: varCustomizationSteps
