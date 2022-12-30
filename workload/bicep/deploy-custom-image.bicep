@@ -13,7 +13,7 @@ param sharedServicesSubId string
 param imageVersionDisasterRecoveryLocation string = ''
 
 @allowed([
-    'Premium_LRS'
+    //'Premium_LRS' supported by Image Versions but not Image Templates yet
     'Standard_LRS'
     'Standard_ZRS'
 ])
