@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "6555465786494825347"
+      "templateHash": "12389905888977014676"
     }
   },
   "parameters": {
@@ -97,13 +97,6 @@
         "win11_21h2_office",
         "win11_21h2"
       ]
-    },
-    "sharedImage": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Set to deploy image from Azure Compute Gallery. (Default: true)"
-      }
     },
     "useExistingVirtualNetwork": {
       "type": "bool",
@@ -473,43 +466,35 @@
     "varVmSize": "Standard_D4s_v3",
     "varOperatingSystemImageDefinitions": {
       "win10_21h2_office": {
-        "name": "Windows10_21H2_Office",
         "osType": "Windows",
         "osState": "Generalized",
         "offer": "office-365",
         "publisher": "MicrosoftWindowsDesktop",
         "sku": "win10-21h2-avd-m365",
-        "osAccountType": "Standard_LRS",
         "hyperVGeneration": "V1"
       },
       "win10_21h2": {
-        "name": "Windows10_21H2",
         "osType": "Windows",
         "osState": "Generalized",
         "offer": "windows-10",
         "publisher": "MicrosoftWindowsDesktop",
         "sku": "win10-21h2-avd",
-        "osAccountType": "Standard_LRS",
         "hyperVGeneration": "V1"
       },
       "win11_21h2_office": {
-        "name": "Windows11_21H2",
         "osType": "Windows",
         "osState": "Generalized",
         "offer": "office-365",
         "publisher": "MicrosoftWindowsDesktop",
         "sku": "win11-21h2-avd-m365",
-        "osAccountType": "Standard_LRS",
         "hyperVGeneration": "V2"
       },
       "win11_21h2": {
-        "name": "Windows11_21H2",
         "osType": "Windows",
         "osState": "Generalized",
         "offer": "windows-11",
         "publisher": "MicrosoftWindowsDesktop",
         "sku": "win11-21h2-avd",
-        "osAccountType": "Standard_LRS",
         "hyperVGeneration": "V2"
       }
     },
@@ -2756,7 +2741,7 @@
         "mode": "Incremental",
         "parameters": {
           "galleryName": {
-            "value": "[if(parameters('sharedImage'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Compute-Gallery_{0}', parameters('time')))).outputs.name.value, '')]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Compute-Gallery_{0}', parameters('time')))).outputs.name.value]"
           },
           "name": {
             "value": "[variables('varImageDefinitionName')]"
@@ -3233,13 +3218,15 @@
             "value": "[parameters('aibLocation')]"
           },
           "imageReplicationRegions": {
-            "value": "[union(array(format('{0}', parameters('aibLocation'))), array(format('{0}', parameters('sharedServicesLocation'))))]"
+            "value": [
+              "[parameters('sharedServicesLocation')]"
+            ]
           },
           "storageAccountType": {
             "value": "[parameters('imageVersionStorageAccountType')]"
           },
           "sigImageDefinitionId": {
-            "value": "[if(parameters('sharedImage'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Definition_{0}', parameters('time')))).outputs.resourceId.value, '')]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Definition_{0}', parameters('time')))).outputs.resourceId.value]"
           },
           "vmSize": {
             "value": "[variables('varVmSize')]"
@@ -3253,7 +3240,6 @@
               "publisher": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].publisher]",
               "offer": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].offer]",
               "sku": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].sku]",
-              "osAccountType": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].osAccountType]",
               "version": "latest"
             }
           },
