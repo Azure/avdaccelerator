@@ -809,9 +809,9 @@
                                                 "value": "Confidential"
                                             },
                                             {
-                                                "label": "Highly-confidential",
+                                                "label": "Highly Confidential",
                                                 "description": "",
-                                                "value": "Highly-confidential"
+                                                "value": "Highly Confidential"
                                             }
                                         ]
                                     }
