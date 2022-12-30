@@ -172,7 +172,7 @@ param workloadNameTag string = 'Contoso-Workload'
     'Public'
     'General'
     'Confidential'
-    'Highly confidential'
+    'Highly Confidential'
 ])
 @description('Optional. Sensitivity of data hosted (Default: Non-business)')
 param dataClassificationTag string = 'Non-business'
@@ -185,7 +185,7 @@ param departmentTag string = 'Contoso-AVD'
     'Medium'
     'High'
     'Mission-critical'
-    'custom'
+    'Custom'
 ])
 @description('Optional. criticality of each workload. (Default: Low)')
 param criticalityTag string = 'Low'
@@ -208,7 +208,7 @@ param costCenterTag string = 'Contoso-CC'
 @allowed([
     'Prod'
     'Dev'
-    'Staging '
+    'Staging'
 ])
 @description('Optional. Deployment environment of the application, workload. (Default: Dev)')
 param environmentTag string = 'Dev'
