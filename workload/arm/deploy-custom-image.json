@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "2790847294094523972"
+      "templateHash": "9759859586731295251"
     }
   },
   "parameters": {
@@ -269,7 +269,7 @@
         "Public",
         "General",
         "Confidential",
-        "Highly confidential"
+        "Highly Confidential"
       ]
     },
     "departmentTag": {
@@ -290,7 +290,7 @@
         "Medium",
         "High",
         "Mission-critical",
-        "custom"
+        "Custom"
       ]
     },
     "criticalityCustomTag": {
@@ -337,7 +337,7 @@
       "allowedValues": [
         "Prod",
         "Dev",
-        "Staging "
+        "Staging"
       ]
     },
     "time": {
