@@ -122,7 +122,7 @@
                                     "type": "Microsoft.Solutions.ArmApiControl",
                                     "request": {
                                         "method": "GET",
-                                        "path": "[concat(subscription().id,'/locations?api-version=2020-01-01')]"
+                                        "path": "/subscriptions/3764b123-4849-4395-8e6e-ca6d68d8d4b4/locations?api-version=2020-01-01"
                                     }
                                 },
                                 {
