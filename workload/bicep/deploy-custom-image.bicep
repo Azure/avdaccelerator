@@ -717,7 +717,7 @@ module imageTemplate '../../carml/1.3.0/Microsoft.VirtualMachineImages/imageTemp
         userMsiName: userAssignedManagedIdentity.outputs.name
         userMsiResourceGroup: userAssignedManagedIdentity.outputs.resourceGroupName
         location: aibLocation
-        imageReplicationRegions: (sharedServicesLocation == aibLocation) ? array('${sharedServicesLocation}') : concat(array('${aibLocation}'), array('${sharedServicesLocation}'))
+        imageReplicationRegions: union(array('${aibLocation}'), array('${sharedServicesLocation}'))
         storageAccountType: imageVersionStorageAccountType
         sigImageDefinitionId: sharedImage ? image.outputs.resourceId : ''
         vmSize: varVmSize
