@@ -77,9 +77,6 @@ param buildSchedule string = 'Recurring'
 @description('Optional. AVD OS image source. (Default: win10-21h2)')
 param operatingSystemImage string = 'win10_21h2'
 
-@description('Optional. Set to deploy image from Azure Compute Gallery. (Default: true)')
-param sharedImage bool = true
-
 @description('Optional. Set to deploy Azure Image Builder to existing virtual network. (Default: false)')
 param useExistingVirtualNetwork bool = false
 
@@ -363,43 +360,35 @@ var varCommonResourceTags = enableResourceTags ? {
 var varVmSize = 'Standard_D4s_v3'
 var varOperatingSystemImageDefinitions = {
     win10_21h2_office: {
-        name: 'Windows10_21H2_Office'
         osType: 'Windows'
         osState: 'Generalized'
         offer: 'office-365'
         publisher: 'MicrosoftWindowsDesktop'
         sku: 'win10-21h2-avd-m365'
-        osAccountType: 'Standard_LRS'
         hyperVGeneration: 'V1'
     }
     win10_21h2: {
-        name: 'Windows10_21H2'
         osType: 'Windows'
         osState: 'Generalized'
         offer: 'windows-10'
         publisher: 'MicrosoftWindowsDesktop'
         sku: 'win10-21h2-avd'
-        osAccountType: 'Standard_LRS'
         hyperVGeneration: 'V1'
     }
     win11_21h2_office: {
-        name: 'Windows11_21H2'
         osType: 'Windows'
         osState: 'Generalized'
         offer: 'office-365'
         publisher: 'MicrosoftWindowsDesktop'
         sku: 'win11-21h2-avd-m365'
-        osAccountType: 'Standard_LRS'
         hyperVGeneration: 'V2'
     }
     win11_21h2: {
-        name: 'Windows11_21H2'
         osType: 'Windows'
         osState: 'Generalized'
         offer: 'windows-11'
         publisher: 'MicrosoftWindowsDesktop'
         sku: 'win11-21h2-avd'
-        osAccountType: 'Standard_LRS'
         hyperVGeneration: 'V2'
     }
 }
@@ -691,7 +680,7 @@ module image '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep'
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Image-Definition_${time}'
     params: {
-        galleryName: sharedImage ? gallery.outputs.name : ''
+        galleryName: gallery.outputs.name
         name: varImageDefinitionName
         osState: varOperatingSystemImageDefinitions[operatingSystemImage].osState
         osType: varOperatingSystemImageDefinitions[operatingSystemImage].osType
@@ -717,9 +706,11 @@ module imageTemplate '../../carml/1.3.0/Microsoft.VirtualMachineImages/imageTemp
         userMsiName: userAssignedManagedIdentity.outputs.name
         userMsiResourceGroup: userAssignedManagedIdentity.outputs.resourceGroupName
         location: aibLocation
-        imageReplicationRegions: union(array('${aibLocation}'), array('${sharedServicesLocation}'))
+        imageReplicationRegions: [
+            sharedServicesLocation
+        ]
         storageAccountType: imageVersionStorageAccountType
-        sigImageDefinitionId: sharedImage ? image.outputs.resourceId : ''
+        sigImageDefinitionId: image.outputs.resourceId
         vmSize: varVmSize
         customizationSteps: varCustomizationSteps
         imageSource: {
@@ -727,7 +718,6 @@ module imageTemplate '../../carml/1.3.0/Microsoft.VirtualMachineImages/imageTemp
             publisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
             offer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
             sku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
-            osAccountType: varOperatingSystemImageDefinitions[operatingSystemImage].osAccountType
             version: 'latest'
         }
         tags: enableResourceTags ? varCommonResourceTags : {}
