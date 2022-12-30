@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "12389905888977014676"
+      "templateHash": "8904625839985363809"
     }
   },
   "parameters": {
@@ -20,6 +20,13 @@
       "type": "string",
       "metadata": {
         "description": "Required. AVD shared services subscription ID, multiple subscriptions scenario."
+      }
+    },
+    "imageVersionDisasterRecoveryLocation": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Disaster recovery location for Image Version. (Default: )"
       }
     },
     "imageVersionStorageAccountType": {
@@ -463,6 +470,7 @@
       "westus3": "Mountain Standard time"
     },
     "varCommonResourceTags": "[if(parameters('enableResourceTags'), createObject('ImageBuildName', parameters('imageBuildNameTag'), 'WorkloadName', parameters('workloadNameTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('criticalityTag'), 'Custom'), parameters('criticalityCustomTag'), parameters('criticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'OpsTeam', parameters('operationsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag'), 'Environment', parameters('environmentTag')), createObject())]",
+    "varImageReplicationRegions": "[if(empty(parameters('imageVersionDisasterRecoveryLocation')), createArray(parameters('sharedServicesLocation')), createArray(parameters('sharedServicesLocation'), parameters('imageVersionDisasterRecoveryLocation')))]",
     "varVmSize": "Standard_D4s_v3",
     "varOperatingSystemImageDefinitions": {
       "win10_21h2_office": {
@@ -3218,9 +3226,7 @@
             "value": "[parameters('aibLocation')]"
           },
           "imageReplicationRegions": {
-            "value": [
-              "[parameters('sharedServicesLocation')]"
-            ]
+            "value": "[variables('varImageReplicationRegions')]"
           },
           "storageAccountType": {
             "value": "[parameters('imageVersionStorageAccountType')]"
