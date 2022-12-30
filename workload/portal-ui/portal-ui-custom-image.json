@@ -76,10 +76,6 @@
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Premium Locally-Redundant Storage",
-                                                "value": "Premium_LRS"
-                                            },
-                                            {
                                                 "label": "Standard Locally-Redundant Storage",
                                                 "value": "Standard_LRS"
                                             },
