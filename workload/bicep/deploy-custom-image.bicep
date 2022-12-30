@@ -9,6 +9,9 @@ param sharedServicesLocation string = 'eastus'
 @description('Required. AVD shared services subscription ID, multiple subscriptions scenario.')
 param sharedServicesSubId string
 
+@description('Optional. Disaster recovery location for Image Version. (Default: )')
+param imageVersionDisasterRecoveryLocation string = ''
+
 @allowed([
     'Standard_LRS'
     'Standard_ZRS'
@@ -281,6 +284,8 @@ var varLocationAcronyms = {
     westus3: 'wus3'
     swedencentral: 'sec'
 }
+//
+
 var varTimeZone = varTimeZones[aibLocation]
 var varTimeZones = {
     australiacentral: 'AUS Eastern Standard time'
@@ -339,7 +344,6 @@ var varTimeZones = {
     westus2: 'Pacific Standard time'
     westus3: 'Mountain Standard time'
 }
-//
 
 // Resource tagging
 var varCommonResourceTags = enableResourceTags ? {
@@ -357,6 +361,12 @@ var varCommonResourceTags = enableResourceTags ? {
 } : {}
 //
 
+var varImageReplicationRegions = empty(imageVersionDisasterRecoveryLocation) ? [
+    sharedServicesLocation
+] : [
+    sharedServicesLocation
+    imageVersionDisasterRecoveryLocation
+]
 var varVmSize = 'Standard_D4s_v3'
 var varOperatingSystemImageDefinitions = {
     win10_21h2_office: {
@@ -706,9 +716,7 @@ module imageTemplate '../../carml/1.3.0/Microsoft.VirtualMachineImages/imageTemp
         userMsiName: userAssignedManagedIdentity.outputs.name
         userMsiResourceGroup: userAssignedManagedIdentity.outputs.resourceGroupName
         location: aibLocation
-        imageReplicationRegions: [
-            sharedServicesLocation
-        ]
+        imageReplicationRegions: varImageReplicationRegions
         storageAccountType: imageVersionStorageAccountType
         sigImageDefinitionId: image.outputs.resourceId
         vmSize: varVmSize
