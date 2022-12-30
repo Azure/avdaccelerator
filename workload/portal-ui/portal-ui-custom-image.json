@@ -132,7 +132,7 @@
                                     "defaultValue": "",
                                     "toolTip": "Choose the desired disaster recovery location for the Image Version.",
                                     "constraints": {
-                                        "allowedValues": "[map(steps('imageManagement').imageVersion.locationsApi, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.name, '\"}')))]",
+                                        "allowedValues": "[map(steps('imageManagement').imageVersion.locationsApi.value, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.name, '\"}')))]",
                                         "required": true
                                     },
                                     "visible": "[equals(steps('imageManagement').imageVersion.replication, true)]"
