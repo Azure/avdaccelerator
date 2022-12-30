@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "274610700790796788"
+      "templateHash": "6555465786494825347"
     }
   },
   "parameters": {
@@ -3233,7 +3233,7 @@
             "value": "[parameters('aibLocation')]"
           },
           "imageReplicationRegions": {
-            "value": "[if(equals(parameters('sharedServicesLocation'), parameters('aibLocation')), array(format('{0}', parameters('sharedServicesLocation'))), concat(array(format('{0}', parameters('aibLocation'))), array(format('{0}', parameters('sharedServicesLocation')))))]"
+            "value": "[union(array(format('{0}', parameters('aibLocation'))), array(format('{0}', parameters('sharedServicesLocation'))))]"
           },
           "storageAccountType": {
             "value": "[parameters('imageVersionStorageAccountType')]"
