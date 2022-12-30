@@ -43,6 +43,13 @@ param sigImageDefinitionId string = ''
 param imageReplicationRegions array = []
 
 @allowed([
+  'Standard_LRS'
+  'Standard_ZRS'
+])
+@description('Optional. Specify the storage redundancy for the Image Version in the Shared Image Gallery.')
+param storageAccountType string = 'Standard_LRS'
+
+@allowed([
   ''
   'CanNotDelete'
   'ReadOnly'
@@ -98,6 +105,7 @@ var sharedImage = {
     creationTime: baseTime
   }
   replicationRegions: imageReplicationRegionsVar
+  storageAccountType: storageAccountType
 }
 var conditionalSharedImage = empty(sigImageDefinitionId) ? [] : array(sharedImage)
 var unManagedImage = {
