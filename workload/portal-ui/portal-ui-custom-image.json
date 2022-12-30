@@ -51,6 +51,44 @@
                             }
                         },
                         {
+                            "name": "imageVersion",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "Image Version",
+                            "elements": [
+                                {
+                                    "name": "info2",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": true,
+                                    "options": {
+                                        "text": "Image Versions distributed by the AIB Image Template support different redundancy options through the Storage Account Type property. Click here for more information.",
+                                        "uri": "https://learn.microsoft.com/azure/virtual-machines/azure-compute-gallery#high-availability",
+                                        "style": "Info"
+                                    }
+                                },
+                                {
+                                    "name": "storageAccountType",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "Storage Account Type",
+                                    "defaultValue": "Locally-Redundant Storage",
+                                    "toolTip": "Determine the redundancy for the Image Version.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Zone-Redundant Storage",
+                                                "value": "Standard_ZRS"
+                                            },
+                                            {
+                                                "label": "Locally-Redundant Storage",
+                                                "value": "Standard_LRS"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
                             "name": "operatingSystem",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
@@ -883,6 +921,7 @@
                 "imageDefinitionCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.imageDefinition, 'none')]",
                 "imageGalleryCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.computeGallery, 'none')]",
                 "imageTemplateCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.imageTemplate, 'none')]",
+                "imageVersionStorageAccountType": "[steps('imageManagement').imageVersion.redundancy]",
                 "logAnalyticsWorkspaceCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.logAnalyticsWorkspace, 'none')]",
                 "operatingSystemImage": "[steps('imageManagement').operatingSystem.versionSelection]",
                 "operationsTeamTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.operationsTeam, 'none')]",
