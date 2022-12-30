@@ -36,17 +36,17 @@ param managedImageName string = ''
 @description('Optional. Name of the unmanaged image that will be created in the AIB resourcegroup.')
 param unManagedImageName string = ''
 
-@description('Optional. Resource ID of Shared Image Gallery to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>.')
+@description('Optional. Resource ID of Azure Compute Gallery to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>.')
 param sigImageDefinitionId string = ''
 
-@description('Optional. List of the regions the image produced by this solution should be stored in the Shared Image Gallery. When left empty, the deployment\'s location will be taken as a default value.')
+@description('Optional. List of the regions the image produced by this solution should be stored in the Azure Compute Gallery. When left empty, the deployment\'s location will be taken as a default value.')
 param imageReplicationRegions array = []
 
 @allowed([
   'Standard_LRS'
   'Standard_ZRS'
 ])
-@description('Optional. Specify the storage redundancy for the Image Version in the Shared Image Gallery.')
+@description('Optional. Specify the storage redundancy for the Image Version in the Azure Compute Gallery.')
 param storageAccountType string = 'Standard_LRS'
 
 @allowed([
