@@ -43,6 +43,7 @@ param sigImageDefinitionId string = ''
 param imageReplicationRegions array = []
 
 @allowed([
+  'Premium_LRS'
   'Standard_LRS'
   'Standard_ZRS'
 ])
