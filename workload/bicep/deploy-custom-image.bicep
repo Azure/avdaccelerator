@@ -13,6 +13,7 @@ param sharedServicesSubId string
 param imageVersionDisasterRecoveryLocation string = ''
 
 @allowed([
+    'Premium_LRS'
     'Standard_LRS'
     'Standard_ZRS'
 ])
