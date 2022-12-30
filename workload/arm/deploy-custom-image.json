@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "673231498146923754"
+      "templateHash": "274610700790796788"
     }
   },
   "parameters": {
@@ -13,15 +13,25 @@
       "type": "string",
       "defaultValue": "eastus",
       "metadata": {
-        "description": "Optional. Location where to deploy compute services. (Default: eastus)"
+        "description": "Optional. Location to deploy the resources in this solution, except the image template. (Default: eastus)"
       }
     },
     "sharedServicesSubId": {
       "type": "string",
-      "defaultValue": "",
       "metadata": {
         "description": "Required. AVD shared services subscription ID, multiple subscriptions scenario."
       }
+    },
+    "imageVersionStorageAccountType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "metadata": {
+        "description": "Optional. Determine the Storage Account Type for the Image Version distributed by the Image Template. (Default: Standard_LRS)"
+      },
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_ZRS"
+      ]
     },
     "aibLocation": {
       "type": "string",
@@ -141,14 +151,14 @@
       "type": "int",
       "defaultValue": 30,
       "metadata": {
-        "description": "Required.  Azure log analytics workspace name data retention."
+        "description": "Optional. Set the data retention in the number of days for the Log Analytics Workspace. (Default: 30)"
       }
     },
     "enableMonitoringAlerts": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Set to deploy monitoring and alerst for image nuilder process (Defualt: false)."
+        "description": "Optional. Set to deploy monitoring and alerts for the build automation (Default: false)."
       }
     },
     "distributionGroup": {
@@ -3225,6 +3235,9 @@
           "imageReplicationRegions": {
             "value": "[if(equals(parameters('sharedServicesLocation'), parameters('aibLocation')), array(format('{0}', parameters('sharedServicesLocation'))), concat(array(format('{0}', parameters('aibLocation'))), array(format('{0}', parameters('sharedServicesLocation')))))]"
           },
+          "storageAccountType": {
+            "value": "[parameters('imageVersionStorageAccountType')]"
+          },
           "sigImageDefinitionId": {
             "value": "[if(parameters('sharedImage'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Definition_{0}', parameters('time')))).outputs.resourceId.value, '')]"
           },
@@ -3255,14 +3268,14 @@
             "_generator": {
               "name": "bicep",
               "version": "0.11.1.770",
-              "templateHash": "6253409140786498343"
+              "templateHash": "2357904522717487597"
             }
           },
           "parameters": {
             "name": {
               "type": "string",
               "metadata": {
-                "description": "Required. Name of the Image Template to be built by the Azure Image Builder service."
+                "description": "Required. Name prefix of the Image Template to be built by the Azure Image Builder service."
               }
             },
             "userMsiName": {
@@ -3345,25 +3358,36 @@
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "Optional. Resource ID of Shared Image Gallery to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>."
+                "description": "Optional. Resource ID of Azure Compute Gallery to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>."
               }
             },
             "imageReplicationRegions": {
               "type": "array",
               "defaultValue": [],
               "metadata": {
-                "description": "Optional. List of the regions the image produced by this solution should be stored in the Shared Image Gallery. When left empty, the deployment's location will be taken as a default value."
+                "description": "Optional. List of the regions the image produced by this solution should be stored in the Azure Compute Gallery. When left empty, the deployment's location will be taken as a default value."
               }
+            },
+            "storageAccountType": {
+              "type": "string",
+              "defaultValue": "Standard_LRS",
+              "metadata": {
+                "description": "Optional. Specify the storage redundancy for the Image Version in the Azure Compute Gallery."
+              },
+              "allowedValues": [
+                "Standard_LRS",
+                "Standard_ZRS"
+              ]
             },
             "lock": {
               "type": "string",
-              "defaultValue": "NotSpecified",
+              "defaultValue": "",
               "metadata": {
                 "description": "Optional. Specify the type of lock."
               },
               "allowedValues": [
+                "",
                 "CanNotDelete",
-                "NotSpecified",
                 "ReadOnly"
               ]
             },
@@ -3385,7 +3409,7 @@
               "type": "bool",
               "defaultValue": true,
               "metadata": {
-                "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
               }
             },
             "roleAssignments": {
@@ -3397,14 +3421,14 @@
             }
           },
           "variables": {
-            "managedImageName_var": "[format('{0}-{1}', parameters('managedImageName'), parameters('baseTime'))]",
-            "managedImageId": "[format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Compute/images/{2}', subscription().subscriptionId, resourceGroup().name, variables('managedImageName_var'))]",
-            "imageReplicationRegions_var": "[if(empty(parameters('imageReplicationRegions')), array(parameters('location')), parameters('imageReplicationRegions'))]",
+            "managedImageNameVar": "[format('{0}-{1}', parameters('managedImageName'), parameters('baseTime'))]",
+            "managedImageId": "[format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Compute/images/{2}', subscription().subscriptionId, resourceGroup().name, variables('managedImageNameVar'))]",
+            "imageReplicationRegionsVar": "[if(empty(parameters('imageReplicationRegions')), array(parameters('location')), parameters('imageReplicationRegions'))]",
             "managedImage": {
               "type": "ManagedImage",
               "imageId": "[variables('managedImageId')]",
               "location": "[parameters('location')]",
-              "runOutputName": "[format('{0}-ManagedImage', variables('managedImageName_var'))]",
+              "runOutputName": "[format('{0}-ManagedImage', variables('managedImageNameVar'))]",
               "artifactTags": {
                 "sourceType": "[parameters('imageSource').type]",
                 "sourcePublisher": "[if(contains(parameters('imageSource'), 'publisher'), parameters('imageSource').publisher, null())]",
@@ -3420,7 +3444,7 @@
             "sharedImage": {
               "type": "SharedImage",
               "galleryImageId": "[parameters('sigImageDefinitionId')]",
-              "runOutputName": "[if(not(empty(parameters('sigImageDefinitionId'))), format('{0}-SharedImage', split(parameters('sigImageDefinitionId'), '/')[10]), 'SharedImage')]",
+              "runOutputName": "[if(not(empty(parameters('sigImageDefinitionId'))), format('{0}-SharedImage', last(split(parameters('sigImageDefinitionId'), '/'))), 'SharedImage')]",
               "artifactTags": {
                 "sourceType": "[parameters('imageSource').type]",
                 "sourcePublisher": "[if(contains(parameters('imageSource'), 'publisher'), parameters('imageSource').publisher, null())]",
@@ -3431,7 +3455,8 @@
                 "sourceImageVersionID": "[if(contains(parameters('imageSource'), 'imageVersionID'), parameters('imageSource').imageVersionID, null())]",
                 "creationTime": "[parameters('baseTime')]"
               },
-              "replicationRegions": "[variables('imageReplicationRegions_var')]"
+              "replicationRegions": "[variables('imageReplicationRegionsVar')]",
+              "storageAccountType": "[parameters('storageAccountType')]"
             },
             "conditionalSharedImage": "[if(empty(parameters('sigImageDefinitionId')), createArray(), array(variables('sharedImage')))]",
             "unManagedImage": {
@@ -3494,9 +3519,9 @@
               }
             },
             {
-              "condition": "[not(equals(parameters('lock'), 'NotSpecified'))]",
+              "condition": "[not(empty(parameters('lock')))]",
               "type": "Microsoft.Authorization/locks",
-              "apiVersion": "2017-04-01",
+              "apiVersion": "2020-05-01",
               "scope": "[format('Microsoft.VirtualMachineImages/imageTemplates/{0}', format('{0}-{1}', parameters('name'), parameters('baseTime')))]",
               "name": "[format('{0}-{1}-lock', format('{0}-{1}', parameters('name'), parameters('baseTime')), parameters('lock'))]",
               "properties": {
@@ -3509,7 +3534,7 @@
             },
             {
               "copy": {
-                "name": "imageTemplate_rbac",
+                "name": "imageTemplate_roleAssignments",
                 "count": "[length(parameters('roleAssignments'))]"
               },
               "type": "Microsoft.Resources/deployments",
@@ -3533,6 +3558,12 @@
                   "roleDefinitionIdOrName": {
                     "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
                   },
+                  "condition": {
+                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), parameters('roleAssignments')[copyIndex()].condition, '')]"
+                  },
+                  "delegatedManagedIdentityResourceId": {
+                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId, '')]"
+                  },
                   "resourceId": {
                     "value": "[resourceId('Microsoft.VirtualMachineImages/imageTemplates', format('{0}-{1}', parameters('name'), parameters('baseTime')))]"
                   }
@@ -3544,7 +3575,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.11.1.770",
-                      "templateHash": "10011684216496135070"
+                      "templateHash": "7035498706953778341"
                     }
                   },
                   "parameters": {
@@ -3587,22 +3618,46 @@
                       "metadata": {
                         "description": "Optional. The description of the role assignment."
                       }
+                    },
+                    "condition": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                      }
+                    },
+                    "conditionVersion": {
+                      "type": "string",
+                      "defaultValue": "2.0",
+                      "allowedValues": [
+                        "2.0"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Version of the condition."
+                      }
+                    },
+                    "delegatedManagedIdentityResourceId": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. Id of the delegated managed identity resource."
+                      }
                     }
                   },
                   "variables": {
                     "builtInRoleNames": {
-                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
                       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
                       "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
                       "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
                       "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
                       "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
                       "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
                       "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
-                      "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
                       "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
                       "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+                      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
                       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
                     }
                   },
@@ -3613,14 +3668,17 @@
                         "count": "[length(parameters('principalIds'))]"
                       },
                       "type": "Microsoft.Authorization/roleAssignments",
-                      "apiVersion": "2020-10-01-preview",
+                      "apiVersion": "2022-04-01",
                       "scope": "[format('Microsoft.VirtualMachineImages/imageTemplates/{0}', last(split(parameters('resourceId'), '/')))]",
                       "name": "[guid(resourceId('Microsoft.VirtualMachineImages/imageTemplates', last(split(parameters('resourceId'), '/'))), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
                       "properties": {
                         "description": "[parameters('description')]",
                         "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
                         "principalId": "[parameters('principalIds')[copyIndex()]]",
-                        "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
+                        "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]",
+                        "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]",
+                        "conditionVersion": "[if(and(not(empty(parameters('conditionVersion'))), not(empty(parameters('condition')))), parameters('conditionVersion'), null())]",
+                        "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), null())]"
                       }
                     }
                   ]
@@ -3650,7 +3708,14 @@
               "type": "string",
               "value": "[format('{0}-{1}', parameters('name'), parameters('baseTime'))]",
               "metadata": {
-                "description": "The name of the image template."
+                "description": "The full name of the deployed image template."
+              }
+            },
+            "namePrefix": {
+              "type": "string",
+              "value": "[parameters('name')]",
+              "metadata": {
+                "description": "The prefix of the image template name provided as input."
               }
             },
             "runThisCommand": {
