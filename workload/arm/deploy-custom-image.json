@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "8904625839985363809"
+      "templateHash": "2790847294094523972"
     }
   },
   "parameters": {
@@ -36,6 +36,7 @@
         "description": "Optional. Determine the Storage Account Type for the Image Version distributed by the Image Template. (Default: Standard_LRS)"
       },
       "allowedValues": [
+        "Premium_LRS",
         "Standard_LRS",
         "Standard_ZRS"
       ]
@@ -3260,7 +3261,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.11.1.770",
-              "templateHash": "2357904522717487597"
+              "templateHash": "17033412187031574000"
             }
           },
           "parameters": {
@@ -3367,6 +3368,7 @@
                 "description": "Optional. Specify the storage redundancy for the Image Version in the Azure Compute Gallery."
               },
               "allowedValues": [
+                "Premium_LRS",
                 "Standard_LRS",
                 "Standard_ZRS"
               ]

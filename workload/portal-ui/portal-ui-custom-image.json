@@ -70,18 +70,22 @@
                                     "name": "storageAccountType",
                                     "type": "Microsoft.Common.DropDown",
                                     "label": "Storage Account Type",
-                                    "defaultValue": "Locally-Redundant Storage",
-                                    "toolTip": "Determine the redundancy for the Image Version.",
+                                    "defaultValue": "Standard Locally-Redundant Storage",
+                                    "toolTip": "Determine the performance and redundancy for the Image Version.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Zone-Redundant Storage",
-                                                "value": "Standard_ZRS"
+                                                "label": "Premium Locally-Redundant Storage",
+                                                "value": "Premium_LRS"
                                             },
                                             {
-                                                "label": "Locally-Redundant Storage",
+                                                "label": "Standard Locally-Redundant Storage",
                                                 "value": "Standard_LRS"
+                                            },
+                                            {
+                                                "label": "Standard Zone-Redundant Storage",
+                                                "value": "Standard_ZRS"
                                             }
                                         ]
                                     }
