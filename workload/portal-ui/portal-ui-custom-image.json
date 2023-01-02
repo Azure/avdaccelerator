@@ -67,6 +67,15 @@
                                     }
                                 },
                                 {
+                                    "name": "warn1",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('imageManagement').imageVersion.storageAccountType, 'Standard_ZRS')]",
+                                    "options": {
+                                        "text": "Ensure your selected Azure location supports zonal storage.",
+                                        "style": "Warning"
+                                    }
+                                },
+                                {
                                     "name": "storageAccountType",
                                     "type": "Microsoft.Common.DropDown",
                                     "label": "Storage Account Type",
@@ -123,6 +132,15 @@
                                     "request": {
                                         "method": "GET",
                                         "path": "[concat(steps('basics').resourceScope.subscription.id,'/locations?api-version=2020-01-01')]"
+                                    }
+                                },
+                                {
+                                    "name": "warn2",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[and(equals(steps('imageManagement').imageVersion.replication, true), equals(steps('imageManagement').imageVersion.storageAccountType, 'Standard_ZRS'))]",
+                                    "options": {
+                                        "text": "Ensure your selected Azure location supports zonal storage.",
+                                        "style": "Warning"
                                     }
                                 },
                                 {
