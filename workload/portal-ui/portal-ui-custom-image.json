@@ -54,7 +54,7 @@
                             "name": "imageVersion",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
-                            "label": "Image Version",
+                            "label": "Image version",
                             "elements": [
                                 {
                                     "name": "info2",
@@ -79,7 +79,7 @@
                                 {
                                     "name": "storageAccountType",
                                     "type": "Microsoft.Common.DropDown",
-                                    "label": "Storage Account Type",
+                                    "label": "Storage account type",
                                     "defaultValue": "Standard Locally-Redundant Storage",
                                     "toolTip": "Determine the performance and redundancy for the Image Version.",
                                     "constraints": {
@@ -110,7 +110,7 @@
                                     "name": "replication",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "visible": true,
-                                    "label": "Enable Replication to Disaster Recovery Location",
+                                    "label": "Enable replication to disaster recovery location",
                                     "defaultValue": "No",
                                     "toolTip": "Determine whether to replicate the Image Version to your disaster recovery location.",
                                     "constraints": {
@@ -148,7 +148,7 @@
                                 {
                                     "name": "disasterRecoveryLocation",
                                     "type": "Microsoft.Common.DropDown",
-                                    "label": "Disaster Recovery Location",
+                                    "label": "Disaster recovery location",
                                     "defaultValue": "",
                                     "filter": true,
                                     "toolTip": "Choose the desired disaster recovery location for the Image Version.",
@@ -164,7 +164,7 @@
                             "name": "operatingSystem",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
-                            "label": "Operating System",
+                            "label": "Operating system",
                             "elements": [
                                 {
                                     "name": "versionSelection",
@@ -218,7 +218,7 @@
                             "type": "Microsoft.Common.DropDown",
                             "visible": true,
                             "filter": true,
-                            "label": "Deployment Location",
+                            "label": "Deployment location",
                             "defaultValue": "[steps('basics').resourceScope.location.displayName]",
                             "toolTip": "Select the location where Azure Image Builder will run to create the image.",
                             "constraints": {
@@ -359,7 +359,7 @@
                             "name": "buildSchedule",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
-                            "label": "Build Schedule",
+                            "label": "Build schedule",
                             "defaultValue": "Recurring",
                             "toolTip": "Select a schedule for the image template builds. A recurring schedule will check for a new marketplace image daily and will initiate a new build when found.",
                             "constraints": {
@@ -380,7 +380,7 @@
                             "name": "virtualNetwork",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
-                            "label": "Existing Virtual Network",
+                            "label": "Existing virtual network",
                             "defaultValue": "No",
                             "toolTip": "Select an existing virtual network and subnet for the AIB build virtual machines. This enables the use of Private Link and prevents the deployment of public IP addresses.",
                             "constraints": {
@@ -401,7 +401,7 @@
                             "name": "virtualNetworkSelection",
                             "type": "Microsoft.Solutions.ResourceSelector",
                             "visible": "[equals(steps('aib').virtualNetwork, true)]",
-                            "label": "Virtual Network",
+                            "label": "Virtual network",
                             "resourceType": "Microsoft.Network/virtualNetworks",
                             "options": {
                                 "filter": {
@@ -443,7 +443,7 @@
                             "name": "rdpShortPathSelection",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
-                            "label": "Enable RDP Short Path for Managed Networks",
+                            "label": "Enable RDP shortpath for managed networks",
                             "defaultValue": "No",
                             "toolTip": "Determine whether to enable RDP short path for managed networks on the AVD session hosts.",
                             "constraints": {
@@ -474,7 +474,7 @@
                             "name": "screenCaptureProtectionSelection",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
-                            "label": "Enable Screen Capture Protection",
+                            "label": "Enable screen capture protection",
                             "defaultValue": "No",
                             "toolTip": "Determine whether to enable Screen Capture Protection for the AVD session hosts.",
                             "constraints": {
@@ -503,7 +503,7 @@
                             "name": "monitoringAndAlerting",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
-                            "label": "Enable Monitoring & Alerting",
+                            "label": "Enable monitoring & alerting",
                             "defaultValue": "No",
                             "toolTip": "Determine whether to enable monitoring and alerting for the Azure Image Builder builds.",
                             "constraints": {
@@ -524,7 +524,7 @@
                             "name": "distributionGroup",
                             "type": "Microsoft.Common.TextBox",
                             "visible": "[equals(steps('monitoring').monitoringAndAlerting, true)]",
-                            "label": "Distribution Group",
+                            "label": "Distribution group",
                             "toolTip": "Input the distribution group for receiving alerts on the build status.",
                             "placeholder": "Example: operations@contoso.com",
                             "constraints": {
@@ -537,7 +537,7 @@
                             "name": "existingLogAnalyticsWorkspace",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": "[equals(steps('monitoring').monitoringAndAlerting, true)]",
-                            "label": "Existing Log Analytics Workspace",
+                            "label": "Existing log analytics workspace",
                             "defaultValue": "No",
                             "toolTip": "Determine whether to select an existing Log Analytics Workspace to capture the monitoring data.",
                             "constraints": {
@@ -558,7 +558,7 @@
                             "name": "logAnalyticsWorkspaceSelection",
                             "type": "Microsoft.Solutions.ResourceSelector",
                             "visible": "[equals(steps('monitoring').existingLogAnalyticsWorkspace, true)]",
-                            "label": "Log Analytics Workspace",
+                            "label": "Log analytics workspace",
                             "resourceType": "Microsoft.OperationalInsights/workspaces",
                             "options": {}
                         }
@@ -584,7 +584,7 @@
                             "name": "customNamingSelection",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
-                            "label": "Custom Resource Naming",
+                            "label": "Custom resource naming",
                             "defaultValue": "No",
                             "toolTip": "When set to 'Yes', the information will be used to name resources. When set to 'No', the deployment will use the AVD accelerator naming standard.",
                             "constraints": {
@@ -614,7 +614,7 @@
                         {
                             "name": "customNaming",
                             "type": "Microsoft.Common.Section",
-                            "label": "Custom Names:",
+                            "label": "Custom names:",
                             "visible": "[equals(steps('naming').customNamingSelection, true)]",
                             "elements": [
                                 {
@@ -632,7 +632,7 @@
                                 {
                                     "name": "computeGallery",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Compute Gallery",
+                                    "label": "Compute gallery",
                                     "toolTip": "Input a custom name for the Azure Compute Gallery.",
                                     "placeholder": "Example: gal_avd",
                                     "constraints": {
@@ -644,7 +644,7 @@
                                 {
                                     "name": "imageDefinition",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Image Definition",
+                                    "label": "Image definition",
                                     "toolTip": "Input a custom name for the Image Definition in the Compute Gallery.",
                                     "placeholder": "Example: avd_win11_21h2",
                                     "constraints": {
@@ -656,7 +656,7 @@
                                 {
                                     "name": "imageTemplate",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Image Template",
+                                    "label": "Image template",
                                     "toolTip": "Input a custom name for the AIB Image Template.",
                                     "placeholder": "Example: it-avd-win11-21h2",
                                     "constraints": {
@@ -668,7 +668,7 @@
                                 {
                                     "name": "automationAccount",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Automation Account",
+                                    "label": "Automation account",
                                     "toolTip": "Input a custom name for the Automation Account.",
                                     "placeholder": "Example: aa-aib",
                                     "constraints": {
@@ -680,7 +680,7 @@
                                 {
                                     "name": "logAnalyticsWorkspace",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Log Analytics Workspace",
+                                    "label": "Log analytics workspace",
                                     "toolTip": "Input a custom name for the Log Analytics Workspace.",
                                     "placeholder": "Example: log-avd",
                                     "constraints": {
@@ -692,7 +692,7 @@
                                 {
                                     "name": "actionGroup",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Action Group",
+                                    "label": "Action group",
                                     "toolTip": "Input a custom name for the Action Group.",
                                     "placeholder": "Example: ag-aib",
                                     "constraints": {
@@ -704,7 +704,7 @@
                                 {
                                     "name": "userAssignedManagedIdentity",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "User Assigned Identity",
+                                    "label": "User assigned identity",
                                     "toolTip": "Input a custom name for the User Assigned Identity.",
                                     "placeholder": "Example: id-aib",
                                     "constraints": {
@@ -747,7 +747,7 @@
                             "name": "selection",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
-                            "label": "Custom Resource Tags",
+                            "label": "Custom resource tags",
                             "defaultValue": "No",
                             "toolTip": "When set 'Yes', the information provided will be used to create tags on resources and resource groups.",
                             "constraints": {
@@ -773,7 +773,7 @@
                                 {
                                     "name": "imageBuild",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Image Build",
+                                    "label": "Image build",
                                     "toolTip": "Input the value for the tag key 'ImageBuildName'.",
                                     "placeholder": "Example: AVD-Image",
                                     "constraints": {
@@ -797,7 +797,7 @@
                                 {
                                     "name": "dataClassification",
                                     "type": "Microsoft.Common.DropDown",
-                                    "label": "Data Classification",
+                                    "label": "Data classification",
                                     "filter": true,
                                     "defaultValue": "Non-business",
                                     "toolTip": "Select the value for the tag key 'DataClassification', in reference to the sensitivity of the data hosted.",
@@ -885,7 +885,7 @@
                                 {
                                     "name": "customCriticality",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Custom Criticality",
+                                    "label": "Custom criticality",
                                     "visible": "[equals(steps('tags').customTags.criticality, 'Custom')]",
                                     "toolTip": "Input the value for the tag key 'Criticality', in reference to a custom criticality for the workload.",
                                     "placeholder": "Example: Contoso-Criticality",
@@ -898,7 +898,7 @@
                                 {
                                     "name": "application",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Application Name",
+                                    "label": "Application name",
                                     "toolTip": "Input the value for the tag key 'ApplicationName', in reference to the details about the application.",
                                     "placeholder": "Example: Contoso-App",
                                     "constraints": {
@@ -910,7 +910,7 @@
                                 {
                                     "name": "operationsTeam",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Operations Team",
+                                    "label": "Operations team",
                                     "toolTip": "Input the value for the tag key 'OpsTeam', in reference to the team accountable for day-to-day operations.",
                                     "placeholder": "Example: workload-admins@Contoso.com",
                                     "constraints": {
@@ -930,7 +930,7 @@
                                 {
                                     "name": "costCenter",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Cost Center",
+                                    "label": "Cost center",
                                     "toolTip": "Input the value for the tag key 'CostCenter', in reference to the cost center of the owning team.",
                                     "placeholder": "Example: Contoso-CC",
                                     "constraints": {
