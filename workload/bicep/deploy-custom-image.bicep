@@ -156,8 +156,9 @@ param avdContainerCustomName string = 'avd-artifacts' */
 param userAssignedManagedIdentityCustomName string = ''
 //
 
-
 // TAGS //
+// Resource tagging
+//
 @description('Optional. Apply tags on resources and resource groups. (Default: false)')
 param enableResourceTags bool = false
 

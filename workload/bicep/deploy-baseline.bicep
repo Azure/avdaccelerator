@@ -711,8 +711,13 @@ var varCommonResourceTags = createResourceTags ? {
 
 var varAllComputeStorageTags = {
     DomainName: avdIdentityDomainName
-    JoinType: 'ADDS' // avdDeviceJoinTypeTag waiting for PR on identity to be merged
+    JoinType: avdIdentityServiceProvider 
 }
+
+var varAvdCostManagementParentResourceTag = {
+    'cm-resource-parent': '/subscriptions/${avdWorkloadSubsId}}/resourceGroups/${varAvdServiceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${varAvdHostPoolName}'
+}
+
 var varAllResourceTags = union(varCommonResourceTags, varAllComputeStorageTags)
 //
 
@@ -724,14 +729,14 @@ var resourceGroups = [
         name: varAvdServiceObjectsRgName
         location: avdManagementPlaneLocation
         enableDefaultTelemetry: false
-        tags: createResourceTags ? varCommonResourceTags : {}
+        tags: createResourceTags ? union(varCommonResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
     }
     {
         purpose: 'Pool-Compute'
         name: varAvdComputeObjectsRgName
         location: avdSessionHostLocation
         enableDefaultTelemetry: false
-        tags: createResourceTags ? varAllComputeStorageTags : {}
+        tags: createResourceTags ? union(varAllComputeStorageTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
     }
 ]
 
@@ -763,7 +768,7 @@ module avdBaselineNetworkResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
         name: varAvdNetworkObjectsRgName
         location: avdSessionHostLocation
         enableDefaultTelemetry: false
-        tags: createResourceTags ? varCommonResourceTags : {}
+        tags: createResourceTags ? union(varCommonResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
     }
     dependsOn: avdDeployMonitoring ? [
         deployMonitoringDiagnosticSettings
@@ -790,7 +795,7 @@ module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/re
         name: varAvdStorageObjectsRgName
         location: avdSessionHostLocation
         enableDefaultTelemetry: false
-        tags: createResourceTags ? varAllComputeStorageTags : {}
+        tags: createResourceTags ? union(varAllComputeStorageTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
     }
     dependsOn: avdDeployMonitoring ? [
         deployMonitoringDiagnosticSettings
@@ -851,7 +856,7 @@ module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring.bicep' =
         avdAlaWorkspaceName: deployAlaWorkspace ? varAvdAlaWorkspaceName: ''
         avdAlaWorkspaceDataRetention: avdAlaWorkspaceDataRetention
         avdWorkloadSubsId: avdWorkloadSubsId
-        avdTags: createResourceTags ? varAllResourceTags : {}
+        avdTags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
     }
     dependsOn: []
 }
@@ -867,7 +872,7 @@ module deployAzurePolicyNetworking './avd-modules/avd-azure-policy-networking.bi
         avdMonitoringRgName: varAvdMonitoringRgName
         stgAccountForFlowLogsId: deployStgAccountForFlowLogs ? '' : stgAccountForFlowLogsId
         stgAccountForFlowLogsName: deployStgAccountForFlowLogs ? varStgAccountForFlowLogsName : ''
-        avdTags: createResourceTags ? varAllResourceTags : {}
+        avdTags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
     }
     dependsOn: [
     ]
@@ -895,7 +900,7 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
         avdVnetworkSubnetAddressPrefix: avdVnetworkSubnetAddressPrefix
         avdWorkloadSubsId: avdWorkloadSubsId
         dnsServers: varDnsServers
-        avdTags: createResourceTags ? varCommonResourceTags : {}
+        avdTags: createResourceTags ? union(varCommonResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
         avdAlaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
@@ -935,7 +940,7 @@ module avdManagementPLane 'avd-modules/avd-management-plane.bicep' = {
         avdIdentityServiceProvider: avdIdentityServiceProvider
         avdApplicationGroupIdentitiesIds: varAvdApplicationGroupIdentitiesIds
         avdApplicationGroupIdentityType: avdApplicationGroupIdentityType
-        avdTags: createResourceTags ? varCommonResourceTags : {}
+        avdTags: createResourceTags ? union(varCommonResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
         avdAlaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
@@ -966,7 +971,7 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
         avdVmPowerStateContributor: varAvdVmPowerStateContributor
         createAvdFslogixDeployment: varCreateAvdFslogixDeployment
         avdApplicationGroupIdentitiesIds: varAvdApplicationGroupIdentitiesIds
-        avdTags: createResourceTags ? varCommonResourceTags : {}
+        avdTags: createResourceTags ? union(varCommonResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
     }
     dependsOn: [
         avdBaselineResourceGroups
@@ -1051,7 +1056,8 @@ module avdWrklKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep
                 }
             ]
         }
-        tags: createResourceTags ? varCommonResourceTags : {}
+        tags: createResourceTags ? union(varCommonResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
+        
     }
     dependsOn: [
         avdBaselineResourceGroups
@@ -1105,7 +1111,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
         subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${varAvdVnetworkSubnetName}' : existingVnetSubnetResourceId
         managementVmName: varManagementVmName
         useSharedImage: useSharedImage
-        avdTags: createResourceTags ? varAllResourceTags : {}
+        avdTags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
         avdAlaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
@@ -1159,7 +1165,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         hostPoolToken: avdManagementPLane.outputs.hostPooltoken
         marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
-        avdTags: createResourceTags ? varAllResourceTags : {}
+        avdTags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
         avdDeployMonitoring: avdDeployMonitoring
         avdAlaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention

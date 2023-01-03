@@ -1,14 +1,7 @@
-# Creates Azure Virtual Desktop Insights Log Analytics Workspace
-module "avdi" {
-  source      = "../../modules/insights"
-  avdLocation = var.avdLocation
-  prefix      = var.prefix
-  rg_avdi     = var.rg_avdi
-}
-
 # Creates the Azure Virtual Desktop Spoke Network resources
 module "network" {
   source = "../../modules/network"
+
   avdLocation           = var.avdLocation
   rg_network            = var.rg_network
   vnet                  = var.vnet
@@ -25,3 +18,5 @@ module "network" {
   hub_subscription_id   = var.hub_subscription_id
   spoke_subscription_id = var.spoke_subscription_id
 }
+
+
