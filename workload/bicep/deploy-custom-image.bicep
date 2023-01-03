@@ -108,7 +108,7 @@ param enableMonitoringAlerts bool = false
 @description('Optional. Input the email distribution list for alert notifications when AIB builds succeed or fail.')
 param distributionGroup string = ''
 
-// Custom Naming
+// Custom Naming.
 // Input must followe resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
 @description('Optional. Custom name for Action Group.')
 param actionGroupCustomName string = 'ag-aib'
@@ -346,7 +346,7 @@ var varTimeZones = {
     westus3: 'Mountain Standard time'
 }
 
-// Resource tagging
+// Resource tagging.
 var varCommonResourceTags = enableResourceTags ? {
     ImageBuildName: imageBuildNameTag
     WorkloadName: workloadNameTag
@@ -557,7 +557,7 @@ var varModules = [
     }
 ]
 
-// Role Definitions & Assignments
+// Role Definitions & Assignments.
 var varDistributionGroupRole = (enableMonitoringAlerts && useExistingVirtualNetwork) ? [
     {
         resourceGroup: split(existingVirtualNetworkResourceId, '/')[4]
@@ -606,7 +606,7 @@ var varRoles = enableMonitoringAlerts? union(varDistributionGroupRole, varImageT
 // Deployments //
 // =========== //
 
-//  telemetry Deployment.
+//  Telemetry Deployment.
 resource telemetryDeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
     name: varTelemetryId
     location: sharedServicesLocation
@@ -620,7 +620,7 @@ resource telemetryDeployment 'Microsoft.Resources/deployments@2021-04-01' = if (
     }
 }
 
-// AVD Shared Services Resource Group
+// AVD Shared Services Resource Group.
 module avdSharedResourcesRg '../../carml/1.0.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
     scope: subscription(sharedServicesSubId)
     name: 'Resource-Group_${time}'
@@ -631,6 +631,7 @@ module avdSharedResourcesRg '../../carml/1.0.0/Microsoft.Resources/resourceGroup
     }
 }
 
+// Role definition.
 module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinitions/subscription/deploy.bicep' = [for i in range(0, length(varRoles)): {
     scope: subscription(sharedServicesSubId)
     name: 'Role-Definition_${i}_${time}'
@@ -645,6 +646,7 @@ module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinition
     }
 }]
 
+// Managed identity.
 module userAssignedManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'User-Assigned-Managed-Identity_${time}'
@@ -658,6 +660,7 @@ module userAssignedManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/
     ]
 }
 
+// Role assignment.
 module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for i in range(0, length(varRoles)): {
     name: 'Role-Assignment_${i}_${time}'
     scope: resourceGroup(sharedServicesSubId, varRoles[i].resourceGroup)
@@ -671,7 +674,7 @@ module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignment
     ]
 }]
 
-// Compute Gallery
+// Compute Gallery.
 module gallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Compute-Gallery_${time}'
@@ -686,7 +689,7 @@ module gallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy.bicep' = {
     ]
 }
 
-// Image Definition
+// Image Definition.
 module image '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Image-Definition_${time}'
@@ -708,6 +711,7 @@ module image '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep'
     ]
 }
 
+// Image template.
 module imageTemplate '../../carml/1.3.0/Microsoft.VirtualMachineImages/imageTemplates/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Image-Template_${time}'
@@ -739,7 +743,7 @@ module imageTemplate '../../carml/1.3.0/Microsoft.VirtualMachineImages/imageTemp
     ]
 }
 
-// Log Analytics Workspace
+// Log Analytics Workspace.
 module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Log-Analytics-Workspace_${time}'
@@ -755,6 +759,7 @@ module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/dep
     ]
 }
 
+// Automation account.
 module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccounts/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Automation-Account_${time}'
@@ -814,6 +819,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
     }
 }
 
+// Automation accounts.
 @batchSize(1)
 module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/modules/deploy.bicep' = [for i in range(0, length(varModules)): {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
@@ -854,6 +860,7 @@ module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/module
     ]
 } */
 
+// Action groups.
 module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bicep' = if (enableMonitoringAlerts) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Action-Group_${time}'
@@ -876,6 +883,7 @@ module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bic
     ]
 }
 
+// Schedules.
 module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(varAlerts)): if (enableMonitoringAlerts) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Scheduled-Query-Rule_${i}_${time}'
