@@ -8,7 +8,7 @@
             "steps": [
                 {
                     "name": "basics",
-                    "label": "Azure core setup",
+                    "label": "Basics",
                     "subLabel": {
                         "preValidation": "Provide deployment prefix for the resource groups and resources that will be created.",
                         "postValidation": "Done"
