@@ -186,7 +186,7 @@ param avdAsFaultDomainCount int = 2
 param avdAsUpdateDomainCount int = 5
 
 @description('Optional. Storage account SKU for FSLogix storage. Recommended tier is Premium LRS or Premium ZRS. (when available) (Defualt: Premium_LRS)')
-param StorageSku string = 'Premium_LRS'
+param storageSku string = 'Premium_LRS'
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool = false
@@ -1090,14 +1090,14 @@ module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bic
     name: 'FslogixStorage-AzureFiles-${time}'
     params: {
         storagePurpose: 'Fslogix'
-        avdFileShareCustomName: 'fslogix-pc-app1-001'
+        fileShareCustomName: 'fslogix-pc-app1-001'
         avdIdentityServiceProvider: avdIdentityServiceProvider
         dscAgentPackageLocation: varDscAgentPackageLocation
-        avdDomainJoinUserPassword: avdDomainJoinUserPassword
+        domainJoinUserPassword: avdDomainJoinUserPassword
         avdStorageCustomOuPath: varStorageCustomOuPath
         avdOuStgPath: varOuStgPath
         avdCreateOuForStorageString: varCreateOuForStorageString
-        avdManagedIdentityClientId: avdManagedIdentityClientId
+        managedIdentityClientId: avdManagedIdentityClientId
         storageToDomainScript:  varStorageToDomainScript
         storageToDomainScriptUri: varStorageToDomainScriptUri
         avdTimeZone: varTimeZones[avdSessionHostLocation]
@@ -1122,8 +1122,8 @@ module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bic
         avdWorkloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
         avdManagedIdentityResourceId: (varCreateAvdFslogixDeployment||varCreateAvdMsixDeployment) ? deployAvdManagedIdentitiesRoleAssign.outputs.ManagedIdentityResourceId : ''
-        avdFileShareMultichannel: (contains(StorageSku, 'Premium_LRS') || contains(StorageSku, 'Premium_ZRS')) ? true : false
-        StorageSku: StorageSku
+        avdFileShareMultichannel: (contains(storageSku, 'Premium_LRS') || contains(storageSku, 'Premium_ZRS')) ? true : false
+        storageSku: storageSku
         //marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows['winServer_2022_Datacenter']
         marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows[avdOsImage]
         subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${varAvdVnetworkSubnetName}' : existingVnetSubnetResourceId
@@ -1131,8 +1131,8 @@ module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bic
         avdTags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
         avdAlaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
-        avdUseCustomNaming: avdUseCustomNaming
-        avdStorageAccountPrefixCustomName: avdStorageAccountPrefixCustomName
+        useCustomNaming: avdUseCustomNaming
+        storageAccountPrefixCustomName: avdStorageAccountPrefixCustomName
         avdNamingUniqueStringSixChar: varAvdNamingUniqueStringSixChar
         avdDeploymentPrefixLowercase: varDeploymentPrefixLowercase
     }
@@ -1149,14 +1149,14 @@ module deployAvdMsixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep'
     name: 'MsixStorage-AzureFiles-${time}'
     params: {
         storagePurpose: 'msix'
-        avdFileShareCustomName: 'msix-pc-app1-001'
+        fileShareCustomName: 'msix-pc-app1-001'
         avdIdentityServiceProvider: avdIdentityServiceProvider
         dscAgentPackageLocation: varDscAgentPackageLocation
-        avdDomainJoinUserPassword: avdDomainJoinUserPassword
+        domainJoinUserPassword: avdDomainJoinUserPassword
         avdStorageCustomOuPath: varStorageCustomOuPath
         avdOuStgPath: varOuStgPath
         avdCreateOuForStorageString: varCreateOuForStorageString
-        avdManagedIdentityClientId: avdManagedIdentityClientId
+        managedIdentityClientId: avdManagedIdentityClientId
         storageToDomainScript:  varStorageToDomainScript
         //storageToDomainScriptArgs: varFslogixStorageToDomainScriptArgs
         storageToDomainScriptUri: varStorageToDomainScriptUri
@@ -1183,8 +1183,8 @@ module deployAvdMsixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep'
         avdWorkloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
         avdManagedIdentityResourceId: (varCreateAvdFslogixDeployment||varCreateAvdMsixDeployment) ? deployAvdManagedIdentitiesRoleAssign.outputs.ManagedIdentityResourceId : ''
-        avdFileShareMultichannel: (contains(StorageSku, 'Premium_LRS') || contains(StorageSku, 'Premium_ZRS')) ? true : false
-        StorageSku: StorageSku
+        avdFileShareMultichannel: (contains(storageSku, 'Premium_LRS') || contains(storageSku, 'Premium_ZRS')) ? true : false
+        storageSku: storageSku
         //marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows['winServer_2022_Datacenter']
         marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows[avdOsImage]
         subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${varAvdVnetworkSubnetName}' : existingVnetSubnetResourceId
@@ -1193,8 +1193,8 @@ module deployAvdMsixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep'
         avdTags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
         avdAlaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         avdDiagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
-        avdUseCustomNaming: avdUseCustomNaming
-        avdStorageAccountPrefixCustomName: avdStorageAccountPrefixCustomName
+        useCustomNaming: avdUseCustomNaming
+        storageAccountPrefixCustomName: avdStorageAccountPrefixCustomName
         avdNamingUniqueStringSixChar: varAvdNamingUniqueStringSixChar
         avdDeploymentPrefixLowercase: varDeploymentPrefixLowercase
     }
