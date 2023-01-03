@@ -8,20 +8,20 @@
   - **Subscription** - The subscription where the accelerator is going to deploy the resources.
   - **Region** – The desired Azure Region to be used for the deployment.
 - **Image Management** blade:
-  - **Storage Account Type** - Select storage account type option between Standard Locally-Redundant Storage or Standard Zone-Redundant Storage (when available).
-  - **Enable Replication to Disaster Recovery Location** - Select if creating image version replica in another region (DR Location).
-  - **Disaster Recovery Location** - When replicating image version, select the region where the image will be replicated.
-  - **Operating System Version** - Select the Image OS SKU to be used as source for the image.
+  - **Storage account type** - Select storage account type option between Standard Locally-Redundant Storage or Standard Zone-Redundant Storage (when available).
+  - **Enable replication to disaster recovery location** - Select if creating image version replica in another region (DR Location).
+  - **Disaster recovery location** - When replicating image version, select the region where the image will be replicated.
+  - **Operating system version** - Select the Image OS SKU to be used as source for the image.
 - **Azure Image Builder (AIB)** blade:
-  - **Deployment Location** - Select the location where Azure Image Builder will run to create the image.
-  - **Build Schedule** - Select if custom image will be built "OneTime" or "Recurring" to create a schedule and run the build every time a new source image is available.
-  - **Existing Virtual Network** - Select "Yes" to use existing virtual network or "No" for the AIB process to create a temporary one that is deleted once the build is completed.
-  - **Enable RDP Short Path for Managed Networks** - Select if enabling RDP Short Path on the custom image registry.
-  - **Enable Screen Capture Protection** - Select if enabling Screen Capture Protection on the custom image registry.
+  - **Deployment location** - Select the location where Azure Image Builder will run to create the image.
+  - **Build schedule** - Select if custom image will be built "OneTime" or "Recurring" to create a schedule and run the build every time a new source image is available.
+  - **Existing virtual network** - Select "Yes" to use existing virtual network or "No" for the AIB process to create a temporary one that is deleted once the build is completed.
+  - **Enable RDP shortpath for managed networks** - Select if enabling RDP Short Path on the custom image registry.
+  - **Enable screen capture protection** - Select if enabling Screen Capture Protection on the custom image registry.
 - **Monitoring** blade:
-  - **Enable Monitoring & Alerting** - Select if enabling monitoring and alerts.
-  - **Distribution Group** - Input the distribution group for receiving alerts (emails) on the build status.
-  - **Existing Log Analytics Workspace** - Select if using existing log analytics workspace selecting "Yes" or if creating a new one selecting "No".
+  - **Enable monitoring & alerting** - Select if enabling monitoring and alerts.
+  - **Distribution group** - Input the distribution group for receiving alerts (emails) on the build status.
+  - **Existing log analytics workspace** - Select if using existing log analytics workspace selecting "Yes" or if creating a new one selecting "No".
 - **Resource naming** blade:
   - **Custom resource naming** - When set "Yes", the user will input names for the resources. When set to "No" the deployment will use the AVD accelerator naming standard.
 - **Resource tagging** blade:
