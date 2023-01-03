@@ -8,7 +8,7 @@
             "steps": [
                 {
                     "name": "basics",
-                    "label": "Azure core setup",
+                    "label": "Basics",
                     "elements": [
                         {
                             "name": "deploymentInfo",
