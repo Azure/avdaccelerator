@@ -30,7 +30,7 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
-                                "text": "Azure AVD Landing Zones ARM deployment requires owner access at the subscription scope. Visit this link to get more information on RBAC permissions and scopes.",
+                                "text": "Azure AVD Landing Zone Accelerator deployment requires owner access at the subscription scope. Visit this link to get more information on RBAC permissions and scopes.",
                                 "uri": "https://docs.microsoft.com/azure/role-based-access-control/scope-overview",
                                 "style": "Warning"
                             }
@@ -141,6 +141,7 @@
                                     "visible": "[and(equals(steps('imageManagement').imageVersion.replication, true), equals(steps('imageManagement').imageVersion.storageAccountType, 'Standard_ZRS'))]",
                                     "options": {
                                         "text": "Ensure your selected Azure location supports zonal storage.",
+                                        "uri": "https://learn.microsoft.com/azure/storage/common/storage-redundancy",
                                         "style": "Warning"
                                     }
                                 },
