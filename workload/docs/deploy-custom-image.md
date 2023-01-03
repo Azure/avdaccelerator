@@ -4,7 +4,7 @@
 | ------------------------------------------------------------ |
 | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json) |
 
-- **Azure core setup** blade:
+- **Basics** blade:
   - **Subscription** - The subscription where the accelerator is going to deploy the resources.
   - **Region** – The desired Azure Region to be used for the deployment.
 - **Image Management** blade:
