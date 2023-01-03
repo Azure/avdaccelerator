@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.11.1.770",
-      "templateHash": "13785565309876603542"
+      "version": "0.12.40.16777",
+      "templateHash": "9441439825086867767"
     }
   },
   "parameters": {
@@ -506,7 +506,7 @@
         "hyperVGeneration": "V2"
       }
     },
-    "varBaseScriptUri": "https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/",
+    "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
     "varTelemetryId": "[format('pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-{0}', parameters('sharedServicesLocation'))]",
     "varRdpShortPathCustomizer": "[if(parameters('rdpShortPath'), createArray(createObject('type', 'PowerShell', 'name', 'rdpShortPath', 'runElevated', true(), 'runAsSystem', true(), 'scriptUri', format('{0}scripts/Set-RdpShortpath.ps1', variables('varBaseScriptUri')))), createArray())]",
     "varScreenCaptureProtectionCustomizer": "[if(parameters('screenCaptureProtection'), createArray(createObject('type', 'PowerShell', 'name', 'screenCaptureProtection', 'runElevated', true(), 'runAsSystem', true(), 'scriptUri', format('{0}scripts/Set-ScreenCaptureProtection.ps1', variables('varBaseScriptUri')))), createArray())]",
@@ -653,8 +653,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "6739506385321379792"
+              "version": "0.12.40.16777",
+              "templateHash": "14371000484120805163"
             }
           },
           "parameters": {
@@ -732,8 +732,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "18423331498261092198"
+                      "version": "0.12.40.16777",
+                      "templateHash": "480946558336396542"
                     }
                   },
                   "parameters": {
@@ -829,8 +829,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "5715331907833933843"
+                      "version": "0.12.40.16777",
+                      "templateHash": "10287774166509004715"
                     }
                   },
                   "parameters": {
@@ -1102,8 +1102,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "8350780597998278945"
+              "version": "0.12.40.16777",
+              "templateHash": "14905381042805460898"
             }
           },
           "parameters": {
@@ -1238,8 +1238,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "2583215207436574164"
+              "version": "0.12.40.16777",
+              "templateHash": "109459918124135444"
             }
           },
           "parameters": {
@@ -1330,8 +1330,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "1882150209236915071"
+                      "version": "0.12.40.16777",
+                      "templateHash": "17666925374910611943"
                     }
                   },
                   "resources": []
@@ -1368,8 +1368,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "6624531388042247984"
+                      "version": "0.12.40.16777",
+                      "templateHash": "7063219950530784819"
                     }
                   },
                   "parameters": {
@@ -1442,14 +1442,14 @@
             },
             "principalId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))).principalId]",
+              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), '2018-11-30').principalId]",
               "metadata": {
                 "description": "The principal ID of the user assigned identity"
               }
             },
             "clientId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))).clientId]",
+              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), '2018-11-30').clientId]",
               "metadata": {
                 "description": "The client ID of the user assigned identity"
               }
@@ -1485,10 +1485,10 @@
         "mode": "Incremental",
         "parameters": {
           "roleDefinitionIdOrName": {
-            "value": "[reference(subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Role-Definition_{0}_{1}', range(0, length(variables('varRoles')))[range(0, length(variables('varRoles')))[copyIndex()]], parameters('time')))).outputs.resourceId.value]"
+            "value": "[reference(subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Role-Definition_{0}_{1}', range(0, length(variables('varRoles')))[range(0, length(variables('varRoles')))[copyIndex()]], parameters('time'))), '2020-10-01').outputs.resourceId.value]"
           },
           "principalId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time')))).outputs.principalId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time'))), '2020-10-01').outputs.principalId.value]"
           },
           "principalType": {
             "value": "ServicePrincipal"
@@ -1500,8 +1500,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "14700347637187874945"
+              "version": "0.12.40.16777",
+              "templateHash": "9412286705087142511"
             }
           },
           "parameters": {
@@ -1969,8 +1969,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "15356750087209843483"
+              "version": "0.12.40.16777",
+              "templateHash": "15848412482820490016"
             }
           },
           "parameters": {
@@ -2112,8 +2112,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "11246476276625673255"
+                      "version": "0.12.40.16777",
+                      "templateHash": "5428316243993186157"
                     }
                   },
                   "parameters": {
@@ -2294,8 +2294,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "3746783456014250418"
+                      "version": "0.12.40.16777",
+                      "templateHash": "7796643272675650318"
                     }
                   },
                   "parameters": {
@@ -2585,8 +2585,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.11.1.770",
-                              "templateHash": "15279393836706496578"
+                              "version": "0.12.40.16777",
+                              "templateHash": "6120118781440186105"
                             }
                           },
                           "parameters": {
@@ -2749,7 +2749,7 @@
         "mode": "Incremental",
         "parameters": {
           "galleryName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Compute-Gallery_{0}', parameters('time')))).outputs.name.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Compute-Gallery_{0}', parameters('time'))), '2020-10-01').outputs.name.value]"
           },
           "name": {
             "value": "[variables('varImageDefinitionName')]"
@@ -2785,8 +2785,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "3746783456014250418"
+              "version": "0.12.40.16777",
+              "templateHash": "7796643272675650318"
             }
           },
           "parameters": {
@@ -3076,8 +3076,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "15279393836706496578"
+                      "version": "0.12.40.16777",
+                      "templateHash": "6120118781440186105"
                     }
                   },
                   "parameters": {
@@ -3217,10 +3217,10 @@
             "value": "[if(and(not(empty(parameters('existingVirtualNetworkResourceId'))), not(empty(parameters('subnetName')))), format('{0}/subnets/{1}', parameters('existingVirtualNetworkResourceId'), parameters('subnetName')), '')]"
           },
           "userMsiName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time')))).outputs.name.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time'))), '2020-10-01').outputs.name.value]"
           },
           "userMsiResourceGroup": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time')))).outputs.resourceGroupName.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time'))), '2020-10-01').outputs.resourceGroupName.value]"
           },
           "location": {
             "value": "[parameters('aibLocation')]"
@@ -3232,7 +3232,7 @@
             "value": "[parameters('imageVersionStorageAccountType')]"
           },
           "sigImageDefinitionId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Definition_{0}', parameters('time')))).outputs.resourceId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Definition_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value]"
           },
           "vmSize": {
             "value": "[variables('varVmSize')]"
@@ -3259,8 +3259,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "2357904522717487597"
+              "version": "0.12.40.16777",
+              "templateHash": "6757482941325382431"
             }
           },
           "parameters": {
@@ -3566,8 +3566,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "7035498706953778341"
+                      "version": "0.12.40.16777",
+                      "templateHash": "16291747920494961943"
                     }
                   },
                   "parameters": {
@@ -3770,8 +3770,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "11457821678904637386"
+              "version": "0.12.40.16777",
+              "templateHash": "13231327832909185929"
             }
           },
           "parameters": {
@@ -3968,10 +3968,10 @@
             },
             "diagnosticLogCategoriesToEnable": {
               "type": "array",
-              "defaultValue": [
+              "allowedValues": [
                 "Audit"
               ],
-              "allowedValues": [
+              "defaultValue": [
                 "Audit"
               ],
               "metadata": {
@@ -3980,10 +3980,10 @@
             },
             "diagnosticMetricsToEnable": {
               "type": "array",
-              "defaultValue": [
+              "allowedValues": [
                 "AllMetrics"
               ],
-              "allowedValues": [
+              "defaultValue": [
                 "AllMetrics"
               ],
               "metadata": {
@@ -4135,8 +4135,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "2308516749768954247"
+                      "version": "0.12.40.16777",
+                      "templateHash": "5143271088180555675"
                     }
                   },
                   "parameters": {
@@ -4283,8 +4283,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "10989487653061022103"
+                      "version": "0.12.40.16777",
+                      "templateHash": "13334440349200766786"
                     }
                   },
                   "parameters": {
@@ -4417,8 +4417,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "5722671671034810823"
+                      "version": "0.12.40.16777",
+                      "templateHash": "13048683144445551749"
                     }
                   },
                   "parameters": {
@@ -4560,8 +4560,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "7100454327502621320"
+                      "version": "0.12.40.16777",
+                      "templateHash": "7401659886726985929"
                     }
                   },
                   "parameters": {
@@ -4765,8 +4765,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "8396482534622813868"
+                      "version": "0.12.40.16777",
+                      "templateHash": "1046196110663983352"
                     }
                   },
                   "parameters": {
@@ -4996,8 +4996,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "14616263177843561456"
+                      "version": "0.12.40.16777",
+                      "templateHash": "6760594650998879915"
                     }
                   },
                   "parameters": {
@@ -5155,8 +5155,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "77811567399520992"
+                      "version": "0.12.40.16777",
+                      "templateHash": "4735967619583694769"
                     }
                   },
                   "parameters": {
@@ -5301,7 +5301,7 @@
             },
             "logAnalyticsWorkspaceId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('name'))).customerId]",
+              "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('name')), '2021-06-01').customerId]",
               "metadata": {
                 "description": "The ID associated with the workspace."
               }
@@ -5351,14 +5351,14 @@
             "value": [
               {
                 "parameters": {
-                  "ClientId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time')))).outputs.clientId.value]",
+                  "ClientId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time'))), '2020-10-01').outputs.clientId.value]",
                   "EnvironmentName": "[environment().name]",
                   "ImageOffer": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].offer]",
                   "ImagePublisher": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].publisher]",
                   "ImageSku": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].sku]",
                   "Location": "[parameters('aibLocation')]",
                   "SubscriptionId": "[parameters('sharedServicesSubId')]",
-                  "TemplateName": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Template_{0}', parameters('time')))).outputs.name.value]",
+                  "TemplateName": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Template_{0}', parameters('time'))), '2020-10-01').outputs.name.value]",
                   "TemplateResourceGroupName": "[variables('varResourceGroupName')]",
                   "TenantId": "[subscription().tenantId]"
                 },
@@ -5376,7 +5376,7 @@
                 "name": "AIB-Build-Automation",
                 "description": "When this runbook is triggered, last build date is checked on the AIB image template.  If a new marketplace image has been released since that date, a new build is initiated. If a build has never been initiated then it will be start one.",
                 "runbookType": "PowerShell",
-                "uri": "https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/scripts/New-AzureImageBuilderBuild.ps1",
+                "uri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/New-AzureImageBuilderBuild.ps1",
                 "version": "1.0.0.0"
               }
             ]
@@ -5404,7 +5404,7 @@
           },
           "userAssignedIdentities": {
             "value": {
-              "[format('{0}', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time')))).outputs.resourceId.value)]": {}
+              "[format('{0}', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value)]": {}
             }
           }
         },
@@ -5414,8 +5414,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "13783267989946078561"
+              "version": "0.12.40.16777",
+              "templateHash": "14733519058203055817"
             }
           },
           "parameters": {
@@ -5639,12 +5639,12 @@
             },
             "diagnosticLogCategoriesToEnable": {
               "type": "array",
-              "defaultValue": [
+              "allowedValues": [
                 "JobLogs",
                 "JobStreams",
                 "DscNodeStatus"
               ],
-              "allowedValues": [
+              "defaultValue": [
                 "JobLogs",
                 "JobStreams",
                 "DscNodeStatus"
@@ -5655,10 +5655,10 @@
             },
             "diagnosticMetricsToEnable": {
               "type": "array",
-              "defaultValue": [
+              "allowedValues": [
                 "AllMetrics"
               ],
-              "allowedValues": [
+              "defaultValue": [
                 "AllMetrics"
               ],
               "metadata": {
@@ -5810,8 +5810,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "2560183311378928863"
+                      "version": "0.12.40.16777",
+                      "templateHash": "5070371254132906086"
                     }
                   },
                   "parameters": {
@@ -5978,8 +5978,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "10213372487218874929"
+                      "version": "0.12.40.16777",
+                      "templateHash": "10559340512698905348"
                     }
                   },
                   "parameters": {
@@ -6177,8 +6177,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "17868112236359672085"
+                      "version": "0.12.40.16777",
+                      "templateHash": "4111940734800906537"
                     }
                   },
                   "parameters": {
@@ -6383,8 +6383,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "733268183629627444"
+                      "version": "0.12.40.16777",
+                      "templateHash": "4047000284349814730"
                     }
                   },
                   "parameters": {
@@ -6536,8 +6536,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "2794168205078858326"
+                      "version": "0.12.40.16777",
+                      "templateHash": "18443026777054248266"
                     }
                   },
                   "parameters": {
@@ -6671,8 +6671,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "10989487653061022103"
+                      "version": "0.12.40.16777",
+                      "templateHash": "13334440349200766786"
                     }
                   },
                   "parameters": {
@@ -6814,8 +6814,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "14616263177843561456"
+                      "version": "0.12.40.16777",
+                      "templateHash": "6760594650998879915"
                     }
                   },
                   "parameters": {
@@ -7051,8 +7051,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "17395915767653741457"
+                      "version": "0.12.40.16777",
+                      "templateHash": "13925680790812293203"
                     }
                   },
                   "parameters": {
@@ -7112,10 +7112,6 @@
                     },
                     "updateClassifications": {
                       "type": "array",
-                      "defaultValue": [
-                        "Critical",
-                        "Security"
-                      ],
                       "allowedValues": [
                         "Critical",
                         "Security",
@@ -7126,6 +7122,10 @@
                         "Tools",
                         "Updates",
                         "Other"
+                      ],
+                      "defaultValue": [
+                        "Critical",
+                        "Security"
                       ],
                       "metadata": {
                         "description": "Optional. Update classification included in the deployment schedule."
@@ -7252,7 +7252,6 @@
                     },
                     "weekDays": {
                       "type": "array",
-                      "defaultValue": [],
                       "allowedValues": [
                         "Monday",
                         "Tuesday",
@@ -7262,13 +7261,13 @@
                         "Saturday",
                         "Sunday"
                       ],
+                      "defaultValue": [],
                       "metadata": {
                         "description": "Optional. Required when used with frequency 'Week'. Specified the day of the week to run the deployment schedule."
                       }
                     },
                     "monthDays": {
                       "type": "array",
-                      "defaultValue": [],
                       "allowedValues": [
                         1,
                         2,
@@ -7302,6 +7301,7 @@
                         30,
                         31
                       ],
+                      "defaultValue": [],
                       "metadata": {
                         "description": "Optional. Can be used with frequency 'Month'. Provides the specific days of the month to run the deployment schedule."
                       }
@@ -7533,8 +7533,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "12850716474812463254"
+                      "version": "0.12.40.16777",
+                      "templateHash": "10822360476021329408"
                     }
                   },
                   "parameters": {
@@ -7706,8 +7706,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.11.1.770",
-                              "templateHash": "7660337883881377224"
+                              "version": "0.12.40.16777",
+                              "templateHash": "7658136598979661650"
                             }
                           },
                           "parameters": {
@@ -7849,8 +7849,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.11.1.770",
-                              "templateHash": "12971386418638505750"
+                              "version": "0.12.40.16777",
+                              "templateHash": "4825234583608650334"
                             }
                           },
                           "parameters": {
@@ -8044,8 +8044,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "11645693613424810623"
+                      "version": "0.12.40.16777",
+                      "templateHash": "13177717396070031189"
                     }
                   },
                   "parameters": {
@@ -8233,7 +8233,7 @@
             "value": "[parameters('sharedServicesLocation')]"
           },
           "automationAccountName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Automation-Account_{0}', parameters('time')))).outputs.name.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Automation-Account_{0}', parameters('time'))), '2020-10-01').outputs.name.value]"
           },
           "uri": {
             "value": "[variables('varModules')[range(0, length(variables('varModules')))[copyIndex()]].uri]"
@@ -8245,8 +8245,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "2560183311378928863"
+              "version": "0.12.40.16777",
+              "templateHash": "5070371254132906086"
             }
           },
           "parameters": {
@@ -8406,8 +8406,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "12953045922734475142"
+              "version": "0.12.40.16777",
+              "templateHash": "1661863640781598734"
             }
           },
           "parameters": {
@@ -8568,8 +8568,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "1882150209236915071"
+                      "version": "0.12.40.16777",
+                      "templateHash": "17666925374910611943"
                     }
                   },
                   "resources": []
@@ -8606,8 +8606,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "69138397619764739"
+                      "version": "0.12.40.16777",
+                      "templateHash": "8493921122479350298"
                     }
                   },
                   "parameters": {
@@ -8763,8 +8763,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "5323398236521491696"
+              "version": "0.12.40.16777",
+              "templateHash": "8290438401723420028"
             }
           },
           "parameters": {
@@ -8996,8 +8996,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "9504854405407133315"
+                      "version": "0.12.40.16777",
+                      "templateHash": "5541330818616749720"
                     }
                   },
                   "parameters": {
