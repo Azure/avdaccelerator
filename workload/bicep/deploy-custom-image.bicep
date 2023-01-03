@@ -404,8 +404,7 @@ var varOperatingSystemImageDefinitions = {
     }
 }
 // Change back before Pull Request
-// var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
-var varBaseScriptUri = 'https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/'
+var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var varTelemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${sharedServicesLocation}'
 
 // Customization Steps
@@ -796,7 +795,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
                 description: 'When this runbook is triggered, last build date is checked on the AIB image template.  If a new marketplace image has been released since that date, a new build is initiated. If a build has never been initiated then it will be start one.'
                 runbookType: 'PowerShell'
                 // ToDo: Update URL before PR merge
-                uri: 'https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/scripts/New-AzureImageBuilderBuild.ps1'
+                uri: 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/New-AzureImageBuilderBuild.ps1'
                 version: '1.0.0.0'
             }
         ]
