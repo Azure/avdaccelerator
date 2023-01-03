@@ -1,4 +1,4 @@
-﻿# OS Optimizations for WVD
+# OS Optimizations for WVD
 Write-Host 'AIB Customization: OS Optimizations for WVD'
 $appName = 'optimize'
 $drive = 'C:\'
@@ -82,4 +82,5 @@ Start-Sleep -Seconds 60
 
 #Write-Host 'Running new AIB Customization script'
 .\Windows_VDOT.ps1 -Verbose -AcceptEULA
+
 Write-Host 'AIB Customization: Finished OS Optimizations script Windows_VDOT.ps1'
