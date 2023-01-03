@@ -40,6 +40,24 @@
         },
         "createResourceTags": {
             "value": false
+        },
+        "useExistingVirtualNetwork": {
+            "value": false
+        },
+        "enableMonitoringAlerts": {
+            "value": false
+        },
+        "distributionGroup": {
+            "value": ""
+        },
+        "rdpShortPath": {
+            "value": false
+        },
+        "screenCaptureProtection": {
+            "value": false
+        },
+        "logAnalyticsWorkspaceDataRetention": {
+            "value": 30
         }
     }
 }
