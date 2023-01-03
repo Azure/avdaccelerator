@@ -72,6 +72,7 @@
                                     "visible": "[equals(steps('imageManagement').imageVersion.storageAccountType, 'Standard_ZRS')]",
                                     "options": {
                                         "text": "Ensure your selected Azure location supports zonal storage.",
+                                        "uri": "https://learn.microsoft.com/azure/storage/common/storage-redundancy",
                                         "style": "Warning"
                                     }
                                 },
