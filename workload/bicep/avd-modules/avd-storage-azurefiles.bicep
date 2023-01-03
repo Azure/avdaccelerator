@@ -118,7 +118,7 @@ param storageAccountPrefixCustomName string
 @description('Deployment Prefix set in main template, in lowercase.')
 param avdDeploymentPrefixLowercase string
 
-@description('Sets purpose of the storage account.')
+@description('Unique name truncated into 6 characters')
 param avdNamingUniqueStringSixChar string
 
 
@@ -143,7 +143,7 @@ param avdCreateOuForStorageString string
 param managedIdentityClientId string
 
 @maxLength(64)
-@description('Optional. AVD fslogix storage account profile container file share prefix custom name. (Default: storagePurpose-pc-app1-001)')
+@description('Optional. Storage account profile container file share prefix custom name. (Default: storagePurpose-pc-app1-001)')
 param fileShareCustomName string
 
 
