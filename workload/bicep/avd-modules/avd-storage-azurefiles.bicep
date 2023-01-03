@@ -77,7 +77,7 @@ param sessionHostOuPath string
 param avdApplicationSecurityGroupResourceId string
 
 @description('*Azure Files storage account SKU.')
-param StorageSku string
+param storageSku string
 
 @description('*Azure File share quota')
 param avdFileShareQuotaSize int
@@ -110,10 +110,10 @@ param time string = utcNow()
 param storagePurpose string
 
 @description('Required. AVD resources custom naming. (Default: false)')
-param avdUseCustomNaming bool
+param useCustomNaming bool
 
 @description('Sets purpose of the storage account.')
-param avdStorageAccountPrefixCustomName string
+param storageAccountPrefixCustomName string
 
 @description('Deployment Prefix set in main template, in lowercase.')
 param avdDeploymentPrefixLowercase string
@@ -128,7 +128,7 @@ param dscAgentPackageLocation string
 
 @secure()
 @description('Domain join user password.')
-param avdDomainJoinUserPassword string
+param domainJoinUserPassword string
 
 @description('Custom OU path for storage.')
 param avdStorageCustomOuPath string
@@ -140,11 +140,11 @@ param avdOuStgPath string
 param avdCreateOuForStorageString string
 
 @description('Managed Identity Client ID')
-param avdManagedIdentityClientId string
+param managedIdentityClientId string
 
 @maxLength(64)
 @description('Optional. AVD fslogix storage account profile container file share prefix custom name. (Default: storagePurpose-pc-app1-001)')
-param avdFileShareCustomName string
+param fileShareCustomName string
 
 
 // =========== //
@@ -160,15 +160,15 @@ var varAvdFileShareMetricsDiagnostic = [
     'Transaction'
 ]
 
-var varFileShareName = avdUseCustomNaming ? avdFileShareCustomName : '${varStoragePurposeLower}-pc-${avdDeploymentPrefixLowercase}-001'
-var varAvdWrklStoragePrivateEndpointName = 'pe-${varAvdStorageName}-file'
+var varFileShareName = useCustomNaming ? fileShareCustomName : '${varStoragePurposeLower}-pc-${avdDeploymentPrefixLowercase}-001'
+var varAvdWrklStoragePrivateEndpointName = 'pe-${varStorageName}-file'
 var varStoragePurposeLower = toLower(storagePurpose)
 var varStoragePurposeLowerPrefix = substring(varStoragePurposeLower, 0,2)
 
-var varAvdStorageName = avdUseCustomNaming ? '${avdStorageAccountPrefixCustomName}${varStoragePurposeLower}${avdDeploymentPrefixLowercase}${avdNamingUniqueStringSixChar}' : 'stavd${varStoragePurposeLower}${avdDeploymentPrefixLowercase}${avdNamingUniqueStringSixChar}'
+var varStorageName = useCustomNaming ? '${storageAccountPrefixCustomName}${varStoragePurposeLower}${avdDeploymentPrefixLowercase}${avdNamingUniqueStringSixChar}' : 'stavd${varStoragePurposeLower}${avdDeploymentPrefixLowercase}${avdNamingUniqueStringSixChar}'
 var varManagementVmName = 'vm-mgmt-${varStoragePurposeLowerPrefix}-${avdDeploymentPrefixLowercase}'
 
-var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${varAvdStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -IdentityServiceProvider ${avdIdentityServiceProvider} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -CustomOuPath ${avdStorageCustomOuPath} -OUName ${avdOuStgPath} -CreateNewOU ${avdCreateOuForStorageString} -ShareName ${varFileShareName} -ClientId ${avdManagedIdentityClientId} -Verbose'
+var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${varStorageName} -StorageAccountRG ${avdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -IdentityServiceProvider ${avdIdentityServiceProvider} -AzureCloudEnvironment AzureCloud -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${domainJoinUserPassword} -CustomOuPath ${avdStorageCustomOuPath} -OUName ${avdOuStgPath} -CreateNewOU ${avdCreateOuForStorageString} -ShareName ${varFileShareName} -ClientId ${managedIdentityClientId} -Verbose'
 
 // =========== //
 // Deployments //
@@ -185,11 +185,11 @@ module storageAndFile '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
     name: 'AVD-${storagePurpose}-${time}'
     params: {
-        name: varAvdStorageName
+        name: varStorageName
         location: avdSessionHostLocation
-        storageAccountSku: StorageSku
+        storageAccountSku: storageSku
         allowBlobPublicAccess: false
-        storageAccountKind: ((StorageSku =~ 'Premium_LRS') || (StorageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
+        storageAccountKind: ((storageSku =~ 'Premium_LRS') || (storageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
         azureFilesIdentityBasedAuthentication: (avdIdentityServiceProvider == 'AADDS') ? {
             directoryServiceOptions: 'AADDS'
         }: {
