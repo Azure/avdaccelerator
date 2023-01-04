@@ -1,13 +1,17 @@
 resource "azurerm_key_vault" "kv" {
-  name                     = local.kv_name
+  name                     = local.keyvault_name
   tenant_id                = data.azurerm_client_config.current.tenant_id
-  location                 = data.azurerm_resource_group.rg.location
-  resource_group_name      = data.azurerm_resource_group.rg.name
+  location                 = azurerm_resource_group.rg.location
+  resource_group_name      = azurerm_resource_group.rg.name
   sku_name                 = "standard"
   purge_protection_enabled = true
+  tags                     = local.tags
 
   depends_on = [
-    data.azurerm_resource_group.rg
+    azurerm_resource_group.rg,
+    azurerm_virtual_desktop_host_pool.hostpool,
+    azurerm_virtual_desktop_workspace.workspace,
+    azurerm_virtual_desktop_application_group.dag
   ]
 
 
@@ -16,9 +20,7 @@ resource "azurerm_key_vault" "kv" {
   network_acls {
     default_action = "Deny"
     bypass         = "AzureServices"
-
-    # The list of allowed ip addresses.
-    ip_rules = ["0.0.0.0"]
+    ip_rules       = local.allow_list_ip
   }
 }
 
@@ -33,11 +35,18 @@ resource "azurerm_key_vault_access_policy" "deploy" {
   storage_permissions     = ["Get", "List", "Update", "Delete"]
 }
 
+# Get Private DNS Zone for the Key Vault Private Endpoints
+data "azurerm_private_dns_zone" "pe-vaultdns-zone" {
+  name                = "privatelink.vaultcore.azure.net"
+  resource_group_name = var.ad_rg
+  provider            = azurerm.hub
+}
 resource "azurerm_private_endpoint" "kvpe" {
-  name                = "pe-${lower("kv-avd-${var.prefix}-${random_string.random.id}")}-vault"
-  location            = data.azurerm_resource_group.rg.location
-  resource_group_name = data.azurerm_resource_group.rg.name
+  name                = "pe-${local.keyvault_name}-vault"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
   subnet_id           = data.azurerm_subnet.subnet.id
+  tags                = local.tags
 
   lifecycle { ignore_changes = [tags] }
 
@@ -47,25 +56,34 @@ resource "azurerm_private_endpoint" "kvpe" {
     is_manual_connection           = false
     subresource_names              = ["Vault"]
   }
+  depends_on = [
+    azurerm_key_vault.kv, azurerm_key_vault_secret.localpassword
+  ]
+  private_dns_zone_group {
+    name                 = "dns-kv-${var.prefix}"
+    private_dns_zone_ids = data.azurerm_private_dns_zone.pe-vaultdns-zone.*.id
+  }
 }
 
-#Create VM local admin password
-resource "random_password" "vmlocalpassword" {
+# Generate VM local password
+resource "random_password" "vmpass" {
   length  = 20
   special = true
 }
-#Create Key Vault Secret for local admin password
-resource "azurerm_key_vault_secret" "vmlocalpassword" {
-  name         = "avdVmLocalUserName"
-  value        = random_password.vmlocalpassword.result
-  key_vault_id = azurerm_key_vault.kv.id
-  depends_on   = [azurerm_key_vault.kv]
+# Create Key Vault Secret
+resource "azurerm_key_vault_secret" "localpassword" {
+  name            = "vmlocalpassword"
+  value           = random_password.vmpass.result
+  key_vault_id    = azurerm_key_vault.kv.id
+  content_type    = "Password"
 }
 
-#Create Key Vault Secret for domain password
-resource "azurerm_key_vault_secret" "domainjoinerpassword" {
-  name         = var.domain_user
-  value        = var.domain_password
-  key_vault_id = azurerm_key_vault.kv.id
-  depends_on   = [azurerm_key_vault.kv]
+# Linking DNS Zone to the VNET
+resource "azurerm_private_dns_zone_virtual_network_link" "vaultlink" {
+  name                  = "keydnsvnet_link"
+  resource_group_name   = var.ad_rg
+  private_dns_zone_name = data.azurerm_private_dns_zone.pe-vaultdns-zone.name
+  virtual_network_id    = data.azurerm_virtual_network.vnet.id
+
+  lifecycle { ignore_changes = [tags] }
 }
