@@ -669,7 +669,7 @@
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "label": "Use availability zones",
                                     "defaultValue": "No",
-                                    "toolTip": "Distribute compute and storage resources across availability zones. When selecting No a availability set will be created to host the VMs.",
+                                    "toolTip": "Distribute compute resources across availability zones. When selecting No a availability set will be created to host the VMs.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
