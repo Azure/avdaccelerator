@@ -302,7 +302,7 @@
                                     "type": "Microsoft.Common.DropDown",
                                     "visible": true,
                                     "label": "Deployment location",
-                                    "defaultValue": "[equals(steps('basics').avdDeploymentScope.location.displayName)]",
+                                    "defaultValue": "[steps('basics').avdDeploymentScope.location.displayName]",
                                     "toolTip": "Select region where AVD workspace, host pool and application groups will be created.",
                                     "constraints": {
                                         "required": true,
