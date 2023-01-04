@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "16201490382802176142"
+      "templateHash": "2314905741402738235"
     }
   },
   "parameters": {
@@ -5334,7 +5334,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('AVD-avdAlaWorkspaceDelay-{0}', parameters('time'))]"
+            "value": "[format('{0}_wait_{1}', variables('varLogAnalyticsWorkspaceName'), parameters('time'))]"
           },
           "location": {
             "value": "[parameters('aibLocation')]"

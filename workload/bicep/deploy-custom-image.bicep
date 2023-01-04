@@ -759,12 +759,12 @@ module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/dep
     ]
 }
 
-// Introduce delay after log analitics workspace creation.
+// Introduce wait after log analitics workspace creation.
 module workspaceDelay '../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Log-Analytics-Workspace-Delay_${time}'
     params: {
-        name: 'AVD-avdAlaWorkspaceDelay-${time}'
+        name: '${varLogAnalyticsWorkspaceName}_wait_${time}'
         location: aibLocation
         azPowerShellVersion: '6.2'
         cleanupPreference: 'Always'
