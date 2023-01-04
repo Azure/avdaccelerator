@@ -38,7 +38,12 @@ resource "azurerm_role_assignment" "af_role" {
   principal_id       = data.azuread_group.adds_group.id
 }
 
-
+# Get Private DNS Zone for the Storage Private Endpoints
+data "azurerm_private_dns_zone" "pe-filedns-zone" {
+  name                = "privatelink.file.core.windows.net"
+  resource_group_name = var.ad_rg
+  provider            = azurerm.hub
+}
 resource "azurerm_private_endpoint" "afpe" {
   name                = "pe-${local.storage_name}-file"
   location            = azurerm_resource_group.rg_storage.location
@@ -54,14 +59,29 @@ resource "azurerm_private_endpoint" "afpe" {
     is_manual_connection           = false
     subresource_names              = ["file"]
   }
+  private_dns_zone_group {
+    name                 = "dns-file-${var.prefix}"
+    private_dns_zone_ids = data.azurerm_private_dns_zone.pe-filedns-zone.*.id
+  }
 }
 
+# Deny Traffic from Public Networks with white list exceptions
 resource "azurerm_storage_account_network_rules" "stfw" {
   storage_account_id = azurerm_storage_account.storage.id
   default_action     = "Deny"
-  bypass             = ["AzureServices"]
-
-  depends_on = [
-    azurerm_storage_share.FSShare
-  ]
+  bypass             = ["AzureServices", "Metrics", "Logging"]
+  ip_rules           = local.white_list_ip
+  depends_on = [azurerm_storage_share.FSShare,
+    azurerm_private_endpoint.afpe,
+  azurerm_role_assignment.af_role]
 }
+
+resource "azurerm_private_dns_zone_virtual_network_link" "filelink" {
+  name                  = "azfilelink"
+  resource_group_name   = var.ad_rg
+  private_dns_zone_name = data.azurerm_private_dns_zone.pe-filedns-zone.name
+  virtual_network_id    = data.azurerm_virtual_network.vnet.id
+
+  lifecycle { ignore_changes = [tags] }
+}
+

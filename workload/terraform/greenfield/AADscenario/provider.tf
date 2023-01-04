@@ -44,3 +44,15 @@ provider "azurerm" {
   }
   skip_provider_registration = true
 }
+
+provider "azurerm" {
+  features {}
+  alias           = "hub"
+  subscription_id = var.hub_subscription_id
+}
+
+provider "azurerm" {
+  features {}
+  alias           = "spoke"
+  subscription_id = var.spoke_subscription_id
+}
