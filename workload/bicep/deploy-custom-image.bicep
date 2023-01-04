@@ -808,14 +808,14 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
                     TemplateResourceGroupName: varResourceGroupName
                     TenantId: subscription().tenantId
                 }
-                runbookName: 'AIB-Build-Automation'
+                runbookName: 'aib-build-automation'
                 scheduleName: varImageTemplateName
             }
         ]
         location: sharedServicesLocation
         runbooks: [
             {
-                name: 'AIB-Build-Automation'
+                name: 'aib-build-automation'
                 description: 'When this runbook is triggered, last build date is checked on the AIB image template.  If a new marketplace image has been released since that date, a new build is initiated. If a build has never been initiated then it will be start one.'
                 runbookType: 'PowerShell'
                 // ToDo: Update URL before PR merge
