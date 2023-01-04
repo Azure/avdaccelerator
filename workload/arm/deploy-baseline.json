@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "11012170558863951115"
+      "templateHash": "13626104518162633469"
     }
   },
   "parameters": {
@@ -14139,7 +14139,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "10377103053956896628"
+              "templateHash": "1461857322730183876"
             }
           },
           "parameters": {
@@ -14448,7 +14448,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.9.1.41621",
-                      "templateHash": "10140325549008652141"
+                      "templateHash": "1559396923562286561"
                     }
                   },
                   "parameters": {
@@ -14723,7 +14723,7 @@
                     },
                     {
                       "type": "Microsoft.DesktopVirtualization/hostPools",
-                      "apiVersion": "2019-12-10-preview",
+                      "apiVersion": "2021-07-12",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
