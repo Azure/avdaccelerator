@@ -8,7 +8,7 @@ module "avdi" {
 
 # Creates the Azure Virtual Desktop Spoke Network resources
 module "network" {
-  source = "../../modules/network"
+  source                = "../../modules/network"
   avdLocation           = var.avdLocation
   rg_network            = var.rg_network
   vnet                  = var.vnet
