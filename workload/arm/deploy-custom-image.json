@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "2314905741402738235"
+      "templateHash": "13372347044061073635"
     }
   },
   "parameters": {
@@ -5324,7 +5324,7 @@
       "condition": "[and(parameters('enableMonitoringAlerts'), empty(parameters('existingLogAnalyticsWorkspaceResourceId')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('Log-Analytics-Workspace-Delay_{0}', parameters('time'))]",
+      "name": "[format('Log-Analytics-Workspace-Wait_{0}', parameters('time'))]",
       "subscriptionId": "[parameters('sharedServicesSubId')]",
       "resourceGroup": "[variables('varResourceGroupName')]",
       "properties": {
@@ -8503,7 +8503,7 @@
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Template_{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace_{0}', parameters('time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-Delay_{0}', parameters('time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-Wait_{0}', parameters('time')))]"
       ]
     },
     {
@@ -9446,7 +9446,7 @@
       "dependsOn": [
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Action-Group_{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace_{0}', parameters('time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-Delay_{0}', parameters('time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-Wait_{0}', parameters('time')))]"
       ]
     }
   ]
