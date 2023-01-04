@@ -760,9 +760,9 @@ module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/dep
 }
 
 // Introduce wait after log analitics workspace creation.
-module workspaceDelay '../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
+module workspaceWait '../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'Log-Analytics-Workspace-Delay_${time}'
+    name: 'Log-Analytics-Workspace-Wait_${time}'
     params: {
         name: '${varLogAnalyticsWorkspaceName}_wait_${time}'
         location: aibLocation
@@ -841,7 +841,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
         }
     }
     dependsOn: empty(existingLogAnalyticsWorkspaceResourceId) ? [
-        workspaceDelay
+        workspaceWait
     ]: []
 }
 
@@ -938,6 +938,6 @@ module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryR
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: empty(existingLogAnalyticsWorkspaceResourceId) ? [
-        workspaceDelay
+        workspaceWait
     ]: []
 }]
