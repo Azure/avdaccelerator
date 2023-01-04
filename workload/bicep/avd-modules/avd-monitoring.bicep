@@ -65,7 +65,7 @@ module avdAlaWorkspace '../../../carml/1.2.1/Microsoft.OperationalInsights/works
   ]
 }
 
-// Introduce delay for management VM to be ready.
+// Introduce delay after log analitics workspace creation.
 module avdAlaWorkspaceDelay '../../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (deployAlaWorkspace) {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdMonitoringRgName}')
   name: 'AVD-ALA-Workspace-Delay-${time}'

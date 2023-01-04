@@ -759,6 +759,29 @@ module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/dep
     ]
 }
 
+// Introduce delay after log analitics workspace creation.
+module workspaceDelay '../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
+    scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
+    name: 'Log-Analytics-Workspace-Delay_${time}'
+    params: {
+        name: 'AVD-avdAlaWorkspaceDelay-${time}'
+        location: aibLocation
+        azPowerShellVersion: '6.2'
+        cleanupPreference: 'Always'
+        timeout: 'PT10M'
+        scriptContent: '''
+        Write-Host "Start"
+        Get-Date
+        Start-Sleep -Seconds 120
+        Write-Host "Stop"
+        Get-Date
+        '''
+    }
+    dependsOn: [
+        workspace
+    ]
+  }
+
 // Automation account.
 module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccounts/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
@@ -817,6 +840,9 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
             '${userAssignedManagedIdentity.outputs.resourceId}': {}
         }
     }
+    dependsOn: empty(existingLogAnalyticsWorkspaceResourceId) ? [
+        workspaceDelay
+    ]: []
 }
 
 // Automation accounts.
@@ -911,4 +937,7 @@ module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryR
         criterias: varAlerts[i].criterias
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
+    dependsOn: empty(existingLogAnalyticsWorkspaceResourceId) ? [
+        workspaceDelay
+    ]: []
 }]
