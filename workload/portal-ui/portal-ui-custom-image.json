@@ -11,6 +11,17 @@
                     "label": "Basics",
                     "elements": [
                         {
+                            "name": "ResourcesProviders",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                              "icon": "None",
+                              "text": "To use VM Image Builder, you need to register some feature. Learn more about Resource Providers.",
+                              "uri": "https://learn.microsoft.com/en-us/azure/virtual-machines/windows/image-builder",
+                              "style": "Info"
+                            }
+                          },
+                        {
                             "name": "deploymentInfo",
                             "type": "Microsoft.Common.InfoBox",
                             "options": {
@@ -46,11 +57,12 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
-                                "text": "This solution will deploy a compute gallery, image definition, image version, managed identity and execute an Azure Image Builder build.",
-                                "style": "Info"
+                                "text": "This solution will deploy a compute gallery, image definition, image version, managed identity and execute an Azure Image Builder build. Learn more about Create a Windows image and distribute it to an Azure Compute Gallery",
+                                 "uri":"https://learn.microsoft.com/en-us/azure/virtual-machines/windows/image-builder-gallery",
+                                 "style": "Info"
                             }
                         },
-                        {
+                       {
                             "name": "imageVersion",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
@@ -203,6 +215,17 @@
                     "name": "aib",
                     "label": "Azure Image Builder (AIB)",
                     "elements": [
+                        {
+                            "name": "prerequisites AIB",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                              "icon": "None",
+                              "text": "Azure Image Builder requires a managed identity and special permissions. We do not want to give the identity too many permissions, so we must create a custom RBAC role to limit permissions.These permissions will be created automatically with the use of this template. Learn more about custom rol and permissions. ",
+                              "uri": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-permissions-cli",
+                              "style": "Info"
+                            }
+                          },
                         {
                             "name": "locationInfo",
                             "type": "Microsoft.Common.InfoBox",
