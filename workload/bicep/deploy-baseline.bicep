@@ -139,7 +139,10 @@ param createAvdFslogixDeployment bool = true
 param createAvdMsixDeployment bool = true
 
 @description('Optional. Fslogix file share size. (Default: ~1TB)')
-param avdFileShareQuotaSize int = 10
+param fslogixFileShareQuotaSize int = 10
+
+@description('Optional. MSIX file share size. (Default: ~1TB)')
+param msixFileShareQuotaSize int = 10
 
 @description('Optional. Deploy new session hosts. (Default: true)')
 param avdDeploySessionHosts bool = true
@@ -179,6 +182,9 @@ param avdSessionHostCountIndex int = 0
 @description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Defualt: true)')
 param avdUseAvailabilityZones bool = true
 
+//@description('Optional. Creates an availability zone for MSIXand adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Defualt: true) test')
+//param avdMsixUseAvailabilityZones bool = true
+
 @description('Optional. Sets the number of fault domains for the availability set. (Defualt: 3)')
 param avdAsFaultDomainCount int = 2
 
@@ -186,7 +192,10 @@ param avdAsFaultDomainCount int = 2
 param avdAsUpdateDomainCount int = 5
 
 @description('Optional. Storage account SKU for FSLogix storage. Recommended tier is Premium LRS or Premium ZRS. (when available) (Defualt: Premium_LRS)')
-param storageSku string = 'Premium_LRS'
+param fslogixStorageSku string = 'Premium_LRS'
+
+@description('Optional. Storage account SKU for MSIX storage. Recommended tier is Premium LRS or Premium ZRS. (when available) (Defualt: Premium_LRS) test')
+param msixStorageSku string = 'Premium_LRS'
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool = false
@@ -1106,7 +1115,7 @@ module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bic
         avdDomainJoinUserName: avdDomainJoinUserName
         avdWrklKvName: varAvdWrklKvName
         avdServiceObjectsRgName: varAvdServiceObjectsRgName
-        avdFileShareQuotaSize: avdFileShareQuotaSize
+        avdFileShareQuotaSize: fslogixFileShareQuotaSize
         avdIdentityDomainName: avdIdentityDomainName
         avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
         sessionHostOuPath: avdOuPath
@@ -1122,8 +1131,8 @@ module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bic
         avdWorkloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
         avdManagedIdentityResourceId: (varCreateAvdFslogixDeployment||varCreateAvdMsixDeployment) ? deployAvdManagedIdentitiesRoleAssign.outputs.ManagedIdentityResourceId : ''
-        avdFileShareMultichannel: (contains(storageSku, 'Premium_LRS') || contains(storageSku, 'Premium_ZRS')) ? true : false
-        storageSku: storageSku
+        avdFileShareMultichannel: (contains(fslogixStorageSku, 'Premium_LRS') || contains(fslogixStorageSku, 'Premium_ZRS')) ? true : false
+        storageSku: fslogixStorageSku
         //marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows['winServer_2022_Datacenter']
         marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows[avdOsImage]
         subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${varAvdVnetworkSubnetName}' : existingVnetSubnetResourceId
@@ -1167,7 +1176,7 @@ module deployAvdMsixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep'
         avdDomainJoinUserName: avdDomainJoinUserName
         avdWrklKvName: varAvdWrklKvName
         avdServiceObjectsRgName: varAvdServiceObjectsRgName
-        avdFileShareQuotaSize: avdFileShareQuotaSize
+        avdFileShareQuotaSize: msixFileShareQuotaSize
         avdIdentityDomainName: avdIdentityDomainName
         avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
         sessionHostOuPath: avdOuPath
@@ -1183,8 +1192,8 @@ module deployAvdMsixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep'
         avdWorkloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
         avdManagedIdentityResourceId: (varCreateAvdFslogixDeployment||varCreateAvdMsixDeployment) ? deployAvdManagedIdentitiesRoleAssign.outputs.ManagedIdentityResourceId : ''
-        avdFileShareMultichannel: (contains(storageSku, 'Premium_LRS') || contains(storageSku, 'Premium_ZRS')) ? true : false
-        storageSku: storageSku
+        avdFileShareMultichannel: (contains(msixStorageSku, 'Premium_LRS') || contains(msixStorageSku, 'Premium_ZRS')) ? true : false
+        storageSku: msixStorageSku
         //marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows['winServer_2022_Datacenter']
         marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows[avdOsImage]
         subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${varAvdVnetworkSubnetName}' : existingVnetSubnetResourceId
