@@ -8,7 +8,7 @@
             "steps": [
                 {
                     "name": "basics",
-                    "label": "Azure core setup",
+                    "label": "Basics",
                     "subLabel": {
                         "preValidation": "Provide deployment prefix for the resource groups and resources that will be created.",
                         "postValidation": "Done"
@@ -302,7 +302,7 @@
                                     "type": "Microsoft.Common.DropDown",
                                     "visible": true,
                                     "label": "Deployment location",
-                                    "defaultValue": "equals(steps('basics').avdDeploymentScope.location.displayName)",
+                                    "defaultValue": "[steps('basics').avdDeploymentScope.location.displayName]",
                                     "toolTip": "Select region where AVD workspace, host pool and application groups will be created.",
                                     "constraints": {
                                         "required": true,
@@ -669,7 +669,7 @@
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "label": "Use availability zones",
                                     "defaultValue": "No",
-                                    "toolTip": "Distribute compute and storage resources across availability zones. When selecting No a availability set will be created to host the VMs.",
+                                    "toolTip": "Distribute compute resources across availability zones. When selecting No a availability set will be created to host the VMs.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
