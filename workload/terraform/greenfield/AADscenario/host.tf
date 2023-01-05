@@ -38,7 +38,7 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   network_interface_ids      = ["${azurerm_network_interface.avd_vm_nic.*.id[count.index]}"]
   provision_vm_agent         = true
   admin_username             = var.local_admin_username
-  admin_password             = var.local_admin_password
+  admin_password             = azurerm_key_vault_secret.localpassword.value
   encryption_at_host_enabled = true //'Microsoft.Compute/EncryptionAtHost' feature is must be enabled in the subscription for this setting to work https://learn.microsoft.com/en-us/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell
 
   os_disk {

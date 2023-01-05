@@ -119,6 +119,7 @@ resource "azurerm_log_analytics_datasource_windows_performance_counter" "winperf
   counter_name        = "Avg. Disk Queue Length"
   instance_name       = "C:"
   interval_seconds    = "30"
+
 }
 
 # capture the performance counters for the AVD insights workbook
