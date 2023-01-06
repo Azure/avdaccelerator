@@ -16,6 +16,23 @@
                     "bladeTitle": "avdBasics",
                     "elements": [
                         {
+                            "name": "deploymentPreRequesites",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "Deployment pre-requesites",
+                            "elements": [
+                                {
+                                    "name": "infoPreReq",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "options": {
+                                        "text": "Prior to deployment, make sure you meet the prerequisites for using this AVD Landing Zone Accelerator outlined in the getting started guide.",
+                                        "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started.md",
+                                        "style": "Warning"
+                                    }
+                                }
+                            ]
+                        },
+                        {
                             "name": "avdSharedServices",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
@@ -60,16 +77,6 @@
                                 "required": true,
                                 "regex": "^[a-z0-9A-Z-]{1,4}$",
                                 "validationMessage": "The prefix must be 1-4 characters."
-                            }
-                        },
-                        {
-                            "name": "roleinfo",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "text": "Azure AVD Landing Zones ARM deployment requires owner access at the subscription scope. Visit this link to get more information on RBAC permissions and scopes.",
-                                "uri": "https://docs.microsoft.com/azure/role-based-access-control/scope-overview",
-                                "style": "Warning"
                             }
                         }
                     ]
@@ -161,8 +168,8 @@
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[not(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'))]",
                                     "options": {
-                                        "text": "Identity service provider must already exist, as they are a prerequisite for the AVD accelerator deployment.",
-                                        "uri": "https://github.com/Azure/avdaccelerator/wiki/Getting-Started",
+                                        "text": "Identity service provider must already exist, as they are a prerequisite for the AVD LZA deployment.",
+                                        "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started.md",
                                         "style": "Info"
                                     }
                                 }
@@ -295,8 +302,18 @@
                             "name": "avdManagementPlanelocation",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
-                            "label": "Location for: workspace, host pool and application groups metadata",
+                            "label": "",
                             "elements": [
+                                {
+                                    "name": "hostPoolInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": true,
+                                    "options": {
+                                        "text": "Select the location where management plane resources (workspace, host pool, application groups) will be deployed, this resources are not available in all locations but are globally replicated and they can share the same location as the session hosts or not.",
+                                        "uri": "https://docs.microsoft.com/azure/virtual-desktop/data-locations",
+                                        "style": "Info"
+                                    }
+                                },
                                 {
                                     "name": "avdManagementPlaneLocation",
                                     "type": "Microsoft.Common.DropDown",
@@ -371,16 +388,6 @@
                                     }
                                 }
                             ]
-                        },
-                        {
-                            "name": "hostPoolInfo",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "text": "Select the location where management plane resources (workspace, host pool, application groups) will be deployed, this resources are not available in all locations but are globally replicated and they can share the same location as the session hosts or not.",
-                                "uri": "https://docs.microsoft.com/azure/virtual-desktop/data-locations",
-                                "style": "Info"
-                            }
                         },
                         {
                             "name": "avdManagementPlaneHostPoolSettings",
@@ -962,7 +969,7 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": "[not(equals(steps('avdIdentity').avdIdentityDomainInformation.avdIdentityServiceProvider, 'AAD'))]",
                             "options": {
-                                "text": "AVD landing zone accelerator requires connectivity to identity services (ADDS or AADDS).",
+                                "text": "AVD landing zone accelerator requires connectivity to identity services (ADDS, AADDS or AAD).",
                                 "uri": "https://docs.microsoft.com/azure/virtual-desktop/authentication",
                                 "style": "info"
                             }
@@ -1271,16 +1278,6 @@
                             }
                         },
                         {
-                            "name": "avdDeployMonitoringInfo2",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": "[equals(steps('avdMonitoring').avdDeployMonitoring, true)]",
-                            "options": {
-                                "text": "Deployment will configured all required settings to use the AVD insights workbook.",
-                                "uri": "https://learn.microsoft.com/azure/virtual-desktop/azure-monitor?WT.mc_id=Portal-AppInsightsExtension",
-                                "style": "Info"
-                            }
-                        },
-                        {
                             "name": "avdDeployMonitoringAlaWorkspace",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": "[equals(steps('avdMonitoring').avdDeployMonitoring, true)]",
@@ -1343,6 +1340,16 @@
                                         "value": false
                                     }
                                 ]
+                            }
+                        },
+                        {
+                            "name": "avdDeployMonitoringInfo2",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[equals(steps('avdMonitoring').avdDeployMonitoring, true)]",
+                            "options": {
+                                "text": "Deployment will configured all required settings to use the AVD insights workbook.",
+                                "uri": "https://learn.microsoft.com/azure/virtual-desktop/azure-monitor?WT.mc_id=Portal-AppInsightsExtension",
+                                "style": "Info"
                             }
                         }
                     ]
