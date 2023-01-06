@@ -9,7 +9,7 @@ param sharedServicesLocation string = 'eastus'
 @description('Required. AVD shared services subscription ID, multiple subscriptions scenario.')
 param sharedServicesSubId string
 
-@description('Optional. Disaster recovery location for Image Version. (Default: )')
+@description('Optional. Disaster recovery location for Image Version. (Default:"")')
 param imageVersionDisasterRecoveryLocation string = ''
 
 @allowed([
@@ -91,7 +91,7 @@ param existingLogAnalyticsWorkspaceResourceId string = ''
 param existingVirtualNetworkResourceId string = ''
 
 @description('Optional. Input the name of the subnet for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: "")')
-param subnetName string = ''
+param existingSubnetName string = ''
 
 @description('Optional. Determine whether to enable RDP Short Path for Managed Networks. (Default: false)')
 param rdpShortPath bool = false
@@ -106,21 +106,21 @@ param logAnalyticsWorkspaceDataRetention int = 30
 param enableMonitoringAlerts bool = false
 
 @description('Optional. Input the email distribution list for alert notifications when AIB builds succeed or fail.')
-param distributionGroup string = ''
+param alertsDistributionGroup string = ''
 
 // Custom Naming.
 // Input must followe resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
+@description('Optional. Determine whether to enable custom naming for the Azure resources. (Default: false)')
+param customNaming bool = false
+
 @description('Optional. Custom name for Action Group.')
-param actionGroupCustomName string = 'ag-aib'
+param alertsActionGroupCustomName string = 'ag-aib'
 
 @description('Optional. Custom name for the Automation Account.')
 param automationAccountCustomName string = 'aa-avd'
 
 @description('Optional. Custom name for the Log Analytics Workspace.')
 param logAnalyticsWorkspaceCustomName string = 'log-avd'
-
-@description('Optional. Determine whether to enable custom naming for the Azure resources. (Default: false)')
-param customNaming bool = false
 
 @maxLength(90)
 @description('Optional. Custom name for Resource Group. (Default: rg-avd-use2-shared-services)')
@@ -225,7 +225,7 @@ param enableTelemetry bool = true
 // Variable declaration //
 // =========== //
 // Resouce Naming.
-var varActionGroupName = customNaming ? actionGroupCustomName : 'ag-avd-${varNamingStandard}'
+var varActionGroupName = customNaming ? alertsActionGroupCustomName : 'ag-avd-${varNamingStandard}'
 var varNamingStandard = '${varLocationAcronym}'
 var varLocationLowercase = toLower(sharedServicesLocation)
 var varResourceGroupName = customNaming ? resourceGroupCustomName : 'rg-avd-${varNamingStandard}-shared-services'
@@ -717,7 +717,7 @@ module imageTemplate '../../carml/1.3.0/Microsoft.VirtualMachineImages/imageTemp
     name: 'Image-Template_${time}'
     params: {
         name: varImageTemplateName
-        subnetId: !empty(existingVirtualNetworkResourceId) && !empty(subnetName) ? '${existingVirtualNetworkResourceId}/subnets/${subnetName}' : ''
+        subnetId: !empty(existingVirtualNetworkResourceId) && !empty(existingSubnetName) ? '${existingVirtualNetworkResourceId}/subnets/${existingSubnetName}' : ''
         userMsiName: userAssignedManagedIdentity.outputs.name
         userMsiResourceGroup: userAssignedManagedIdentity.outputs.resourceGroupName
         location: aibLocation
@@ -792,7 +792,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
             'JobStreams'
         ]
         diagnosticLogsRetentionInDays: 30
-        diagnosticWorkspaceId: empty(distributionGroup) ? '' : empty(existingLogAnalyticsWorkspaceResourceId) ? workspace.outputs.resourceId : existingLogAnalyticsWorkspaceResourceId
+        diagnosticWorkspaceId: empty(alertsDistributionGroup) ? '' : empty(existingLogAnalyticsWorkspaceResourceId) ? workspace.outputs.resourceId : existingLogAnalyticsWorkspaceResourceId
         name: varAutomationAccountName
         jobSchedules: [
             {
@@ -897,8 +897,8 @@ module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bic
         enabled: true
         emailReceivers: [
             {
-                name: distributionGroup
-                emailAddress: distributionGroup
+                name: alertsDistributionGroup
+                emailAddress: alertsDistributionGroup
                 useCommonvarAlertschema: true
             }
         ]
@@ -923,7 +923,7 @@ module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryR
         skipQueryValidation: false
         targetResourceTypes: []
         roleAssignments: []
-        scopes: empty(distributionGroup) ? [] : empty(existingLogAnalyticsWorkspaceResourceId) ? [
+        scopes: empty(alertsDistributionGroup) ? [] : empty(existingLogAnalyticsWorkspaceResourceId) ? [
             workspace.outputs.resourceId
         ] : [
             existingLogAnalyticsWorkspaceResourceId
@@ -931,7 +931,7 @@ module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryR
         severity: varAlerts[i].severity
         evaluationFrequency: varAlerts[i].evaluationFrequency
         windowSize: varAlerts[i].windowSize
-        actions: !empty(distributionGroup) ? [
+        actions: !empty(alertsDistributionGroup) ? [
             actionGroup.outputs.resourceId
         ] : []
         criterias: varAlerts[i].criterias
