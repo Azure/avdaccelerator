@@ -16,6 +16,22 @@
                     "bladeTitle": "avdBasics",
                     "elements": [
                         {
+                            "name": "deploymentPreRequesits",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "Deployment pre-requesits",
+                            "elements": [
+                                {
+                                    "name": "info",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "options": {
+                                        "text": "Prior to deployment, make sure you meet all the prerequisites for using this Azure virtual desktop accelerator. Be sure to review the documentation for the link.",
+                                        "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started.md"                                                                                     
+                                    }
+                                }
+                            ]
+                        },
+                        {
                             "name": "avdSharedServices",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
@@ -27,6 +43,16 @@
                                     "options": {
                                         "text": "Subscription and location selected in this step, will be used to deploy AVD workload Landing Zone resources (Application group, host pool, workspace, key vaults, storage, VMs etc.).",
                                         "style": "Info"
+                                    }
+                                }, {
+                                    "name": "recommendations ALZ",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": true,
+                                    "options": {
+                                      "icon": "None",
+                                      "text": "It is recommended to have already deployed an ALZ architecture (not mandatory) from a template reference implementation available.",
+                                      "uri":"https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/wvd/ready",
+                                      "style": "Info"
                                     }
                                 }
                             ]
@@ -812,6 +838,16 @@
                             "visible": "[equals(steps('avdSessionHosts').avdDeploySessionHosts, true)]",
                             "label": "Session hosts settings",
                             "elements": [
+                                {
+                                    "name": "LicensesType",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": true,
+                                    "options": {
+                                      "style": "Info",
+                                      "text": "Be sure to choose the appropriate license type for your environment. Learn more about Multi-Session Operating Systems ",
+                                      "uri": "https://learn.microsoft.com/es-mx/azure/virtual-desktop/prerequisites#operating-systems-and-licenses"
+                                    }
+                                  },   
                                 {
                                     "name": "element1",
                                     "type": "Microsoft.Compute.SizeSelector",
