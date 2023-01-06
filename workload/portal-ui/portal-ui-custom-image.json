@@ -11,28 +11,27 @@
                     "label": "Basics",
                     "elements": [
                         {
-                            "name": "deploymentInfo",
-                            "type": "Microsoft.Common.InfoBox",
-                            "options": {
-                                "text": "The subscription and location selected in this step, will be used to deploy AVD Shared Services Landing Zone resources (compute gallery, key vaults, storage, image template, etc.).",
-                                "style": "Info"
-                            }
+                            "name": "deploymentPreRequesites",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "Deployment pre-requesites",
+                            "elements": [
+                                {
+                                    "name": "infoPreReq",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "options": {
+                                        "text": "Prior to deployment, make sure you meet the prerequisites for using this AVD Landing Zone Accelerator outlined in the getting started guide.",
+                                        "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started.md",
+                                        "style": "Warning"
+                                    }
+                                }
+                            ]
                         },
                         {
                             "name": "resourceScope",
                             "type": "Microsoft.Common.ResourceScope",
                             "location": {
                                 "resourceTypes": []
-                            }
-                        },
-                        {
-                            "name": "roleInfo",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "text": "Azure AVD Landing Zone Accelerator deployment requires owner access at the subscription scope. Visit this link to get more information on RBAC permissions and scopes.",
-                                "uri": "https://docs.microsoft.com/azure/role-based-access-control/scope-overview",
-                                "style": "Warning"
                             }
                         }
                     ]
@@ -46,11 +45,12 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
-                                "text": "This solution will deploy a compute gallery, image definition, image version, managed identity and execute an Azure Image Builder build.",
-                                "style": "Info"
+                                "text": "This solution will deploy a compute gallery, image definition, image version, managed identity and execute an Azure Image Builder build. Learn more about Create a Windows image and distribute it to an Azure Compute Gallery",
+                                 "uri":"https://learn.microsoft.com/en-us/azure/virtual-machines/windows/image-builder-gallery",
+                                 "style": "Info"
                             }
                         },
-                        {
+                       {
                             "name": "imageVersion",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
@@ -489,6 +489,17 @@
                                         "value": false
                                     }
                                 ]
+                            }
+                        },
+                        {
+                            "name": "prerequisites AIB",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                              "icon": "None",
+                              "text": "AVD Landing Zone Accelerator will deploy a managed identity and custom RBAC roles for AIB. ",
+                              "uri": "https://learn.microsoft.com/azure/virtual-machines/image-builder-overview?tabs=azure-powershell",
+                              "style": "Info"
                             }
                         }
                     ]
