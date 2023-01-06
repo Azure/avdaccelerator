@@ -171,7 +171,7 @@
                                     "type": "Microsoft.Common.DropDown",
                                     "label": "Version",
                                     "filter": true,
-                                    "defaultValue": "Windows 11",
+                                    "defaultValue": "Windows 11 22H2 (Gen2)",
                                     "toolTip": "Select the operating system version for the source image.",
                                     "constraints": {
                                         "required": true,
@@ -219,6 +219,16 @@
                             "visible": true,
                             "label": "Image Definition Features",
                             "elements": [
+                                {
+                                    "name": "imageDefinitionFeaturesInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[and(not(contains(steps('imageManagement').operatingSystem.versionSelection, 'g2')), not(contains(steps('imageManagement').operatingSystem.versionSelection, 'win11')))]",
+                                    "options": {
+                                        "text": "Image Definition Features are currently applicable to Generation 2 images only. Select a Gen 2 Operating System Image to see the features available. Click here for more information.",
+                                        "uri": "https://learn.microsoft.com/azure/virtual-machines/azure-compute-gallery#high-availability",
+                                        "style": "Info"
+                                    }
+                                },
                                 {
                                     "name": "securityType",
                                     "type": "Microsoft.Common.DropDown",
