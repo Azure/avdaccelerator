@@ -560,7 +560,7 @@ var varModules = [
 ]
 
 // Role Definitions & Assignments.
-var varDistributionGroupRole = (enableMonitoringAlerts && useExistingVirtualNetwork) ? [
+var varVirtualNetworkJoinRole = useExistingVirtualNetwork ? [
     {
         resourceGroup: split(existingVirtualNetworkResourceId, '/')[4]
         name: 'Virtual Network Join'
@@ -570,10 +570,27 @@ var varDistributionGroupRole = (enableMonitoringAlerts && useExistingVirtualNetw
             'Microsoft.Network/virtualNetworks/subnets/read'
             'Microsoft.Network/virtualNetworks/subnets/join/action'
         ]
-        notActions: []
     }
 ] : []
-var varImageTemplateRoles = [
+
+// Role Definition required for build automation
+//// Image template permissions are currently (1/6/23) not supported in Azure US Government
+var varImageTemplateBuildAutomation = environment().name == 'AzureCloud' ? [
+    {
+        resourceGroup: varResourceGroupName
+        name: 'Image Template Build Automation'
+        description: 'Allow Image Template build automation using a Managed Identity on an Automation Account.'
+        actions: [
+            'Microsoft.VirtualMachineImages/imageTemplates/run/action'
+            'Microsoft.VirtualMachineImages/imageTemplates/read'
+            'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/versions/read'
+            'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/read'
+            'Microsoft.Compute/locations/publishers/artifacttypes/offers/read'
+            'Microsoft.Compute/locations/publishers/read'
+        ]
+    }
+] : []
+var varImageTemplateContributorRole = [
     {
         resourceGroup: varResourceGroupName
         name: 'Image Template Contributor'
@@ -587,64 +604,10 @@ var varImageTemplateRoles = [
             'Microsoft.Compute/images/write'
             'Microsoft.Compute/images/delete'
         ]
-        notActions: []
-    }
-    {
-        resourceGroup: varResourceGroupName
-        name: 'Image Template Build Automation'
-        description: 'Allow Image Template build automation using a Managed Identity on an Automation Account.'
-        actions: environment().name == 'AzureCloud' ? [
-            'Microsoft.VirtualMachineImages/imageTemplates/run/action'
-            'Microsoft.VirtualMachineImages/imageTemplates/read'
-            'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/versions/read'
-            'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/read'
-            'Microsoft.Compute/locations/publishers/artifacttypes/offers/read'
-            'Microsoft.Compute/locations/publishers/read'
-        ] : [
-            '*'
-        ]
-        notActions: environment().name == 'AzureCloud' ? [] : [
-            'Microsoft.AAD/*'
-            'Microsoft.ADHybridHealthService/*'
-            'Microsoft.Advisor/*'
-            'Microsoft.AlertsManagement/*'
-            'Microsoft.Authorization/*'
-            'Microsoft.Automation/*'
-            'Microsoft.Billing/*'
-            'Microsoft.ClassicSubscription/*'
-            'Microsoft.Commerce/*'
-            'Microsoft.Consumption/*'
-            'Microsoft.ContainerInstance/*'
-            'Microsoft.ContainerService/*'
-            'Microsoft.CostManagement/*'
-            'Microsoft.DesktopVirtualization/*'
-            'Microsoft.DevTestLab/*'
-            'Microsoft.Features/*'
-            'Microsoft.GuestConfiguration/*'
-            'microsoft.insights/*'
-            'Microsoft.KeyVault/*'
-            'Microsoft.Logic/*'
-            'Microsoft.ManagedIdentity/*'
-            'Microsoft.MarketplaceOrdering/*'
-            'Microsoft.NetApp/*'
-            'Microsoft.Network/*'
-            'Microsoft.OperationalInsights/*'
-            'Microsoft.OperationsManagement/*'
-            'Microsoft.PolicyInsights/*'
-            'Microsoft.Portal/*'
-            'Microsoft.RecoveryServices/*'
-            'Microsoft.ResourceGraph/*'
-            'Microsoft.ResourceHealth/*'
-            'Microsoft.Resources/*'
-            'Microsoft.Security/*'
-            'Microsoft.SerialConsole/*'
-            'Microsoft.Storage/*'
-            'microsoft.support/*'
-            'Microsoft.Web/*'
-        ]
     }
 ]
-var varRoles = enableMonitoringAlerts? union(varDistributionGroupRole, varImageTemplateRoles): varImageTemplateRoles
+
+var varRoles = union(varVirtualNetworkJoinRole, varImageTemplateBuildAutomation, varImageTemplateContributorRole)
 //
 
 // =========== //
@@ -685,7 +648,6 @@ module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinition
         description: varRoles[i].description
         roleName: varRoles[i].name
         actions: varRoles[i].actions
-        notActions: varRoles[i].notActions
         assignableScopes: [
             '/subscriptions/${sharedServicesSubId}'
         ]
@@ -706,7 +668,7 @@ module userAssignedManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/
     ]
 }
 
-// Role assignment.
+// Role assignments.
 module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for i in range(0, length(varRoles)): {
     name: 'Role-Assignment_${i}_${time}'
     scope: resourceGroup(sharedServicesSubId, varRoles[i].resourceGroup)
@@ -715,10 +677,18 @@ module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignment
         principalId: userAssignedManagedIdentity.outputs.principalId
         principalType: 'ServicePrincipal'
     }
-    dependsOn: [
-
-    ]
 }]
+
+//// Unique role assignment for Azure US Government since it does not support image template permissions
+module roleAssignment_AzureUSGovernment '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = {
+    name: 'Role-Assignment_MAG_${time}'
+    scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
+    params: {
+        roleDefinitionIdOrName: 'Contributor'
+        principalId: userAssignedManagedIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+    }
+}
 
 // Compute Gallery.
 module gallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy.bicep' = {
