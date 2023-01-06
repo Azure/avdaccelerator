@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "848964655586195916"
+      "templateHash": "8531520268416962674"
     }
   },
   "parameters": {
@@ -14139,7 +14139,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.12.40.16777",
-              "templateHash": "3045823845582651496"
+              "templateHash": "18371430112929966351"
             }
           },
           "parameters": {
@@ -14448,7 +14448,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.12.40.16777",
-                      "templateHash": "6678643858905560245"
+                      "templateHash": "17082162793907339231"
                     }
                   },
                   "parameters": {
@@ -14723,7 +14723,7 @@
                     },
                     {
                       "type": "Microsoft.DesktopVirtualization/hostPools",
-                      "apiVersion": "2021-07-12",
+                      "apiVersion": "2019-12-10-preview",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -14928,7 +14928,7 @@
                     },
                     "hostPoolRestrationInfo": {
                       "type": "object",
-                      "value": "[reference(resourceId('Microsoft.DesktopVirtualization/hostPools', parameters('name')), '2021-07-12').registrationInfo]",
+                      "value": "[reference(resourceId('Microsoft.DesktopVirtualization/hostPools', parameters('name')), '2019-12-10-preview').registrationInfo]",
                       "metadata": {
                         "description": "Host pool registration info"
                       }
