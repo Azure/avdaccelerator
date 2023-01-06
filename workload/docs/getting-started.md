@@ -15,7 +15,7 @@ Prior to deploying, you need to ensure you have met the following prerequisites:
 - The Domain Controllers used for AD join purposes should be standard writable Domain Controllers, not Read Only Domain Controllers.
 - You have the appropriate [licenses](https://docs.microsoft.com/azure/virtual-desktop/prerequisites#operating-systems-and-licenses) for proper AVD entitlement.
 - If the new AVD workload will be connected (peered) with a Hub VNet, contributor permissions are required on the referenced Hub VNet.
-- If using existing Virtual Networks, the deployment will fail if Private Endpoint policies are enabled. See the following article on disabling them: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy).
+- If using existing Virtual Networks, the deployment will fail if deny private endpoint network policies is enabled. See the following article on disabling them: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy).
 - Private DNS zones for Azure files (privatelink.file.core.windows.net) and keyvault private (privatelink.vaultcore.azure.net) endpoints resolution.
 - When enabling Start VM on Connect or Scaling Plans features, it is required to provide the ObjectID for the enterprise application Azure Virtual Desktop (Name can also be displayed as 'Windows Virtual Desktops'). To get the ObjectID got to Azure AD > Enterprise applications, remove all filters and search for 'Virtual Desktops' and copy the OjectID that is paired with the Application ID: 9cdead84-a844-4324-93f2-b2e6bb768d07.
 
@@ -78,9 +78,9 @@ This [diagram](/workload/docs/diagrams/avd-accelerator-resource-organization-nam
   - `Unique string`: a1b2c3 (6 characters string calculated by the deployment)
 
 - **Custom image deployment**:
-  - `avdSharedServicesLocation`: East US 2
-  - `avdSharedServicesSubId`:  ID for Subscription name: Subscription AVD Shared Services
-  - `avdUseCustomNaming`: false
+  - `sharedServicesLocation`: East US 2
+  - `sharedServicesSubId`:  ID for Subscription name: Subscription AVD Shared Services
+  - `customNaming`: false
   - `Unique string`: a1b2c3 (6 characters string calculated by the deployment)
 
 ## Naming standard
