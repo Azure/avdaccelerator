@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "17236923635442432721"
+      "templateHash": "278875550138715877"
     }
   },
   "parameters": {
@@ -579,7 +579,7 @@
         "uri": "https://www.powershellgallery.com/api/v2/package"
       }
     ],
-    "varDistributionGroupRole": "[if(and(parameters('enableMonitoringAlerts'), parameters('useExistingVirtualNetwork')), createArray(createObject('resourceGroup', split(parameters('existingVirtualNetworkResourceId'), '/')[4], 'name', 'Virtual Network Join', 'description', 'Allow resources to join a subnet', 'actions', createArray('Microsoft.Network/virtualNetworks/read', 'Microsoft.Network/virtualNetworks/subnets/read', 'Microsoft.Network/virtualNetworks/subnets/join/action'))), createArray())]",
+    "varDistributionGroupRole": "[if(and(parameters('enableMonitoringAlerts'), parameters('useExistingVirtualNetwork')), createArray(createObject('resourceGroup', split(parameters('existingVirtualNetworkResourceId'), '/')[4], 'name', 'Virtual Network Join', 'description', 'Allow resources to join a subnet', 'actions', createArray('Microsoft.Network/virtualNetworks/read', 'Microsoft.Network/virtualNetworks/subnets/read', 'Microsoft.Network/virtualNetworks/subnets/join/action'), 'notActions', createArray())), createArray())]",
     "varImageTemplateRoles": [
       {
         "resourceGroup": "[variables('varResourceGroupName')]",
@@ -593,20 +593,15 @@
           "Microsoft.Compute/images/read",
           "Microsoft.Compute/images/write",
           "Microsoft.Compute/images/delete"
-        ]
+        ],
+        "notActions": []
       },
       {
         "resourceGroup": "[variables('varResourceGroupName')]",
         "name": "Image Template Build Automation",
         "description": "Allow Image Template build automation using a Managed Identity on an Automation Account.",
-        "actions": [
-          "Microsoft.VirtualMachineImages/imageTemplates/run/action",
-          "Microsoft.VirtualMachineImages/imageTemplates/read",
-          "Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/versions/read",
-          "Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/read",
-          "Microsoft.Compute/locations/publishers/artifacttypes/offers/read",
-          "Microsoft.Compute/locations/publishers/read"
-        ]
+        "actions": "[if(equals(environment().name, 'AzureCloud'), createArray('Microsoft.VirtualMachineImages/imageTemplates/run/action', 'Microsoft.VirtualMachineImages/imageTemplates/read', 'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/versions/read', 'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/read', 'Microsoft.Compute/locations/publishers/artifacttypes/offers/read', 'Microsoft.Compute/locations/publishers/read'), createArray('*'))]",
+        "notActions": "[if(equals(environment().name, 'AzureCloud'), createArray(), createArray('Microsoft.AAD/*', 'Microsoft.ADHybridHealthService/*', 'Microsoft.Advisor/*', 'Microsoft.AlertsManagement/*', 'Microsoft.Authorization/*', 'Microsoft.Automation/*', 'Microsoft.Billing/*', 'Microsoft.ClassicSubscription/*', 'Microsoft.Commerce/*', 'Microsoft.Consumption/*', 'Microsoft.ContainerInstance/*', 'Microsoft.ContainerService/*', 'Microsoft.CostManagement/*', 'Microsoft.DesktopVirtualization/*', 'Microsoft.DevTestLab/*', 'Microsoft.Features/*', 'Microsoft.GuestConfiguration/*', 'microsoft.insights/*', 'Microsoft.KeyVault/*', 'Microsoft.Logic/*', 'Microsoft.ManagedIdentity/*', 'Microsoft.MarketplaceOrdering/*', 'Microsoft.NetApp/*', 'Microsoft.Network/*', 'Microsoft.OperationalInsights/*', 'Microsoft.OperationsManagement/*', 'Microsoft.PolicyInsights/*', 'Microsoft.Portal/*', 'Microsoft.RecoveryServices/*', 'Microsoft.ResourceGraph/*', 'Microsoft.ResourceHealth/*', 'Microsoft.Resources/*', 'Microsoft.Security/*', 'Microsoft.SerialConsole/*', 'Microsoft.Storage/*', 'microsoft.support/*', 'Microsoft.Web/*'))]"
       }
     ],
     "varRoles": "[if(parameters('enableMonitoringAlerts'), union(variables('varDistributionGroupRole'), variables('varImageTemplateRoles')), variables('varImageTemplateRoles'))]"
@@ -1091,6 +1086,9 @@
           },
           "actions": {
             "value": "[variables('varRoles')[range(0, length(variables('varRoles')))[copyIndex()]].actions]"
+          },
+          "notActions": {
+            "value": "[variables('varRoles')[range(0, length(variables('varRoles')))[copyIndex()]].notActions]"
           },
           "assignableScopes": {
             "value": [
