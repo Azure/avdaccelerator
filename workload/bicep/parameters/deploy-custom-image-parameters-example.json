@@ -2,52 +2,37 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "deploymentPrefix": {
-            "value": "<<deploymentPrefix>>"
+        "sharedServicesSubId": {
+            "value": "<<SubscriptionID>>"
         },
-        "avdSharedServicesLocation": {
-            "value": "eastus2"
+        "sharedServicesLocation": {
+            "value": "eastus"
         },
-        "avdSharedServicesSubId": {
-            "value": "<<subscriptionId>>"
+        "imageVersionDisasterRecoveryLocation": {
+            "value": ""
         },
-        "avdUseAvailabilityZones": {
-            "value": false
+        "imageVersionStorageAccountType": {
+            "value": "Standard_LRS"
         },
         "aibLocation": {
-            "value": "eastus2"
+            "value": "eastus"
         },
-        "createAibCustomRole": {
-            "value": true
+        "buildSchedule": {
+            "value": "Recurring"
         },
-        "avdOsImage": {
+        "operatingSystemImage": {
             "value": "win10_21h2"
-        },
-        "useSharedImage": {
-            "value": true
-        },
-        "createAibManagedIdentity": {
-            "value": true
-        },
-        "existingAibManagedIdentityId": {
-            "value": ""
-        },
-        "existingAibManagedIdentityName": {
-            "value": ""
-        },
-        "avdUseCustomNaming": {
-            "value": false
-        },
-        "createResourceTags": {
-            "value": false
         },
         "useExistingVirtualNetwork": {
             "value": false
         },
-        "enableMonitoringAlerts": {
-            "value": false
+        "existingLogAnalyticsWorkspaceResourceId": {
+            "value": ""
         },
-        "distributionGroup": {
+        "existingVirtualNetworkResourceId": {
+            "value": ""
+        },
+        "existingSubnetName": {
             "value": ""
         },
         "rdpShortPath": {
@@ -57,7 +42,16 @@
             "value": false
         },
         "logAnalyticsWorkspaceDataRetention": {
-            "value": 30
-        }
-    }
+            "value": "30"
+        },
+        "enableMonitoringAlerts": {
+            "value": false
+        },
+        "alertsDistributionGroup": {
+            "value": false
+        },
+        "enableResourceTags": {
+            "value": false
+        }     
+    }   
 }
