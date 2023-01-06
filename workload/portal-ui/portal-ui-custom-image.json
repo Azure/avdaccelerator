@@ -11,39 +11,27 @@
                     "label": "Basics",
                     "elements": [
                         {
-                            "name": "ResourcesProviders",
-                            "type": "Microsoft.Common.InfoBox",
+                            "name": "deploymentPreRequesites",
+                            "type": "Microsoft.Common.Section",
                             "visible": true,
-                            "options": {
-                              "icon": "None",
-                              "text": "To use VM Image Builder, you need to register some feature. Learn more about Resource Providers.",
-                              "uri": "https://learn.microsoft.com/en-us/azure/virtual-machines/windows/image-builder",
-                              "style": "Info"
-                            }
-                          },
-                        {
-                            "name": "deploymentInfo",
-                            "type": "Microsoft.Common.InfoBox",
-                            "options": {
-                                "text": "The subscription and location selected in this step, will be used to deploy AVD Shared Services Landing Zone resources (compute gallery, key vaults, storage, image template, etc.).",
-                                "style": "Info"
-                            }
+                            "label": "Deployment pre-requesites",
+                            "elements": [
+                                {
+                                    "name": "infoPreReq",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "options": {
+                                        "text": "Prior to deployment, make sure you meet the prerequisites for using this AVD Landing Zone Accelerator outlined in the getting started guide.",
+                                        "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started.md",
+                                        "style": "Warning"
+                                    }
+                                }
+                            ]
                         },
                         {
                             "name": "resourceScope",
                             "type": "Microsoft.Common.ResourceScope",
                             "location": {
                                 "resourceTypes": []
-                            }
-                        },
-                        {
-                            "name": "roleInfo",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "text": "Azure AVD Landing Zone Accelerator deployment requires owner access at the subscription scope. Visit this link to get more information on RBAC permissions and scopes.",
-                                "uri": "https://docs.microsoft.com/azure/role-based-access-control/scope-overview",
-                                "style": "Warning"
                             }
                         }
                     ]
@@ -215,17 +203,6 @@
                     "name": "aib",
                     "label": "Azure Image Builder (AIB)",
                     "elements": [
-                        {
-                            "name": "prerequisites AIB",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                              "icon": "None",
-                              "text": "Azure Image Builder requires a managed identity and special permissions. We do not want to give the identity too many permissions, so we must create a custom RBAC role to limit permissions.These permissions will be created automatically with the use of this template. Learn more about custom rol and permissions. ",
-                              "uri": "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/image-builder-permissions-cli",
-                              "style": "Info"
-                            }
-                          },
                         {
                             "name": "locationInfo",
                             "type": "Microsoft.Common.InfoBox",
@@ -512,6 +489,17 @@
                                         "value": false
                                     }
                                 ]
+                            }
+                        },
+                        {
+                            "name": "prerequisites AIB",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                              "icon": "None",
+                              "text": "AVD Landing Zone Accelerator will deploy a managed identity and custom RBAC roles for AIB. ",
+                              "uri": "https://learn.microsoft.com/azure/virtual-machines/image-builder-overview?tabs=azure-powershell",
+                              "style": "Info"
                             }
                         }
                     ]
