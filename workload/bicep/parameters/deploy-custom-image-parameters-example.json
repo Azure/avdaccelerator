@@ -42,13 +42,13 @@
             "value": false
         },
         "logAnalyticsWorkspaceDataRetention": {
-            "value": "30"
+            "value": 30
         },
         "enableMonitoringAlerts": {
             "value": false
         },
         "alertsDistributionGroup": {
-            "value": false
+            "value": ""
         },
         "enableResourceTags": {
             "value": false
