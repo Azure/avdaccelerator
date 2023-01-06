@@ -86,14 +86,13 @@ param buildSchedule string = 'Recurring'
 param operatingSystemImage string = 'win10_21h2'
 
 @allowed([
-    ''
     'Standard'
     'TrustedLaunch'
     'ConfidentialVM'
     'ConfidentialVMSupported'
 ])
-@description('Optional. Choose the Security Type.')
-param securityType string
+@description('Optional. Choose the Security Type of the Image Definition.')
+param imageDefinitionSecurityType string = 'Standard'
 
 @description('Optional. Set to deploy Azure Image Builder to existing virtual network. (Default: false)')
 param useExistingVirtualNetwork bool = false
@@ -765,7 +764,7 @@ module image '../../carml/1.3.0/Microsoft.Compute/galleries/images/deploy.bicep'
         sku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
         location: aibLocation
         hyperVGeneration: varOperatingSystemImageDefinitions[operatingSystemImage].hyperVGeneration
-        securityType: securityType
+        securityType: imageDefinitionSecurityType
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
