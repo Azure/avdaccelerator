@@ -570,6 +570,7 @@ var varDistributionGroupRole = (enableMonitoringAlerts && useExistingVirtualNetw
             'Microsoft.Network/virtualNetworks/subnets/read'
             'Microsoft.Network/virtualNetworks/subnets/join/action'
         ]
+        notActions: []
     }
 ] : []
 var varImageTemplateRoles = [
@@ -586,18 +587,60 @@ var varImageTemplateRoles = [
             'Microsoft.Compute/images/write'
             'Microsoft.Compute/images/delete'
         ]
+        notActions: []
     }
     {
         resourceGroup: varResourceGroupName
         name: 'Image Template Build Automation'
         description: 'Allow Image Template build automation using a Managed Identity on an Automation Account.'
-        actions: [
+        actions: environment().name == 'AzureCloud' ? [
             'Microsoft.VirtualMachineImages/imageTemplates/run/action'
             'Microsoft.VirtualMachineImages/imageTemplates/read'
             'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/versions/read'
             'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/read'
             'Microsoft.Compute/locations/publishers/artifacttypes/offers/read'
             'Microsoft.Compute/locations/publishers/read'
+        ] : [
+            '*'
+        ]
+        notActions: environment().name == 'AzureCloud' ? [] : [
+            'Microsoft.AAD/*'
+            'Microsoft.ADHybridHealthService/*'
+            'Microsoft.Advisor/*'
+            'Microsoft.AlertsManagement/*'
+            'Microsoft.Authorization/*'
+            'Microsoft.Automation/*'
+            'Microsoft.Billing/*'
+            'Microsoft.ClassicSubscription/*'
+            'Microsoft.Commerce/*'
+            'Microsoft.Consumption/*'
+            'Microsoft.ContainerInstance/*'
+            'Microsoft.ContainerService/*'
+            'Microsoft.CostManagement/*'
+            'Microsoft.DesktopVirtualization/*'
+            'Microsoft.DevTestLab/*'
+            'Microsoft.Features/*'
+            'Microsoft.GuestConfiguration/*'
+            'microsoft.insights/*'
+            'Microsoft.KeyVault/*'
+            'Microsoft.Logic/*'
+            'Microsoft.ManagedIdentity/*'
+            'Microsoft.MarketplaceOrdering/*'
+            'Microsoft.NetApp/*'
+            'Microsoft.Network/*'
+            'Microsoft.OperationalInsights/*'
+            'Microsoft.OperationsManagement/*'
+            'Microsoft.PolicyInsights/*'
+            'Microsoft.Portal/*'
+            'Microsoft.RecoveryServices/*'
+            'Microsoft.ResourceGraph/*'
+            'Microsoft.ResourceHealth/*'
+            'Microsoft.Resources/*'
+            'Microsoft.Security/*'
+            'Microsoft.SerialConsole/*'
+            'Microsoft.Storage/*'
+            'microsoft.support/*'
+            'Microsoft.Web/*'
         ]
     }
 ]
@@ -642,6 +685,7 @@ module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinition
         description: varRoles[i].description
         roleName: varRoles[i].name
         actions: varRoles[i].actions
+        notActions: varRoles[i].notActions
         assignableScopes: [
             '/subscriptions/${sharedServicesSubId}'
         ]
