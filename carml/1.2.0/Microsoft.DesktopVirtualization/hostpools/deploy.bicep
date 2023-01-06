@@ -150,7 +150,8 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (ena
   }
 }
 
-resource hostPool 'Microsoft.DesktopVirtualization/hostpools@2021-07-12' = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostpools@2019-12-10-preview' = {
+//resource hostPool 'Microsoft.DesktopVirtualization/hostpools@2021-07-12' = {
   name: name
   location: location
   tags: tags
