@@ -52,6 +52,9 @@
         },
         "enableResourceTags": {
             "value": false
-        }     
+        },
+        "customNaming": {
+            "value": false
+        }          
     }   
 }
