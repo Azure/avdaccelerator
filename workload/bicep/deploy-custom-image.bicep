@@ -91,7 +91,7 @@ param operatingSystemImage string = 'win10_21h2'
     'ConfidentialVM'
     'ConfidentialVMSupported'
 ])
-@description('Optional. Choose the Security Type of the Image Definition.')
+@description('Optional. Choose the Security Type of the Image Definition. (Default: Standard)')
 param imageDefinitionSecurityType string = 'Standard'
 
 @description('Optional. Set to deploy Azure Image Builder to existing virtual network. (Default: false)')
