@@ -199,14 +199,14 @@ param avdSessionHostDiskType string = 'Standard_LRS'
     'TrustedLaunch'
     'ConfidentialVM'
 ])
-@description('Optional. Specifies the securityType of the virtual machine. "ConfidentialVM" and "TrustedLaunch" require a Gen2 Image.')
+@description('Optional. Specifies the securityType of the virtual machine. "ConfidentialVM" and "TrustedLaunch" require a Gen2 Image. (Default: Standard)')
 param securityType string = 'Standard'
 
 @description('Optional. Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings.')
 param secureBootEnabled bool = false
 
 @description('Optional. Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings.')
-param vTPMEnabled bool = false
+param vTpmEnabled bool = false
 @allowed([
     'win10_21h2_office'
     'win10_21h2'
@@ -1180,7 +1180,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         avdSessionHostsSize: avdSessionHostsSize
         securityType: securityType == 'Standard' ? '' : securityType
         secureBootEnabled: secureBootEnabled
-        vTPMEnabled: vTPMEnabled
+        vTpmEnabled: vTpmEnabled
         avdSubnetId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${varAvdVnetworkSubnetName}' : existingVnetSubnetResourceId
         createAvdVnet: createAvdVnet
         avdUseAvailabilityZones: avdUseAvailabilityZones
