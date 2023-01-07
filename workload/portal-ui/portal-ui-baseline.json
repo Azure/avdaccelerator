@@ -913,8 +913,8 @@
                                     "visible": "[equals(steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsImageSource, false)]",
                                     "label": "OS version",
                                     "filter": true,
-                                    "defaultValue": "Windows 11",
-                                    "toolTip": "Select OS version to deploy the session hosts with.",
+                                    "defaultValue": "Windows 11 22H2 (Gen2)",
+                                    "toolTip": "Select the operating system version of the session hosts.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
@@ -968,13 +968,23 @@
                         {
                             "name": "avdSessionHostsSecuritySection",
                             "type": "Microsoft.Common.Section",
-                            "visible": "[equals(steps('avdSessionHosts').avdDeploySessionHosts, true)]",
-                            "label": "Security Profile",
+                            "visible": "[and(equals(steps('avdSessionHosts').avdDeploySessionHosts, true), or(contains(steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsOsImage, 'win11'), contains(steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsOsImage, 'g2'), not(empty(steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsComputeGalleryImage))))]",
+                            "label": "Security profile",
                             "elements": [
+                                {
+                                    "name": "avdSessionHostSecurityTypeWarning",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[not(empty(steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsComputeGalleryImage))]",
+                                    "options": {
+                                        "text": "Setting the Security Type to anything other than 'Standard' requires that the Azure Compute Gallery Image Definition be configured with the Security Type feature set to the appropriate value. You can determine if the image definition supports the required feature by reviewing the 'Properties' tab on the 'Overview' node of the Gallery Image Definition in the portal. If the image definition does not contain these feature options, then the deployment will fail.",
+                                        "uri": "https://learn.microsoft.com/en-us/azure/templates/microsoft.compute/galleries/images?pivots=deployment-language-bicep",
+                                        "style": "Warning"
+                                    }
+                                },
                                 {
                                     "name": "securityType",
                                     "type": "Microsoft.Common.DropDown",
-                                    "label": "Security Type",
+                                    "label": "Security type",
                                     "filter": true,
                                     "defaultValue": "Standard",
                                     "toolTip": "Choose a type of security that matches your needs: Standard includes basic protections at no additional cost. Trusted launch virtual machines provide additional security features on Gen2 virtual machines to protect against persistent and advanced attacks.",
@@ -2212,7 +2222,7 @@
                 "avdOsImage": "[if(equals(steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsImageSource, false), steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsOsImage, 'win11_21h2')]",
                 "securityType": "[steps('avdSessionHosts').avdSessionHostsSecuritySection.securityType]",
                 "secureBootEnabled": "[steps('avdSessionHosts').avdSessionHostsSecuritySection.secureBootEnabled]",
-                "vTPMEnabled": "[steps('avdSessionHosts').avdSessionHostsSecuritySection.vTpmEnabled]",
+                "vTpmEnabled": "[steps('avdSessionHosts').avdSessionHostsSecuritySection.vTpmEnabled]",
                 "avdImageTemplateDefinitionId": "[if(equals(steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsImageSource, true), steps('avdSessionHosts').avdSessionHostsOsSection.avdSessionHostsComputeGalleryImage.id, 'none')]",
                 "avdSessionHostDiskType": "[steps('avdSessionHosts').avdSessionHostsSettingsSection.avdSessionHostDiskType]",
                 "avdSessionHostsSize": "[if(equals(steps('avdSessionHosts').avdDeploySessionHosts, true), steps('avdSessionHosts').avdSessionHostsSettingsSection.element1, 'Standard_D2s_v4')]",
