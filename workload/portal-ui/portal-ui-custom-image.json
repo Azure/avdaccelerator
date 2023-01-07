@@ -986,7 +986,7 @@
         },
         "outputs": {
             "parameters": {
-                "actionGroupCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.actionGroup, 'none')]",
+                "alertsActionGroupCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.actionGroup, 'none')]",
                 "aibLocation": "[steps('aib').locationSelection]",
                 "buildSchedule": "[steps('aib').buildSchedule]",
                 "applicationNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.application, 'none')]",
@@ -998,7 +998,7 @@
                 "dataClassificationTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.dataClassification, 'Non-business')]",
                 "departmentTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.department, 'none')]",
                 "enableMonitoringAlerts": "[steps('monitoring').monitoringAndAlerting]",
-                "distributionGroup": "[if(equals(steps('monitoring').monitoringAndAlerting, true), steps('monitoring').distributionGroup, '')]",
+                "alertsDistributionGroup": "[if(equals(steps('monitoring').monitoringAndAlerting, true), steps('monitoring').distributionGroup, '')]",
                 "environmentTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.environment, 'Dev')]",
                 "imageBuildNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.imageBuild, 'none')]",
                 "imageDefinitionCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.imageDefinition, 'none')]",
@@ -1019,7 +1019,7 @@
                 "useExistingVirtualNetwork": "[steps('aib').virtualNetwork]",
                 "existingLogAnalyticsWorkspaceResourceId": "[if(equals(steps('monitoring').existingLogAnalyticsWorkspace, true), steps('monitoring').logAnalyticsWorkspaceSelection.id, '')]",
                 "existingVirtualNetworkResourceId": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').virtualNetworkSelection.id, '')]",
-                "subnetName": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').subnet, '')]",
+                "existingSubnetName": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').subnet, '')]",
                 "userAssignedManagedIdentityCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.userAssignedManagedIdentity, 'none')]",
                 "workloadNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.workload, 'none')]"
             },
