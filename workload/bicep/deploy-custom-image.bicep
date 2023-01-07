@@ -82,8 +82,8 @@ param buildSchedule string = 'Recurring'
     'win11_22h2_office'
     'win11_22h2'
 ])
-@description('Optional. AVD OS image source. (Default: win10-21h2)')
-param operatingSystemImage string = 'win10_21h2'
+@description('Optional. AVD OS image source. (Default: win11-22h2)')
+param operatingSystemImage string = 'win11_22h2'
 
 @allowed([
     'Standard'
@@ -149,7 +149,7 @@ param imageDefinitionCustomName string = 'avd-win11-21h2'
 
 @maxLength(260)
 @description('Optional. Custom name for Image Template. (Default: it-avd-win11-21h2)')
-param imageTemplateCustomName string = 'it-avd-win11-21h2'
+param imageTemplateCustomName string = 'it-avd-win11-22h2'
 
 // Placeholders for future release
 /* @maxLength(24)
