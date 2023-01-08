@@ -73,13 +73,26 @@ param aibLocation string = 'eastus'
 param buildSchedule string = 'Recurring'
 
 @allowed([
-    'win10_21h2_office'
     'win10_21h2'
-    'win11_21h2_office'
+    'win10_21h2_office'
+    'win10_22h2_g2'
+    'win10_22h2_office_g2'
     'win11_21h2'
+    'win11_21h2_office'
+    'win11_22h2'
+    'win11_22h2_office'
 ])
-@description('Optional. AVD OS image source. (Default: win10-21h2)')
-param operatingSystemImage string = 'win10_21h2'
+@description('Optional. AVD OS image source. (Default: win11-22h2)')
+param operatingSystemImage string = 'win11_22h2'
+
+@allowed([
+    'Standard'
+    'TrustedLaunch'
+    'ConfidentialVM'
+    'ConfidentialVMSupported'
+])
+@description('Optional. Choose the Security Type of the Image Definition. (Default: Standard)')
+param imageDefinitionSecurityType string = 'Standard'
 
 @description('Optional. Set to deploy Azure Image Builder to existing virtual network. (Default: false)')
 param useExistingVirtualNetwork bool = false
@@ -136,7 +149,7 @@ param imageDefinitionCustomName string = 'avd-win11-21h2'
 
 @maxLength(260)
 @description('Optional. Custom name for Image Template. (Default: it-avd-win11-21h2)')
-param imageTemplateCustomName string = 'it-avd-win11-21h2'
+param imageTemplateCustomName string = 'it-avd-win11-22h2'
 
 // Placeholders for future release
 /* @maxLength(24)
@@ -371,37 +384,66 @@ var varImageReplicationRegions = empty(imageVersionDisasterRecoveryLocation) ? [
 ]
 var varVmSize = 'Standard_D4s_v3'
 var varOperatingSystemImageDefinitions = {
-    win10_21h2_office: {
-        osType: 'Windows'
-        osState: 'Generalized'
-        offer: 'office-365'
-        publisher: 'MicrosoftWindowsDesktop'
-        sku: 'win10-21h2-avd-m365'
-        hyperVGeneration: 'V1'
-    }
     win10_21h2: {
-        osType: 'Windows'
-        osState: 'Generalized'
+        publisher: 'MicrosoftWindowsDesktop'
         offer: 'windows-10'
-        publisher: 'MicrosoftWindowsDesktop'
         sku: 'win10-21h2-avd'
-        hyperVGeneration: 'V1'
+        version: 'latest'
     }
-    win11_21h2_office: {
-        osType: 'Windows'
-        osState: 'Generalized'
-        offer: 'office-365'
+    win10_21h2_office: {
         publisher: 'MicrosoftWindowsDesktop'
-        sku: 'win11-21h2-avd-m365'
-        hyperVGeneration: 'V2'
+        offer: 'office-365'
+        sku: 'win10-21h2-avd-m365'
+        version: 'latest'
+    }
+	win10_22h2_g2: {
+        publisher: 'MicrosoftWindowsDesktop'
+        offer: 'windows-10'
+        sku: 'win10-22h2-avd-g2'
+        version: 'latest'
+    }
+	
+    win10_22h2_office_g2: {
+        publisher: 'MicrosoftWindowsDesktop'
+        offer: 'office-365'
+        sku: 'win10-21h2-avd-m365-g2'
+        version: 'latest'
     }
     win11_21h2: {
-        osType: 'Windows'
-        osState: 'Generalized'
-        offer: 'windows-11'
         publisher: 'MicrosoftWindowsDesktop'
+        offer: 'Windows-11'
         sku: 'win11-21h2-avd'
-        hyperVGeneration: 'V2'
+        version: 'latest'
+    }
+    win11_21h2_office: {
+        publisher: 'MicrosoftWindowsDesktop'
+        offer: 'office-365'
+        sku: 'win11-21h2-avd-m365'
+        version: 'latest'
+    }
+    win11_22h2: {
+        publisher: 'MicrosoftWindowsDesktop'
+        offer: 'Windows-11'
+        sku: 'win11-22h2-avd'
+        version: 'latest'
+    }
+    win11_22h2_office: {
+        publisher: 'MicrosoftWindowsDesktop'
+        offer: 'office-365'
+        sku: 'win11-22h2-avd-m365'
+        version: 'latest'
+    }
+    winServer_2022_Datacenter: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2022-datacenter'
+        version: 'latest'
+    }
+    winServer_2019_Datacenter: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2019-datacenter'
+        version: 'latest'
     }
 }
 // Change back before Pull Request
@@ -675,7 +717,7 @@ module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignment
 }]
 
 // Compute Gallery.
-module gallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy.bicep' = {
+module gallery '../../carml/1.3.0/Microsoft.Compute/galleries/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Compute-Gallery_${time}'
     params: {
@@ -690,7 +732,7 @@ module gallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy.bicep' = {
 }
 
 // Image Definition.
-module image '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep' = {
+module image '../../carml/1.3.0/Microsoft.Compute/galleries/images/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Image-Definition_${time}'
     params: {
@@ -703,6 +745,7 @@ module image '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep'
         sku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
         location: aibLocation
         hyperVGeneration: varOperatingSystemImageDefinitions[operatingSystemImage].hyperVGeneration
+        securityType: imageDefinitionSecurityType
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
