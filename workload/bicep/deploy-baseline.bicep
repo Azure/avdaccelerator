@@ -442,7 +442,7 @@ var varLocationAcronyms = {
     westeurope: 'weu'
     japanwest: 'jpw'
     japaneast: 'jpe'
-    brazilsouth: 'drs'
+    brazilsouth: 'brs'
     australiaeast: 'aue'
     australiasoutheast: 'ause'
     southindia: 'sin'

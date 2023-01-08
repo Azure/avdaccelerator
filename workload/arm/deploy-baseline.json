@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "9431385728466801384"
+      "templateHash": "8030643687571844971"
     }
   },
   "parameters": {
@@ -841,7 +841,7 @@
       "westeurope": "weu",
       "japanwest": "jpw",
       "japaneast": "jpe",
-      "brazilsouth": "drs",
+      "brazilsouth": "brs",
       "australiaeast": "aue",
       "australiasoutheast": "ause",
       "southindia": "sin",
