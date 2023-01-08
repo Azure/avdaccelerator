@@ -932,7 +932,7 @@
                                             },
                                             {
                                                 "label": "Windows 10 22H2 - Office 365 (Gen2)",
-                                                "value": "win10_22h2_office"
+                                                "value": "win10_22h2_office_g2"
                                             },
                                             {
                                                 "label": "Windows 11",
