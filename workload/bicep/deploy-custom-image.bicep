@@ -73,13 +73,26 @@ param aibLocation string = 'eastus'
 param buildSchedule string = 'Recurring'
 
 @allowed([
-    'win10_21h2_office'
     'win10_21h2'
-    'win11_21h2_office'
+    'win10_21h2_office'
+    'win10_22h2_g2'
+    'win10_22h2_office_g2'
     'win11_21h2'
+    'win11_21h2_office'
+    'win11_22h2'
+    'win11_22h2_office'
 ])
-@description('Optional. AVD OS image source. (Default: win10-21h2)')
-param operatingSystemImage string = 'win10_21h2'
+@description('Optional. AVD OS image source. (Default: win11-22h2)')
+param operatingSystemImage string = 'win11_22h2'
+
+@allowed([
+    'Standard'
+    'TrustedLaunch'
+    'ConfidentialVM'
+    'ConfidentialVMSupported'
+])
+@description('Optional. Choose the Security Type of the Image Definition. (Default: Standard)')
+param imageDefinitionSecurityType string = 'Standard'
 
 @description('Optional. Set to deploy Azure Image Builder to existing virtual network. (Default: false)')
 param useExistingVirtualNetwork bool = false
@@ -136,7 +149,7 @@ param imageDefinitionCustomName string = 'avd-win11-21h2'
 
 @maxLength(260)
 @description('Optional. Custom name for Image Template. (Default: it-avd-win11-21h2)')
-param imageTemplateCustomName string = 'it-avd-win11-21h2'
+param imageTemplateCustomName string = 'it-avd-win11-22h2'
 
 // Placeholders for future release
 /* @maxLength(24)
@@ -225,6 +238,7 @@ param enableTelemetry bool = true
 // Variable declaration //
 // =========== //
 // Resouce Naming.
+var varAzureCloudName = environment().name
 var varActionGroupName = customNaming ? alertsActionGroupCustomName : 'ag-avd-${varNamingStandard}'
 var varNamingStandard = '${varLocationAcronym}'
 var varLocationLowercase = toLower(sharedServicesLocation)
@@ -242,49 +256,53 @@ var varAutomationAccountName = customNaming ? automationAccountCustomName : 'aa-
 // var varAvdContainerName = customNaming ? avdContainerCustomName : 'avd-artifacts'
 var varLocationAcronym = varLocationAcronyms[varLocationLowercase]
 var varLocationAcronyms = {
-    eastasia: 'eas'
-    southeastasia: 'seas'
-    centralus: 'cus'
-    eastus: 'eus'
-    eastus2: 'eus2'
-    westus: 'wus'
-    northcentralus: 'ncus'
-    southcentralus: 'scus'
-    northeurope: 'neu'
-    westeurope: 'weu'
-    japanwest: 'jpw'
-    japaneast: 'jpe'
-    brazilsouth: 'drs'
-    australiaeast: 'aue'
-    australiasoutheast: 'ause'
-    southindia: 'sin'
-    centralindia: 'cin'
-    westindia: 'win'
-    canadacentral: 'cac'
-    canadaeast: 'cae'
-    uksouth: 'uks'
-    ukwest: 'ukw'
-    westcentralus: 'wcus'
-    westus2: 'wus2'
-    koreacentral: 'krc'
-    koreasouth: 'krs'
-    francecentral: 'frc'
-    francesouth: 'frs'
     australiacentral: 'auc'
     australiacentral2: 'auc2'
-    uaecentral: 'aec'
-    uaenorth: 'aen'
-    southafricanorth: 'zan'
-    southafricawest: 'zaw'
-    switzerlandnorth: 'chn'
-    switzerlandwest: 'chw'
+    australiaeast: 'aue'
+    australiasoutheast: 'ause'
+    brazilsouth: 'drs'
+    brazilsoutheast: 'brse'
+    canadacentral: 'cac'
+    canadaeast: 'cae'
+    centralindia: 'cin'
+    centralus: 'cus'
+    eastasia: 'eas'
+    eastus: 'eus'
+    eastus2: 'eus2'
+    francecentral: 'frc'
+    francesouth: 'frs'
     germanynorth: 'den'
     germanywestcentral: 'dewc'
-    norwaywest: 'now'
+    japaneast: 'jpe'
+    japanwest: 'jpw'
+    koreacentral: 'krc'
+    koreasouth: 'krs'
+    northcentralus: 'ncus'
+    northeurope: 'neu'
     norwayeast: 'noe'
-    brazilsoutheast: 'brse'
-    westus3: 'wus3'
+    norwaywest: 'now'
+    southafricanorth: 'zan'
+    southafricawest: 'zaw'
+    southcentralus: 'scus'
+    southeastasia: 'seas'
+    southindia: 'sin'
     swedencentral: 'sec'
+    switzerlandnorth: 'chn'
+    switzerlandwest: 'chw'
+    uaecentral: 'aec'
+    uaenorth: 'aen'
+    uksouth: 'uks'
+    ukwest: 'ukw'
+    usgovarizona: 'az'
+    usgoviowa: 'ia'
+    usgovtexas: 'tx'
+    usgovvirginia: 'va'
+    westcentralus: 'wcus'
+    westeurope: 'weu'
+    westindia: 'win'
+    westus: 'wus'
+    westus2: 'wus2'
+    westus3: 'wus3'
 }
 //
 
@@ -333,8 +351,6 @@ var varTimeZones = {
     uaenorth: 'Arabian Standard time'
     uksouth: 'GMT Standard time'
     ukwest: 'GMT Standard time'
-    usdodcentral: 'Central Standard time'
-    usdodeast: 'Eastern Standard time'
     usgovarizona: 'Mountain Standard time'
     usgoviowa: 'Central Standard time'
     usgovtexas: 'Central Standard time'
@@ -371,14 +387,6 @@ var varImageReplicationRegions = empty(imageVersionDisasterRecoveryLocation) ? [
 ]
 var varVmSize = 'Standard_D4s_v3'
 var varOperatingSystemImageDefinitions = {
-    win10_21h2_office: {
-        osType: 'Windows'
-        osState: 'Generalized'
-        offer: 'office-365'
-        publisher: 'MicrosoftWindowsDesktop'
-        sku: 'win10-21h2-avd-m365'
-        hyperVGeneration: 'V1'
-    }
     win10_21h2: {
         osType: 'Windows'
         osState: 'Generalized'
@@ -386,14 +394,34 @@ var varOperatingSystemImageDefinitions = {
         publisher: 'MicrosoftWindowsDesktop'
         sku: 'win10-21h2-avd'
         hyperVGeneration: 'V1'
+        version: 'latest'
     }
-    win11_21h2_office: {
+    win10_21h2_office: {
         osType: 'Windows'
         osState: 'Generalized'
         offer: 'office-365'
         publisher: 'MicrosoftWindowsDesktop'
-        sku: 'win11-21h2-avd-m365'
+        sku: 'win10-21h2-avd-m365'
+        hyperVGeneration: 'V1'
+        version: 'latest'
+    }
+	win10_22h2_g2: {
+        osType: 'Windows'
+        osState: 'Generalized'
+        offer: 'windows-10'
+        publisher: 'MicrosoftWindowsDesktop'
+        sku: 'win10-22h2-avd-g2'
         hyperVGeneration: 'V2'
+        version: 'latest'
+    }
+    win10_22h2_office_g2: {
+        osType: 'Windows'
+        osState: 'Generalized'
+        offer: 'office-365'
+        publisher: 'MicrosoftWindowsDesktop'
+        sku: 'win10-22h2-avd-m365-g2'
+        hyperVGeneration: 'V2'
+        version: 'latest'
     }
     win11_21h2: {
         osType: 'Windows'
@@ -402,9 +430,37 @@ var varOperatingSystemImageDefinitions = {
         publisher: 'MicrosoftWindowsDesktop'
         sku: 'win11-21h2-avd'
         hyperVGeneration: 'V2'
+        version: 'latest'
+    }
+    win11_21h2_office: {
+        osType: 'Windows'
+        osState: 'Generalized'
+        offer: 'office-365'
+        publisher: 'MicrosoftWindowsDesktop'
+        sku: 'win11-21h2-avd-m365'
+        hyperVGeneration: 'V2'
+        version: 'latest'
+    }
+    win11_22h2: {
+        osType: 'Windows'
+        osState: 'Generalized'
+        offer: 'windows-11'
+        publisher: 'MicrosoftWindowsDesktop'
+        sku: 'win11-22h2-avd'
+        hyperVGeneration: 'V2'
+        version: 'latest'
+    }
+    win11_22h2_office: {
+        osType: 'Windows'
+        osState: 'Generalized'
+        offer: 'office-365'
+        publisher: 'MicrosoftWindowsDesktop'
+        sku: 'win11-22h2-avd-m365'
+        hyperVGeneration: 'V2'
+        version: 'latest'
     }
 }
-// Change back before Pull Request
+
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var varTelemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${sharedServicesLocation}'
 
@@ -546,6 +602,7 @@ var varAlerts = enableMonitoringAlerts ? [
         }
     }
 ]: []
+
 var varModules = [
     {
         name: 'Az.Accounts'
@@ -558,7 +615,7 @@ var varModules = [
 ]
 
 // Role Definitions & Assignments.
-var varDistributionGroupRole = (enableMonitoringAlerts && useExistingVirtualNetwork) ? [
+var varVirtualNetworkJoinRole = useExistingVirtualNetwork ? [
     {
         resourceGroup: split(existingVirtualNetworkResourceId, '/')[4]
         name: 'Virtual Network Join'
@@ -570,7 +627,25 @@ var varDistributionGroupRole = (enableMonitoringAlerts && useExistingVirtualNetw
         ]
     }
 ] : []
-var varImageTemplateRoles = [
+
+// Role Definition required for build automation
+//// Image template permissions are currently (1/6/23) not supported in Azure US Government
+var varImageTemplateBuildAutomation = varAzureCloudName == 'AzureCloud' ? [
+    {
+        resourceGroup: varResourceGroupName
+        name: 'Image Template Build Automation'
+        description: 'Allow Image Template build automation using a Managed Identity on an Automation Account.'
+        actions: [
+            'Microsoft.VirtualMachineImages/imageTemplates/run/action'
+            'Microsoft.VirtualMachineImages/imageTemplates/read'
+            'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/versions/read'
+            'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/read'
+            'Microsoft.Compute/locations/publishers/artifacttypes/offers/read'
+            'Microsoft.Compute/locations/publishers/read'
+        ]
+    }
+] : []
+var varImageTemplateContributorRole = [
     {
         resourceGroup: varResourceGroupName
         name: 'Image Template Contributor'
@@ -585,21 +660,9 @@ var varImageTemplateRoles = [
             'Microsoft.Compute/images/delete'
         ]
     }
-    {
-        resourceGroup: varResourceGroupName
-        name: 'Image Template Build Automation'
-        description: 'Allow Image Template build automation using a Managed Identity on an Automation Account.'
-        actions: [
-            'Microsoft.VirtualMachineImages/imageTemplates/run/action'
-            'Microsoft.VirtualMachineImages/imageTemplates/read'
-            'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/versions/read'
-            'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/read'
-            'Microsoft.Compute/locations/publishers/artifacttypes/offers/read'
-            'Microsoft.Compute/locations/publishers/read'
-        ]
-    }
 ]
-var varRoles = enableMonitoringAlerts? union(varDistributionGroupRole, varImageTemplateRoles): varImageTemplateRoles
+
+var varRoles = union(varVirtualNetworkJoinRole, varImageTemplateBuildAutomation, varImageTemplateContributorRole)
 //
 
 // =========== //
@@ -660,7 +723,7 @@ module userAssignedManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/
     ]
 }
 
-// Role assignment.
+// Role assignments.
 module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for i in range(0, length(varRoles)): {
     name: 'Role-Assignment_${i}_${time}'
     scope: resourceGroup(sharedServicesSubId, varRoles[i].resourceGroup)
@@ -669,13 +732,21 @@ module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignment
         principalId: userAssignedManagedIdentity.outputs.principalId
         principalType: 'ServicePrincipal'
     }
-    dependsOn: [
-
-    ]
 }]
 
+//// Unique role assignment for Azure US Government since it does not support image template permissions
+module roleAssignment_AzureUSGovernment '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (varAzureCloudName != 'AzureCloud') {
+    name: 'Role-Assignment_MAG_${time}'
+    scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
+    params: {
+        roleDefinitionIdOrName: 'Contributor'
+        principalId: userAssignedManagedIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+    }
+}
+
 // Compute Gallery.
-module gallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy.bicep' = {
+module gallery '../../carml/1.3.0/Microsoft.Compute/galleries/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Compute-Gallery_${time}'
     params: {
@@ -690,7 +761,7 @@ module gallery '../../carml/1.2.0/Microsoft.Compute/galleries/deploy.bicep' = {
 }
 
 // Image Definition.
-module image '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep' = {
+module image '../../carml/1.3.0/Microsoft.Compute/galleries/images/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Image-Definition_${time}'
     params: {
@@ -703,6 +774,7 @@ module image '../../carml/1.2.0/Microsoft.Compute/galleries/images/deploy.bicep'
         sku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
         location: aibLocation
         hyperVGeneration: varOperatingSystemImageDefinitions[operatingSystemImage].hyperVGeneration
+        securityType: imageDefinitionSecurityType
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
@@ -731,7 +803,7 @@ module imageTemplate '../../carml/1.3.0/Microsoft.VirtualMachineImages/imageTemp
             publisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
             offer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
             sku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
-            version: 'latest'
+            version: varOperatingSystemImageDefinitions[operatingSystemImage].version
         }
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
@@ -798,7 +870,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
             {
                 parameters: {
                     ClientId: userAssignedManagedIdentity.outputs.clientId
-                    EnvironmentName: environment().name
+                    EnvironmentName: varAzureCloudName
                     ImageOffer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
                     ImagePublisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
                     ImageSku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
