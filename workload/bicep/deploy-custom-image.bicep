@@ -255,49 +255,53 @@ var varAutomationAccountName = customNaming ? automationAccountCustomName : 'aa-
 // var varAvdContainerName = customNaming ? avdContainerCustomName : 'avd-artifacts'
 var varLocationAcronym = varLocationAcronyms[varLocationLowercase]
 var varLocationAcronyms = {
-    eastasia: 'eas'
-    southeastasia: 'seas'
-    centralus: 'cus'
-    eastus: 'eus'
-    eastus2: 'eus2'
-    westus: 'wus'
-    northcentralus: 'ncus'
-    southcentralus: 'scus'
-    northeurope: 'neu'
-    westeurope: 'weu'
-    japanwest: 'jpw'
-    japaneast: 'jpe'
-    brazilsouth: 'drs'
-    australiaeast: 'aue'
-    australiasoutheast: 'ause'
-    southindia: 'sin'
-    centralindia: 'cin'
-    westindia: 'win'
-    canadacentral: 'cac'
-    canadaeast: 'cae'
-    uksouth: 'uks'
-    ukwest: 'ukw'
-    westcentralus: 'wcus'
-    westus2: 'wus2'
-    koreacentral: 'krc'
-    koreasouth: 'krs'
-    francecentral: 'frc'
-    francesouth: 'frs'
     australiacentral: 'auc'
     australiacentral2: 'auc2'
-    uaecentral: 'aec'
-    uaenorth: 'aen'
-    southafricanorth: 'zan'
-    southafricawest: 'zaw'
-    switzerlandnorth: 'chn'
-    switzerlandwest: 'chw'
+    australiaeast: 'aue'
+    australiasoutheast: 'ause'
+    brazilsouth: 'drs'
+    brazilsoutheast: 'brse'
+    canadacentral: 'cac'
+    canadaeast: 'cae'
+    centralindia: 'cin'
+    centralus: 'cus'
+    eastasia: 'eas'
+    eastus: 'eus'
+    eastus2: 'eus2'
+    francecentral: 'frc'
+    francesouth: 'frs'
     germanynorth: 'den'
     germanywestcentral: 'dewc'
-    norwaywest: 'now'
+    japaneast: 'jpe'
+    japanwest: 'jpw'
+    koreacentral: 'krc'
+    koreasouth: 'krs'
+    northcentralus: 'ncus'
+    northeurope: 'neu'
     norwayeast: 'noe'
-    brazilsoutheast: 'brse'
-    westus3: 'wus3'
+    norwaywest: 'now'
+    southafricanorth: 'zan'
+    southafricawest: 'zaw'
+    southcentralus: 'scus'
+    southeastasia: 'seas'
+    southindia: 'sin'
     swedencentral: 'sec'
+    switzerlandnorth: 'chn'
+    switzerlandwest: 'chw'
+    uaecentral: 'aec'
+    uaenorth: 'aen'
+    uksouth: 'uks'
+    ukwest: 'ukw'
+    usgovarizona: 'az'
+    usgoviowa: 'ia'
+    usgovtexas: 'tx'
+    usgovvirginia: 'va'
+    westcentralus: 'wcus'
+    westeurope: 'weu'
+    westindia: 'win'
+    westus: 'wus'
+    westus2: 'wus2'
+    westus3: 'wus3'
 }
 //
 
@@ -346,8 +350,6 @@ var varTimeZones = {
     uaenorth: 'Arabian Standard time'
     uksouth: 'GMT Standard time'
     ukwest: 'GMT Standard time'
-    usdodcentral: 'Central Standard time'
-    usdodeast: 'Eastern Standard time'
     usgovarizona: 'Mountain Standard time'
     usgoviowa: 'Central Standard time'
     usgovtexas: 'Central Standard time'
@@ -611,7 +613,7 @@ var varModules = [
 ]
 
 // Role Definitions & Assignments.
-var varDistributionGroupRole = (enableMonitoringAlerts && useExistingVirtualNetwork) ? [
+var varVirtualNetworkJoinRole = useExistingVirtualNetwork ? [
     {
         resourceGroup: split(existingVirtualNetworkResourceId, '/')[4]
         name: 'Virtual Network Join'
@@ -623,7 +625,25 @@ var varDistributionGroupRole = (enableMonitoringAlerts && useExistingVirtualNetw
         ]
     }
 ] : []
-var varImageTemplateRoles = [
+
+// Role Definition required for build automation
+//// Image template permissions are currently (1/6/23) not supported in Azure US Government
+var varImageTemplateBuildAutomation = environment().name == 'AzureCloud' ? [
+    {
+        resourceGroup: varResourceGroupName
+        name: 'Image Template Build Automation'
+        description: 'Allow Image Template build automation using a Managed Identity on an Automation Account.'
+        actions: [
+            'Microsoft.VirtualMachineImages/imageTemplates/run/action'
+            'Microsoft.VirtualMachineImages/imageTemplates/read'
+            'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/versions/read'
+            'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/read'
+            'Microsoft.Compute/locations/publishers/artifacttypes/offers/read'
+            'Microsoft.Compute/locations/publishers/read'
+        ]
+    }
+] : []
+var varImageTemplateContributorRole = [
     {
         resourceGroup: varResourceGroupName
         name: 'Image Template Contributor'
@@ -638,21 +658,9 @@ var varImageTemplateRoles = [
             'Microsoft.Compute/images/delete'
         ]
     }
-    {
-        resourceGroup: varResourceGroupName
-        name: 'Image Template Build Automation'
-        description: 'Allow Image Template build automation using a Managed Identity on an Automation Account.'
-        actions: [
-            'Microsoft.VirtualMachineImages/imageTemplates/run/action'
-            'Microsoft.VirtualMachineImages/imageTemplates/read'
-            'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/versions/read'
-            'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/read'
-            'Microsoft.Compute/locations/publishers/artifacttypes/offers/read'
-            'Microsoft.Compute/locations/publishers/read'
-        ]
-    }
 ]
-var varRoles = enableMonitoringAlerts? union(varDistributionGroupRole, varImageTemplateRoles): varImageTemplateRoles
+
+var varRoles = union(varVirtualNetworkJoinRole, varImageTemplateBuildAutomation, varImageTemplateContributorRole)
 //
 
 // =========== //
@@ -713,7 +721,7 @@ module userAssignedManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/
     ]
 }
 
-// Role assignment.
+// Role assignments.
 module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for i in range(0, length(varRoles)): {
     name: 'Role-Assignment_${i}_${time}'
     scope: resourceGroup(sharedServicesSubId, varRoles[i].resourceGroup)
@@ -722,10 +730,18 @@ module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignment
         principalId: userAssignedManagedIdentity.outputs.principalId
         principalType: 'ServicePrincipal'
     }
-    dependsOn: [
-
-    ]
 }]
+
+//// Unique role assignment for Azure US Government since it does not support image template permissions
+module roleAssignment_AzureUSGovernment '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = {
+    name: 'Role-Assignment_MAG_${time}'
+    scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
+    params: {
+        roleDefinitionIdOrName: 'Contributor'
+        principalId: userAssignedManagedIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+    }
+}
 
 // Compute Gallery.
 module gallery '../../carml/1.3.0/Microsoft.Compute/galleries/deploy.bicep' = {
