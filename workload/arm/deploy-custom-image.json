@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "16193646325324166652"
+      "templateHash": "10879565752675221919"
     }
   },
   "parameters": {
@@ -491,63 +491,75 @@
     "varVmSize": "Standard_D4s_v3",
     "varOperatingSystemImageDefinitions": {
       "win10_21h2": {
-        "publisher": "MicrosoftWindowsDesktop",
+        "osType": "Windows",
+        "osState": "Generalized",
         "offer": "windows-10",
+        "publisher": "MicrosoftWindowsDesktop",
         "sku": "win10-21h2-avd",
+        "hyperVGeneration": "V1",
         "version": "latest"
       },
       "win10_21h2_office": {
-        "publisher": "MicrosoftWindowsDesktop",
+        "osType": "Windows",
+        "osState": "Generalized",
         "offer": "office-365",
+        "publisher": "MicrosoftWindowsDesktop",
         "sku": "win10-21h2-avd-m365",
+        "hyperVGeneration": "V1",
         "version": "latest"
       },
       "win10_22h2_g2": {
-        "publisher": "MicrosoftWindowsDesktop",
+        "osType": "Windows",
+        "osState": "Generalized",
         "offer": "windows-10",
+        "publisher": "MicrosoftWindowsDesktop",
         "sku": "win10-22h2-avd-g2",
+        "hyperVGeneration": "V2",
         "version": "latest"
       },
       "win10_22h2_office_g2": {
-        "publisher": "MicrosoftWindowsDesktop",
+        "osType": "Windows",
+        "osState": "Generalized",
         "offer": "office-365",
-        "sku": "win10-21h2-avd-m365-g2",
+        "publisher": "MicrosoftWindowsDesktop",
+        "sku": "win10-22h2-avd-m365-g2",
+        "hyperVGeneration": "V2",
         "version": "latest"
       },
       "win11_21h2": {
+        "osType": "Windows",
+        "osState": "Generalized",
+        "offer": "windows-11",
         "publisher": "MicrosoftWindowsDesktop",
-        "offer": "Windows-11",
         "sku": "win11-21h2-avd",
+        "hyperVGeneration": "V2",
         "version": "latest"
       },
       "win11_21h2_office": {
-        "publisher": "MicrosoftWindowsDesktop",
+        "osType": "Windows",
+        "osState": "Generalized",
         "offer": "office-365",
+        "publisher": "MicrosoftWindowsDesktop",
         "sku": "win11-21h2-avd-m365",
+        "hyperVGeneration": "V2",
         "version": "latest"
       },
       "win11_22h2": {
+        "osType": "Windows",
+        "osState": "Generalized",
+        "offer": "windows-11",
         "publisher": "MicrosoftWindowsDesktop",
-        "offer": "Windows-11",
         "sku": "win11-22h2-avd",
+        "hyperVGeneration": "V2",
         "version": "latest"
       },
       "win11_22h2_office": {
-        "publisher": "MicrosoftWindowsDesktop",
+        "osType": "Windows",
+        "osState": "Generalized",
         "offer": "office-365",
+        "publisher": "MicrosoftWindowsDesktop",
         "sku": "win11-22h2-avd-m365",
-        "version": "latest"
-      },
-      "winServer_2022_Datacenter": {
-        "publisher": "MicrosoftWindowsServer",
-        "offer": "WindowsServer",
-        "sku": "2022-datacenter",
-        "version": "latest"
-      },
-      "winServer_2019_Datacenter": {
-        "publisher": "MicrosoftWindowsServer",
-        "offer": "WindowsServer",
-        "sku": "2019-datacenter",
+        "hyperVGeneration": "V2",
         "version": "latest"
       }
     },
@@ -3888,7 +3900,7 @@
               "publisher": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].publisher]",
               "offer": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].offer]",
               "sku": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].sku]",
-              "version": "latest"
+              "version": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].version]"
             }
           },
           "tags": {
