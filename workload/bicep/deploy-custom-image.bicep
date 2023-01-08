@@ -238,6 +238,7 @@ param enableTelemetry bool = true
 // Variable declaration //
 // =========== //
 // Resouce Naming.
+var varAzureCloudName = environment().name
 var varActionGroupName = customNaming ? alertsActionGroupCustomName : 'ag-avd-${varNamingStandard}'
 var varNamingStandard = '${varLocationAcronym}'
 var varLocationLowercase = toLower(sharedServicesLocation)
@@ -459,7 +460,7 @@ var varOperatingSystemImageDefinitions = {
         version: 'latest'
     }
 }
-// Change back before Pull Request
+
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var varTelemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${sharedServicesLocation}'
 
@@ -601,6 +602,7 @@ var varAlerts = enableMonitoringAlerts ? [
         }
     }
 ]: []
+
 var varModules = [
     {
         name: 'Az.Accounts'
@@ -628,7 +630,7 @@ var varVirtualNetworkJoinRole = useExistingVirtualNetwork ? [
 
 // Role Definition required for build automation
 //// Image template permissions are currently (1/6/23) not supported in Azure US Government
-var varImageTemplateBuildAutomation = environment().name == 'AzureCloud' ? [
+var varImageTemplateBuildAutomation = varAzureCloudName == 'AzureCloud' ? [
     {
         resourceGroup: varResourceGroupName
         name: 'Image Template Build Automation'
@@ -733,7 +735,7 @@ module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignment
 }]
 
 //// Unique role assignment for Azure US Government since it does not support image template permissions
-module roleAssignment_AzureUSGovernment '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = {
+module roleAssignment_AzureUSGovernment '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (varAzureCloudName != 'AzureCloud') {
     name: 'Role-Assignment_MAG_${time}'
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     params: {
@@ -868,7 +870,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
             {
                 parameters: {
                     ClientId: userAssignedManagedIdentity.outputs.clientId
-                    EnvironmentName: environment().name
+                    EnvironmentName: varAzureCloudName
                     ImageOffer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
                     ImagePublisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
                     ImageSku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
