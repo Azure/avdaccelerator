@@ -61,8 +61,9 @@ New-AzSubscriptionDeployment `
 ```bash
 az deployment create \
   --template-file workload/bicep/deploy-custom-image.bicep \
-  --parameters avdSharedServicesSubId="<subscriptionId>" \
-  --Location eastus
+  --parameters @workload/bicep/parameters/deploy-custom-image-parameters-example.json \
+  --parameters sharedServicesSubId="<subscriptionId>" \
+  --Location "eastus"
 ```
 
 ### PowerShell
@@ -70,8 +71,9 @@ az deployment create \
 ```powershell
 New-AzSubscriptionDeployment `
   -TemplateFile workload/bicep/deploy-custom-image.bicep `
-  -avdSharedServicesSubId "<subscriptionId>" `
-  -Location "eastus"
+  -TemplateParameterFile workload/bicep/parameters/deploy-custom-image-parameters-example.json `
+  -sharedServicesSubId "<subscriptionId>" `
+  -Location "eastus2"
 ```
 
 ## Contributing
