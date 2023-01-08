@@ -63,7 +63,7 @@ az deployment create \
   --template-file workload/bicep/deploy-custom-image.bicep \
   --parameters @workload/bicep/parameters/deploy-custom-image-parameters-example.json \
   --parameters sharedServicesSubId="<subscriptionId>" \
-  --Location "eastus2"
+  --Location "eastus"
 ```
 
 ### PowerShell
