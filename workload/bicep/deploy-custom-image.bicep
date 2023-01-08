@@ -385,64 +385,75 @@ var varImageReplicationRegions = empty(imageVersionDisasterRecoveryLocation) ? [
 var varVmSize = 'Standard_D4s_v3'
 var varOperatingSystemImageDefinitions = {
     win10_21h2: {
-        publisher: 'MicrosoftWindowsDesktop'
+        osType: 'Windows'
+        osState: 'Generalized'
         offer: 'windows-10'
+        publisher: 'MicrosoftWindowsDesktop'
         sku: 'win10-21h2-avd'
+        hyperVGeneration: 'V1'
         version: 'latest'
     }
     win10_21h2_office: {
-        publisher: 'MicrosoftWindowsDesktop'
+        osType: 'Windows'
+        osState: 'Generalized'
         offer: 'office-365'
+        publisher: 'MicrosoftWindowsDesktop'
         sku: 'win10-21h2-avd-m365'
+        hyperVGeneration: 'V1'
         version: 'latest'
     }
 	win10_22h2_g2: {
-        publisher: 'MicrosoftWindowsDesktop'
+        osType: 'Windows'
+        osState: 'Generalized'
         offer: 'windows-10'
+        publisher: 'MicrosoftWindowsDesktop'
         sku: 'win10-22h2-avd-g2'
+        hyperVGeneration: 'V2'
         version: 'latest'
     }
-	
     win10_22h2_office_g2: {
-        publisher: 'MicrosoftWindowsDesktop'
+        osType: 'Windows'
+        osState: 'Generalized'
         offer: 'office-365'
-        sku: 'win10-21h2-avd-m365-g2'
+        publisher: 'MicrosoftWindowsDesktop'
+        sku: 'win10-22h2-avd-m365-g2'
+        hyperVGeneration: 'V2'
         version: 'latest'
     }
     win11_21h2: {
+        osType: 'Windows'
+        osState: 'Generalized'
+        offer: 'windows-11'
         publisher: 'MicrosoftWindowsDesktop'
-        offer: 'Windows-11'
         sku: 'win11-21h2-avd'
+        hyperVGeneration: 'V2'
         version: 'latest'
     }
     win11_21h2_office: {
-        publisher: 'MicrosoftWindowsDesktop'
+        osType: 'Windows'
+        osState: 'Generalized'
         offer: 'office-365'
+        publisher: 'MicrosoftWindowsDesktop'
         sku: 'win11-21h2-avd-m365'
+        hyperVGeneration: 'V2'
         version: 'latest'
     }
     win11_22h2: {
+        osType: 'Windows'
+        osState: 'Generalized'
+        offer: 'windows-11'
         publisher: 'MicrosoftWindowsDesktop'
-        offer: 'Windows-11'
         sku: 'win11-22h2-avd'
+        hyperVGeneration: 'V2'
         version: 'latest'
     }
     win11_22h2_office: {
-        publisher: 'MicrosoftWindowsDesktop'
+        osType: 'Windows'
+        osState: 'Generalized'
         offer: 'office-365'
+        publisher: 'MicrosoftWindowsDesktop'
         sku: 'win11-22h2-avd-m365'
-        version: 'latest'
-    }
-    winServer_2022_Datacenter: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2022-datacenter'
-        version: 'latest'
-    }
-    winServer_2019_Datacenter: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2019-datacenter'
+        hyperVGeneration: 'V2'
         version: 'latest'
     }
 }
@@ -774,7 +785,7 @@ module imageTemplate '../../carml/1.3.0/Microsoft.VirtualMachineImages/imageTemp
             publisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
             offer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
             sku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
-            version: 'latest'
+            version: varOperatingSystemImageDefinitions[operatingSystemImage].version
         }
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
