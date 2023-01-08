@@ -48,6 +48,7 @@ workload/terraform/greenfield/avdbaseline/.terraform.lock.hcl
  /.terraform/
 workload/terraform/greenfield/avdbaseline/.terraform/modules/modules.json
 workload/terraform/greenfield/avdbaseline/.terraform/providers/registry.terraform.io/azure/azapi/0.6.0/linux_amd64/terraform-provider-azapi_v0.6.0
+
 Deploy-Baseline.ps1
 workload/bicep/parameters/deploy-baseline-parameters-MSA.json
 Deploy-Baseline.ps1
