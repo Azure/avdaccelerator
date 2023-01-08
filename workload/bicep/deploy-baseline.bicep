@@ -650,16 +650,22 @@ var varAvdScalingPlanSchedules = [
 ]
 
 var varMarketPlaceGalleryWindows = {
+    win10_21h2: {
+        publisher: 'MicrosoftWindowsDesktop'
+        offer: 'windows-10'
+        sku: 'win10-21h2-avd'
+        version: 'latest'
+    }
     win10_21h2_office: {
         publisher: 'MicrosoftWindowsDesktop'
         offer: 'office-365'
         sku: 'win10-21h2-avd-m365'
         version: 'latest'
     }
-    win10_21h2: {
+	win10_22h2_g2: {
         publisher: 'MicrosoftWindowsDesktop'
         offer: 'windows-10'
-        sku: 'win10-21h2-avd'
+        sku: 'win10-22h2-avd-g2'
         version: 'latest'
     }
     win10_22h2_office_g2: {
@@ -668,10 +674,10 @@ var varMarketPlaceGalleryWindows = {
         sku: 'win10-21h2-avd-m365-g2'
         version: 'latest'
     }
-    win10_21h2_g2: {
+    win11_21h2: {
         publisher: 'MicrosoftWindowsDesktop'
-        offer: 'windows-10'
-        sku: 'win10-21h2-avd-g2'
+        offer: 'Windows-11'
+        sku: 'win11-21h2-avd'
         version: 'latest'
     }
     win11_21h2_office: {
@@ -680,22 +686,16 @@ var varMarketPlaceGalleryWindows = {
         sku: 'win11-21h2-avd-m365'
         version: 'latest'
     }
-    win11_21h2: {
+    win11_22h2: {
         publisher: 'MicrosoftWindowsDesktop'
         offer: 'Windows-11'
-        sku: 'win11-21h2-avd'
+        sku: 'win11-22h2-avd'
         version: 'latest'
     }
     win11_22h2_office: {
         publisher: 'MicrosoftWindowsDesktop'
         offer: 'office-365'
         sku: 'win11-22h2-avd-m365'
-        version: 'latest'
-    }
-    win11_22h2: {
-        publisher: 'MicrosoftWindowsDesktop'
-        offer: 'Windows-11'
-        sku: 'win11-22h2-avd'
         version: 'latest'
     }
     winServer_2022_Datacenter: {
