@@ -697,6 +697,18 @@ var varMarketPlaceGalleryWindows = {
         sku: 'win11-22h2-avd'
         version: 'latest'
     }
+    winServer_2022_Datacenter: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2022-datacenter'
+        version: 'latest'
+    }
+    winServer_2019_Datacenter: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2019-datacenter'
+        version: 'latest'
+    }
 }
 
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
