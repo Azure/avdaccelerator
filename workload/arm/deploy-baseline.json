@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "8531520268416962674"
+      "templateHash": "9431385728466801384"
     }
   },
   "parameters": {
@@ -413,6 +413,32 @@
         "description": "Optional. OS disk type for session host. (Defualt: Standard_LRS)"
       }
     },
+    "securityType": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "metadata": {
+        "description": "Optional. Specifies the securityType of the virtual machine. \"ConfidentialVM\" and \"TrustedLaunch\" require a Gen2 Image. (Default: Standard)"
+      },
+      "allowedValues": [
+        "Standard",
+        "TrustedLaunch",
+        "ConfidentialVM"
+      ]
+    },
+    "secureBootEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings. (Default: false)"
+      }
+    },
+    "vTpmEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings. (Default: false)"
+      }
+    },
     "avdOsImage": {
       "type": "string",
       "defaultValue": "win10_21h2",
@@ -420,10 +446,14 @@
         "description": "Optional. AVD OS image source. (Default: win10-21h2)"
       },
       "allowedValues": [
-        "win10_21h2_office",
         "win10_21h2",
+        "win10_21h2_office",
+        "win10_22h2_g2",
+        "win10_22h2_office_g2",
+        "win11_21h2",
         "win11_21h2_office",
-        "win11_21h2"
+        "win11_22h2",
+        "win11_22h2_office"
       ]
     },
     "useSharedImage": {
@@ -1014,16 +1044,34 @@
       }
     ],
     "varMarketPlaceGalleryWindows": {
+      "win10_21h2": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "windows-10",
+        "sku": "win10-21h2-avd",
+        "version": "latest"
+      },
       "win10_21h2_office": {
         "publisher": "MicrosoftWindowsDesktop",
         "offer": "office-365",
         "sku": "win10-21h2-avd-m365",
         "version": "latest"
       },
-      "win10_21h2": {
+      "win10_22h2_g2": {
         "publisher": "MicrosoftWindowsDesktop",
         "offer": "windows-10",
-        "sku": "win10-21h2-avd",
+        "sku": "win10-22h2-avd-g2",
+        "version": "latest"
+      },
+      "win10_22h2_office_g2": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "office-365",
+        "sku": "win10-21h2-avd-m365-g2",
+        "version": "latest"
+      },
+      "win11_21h2": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "Windows-11",
+        "sku": "win11-21h2-avd",
         "version": "latest"
       },
       "win11_21h2_office": {
@@ -1032,10 +1080,16 @@
         "sku": "win11-21h2-avd-m365",
         "version": "latest"
       },
-      "win11_21h2": {
+      "win11_22h2": {
         "publisher": "MicrosoftWindowsDesktop",
         "offer": "Windows-11",
-        "sku": "win11-21h2-avd",
+        "sku": "win11-22h2-avd",
+        "version": "latest"
+      },
+      "win11_22h2_office": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "office-365",
+        "sku": "win11-22h2-avd-m365",
         "version": "latest"
       },
       "winServer_2022_Datacenter": {
@@ -29647,6 +29701,15 @@
           "avdSessionHostsSize": {
             "value": "[parameters('avdSessionHostsSize')]"
           },
+          "securityType": {
+            "value": "[if(equals(parameters('securityType'), 'Standard'), '', parameters('securityType'))]"
+          },
+          "secureBootEnabled": {
+            "value": "[parameters('secureBootEnabled')]"
+          },
+          "vTpmEnabled": {
+            "value": "[parameters('vTpmEnabled')]"
+          },
           "avdSubnetId": {
             "value": "[if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Deploy-AVD-Networking-{0}', parameters('time'))), '2020-10-01').outputs.avdVirtualNetworkResourceId.value, variables('varAvdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId'))]"
           },
@@ -29712,7 +29775,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.12.40.16777",
-              "templateHash": "16229733117889532008"
+              "templateHash": "8369828764626016223"
             }
           },
           "parameters": {
@@ -29822,6 +29885,24 @@
               "type": "string",
               "metadata": {
                 "description": "Session host VM size."
+              }
+            },
+            "securityType": {
+              "type": "string",
+              "metadata": {
+                "description": "Optional. Specifies the securityType of the virtual machine. Must be TrustedLaunch or ConfidentialVM enable UefiSettings."
+              }
+            },
+            "secureBootEnabled": {
+              "type": "bool",
+              "metadata": {
+                "description": "Optional. Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch to enable UefiSettings."
+              }
+            },
+            "vTpmEnabled": {
+              "type": "bool",
+              "metadata": {
+                "description": "Optional. Specifies whether virtual TPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch to enable UefiSettings."
               }
             },
             "avdSessionHostDiskType": {
@@ -30489,6 +30570,15 @@
                   "avdSessionHostsSize": {
                     "value": "[parameters('avdSessionHostsSize')]"
                   },
+                  "securityType": {
+                    "value": "[parameters('securityType')]"
+                  },
+                  "secureBootEnabled": {
+                    "value": "[parameters('secureBootEnabled')]"
+                  },
+                  "vTpmEnabled": {
+                    "value": "[parameters('vTpmEnabled')]"
+                  },
                   "avdSubnetId": {
                     "value": "[parameters('avdSubnetId')]"
                   },
@@ -30557,7 +30647,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.12.40.16777",
-                      "templateHash": "7674717005336479109"
+                      "templateHash": "2325314406125851869"
                     }
                   },
                   "parameters": {
@@ -30649,6 +30739,24 @@
                       "type": "string",
                       "metadata": {
                         "description": "Session host VM size."
+                      }
+                    },
+                    "securityType": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Optional. Specifies the securityType of the virtual machine. It is set as TrustedLaunch to enable UefiSettings."
+                      }
+                    },
+                    "secureBootEnabled": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Optional. Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch to enable UefiSettings."
+                      }
+                    },
+                    "vTpmEnabled": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Optional. Specifies whether the virtual TPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch to enable UefiSettings."
                       }
                     },
                     "avdSessionHostDiskType": {
@@ -30864,6 +30972,15 @@
                           },
                           "vmSize": {
                             "value": "[parameters('avdSessionHostsSize')]"
+                          },
+                          "securityType": {
+                            "value": "[parameters('securityType')]"
+                          },
+                          "secureBootEnabled": {
+                            "value": "[parameters('secureBootEnabled')]"
+                          },
+                          "vTpmEnabled": {
+                            "value": "[parameters('vTpmEnabled')]"
                           },
                           "imageReference": {
                             "value": "[if(parameters('useSharedImage'), json(format('{{''id'': ''{0}''}}', parameters('avdImageTemplateDefinitionId'))), parameters('marketPlaceGalleryWindows'))]"
