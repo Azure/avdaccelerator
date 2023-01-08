@@ -208,14 +208,14 @@ param secureBootEnabled bool = false
 @description('Optional. Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings.')
 param vTpmEnabled bool = false
 @allowed([
-    'win10_21h2_office'
     'win10_21h2'
-    'win10_22h2_office_g2'
+    'win10_21h2_office'
     'win10_22h2_g2'
-    'win11_21h2_office'
+    'win10_22h2_office_g2'
     'win11_21h2'
-    'win11_22h2_office'
+    'win11_21h2_office'
     'win11_22h2'
+    'win11_22h2_office'
 ])
 @description('Optional. AVD OS image source. (Default: win10-21h2)')
 param avdOsImage string = 'win10_21h2'
