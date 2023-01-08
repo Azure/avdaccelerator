@@ -21,7 +21,7 @@ param principalType string = ''
 @sys.description('Optional. The description of the role assignment.')
 param description string = ''
 
-@sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
+@sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
 param condition string = ''
 
 @sys.description('Optional. Version of the condition.')
@@ -34,7 +34,9 @@ param conditionVersion string = '2.0'
 param delegatedManagedIdentityResourceId string = ''
 
 var builtInRoleNames = {
+  'Compute Gallery Sharing Admin': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1ef6a3be-d0ac-425d-8c01-acb62866290b')
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+  'Desktop Virtualization Virtual Machine Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a959dbd1-f747-45e3-8ba6-dd80f235f97c')
   'Log Analytics Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')
   'Log Analytics Reader': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')
   'Managed Application Contributor Role': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')
@@ -47,14 +49,15 @@ var builtInRoleNames = {
   'Resource Policy Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')
   'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
+  'Windows Admin Center Administrator Login': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a6333a3e-0164-44c3-b281-7a577aff287f')
 }
 
-resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2022-02-14' existing = {
-  name: last(split(resourceId, '/'))
+resource galleryApplication 'Microsoft.Compute/galleries/applications@2022-03-03' existing = {
+  name: '${split(resourceId, '/')[8]}/${split(resourceId, '/')[10]}'
 }
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for principalId in principalIds: {
-  name: guid(imageTemplate.id, principalId, roleDefinitionIdOrName)
+  name: guid(galleryApplication.id, principalId, roleDefinitionIdOrName)
   properties: {
     description: description
     roleDefinitionId: contains(builtInRoleNames, roleDefinitionIdOrName) ? builtInRoleNames[roleDefinitionIdOrName] : roleDefinitionIdOrName
@@ -64,5 +67,5 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
     conditionVersion: !empty(conditionVersion) && !empty(condition) ? conditionVersion : null
     delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId) ? delegatedManagedIdentityResourceId : null
   }
-  scope: imageTemplate
+  scope: galleryApplication
 }]
