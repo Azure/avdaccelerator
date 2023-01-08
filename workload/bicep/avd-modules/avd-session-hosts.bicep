@@ -48,6 +48,15 @@ param encryptionAtHost bool
 @description('Session host VM size.')
 param avdSessionHostsSize string
 
+@description('Optional. Specifies the securityType of the virtual machine. It is set as TrustedLaunch to enable UefiSettings.')
+param securityType string
+
+@description('Optional. Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch to enable UefiSettings.')
+param secureBootEnabled bool
+
+@description('Optional. Specifies whether the virtual TPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch to enable UefiSettings.')
+param vTpmEnabled bool
+
 @description('OS disk type for session host.')
 param avdSessionHostDiskType string
 
@@ -160,6 +169,9 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
         osType: 'Windows'
         licenseType: 'Windows_Client'
         vmSize: avdSessionHostsSize
+        securityType: securityType
+        secureBootEnabled: secureBootEnabled
+        vTpmEnabled: vTpmEnabled
         imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinitionId}\'}') : marketPlaceGalleryWindows
         osDisk: {
             createOption: 'fromImage'

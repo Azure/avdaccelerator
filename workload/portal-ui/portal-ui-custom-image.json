@@ -171,26 +171,89 @@
                                     "type": "Microsoft.Common.DropDown",
                                     "label": "Version",
                                     "filter": true,
-                                    "defaultValue": "Windows 11",
+                                    "defaultValue": "Windows 11 22H2 (Gen2)",
                                     "toolTip": "Select the operating system version for the source image.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Windows 10",
+                                                "label": "Windows 10 21H2 (Gen1)",
                                                 "value": "win10_21h2"
                                             },
                                             {
-                                                "label": "Windows 10 - Office 365",
+                                                "label": "Windows 10 21H2 - Office 365 (Gen1)",
                                                 "value": "win10_21h2_office"
                                             },
                                             {
-                                                "label": "Windows 11",
+                                                "label": "Windows 10 22H2 (Gen2)",
+                                                "value": "win10_22h2_g2"
+                                            },
+                                            {
+                                                "label": "Windows 10 22H2 - Office 365 (Gen2)",
+                                                "value": "win10_22h2_office_g2"
+                                            },
+                                            {
+                                                "label": "Windows 11 21H2 (Gen2)",
                                                 "value": "win11_21h2"
                                             },
                                             {
-                                                "label": "Windows 11 - Office 365",
+                                                "label": "Windows 11 21H2 - Office 365 (Gen2)",
                                                 "value": "win11_21h2_office"
+                                            },
+                                            {
+                                                "label": "Windows 11 22H2 (Gen2)",
+                                                "value": "win11_22h2"
+                                            },
+                                            {
+                                                "label": "Windows 11 22H2 - Office 365 (Gen2)",
+                                                "value": "win11_22h2_office"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "imageDefinitionFeatures",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "Image definition features",
+                            "elements": [
+                                {
+                                    "name": "imageDefinitionFeaturesInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[and(not(contains(steps('imageManagement').operatingSystem.versionSelection, 'g2')), not(contains(steps('imageManagement').operatingSystem.versionSelection, 'win11')))]",
+                                    "options": {
+                                        "text": "Image Definition Features are currently applicable to Generation 2 images only. Select a Gen 2 Operating System Image to see the features available. Click here for more information.",
+                                        "uri": "https://learn.microsoft.com/azure/virtual-machines/azure-compute-gallery#high-availability",
+                                        "style": "Info"
+                                    }
+                                },
+                                {
+                                    "name": "securityType",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "visible": "[or(contains(steps('imageManagement').operatingSystem.versionSelection, 'g2'), contains(steps('imageManagement').operatingSystem.versionSelection, 'win11'))]",
+                                    "label": "Security type",
+                                    "defaultValue": "Standard",
+                                    "toolTip": "Security type refers to the different security features available for a virtual machine. Security features like Trusted launch and Confidential Virtual Machines help to improve the security of Azure generation 2 virtual machines. However, additional security features have some limitations, which include not supporting back up, managed disks, and ephemeral OS disks. Learn more about Trusted launch virtual machines at https://learn.microsoft.com/en-us/azure/virtual-machines/trusted-launch and Confidential virtual machines at https://learn.microsoft.com/en-us/azure/confidential-computing/confidential-vm-overview.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Standard",
+                                                "value": "Standard"
+                                            },
+                                            {
+                                                "label": "Trusted Launch",
+                                                "value": "TrustedLaunch"
+                                            },
+                                            {
+                                                "label": "Confidential Virtual Machine",
+                                                "value": "ConfidentialVM"
+                                            },
+                                            {
+                                                "label": "Confidential Virtual Machine Supported",
+                                                "value": "ConfidentialVMSupported"
                                             }
                                         ]
                                     }
@@ -986,7 +1049,7 @@
         },
         "outputs": {
             "parameters": {
-                "actionGroupCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.actionGroup, 'none')]",
+                "alertsActionGroupCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.actionGroup, 'none')]",
                 "aibLocation": "[steps('aib').locationSelection]",
                 "buildSchedule": "[steps('aib').buildSchedule]",
                 "applicationNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.application, 'none')]",
@@ -998,7 +1061,7 @@
                 "dataClassificationTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.dataClassification, 'Non-business')]",
                 "departmentTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.department, 'none')]",
                 "enableMonitoringAlerts": "[steps('monitoring').monitoringAndAlerting]",
-                "distributionGroup": "[if(equals(steps('monitoring').monitoringAndAlerting, true), steps('monitoring').distributionGroup, '')]",
+                "alertsDistributionGroup": "[if(equals(steps('monitoring').monitoringAndAlerting, true), steps('monitoring').distributionGroup, '')]",
                 "environmentTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.environment, 'Dev')]",
                 "imageBuildNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.imageBuild, 'none')]",
                 "imageDefinitionCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.imageDefinition, 'none')]",
@@ -1008,6 +1071,7 @@
                 "imageVersionDisasterRecoveryLocation": "[if(equals(steps('imageManagement').imageVersion.replication, true), steps('imageManagement').imageVersion.disasterRecoveryLocation, '')]",
                 "logAnalyticsWorkspaceCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.logAnalyticsWorkspace, 'none')]",
                 "operatingSystemImage": "[steps('imageManagement').operatingSystem.versionSelection]",
+                "imageDefinitionSecurityType": "[steps('imageManagement').imageDefinitionFeatures.securityType]",
                 "operationsTeamTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.operationsTeam, 'none')]",
                 "ownerTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.owner, 'none')]",
                 "rdpShortPath": "[steps('aib').rdpShortPathSelection]",
@@ -1019,7 +1083,7 @@
                 "useExistingVirtualNetwork": "[steps('aib').virtualNetwork]",
                 "existingLogAnalyticsWorkspaceResourceId": "[if(equals(steps('monitoring').existingLogAnalyticsWorkspace, true), steps('monitoring').logAnalyticsWorkspaceSelection.id, '')]",
                 "existingVirtualNetworkResourceId": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').virtualNetworkSelection.id, '')]",
-                "subnetName": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').subnet, '')]",
+                "existingSubnetName": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').subnet, '')]",
                 "userAssignedManagedIdentityCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.userAssignedManagedIdentity, 'none')]",
                 "workloadNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.workload, 'none')]"
             },
