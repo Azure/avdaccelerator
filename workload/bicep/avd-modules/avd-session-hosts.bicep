@@ -24,7 +24,7 @@ param maxAvailabilitySetMembersCount int
 @description('Resource Group name for the session hosts')
 param avdComputeObjectsRgName string
 
-@description('Resource Group name for the session hosts')
+@description('Resource Group name for the AVD infrastructure resources')
 param avdServiceObjectsRgName string
 
 @description('Optional. AVD workload subscription ID, multiple subscriptions scenario.')
