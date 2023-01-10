@@ -4,21 +4,28 @@
 | ------------------------------------------------------------ |
 | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json) |
 
-- **Azure core setup** blade
-  - **Subscription** - The subscription where the accelerator is going to deploy the resources
-  - **Region** – The desired Azure Region to be used for the deployment
-  - **Deployment prefix** – A prefix of maximum 4 characters that will be appended to the names of Resource Groups and Azure resources within the Resource Groups
-- **Image Management** blade
-  - **Storage- Use availability zones** - Select "Yes" to distribute storage resources across availability zones (when available)
-  - **OS- Version** - Select the Image OS SKU to be used as source for the image
-- **Image Azure Image Builder (AIB)** blade
-  - **Deployment location** - Select the location where Azure Image Builder will run to create the image
-  - **Create AIB managed identity** - Select "Yes" to create managed identity for Azure Image Builder custom role
-  - **Create AIB role** - Select "Yes" to create an Azure Image Builder custom role
-- **Resource naming** blade
-  - **Custom resource naming** - When set "Yes", the user will input names for the resources. When set to "No" the deployment will use the AVD accelerator naming standard
-- **Resource tagging** blade
-  - **Custom resource tags** - When set 'Yes', the information provided will be used to create tags on resources and resource groups
+- **Basics** blade:
+  - **Subscription** - The subscription where the accelerator is going to deploy the resources.
+  - **Region** – The desired Azure Region to be used for the deployment.
+- **Image Management** blade:
+  - **Storage account type** - Select storage account type option between Standard Locally-Redundant Storage or Standard Zone-Redundant Storage (when available).
+  - **Enable replication to disaster recovery location** - Select if creating image version replica in another region (DR Location).
+  - **Disaster recovery location** - When replicating image version, select the region where the image will be replicated.
+  - **Operating system version** - Select the Image OS SKU to be used as source for the image.
+- **Azure Image Builder (AIB)** blade:
+  - **Deployment location** - Select the location where Azure Image Builder will run to create the image.
+  - **Build schedule** - Select if custom image will be built "OneTime" or "Recurring" to create a schedule and run the build every time a new source image is available.
+  - **Existing virtual network** - Select "Yes" to use existing virtual network or "No" for the AIB process to create a temporary one that is deleted once the build is completed.
+  - **Enable RDP shortpath for managed networks** - Select if enabling RDP Short Path on the custom image registry.
+  - **Enable screen capture protection** - Select if enabling Screen Capture Protection on the custom image registry.
+- **Monitoring** blade:
+  - **Enable monitoring & alerting** - Select if enabling monitoring and alerts.
+  - **Distribution group** - Input the distribution group for receiving alerts (emails) on the build status.
+  - **Existing log analytics workspace** - Select if using existing log analytics workspace selecting "Yes" or if creating a new one selecting "No".
+- **Resource naming** blade:
+  - **Custom resource naming** - When set "Yes", the user will input names for the resources. When set to "No" the deployment will use the AVD accelerator naming standard.
+- **Resource tagging** blade:
+  - **Custom resource tags** - When set 'Yes', the information provided will be used to create tags on resources and resource groups.
 
 Take a look at the [Naming Standard and Tagging](./resource-naming.md) page for further information.
 

@@ -8,20 +8,21 @@ This accelerator is to be used as starter kit and you can expand its functionali
 
 Prior to deploying, you need to ensure you have met the following prerequisites:
 
-- It is recommended to have already deployed an ALZ architecture (not mandatory) from a template reference implementation available. See [Deploying Enterprise-Scale Architecture in your own environment](https://github.com/Azure/Enterprise-Scale#deploying-enterprise-scale-architecture-in-your-own-environment)
-- Access to the AVD Azure subscription(s) with owner permissions
-- Azure AD Connect is already configured and users are already synchronized from AD DS to Azure AD
-- The account used for the deployment and the Active Directory Domain Join account cannot have multi-factor authentication (MFA) enabled
-- The Domain Controllers used for AD join purposes should be standard writable Domain Controllers, not Read Only Domain Controllers
-- You have the appropriate [licenses](https://docs.microsoft.com/azure/virtual-desktop/prerequisites#operating-systems-and-licenses) for proper AVD entitlement
-- If the new AVD workload will be connected (peered) with a Hub VNet, contributor permissions are required on the referenced Hub VNet
-- If using existing Virtual Networks, the deployment will fail if Private Endpoint policies are enabled. See the following article on disabling them: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy)
+- It is recommended to have already deployed an ALZ architecture (not mandatory) from a template reference implementation available. See [Deploying Enterprise-Scale Architecture in your own environment](https://github.com/Azure/Enterprise-Scale#deploying-enterprise-scale-architecture-in-your-own-environment).
+- Access to the AVD Azure subscription(s) with owner permissions.
+- Azure AD Connect is already configured and users are already synchronized from AD DS to Azure AD, unless session hosts are being join to Azure AD and FSLogix is not in use.
+- The account used for the deployment and the Active Directory Domain Join account cannot have multi-factor authentication (MFA) enabled.
+- The Domain Controllers used for AD join purposes should be standard writable Domain Controllers, not Read Only Domain Controllers.
+- You have the appropriate [licenses](https://docs.microsoft.com/azure/virtual-desktop/prerequisites#operating-systems-and-licenses) for proper AVD entitlement.
+- If the new AVD workload will be connected (peered) with a Hub VNet, contributor permissions are required on the referenced Hub VNet.
+- If using existing Virtual Networks, the deployment will fail if deny private endpoint network policies is enabled. See the following article on disabling them: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy).
 - Private DNS zones for Azure files (privatelink.file.core.windows.net) and keyvault private (privatelink.vaultcore.azure.net) endpoints resolution.
+- When enabling Start VM on Connect or Scaling Plans features, it is required to provide the ObjectID for the enterprise application Azure Virtual Desktop (Name can also be displayed as 'Windows Virtual Desktops'). To get the ObjectID got to Azure AD > Enterprise applications, remove all filters and search for 'Virtual Desktops' and copy the OjectID that is paired with the Application ID: 9cdead84-a844-4324-93f2-b2e6bb768d07.
 
 ### Subscription requirements
 
 - A set of new subscriptions has been created for Azure Virtual Desktop. We recommend two subscriptions, but a single subscription can be specified during deployment.
-- The user or service principal must have rights at the tenant root as described here: [EnterpriseScale-Setup](https://github.com/Azure/Enterprise-Scale/blob/main/docs/EnterpriseScale-Setup-azure.md)
+- The user or service principal must have rights at the tenant root as described here: [EnterpriseScale-Setup](https://github.com/Azure/Enterprise-Scale/blob/main/docs/EnterpriseScale-Setup-azure.md).
 - The [Microsoft.DesktopVirtualization](https://docs.microsoft.com/azure/virtual-desktop/create-host-pools-azure-marketplace?tabs=azure-portal#final-requirements) resource provider must be registered in subscription(s) to be used for deployment.
 - You will need the ObjectId of the **Windows Virtual Desktop** Enterprise Application (with Application Id **9cdead84-a844-4324-93f2-b2e6bb768d07**). This ObjectId is unique for each tenant and is used to give permissions for the [Start VM on Connect](https://docs.microsoft.com/azure/virtual-desktop/start-virtual-machine-connect) feature.
 
@@ -77,9 +78,9 @@ This [diagram](/workload/docs/diagrams/avd-accelerator-resource-organization-nam
   - `Unique string`: a1b2c3 (6 characters string calculated by the deployment)
 
 - **Custom image deployment**:
-  - `avdSharedServicesLocation`: East US 2
-  - `avdSharedServicesSubId`:  ID for Subscription name: Subscription AVD Shared Services
-  - `avdUseCustomNaming`: false
+  - `sharedServicesLocation`: East US 2
+  - `sharedServicesSubId`:  ID for Subscription name: Subscription AVD Shared Services
+  - `customNaming`: false
   - `Unique string`: a1b2c3 (6 characters string calculated by the deployment)
 
 ## Naming standard
