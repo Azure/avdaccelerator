@@ -21,6 +21,11 @@ variable "rg_pool" {
   description = "Resource group AVD machines will be deployed to"
 }
 
+variable "rg_avdi" {
+  type        = string
+  description = "Name of the Resource group in which to deploy avd service objects"
+}
+
 variable "vnet" {
   type        = string
   description = "Name of avd vnet"
@@ -31,6 +36,24 @@ variable "snet" {
   description = "Name of subnet"
 }
 
+variable "pesnet" {
+  type        = string
+  description = "Name of subnet"
+}
+
+variable "ad_rg" {
+  type        = string
+  description = "The resource group for AD VM"
+}
+variable "ad_vnet" {
+  type        = string
+  description = "Name of domain controller vnet"
+}
+
+variable "pesubnet_range" {
+  type        = list(string)
+  description = "Address range for private endpoints subnet"
+}
 variable "nsg" {
   type        = string
   description = "Name of the nsg"
@@ -111,14 +134,6 @@ variable "local_admin_username" {
   type        = string
   description = "local admin username"
 }
-
-
-variable "local_admin_password" {
-  type        = string
-  description = "local admin password"
-  sensitive   = true
-}
-
 
 variable "image_name" {
   type        = string
