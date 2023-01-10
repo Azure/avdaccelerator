@@ -2,44 +2,59 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "deploymentPrefix": {
-            "value": "<<deploymentPrefix>>"
+        "sharedServicesSubId": {
+            "value": "<<SubscriptionID>>"
         },
-        "avdSharedServicesLocation": {
-            "value": "eastus2"
+        "sharedServicesLocation": {
+            "value": "eastus"
         },
-        "avdSharedServicesSubId": {
-            "value": "<<subscriptionId>>"
+        "imageVersionDisasterRecoveryLocation": {
+            "value": ""
         },
-        "avdUseAvailabilityZones": {
-            "value": false
+        "imageVersionStorageAccountType": {
+            "value": "Standard_LRS"
         },
         "aibLocation": {
-            "value": "eastus2"
+            "value": "eastus"
         },
-        "createAibCustomRole": {
-            "value": true
+        "buildSchedule": {
+            "value": "Recurring"
         },
-        "avdOsImage": {
+        "operatingSystemImage": {
             "value": "win10_21h2"
         },
-        "useSharedImage": {
-            "value": true
-        },
-        "createAibManagedIdentity": {
-            "value": true
-        },
-        "existingAibManagedIdentityId": {
-            "value": ""
-        },
-        "existingAibManagedIdentityName": {
-            "value": ""
-        },
-        "avdUseCustomNaming": {
+        "useExistingVirtualNetwork": {
             "value": false
         },
-        "createResourceTags": {
+        "existingLogAnalyticsWorkspaceResourceId": {
+            "value": ""
+        },
+        "existingVirtualNetworkResourceId": {
+            "value": ""
+        },
+        "existingSubnetName": {
+            "value": ""
+        },
+        "rdpShortPath": {
             "value": false
-        }
-    }
+        },
+        "screenCaptureProtection": {
+            "value": false
+        },
+        "logAnalyticsWorkspaceDataRetention": {
+            "value": 30
+        },
+        "enableMonitoringAlerts": {
+            "value": false
+        },
+        "alertsDistributionGroup": {
+            "value": ""
+        },
+        "enableResourceTags": {
+            "value": false
+        },
+        "customNaming": {
+            "value": false
+        }          
+    }   
 }
