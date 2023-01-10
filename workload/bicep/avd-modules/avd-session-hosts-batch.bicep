@@ -4,49 +4,49 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 @description('AVD subnet ID.')
-param avdSubnetId string
+param subnetId string
 
 @description('Required. Location where to deploy compute services.')
-param avdSessionHostLocation string
+param sessionHostLocation string
 
 @description('Required. Virtual machine time zone.')
-param avdTimeZone string
+param timeZone string
 
 @description('AVD Session Host prefix.')
-param avdSessionHostNamePrefix string
+param sessionHostNamePrefix string
 
 @description('Resource Group name for the session hosts.')
-param avdComputeObjectsRgName string
+param computeObjectsRgName string
 
 @description('Required. Name of AVD service objects RG.')
-param avdServiceObjectsRgName string
+param serviceObjectsRgName string
 
 @description('Optional. AVD workload subscription ID, multiple subscriptions scenario.')
-param avdWorkloadSubsId string
+param workloadSubsId string
 
 @description('Quantity of session hosts to deploy.')
-param avdDeploySessionHostsCount int
+param deploySessionHostsCount int
 
 @description('The session host number to begin with for the deployment.')
-param avdSessionHostCountIndex int
+param sessionHostCountIndex int
 
 @description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set.')
-param avdUseAvailabilityZones bool
+param useAvailabilityZones bool
 
 @description('Optional. Availablity Set name.')
-param avdAvailabilitySetNamePrefix string
+param availabilitySetNamePrefix string
 
 @description('Optional. Sets the number of fault domains for the availability set.')
-param avdAsFaultDomainCount int
+param avsetFaultDomainCount int
 
 @description('Optional. Sets the number of update domains for the availability set.')
-param avdAsUpdateDomainCount int
+param avsetUpdateDomainCount int
 
 @description('Optional. Create new virtual network.')
 param createAvdVnet bool
 
 @description('Required, The service providing domain services for Azure Virtual Desktop.')
-param avdIdentityServiceProvider string
+param identityServiceProvider string
 
 @description('Required, Eronll session hosts on Intune.')
 param createIntuneEnrollment bool
@@ -55,7 +55,7 @@ param createIntuneEnrollment bool
 param encryptionAtHost bool
 
 @description('Session host VM size.')
-param avdSessionHostsSize string
+param sessionHostsSize string
 
 @description('Optional. Specifies the securityType of the virtual machine. Must be TrustedLaunch or ConfidentialVM enable UefiSettings.')
 param securityType string
@@ -67,7 +67,7 @@ param secureBootEnabled bool
 param vTpmEnabled bool
 
 @description('OS disk type for session host.')
-param avdSessionHostDiskType string
+param sessionHostDiskType string
 
 @description('Market Place OS image.')
 param marketPlaceGalleryWindows object
@@ -78,35 +78,35 @@ param useSharedImage bool
 @description('Source custom image ID.')
 param avdImageTemplateDefinitionId string
 
-@description('Fslogix Managed Identity Resource ID.')
-param avdManagedIdentityResourceId string
+@description('Storage Managed Identity Resource ID.')
+param storageManagedIdentityResourceId string
 
 @description('Local administrator username.')
-param avdVmLocalUserName string
+param vmLocalUserName string
 
 @description('Required. Name of keyvault that contains credentials.')
-param avdWrklKvName string
+param wrklKvName string
 
 @description('Required. AD domain name.')
-param avdIdentityDomainName string
+param identityDomainName string
 
 @description('Required. AVD session host domain join credentials.')
-param avdDomainJoinUserName string
+param domainJoinUserName string
 
 @description('Optional. OU path to join AVd VMs.')
 param sessionHostOuPath string
 
 @description('Application Security Group (ASG) for the session hosts.')
-param avdApplicationSecurityGroupResourceId string
+param applicationSecurityGroupResourceId string
 
 @description('AVD host pool token.')
 param hostPoolToken string
 
 @description('AVD Host Pool name.')
-param avdHostPoolName string
+param hostPoolName string
 
 @description('Location for the AVD agent installation package.')
-param avdAgentPackageLocation string
+param agentPackageLocation string
 
 @description('Deploy Fslogix setup.')
 param createAvdFslogixDeployment bool
@@ -115,25 +115,25 @@ param createAvdFslogixDeployment bool
 param fsLogixScript string
 
 @description('Configuration arguments for FSlogix.')
-param FsLogixScriptArguments string
+param fsLogixScriptArguments string
 
 @description('Path for the FSlogix share.')
-param FslogixSharePath string
+param fslogixSharePath string
 
 @description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
 
 @description('Required. Tags to be applied to resources')
-param avdTags object
+param tags object
 
 @description('Optional. Log analytics workspace for diagnostic logs.')
-param avdAlaWorkspaceResourceId string
+param alaWorkspaceResourceId string
 
 @description('Optional. Diagnostic logs retention.')
-param avdDiagnosticLogsRetentionInDays int
+param diagnosticLogsRetentionInDays int
 
 @description('Optional. Deploy AVD monitoring resources and setings. (Default: true)')
-param avdDeployMonitoring bool
+param deployMonitoring bool
 
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
@@ -142,12 +142,12 @@ param time string = utcNow()
 // Variable declaration //
 // =========== //
 var varAvdMaxSessionHostsPerTemplateDeployment = 30 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
-var varDivisionValue = avdDeploySessionHostsCount / varAvdMaxSessionHostsPerTemplateDeployment // This determines if any full batches are required.
-var varDivisionRemainderValue = avdDeploySessionHostsCount % varAvdMaxSessionHostsPerTemplateDeployment // This determines if any partial batches are required.
+var varDivisionValue = deploySessionHostsCount / varAvdMaxSessionHostsPerTemplateDeployment // This determines if any full batches are required.
+var varDivisionRemainderValue = deploySessionHostsCount % varAvdMaxSessionHostsPerTemplateDeployment // This determines if any partial batches are required.
 var varAvdSessionHostBatchCount = varDivisionRemainderValue > 0 ? varDivisionValue + 1 : varDivisionValue // This determines the total number of batches needed, whether full and / or partial.
 var maxAvailabilitySetMembersCount = 199 // This is the max number of session hosts that can be deployed in an availability set.
-var divisionAvSetValue = avdDeploySessionHostsCount / maxAvailabilitySetMembersCount // This determines if any full availability sets are required.
-var divisionAvSetRemainderValue = avdDeploySessionHostsCount % maxAvailabilitySetMembersCount // This determines if any partial availability sets are required.
+var divisionAvSetValue = deploySessionHostsCount / maxAvailabilitySetMembersCount // This determines if any full availability sets are required.
+var divisionAvSetRemainderValue = deploySessionHostsCount % maxAvailabilitySetMembersCount // This determines if any partial availability sets are required.
 var availabilitySetCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue + 1 : divisionAvSetValue // This determines the total number of availability sets needed, whether full and / or partial.
 
 // =========== //
@@ -155,72 +155,72 @@ var availabilitySetCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue 
 // =========== //
 
 // Availability set.
-module avdAvailabilitySet './avd-availability-sets.bicep' = if (!avdUseAvailabilityZones) {
+module availabilitySet './avd-availability-sets.bicep' = if (!useAvailabilityZones) {
   name: 'AVD-Availability-Set-${time}'
-  scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
+  scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
   params: {
-      avdWorkloadSubsId: avdWorkloadSubsId
-      avdComputeObjectsRgName: avdComputeObjectsRgName
-      avdAvailabilitySetNamePrefix: avdAvailabilitySetNamePrefix
-      avdSessionHostLocation: avdSessionHostLocation
+      avdWorkloadSubsId: workloadSubsId
+      avdComputeObjectsRgName: computeObjectsRgName
+      avdAvailabilitySetNamePrefix: availabilitySetNamePrefix
+      avdSessionHostLocation: sessionHostLocation
       availabilitySetCount: availabilitySetCount
-      avdAsFaultDomainCount: avdAsFaultDomainCount
-      avdAsUpdateDomainCount: avdAsUpdateDomainCount
-      avdTags: avdTags
+      avdAsFaultDomainCount: avsetFaultDomainCount
+      avdAsUpdateDomainCount: avsetUpdateDomainCount
+      avdTags: tags
   }
 }
 
 // Session hosts.
 @batchSize(1)
-module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, varAvdSessionHostBatchCount): {
-  scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
+module sessionHosts './avd-session-hosts.bicep' = [for i in range(1, varAvdSessionHostBatchCount): {
+  scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
   name: 'AVD-SH-Batch-${i-1}-${time}'
   params: {
-    avdAgentPackageLocation: avdAgentPackageLocation
-    avdTimeZone: avdTimeZone
-    avdApplicationSecurityGroupResourceId: avdApplicationSecurityGroupResourceId
-    avdAvailabilitySetNamePrefix: avdAvailabilitySetNamePrefix
+    agentPackageLocation: agentPackageLocation
+    timeZone: timeZone
+    applicationSecurityGroupResourceId: applicationSecurityGroupResourceId
+    availabilitySetNamePrefix: availabilitySetNamePrefix
     maxAvailabilitySetMembersCount: maxAvailabilitySetMembersCount
-    avdComputeObjectsRgName: avdComputeObjectsRgName
-    avdDomainJoinUserName: avdDomainJoinUserName
-    avdWrklKvName: avdWrklKvName
-    avdServiceObjectsRgName: avdServiceObjectsRgName
-    avdHostPoolName: avdHostPoolName
-    avdIdentityDomainName: avdIdentityDomainName
-    avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
+    computeObjectsRgName: computeObjectsRgName
+    domainJoinUserName: domainJoinUserName
+    wrklKvName: wrklKvName
+    serviceObjectsRgName: serviceObjectsRgName
+    hostPoolName: hostPoolName
+    identityDomainName: identityDomainName
+    imageTemplateDefinitionId: avdImageTemplateDefinitionId
     sessionHostOuPath: sessionHostOuPath
-    avdSessionHostsCount: i == varAvdSessionHostBatchCount && varDivisionRemainderValue > 0 ? varDivisionRemainderValue : varAvdMaxSessionHostsPerTemplateDeployment
-    avdSessionHostCountIndex: i == 1 ? avdSessionHostCountIndex : ((i - 1) * varAvdMaxSessionHostsPerTemplateDeployment) + avdSessionHostCountIndex
-    avdSessionHostDiskType: avdSessionHostDiskType
-    avdSessionHostLocation: avdSessionHostLocation
-    avdSessionHostNamePrefix: avdSessionHostNamePrefix
+    sessionHostsCount: i == varAvdSessionHostBatchCount && varDivisionRemainderValue > 0 ? varDivisionRemainderValue : varAvdMaxSessionHostsPerTemplateDeployment
+    sessionHostCountIndex: i == 1 ? sessionHostCountIndex : ((i - 1) * varAvdMaxSessionHostsPerTemplateDeployment) + sessionHostCountIndex
+    sessionHostDiskType: sessionHostDiskType
+    sessionHostLocation: sessionHostLocation
+    sessionHostNamePrefix: sessionHostNamePrefix
     createAvdVnet: createAvdVnet
-    avdSessionHostsSize: avdSessionHostsSize
+    sessionHostsSize: sessionHostsSize
     securityType: securityType
     secureBootEnabled: secureBootEnabled
     vTpmEnabled: vTpmEnabled
-    avdSubnetId: avdSubnetId
-    avdUseAvailabilityZones: avdUseAvailabilityZones
-    avdVmLocalUserName: avdVmLocalUserName
-    avdWorkloadSubsId: avdWorkloadSubsId
+    subnetId: subnetId
+    useAvailabilityZones: useAvailabilityZones
+    vmLocalUserName: vmLocalUserName
+    workloadSubsId: workloadSubsId
     encryptionAtHost: encryptionAtHost
     createAvdFslogixDeployment: createAvdFslogixDeployment
-    avdManagedIdentityResourceId: avdManagedIdentityResourceId
+    storageManagedIdentityResourceId: storageManagedIdentityResourceId
     fsLogixScript: fsLogixScript
-    FsLogixScriptArguments: FsLogixScriptArguments
-    FslogixSharePath: FslogixSharePath
+    fsLogixScriptArguments: fsLogixScriptArguments
+    fslogixSharePath: fslogixSharePath
     fslogixScriptUri: fslogixScriptUri
     hostPoolToken: hostPoolToken
     marketPlaceGalleryWindows: marketPlaceGalleryWindows
     useSharedImage: useSharedImage
-    avdIdentityServiceProvider: avdIdentityServiceProvider
+    identityServiceProvider: identityServiceProvider
     createIntuneEnrollment: createIntuneEnrollment
-    avdTags: avdTags
-    avdDeployMonitoring: avdDeployMonitoring
-    avdAlaWorkspaceResourceId: avdAlaWorkspaceResourceId
-    avdDiagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
+    tags: tags
+    deployMonitoring: deployMonitoring
+    alaWorkspaceResourceId: alaWorkspaceResourceId
+    diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
   }
   dependsOn: [
-    avdAvailabilitySet
+    availabilitySet
   ]
 }]
