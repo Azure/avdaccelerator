@@ -231,7 +231,7 @@ param vTpmEnabled bool = false
     'win11_22h2_office'
 ])
 @description('Optional. AVD OS image source. (Default: win10-21h2)')
-param avdOsImage string = 'win10_21h2'
+param avdOsImage string = 'win11_21h2'
 
 @description('Optional. Set to deploy image from Azure Compute Gallery. (Default: false)')
 param useSharedImage bool = false
