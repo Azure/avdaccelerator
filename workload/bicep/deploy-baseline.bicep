@@ -343,8 +343,8 @@ param avdSessionHostCustomNamePrefix string = 'vm-avd-app1'
 param avdAvailabilitySetCustomNamePrefix string = 'avail-avd'
 
 @maxLength(5)
-@description('Optional. AVD fslogix storage account prefix custom name. (Default: stavd)')
-param avdStorageAccountPrefixCustomName string = 'stavd'
+@description('Optional. AVD fslogix and MSIX app attach storage account prefix custom name. (Default: stavd)')
+param storageAccountPrefixCustomName string = 'stavd'
 
 
 //@maxLength(64)
@@ -582,7 +582,7 @@ var varManagementVmName = 'vm-mgmt-${varDeploymentPrefixLowercase}'
 //var varAvdMsixStorageName = deployAvdMsixStorageAzureFiles.outputs.storageAccountName
 //var varAvdWrklStoragePrivateEndpointName = 'pe-stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}-file'
 var varAvdAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName :  'log-avd-${varAvdManagementPlaneLocationAcronym}' //'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
-var varStgAccountForFlowLogsName = avdUseCustomNaming ? '${avdStorageAccountPrefixCustomName}${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}' : 'stavd${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}'
+var varStgAccountForFlowLogsName = avdUseCustomNaming ? '${storageAccountPrefixCustomName}${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}' : 'stavd${varDeploymentPrefixLowercase}flowlogs${varAvdNamingUniqueStringSixChar}'
 
 var varAvdScalingPlanSchedules = [
     {
@@ -1182,7 +1182,7 @@ module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bic
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         diagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
         useCustomNaming: avdUseCustomNaming
-        storageAccountPrefixCustomName: avdStorageAccountPrefixCustomName
+        storageAccountPrefixCustomName: storageAccountPrefixCustomName
         namingUniqueStringSixChar: varAvdNamingUniqueStringSixChar
         deploymentPrefixLowercase: varDeploymentPrefixLowercase
     }
@@ -1245,7 +1245,7 @@ module deployAvdMsixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep'
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         diagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
         useCustomNaming: avdUseCustomNaming
-        storageAccountPrefixCustomName: avdStorageAccountPrefixCustomName
+        storageAccountPrefixCustomName: storageAccountPrefixCustomName
         namingUniqueStringSixChar: varAvdNamingUniqueStringSixChar
         deploymentPrefixLowercase: varDeploymentPrefixLowercase
     }
