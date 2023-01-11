@@ -1000,7 +1000,7 @@
                                         "allowedValues": [
                                             {
                                                 "label": "Standard",
-                                                "value": null
+                                                "value": "Standard"
                                             },
                                             {
                                                 "label": "Trusted Launch Virtual Machines",
