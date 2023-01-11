@@ -3,13 +3,13 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
-@description('Optional. Location to deploy the resources in this solution, except the image template. (Default: eastus)')
-param sharedServicesLocation string = 'eastus'
-
 @description('Required. AVD shared services subscription ID, multiple subscriptions scenario.')
 param sharedServicesSubId string
 
-@description('Optional. Disaster recovery location for Image Version. (Default:"")')
+@description('Required. Primary replication location for Image Version. (Default:)')
+param imageVersionPrimaryLocation string
+
+@description('Optional. Disaster recovery replication location for Image Version. (Default:"")')
 param imageVersionDisasterRecoveryLocation string = ''
 
 @allowed([
@@ -62,8 +62,8 @@ param storageAccountSku string = 'Standard_LRS' */
     'westus2'
     'westus3'
 ])
-@description('Optional. Azure Image Builder location. (Default: eastus)')
-param aibLocation string = 'eastus'
+@description('Required. Location to deploy the resources in this solution, except the image template. (Default: eastus)')
+param aibLocation string
 
 @allowed([
     'OneTime'
@@ -241,7 +241,7 @@ param enableTelemetry bool = true
 var varAzureCloudName = environment().name
 var varActionGroupName = customNaming ? alertsActionGroupCustomName : 'ag-avd-${varNamingStandard}'
 var varNamingStandard = '${varLocationAcronym}'
-var varLocationLowercase = toLower(sharedServicesLocation)
+var varLocationLowercase = toLower(aibLocation)
 var varResourceGroupName = customNaming ? resourceGroupCustomName : 'rg-avd-${varNamingStandard}-shared-services'
 var varImageGalleryName = customNaming ? imageGalleryCustomName : 'gal_avd_${varNamingStandard}'
 var varUserAssignedManagedIdentityName = customNaming ? userAssignedManagedIdentityCustomName : 'id-aib-${varNamingStandard}'
@@ -380,9 +380,9 @@ var varCommonResourceTags = enableResourceTags ? {
 //
 
 var varImageReplicationRegions = empty(imageVersionDisasterRecoveryLocation) ? [
-    sharedServicesLocation
+    imageVersionPrimaryLocation
 ] : [
-    sharedServicesLocation
+    imageVersionPrimaryLocation
     imageVersionDisasterRecoveryLocation
 ]
 var varVmSize = 'Standard_D4s_v3'
@@ -462,7 +462,7 @@ var varOperatingSystemImageDefinitions = {
 }
 
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
-var varTelemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${sharedServicesLocation}'
+var varTelemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${aibLocation}'
 
 // Customization Steps
 var varRdpShortPathCustomizer = rdpShortPath ? [
@@ -672,7 +672,7 @@ var varRoles = union(varVirtualNetworkJoinRole, varImageTemplateBuildAutomation,
 //  Telemetry Deployment.
 resource telemetryDeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
     name: varTelemetryId
-    location: sharedServicesLocation
+    location: aibLocation
     properties: {
         mode: 'Incremental'
         template: {
@@ -689,7 +689,7 @@ module avdSharedResourcesRg '../../carml/1.0.0/Microsoft.Resources/resourceGroup
     name: 'Resource-Group_${time}'
     params: {
         name: varResourceGroupName
-        location: sharedServicesLocation
+        location: aibLocation
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
 }
@@ -715,7 +715,7 @@ module userAssignedManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/
     name: 'User-Assigned-Managed-Identity_${time}'
     params: {
         name: varUserAssignedManagedIdentityName
-        location: sharedServicesLocation
+        location: aibLocation
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
@@ -751,7 +751,7 @@ module gallery '../../carml/1.3.0/Microsoft.Compute/galleries/deploy.bicep' = {
     name: 'Compute-Gallery_${time}'
     params: {
         name: varImageGalleryName
-        location: sharedServicesLocation
+        location: aibLocation
         galleryDescription: 'Azure Virtual Desktops Images'
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
@@ -884,7 +884,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
                 scheduleName: varImageTemplateName
             }
         ]
-        location: sharedServicesLocation
+        location: aibLocation
         runbooks: [
             {
                 name: 'aib-build-automation'
@@ -924,7 +924,7 @@ module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/module
     name: 'Automation-Account-Module_${i}_${time}'
     params: {
         name: varModules[i].name
-        location: sharedServicesLocation
+        location: aibLocation
         automationAccountName: automationAccount.outputs.name
         uri: varModules[i].uri
     }
@@ -936,7 +936,7 @@ module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/module
     name: 'Storage-Account_${time}'
     params: {
         name: varStorageAccountName
-        location: sharedServicesLocation
+        location: aibLocation
         storageAccountSku: storageAccountSku
         storageAccountKind: 'StorageV2'
         blobServices: {
@@ -986,7 +986,7 @@ module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryR
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Scheduled-Query-Rule_${i}_${time}'
     params: {
-        location: sharedServicesLocation
+        location: aibLocation
         name: varAlerts[i].name
         alertDescription: varAlerts[i].description
         enabled: true
