@@ -80,7 +80,9 @@ if ($IdentityServiceProvider -eq 'ADDS') {
 	$AzFilesHybridPath = (Join-Path $PSScriptRoot "CopyToPSPath.ps1")
 	& $AzFilesHybridPath
 }
+Write-Log "Installing AzFilesHybrid module - Done"
 
+Write-Log "initiating check"
 if ($IdentityServiceProvider -eq 'ADDS') {
 	# Please note: ActiveDirectory powershell module is only available on AD joined machines.
 	# To install it, RSAT administrative tools must be installed on the VM which will
@@ -112,7 +114,8 @@ if ($IdentityServiceProvider -eq 'ADDS') {
 
 	}
 }
-
+Write-Log "Check done"
+<#
 Write-Log "Connecting to managed identity account"
 # Add-AzAccount -Environment $AzureCloudEnvironment -identity
 Connect-AzAccount -Identity -AccountId $ClientId
@@ -179,3 +182,4 @@ Catch {
     Write-Log -Err $_.Exception.Message
     Throw $_
 }
+#>
