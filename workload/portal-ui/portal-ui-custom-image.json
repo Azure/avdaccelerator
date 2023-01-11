@@ -31,7 +31,17 @@
                             "name": "resourceScope",
                             "type": "Microsoft.Common.ResourceScope",
                             "location": {
-                                "resourceTypes": []
+                                "resourceTypes": [
+                                    "Microsoft.VirtualMachineImages/imageTemplates"
+                                ]
+                            }
+                        },
+                        {
+                            "name": "locationsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('basics').resourceScope.subscription.id,'/locations?api-version=2020-01-01')]"
                             }
                         }
                     ]
@@ -46,11 +56,11 @@
                             "visible": true,
                             "options": {
                                 "text": "This solution will deploy a compute gallery, image definition, image version, managed identity and execute an Azure Image Builder build. Learn more about Create a Windows image and distribute it to an Azure Compute Gallery",
-                                 "uri":"https://learn.microsoft.com/en-us/azure/virtual-machines/windows/image-builder-gallery",
-                                 "style": "Info"
+                                "uri": "https://learn.microsoft.com/en-us/azure/virtual-machines/windows/image-builder-gallery",
+                                "style": "Info"
                             }
                         },
-                       {
+                        {
                             "name": "imageVersion",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
@@ -97,6 +107,19 @@
                                     }
                                 },
                                 {
+                                    "name": "primaryLocation",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "visible": true,
+                                    "filter": true,
+                                    "label": "Primary storage location",
+                                    "defaultValue": "[steps('basics').resourceScope.location.displayName]",
+                                    "toolTip": "Select the primary location to store the Image Version. This location should coincide with your AVD session hosts.",
+                                    "constraints": {
+                                        "allowedValues": "[map(steps('basics').locationsApi.value, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.name, '\"}')))]",
+                                        "required": true
+                                    }
+                                },
+                                {
                                     "name": "info3",
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": true,
@@ -107,7 +130,7 @@
                                     }
                                 },
                                 {
-                                    "name": "replication",
+                                    "name": "disasterRecovery",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "visible": true,
                                     "label": "Enable replication to disaster recovery location",
@@ -128,17 +151,9 @@
                                     }
                                 },
                                 {
-                                    "name": "locationsApi",
-                                    "type": "Microsoft.Solutions.ArmApiControl",
-                                    "request": {
-                                        "method": "GET",
-                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/locations?api-version=2020-01-01')]"
-                                    }
-                                },
-                                {
                                     "name": "warn2",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[and(equals(steps('imageManagement').imageVersion.replication, true), equals(steps('imageManagement').imageVersion.storageAccountType, 'Standard_ZRS'))]",
+                                    "visible": "[and(equals(steps('imageManagement').imageVersion.disasterRecovery, true), equals(steps('imageManagement').imageVersion.storageAccountType, 'Standard_ZRS'))]",
                                     "options": {
                                         "text": "Ensure your selected Azure location supports zonal storage.",
                                         "uri": "https://learn.microsoft.com/azure/storage/common/storage-redundancy",
@@ -151,12 +166,12 @@
                                     "label": "Disaster recovery location",
                                     "defaultValue": "",
                                     "filter": true,
-                                    "toolTip": "Choose the desired disaster recovery location for the Image Version.",
+                                    "toolTip": "Select the disaster recovery location to store the Image Version. This location should coincide with your disaster recovery location for your AVD session hosts.",
                                     "constraints": {
-                                        "allowedValues": "[map(steps('imageManagement').imageVersion.locationsApi.value, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.name, '\"}')))]",
+                                        "allowedValues": "[map(steps('basics').locationsApi.value, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.name, '\"}')))]",
                                         "required": true
                                     },
-                                    "visible": "[equals(steps('imageManagement').imageVersion.replication, true)]"
+                                    "visible": "[equals(steps('imageManagement').imageVersion.disasterRecovery, true)]"
                                 }
                             ]
                         },
@@ -274,148 +289,6 @@
                                 "text": "Azure Image Builder is not available in all locations. Click here for more information.",
                                 "uri": "https://docs.microsoft.com/azure/virtual-machines/image-builder-overview?msclkid=06a023c8ac4c11ecb3c259d74812c2c6",
                                 "style": "Info"
-                            }
-                        },
-                        {
-                            "name": "locationSelection",
-                            "type": "Microsoft.Common.DropDown",
-                            "visible": true,
-                            "filter": true,
-                            "label": "Deployment location",
-                            "defaultValue": "[steps('basics').resourceScope.location.displayName]",
-                            "toolTip": "Select the location where Azure Image Builder will run to create the image.",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label": "Australia East",
-                                        "value": "australiaeast"
-                                    },
-                                    {
-                                        "label": "Australia Southeast",
-                                        "value": "australiasoutheast"
-                                    },
-                                    {
-                                        "label": "Brazil South",
-                                        "value": "brazilsouth"
-                                    },
-                                    {
-                                        "label": "Canada Central",
-                                        "value": "canadacentral"
-                                    },
-                                    {
-                                        "label": "Central India",
-                                        "value": "centralindia"
-                                    },
-                                    {
-                                        "label": "Central US",
-                                        "value": "centralus"
-                                    },
-                                    {
-                                        "label": "East Asia",
-                                        "value": "eastasia"
-                                    },
-                                    {
-                                        "label": "East US",
-                                        "value": "eastus"
-                                    },
-                                    {
-                                        "label": "East US 2",
-                                        "value": "eastus2"
-                                    },
-                                    {
-                                        "label": "France Central",
-                                        "value": "francecentral"
-                                    },
-                                    {
-                                        "label": "Germany West Central",
-                                        "value": "germanywestcentral"
-                                    },
-                                    {
-                                        "label": "Japan East",
-                                        "value": "japaneast"
-                                    },
-                                    {
-                                        "label": "Jio India West",
-                                        "value": "jioindiawest"
-                                    },
-                                    {
-                                        "label": "Korea Central",
-                                        "value": "koreacentral"
-                                    },
-                                    {
-                                        "label": "North Central US",
-                                        "value": "northcentralus"
-                                    },
-                                    {
-                                        "label": "North Europe",
-                                        "value": "northeurope"
-                                    },
-                                    {
-                                        "label": "Norway East",
-                                        "value": "norwayeast"
-                                    },
-                                    {
-                                        "label": "Qatar Central",
-                                        "value": "qatarcentral"
-                                    },
-                                    {
-                                        "label": "South Africa North",
-                                        "value": "southafricanorth"
-                                    },
-                                    {
-                                        "label": "South Central US",
-                                        "value": "southcentralus"
-                                    },
-                                    {
-                                        "label": "South East Asia",
-                                        "value": "southeastasia"
-                                    },
-                                    {
-                                        "label": "Switzerland North",
-                                        "value": "switzerlandnorth"
-                                    },
-                                    {
-                                        "label": "UAE North",
-                                        "value": "uaenorth"
-                                    },
-                                    {
-                                        "label": "UK South",
-                                        "value": "uksouth"
-                                    },
-                                    {
-                                        "label": "UK West",
-                                        "value": "ukwest"
-                                    },
-                                    {
-                                        "label": "USGov Arizona (Public Preview)",
-                                        "value": "usgovarizona"
-                                    },
-                                    {
-                                        "label": "USGov Virginia (Public Preview)",
-                                        "value": "usgovvirginia"
-                                    },
-                                    {
-                                        "label": "West Central US",
-                                        "value": "westcentralus"
-                                    },
-                                    {
-                                        "label": "West Europe",
-                                        "value": "westeurope"
-                                    },
-                                    {
-                                        "label": "West US",
-                                        "value": "westus"
-                                    },
-                                    {
-                                        "label": "West US 2",
-                                        "value": "westus2"
-                                    },
-                                    {
-                                        "label": "West US 3",
-                                        "value": "westus3"
-                                    }
-                                ]
                             }
                         },
                         {
@@ -559,10 +432,10 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
-                              "icon": "None",
-                              "text": "AVD Landing Zone Accelerator will deploy a managed identity and custom RBAC roles for AIB. ",
-                              "uri": "https://learn.microsoft.com/azure/virtual-machines/image-builder-overview?tabs=azure-powershell",
-                              "style": "Info"
+                                "icon": "None",
+                                "text": "AVD Landing Zone Accelerator will deploy a managed identity and custom RBAC roles for AIB. ",
+                                "uri": "https://learn.microsoft.com/azure/virtual-machines/image-builder-overview?tabs=azure-powershell",
+                                "style": "Info"
                             }
                         }
                     ]
@@ -1050,7 +923,7 @@
         "outputs": {
             "parameters": {
                 "alertsActionGroupCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.actionGroup, 'none')]",
-                "aibLocation": "[steps('aib').locationSelection]",
+                "aibLocation": "[steps('basics').resourceScope.location.name]",
                 "buildSchedule": "[steps('aib').buildSchedule]",
                 "applicationNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.application, 'none')]",
                 "automationAccountCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.automationAccount, 'none')]",
@@ -1068,7 +941,8 @@
                 "imageGalleryCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.computeGallery, 'none')]",
                 "imageTemplateCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.imageTemplate, 'none')]",
                 "imageVersionStorageAccountType": "[steps('imageManagement').imageVersion.storageAccountType]",
-                "imageVersionDisasterRecoveryLocation": "[if(equals(steps('imageManagement').imageVersion.replication, true), steps('imageManagement').imageVersion.disasterRecoveryLocation, '')]",
+                "imageVersionPrimaryLocation": "[steps('imageManagement').imageVersion.primaryLocation]",
+                "imageVersionDisasterRecoveryLocation": "[if(equals(steps('imageManagement').imageVersion.disasterRecovery, true), steps('imageManagement').imageVersion.disasterRecoveryLocation, '')]",
                 "logAnalyticsWorkspaceCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.logAnalyticsWorkspace, 'none')]",
                 "operatingSystemImage": "[steps('imageManagement').operatingSystem.versionSelection]",
                 "imageDefinitionSecurityType": "[steps('imageManagement').imageDefinitionFeatures.securityType]",
@@ -1078,7 +952,6 @@
                 "resourceGroupCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.resourceGroup, 'none')]",
                 "enableResourceTags": "[steps('tags').selection]",
                 "screenCaptureProtection": "[steps('aib').screenCaptureProtectionSelection]",
-                "sharedServicesLocation": "[steps('basics').resourceScope.location.name]",
                 "sharedServicesSubId": "[steps('basics').resourceScope.subscription.subscriptionId]",
                 "useExistingVirtualNetwork": "[steps('aib').virtualNetwork]",
                 "existingLogAnalyticsWorkspaceResourceId": "[if(equals(steps('monitoring').existingLogAnalyticsWorkspace, true), steps('monitoring').logAnalyticsWorkspaceSelection.id, '')]",
