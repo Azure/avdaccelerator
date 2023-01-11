@@ -113,10 +113,10 @@
         "createAvdFslogixDeployment": {
             "value": true
         },
-        "createAvdMsixDeployment": {
+        "createMsixDeployment": {
             "value": true
         },
-        "avdFslogixFileShareQuotaSize": {
+        "fslogixFileShareQuotaSize": {
             "value": 10
         },
         "msixFileShareQuotaSize": {
