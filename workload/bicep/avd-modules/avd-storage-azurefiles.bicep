@@ -124,7 +124,6 @@ param deploymentPrefixLowercase string
 @description('Unique name truncated into 6 characters')
 param namingUniqueStringSixChar string
 
-
 //parameters for domain join
 @description('Sets location of DSC Agent.')
 param dscAgentPackageLocation string
@@ -245,7 +244,7 @@ module storageAndFile '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
 // Provision temporary VM and add it to domain.
 module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.bicep' = {
     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
-    name: 'Deploy-Mgmt-VM-${storagePurpose}-${time}'
+    name: 'Deploy-Mgmt-VM-${time}'
     params: {
         name: managementVmName
         location: sessionHostLocation
@@ -310,12 +309,12 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
     ]
 }
 
-// Introduce delay for management VM to be ready.
-module managementVmDelay '../../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
+// Introduce wait for management VM to be ready.
+module managementVmWait '../../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
-    name: 'AVD-Management-VM-${storagePurpose}-Delay-${time}'
+    name: 'AVD-Management-VM-Wait-${time}'
     params: {
-        name: '${storagePurpose}-userManagedIdentityDelay-${time}'
+        name: '${storagePurpose}-userManagedIdentityWait-${time}'
         location: sessionHostLocation
         azPowerShellVersion: '6.2'
         cleanupPreference: 'Always'
@@ -334,7 +333,7 @@ module managementVmDelay '../../../carml/1.0.0/Microsoft.Resources/deploymentScr
 } 
 
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
-module addShareToDomainScript '../../vm-custom-extensions/add-azure-files-to-domain-script.bicep' = { //if(identityServiceProvider == 'ADDS')  {
+module addShareToDomainScript '../../vm-custom-extensions/add-azure-files-to-domain-script.bicep' = if(identityServiceProvider == 'ADDS' || identityServiceProvider == 'AADDS')  {
     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
     name: 'Add-${storagePurpose}-Storage-Setup-${time}'
     params: {
@@ -346,7 +345,7 @@ module addShareToDomainScript '../../vm-custom-extensions/add-azure-files-to-dom
     }
     dependsOn: [
         storageAndFile
-        managementVmDelay
+        managementVmWait
     ]
 }
 
