@@ -10,7 +10,7 @@ param hostPoolToken string
 
 /* Add session hosts to Host Pool */
 
-resource addToHostPool 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = {
+resource addToHostPool 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = {
   name: '${name}/Microsoft.PowerShell.DSC'
   location: location
   properties: {
