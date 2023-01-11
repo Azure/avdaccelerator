@@ -1016,7 +1016,7 @@
                                 {
                                     "name": "secureBootEnabled",
                                     "type": "Microsoft.Common.OptionsGroup",
-                                    "visible": "[not(empty(steps('avdSessionHosts').avdSessionHostsSecuritySection.securityType))]",
+                                    "visible": "[or(equals(steps('avdSessionHosts').avdSessionHostsSecuritySection.securityType, 'TrustedLaunch'), equals(steps('avdSessionHosts').avdSessionHostsSecuritySection.securityType, 'ConfidentialVM'))]",
                                     "label": "Enable secure boot",
                                     "defaultValue": "No",
                                     "toolTip": "Secure boot helps protect your VMs against boot kits, rootkits, and kernel-level malware.",
@@ -1037,7 +1037,7 @@
                                 {
                                     "name": "vTpmEnabled",
                                     "type": "Microsoft.Common.OptionsGroup",
-                                    "visible": "[not(empty(steps('avdSessionHosts').avdSessionHostsSecuritySection.securityType))]",
+                                    "visible": "[or(equals(steps('avdSessionHosts').avdSessionHostsSecuritySection.securityType, 'TrustedLaunch'), equals(steps('avdSessionHosts').avdSessionHostsSecuritySection.securityType, 'ConfidentialVM'))]",
                                     "label": "Enable vTPM",
                                     "defaultValue": "No",
                                     "toolTip": "Virtual Trusted Platform Module (vTPM) is TPM2.0 compliant and validates your VM boot integrity apart from securely storing keys and secrets.",
