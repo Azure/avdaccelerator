@@ -168,7 +168,7 @@
                                     "filter": true,
                                     "toolTip": "Select the disaster recovery location to store the Image Version. This location should coincide with your disaster recovery location for your AVD session hosts.",
                                     "constraints": {
-                                        "allowedValues": "[map(filter(steps('basics').locationsApi.value, (item) => not(equals(item.name, 'global'))), (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.name, '\"}')))]",
+                                        "allowedValues": "[map(filter(steps('basics').locationsApi.value, (item) => and(not(equals(item.name, 'global')), not(equals(item.name, steps('imageManagement').imageVersion.primaryLocation)))), (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.name, '\"}')))]",
                                         "required": true
                                     },
                                     "visible": "[equals(steps('imageManagement').imageVersion.disasterRecovery, true)]"
