@@ -115,7 +115,7 @@
                                     "defaultValue": "[steps('basics').resourceScope.location.displayName]",
                                     "toolTip": "Select the primary location to store the Image Version. This location should coincide with your AVD session hosts.",
                                     "constraints": {
-                                        "allowedValues": "[map(steps('basics').locationsApi.value, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.name, '\"}')))]",
+                                        "allowedValues": "[map(filter(steps('basics').locationsApi.value, (item) => not(equals(item.name, 'global'))), (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.name, '\"}')))]",
                                         "required": true
                                     }
                                 },
@@ -168,7 +168,7 @@
                                     "filter": true,
                                     "toolTip": "Select the disaster recovery location to store the Image Version. This location should coincide with your disaster recovery location for your AVD session hosts.",
                                     "constraints": {
-                                        "allowedValues": "[map(steps('basics').locationsApi.value, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.name, '\"}')))]",
+                                        "allowedValues": "[map(filter(steps('basics').locationsApi.value, (item) => not(equals(item.name, 'global'))), (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.name, '\"}')))]",
                                         "required": true
                                     },
                                     "visible": "[equals(steps('imageManagement').imageVersion.disasterRecovery, true)]"
