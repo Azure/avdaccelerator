@@ -5,7 +5,6 @@ param file string
 @secure()
 param ScriptArguments string
 
-//resource dscStorageScript 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = {
 resource dscStorageScript 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = {
   name: '${name}/dscStorageScript'
   location: location
