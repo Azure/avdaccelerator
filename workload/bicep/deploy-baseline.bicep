@@ -888,7 +888,7 @@ module validation 'avd-modules/avd-validation.bicep' = {
 
 // Azure Policies for monitoring Diagnostic settings. Performance couunters on new or existing Log Analytics workspace. New workspace if needed.
 module deployMonitoringDiagnosticSettings './avd-modules/avd-monitoring.bicep' = if (avdDeployMonitoring) {
-    name: 'Deploy-AVD-Monitoring-${time}'
+    name: 'Monitoring-${time}'
     params: {
         avdManagementPlaneLocation: avdManagementPlaneLocation
         deployAlaWorkspace: deployAlaWorkspace
@@ -923,7 +923,7 @@ module deployAzurePolicyNetworking './avd-modules/avd-azure-policy-networking.bi
 
 // Networking.
 module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
-    name: 'Deploy-AVD-Networking-${time}'
+    name: 'Networking-${time}'
     params: {
         avdApplicationSecurityGroupName: varAvdApplicationSecurityGroupName
         avdComputeObjectsRgName: varAvdComputeObjectsRgName
@@ -953,7 +953,7 @@ module avdNetworking 'avd-modules/avd-networking.bicep' = if (createAvdVnet) {
 
 // AVD management plane.
 module avdManagementPLane 'avd-modules/avd-management-plane.bicep' = {
-    name: 'Deploy-AVD-HostPool-AppGroups-${time}'
+    name: 'HostPool-AppGroups-${time}'
     params: {
         avdApplicationGroupNameDesktop: varAvdApplicationGroupNameDesktop
         avdApplicationGroupFriendlyNameDesktop: varAvdApplicationGroupFriendlyName
@@ -994,7 +994,7 @@ module avdManagementPLane 'avd-modules/avd-management-plane.bicep' = {
 
 // Identity: managed identities and role assignments.
 module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
-    name: 'Create-Managed-ID-RoleAssign-${time}'
+    name: 'Managed-ID-RoleAssign-${time}'
     params: {
         avdComputeObjectsRgName: varAvdComputeObjectsRgName
         avdDeploySessionHosts: avdDeploySessionHosts
@@ -1024,7 +1024,7 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
 // Key vault.
 module avdWrklKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep' = if (avdDeploySessionHosts) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${varAvdServiceObjectsRgName}')
-    name: 'AVD-Workload-KeyVault-${time}'
+    name: 'Workload-KeyVault-${time}'
     params: {
         name: varAvdWrklKvName
         location: avdSessionHostLocation
@@ -1115,7 +1115,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 
 // Storage.
 module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (varCreateAvdFslogixDeployment && avdDeploySessionHosts && (avdIdentityServiceProvider != 'AAD')) {
-    name: 'Deploy-AVD-Storage-AzureFiles-${time}'
+    name: 'Storage-Azure-Files-${time}'
     params: {
         avdIdentityServiceProvider: avdIdentityServiceProvider
         storageToDomainScript:  varStorageToDomainScript
@@ -1167,7 +1167,7 @@ module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = i
 
 // Session hosts.
 module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.bicep' = if (avdDeploySessionHosts) {
-    name: 'Deploy-and-Configure-AVD-SessionHosts-${time}'
+    name: 'Session-Hosts-${time}'
     params: {
         avdAgentPackageLocation: varAvdAgentPackageLocation
         avdTimeZone: varTimeZones[avdSessionHostLocation]
