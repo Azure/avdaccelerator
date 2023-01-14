@@ -121,6 +121,7 @@ Configuration DomainJoinFileShare
     
     # Import the module that contains the File resource.
     Import-DscResource -ModuleName PsDesiredStateConfiguration
+    #Import-DscResource -ModuleName PSDscResources
     $secStringPassword = ConvertTo-SecureString $DomainAdminUserPassword -AsPlainText -Force
     $DomainAdminCred = New-Object System.Management.Automation.PSCredential ($DomainAdminUserName, $secStringPassword)
 
