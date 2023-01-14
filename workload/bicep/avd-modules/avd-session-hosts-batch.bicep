@@ -156,7 +156,7 @@ var availabilitySetCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue 
 
 // Availability set.
 module avdAvailabilitySet './avd-availability-sets.bicep' = if (!avdUseAvailabilityZones) {
-  name: 'AVD-Availability-Set-${time}'
+  name: 'Availability-Set-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
   params: {
       avdWorkloadSubsId: avdWorkloadSubsId
@@ -174,7 +174,7 @@ module avdAvailabilitySet './avd-availability-sets.bicep' = if (!avdUseAvailabil
 @batchSize(1)
 module avdSessionHosts './avd-session-hosts.bicep' = [for i in range(1, varAvdSessionHostBatchCount): {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-  name: 'AVD-SH-Batch-${i-1}-${time}'
+  name: 'SH-Batch-${i-1}-${time}'
   params: {
     avdAgentPackageLocation: avdAgentPackageLocation
     avdTimeZone: avdTimeZone

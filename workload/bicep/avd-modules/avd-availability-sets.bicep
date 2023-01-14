@@ -40,7 +40,7 @@ param time string = utcNow()
 
 // Availability set.
 module avdAvailabilitySet '../../../carml/1.2.0/Microsoft.Compute/availabilitySets/deploy.bicep' = [for i in range(1, availabilitySetCount): {
-    name: 'AVD-AvSet--${i}-${time}'
+    name: 'Availability-Set-${i}-${time}'
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
     params: {
         name: '${avdAvailabilitySetNamePrefix}-${padLeft(i, 3, '0')}'
