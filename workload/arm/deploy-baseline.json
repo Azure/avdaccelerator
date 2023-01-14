@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "3817738305119359260"
+      "templateHash": "2881490628711264036"
     }
   },
   "parameters": {
@@ -441,7 +441,7 @@
     },
     "avdOsImage": {
       "type": "string",
-      "defaultValue": "win10_21h2",
+      "defaultValue": "win11_22h2",
       "metadata": {
         "description": "Optional. AVD OS image source. (Default: win10-21h2)"
       },
