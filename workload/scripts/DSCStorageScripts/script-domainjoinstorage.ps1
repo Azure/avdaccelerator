@@ -81,7 +81,6 @@ if ($IdentityServiceProvider -eq 'ADDS') {
 	& $AzFilesHybridPath
 }
 
-
 if ($IdentityServiceProvider -eq 'ADDS') {
 	# Please note: ActiveDirectory powershell module is only available on AD joined machines.
 	# To install it, RSAT administrative tools must be installed on the VM which will
