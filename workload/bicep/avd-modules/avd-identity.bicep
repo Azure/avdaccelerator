@@ -75,12 +75,12 @@ module fslogixManagedIdentity '../../../carml/1.2.0/Microsoft.ManagedIdentity/us
   }
 }
 
-// Introduce delay for management VM to be ready.
-module fslogixManagedIdentityDelay '../../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD')) {
+// Introduce wait for management VM to be ready.
+module fslogixManagedIdentityWait '../../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD')) {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
-  name: 'AVD-FSLogix-Identity-Delay-${time}'
+  name: 'FSLogix-Identity-Wait-${time}'
   params: {
-      name: 'AVD-fslogixManagedIdentityDelay-${time}'
+      name: 'AVD-fslogixManagedIdentityWait-${time}'
       location: avdSessionHostLocation
       azPowerShellVersion: '6.2'
       cleanupPreference: 'Always'
@@ -141,7 +141,7 @@ module fslogixRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/roleAssig
     principalId: createAvdFslogixDeployment ? fslogixManagedIdentity.outputs.principalId: ''
   }
   dependsOn: [
-    fslogixManagedIdentityDelay
+    fslogixManagedIdentityWait
   ]
 }
 //FSLogix reader.
@@ -153,7 +153,7 @@ module fslogixReaderRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/rol
     principalId: createAvdFslogixDeployment ? fslogixManagedIdentity.outputs.principalId: ''
   }
   dependsOn: [
-    fslogixManagedIdentityDelay
+    fslogixManagedIdentityWait
   ]
 }
 
