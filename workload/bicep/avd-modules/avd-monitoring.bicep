@@ -40,7 +40,7 @@ param time string = utcNow()
 // Resource group if new Log Analytics space is required
 module avdBaselineMonitoringResourceGroup '../../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (deployAlaWorkspace) {
   scope: subscription(avdWorkloadSubsId)
-  name: 'Deploy-${avdMonitoringRgName}-${time}'
+  name: '${avdMonitoringRgName}-${time}'
   params: {
       name: avdMonitoringRgName
       location: avdManagementPlaneLocation
@@ -52,7 +52,7 @@ module avdBaselineMonitoringResourceGroup '../../../carml/1.2.0/Microsoft.Resour
 // Azure log analytics workspace.
 module avdAlaWorkspace '../../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (deployAlaWorkspace) {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdMonitoringRgName}')
-  name: 'AVD-Log-Analytics-Workspace-${time}'
+  name: 'Log-Analytics-Workspace-${time}'
   params: {
     location: avdManagementPlaneLocation
     name: avdAlaWorkspaceName
@@ -65,12 +65,12 @@ module avdAlaWorkspace '../../../carml/1.2.1/Microsoft.OperationalInsights/works
   ]
 }
 
-// Introduce delay after log analitics workspace creation.
-module avdAlaWorkspaceDelay '../../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (deployAlaWorkspace) {
+// Introduce Wait after log analitics workspace creation.
+module avdAlaWorkspaceWait '../../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (deployAlaWorkspace) {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdMonitoringRgName}')
-  name: 'AVD-ALA-Workspace-Delay-${time}'
+  name: 'ALA-Workspace-Wait-${time}'
   params: {
-      name: 'AVD-avdAlaWorkspaceDelay-${time}'
+      name: 'AVD-avdAlaWorkspaceWait-${time}'
       location: avdManagementPlaneLocation
       azPowerShellVersion: '6.2'
       cleanupPreference: 'Always'
@@ -102,7 +102,7 @@ module deployDiagnosticsAzurePolicyForAvd 'avd-azure-policy-monitoring.bicep' = 
 
 // Performance counters
 module deployMonitoringEventsPerformanceSettings 'avd-monitoring-events-performance-counters.bicep' = {
-  name: 'Deploy-AVD-Events-Performance-${time}'
+  name: 'Events-Performance-${time}'
   params: {
       avdManagementPlaneLocation: avdManagementPlaneLocation
       deployAlaWorkspace: deployAlaWorkspace

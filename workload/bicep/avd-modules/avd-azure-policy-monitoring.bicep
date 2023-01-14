@@ -138,7 +138,7 @@ module avdPolicyDefinitions '../../../carml/1.2.0/Microsoft.Authorization/policy
 // Policy set definition.
 module avdPolicySetDefinitions '../../../carml/1.2.0/Microsoft.Authorization/policySetDefinitions/subscription/deploy.bicep' = {
   scope: subscription('${avdWorkloadSubsId}')
-  name: 'AVD-Policy-Set-Definition-${time}'
+  name: 'Policy-Set-Definition-${time}'
   params: {
     location: avdManagementPlaneLocation
     name: varCustomPolicySetDefinitions.name
@@ -161,7 +161,7 @@ module avdPolicySetDefinitions '../../../carml/1.2.0/Microsoft.Authorization/pol
 // Policy set assignment.
 module avdPolicySetassignment '../../../carml/1.2.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = {
   scope: subscription('${avdWorkloadSubsId}')
-  name: 'AVD-Policy-Set-Assignment-${time}'
+  name: 'Policy-Set-Assignment-${time}'
   params: {
     location: avdManagementPlaneLocation
     name: take('${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}', 64)
