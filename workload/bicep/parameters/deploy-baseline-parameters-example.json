@@ -114,7 +114,7 @@
             "value": true
         },
         "createMsixDeployment": {
-            "value": true
+            "value": false
         },
         "fslogixFileShareQuotaSize": {
             "value": 10
