@@ -14,7 +14,7 @@
         "imageVersionStorageAccountType": {
             "value": "Standard_LRS"
         },
-        "aibLocation": {
+        "deploymentLocation": {
             "value": "eastus"
         },
         "buildSchedule": {
