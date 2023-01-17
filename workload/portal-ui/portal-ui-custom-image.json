@@ -923,7 +923,7 @@
         "outputs": {
             "parameters": {
                 "alertsActionGroupCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.actionGroup, 'none')]",
-                "aibLocation": "[steps('basics').resourceScope.location.name]",
+                "deploymentLocation": "[steps('basics').resourceScope.location.name]",
                 "buildSchedule": "[steps('aib').buildSchedule]",
                 "applicationNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.application, 'none')]",
                 "automationAccountCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.automationAccount, 'none')]",
