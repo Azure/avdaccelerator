@@ -63,7 +63,7 @@ param storageAccountSku string = 'Standard_LRS' */
     'westus3'
 ])
 @description('Required. Location to deploy the resources in this solution, except the image template. (Default: eastus)')
-param aibLocation string
+param deploymentLocation string = 'eastus'
 
 @allowed([
     'OneTime'
@@ -241,7 +241,7 @@ param enableTelemetry bool = true
 var varAzureCloudName = environment().name
 var varActionGroupName = customNaming ? alertsActionGroupCustomName : 'ag-avd-${varNamingStandard}'
 var varNamingStandard = '${varLocationAcronym}'
-var varLocationLowercase = toLower(aibLocation)
+var varLocationLowercase = toLower(deploymentLocation)
 var varResourceGroupName = customNaming ? resourceGroupCustomName : 'rg-avd-${varNamingStandard}-shared-services'
 var varImageGalleryName = customNaming ? imageGalleryCustomName : 'gal_avd_${varNamingStandard}'
 var varUserAssignedManagedIdentityName = customNaming ? userAssignedManagedIdentityCustomName : 'id-aib-${varNamingStandard}'
@@ -306,7 +306,7 @@ var varLocationAcronyms = {
 }
 //
 
-var varTimeZone = varTimeZones[aibLocation]
+var varTimeZone = varTimeZones[deploymentLocation]
 var varTimeZones = {
     australiacentral: 'AUS Eastern Standard time'
     australiacentral2: 'AUS Eastern Standard time'
@@ -462,7 +462,7 @@ var varOperatingSystemImageDefinitions = {
 }
 
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
-var varTelemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${aibLocation}'
+var varTelemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${deploymentLocation}'
 
 // Customization Steps
 var varRdpShortPathCustomizer = rdpShortPath ? [
@@ -672,7 +672,7 @@ var varRoles = union(varVirtualNetworkJoinRole, varImageTemplateBuildAutomation,
 //  Telemetry Deployment.
 resource telemetryDeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
     name: varTelemetryId
-    location: aibLocation
+    location: deploymentLocation
     properties: {
         mode: 'Incremental'
         template: {
@@ -689,7 +689,7 @@ module avdSharedResourcesRg '../../carml/1.0.0/Microsoft.Resources/resourceGroup
     name: 'Resource-Group_${time}'
     params: {
         name: varResourceGroupName
-        location: aibLocation
+        location: deploymentLocation
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
 }
@@ -715,7 +715,7 @@ module userAssignedManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/
     name: 'User-Assigned-Managed-Identity_${time}'
     params: {
         name: varUserAssignedManagedIdentityName
-        location: aibLocation
+        location: deploymentLocation
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
@@ -751,7 +751,7 @@ module gallery '../../carml/1.3.0/Microsoft.Compute/galleries/deploy.bicep' = {
     name: 'Compute-Gallery_${time}'
     params: {
         name: varImageGalleryName
-        location: aibLocation
+        location: deploymentLocation
         galleryDescription: 'Azure Virtual Desktops Images'
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
@@ -772,7 +772,7 @@ module image '../../carml/1.3.0/Microsoft.Compute/galleries/images/deploy.bicep'
         publisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
         offer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
         sku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
-        location: aibLocation
+        location: deploymentLocation
         hyperVGeneration: varOperatingSystemImageDefinitions[operatingSystemImage].hyperVGeneration
         securityType: imageDefinitionSecurityType
         tags: enableResourceTags ? varCommonResourceTags : {}
@@ -792,7 +792,7 @@ module imageTemplate '../../carml/1.3.0/Microsoft.VirtualMachineImages/imageTemp
         subnetId: !empty(existingVirtualNetworkResourceId) && !empty(existingSubnetName) ? '${existingVirtualNetworkResourceId}/subnets/${existingSubnetName}' : ''
         userMsiName: userAssignedManagedIdentity.outputs.name
         userMsiResourceGroup: userAssignedManagedIdentity.outputs.resourceGroupName
-        location: aibLocation
+        location: deploymentLocation
         imageReplicationRegions: varImageReplicationRegions
         storageAccountType: imageVersionStorageAccountType
         sigImageDefinitionId: image.outputs.resourceId
@@ -820,7 +820,7 @@ module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/dep
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Log-Analytics-Workspace_${time}'
     params: {
-        location: aibLocation
+        location: deploymentLocation
         name: varLogAnalyticsWorkspaceName
         dataRetention: logAnalyticsWorkspaceDataRetention
         useResourcePermissions: true
@@ -837,7 +837,7 @@ module workspaceWait '../../carml/1.0.0/Microsoft.Resources/deploymentScripts/de
     name: 'Log-Analytics-Workspace-Wait_${time}'
     params: {
         name: '${varLogAnalyticsWorkspaceName}_wait_${time}'
-        location: aibLocation
+        location: deploymentLocation
         azPowerShellVersion: '6.2'
         cleanupPreference: 'Always'
         timeout: 'PT10M'
@@ -874,7 +874,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
                     ImageOffer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
                     ImagePublisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
                     ImageSku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
-                    Location: aibLocation
+                    Location: deploymentLocation
                     SubscriptionId: sharedServicesSubId
                     TemplateName: imageTemplate.outputs.name
                     TemplateResourceGroupName: varResourceGroupName
@@ -884,7 +884,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
                 scheduleName: varImageTemplateName
             }
         ]
-        location: aibLocation
+        location: deploymentLocation
         runbooks: [
             {
                 name: 'aib-build-automation'
@@ -924,7 +924,7 @@ module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/module
     name: 'Automation-Account-Module_${i}_${time}'
     params: {
         name: varModules[i].name
-        location: aibLocation
+        location: deploymentLocation
         automationAccountName: automationAccount.outputs.name
         uri: varModules[i].uri
     }
@@ -936,7 +936,7 @@ module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/module
     name: 'Storage-Account_${time}'
     params: {
         name: varStorageAccountName
-        location: aibLocation
+        location: deploymentLocation
         storageAccountSku: storageAccountSku
         storageAccountKind: 'StorageV2'
         blobServices: {
@@ -986,7 +986,7 @@ module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryR
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Scheduled-Query-Rule_${i}_${time}'
     params: {
-        location: aibLocation
+        location: deploymentLocation
         name: varAlerts[i].name
         alertDescription: varAlerts[i].description
         enabled: true
