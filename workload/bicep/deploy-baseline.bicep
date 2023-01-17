@@ -135,8 +135,8 @@ param vNetworkGatewayOnHub bool = false
 @description('Optional. Deploy Fslogix setup. (Default: true)')
 param createAvdFslogixDeployment bool = true
 
-@description('Optional. Deploy MSIX App Attach setup. (Default: true)')
-param createMsixDeployment bool = true
+@description('Optional. Deploy MSIX App Attach setup. (Default: false)')
+param createMsixDeployment bool = false
 
 @description('Optional. Fslogix file share size. (Default: ~1TB)')
 param fslogixFileShareQuotaSize int = 10
