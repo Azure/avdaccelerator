@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.12.40.16777",
-      "templateHash": "17783840241854315384"
+      "version": "0.13.1.58284",
+      "templateHash": "12831290755907301643"
     }
   },
   "parameters": {
@@ -691,9 +691,7 @@
           "location": {
             "value": "[parameters('sharedServicesLocation')]"
           },
-          "tags": {
-            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
-          }
+          "tags": "[if(parameters('enableResourceTags'), createObject('value', variables('varCommonResourceTags')), createObject('value', createObject()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
@@ -701,8 +699,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.12.40.16777",
-              "templateHash": "14371000484120805163"
+              "version": "0.13.1.58284",
+              "templateHash": "14125043125979717613"
             }
           },
           "parameters": {
@@ -780,8 +778,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "480946558336396542"
+                      "version": "0.13.1.58284",
+                      "templateHash": "7993656388366559830"
                     }
                   },
                   "parameters": {
@@ -877,8 +875,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "10287774166509004715"
+                      "version": "0.13.1.58284",
+                      "templateHash": "13552897913478228138"
                     }
                   },
                   "parameters": {
@@ -1150,8 +1148,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.12.40.16777",
-              "templateHash": "14905381042805460898"
+              "version": "0.13.1.58284",
+              "templateHash": "237588929647907651"
             }
           },
           "parameters": {
@@ -1276,9 +1274,7 @@
           "location": {
             "value": "[parameters('sharedServicesLocation')]"
           },
-          "tags": {
-            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
-          }
+          "tags": "[if(parameters('enableResourceTags'), createObject('value', variables('varCommonResourceTags')), createObject('value', createObject()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1286,8 +1282,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.12.40.16777",
-              "templateHash": "109459918124135444"
+              "version": "0.13.1.58284",
+              "templateHash": "3161530559720263597"
             }
           },
           "parameters": {
@@ -1378,8 +1374,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "17666925374910611943"
+                      "version": "0.13.1.58284",
+                      "templateHash": "3208761235556063943"
                     }
                   },
                   "resources": []
@@ -1416,8 +1412,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "7063219950530784819"
+                      "version": "0.13.1.58284",
+                      "templateHash": "11082061432231238184"
                     }
                   },
                   "parameters": {
@@ -1548,8 +1544,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.12.40.16777",
-              "templateHash": "9412286705087142511"
+              "version": "0.13.1.58284",
+              "templateHash": "1169469686274678361"
             }
           },
           "parameters": {
@@ -2015,8 +2011,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.12.40.16777",
-              "templateHash": "9412286705087142511"
+              "version": "0.13.1.58284",
+              "templateHash": "1169469686274678361"
             }
           },
           "parameters": {
@@ -2473,9 +2469,7 @@
           "galleryDescription": {
             "value": "Azure Virtual Desktops Images"
           },
-          "tags": {
-            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
-          }
+          "tags": "[if(parameters('enableResourceTags'), createObject('value', variables('varCommonResourceTags')), createObject('value', createObject()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2483,8 +2477,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.12.40.16777",
-              "templateHash": "14397254289915009110"
+              "version": "0.13.1.58284",
+              "templateHash": "15649455438438534841"
             }
           },
           "parameters": {
@@ -2614,24 +2608,16 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "description": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), parameters('roleAssignments')[copyIndex()].description, '')]"
-                  },
+                  "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
                   "principalIds": {
                     "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
                   },
-                  "principalType": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), parameters('roleAssignments')[copyIndex()].principalType, '')]"
-                  },
+                  "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
                   "roleDefinitionIdOrName": {
                     "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
                   },
-                  "condition": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), parameters('roleAssignments')[copyIndex()].condition, '')]"
-                  },
-                  "delegatedManagedIdentityResourceId": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId, '')]"
-                  },
+                  "condition": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), createObject('value', parameters('roleAssignments')[copyIndex()].condition), createObject('value', ''))]",
+                  "delegatedManagedIdentityResourceId": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), createObject('value', parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId), createObject('value', ''))]",
                   "resourceId": {
                     "value": "[resourceId('Microsoft.Compute/galleries', parameters('name'))]"
                   }
@@ -2642,8 +2628,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "12027616316044904819"
+                      "version": "0.13.1.58284",
+                      "templateHash": "3716409647291684227"
                     }
                   },
                   "parameters": {
@@ -2795,33 +2781,15 @@
                   "galleryName": {
                     "value": "[parameters('name')]"
                   },
-                  "supportedOSType": {
-                    "value": "[if(contains(parameters('applications')[copyIndex()], 'supportOSType'), parameters('applications')[copyIndex()].supportedOSType, 'Windows')]"
-                  },
-                  "applicationDefinitionDescription": {
-                    "value": "[if(contains(parameters('applications')[copyIndex()], 'applicationDefinitionDescription'), parameters('applications')[copyIndex()].applicationDefinitionDescription, '')]"
-                  },
-                  "eula": {
-                    "value": "[if(contains(parameters('applications')[copyIndex()], 'eula'), parameters('applications')[copyIndex()].eula, '')]"
-                  },
-                  "privacyStatementUri": {
-                    "value": "[if(contains(parameters('applications')[copyIndex()], 'privacyStatementUri'), parameters('applications')[copyIndex()].privacyStatementUri, '')]"
-                  },
-                  "releaseNoteUri": {
-                    "value": "[if(contains(parameters('applications')[copyIndex()], 'releaseNoteUri'), parameters('applications')[copyIndex()].releaseNoteUri, '')]"
-                  },
-                  "endOfLifeDate": {
-                    "value": "[if(contains(parameters('applications')[copyIndex()], 'endOfLifeDate'), parameters('applications')[copyIndex()].endOfLifeDate, '')]"
-                  },
-                  "roleAssignments": {
-                    "value": "[if(contains(parameters('applications')[copyIndex()], 'roleAssignments'), parameters('applications')[copyIndex()].roleAssignments, createArray())]"
-                  },
-                  "customActions": {
-                    "value": "[if(contains(parameters('applications')[copyIndex()], 'customActions'), parameters('applications')[copyIndex()].customActions, createArray())]"
-                  },
-                  "tags": {
-                    "value": "[if(contains(parameters('applications')[copyIndex()], 'tags'), parameters('applications')[copyIndex()].tags, createObject())]"
-                  },
+                  "supportedOSType": "[if(contains(parameters('applications')[copyIndex()], 'supportOSType'), createObject('value', parameters('applications')[copyIndex()].supportedOSType), createObject('value', 'Windows'))]",
+                  "applicationDefinitionDescription": "[if(contains(parameters('applications')[copyIndex()], 'applicationDefinitionDescription'), createObject('value', parameters('applications')[copyIndex()].applicationDefinitionDescription), createObject('value', ''))]",
+                  "eula": "[if(contains(parameters('applications')[copyIndex()], 'eula'), createObject('value', parameters('applications')[copyIndex()].eula), createObject('value', ''))]",
+                  "privacyStatementUri": "[if(contains(parameters('applications')[copyIndex()], 'privacyStatementUri'), createObject('value', parameters('applications')[copyIndex()].privacyStatementUri), createObject('value', ''))]",
+                  "releaseNoteUri": "[if(contains(parameters('applications')[copyIndex()], 'releaseNoteUri'), createObject('value', parameters('applications')[copyIndex()].releaseNoteUri), createObject('value', ''))]",
+                  "endOfLifeDate": "[if(contains(parameters('applications')[copyIndex()], 'endOfLifeDate'), createObject('value', parameters('applications')[copyIndex()].endOfLifeDate), createObject('value', ''))]",
+                  "roleAssignments": "[if(contains(parameters('applications')[copyIndex()], 'roleAssignments'), createObject('value', parameters('applications')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
+                  "customActions": "[if(contains(parameters('applications')[copyIndex()], 'customActions'), createObject('value', parameters('applications')[copyIndex()].customActions), createObject('value', createArray()))]",
+                  "tags": "[if(contains(parameters('applications')[copyIndex()], 'tags'), createObject('value', parameters('applications')[copyIndex()].tags), createObject('value', createObject()))]",
                   "enableDefaultTelemetry": {
                     "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
@@ -2832,8 +2800,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "14849269997372505808"
+                      "version": "0.13.1.58284",
+                      "templateHash": "5430891490691344311"
                     }
                   },
                   "parameters": {
@@ -2977,24 +2945,16 @@
                         },
                         "mode": "Incremental",
                         "parameters": {
-                          "description": {
-                            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), parameters('roleAssignments')[copyIndex()].description, '')]"
-                          },
+                          "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
                           "principalIds": {
                             "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
                           },
-                          "principalType": {
-                            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), parameters('roleAssignments')[copyIndex()].principalType, '')]"
-                          },
+                          "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
                           "roleDefinitionIdOrName": {
                             "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
                           },
-                          "condition": {
-                            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), parameters('roleAssignments')[copyIndex()].condition, '')]"
-                          },
-                          "delegatedManagedIdentityResourceId": {
-                            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId, '')]"
-                          },
+                          "condition": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), createObject('value', parameters('roleAssignments')[copyIndex()].condition), createObject('value', ''))]",
+                          "delegatedManagedIdentityResourceId": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), createObject('value', parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId), createObject('value', ''))]",
                           "resourceId": {
                             "value": "[resourceId('Microsoft.Compute/galleries/applications', parameters('galleryName'), parameters('name'))]"
                           }
@@ -3005,8 +2965,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.12.40.16777",
-                              "templateHash": "12885985551814078207"
+                              "version": "0.13.1.58284",
+                              "templateHash": "5667147591372150590"
                             }
                           },
                           "parameters": {
@@ -3179,72 +3139,28 @@
                   "galleryName": {
                     "value": "[parameters('name')]"
                   },
-                  "osType": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'osType'), parameters('images')[copyIndex()].osType, 'Windows')]"
-                  },
-                  "osState": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'osState'), parameters('images')[copyIndex()].osState, 'Generalized')]"
-                  },
-                  "publisher": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'publisher'), parameters('images')[copyIndex()].publisher, 'MicrosoftWindowsServer')]"
-                  },
-                  "offer": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'offer'), parameters('images')[copyIndex()].offer, 'WindowsServer')]"
-                  },
-                  "sku": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'sku'), parameters('images')[copyIndex()].sku, '2019-Datacenter')]"
-                  },
-                  "minRecommendedvCPUs": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'minRecommendedvCPUs'), parameters('images')[copyIndex()].minRecommendedvCPUs, 1)]"
-                  },
-                  "maxRecommendedvCPUs": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'maxRecommendedvCPUs'), parameters('images')[copyIndex()].maxRecommendedvCPUs, 4)]"
-                  },
-                  "minRecommendedMemory": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'minRecommendedMemory'), parameters('images')[copyIndex()].minRecommendedMemory, 4)]"
-                  },
-                  "maxRecommendedMemory": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'maxRecommendedMemory'), parameters('images')[copyIndex()].maxRecommendedMemory, 16)]"
-                  },
-                  "hyperVGeneration": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'hyperVGeneration'), parameters('images')[copyIndex()].hyperVGeneration, 'V1')]"
-                  },
-                  "securityType": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'securityType'), parameters('images')[copyIndex()].securityType, 'Standard')]"
-                  },
-                  "imageDefinitionDescription": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'imageDefinitionDescription'), parameters('images')[copyIndex()].imageDefinitionDescription, '')]"
-                  },
-                  "eula": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'eula'), parameters('images')[copyIndex()].eula, '')]"
-                  },
-                  "privacyStatementUri": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'privacyStatementUri'), parameters('images')[copyIndex()].privacyStatementUri, '')]"
-                  },
-                  "releaseNoteUri": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'releaseNoteUri'), parameters('images')[copyIndex()].releaseNoteUri, '')]"
-                  },
-                  "productName": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'productName'), parameters('images')[copyIndex()].productName, '')]"
-                  },
-                  "planName": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'planName'), parameters('images')[copyIndex()].planName, '')]"
-                  },
-                  "planPublisherName": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'planPublisherName'), parameters('images')[copyIndex()].planPublisherName, '')]"
-                  },
-                  "endOfLife": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'endOfLife'), parameters('images')[copyIndex()].endOfLife, '')]"
-                  },
-                  "excludedDiskTypes": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'excludedDiskTypes'), parameters('images')[copyIndex()].excludedDiskTypes, createArray())]"
-                  },
-                  "roleAssignments": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'roleAssignments'), parameters('images')[copyIndex()].roleAssignments, createArray())]"
-                  },
-                  "tags": {
-                    "value": "[if(contains(parameters('images')[copyIndex()], 'tags'), parameters('images')[copyIndex()].tags, createObject())]"
-                  },
+                  "osType": "[if(contains(parameters('images')[copyIndex()], 'osType'), createObject('value', parameters('images')[copyIndex()].osType), createObject('value', 'Windows'))]",
+                  "osState": "[if(contains(parameters('images')[copyIndex()], 'osState'), createObject('value', parameters('images')[copyIndex()].osState), createObject('value', 'Generalized'))]",
+                  "publisher": "[if(contains(parameters('images')[copyIndex()], 'publisher'), createObject('value', parameters('images')[copyIndex()].publisher), createObject('value', 'MicrosoftWindowsServer'))]",
+                  "offer": "[if(contains(parameters('images')[copyIndex()], 'offer'), createObject('value', parameters('images')[copyIndex()].offer), createObject('value', 'WindowsServer'))]",
+                  "sku": "[if(contains(parameters('images')[copyIndex()], 'sku'), createObject('value', parameters('images')[copyIndex()].sku), createObject('value', '2019-Datacenter'))]",
+                  "minRecommendedvCPUs": "[if(contains(parameters('images')[copyIndex()], 'minRecommendedvCPUs'), createObject('value', parameters('images')[copyIndex()].minRecommendedvCPUs), createObject('value', 1))]",
+                  "maxRecommendedvCPUs": "[if(contains(parameters('images')[copyIndex()], 'maxRecommendedvCPUs'), createObject('value', parameters('images')[copyIndex()].maxRecommendedvCPUs), createObject('value', 4))]",
+                  "minRecommendedMemory": "[if(contains(parameters('images')[copyIndex()], 'minRecommendedMemory'), createObject('value', parameters('images')[copyIndex()].minRecommendedMemory), createObject('value', 4))]",
+                  "maxRecommendedMemory": "[if(contains(parameters('images')[copyIndex()], 'maxRecommendedMemory'), createObject('value', parameters('images')[copyIndex()].maxRecommendedMemory), createObject('value', 16))]",
+                  "hyperVGeneration": "[if(contains(parameters('images')[copyIndex()], 'hyperVGeneration'), createObject('value', parameters('images')[copyIndex()].hyperVGeneration), createObject('value', 'V1'))]",
+                  "securityType": "[if(contains(parameters('images')[copyIndex()], 'securityType'), createObject('value', parameters('images')[copyIndex()].securityType), createObject('value', 'Standard'))]",
+                  "imageDefinitionDescription": "[if(contains(parameters('images')[copyIndex()], 'imageDefinitionDescription'), createObject('value', parameters('images')[copyIndex()].imageDefinitionDescription), createObject('value', ''))]",
+                  "eula": "[if(contains(parameters('images')[copyIndex()], 'eula'), createObject('value', parameters('images')[copyIndex()].eula), createObject('value', ''))]",
+                  "privacyStatementUri": "[if(contains(parameters('images')[copyIndex()], 'privacyStatementUri'), createObject('value', parameters('images')[copyIndex()].privacyStatementUri), createObject('value', ''))]",
+                  "releaseNoteUri": "[if(contains(parameters('images')[copyIndex()], 'releaseNoteUri'), createObject('value', parameters('images')[copyIndex()].releaseNoteUri), createObject('value', ''))]",
+                  "productName": "[if(contains(parameters('images')[copyIndex()], 'productName'), createObject('value', parameters('images')[copyIndex()].productName), createObject('value', ''))]",
+                  "planName": "[if(contains(parameters('images')[copyIndex()], 'planName'), createObject('value', parameters('images')[copyIndex()].planName), createObject('value', ''))]",
+                  "planPublisherName": "[if(contains(parameters('images')[copyIndex()], 'planPublisherName'), createObject('value', parameters('images')[copyIndex()].planPublisherName), createObject('value', ''))]",
+                  "endOfLife": "[if(contains(parameters('images')[copyIndex()], 'endOfLife'), createObject('value', parameters('images')[copyIndex()].endOfLife), createObject('value', ''))]",
+                  "excludedDiskTypes": "[if(contains(parameters('images')[copyIndex()], 'excludedDiskTypes'), createObject('value', parameters('images')[copyIndex()].excludedDiskTypes), createObject('value', createArray()))]",
+                  "roleAssignments": "[if(contains(parameters('images')[copyIndex()], 'roleAssignments'), createObject('value', parameters('images')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
+                  "tags": "[if(contains(parameters('images')[copyIndex()], 'tags'), createObject('value', parameters('images')[copyIndex()].tags), createObject('value', createObject()))]",
                   "enableDefaultTelemetry": {
                     "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
@@ -3255,8 +3171,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "429157153520114264"
+                      "version": "0.13.1.58284",
+                      "templateHash": "7192654441850008662"
                     }
                   },
                   "parameters": {
@@ -3375,7 +3291,7 @@
                         "V2"
                       ],
                       "metadata": {
-                        "description": "Optional. The hypervisor generation of the Virtual Machine.\r\n* If this value is not specified, then it is determined by the securityType parameter.\r\n* If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\r\n"
+                        "description": "Optional. The hypervisor generation of the Virtual Machine.\n* If this value is not specified, then it is determined by the securityType parameter.\n* If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\n"
                       }
                     },
                     "securityType": {
@@ -3539,24 +3455,16 @@
                         },
                         "mode": "Incremental",
                         "parameters": {
-                          "description": {
-                            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), parameters('roleAssignments')[copyIndex()].description, '')]"
-                          },
+                          "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
                           "principalIds": {
                             "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
                           },
-                          "principalType": {
-                            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), parameters('roleAssignments')[copyIndex()].principalType, '')]"
-                          },
+                          "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
                           "roleDefinitionIdOrName": {
                             "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
                           },
-                          "condition": {
-                            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), parameters('roleAssignments')[copyIndex()].condition, '')]"
-                          },
-                          "delegatedManagedIdentityResourceId": {
-                            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId, '')]"
-                          },
+                          "condition": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), createObject('value', parameters('roleAssignments')[copyIndex()].condition), createObject('value', ''))]",
+                          "delegatedManagedIdentityResourceId": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), createObject('value', parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId), createObject('value', ''))]",
                           "resourceId": {
                             "value": "[resourceId('Microsoft.Compute/galleries/images', parameters('galleryName'), parameters('name'))]"
                           }
@@ -3567,8 +3475,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.12.40.16777",
-                              "templateHash": "18290663259485060426"
+                              "version": "0.13.1.58284",
+                              "templateHash": "11215318230328220652"
                             }
                           },
                           "parameters": {
@@ -3816,9 +3724,7 @@
           "securityType": {
             "value": "[parameters('imageDefinitionSecurityType')]"
           },
-          "tags": {
-            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
-          }
+          "tags": "[if(parameters('enableResourceTags'), createObject('value', variables('varCommonResourceTags')), createObject('value', createObject()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -3826,8 +3732,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.12.40.16777",
-              "templateHash": "429157153520114264"
+              "version": "0.13.1.58284",
+              "templateHash": "7192654441850008662"
             }
           },
           "parameters": {
@@ -3946,7 +3852,7 @@
                 "V2"
               ],
               "metadata": {
-                "description": "Optional. The hypervisor generation of the Virtual Machine.\r\n* If this value is not specified, then it is determined by the securityType parameter.\r\n* If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\r\n"
+                "description": "Optional. The hypervisor generation of the Virtual Machine.\n* If this value is not specified, then it is determined by the securityType parameter.\n* If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\n"
               }
             },
             "securityType": {
@@ -4110,24 +4016,16 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "description": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), parameters('roleAssignments')[copyIndex()].description, '')]"
-                  },
+                  "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
                   "principalIds": {
                     "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
                   },
-                  "principalType": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), parameters('roleAssignments')[copyIndex()].principalType, '')]"
-                  },
+                  "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
                   "roleDefinitionIdOrName": {
                     "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
                   },
-                  "condition": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), parameters('roleAssignments')[copyIndex()].condition, '')]"
-                  },
-                  "delegatedManagedIdentityResourceId": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId, '')]"
-                  },
+                  "condition": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), createObject('value', parameters('roleAssignments')[copyIndex()].condition), createObject('value', ''))]",
+                  "delegatedManagedIdentityResourceId": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), createObject('value', parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId), createObject('value', ''))]",
                   "resourceId": {
                     "value": "[resourceId('Microsoft.Compute/galleries/images', parameters('galleryName'), parameters('name'))]"
                   }
@@ -4138,8 +4036,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "18290663259485060426"
+                      "version": "0.13.1.58284",
+                      "templateHash": "11215318230328220652"
                     }
                   },
                   "parameters": {
@@ -4324,9 +4222,7 @@
           "name": {
             "value": "[variables('varImageTemplateName')]"
           },
-          "subnetId": {
-            "value": "[if(and(not(empty(parameters('existingVirtualNetworkResourceId'))), not(empty(parameters('existingSubnetName')))), format('{0}/subnets/{1}', parameters('existingVirtualNetworkResourceId'), parameters('existingSubnetName')), '')]"
-          },
+          "subnetId": "[if(and(not(empty(parameters('existingVirtualNetworkResourceId'))), not(empty(parameters('existingSubnetName')))), createObject('value', format('{0}/subnets/{1}', parameters('existingVirtualNetworkResourceId'), parameters('existingSubnetName'))), createObject('value', ''))]",
           "userMsiName": {
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time'))), '2020-10-01').outputs.name.value]"
           },
@@ -4360,9 +4256,7 @@
               "version": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].version]"
             }
           },
-          "tags": {
-            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
-          }
+          "tags": "[if(parameters('enableResourceTags'), createObject('value', variables('varCommonResourceTags')), createObject('value', createObject()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -4370,8 +4264,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.12.40.16777",
-              "templateHash": "1039773322430027720"
+              "version": "0.13.1.58284",
+              "templateHash": "14241749278142076984"
             }
           },
           "parameters": {
@@ -4428,14 +4322,14 @@
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "Optional. Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>.\r\nIf no value is provided, a new temporary VNET and subnet will be created in the staging resource group and will be deleted along with the remaining temporary resources.\r\n"
+                "description": "Optional. Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>.\nIf no value is provided, a new temporary VNET and subnet will be created in the staging resource group and will be deleted along with the remaining temporary resources.\n"
               }
             },
             "userAssignedIdentities": {
               "type": "array",
               "defaultValue": [],
               "metadata": {
-                "description": "Optional. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.\r\nBe aware, the user assigned identity specified in the \\'userMsiName\\' parameter must have the \\'Managed Identity Operator\\' role assignment on all the user assigned identities\r\nspecified in this parameter for Azure Image Builder to be able to associate them to the build VM.\r\n"
+                "description": "Optional. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.\nBe aware, the user assigned identity specified in the \\'userMsiName\\' parameter must have the \\'Managed Identity Operator\\' role assignment on all the user assigned identities\nspecified in this parameter for Azure Image Builder to be able to associate them to the build VM.\n"
               }
             },
             "imageSource": {
@@ -4507,7 +4401,7 @@
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "Optional. Resource ID of the staging resource group in the same subscription and location as the image template that will be used to build the image.\r\nIf this field is empty, a resource group with a random name will be created.\r\nIf the resource group specified in this field doesn\\'t exist, it will be created with the same name.\r\nIf the resource group specified exists, it must be empty and in the same region as the image template.\r\nThe resource group created will be deleted during template deletion if this field is empty or the resource group specified doesn\\'t exist,\r\nbut if the resource group specified exists the resources created in the resource group will be deleted during template deletion and the resource group itself will remain.\r\n"
+                "description": "Optional. Resource ID of the staging resource group in the same subscription and location as the image template that will be used to build the image.\nIf this field is empty, a resource group with a random name will be created.\nIf the resource group specified in this field doesn\\'t exist, it will be created with the same name.\nIf the resource group specified exists, it must be empty and in the same region as the image template.\nThe resource group created will be deleted during template deletion if this field is empty or the resource group specified doesn\\'t exist,\nbut if the resource group specified exists the resources created in the resource group will be deleted during template deletion and the resource group itself will remain.\n"
               }
             },
             "lock": {
@@ -4680,24 +4574,16 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "description": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), parameters('roleAssignments')[copyIndex()].description, '')]"
-                  },
+                  "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
                   "principalIds": {
                     "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
                   },
-                  "principalType": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), parameters('roleAssignments')[copyIndex()].principalType, '')]"
-                  },
+                  "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
                   "roleDefinitionIdOrName": {
                     "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
                   },
-                  "condition": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), parameters('roleAssignments')[copyIndex()].condition, '')]"
-                  },
-                  "delegatedManagedIdentityResourceId": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId, '')]"
-                  },
+                  "condition": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), createObject('value', parameters('roleAssignments')[copyIndex()].condition), createObject('value', ''))]",
+                  "delegatedManagedIdentityResourceId": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), createObject('value', parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId), createObject('value', ''))]",
                   "resourceId": {
                     "value": "[resourceId('Microsoft.VirtualMachineImages/imageTemplates', format('{0}-{1}', parameters('name'), parameters('baseTime')))]"
                   }
@@ -4708,8 +4594,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "16291747920494961943"
+                      "version": "0.13.1.58284",
+                      "templateHash": "483239404483242459"
                     }
                   },
                   "parameters": {
@@ -4902,9 +4788,7 @@
           "useResourcePermissions": {
             "value": true
           },
-          "tags": {
-            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
-          }
+          "tags": "[if(parameters('enableResourceTags'), createObject('value', variables('varCommonResourceTags')), createObject('value', createObject()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -4912,8 +4796,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.12.40.16777",
-              "templateHash": "13231327832909185929"
+              "version": "0.13.1.58284",
+              "templateHash": "10471779228204015022"
             }
           },
           "parameters": {
@@ -5110,10 +4994,10 @@
             },
             "diagnosticLogCategoriesToEnable": {
               "type": "array",
-              "allowedValues": [
+              "defaultValue": [
                 "Audit"
               ],
-              "defaultValue": [
+              "allowedValues": [
                 "Audit"
               ],
               "metadata": {
@@ -5122,10 +5006,10 @@
             },
             "diagnosticMetricsToEnable": {
               "type": "array",
-              "allowedValues": [
+              "defaultValue": [
                 "AllMetrics"
               ],
-              "defaultValue": [
+              "allowedValues": [
                 "AllMetrics"
               ],
               "metadata": {
@@ -5258,12 +5142,8 @@
                   "logAnalyticsWorkspaceName": {
                     "value": "[parameters('name')]"
                   },
-                  "containers": {
-                    "value": "[if(contains(parameters('storageInsightsConfigs')[copyIndex()], 'containers'), parameters('storageInsightsConfigs')[copyIndex()].containers, createArray())]"
-                  },
-                  "tables": {
-                    "value": "[if(contains(parameters('storageInsightsConfigs')[copyIndex()], 'tables'), parameters('storageInsightsConfigs')[copyIndex()].tables, createArray())]"
-                  },
+                  "containers": "[if(contains(parameters('storageInsightsConfigs')[copyIndex()], 'containers'), createObject('value', parameters('storageInsightsConfigs')[copyIndex()].containers), createObject('value', createArray()))]",
+                  "tables": "[if(contains(parameters('storageInsightsConfigs')[copyIndex()], 'tables'), createObject('value', parameters('storageInsightsConfigs')[copyIndex()].tables), createObject('value', createArray()))]",
                   "storageAccountId": {
                     "value": "[parameters('storageInsightsConfigs')[copyIndex()].storageAccountId]"
                   },
@@ -5277,8 +5157,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "5143271088180555675"
+                      "version": "0.13.1.58284",
+                      "templateHash": "6468317457050685506"
                     }
                   },
                   "parameters": {
@@ -5409,12 +5289,8 @@
                   "name": {
                     "value": "[parameters('linkedServices')[copyIndex()].name]"
                   },
-                  "resourceId": {
-                    "value": "[if(contains(parameters('linkedServices')[copyIndex()], 'resourceId'), parameters('linkedServices')[copyIndex()].resourceId, '')]"
-                  },
-                  "writeAccessResourceId": {
-                    "value": "[if(contains(parameters('linkedServices')[copyIndex()], 'writeAccessResourceId'), parameters('linkedServices')[copyIndex()].writeAccessResourceId, '')]"
-                  },
+                  "resourceId": "[if(contains(parameters('linkedServices')[copyIndex()], 'resourceId'), createObject('value', parameters('linkedServices')[copyIndex()].resourceId), createObject('value', ''))]",
+                  "writeAccessResourceId": "[if(contains(parameters('linkedServices')[copyIndex()], 'writeAccessResourceId'), createObject('value', parameters('linkedServices')[copyIndex()].writeAccessResourceId), createObject('value', ''))]",
                   "enableDefaultTelemetry": {
                     "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
@@ -5425,8 +5301,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "13334440349200766786"
+                      "version": "0.13.1.58284",
+                      "templateHash": "7002984992550738658"
                     }
                   },
                   "parameters": {
@@ -5559,8 +5435,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "13048683144445551749"
+                      "version": "0.13.1.58284",
+                      "templateHash": "3525770028275725902"
                     }
                   },
                   "parameters": {
@@ -5671,9 +5547,7 @@
                   "name": {
                     "value": "[format('{0}{1}', parameters('savedSearches')[copyIndex()].name, uniqueString(deployment().name))]"
                   },
-                  "etag": {
-                    "value": "[if(contains(parameters('savedSearches')[copyIndex()], 'eTag'), parameters('savedSearches')[copyIndex()].etag, '*')]"
-                  },
+                  "etag": "[if(contains(parameters('savedSearches')[copyIndex()], 'eTag'), createObject('value', parameters('savedSearches')[copyIndex()].etag), createObject('value', '*'))]",
                   "displayName": {
                     "value": "[parameters('savedSearches')[copyIndex()].displayName]"
                   },
@@ -5683,15 +5557,9 @@
                   "query": {
                     "value": "[parameters('savedSearches')[copyIndex()].query]"
                   },
-                  "functionAlias": {
-                    "value": "[if(contains(parameters('savedSearches')[copyIndex()], 'functionAlias'), parameters('savedSearches')[copyIndex()].functionAlias, '')]"
-                  },
-                  "functionParameters": {
-                    "value": "[if(contains(parameters('savedSearches')[copyIndex()], 'functionParameters'), parameters('savedSearches')[copyIndex()].functionParameters, '')]"
-                  },
-                  "version": {
-                    "value": "[if(contains(parameters('savedSearches')[copyIndex()], 'version'), parameters('savedSearches')[copyIndex()].version, 2)]"
-                  },
+                  "functionAlias": "[if(contains(parameters('savedSearches')[copyIndex()], 'functionAlias'), createObject('value', parameters('savedSearches')[copyIndex()].functionAlias), createObject('value', ''))]",
+                  "functionParameters": "[if(contains(parameters('savedSearches')[copyIndex()], 'functionParameters'), createObject('value', parameters('savedSearches')[copyIndex()].functionParameters), createObject('value', ''))]",
+                  "version": "[if(contains(parameters('savedSearches')[copyIndex()], 'version'), createObject('value', parameters('savedSearches')[copyIndex()].version), createObject('value', 2))]",
                   "enableDefaultTelemetry": {
                     "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
@@ -5702,8 +5570,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "7401659886726985929"
+                      "version": "0.13.1.58284",
+                      "templateHash": "8570155042441468240"
                     }
                   },
                   "parameters": {
@@ -5864,39 +5732,17 @@
                   "kind": {
                     "value": "[parameters('dataSources')[copyIndex()].kind]"
                   },
-                  "linkedResourceId": {
-                    "value": "[if(contains(parameters('dataSources')[copyIndex()], 'linkedResourceId'), parameters('dataSources')[copyIndex()].linkedResourceId, '')]"
-                  },
-                  "eventLogName": {
-                    "value": "[if(contains(parameters('dataSources')[copyIndex()], 'eventLogName'), parameters('dataSources')[copyIndex()].eventLogName, '')]"
-                  },
-                  "eventTypes": {
-                    "value": "[if(contains(parameters('dataSources')[copyIndex()], 'eventTypes'), parameters('dataSources')[copyIndex()].eventTypes, createArray())]"
-                  },
-                  "objectName": {
-                    "value": "[if(contains(parameters('dataSources')[copyIndex()], 'objectName'), parameters('dataSources')[copyIndex()].objectName, '')]"
-                  },
-                  "instanceName": {
-                    "value": "[if(contains(parameters('dataSources')[copyIndex()], 'instanceName'), parameters('dataSources')[copyIndex()].instanceName, '')]"
-                  },
-                  "intervalSeconds": {
-                    "value": "[if(contains(parameters('dataSources')[copyIndex()], 'intervalSeconds'), parameters('dataSources')[copyIndex()].intervalSeconds, 60)]"
-                  },
-                  "counterName": {
-                    "value": "[if(contains(parameters('dataSources')[copyIndex()], 'counterName'), parameters('dataSources')[copyIndex()].counterName, '')]"
-                  },
-                  "state": {
-                    "value": "[if(contains(parameters('dataSources')[copyIndex()], 'state'), parameters('dataSources')[copyIndex()].state, '')]"
-                  },
-                  "syslogName": {
-                    "value": "[if(contains(parameters('dataSources')[copyIndex()], 'syslogName'), parameters('dataSources')[copyIndex()].syslogName, '')]"
-                  },
-                  "syslogSeverities": {
-                    "value": "[if(contains(parameters('dataSources')[copyIndex()], 'syslogSeverities'), parameters('dataSources')[copyIndex()].syslogSeverities, createArray())]"
-                  },
-                  "performanceCounters": {
-                    "value": "[if(contains(parameters('dataSources')[copyIndex()], 'performanceCounters'), parameters('dataSources')[copyIndex()].performanceCounters, createArray())]"
-                  },
+                  "linkedResourceId": "[if(contains(parameters('dataSources')[copyIndex()], 'linkedResourceId'), createObject('value', parameters('dataSources')[copyIndex()].linkedResourceId), createObject('value', ''))]",
+                  "eventLogName": "[if(contains(parameters('dataSources')[copyIndex()], 'eventLogName'), createObject('value', parameters('dataSources')[copyIndex()].eventLogName), createObject('value', ''))]",
+                  "eventTypes": "[if(contains(parameters('dataSources')[copyIndex()], 'eventTypes'), createObject('value', parameters('dataSources')[copyIndex()].eventTypes), createObject('value', createArray()))]",
+                  "objectName": "[if(contains(parameters('dataSources')[copyIndex()], 'objectName'), createObject('value', parameters('dataSources')[copyIndex()].objectName), createObject('value', ''))]",
+                  "instanceName": "[if(contains(parameters('dataSources')[copyIndex()], 'instanceName'), createObject('value', parameters('dataSources')[copyIndex()].instanceName), createObject('value', ''))]",
+                  "intervalSeconds": "[if(contains(parameters('dataSources')[copyIndex()], 'intervalSeconds'), createObject('value', parameters('dataSources')[copyIndex()].intervalSeconds), createObject('value', 60))]",
+                  "counterName": "[if(contains(parameters('dataSources')[copyIndex()], 'counterName'), createObject('value', parameters('dataSources')[copyIndex()].counterName), createObject('value', ''))]",
+                  "state": "[if(contains(parameters('dataSources')[copyIndex()], 'state'), createObject('value', parameters('dataSources')[copyIndex()].state), createObject('value', ''))]",
+                  "syslogName": "[if(contains(parameters('dataSources')[copyIndex()], 'syslogName'), createObject('value', parameters('dataSources')[copyIndex()].syslogName), createObject('value', ''))]",
+                  "syslogSeverities": "[if(contains(parameters('dataSources')[copyIndex()], 'syslogSeverities'), createObject('value', parameters('dataSources')[copyIndex()].syslogSeverities), createObject('value', createArray()))]",
+                  "performanceCounters": "[if(contains(parameters('dataSources')[copyIndex()], 'performanceCounters'), createObject('value', parameters('dataSources')[copyIndex()].performanceCounters), createObject('value', createArray()))]",
                   "enableDefaultTelemetry": {
                     "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
@@ -5907,8 +5753,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "1046196110663983352"
+                      "version": "0.13.1.58284",
+                      "templateHash": "10365347278093545754"
                     }
                   },
                   "parameters": {
@@ -6122,12 +5968,8 @@
                   "logAnalyticsWorkspaceName": {
                     "value": "[parameters('name')]"
                   },
-                  "product": {
-                    "value": "[if(contains(parameters('gallerySolutions')[copyIndex()], 'product'), parameters('gallerySolutions')[copyIndex()].product, 'OMSGallery')]"
-                  },
-                  "publisher": {
-                    "value": "[if(contains(parameters('gallerySolutions')[copyIndex()], 'publisher'), parameters('gallerySolutions')[copyIndex()].publisher, 'Microsoft')]"
-                  },
+                  "product": "[if(contains(parameters('gallerySolutions')[copyIndex()], 'product'), createObject('value', parameters('gallerySolutions')[copyIndex()].product), createObject('value', 'OMSGallery'))]",
+                  "publisher": "[if(contains(parameters('gallerySolutions')[copyIndex()], 'publisher'), createObject('value', parameters('gallerySolutions')[copyIndex()].publisher), createObject('value', 'Microsoft'))]",
                   "enableDefaultTelemetry": {
                     "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
@@ -6138,8 +5980,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "6760594650998879915"
+                      "version": "0.13.1.58284",
+                      "templateHash": "15958702291040471116"
                     }
                   },
                   "parameters": {
@@ -6269,24 +6111,16 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "description": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), parameters('roleAssignments')[copyIndex()].description, '')]"
-                  },
+                  "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
                   "principalIds": {
                     "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
                   },
-                  "principalType": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), parameters('roleAssignments')[copyIndex()].principalType, '')]"
-                  },
+                  "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
                   "roleDefinitionIdOrName": {
                     "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
                   },
-                  "condition": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), parameters('roleAssignments')[copyIndex()].condition, '')]"
-                  },
-                  "delegatedManagedIdentityResourceId": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId, '')]"
-                  },
+                  "condition": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), createObject('value', parameters('roleAssignments')[copyIndex()].condition), createObject('value', ''))]",
+                  "delegatedManagedIdentityResourceId": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), createObject('value', parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId), createObject('value', ''))]",
                   "resourceId": {
                     "value": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('name'))]"
                   }
@@ -6297,8 +6131,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "4735967619583694769"
+                      "version": "0.13.1.58284",
+                      "templateHash": "6018652049715929620"
                     }
                   },
                   "parameters": {
@@ -6491,7 +6325,7 @@
             "value": "PT10M"
           },
           "scriptContent": {
-            "value": "        Write-Host \"Start\"\r\n        Get-Date\r\n        Start-Sleep -Seconds 120\r\n        Write-Host \"Stop\"\r\n        Get-Date\r\n        "
+            "value": "        Write-Host \"Start\"\n        Get-Date\n        Start-Sleep -Seconds 120\n        Write-Host \"Stop\"\n        Get-Date\n        "
           }
         },
         "template": {
@@ -6500,8 +6334,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.12.40.16777",
-              "templateHash": "951879872069765680"
+              "version": "0.13.1.58284",
+              "templateHash": "12111508889456398470"
             }
           },
           "parameters": {
@@ -6721,8 +6555,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "17666925374910611943"
+                      "version": "0.13.1.58284",
+                      "templateHash": "3208761235556063943"
                     }
                   },
                   "resources": []
@@ -6780,9 +6614,7 @@
           "diagnosticLogsRetentionInDays": {
             "value": 30
           },
-          "diagnosticWorkspaceId": {
-            "value": "[if(empty(parameters('alertsDistributionGroup')), '', if(empty(parameters('existingLogAnalyticsWorkspaceResourceId')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value, parameters('existingLogAnalyticsWorkspaceResourceId')))]"
-          },
+          "diagnosticWorkspaceId": "[if(empty(parameters('alertsDistributionGroup')), createObject('value', ''), if(empty(parameters('existingLogAnalyticsWorkspaceResourceId')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value), createObject('value', parameters('existingLogAnalyticsWorkspaceResourceId'))))]",
           "name": {
             "value": "[variables('varAutomationAccountName')]"
           },
@@ -6835,9 +6667,7 @@
           "skuName": {
             "value": "Free"
           },
-          "tags": {
-            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
-          },
+          "tags": "[if(parameters('enableResourceTags'), createObject('value', variables('varCommonResourceTags')), createObject('value', createObject()))]",
           "systemAssignedIdentity": {
             "value": false
           },
@@ -6853,8 +6683,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.12.40.16777",
-              "templateHash": "14733519058203055817"
+              "version": "0.13.1.58284",
+              "templateHash": "7651462837805242007"
             }
           },
           "parameters": {
@@ -7078,12 +6908,12 @@
             },
             "diagnosticLogCategoriesToEnable": {
               "type": "array",
-              "allowedValues": [
+              "defaultValue": [
                 "JobLogs",
                 "JobStreams",
                 "DscNodeStatus"
               ],
-              "defaultValue": [
+              "allowedValues": [
                 "JobLogs",
                 "JobStreams",
                 "DscNodeStatus"
@@ -7094,10 +6924,10 @@
             },
             "diagnosticMetricsToEnable": {
               "type": "array",
-              "allowedValues": [
+              "defaultValue": [
                 "AllMetrics"
               ],
-              "defaultValue": [
+              "allowedValues": [
                 "AllMetrics"
               ],
               "metadata": {
@@ -7249,8 +7079,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "5070371254132906086"
+                      "version": "0.13.1.58284",
+                      "templateHash": "17184633161490229365"
                     }
                   },
                   "parameters": {
@@ -7386,27 +7216,13 @@
                   "automationAccountName": {
                     "value": "[parameters('name')]"
                   },
-                  "advancedSchedule": {
-                    "value": "[if(contains(parameters('schedules')[copyIndex()], 'advancedSchedule'), parameters('schedules')[copyIndex()].advancedSchedule, null())]"
-                  },
-                  "scheduleDescription": {
-                    "value": "[if(contains(parameters('schedules')[copyIndex()], 'description'), parameters('schedules')[copyIndex()].description, '')]"
-                  },
-                  "expiryTime": {
-                    "value": "[if(contains(parameters('schedules')[copyIndex()], 'expiryTime'), parameters('schedules')[copyIndex()].expiryTime, '')]"
-                  },
-                  "frequency": {
-                    "value": "[if(contains(parameters('schedules')[copyIndex()], 'frequency'), parameters('schedules')[copyIndex()].frequency, 'OneTime')]"
-                  },
-                  "interval": {
-                    "value": "[if(contains(parameters('schedules')[copyIndex()], 'interval'), parameters('schedules')[copyIndex()].interval, 0)]"
-                  },
-                  "startTime": {
-                    "value": "[if(contains(parameters('schedules')[copyIndex()], 'startTime'), parameters('schedules')[copyIndex()].startTime, '')]"
-                  },
-                  "timeZone": {
-                    "value": "[if(contains(parameters('schedules')[copyIndex()], 'timeZone'), parameters('schedules')[copyIndex()].timeZone, '')]"
-                  },
+                  "advancedSchedule": "[if(contains(parameters('schedules')[copyIndex()], 'advancedSchedule'), createObject('value', parameters('schedules')[copyIndex()].advancedSchedule), createObject('value', null()))]",
+                  "scheduleDescription": "[if(contains(parameters('schedules')[copyIndex()], 'description'), createObject('value', parameters('schedules')[copyIndex()].description), createObject('value', ''))]",
+                  "expiryTime": "[if(contains(parameters('schedules')[copyIndex()], 'expiryTime'), createObject('value', parameters('schedules')[copyIndex()].expiryTime), createObject('value', ''))]",
+                  "frequency": "[if(contains(parameters('schedules')[copyIndex()], 'frequency'), createObject('value', parameters('schedules')[copyIndex()].frequency), createObject('value', 'OneTime'))]",
+                  "interval": "[if(contains(parameters('schedules')[copyIndex()], 'interval'), createObject('value', parameters('schedules')[copyIndex()].interval), createObject('value', 0))]",
+                  "startTime": "[if(contains(parameters('schedules')[copyIndex()], 'startTime'), createObject('value', parameters('schedules')[copyIndex()].startTime), createObject('value', ''))]",
+                  "timeZone": "[if(contains(parameters('schedules')[copyIndex()], 'timeZone'), createObject('value', parameters('schedules')[copyIndex()].timeZone), createObject('value', ''))]",
                   "enableDefaultTelemetry": {
                     "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
@@ -7417,8 +7233,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "10559340512698905348"
+                      "version": "0.13.1.58284",
+                      "templateHash": "15002238512687290532"
                     }
                   },
                   "parameters": {
@@ -7591,15 +7407,9 @@
                   "runbookType": {
                     "value": "[parameters('runbooks')[copyIndex()].runbookType]"
                   },
-                  "runbookDescription": {
-                    "value": "[if(contains(parameters('runbooks')[copyIndex()], 'description'), parameters('runbooks')[copyIndex()].description, '')]"
-                  },
-                  "uri": {
-                    "value": "[if(contains(parameters('runbooks')[copyIndex()], 'uri'), parameters('runbooks')[copyIndex()].uri, '')]"
-                  },
-                  "version": {
-                    "value": "[if(contains(parameters('runbooks')[copyIndex()], 'version'), parameters('runbooks')[copyIndex()].version, '')]"
-                  },
+                  "runbookDescription": "[if(contains(parameters('runbooks')[copyIndex()], 'description'), createObject('value', parameters('runbooks')[copyIndex()].description), createObject('value', ''))]",
+                  "uri": "[if(contains(parameters('runbooks')[copyIndex()], 'uri'), createObject('value', parameters('runbooks')[copyIndex()].uri), createObject('value', ''))]",
+                  "version": "[if(contains(parameters('runbooks')[copyIndex()], 'version'), createObject('value', parameters('runbooks')[copyIndex()].version), createObject('value', ''))]",
                   "location": {
                     "value": "[parameters('location')]"
                   },
@@ -7616,8 +7426,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "4111940734800906537"
+                      "version": "0.13.1.58284",
+                      "templateHash": "13997957689975809414"
                     }
                   },
                   "parameters": {
@@ -7806,12 +7616,8 @@
                   "scheduleName": {
                     "value": "[parameters('jobSchedules')[copyIndex()].scheduleName]"
                   },
-                  "parameters": {
-                    "value": "[if(contains(parameters('jobSchedules')[copyIndex()], 'parameters'), parameters('jobSchedules')[copyIndex()].parameters, createObject())]"
-                  },
-                  "runOn": {
-                    "value": "[if(contains(parameters('jobSchedules')[copyIndex()], 'runOn'), parameters('jobSchedules')[copyIndex()].runOn, '')]"
-                  },
+                  "parameters": "[if(contains(parameters('jobSchedules')[copyIndex()], 'parameters'), createObject('value', parameters('jobSchedules')[copyIndex()].parameters), createObject('value', createObject()))]",
+                  "runOn": "[if(contains(parameters('jobSchedules')[copyIndex()], 'runOn'), createObject('value', parameters('jobSchedules')[copyIndex()].runOn), createObject('value', ''))]",
                   "enableDefaultTelemetry": {
                     "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
@@ -7822,8 +7628,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "4047000284349814730"
+                      "version": "0.13.1.58284",
+                      "templateHash": "6326829700463034676"
                     }
                   },
                   "parameters": {
@@ -7956,15 +7762,11 @@
                   "name": {
                     "value": "[parameters('variables')[copyIndex()].name]"
                   },
-                  "description": {
-                    "value": "[if(contains(parameters('variables')[copyIndex()], 'description'), parameters('variables')[copyIndex()].description, '')]"
-                  },
+                  "description": "[if(contains(parameters('variables')[copyIndex()], 'description'), createObject('value', parameters('variables')[copyIndex()].description), createObject('value', ''))]",
                   "value": {
                     "value": "[parameters('variables')[copyIndex()].value]"
                   },
-                  "isEncrypted": {
-                    "value": "[if(contains(parameters('variables')[copyIndex()], 'isEncrypted'), parameters('variables')[copyIndex()].isEncrypted, true())]"
-                  },
+                  "isEncrypted": "[if(contains(parameters('variables')[copyIndex()], 'isEncrypted'), createObject('value', parameters('variables')[copyIndex()].isEncrypted), createObject('value', true()))]",
                   "enableDefaultTelemetry": {
                     "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
@@ -7975,8 +7777,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "18443026777054248266"
+                      "version": "0.13.1.58284",
+                      "templateHash": "193284060554935329"
                     }
                   },
                   "parameters": {
@@ -8110,8 +7912,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "13334440349200766786"
+                      "version": "0.13.1.58284",
+                      "templateHash": "7002984992550738658"
                     }
                   },
                   "parameters": {
@@ -8237,12 +8039,8 @@
                   "logAnalyticsWorkspaceName": {
                     "value": "[last(split(parameters('linkedWorkspaceResourceId'), '/'))]"
                   },
-                  "product": {
-                    "value": "[if(contains(parameters('gallerySolutions')[copyIndex()], 'product'), parameters('gallerySolutions')[copyIndex()].product, 'OMSGallery')]"
-                  },
-                  "publisher": {
-                    "value": "[if(contains(parameters('gallerySolutions')[copyIndex()], 'publisher'), parameters('gallerySolutions')[copyIndex()].publisher, 'Microsoft')]"
-                  },
+                  "product": "[if(contains(parameters('gallerySolutions')[copyIndex()], 'product'), createObject('value', parameters('gallerySolutions')[copyIndex()].product), createObject('value', 'OMSGallery'))]",
+                  "publisher": "[if(contains(parameters('gallerySolutions')[copyIndex()], 'publisher'), createObject('value', parameters('gallerySolutions')[copyIndex()].publisher), createObject('value', 'Microsoft'))]",
                   "enableDefaultTelemetry": {
                     "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
@@ -8253,8 +8051,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "6760594650998879915"
+                      "version": "0.13.1.58284",
+                      "templateHash": "15958702291040471116"
                     }
                   },
                   "parameters": {
@@ -8399,87 +8197,33 @@
                   "rebootSetting": {
                     "value": "[parameters('softwareUpdateConfigurations')[copyIndex()].rebootSetting]"
                   },
-                  "azureVirtualMachines": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'azureVirtualMachines'), parameters('softwareUpdateConfigurations')[copyIndex()].azureVirtualMachines, createArray())]"
-                  },
-                  "excludeUpdates": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'excludeUpdates'), parameters('softwareUpdateConfigurations')[copyIndex()].excludeUpdates, createArray())]"
-                  },
-                  "expiryTime": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'expiryTime'), parameters('softwareUpdateConfigurations')[copyIndex()].expiryTime, '')]"
-                  },
-                  "expiryTimeOffsetMinutes": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'expiryTimeOffsetMinutes'), parameters('softwareUpdateConfigurations')[copyIndex()].expiryTimeOffsetMinute, 0)]"
-                  },
-                  "includeUpdates": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'includeUpdates'), parameters('softwareUpdateConfigurations')[copyIndex()].includeUpdates, createArray())]"
-                  },
-                  "interval": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'interval'), parameters('softwareUpdateConfigurations')[copyIndex()].interval, 1)]"
-                  },
-                  "isEnabled": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'isEnabled'), parameters('softwareUpdateConfigurations')[copyIndex()].isEnabled, true())]"
-                  },
-                  "maintenanceWindow": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'maintenanceWindow'), parameters('softwareUpdateConfigurations')[copyIndex()].maintenanceWindow, 'PT2H')]"
-                  },
-                  "monthDays": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'monthDays'), parameters('softwareUpdateConfigurations')[copyIndex()].monthDays, createArray())]"
-                  },
-                  "monthlyOccurrences": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'monthlyOccurrences'), parameters('softwareUpdateConfigurations')[copyIndex()].monthlyOccurrences, createArray())]"
-                  },
-                  "nextRun": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'nextRun'), parameters('softwareUpdateConfigurations')[copyIndex()].nextRun, '')]"
-                  },
-                  "nextRunOffsetMinutes": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'nextRunOffsetMinutes'), parameters('softwareUpdateConfigurations')[copyIndex()].nextRunOffsetMinutes, 0)]"
-                  },
-                  "nonAzureComputerNames": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'nonAzureComputerNames'), parameters('softwareUpdateConfigurations')[copyIndex()].nonAzureComputerNames, createArray())]"
-                  },
-                  "nonAzureQueries": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'nonAzureQueries'), parameters('softwareUpdateConfigurations')[copyIndex()].nonAzureQueries, createArray())]"
-                  },
-                  "postTaskParameters": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'postTaskParameters'), parameters('softwareUpdateConfigurations')[copyIndex()].postTaskParameters, createObject())]"
-                  },
-                  "postTaskSource": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'postTaskSource'), parameters('softwareUpdateConfigurations')[copyIndex()].postTaskSource, '')]"
-                  },
-                  "preTaskParameters": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'preTaskParameters'), parameters('softwareUpdateConfigurations')[copyIndex()].preTaskParameters, createObject())]"
-                  },
-                  "preTaskSource": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'preTaskSource'), parameters('softwareUpdateConfigurations')[copyIndex()].preTaskSource, '')]"
-                  },
-                  "scheduleDescription": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'scheduleDescription'), parameters('softwareUpdateConfigurations')[copyIndex()].scheduleDescription, '')]"
-                  },
-                  "scopeByLocations": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'scopeByLocations'), parameters('softwareUpdateConfigurations')[copyIndex()].scopeByLocations, createArray())]"
-                  },
-                  "scopeByResources": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'scopeByResources'), parameters('softwareUpdateConfigurations')[copyIndex()].scopeByResources, createArray(subscription().id))]"
-                  },
-                  "scopeByTags": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'scopeByTags'), parameters('softwareUpdateConfigurations')[copyIndex()].scopeByTags, createObject())]"
-                  },
-                  "scopeByTagsOperation": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'scopeByTagsOperation'), parameters('softwareUpdateConfigurations')[copyIndex()].scopeByTagsOperation, 'All')]"
-                  },
-                  "startTime": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'startTime'), parameters('softwareUpdateConfigurations')[copyIndex()].startTime, '')]"
-                  },
-                  "timeZone": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'timeZone'), parameters('softwareUpdateConfigurations')[copyIndex()].timeZone, 'UTC')]"
-                  },
-                  "updateClassifications": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'updateClassifications'), parameters('softwareUpdateConfigurations')[copyIndex()].updateClassifications, createArray('Critical', 'Security'))]"
-                  },
-                  "weekDays": {
-                    "value": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'weekDays'), parameters('softwareUpdateConfigurations')[copyIndex()].weekDays, createArray())]"
-                  },
+                  "azureVirtualMachines": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'azureVirtualMachines'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].azureVirtualMachines), createObject('value', createArray()))]",
+                  "excludeUpdates": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'excludeUpdates'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].excludeUpdates), createObject('value', createArray()))]",
+                  "expiryTime": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'expiryTime'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].expiryTime), createObject('value', ''))]",
+                  "expiryTimeOffsetMinutes": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'expiryTimeOffsetMinutes'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].expiryTimeOffsetMinute), createObject('value', 0))]",
+                  "includeUpdates": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'includeUpdates'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].includeUpdates), createObject('value', createArray()))]",
+                  "interval": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'interval'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].interval), createObject('value', 1))]",
+                  "isEnabled": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'isEnabled'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].isEnabled), createObject('value', true()))]",
+                  "maintenanceWindow": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'maintenanceWindow'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].maintenanceWindow), createObject('value', 'PT2H'))]",
+                  "monthDays": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'monthDays'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].monthDays), createObject('value', createArray()))]",
+                  "monthlyOccurrences": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'monthlyOccurrences'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].monthlyOccurrences), createObject('value', createArray()))]",
+                  "nextRun": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'nextRun'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].nextRun), createObject('value', ''))]",
+                  "nextRunOffsetMinutes": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'nextRunOffsetMinutes'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].nextRunOffsetMinutes), createObject('value', 0))]",
+                  "nonAzureComputerNames": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'nonAzureComputerNames'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].nonAzureComputerNames), createObject('value', createArray()))]",
+                  "nonAzureQueries": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'nonAzureQueries'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].nonAzureQueries), createObject('value', createArray()))]",
+                  "postTaskParameters": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'postTaskParameters'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].postTaskParameters), createObject('value', createObject()))]",
+                  "postTaskSource": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'postTaskSource'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].postTaskSource), createObject('value', ''))]",
+                  "preTaskParameters": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'preTaskParameters'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].preTaskParameters), createObject('value', createObject()))]",
+                  "preTaskSource": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'preTaskSource'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].preTaskSource), createObject('value', ''))]",
+                  "scheduleDescription": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'scheduleDescription'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].scheduleDescription), createObject('value', ''))]",
+                  "scopeByLocations": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'scopeByLocations'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].scopeByLocations), createObject('value', createArray()))]",
+                  "scopeByResources": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'scopeByResources'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].scopeByResources), createObject('value', createArray(subscription().id)))]",
+                  "scopeByTags": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'scopeByTags'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].scopeByTags), createObject('value', createObject()))]",
+                  "scopeByTagsOperation": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'scopeByTagsOperation'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].scopeByTagsOperation), createObject('value', 'All'))]",
+                  "startTime": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'startTime'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].startTime), createObject('value', ''))]",
+                  "timeZone": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'timeZone'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].timeZone), createObject('value', 'UTC'))]",
+                  "updateClassifications": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'updateClassifications'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].updateClassifications), createObject('value', createArray('Critical', 'Security')))]",
+                  "weekDays": "[if(contains(parameters('softwareUpdateConfigurations')[copyIndex()], 'weekDays'), createObject('value', parameters('softwareUpdateConfigurations')[copyIndex()].weekDays), createObject('value', createArray()))]",
                   "enableDefaultTelemetry": {
                     "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
@@ -8490,8 +8234,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "13925680790812293203"
+                      "version": "0.13.1.58284",
+                      "templateHash": "7380480014495011100"
                     }
                   },
                   "parameters": {
@@ -8551,6 +8295,10 @@
                     },
                     "updateClassifications": {
                       "type": "array",
+                      "defaultValue": [
+                        "Critical",
+                        "Security"
+                      ],
                       "allowedValues": [
                         "Critical",
                         "Security",
@@ -8561,10 +8309,6 @@
                         "Tools",
                         "Updates",
                         "Other"
-                      ],
-                      "defaultValue": [
-                        "Critical",
-                        "Security"
                       ],
                       "metadata": {
                         "description": "Optional. Update classification included in the deployment schedule."
@@ -8691,6 +8435,7 @@
                     },
                     "weekDays": {
                       "type": "array",
+                      "defaultValue": [],
                       "allowedValues": [
                         "Monday",
                         "Tuesday",
@@ -8700,13 +8445,13 @@
                         "Saturday",
                         "Sunday"
                       ],
-                      "defaultValue": [],
                       "metadata": {
                         "description": "Optional. Required when used with frequency 'Week'. Specified the day of the week to run the deployment schedule."
                       }
                     },
                     "monthDays": {
                       "type": "array",
+                      "defaultValue": [],
                       "allowedValues": [
                         1,
                         2,
@@ -8740,7 +8485,6 @@
                         30,
                         31
                       ],
-                      "defaultValue": [],
                       "metadata": {
                         "description": "Optional. Can be used with frequency 'Month'. Provides the specific days of the month to run the deployment schedule."
                       }
@@ -8932,9 +8676,7 @@
                       "[parameters('privateEndpoints')[copyIndex()].service]"
                     ]
                   },
-                  "name": {
-                    "value": "[if(contains(parameters('privateEndpoints')[copyIndex()], 'name'), parameters('privateEndpoints')[copyIndex()].name, format('pe-{0}-{1}-{2}', last(split(resourceId('Microsoft.Automation/automationAccounts', parameters('name')), '/')), parameters('privateEndpoints')[copyIndex()].service, copyIndex()))]"
-                  },
+                  "name": "[if(contains(parameters('privateEndpoints')[copyIndex()], 'name'), createObject('value', parameters('privateEndpoints')[copyIndex()].name), createObject('value', format('pe-{0}-{1}-{2}', last(split(resourceId('Microsoft.Automation/automationAccounts', parameters('name')), '/')), parameters('privateEndpoints')[copyIndex()].service, copyIndex())))]",
                   "serviceResourceId": {
                     "value": "[resourceId('Microsoft.Automation/automationAccounts', parameters('name'))]"
                   },
@@ -8947,24 +8689,12 @@
                   "location": {
                     "value": "[reference(split(parameters('privateEndpoints')[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location]"
                   },
-                  "lock": {
-                    "value": "[if(contains(parameters('privateEndpoints')[copyIndex()], 'lock'), parameters('privateEndpoints')[copyIndex()].lock, parameters('lock'))]"
-                  },
-                  "privateDnsZoneGroup": {
-                    "value": "[if(contains(parameters('privateEndpoints')[copyIndex()], 'privateDnsZoneGroup'), parameters('privateEndpoints')[copyIndex()].privateDnsZoneGroup, createObject())]"
-                  },
-                  "roleAssignments": {
-                    "value": "[if(contains(parameters('privateEndpoints')[copyIndex()], 'roleAssignments'), parameters('privateEndpoints')[copyIndex()].roleAssignments, createArray())]"
-                  },
-                  "tags": {
-                    "value": "[if(contains(parameters('privateEndpoints')[copyIndex()], 'tags'), parameters('privateEndpoints')[copyIndex()].tags, createObject())]"
-                  },
-                  "manualPrivateLinkServiceConnections": {
-                    "value": "[if(contains(parameters('privateEndpoints')[copyIndex()], 'manualPrivateLinkServiceConnections'), parameters('privateEndpoints')[copyIndex()].manualPrivateLinkServiceConnections, createArray())]"
-                  },
-                  "customDnsConfigs": {
-                    "value": "[if(contains(parameters('privateEndpoints')[copyIndex()], 'customDnsConfigs'), parameters('privateEndpoints')[copyIndex()].customDnsConfigs, createArray())]"
-                  }
+                  "lock": "[if(contains(parameters('privateEndpoints')[copyIndex()], 'lock'), createObject('value', parameters('privateEndpoints')[copyIndex()].lock), createObject('value', parameters('lock')))]",
+                  "privateDnsZoneGroup": "[if(contains(parameters('privateEndpoints')[copyIndex()], 'privateDnsZoneGroup'), createObject('value', parameters('privateEndpoints')[copyIndex()].privateDnsZoneGroup), createObject('value', createObject()))]",
+                  "roleAssignments": "[if(contains(parameters('privateEndpoints')[copyIndex()], 'roleAssignments'), createObject('value', parameters('privateEndpoints')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
+                  "tags": "[if(contains(parameters('privateEndpoints')[copyIndex()], 'tags'), createObject('value', parameters('privateEndpoints')[copyIndex()].tags), createObject('value', createObject()))]",
+                  "manualPrivateLinkServiceConnections": "[if(contains(parameters('privateEndpoints')[copyIndex()], 'manualPrivateLinkServiceConnections'), createObject('value', parameters('privateEndpoints')[copyIndex()].manualPrivateLinkServiceConnections), createObject('value', createArray()))]",
+                  "customDnsConfigs": "[if(contains(parameters('privateEndpoints')[copyIndex()], 'customDnsConfigs'), createObject('value', parameters('privateEndpoints')[copyIndex()].customDnsConfigs), createObject('value', createArray()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -8972,8 +8702,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "10822360476021329408"
+                      "version": "0.13.1.58284",
+                      "templateHash": "14832167575435790367"
                     }
                   },
                   "parameters": {
@@ -9145,8 +8875,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.12.40.16777",
-                              "templateHash": "7658136598979661650"
+                              "version": "0.13.1.58284",
+                              "templateHash": "1793124400145419878"
                             }
                           },
                           "parameters": {
@@ -9260,24 +8990,16 @@
                         },
                         "mode": "Incremental",
                         "parameters": {
-                          "description": {
-                            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), parameters('roleAssignments')[copyIndex()].description, '')]"
-                          },
+                          "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
                           "principalIds": {
                             "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
                           },
-                          "principalType": {
-                            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), parameters('roleAssignments')[copyIndex()].principalType, '')]"
-                          },
+                          "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
                           "roleDefinitionIdOrName": {
                             "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
                           },
-                          "condition": {
-                            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), parameters('roleAssignments')[copyIndex()].condition, '')]"
-                          },
-                          "delegatedManagedIdentityResourceId": {
-                            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId, '')]"
-                          },
+                          "condition": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), createObject('value', parameters('roleAssignments')[copyIndex()].condition), createObject('value', ''))]",
+                          "delegatedManagedIdentityResourceId": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), createObject('value', parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId), createObject('value', ''))]",
                           "resourceId": {
                             "value": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]"
                           }
@@ -9288,8 +9010,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.12.40.16777",
-                              "templateHash": "4825234583608650334"
+                              "version": "0.13.1.58284",
+                              "templateHash": "4562593971792332969"
                             }
                           },
                           "parameters": {
@@ -9455,24 +9177,16 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "description": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), parameters('roleAssignments')[copyIndex()].description, '')]"
-                  },
+                  "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
                   "principalIds": {
                     "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
                   },
-                  "principalType": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), parameters('roleAssignments')[copyIndex()].principalType, '')]"
-                  },
+                  "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
                   "roleDefinitionIdOrName": {
                     "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
                   },
-                  "condition": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), parameters('roleAssignments')[copyIndex()].condition, '')]"
-                  },
-                  "delegatedManagedIdentityResourceId": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId, '')]"
-                  },
+                  "condition": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), createObject('value', parameters('roleAssignments')[copyIndex()].condition), createObject('value', ''))]",
+                  "delegatedManagedIdentityResourceId": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), createObject('value', parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId), createObject('value', ''))]",
                   "resourceId": {
                     "value": "[resourceId('Microsoft.Automation/automationAccounts', parameters('name'))]"
                   }
@@ -9483,8 +9197,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "13177717396070031189"
+                      "version": "0.13.1.58284",
+                      "templateHash": "13763589690481973299"
                     }
                   },
                   "parameters": {
@@ -9685,8 +9399,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.12.40.16777",
-              "templateHash": "5070371254132906086"
+              "version": "0.13.1.58284",
+              "templateHash": "17184633161490229365"
             }
           },
           "parameters": {
@@ -9836,9 +9550,7 @@
               }
             ]
           },
-          "tags": {
-            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
-          }
+          "tags": "[if(parameters('enableResourceTags'), createObject('value', variables('varCommonResourceTags')), createObject('value', createObject()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -9846,8 +9558,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.12.40.16777",
-              "templateHash": "1661863640781598734"
+              "version": "0.13.1.58284",
+              "templateHash": "6002737819354207786"
             }
           },
           "parameters": {
@@ -10008,8 +9720,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "17666925374910611943"
+                      "version": "0.13.1.58284",
+                      "templateHash": "3208761235556063943"
                     }
                   },
                   "resources": []
@@ -10046,8 +9758,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "8493921122479350298"
+                      "version": "0.13.1.58284",
+                      "templateHash": "3417687752431288163"
                     }
                   },
                   "parameters": {
@@ -10175,9 +9887,7 @@
           "roleAssignments": {
             "value": []
           },
-          "scopes": {
-            "value": "[if(empty(parameters('alertsDistributionGroup')), createArray(), if(empty(parameters('existingLogAnalyticsWorkspaceResourceId')), createArray(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value), createArray(parameters('existingLogAnalyticsWorkspaceResourceId'))))]"
-          },
+          "scopes": "[if(empty(parameters('alertsDistributionGroup')), createObject('value', createArray()), if(empty(parameters('existingLogAnalyticsWorkspaceResourceId')), createObject('value', createArray(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value)), createObject('value', createArray(parameters('existingLogAnalyticsWorkspaceResourceId')))))]",
           "severity": {
             "value": "[variables('varAlerts')[range(0, length(variables('varAlerts')))[copyIndex()]].severity]"
           },
@@ -10187,15 +9897,11 @@
           "windowSize": {
             "value": "[variables('varAlerts')[range(0, length(variables('varAlerts')))[copyIndex()]].windowSize]"
           },
-          "actions": {
-            "value": "[if(not(empty(parameters('alertsDistributionGroup'))), createArray(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Action-Group_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value), createArray())]"
-          },
+          "actions": "[if(not(empty(parameters('alertsDistributionGroup'))), createObject('value', createArray(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Action-Group_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value)), createObject('value', createArray()))]",
           "criterias": {
             "value": "[variables('varAlerts')[range(0, length(variables('varAlerts')))[copyIndex()]].criterias]"
           },
-          "tags": {
-            "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
-          }
+          "tags": "[if(parameters('enableResourceTags'), createObject('value', variables('varCommonResourceTags')), createObject('value', createObject()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -10203,8 +9909,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.12.40.16777",
-              "templateHash": "8290438401723420028"
+              "version": "0.13.1.58284",
+              "templateHash": "15073214667709640367"
             }
           },
           "parameters": {
@@ -10408,24 +10114,16 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "description": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), parameters('roleAssignments')[copyIndex()].description, '')]"
-                  },
+                  "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
                   "principalIds": {
                     "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
                   },
-                  "principalType": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), parameters('roleAssignments')[copyIndex()].principalType, '')]"
-                  },
+                  "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
                   "roleDefinitionIdOrName": {
                     "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
                   },
-                  "condition": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), parameters('roleAssignments')[copyIndex()].condition, '')]"
-                  },
-                  "delegatedManagedIdentityResourceId": {
-                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId, '')]"
-                  },
+                  "condition": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), createObject('value', parameters('roleAssignments')[copyIndex()].condition), createObject('value', ''))]",
+                  "delegatedManagedIdentityResourceId": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), createObject('value', parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId), createObject('value', ''))]",
                   "resourceId": {
                     "value": "[resourceId('Microsoft.Insights/scheduledQueryRules', parameters('name'))]"
                   }
@@ -10436,8 +10134,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "5541330818616749720"
+                      "version": "0.13.1.58284",
+                      "templateHash": "4874839034474854748"
                     }
                   },
                   "parameters": {
