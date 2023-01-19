@@ -110,7 +110,7 @@ Continue with:
 Prior to deploying the Custom Image Build solution, you need to ensure you have met the following prerequisites:
 
 - Access to an Azure subscription with owner permissions.
-- If using existing Virtual Networks, the deployment will fail if deny private endpoint network policies is enabled. See the following article on disabling them: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy).
+- If using an existing virtual network, the deployment will fail if deny private endpoint network policies are enabled. See the following article on disabling them: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy).
 
 ### Planning
 
