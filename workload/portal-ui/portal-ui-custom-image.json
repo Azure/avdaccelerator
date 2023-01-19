@@ -11,21 +11,25 @@
                     "label": "Basics",
                     "elements": [
                         {
-                            "name": "deploymentPreRequesites",
-                            "type": "Microsoft.Common.Section",
+                            "name": "infoPreReq",
+                            "type": "Microsoft.Common.InfoBox",
+                            "options": {
+                                "text": "PREREQUISITES REQUIRED \n\nThere are prerequisites that must be setup in your Azure environment to successfully deploy this AVD Landing Zone Accelerator. Click here to review the prerequisites in the Getting Started guide.",
+                                "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started.md",
+                                "style": "Warning"
+                            }
+                        },
+                        {
+                            "name": "deploymentInfo",
+                            "type": "Microsoft.Common.TextBlock",
                             "visible": true,
-                            "label": "Deployment pre-requesites",
-                            "elements": [
-                                {
-                                    "name": "infoPreReq",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "options": {
-                                        "text": "Prior to deployment, make sure you meet the prerequisites for using this AVD Landing Zone Accelerator outlined in the getting started guide.",
-                                        "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started.md",
-                                        "style": "Warning"
-                                    }
+                            "options": {
+                                "text": "The subscription, resource group, and region selected below will be used for most of the resources deployed in this solution. The replication regions for the image version will be the only exception and those regions will be defined in the next step. The regions listed in the menu below are the only regions that support Azure Image Builder image templates. Please ensure to select the appropriate options for your environment.",
+                                "link": {
+                                    "label": "Click here to learn about the supported Azure Image Builder regions.",
+                                    "uri": "https://learn.microsoft.com/en-us/azure/virtual-machines/image-builder-overview?tabs=azure-powershell#regions"
                                 }
-                            ]
+                            }
                         },
                         {
                             "name": "resourceScope",
@@ -52,12 +56,14 @@
                     "elements": [
                         {
                             "name": "info",
-                            "type": "Microsoft.Common.InfoBox",
+                            "type": "Microsoft.Common.TextBlock",
                             "visible": true,
                             "options": {
-                                "text": "This solution will deploy a compute gallery, image definition, image version, managed identity and execute an Azure Image Builder build. Learn more about Create a Windows image and distribute it to an Azure Compute Gallery",
-                                "uri": "https://learn.microsoft.com/en-us/azure/virtual-machines/windows/image-builder-gallery",
-                                "style": "Info"
+                                "text": "For image management, this solution will deploy a compute gallery, image definition, and image version.",
+                                "link": {
+                                    "label": "Learn more about managing images with an Azure Compute Gallery.",
+                                    "uri": "https://learn.microsoft.com/en-us/azure/virtual-machines/windows/image-builder-gallery"
+                                }
                             }
                         },
                         {
@@ -108,16 +114,13 @@
                                 },
                                 {
                                     "name": "primaryLocation",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "visible": true,
-                                    "filter": true,
+                                    "type": "Microsoft.Common.LocationSelector",
                                     "label": "Primary storage location",
                                     "defaultValue": "[steps('basics').resourceScope.location.displayName]",
                                     "toolTip": "Select the primary location to store the Image Version. This location should coincide with your AVD session hosts.",
-                                    "constraints": {
-                                        "allowedValues": "[map(filter(steps('basics').locationsApi.value, (item) => not(equals(item.name, 'global'))), (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.name, '\"}')))]",
-                                        "required": true
-                                    }
+                                    "resourceTypes": [
+                                        "Microsoft.Compute/galleries/images/versions"
+                                    ]
                                 },
                                 {
                                     "name": "info3",
@@ -162,15 +165,14 @@
                                 },
                                 {
                                     "name": "disasterRecoveryLocation",
-                                    "type": "Microsoft.Common.DropDown",
+                                    "type": "Microsoft.Common.LocationSelector",
                                     "label": "Disaster recovery location",
                                     "defaultValue": "",
-                                    "filter": true,
                                     "toolTip": "Select the disaster recovery location to store the Image Version. This location should coincide with your disaster recovery location for your AVD session hosts.",
-                                    "constraints": {
-                                        "allowedValues": "[map(filter(steps('basics').locationsApi.value, (item) => and(not(equals(item.name, 'global')), not(equals(item.name, steps('imageManagement').imageVersion.primaryLocation)))), (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.name, '\"}')))]",
-                                        "required": true
-                                    },
+                                    "resourceTypes": [
+                                        "Microsoft.Compute/galleries/images/versions"
+                                    ],
+                                    "allowedValues": "[map(filter(steps('basics').locationsApi.value, (item) => not(equals(item.name, steps('imageManagement').imageVersion.primaryLocation.name))), (item) => parse(concat('\"', item.name, '\"')))]",
                                     "visible": "[equals(steps('imageManagement').imageVersion.disasterRecovery, true)]"
                                 }
                             ]
@@ -281,16 +283,6 @@
                     "name": "aib",
                     "label": "Azure Image Builder (AIB)",
                     "elements": [
-                        {
-                            "name": "locationInfo",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "text": "Azure Image Builder is not available in all locations. Click here for more information.",
-                                "uri": "https://docs.microsoft.com/azure/virtual-machines/image-builder-overview?msclkid=06a023c8ac4c11ecb3c259d74812c2c6",
-                                "style": "Info"
-                            }
-                        },
                         {
                             "name": "buildSchedule",
                             "type": "Microsoft.Common.OptionsGroup",
