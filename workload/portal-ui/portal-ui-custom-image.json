@@ -284,6 +284,18 @@
                     "label": "Azure Image Builder (AIB)",
                     "elements": [
                         {
+                            "name": "description",
+                            "type": "Microsoft.Common.TextBlock",
+                            "visible": true,
+                            "options": {
+                              "text": "The AIB service allows the use of scripts and customizers to automatically create images on demand. This solution will deploy a managed identity and custom RBAC roles to enable AIB.",
+                              "link": {
+                                "label": "Learn more",
+                                "uri": "https://learn.microsoft.com/azure/virtual-machines/image-builder-overview?tabs=azure-powershell"
+                              }
+                            }
+                          },
+                        {
                             "name": "buildSchedule",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
@@ -358,77 +370,73 @@
                             }
                         },
                         {
-                            "name": "rdpShortPathInfo",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "text": "RDP Short Path for Managed Networks is a beneficial feature under specific conditions. Click here for more information.",
-                                "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/rdp-shortpath",
-                                "style": "Info"
-                            }
-                        },
-                        {
-                            "name": "rdpShortPathSelection",
-                            "type": "Microsoft.Common.OptionsGroup",
-                            "visible": true,
-                            "label": "Enable RDP shortpath for managed networks",
-                            "defaultValue": "No",
-                            "toolTip": "Determine whether to enable RDP short path for managed networks on the AVD session hosts.",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label": "Yes",
-                                        "value": true
-                                    },
-                                    {
-                                        "label": "No",
-                                        "value": false
+                            "name": "customizers",
+                            "type": "Microsoft.Common.Section",
+                            "label": "Customizers",
+                            "elements": [
+                                {
+                                    "name": "rdpShortPathInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": true,
+                                    "options": {
+                                        "text": "RDP Short Path for Managed Networks is a beneficial feature under specific conditions. Click here for more information.",
+                                        "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/rdp-shortpath",
+                                        "style": "Info"
                                     }
-                                ]
-                            }
-                        },
-                        {
-                            "name": "screenCaptureProtectionInfo",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "text": "Screen Capture Protection is a beneficial feature under specific conditions. Click here for more information.",
-                                "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/screen-capture-protection",
-                                "style": "Info"
-                            }
-                        },
-                        {
-                            "name": "screenCaptureProtectionSelection",
-                            "type": "Microsoft.Common.OptionsGroup",
-                            "visible": true,
-                            "label": "Enable screen capture protection",
-                            "defaultValue": "No",
-                            "toolTip": "Determine whether to enable Screen Capture Protection for the AVD session hosts.",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label": "Yes",
-                                        "value": true
-                                    },
-                                    {
-                                        "label": "No",
-                                        "value": false
+                                },
+                                {
+                                    "name": "rdpShortPathSelection",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "visible": true,
+                                    "label": "Enable RDP shortpath for managed networks",
+                                    "defaultValue": "No",
+                                    "toolTip": "Determine whether to enable RDP short path for managed networks on the AVD session hosts.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes",
+                                                "value": true
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": false
+                                            }
+                                        ]
                                     }
-                                ]
-                            }
-                        },
-                        {
-                            "name": "prerequisites AIB",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "icon": "None",
-                                "text": "AVD Landing Zone Accelerator will deploy a managed identity and custom RBAC roles for AIB. ",
-                                "uri": "https://learn.microsoft.com/azure/virtual-machines/image-builder-overview?tabs=azure-powershell",
-                                "style": "Info"
-                            }
+                                },
+                                {
+                                    "name": "screenCaptureProtectionInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": true,
+                                    "options": {
+                                        "text": "Screen Capture Protection is a beneficial feature under specific conditions. Click here for more information.",
+                                        "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/screen-capture-protection",
+                                        "style": "Info"
+                                    }
+                                },
+                                {
+                                    "name": "screenCaptureProtectionSelection",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "visible": true,
+                                    "label": "Enable screen capture protection",
+                                    "defaultValue": "No",
+                                    "toolTip": "Determine whether to enable Screen Capture Protection for the AVD session hosts.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes",
+                                                "value": true
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": false
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
                         }
                     ]
                 },
@@ -944,9 +952,9 @@
                 "operatingSystemImage": "[steps('imageManagement').operatingSystem.versionSelection]",
                 "operationsTeamTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.operationsTeam, 'none')]",
                 "ownerTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.owner, 'none')]",
-                "rdpShortPath": "[steps('aib').rdpShortPathSelection]",
+                "rdpShortPath": "[steps('aib').customizers.rdpShortPathSelection]",
                 "resourceGroupCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.resourceGroup, 'none')]",
-                "screenCaptureProtection": "[steps('aib').screenCaptureProtectionSelection]",
+                "screenCaptureProtection": "[steps('aib').customizers.screenCaptureProtectionSelection]",
                 "sharedServicesSubId": "[steps('basics').resourceScope.subscription.subscriptionId]",
                 "useExistingVirtualNetwork": "[steps('aib').virtualNetwork]",
                 "userAssignedManagedIdentityCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.userAssignedManagedIdentity, 'none')]",
