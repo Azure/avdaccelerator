@@ -24,7 +24,7 @@
                             "type": "Microsoft.Common.TextBlock",
                             "visible": true,
                             "options": {
-                                "text": "The subscription, resource group, and region selected below will be used for most of the resources deployed in this solution. The replication regions for the image version will be the only exception and those regions will be defined in the next step. The regions listed in the menu below are the only regions that support Azure Image Builder image templates. Please ensure to select the appropriate options for your environment.",
+                                "text": "The subscription and region selected below will be used for most of the resources deployed in this solution. The replication regions for the image version will be the only exception and those regions will be defined in the next step. The regions listed in the menu below are the only regions that support Azure Image Builder image templates. Please ensure to select the appropriate options for your environment.",
                                 "link": {
                                     "label": "Click here to learn about the supported Azure Image Builder regions.",
                                     "uri": "https://learn.microsoft.com/en-us/azure/virtual-machines/image-builder-overview?tabs=azure-powershell#regions"
