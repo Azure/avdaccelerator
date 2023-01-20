@@ -15,7 +15,7 @@
                             "type": "Microsoft.Common.InfoBox",
                             "options": {
                                 "text": "PREREQUISITES REQUIRED \n\nThere are prerequisites that must be setup in your Azure environment to successfully deploy this AVD Landing Zone Accelerator. Click here to review the prerequisites in the Getting Started guide.",
-                                "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started.md",
+                                "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started-custom-image-build.md",
                                 "style": "Warning"
                             }
                         },
