@@ -24,7 +24,7 @@ param maxAvailabilitySetMembersCount int
 @description('Resource Group name for the session hosts')
 param avdComputeObjectsRgName string
 
-@description('Resource Group name for the session hosts')
+@description('Resource Group name for the AVD infrastructure resources')
 param avdServiceObjectsRgName string
 
 @description('Optional. AVD workload subscription ID, multiple subscriptions scenario.')
@@ -154,7 +154,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 // Session hosts.
 module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(1, avdSessionHostsCount): {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-    name: 'AVD-Session-Host-${padLeft((i + avdSessionHostCountIndex), 3, '0')}-${time}'
+    name: 'Session-Host-${padLeft((i + avdSessionHostCountIndex), 3, '0')}-${time}'
     params: {
         name: '${avdSessionHostNamePrefix}-${padLeft((i + avdSessionHostCountIndex), 3, '0')}'
         location: avdSessionHostLocation
@@ -259,7 +259,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
 // Add session hosts to AVD Host pool.
 module addAvdHostsToHostPool '../../vm-custom-extensions/add-avd-session-hosts.bicep' = [for i in range(1, avdSessionHostsCount): {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-    name: 'Add-AVD-SH-${padLeft((i + avdSessionHostCountIndex), 3, '0')}-to-HP-${time}'
+    name: 'HP-Join-${padLeft((i + avdSessionHostCountIndex), 3, '0')}-to-HP-${time}'
     params: {
         location: avdSessionHostLocation
         hostPoolToken: hostPoolToken

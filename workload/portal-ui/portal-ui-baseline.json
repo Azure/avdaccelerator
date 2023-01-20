@@ -16,21 +16,13 @@
                     "bladeTitle": "avdBasics",
                     "elements": [
                         {
-                            "name": "deploymentPreRequesites",
-                            "type": "Microsoft.Common.Section",
-                            "visible": true,
-                            "label": "Deployment pre-requesites",
-                            "elements": [
-                                {
-                                    "name": "infoPreReq",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "options": {
-                                        "text": "Prior to deployment, make sure you meet the prerequisites for using this AVD Landing Zone Accelerator outlined in the getting started guide.",
-                                        "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started.md",
-                                        "style": "Warning"
-                                    }
-                                }
-                            ]
+                            "name": "infoPreReq",
+                            "type": "Microsoft.Common.InfoBox",
+                            "options": {
+                                "text": "PREREQUISITES REQUIRED \n\nThere are prerequisites that must be setup in your Azure environment to successfully deploy this AVD Landing Zone Accelerator. Click here to review the prerequisites in the Getting Started guide.",
+                                "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started-baseline.md",
+                                "style": "Warning"
+                            }
                         },
                         {
                             "name": "avdSharedServices",
@@ -1000,7 +992,7 @@
                                         "allowedValues": [
                                             {
                                                 "label": "Standard",
-                                                "value": null
+                                                "value": "Standard"
                                             },
                                             {
                                                 "label": "Trusted Launch Virtual Machines",
@@ -1016,7 +1008,7 @@
                                 {
                                     "name": "secureBootEnabled",
                                     "type": "Microsoft.Common.OptionsGroup",
-                                    "visible": "[not(empty(steps('avdSessionHosts').avdSessionHostsSecuritySection.securityType))]",
+                                    "visible": "[or(equals(steps('avdSessionHosts').avdSessionHostsSecuritySection.securityType, 'TrustedLaunch'), equals(steps('avdSessionHosts').avdSessionHostsSecuritySection.securityType, 'ConfidentialVM'))]",
                                     "label": "Enable secure boot",
                                     "defaultValue": "No",
                                     "toolTip": "Secure boot helps protect your VMs against boot kits, rootkits, and kernel-level malware.",
@@ -1037,7 +1029,7 @@
                                 {
                                     "name": "vTpmEnabled",
                                     "type": "Microsoft.Common.OptionsGroup",
-                                    "visible": "[not(empty(steps('avdSessionHosts').avdSessionHostsSecuritySection.securityType))]",
+                                    "visible": "[or(equals(steps('avdSessionHosts').avdSessionHostsSecuritySection.securityType, 'TrustedLaunch'), equals(steps('avdSessionHosts').avdSessionHostsSecuritySection.securityType, 'ConfidentialVM'))]",
                                     "label": "Enable vTPM",
                                     "defaultValue": "No",
                                     "toolTip": "Virtual Trusted Platform Module (vTPM) is TPM2.0 compliant and validates your VM boot integrity apart from securely storing keys and secrets.",

@@ -4,7 +4,7 @@ param baseScriptUri string
 param file string
 param FsLogixScriptArguments string
 
-resource fslogixconfigure 'Microsoft.Compute/virtualMachines/extensions@2021-07-01' = {
+resource fslogixconfigure 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = {
   name: '${name}/configurefslogix'
   location: location
   properties: {
