@@ -3,30 +3,67 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
-@description('Optional. Location to deploy the resources in this solution, except the image template. (Default: eastus)')
-param sharedServicesLocation string = 'eastus'
-
-@description('Required. AVD shared services subscription ID, multiple subscriptions scenario.')
-param sharedServicesSubId string
-
-@description('Optional. Disaster recovery location for Image Version. (Default:"")')
-param imageVersionDisasterRecoveryLocation string = ''
-
-@allowed([
-    //'Premium_LRS' supported by Image Versions but not Image Templates yet
-    'Standard_LRS'
-    'Standard_ZRS'
-])
-@description('Optional. Determine the Storage Account Type for the Image Version distributed by the Image Template. (Default: Standard_LRS)')
-param imageVersionStorageAccountType string = 'Standard_LRS'
 
 // Placeholder for future release
-/* @allowed([
-    'Standard_LRS'
-    'Standard_ZRS'
+// @maxLength(60)
+// @description('Optional. Custom name for container storing AIB artifacts. (Default: avd-artifacts)')
+// param aibContainerCustomName string = 'aib-artifacts'
+
+@description('Optional. Custom name for Action Group.')
+param alertsActionGroupCustomName string = 'ag-aib'
+
+@description('Optional. Input the email distribution list for alert notifications when AIB builds succeed or fail.')
+param alertsDistributionGroup string = ''
+
+@description('Optional. Details about the application.')
+param applicationNameTag string = 'Contoso-App'
+
+@description('Optional. Custom name for the Automation Account.')
+param automationAccountCustomName string = 'aa-avd'
+
+// Placeholder for future release
+// @maxLength(60)
+// @description('Optional. Custom name for container storing AVD artifacts. (Default: avd-artifacts)')
+// param avdContainerCustomName string = 'avd-artifacts'
+
+@allowed([
+    'OneTime'
+    'Recurring'
 ])
-@description('Optional. Determine the Storage Account SKU for local or zonal redundancy. (Default: Standard_LRS)')
-param storageAccountSku string = 'Standard_LRS' */
+@description('Optional. Determine whether to build the image template one time or check daily for a new marketplace image and auto build when found. (Default: Recurring)')
+param buildSchedule string = 'Recurring'
+
+@description('Optional. Cost center of owner team. (Defualt: Contoso-CC)')
+param costCenterTag string = 'Contoso-CC'
+
+@description('Optional. Tag value for custom criticality value. (Default: Contoso-Critical)')
+param criticalityCustomTag string = 'Contoso-Critical'
+
+@allowed([
+    'Low'
+    'Medium'
+    'High'
+    'Mission-critical'
+    'Custom'
+])
+@description('Optional. criticality of each workload. (Default: Low)')
+param criticalityTag string = 'Low'
+
+@description('Optional. Determine whether to enable custom naming for the Azure resources. (Default: false)')
+param customNaming bool = false
+
+@allowed([
+    'Non-business'
+    'Public'
+    'General'
+    'Confidential'
+    'Highly Confidential'
+])
+@description('Optional. Sensitivity of data hosted (Default: Non-business)')
+param dataClassificationTag string = 'Non-business'
+
+@description('Optional. Department that owns the deployment, (Dafult: Contoso-AVD)')
+param departmentTag string = 'Contoso-AVD'
 
 @allowed([
     'australiaeast'
@@ -62,15 +99,78 @@ param storageAccountSku string = 'Standard_LRS' */
     'westus2'
     'westus3'
 ])
-@description('Optional. Azure Image Builder location. (Default: eastus)')
-param aibLocation string = 'eastus'
+@description('Required. Location to deploy the resources in this solution, except the image template. (Default: eastus)')
+param deploymentLocation string = 'eastus'
+
+@description('Optional. Set to deploy monitoring and alerts for the build automation (Default: false).')
+param enableMonitoringAlerts bool = false
+
+@description('Optional. Apply tags on resources and resource groups. (Default: false)')
+param enableResourceTags bool = false
+
+@description('Enable usage and telemetry feedback to Microsoft.')
+param enableTelemetry bool = true
 
 @allowed([
-    'OneTime'
-    'Recurring'
+    'Prod'
+    'Dev'
+    'Staging'
 ])
-@description('Optional. Determine whether to build the image template one time or check daily for a new marketplace image and auto build when found. (Default: Recurring)')
-param buildSchedule string = 'Recurring'
+@description('Optional. Deployment environment of the application, workload. (Default: Dev)')
+param environmentTag string = 'Dev'
+
+@description('Optional. Existing Azure log analytics workspace resource ID to capture build logs. (Default: )')
+param existingLogAnalyticsWorkspaceResourceId string = ''
+
+@description('Optional. Input the name of the subnet for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: "")')
+param existingSubnetName string = ''
+
+@description('Optional. Input the resource ID for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: "")')
+param existingVirtualNetworkResourceId string = ''
+
+@description('Optional. The name of workload for tagging purposes. (Default: AVD-Image)')
+param imageBuildNameTag string = 'AVD-Image'
+
+@maxLength(64)
+@description('Optional. Custom name for Image Definition. (Default: avd-win11-21h2)')
+param imageDefinitionCustomName string = 'avd-win11-21h2'
+
+@allowed([
+    'Standard'
+    'TrustedLaunch'
+    'ConfidentialVM'
+    'ConfidentialVMSupported'
+])
+@description('Optional. Choose the Security Type of the Image Definition. (Default: Standard)')
+param imageDefinitionSecurityType string = 'Standard'
+
+@maxLength(64)
+@description('Optional. Custom name for Image Gallery. (Default: gal_avd_use2_001)')
+param imageGalleryCustomName string = 'gal_avd_use2_001'
+
+@maxLength(260)
+@description('Optional. Custom name for Image Template. (Default: it-avd-win11-21h2)')
+param imageTemplateCustomName string = 'it-avd-win11-22h2'
+
+@description('Optional. Disaster recovery replication location for Image Version. (Default:"")')
+param imageVersionDisasterRecoveryLocation string = ''
+
+@description('Required. Primary replication location for Image Version. (Default:)')
+param imageVersionPrimaryLocation string
+
+@allowed([
+    //'Premium_LRS' supported by Image Versions but not Image Templates yet
+    'Standard_LRS'
+    'Standard_ZRS'
+])
+@description('Optional. Determine the Storage Account Type for the Image Version distributed by the Image Template. (Default: Standard_LRS)')
+param imageVersionStorageAccountType string = 'Standard_LRS'
+
+@description('Optional. Custom name for the Log Analytics Workspace.')
+param logAnalyticsWorkspaceCustomName string = 'log-avd'
+
+@description('Optional. Set the data retention in the number of days for the Log Analytics Workspace. (Default: 30)')
+param logAnalyticsWorkspaceDataRetention int = 30
 
 @allowed([
     'win10_21h2'
@@ -85,175 +185,181 @@ param buildSchedule string = 'Recurring'
 @description('Optional. AVD OS image source. (Default: win11-22h2)')
 param operatingSystemImage string = 'win11_22h2'
 
-@allowed([
-    'Standard'
-    'TrustedLaunch'
-    'ConfidentialVM'
-    'ConfidentialVMSupported'
-])
-@description('Optional. Choose the Security Type of the Image Definition. (Default: Standard)')
-param imageDefinitionSecurityType string = 'Standard'
-
-@description('Optional. Set to deploy Azure Image Builder to existing virtual network. (Default: false)')
-param useExistingVirtualNetwork bool = false
-
-@description('Optional. Existing Azure log analytics workspace resource ID to capture build logs. (Default: )')
-param existingLogAnalyticsWorkspaceResourceId string = ''
-
-@description('Optional. Input the resource ID for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: "")')
-param existingVirtualNetworkResourceId string = ''
-
-@description('Optional. Input the name of the subnet for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: "")')
-param existingSubnetName string = ''
-
-@description('Optional. Determine whether to enable RDP Short Path for Managed Networks. (Default: false)')
-param rdpShortPath bool = false
-
-@description('Optional. Determine whether to enable Screen Capture Protection. (Default: false)')
-param screenCaptureProtection bool = false
-
-@description('Optional. Set the data retention in the number of days for the Log Analytics Workspace. (Default: 30)')
-param logAnalyticsWorkspaceDataRetention int = 30
-
-@description('Optional. Set to deploy monitoring and alerts for the build automation (Default: false).')
-param enableMonitoringAlerts bool = false
-
-@description('Optional. Input the email distribution list for alert notifications when AIB builds succeed or fail.')
-param alertsDistributionGroup string = ''
-
-// Custom Naming.
-// Input must followe resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
-@description('Optional. Determine whether to enable custom naming for the Azure resources. (Default: false)')
-param customNaming bool = false
-
-@description('Optional. Custom name for Action Group.')
-param alertsActionGroupCustomName string = 'ag-aib'
-
-@description('Optional. Custom name for the Automation Account.')
-param automationAccountCustomName string = 'aa-avd'
-
-@description('Optional. Custom name for the Log Analytics Workspace.')
-param logAnalyticsWorkspaceCustomName string = 'log-avd'
-
-@maxLength(90)
-@description('Optional. Custom name for Resource Group. (Default: rg-avd-use2-shared-services)')
-param resourceGroupCustomName string = 'rg-avd-use2-shared-services'
-
-@maxLength(64)
-@description('Optional. Custom name for Image Gallery. (Default: gal_avd_use2_001)')
-param imageGalleryCustomName string = 'gal_avd_use2_001'
-
-@maxLength(64)
-@description('Optional. Custom name for Image Definition. (Default: avd-win11-21h2)')
-param imageDefinitionCustomName string = 'avd-win11-21h2'
-
-@maxLength(260)
-@description('Optional. Custom name for Image Template. (Default: it-avd-win11-21h2)')
-param imageTemplateCustomName string = 'it-avd-win11-22h2'
-
-// Placeholders for future release
-/* @maxLength(24)
-@description('Optional. Custom name for Storage Account. (Default: stavdshar)')
-param storageAccountCustomName string = ''
-
-@maxLength(60)
-@description('Optional. Custom name for container storing AIB artifacts. (Default: avd-artifacts)')
-param aibContainerCustomName string = 'aib-artifacts'
-
-@maxLength(60)
-@description('Optional. Custom name for container storing AVD artifacts. (Default: avd-artifacts)')
-param avdContainerCustomName string = 'avd-artifacts' */
-
-@maxLength(128)
-@description('Optional. Custom name for User Assigned Identity. (Default: id-avd)')
-param userAssignedManagedIdentityCustomName string = ''
-//
-
-// TAGS //
-// Resource tagging
-//
-@description('Optional. Apply tags on resources and resource groups. (Default: false)')
-param enableResourceTags bool = false
-
-@description('Optional. The name of workload for tagging purposes. (Default: AVD-Image)')
-param imageBuildNameTag string = 'AVD-Image'
-
-@description('Optional. Reference to the size of the VM for your workloads (Default: Contoso-Workload)')
-param workloadNameTag string = 'Contoso-Workload'
-
-@allowed([
-    'Non-business'
-    'Public'
-    'General'
-    'Confidential'
-    'Highly Confidential'
-])
-@description('Optional. Sensitivity of data hosted (Default: Non-business)')
-param dataClassificationTag string = 'Non-business'
-
-@description('Optional. Department that owns the deployment, (Dafult: Contoso-AVD)')
-param departmentTag string = 'Contoso-AVD'
-
-@allowed([
-    'Low'
-    'Medium'
-    'High'
-    'Mission-critical'
-    'Custom'
-])
-@description('Optional. criticality of each workload. (Default: Low)')
-param criticalityTag string = 'Low'
-
-@description('Optional. Tag value for custom criticality value. (Default: Contoso-Critical)')
-param criticalityCustomTag string = 'Contoso-Critical'
-
-@description('Optional. Details about the application.')
-param applicationNameTag string = 'Contoso-App'
-
 @description('Optional. Team accountable for day-to-day operations. (Contoso-Ops)')
 param operationsTeamTag string = 'workload-admins@Contoso.com'
 
 @description('Optional. Organizational owner of the AVD deployment. (Default: Contoso-Owner)')
 param ownerTag string = 'workload-owner@Contoso.com'
 
-@description('Optional. Cost center of owner team. (Defualt: Contoso-CC)')
-param costCenterTag string = 'Contoso-CC'
+@description('Optional. Determine whether to enable RDP Short Path for Managed Networks. (Default: false)')
+param rdpShortPath bool = false
 
-@allowed([
-    'Prod'
-    'Dev'
-    'Staging'
-])
-@description('Optional. Deployment environment of the application, workload. (Default: Dev)')
-param environmentTag string = 'Dev'
-//
+@maxLength(90)
+@description('Optional. Custom name for Resource Group. (Default: rg-avd-use2-shared-services)')
+param resourceGroupCustomName string = 'rg-avd-use2-shared-services'
+
+@description('Optional. Determine whether to enable Screen Capture Protection. (Default: false)')
+param screenCaptureProtection bool = false
+
+@description('Required. AVD shared services subscription ID, multiple subscriptions scenario.')
+param sharedServicesSubId string
+
+// Placeholder for future release
+// @maxLength(24)
+// @description('Optional. Custom name for Storage Account. (Default: stavdshar)')
+// param storageAccountCustomName string = ''
+
+// Placeholder for future release
+// @allowed([
+//     'Standard_LRS'
+//     'Standard_ZRS'
+// ])
+// @description('Optional. Determine the Storage Account SKU for local or zonal redundancy. (Default: Standard_LRS)')
+// param storageAccountSku string = 'Standard_LRS'
 
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
-@description('Enable usage and telemetry feedback to Microsoft.')
-param enableTelemetry bool = true
+@description('Optional. Set to deploy Azure Image Builder to existing virtual network. (Default: false)')
+param useExistingVirtualNetwork bool = false
+
+@maxLength(128)
+@description('Optional. Custom name for User Assigned Identity. (Default: id-avd)')
+param userAssignedManagedIdentityCustomName string = ''
+
+@description('Optional. Reference to the size of the VM for your workloads (Default: Contoso-Workload)')
+param workloadNameTag string = 'Contoso-Workload'
+
 
 // =========== //
-// Variable declaration //
+// Variables   //
 // =========== //
-// Resouce Naming.
-var varAzureCloudName = environment().name
+
 var varActionGroupName = customNaming ? alertsActionGroupCustomName : 'ag-avd-${varNamingStandard}'
-var varNamingStandard = '${varLocationAcronym}'
-var varLocationLowercase = toLower(sharedServicesLocation)
-var varResourceGroupName = customNaming ? resourceGroupCustomName : 'rg-avd-${varNamingStandard}-shared-services'
-var varImageGalleryName = customNaming ? imageGalleryCustomName : 'gal_avd_${varNamingStandard}'
-var varUserAssignedManagedIdentityName = customNaming ? userAssignedManagedIdentityCustomName : 'id-aib-${varNamingStandard}'
-var varLogAnalyticsWorkspaceName = customNaming ? logAnalyticsWorkspaceCustomName : 'log-avd-${varNamingStandard}'
-var varImageDefinitionName = customNaming ? imageDefinitionCustomName : 'avd-${operatingSystemImage}'
-var varImageTemplateName = customNaming ? imageTemplateCustomName : 'it-avd-${operatingSystemImage}'
-var varAutomationAccountName = customNaming ? automationAccountCustomName : 'aa-avd-${varNamingStandard}'
-// Placeholders for future feature
-// var varUniqueStringSixChar = take('${uniqueString(sharedServicesSubId, time)}', 6)
-// var varStorageAccountName = customNaming ? storageAccountCustomName : 'stavd${varNamingStandard}${varUniqueStringSixChar}'
+// Placeholder for future feature
 // var varAibContainerName = customNaming ? aibContainerCustomName : 'aib-artifacts'
+var varAlerts = enableMonitoringAlerts ? [
+    {
+        name: 'Azure Image Builder - Build Failure'
+        description: 'Sends an error alert when a build fails on an image template for Azure Image Builder.'
+        severity: 0
+        evaluationFrequency: 'PT5M'
+        windowSize: 'PT5M'
+        criterias: {
+            allOf: [
+                {
+                    query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| where ResultDescription has "Image Template build failed"'
+                    timeAggregation: 'Count'
+                    dimensions: [
+                        {
+                            name: 'ResultDescription'
+                            operator: 'Include'
+                            values: [
+                                '*'
+                            ]
+                        }
+                    ]
+                    operator: 'GreaterThanOrEqual'
+                    threshold: 1
+                    failingPeriods: {
+                        numberOfEvaluationPeriods: 1
+                        minFailingPeriodsToAlert: 1
+                    }
+                }
+            ]
+        }
+    }
+    {
+        name: 'Azure Image Builder - Build Success'
+        description: 'Sends an informational alert when a build succeeds on an image template for Azure Image Builder.'
+        severity: 3
+        evaluationFrequency: 'PT5M'
+        windowSize: 'PT5M'
+        criterias: {
+            allOf: [
+                {
+                    query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| where ResultDescription has "Image Template build succeeded"'
+                    timeAggregation: 'Count'
+                    dimensions: [
+                        {
+                            name: 'ResultDescription'
+                            operator: 'Include'
+                            values: [
+                                '*'
+                            ]
+                        }
+                    ]
+                    operator: 'GreaterThanOrEqual'
+                    threshold: 1
+                    failingPeriods: {
+                        numberOfEvaluationPeriods: 1
+                        minFailingPeriodsToAlert: 1
+                    }
+                }
+            ]
+        }
+    }
+]: []
+var varAutomationAccountName = customNaming ? automationAccountCustomName : 'aa-avd-${varNamingStandard}'
+// Placeholder for future feature
 // var varAvdContainerName = customNaming ? avdContainerCustomName : 'avd-artifacts'
+var varAzureCloudName = environment().name
+var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
+var varCommonResourceTags = enableResourceTags ? {
+    ImageBuildName: imageBuildNameTag
+    WorkloadName: workloadNameTag
+    DataClassification: dataClassificationTag
+    Department: departmentTag
+    Criticality: (criticalityTag == 'Custom') ? criticalityCustomTag : criticalityTag
+    ApplicationName: applicationNameTag
+    OpsTeam: operationsTeamTag
+    Owner: ownerTag
+    CostCenter: costCenterTag
+    Environment: environmentTag
+
+} : {}
+var varCustomizationSteps = union(varScriptCustomizers, varRemainingCustomizers)
+var varImageDefinitionName = customNaming ? imageDefinitionCustomName : 'avd-${operatingSystemImage}'
+var varImageGalleryName = customNaming ? imageGalleryCustomName : 'gal_avd_${varNamingStandard}'
+var varImageReplicationRegions = empty(imageVersionDisasterRecoveryLocation) ? [
+    imageVersionPrimaryLocation
+] : [
+    imageVersionPrimaryLocation
+    imageVersionDisasterRecoveryLocation
+]
+// Image template permissions are currently (1/6/23) not supported in Azure US Government
+var varImageTemplateBuildAutomation = varAzureCloudName == 'AzureCloud' ? [
+    {
+        resourceGroup: varResourceGroupName
+        name: 'Image Template Build Automation'
+        description: 'Allow Image Template build automation using a Managed Identity on an Automation Account.'
+        actions: [
+            'Microsoft.VirtualMachineImages/imageTemplates/run/action'
+            'Microsoft.VirtualMachineImages/imageTemplates/read'
+            'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/versions/read'
+            'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/read'
+            'Microsoft.Compute/locations/publishers/artifacttypes/offers/read'
+            'Microsoft.Compute/locations/publishers/read'
+        ]
+    }
+] : []
+var varImageTemplateContributorRole = [
+    {
+        resourceGroup: varResourceGroupName
+        name: 'Image Template Contributor'
+        description: 'Allow the creation and management of images'
+        actions: [
+            'Microsoft.Compute/galleries/read'
+            'Microsoft.Compute/galleries/images/read'
+            'Microsoft.Compute/galleries/images/versions/read'
+            'Microsoft.Compute/galleries/images/versions/write'
+            'Microsoft.Compute/images/read'
+            'Microsoft.Compute/images/write'
+            'Microsoft.Compute/images/delete'
+        ]
+    }
+]
+var varImageTemplateName = customNaming ? imageTemplateCustomName : 'it-avd-${operatingSystemImage}'
 var varLocationAcronym = varLocationAcronyms[varLocationLowercase]
 var varLocationAcronyms = {
     australiacentral: 'auc'
@@ -304,88 +410,19 @@ var varLocationAcronyms = {
     westus2: 'wus2'
     westus3: 'wus3'
 }
-//
-
-var varTimeZone = varTimeZones[aibLocation]
-var varTimeZones = {
-    australiacentral: 'AUS Eastern Standard time'
-    australiacentral2: 'AUS Eastern Standard time'
-    australiaeast: 'AUS Eastern Standard time'
-    australiasoutheast: 'AUS Eastern Standard time'
-    brazilsouth: 'E. South America Standard time'
-    brazilsoutheast: 'E. South America Standard time'
-    canadacentral: 'Eastern Standard time'
-    canadaeast: 'Eastern Standard time'
-    centralindia: 'India Standard time'
-    centralus: 'Central Standard time'
-    chinaeast: 'China Standard time'
-    chinaeast2: 'China Standard time'
-    chinanorth: 'China Standard time'
-    chinanorth2: 'China Standard time'
-    eastasia: 'China Standard time'
-    eastus: 'Eastern Standard time'
-    eastus2: 'Eastern Standard time'
-    francecentral: 'Central Europe Standard time'
-    francesouth: 'Central Europe Standard time'
-    germanynorth: 'Central Europe Standard time'
-    germanywestcentral: 'Central Europe Standard time'
-    japaneast: 'Tokyo Standard time'
-    japanwest: 'Tokyo Standard time'
-    jioindiacentral: 'India Standard time'
-    jioindiawest: 'India Standard time'
-    koreacentral: 'Korea Standard time'
-    koreasouth: 'Korea Standard time'
-    northcentralus: 'Central Standard time'
-    northeurope: 'GMT Standard time'
-    norwayeast: 'Central Europe Standard time'
-    norwaywest: 'Central Europe Standard time'
-    southafricanorth: 'South Africa Standard time'
-    southafricawest: 'South Africa Standard time'
-    southcentralus: 'Central Standard time'
-    southindia: 'India Standard time'
-    southeastasia: 'Singapore Standard time'
-    swedencentral: 'Central Europe Standard time'
-    switzerlandnorth: 'Central Europe Standard time'
-    switzerlandwest: 'Central Europe Standard time'
-    uaecentral: 'Arabian Standard time'
-    uaenorth: 'Arabian Standard time'
-    uksouth: 'GMT Standard time'
-    ukwest: 'GMT Standard time'
-    usgovarizona: 'Mountain Standard time'
-    usgoviowa: 'Central Standard time'
-    usgovtexas: 'Central Standard time'
-    usgovvirginia: 'Eastern Standard time'
-    westcentralus: 'Mountain Standard time'
-    westeurope: 'Central Europe Standard time'
-    westindia: 'India Standard time'
-    westus: 'Pacific Standard time'
-    westus2: 'Pacific Standard time'
-    westus3: 'Mountain Standard time'
-}
-
-// Resource tagging.
-var varCommonResourceTags = enableResourceTags ? {
-    ImageBuildName: imageBuildNameTag
-    WorkloadName: workloadNameTag
-    DataClassification: dataClassificationTag
-    Department: departmentTag
-    Criticality: (criticalityTag == 'Custom') ? criticalityCustomTag : criticalityTag
-    ApplicationName: applicationNameTag
-    OpsTeam: operationsTeamTag
-    Owner: ownerTag
-    CostCenter: costCenterTag
-    Environment: environmentTag
-
-} : {}
-//
-
-var varImageReplicationRegions = empty(imageVersionDisasterRecoveryLocation) ? [
-    sharedServicesLocation
-] : [
-    sharedServicesLocation
-    imageVersionDisasterRecoveryLocation
+var varLocationLowercase = toLower(deploymentLocation)
+var varLogAnalyticsWorkspaceName = customNaming ? logAnalyticsWorkspaceCustomName : 'log-avd-${varNamingStandard}'
+var varModules = [
+    {
+        name: 'Az.Accounts'
+        uri: 'https://www.powershellgallery.com/api/v2/package'
+    }
+    {
+        name: 'Az.ImageBuilder'
+        uri: 'https://www.powershellgallery.com/api/v2/package'
+    }
 ]
-var varVmSize = 'Standard_D4s_v3'
+var varNamingStandard = '${varLocationAcronym}'
 var varOperatingSystemImageDefinitions = {
     win10_21h2: {
         osType: 'Windows'
@@ -460,11 +497,6 @@ var varOperatingSystemImageDefinitions = {
         version: 'latest'
     }
 }
-
-var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
-var varTelemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${sharedServicesLocation}'
-
-// Customization Steps
 var varRdpShortPathCustomizer = rdpShortPath ? [
     {
         type: 'PowerShell'
@@ -474,25 +506,6 @@ var varRdpShortPathCustomizer = rdpShortPath ? [
         scriptUri: '${varBaseScriptUri}scripts/Set-RdpShortpath.ps1'
     }
 ] : []
-var varScreenCaptureProtectionCustomizer = screenCaptureProtection ? [
-    {
-        type: 'PowerShell'
-        name: 'screenCaptureProtection'
-        runElevated: true
-        runAsSystem: true
-        scriptUri: '${varBaseScriptUri}scripts/Set-ScreenCaptureProtection.ps1'
-    }
-] : []
-var varVdotCustomizer = [
-    {
-        type: 'PowerShell'
-        name: 'VirtualDesktopOptimizationTool'
-        runElevated: true
-        runAsSystem: true
-        scriptUri: '${varBaseScriptUri}scripts/Set-VirtualDesktopOptimizations.ps1'
-    }
-]
-var varScriptCustomizers = union(varRdpShortPathCustomizer, varScreenCaptureProtectionCustomizer, varVdotCustomizer)
 var varRemainingCustomizers = [
     {
         type: 'WindowsRestart'
@@ -538,83 +551,89 @@ var varRemainingCustomizers = [
         restarttimeout: '10m'
     }
 ]
-var varCustomizationSteps = union(varScriptCustomizers, varRemainingCustomizers)
-//
-var varAlerts = enableMonitoringAlerts ? [
+var varResourceGroupName = customNaming ? resourceGroupCustomName : 'rg-avd-${varNamingStandard}-shared-services'
+var varRoles = union(varVirtualNetworkJoinRole, varImageTemplateBuildAutomation, varImageTemplateContributorRole)
+var varScreenCaptureProtectionCustomizer = screenCaptureProtection ? [
     {
-        name: 'Azure Image Builder - Build Failure'
-        description: 'Sends an error alert when a build fails on an image template for Azure Image Builder.'
-        severity: 0
-        evaluationFrequency: 'PT5M'
-        windowSize: 'PT5M'
-        criterias: {
-            allOf: [
-                {
-                    query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| where ResultDescription has "Image Template build failed"'
-                    timeAggregation: 'Count'
-                    dimensions: [
-                        {
-                            name: 'ResultDescription'
-                            operator: 'Include'
-                            values: [
-                                '*'
-                            ]
-                        }
-                    ]
-                    operator: 'GreaterThanOrEqual'
-                    threshold: 1
-                    failingPeriods: {
-                        numberOfEvaluationPeriods: 1
-                        minFailingPeriodsToAlert: 1
-                    }
-                }
-            ]
-        }
+        type: 'PowerShell'
+        name: 'screenCaptureProtection'
+        runElevated: true
+        runAsSystem: true
+        scriptUri: '${varBaseScriptUri}scripts/Set-ScreenCaptureProtection.ps1'
     }
+] : []
+var varScriptCustomizers = union(varRdpShortPathCustomizer, varScreenCaptureProtectionCustomizer, varVdotCustomizer)
+// Placeholder for future feature
+// var varStorageAccountName = customNaming ? storageAccountCustomName : 'stavd${varNamingStandard}${varUniqueStringSixChar}'
+var varTelemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${deploymentLocation}'
+var varTimeZone = varTimeZones[deploymentLocation]
+var varTimeZones = {
+    australiacentral: 'AUS Eastern Standard time'
+    australiacentral2: 'AUS Eastern Standard time'
+    australiaeast: 'AUS Eastern Standard time'
+    australiasoutheast: 'AUS Eastern Standard time'
+    brazilsouth: 'E. South America Standard time'
+    brazilsoutheast: 'E. South America Standard time'
+    canadacentral: 'Eastern Standard time'
+    canadaeast: 'Eastern Standard time'
+    centralindia: 'India Standard time'
+    centralus: 'Central Standard time'
+    chinaeast: 'China Standard time'
+    chinaeast2: 'China Standard time'
+    chinanorth: 'China Standard time'
+    chinanorth2: 'China Standard time'
+    eastasia: 'China Standard time'
+    eastus: 'Eastern Standard time'
+    eastus2: 'Eastern Standard time'
+    francecentral: 'Central Europe Standard time'
+    francesouth: 'Central Europe Standard time'
+    germanynorth: 'Central Europe Standard time'
+    germanywestcentral: 'Central Europe Standard time'
+    japaneast: 'Tokyo Standard time'
+    japanwest: 'Tokyo Standard time'
+    jioindiacentral: 'India Standard time'
+    jioindiawest: 'India Standard time'
+    koreacentral: 'Korea Standard time'
+    koreasouth: 'Korea Standard time'
+    northcentralus: 'Central Standard time'
+    northeurope: 'GMT Standard time'
+    norwayeast: 'Central Europe Standard time'
+    norwaywest: 'Central Europe Standard time'
+    southafricanorth: 'South Africa Standard time'
+    southafricawest: 'South Africa Standard time'
+    southcentralus: 'Central Standard time'
+    southindia: 'India Standard time'
+    southeastasia: 'Singapore Standard time'
+    swedencentral: 'Central Europe Standard time'
+    switzerlandnorth: 'Central Europe Standard time'
+    switzerlandwest: 'Central Europe Standard time'
+    uaecentral: 'Arabian Standard time'
+    uaenorth: 'Arabian Standard time'
+    uksouth: 'GMT Standard time'
+    ukwest: 'GMT Standard time'
+    usgovarizona: 'Mountain Standard time'
+    usgoviowa: 'Central Standard time'
+    usgovtexas: 'Central Standard time'
+    usgovvirginia: 'Eastern Standard time'
+    westcentralus: 'Mountain Standard time'
+    westeurope: 'Central Europe Standard time'
+    westindia: 'India Standard time'
+    westus: 'Pacific Standard time'
+    westus2: 'Pacific Standard time'
+    westus3: 'Mountain Standard time'
+}
+// Placeholder for future feature
+// var varUniqueStringSixChar = take('${uniqueString(sharedServicesSubId, time)}', 6)
+var varUserAssignedManagedIdentityName = customNaming ? userAssignedManagedIdentityCustomName : 'id-aib-${varNamingStandard}'
+var varVdotCustomizer = [
     {
-        name: 'Azure Image Builder - Build Success'
-        description: 'Sends an informational alert when a build succeeds on an image template for Azure Image Builder.'
-        severity: 3
-        evaluationFrequency: 'PT5M'
-        windowSize: 'PT5M'
-        criterias: {
-            allOf: [
-                {
-                    query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| where ResultDescription has "Image Template build succeeded"'
-                    timeAggregation: 'Count'
-                    dimensions: [
-                        {
-                            name: 'ResultDescription'
-                            operator: 'Include'
-                            values: [
-                                '*'
-                            ]
-                        }
-                    ]
-                    operator: 'GreaterThanOrEqual'
-                    threshold: 1
-                    failingPeriods: {
-                        numberOfEvaluationPeriods: 1
-                        minFailingPeriodsToAlert: 1
-                    }
-                }
-            ]
-        }
-    }
-]: []
-
-var varModules = [
-    {
-        name: 'Az.Accounts'
-        uri: 'https://www.powershellgallery.com/api/v2/package'
-    }
-    {
-        name: 'Az.ImageBuilder'
-        uri: 'https://www.powershellgallery.com/api/v2/package'
+        type: 'PowerShell'
+        name: 'VirtualDesktopOptimizationTool'
+        runElevated: true
+        runAsSystem: true
+        scriptUri: '${varBaseScriptUri}scripts/Set-VirtualDesktopOptimizations.ps1'
     }
 ]
-
-// Role Definitions & Assignments.
 var varVirtualNetworkJoinRole = useExistingVirtualNetwork ? [
     {
         resourceGroup: split(existingVirtualNetworkResourceId, '/')[4]
@@ -627,43 +646,8 @@ var varVirtualNetworkJoinRole = useExistingVirtualNetwork ? [
         ]
     }
 ] : []
+var varVmSize = 'Standard_D4s_v3'
 
-// Role Definition required for build automation
-//// Image template permissions are currently (1/6/23) not supported in Azure US Government
-var varImageTemplateBuildAutomation = varAzureCloudName == 'AzureCloud' ? [
-    {
-        resourceGroup: varResourceGroupName
-        name: 'Image Template Build Automation'
-        description: 'Allow Image Template build automation using a Managed Identity on an Automation Account.'
-        actions: [
-            'Microsoft.VirtualMachineImages/imageTemplates/run/action'
-            'Microsoft.VirtualMachineImages/imageTemplates/read'
-            'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/versions/read'
-            'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/read'
-            'Microsoft.Compute/locations/publishers/artifacttypes/offers/read'
-            'Microsoft.Compute/locations/publishers/read'
-        ]
-    }
-] : []
-var varImageTemplateContributorRole = [
-    {
-        resourceGroup: varResourceGroupName
-        name: 'Image Template Contributor'
-        description: 'Allow the creation and management of images'
-        actions: [
-            'Microsoft.Compute/galleries/read'
-            'Microsoft.Compute/galleries/images/read'
-            'Microsoft.Compute/galleries/images/versions/read'
-            'Microsoft.Compute/galleries/images/versions/write'
-            'Microsoft.Compute/images/read'
-            'Microsoft.Compute/images/write'
-            'Microsoft.Compute/images/delete'
-        ]
-    }
-]
-
-var varRoles = union(varVirtualNetworkJoinRole, varImageTemplateBuildAutomation, varImageTemplateContributorRole)
-//
 
 // =========== //
 // Deployments //
@@ -672,7 +656,7 @@ var varRoles = union(varVirtualNetworkJoinRole, varImageTemplateBuildAutomation,
 //  Telemetry Deployment.
 resource telemetryDeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
     name: varTelemetryId
-    location: sharedServicesLocation
+    location: deploymentLocation
     properties: {
         mode: 'Incremental'
         template: {
@@ -689,7 +673,7 @@ module avdSharedResourcesRg '../../carml/1.0.0/Microsoft.Resources/resourceGroup
     name: 'Resource-Group_${time}'
     params: {
         name: varResourceGroupName
-        location: sharedServicesLocation
+        location: deploymentLocation
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
 }
@@ -715,7 +699,7 @@ module userAssignedManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/
     name: 'User-Assigned-Managed-Identity_${time}'
     params: {
         name: varUserAssignedManagedIdentityName
-        location: sharedServicesLocation
+        location: deploymentLocation
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
@@ -751,7 +735,7 @@ module gallery '../../carml/1.3.0/Microsoft.Compute/galleries/deploy.bicep' = {
     name: 'Compute-Gallery_${time}'
     params: {
         name: varImageGalleryName
-        location: sharedServicesLocation
+        location: deploymentLocation
         galleryDescription: 'Azure Virtual Desktops Images'
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
@@ -772,7 +756,7 @@ module image '../../carml/1.3.0/Microsoft.Compute/galleries/images/deploy.bicep'
         publisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
         offer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
         sku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
-        location: aibLocation
+        location: deploymentLocation
         hyperVGeneration: varOperatingSystemImageDefinitions[operatingSystemImage].hyperVGeneration
         securityType: imageDefinitionSecurityType
         tags: enableResourceTags ? varCommonResourceTags : {}
@@ -792,7 +776,7 @@ module imageTemplate '../../carml/1.3.0/Microsoft.VirtualMachineImages/imageTemp
         subnetId: !empty(existingVirtualNetworkResourceId) && !empty(existingSubnetName) ? '${existingVirtualNetworkResourceId}/subnets/${existingSubnetName}' : ''
         userMsiName: userAssignedManagedIdentity.outputs.name
         userMsiResourceGroup: userAssignedManagedIdentity.outputs.resourceGroupName
-        location: aibLocation
+        location: deploymentLocation
         imageReplicationRegions: varImageReplicationRegions
         storageAccountType: imageVersionStorageAccountType
         sigImageDefinitionId: image.outputs.resourceId
@@ -820,7 +804,7 @@ module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/dep
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Log-Analytics-Workspace_${time}'
     params: {
-        location: aibLocation
+        location: deploymentLocation
         name: varLogAnalyticsWorkspaceName
         dataRetention: logAnalyticsWorkspaceDataRetention
         useResourcePermissions: true
@@ -837,7 +821,7 @@ module workspaceWait '../../carml/1.0.0/Microsoft.Resources/deploymentScripts/de
     name: 'Log-Analytics-Workspace-Wait_${time}'
     params: {
         name: '${varLogAnalyticsWorkspaceName}_wait_${time}'
-        location: aibLocation
+        location: deploymentLocation
         azPowerShellVersion: '6.2'
         cleanupPreference: 'Always'
         timeout: 'PT10M'
@@ -874,7 +858,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
                     ImageOffer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
                     ImagePublisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
                     ImageSku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
-                    Location: aibLocation
+                    Location: deploymentLocation
                     SubscriptionId: sharedServicesSubId
                     TemplateName: imageTemplate.outputs.name
                     TemplateResourceGroupName: varResourceGroupName
@@ -884,7 +868,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
                 scheduleName: varImageTemplateName
             }
         ]
-        location: sharedServicesLocation
+        location: deploymentLocation
         runbooks: [
             {
                 name: 'aib-build-automation'
@@ -924,7 +908,7 @@ module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/module
     name: 'Automation-Account-Module_${i}_${time}'
     params: {
         name: varModules[i].name
-        location: sharedServicesLocation
+        location: deploymentLocation
         automationAccountName: automationAccount.outputs.name
         uri: varModules[i].uri
     }
@@ -936,7 +920,7 @@ module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/module
     name: 'Storage-Account_${time}'
     params: {
         name: varStorageAccountName
-        location: sharedServicesLocation
+        location: deploymentLocation
         storageAccountSku: storageAccountSku
         storageAccountKind: 'StorageV2'
         blobServices: {
@@ -986,7 +970,7 @@ module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryR
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Scheduled-Query-Rule_${i}_${time}'
     params: {
-        location: sharedServicesLocation
+        location: deploymentLocation
         name: varAlerts[i].name
         alertDescription: varAlerts[i].description
         enabled: true

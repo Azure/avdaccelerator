@@ -17,11 +17,9 @@ As of today, we have a first reference implementation scenario that is one of th
 
 ## Getting Started
 
-Head over to [Getting Started](/workload/docs/getting-started.md) to review prerequisites and deployment options.
-
 ## AVD Accelerator Baseline
 
-Deploy Azure Virtual Desktop (AVD) resources and dependent services for establishing the baseline
+[Getting Started](/workload/docs/getting-started-baseline.md) deploying Azure Virtual Desktop (AVD) resources and dependent services for establishing the baseline
 
 - AVD resources: workspace, two (2) application groups and host pool
 - [Optional]: new virtual network (VNet) with baseline NSG and route table
@@ -36,7 +34,7 @@ Deploy Azure Virtual Desktop (AVD) resources and dependent services for establis
 
 ## Optional: Custom Image Build
 
-Deploy a custom image based on the latest version of the Azure marketplace image to an Azure Compute Gallery. The following images are offered: 
+[Getting Started](/workload/docs/getting-started-custom-image-build.md) deploying a custom image based on the latest version of the Azure marketplace image to an Azure Compute Gallery. The following images are offered: 
  - Windows 10 21H2
  - Windows 10 22H2 (Gen 2)
  - Windows 11 21H2 (Gen 2)
