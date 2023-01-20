@@ -73,7 +73,7 @@ params: {
  
 module avdNetworkingPolicySetDefinition '../../../carml/1.2.0/Microsoft.Authorization/policySetDefinitions/subscription/deploy.bicep' = {
   scope: subscription('${avdWorkloadSubsId}')
-  name: (length('AVD-Network-Policy-Set-Definition-${time}') > 64) ? take('AVD-Network-Policy-Set-Definition-${time}',64) : 'AVD-Network-Policy-Set-Definition-${time}'
+  name: (length('NetPolicySetDefini-${time}') > 64) ? take('AVD-Network-Policy-Set-Definition-${time}',64) : 'AVD-Network-Policy-Set-Definition-${time}'
   params: {
     location: avdManagementPlaneLocation
     name: varCustomPolicySetDefinitions.name
@@ -90,7 +90,7 @@ module avdNetworkingPolicySetDefinition '../../../carml/1.2.0/Microsoft.Authoriz
 // Policy set assignment.
 module avdNetworkingPolicySetDefinitionAssignment '../../../carml/1.2.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = {
   scope: subscription('${avdWorkloadSubsId}')
-  name: (length('AVD-NetPolicySetAssign-${time}') > 64) ? take('AVD-NetPolicySetAssign-${time}',64) : 'AVD-NetPolicySetAssign-${time}'
+  name: (length('NetPolicySetAssign-${time}') > 64) ? take('AVD-NetPolicySetAssign-${time}',64) : 'AVD-NetPolicySetAssign-${time}'
   params: {
     name: (length('${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}') > 64) ? take('${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}',64) : '${varCustomPolicySetDefinitions.name}-${avdWorkloadSubsId}'
     displayName: varCustomPolicySetDefinitions.libSetDefinition.properties.displayName
