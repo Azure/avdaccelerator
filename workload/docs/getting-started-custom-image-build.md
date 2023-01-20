@@ -58,4 +58,4 @@ To learn more about the resource naming used in this accelerator take a look at 
 
 ## Next Steps
 
-Continue with [Custom image deployment (optional)](./deploy-custom-image.md) to build an updated image for your AVD session hosts.
+- Continue with [Custom image deployment](./deploy-custom-image.md) to build an updated image for your AVD session hosts.
