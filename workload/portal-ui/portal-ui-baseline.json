@@ -25,20 +25,12 @@
                             }
                         },
                         {
-                            "name": "avdSharedServices",
-                            "type": "Microsoft.Common.Section",
-                            "visible": true,
-                            "label": "Workload services baseline deployment",
-                            "elements": [
-                                {
-                                    "name": "info",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "options": {
-                                        "text": "Subscription and location selected in this step, will be used to deploy AVD workload Landing Zone resources (Application group, host pool, workspace, key vaults, storage, VMs etc.).",
-                                        "style": "Info"
-                                    }
-                                }
-                            ]
+                            "name": "info",
+                            "type": "Microsoft.Common.InfoBox",
+                            "options": {
+                                "text": "The subscription and region selected below will be used for most of the resources deployed in this solution.",
+                                "style": "Info"
+                            }
                         },
                         {
                             "name": "avdDeploymentScope",
