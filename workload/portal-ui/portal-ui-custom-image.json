@@ -950,7 +950,7 @@
                 "imageDefinitionSecurityType": "[steps('imageManagement').imageDefinitionFeatures.securityType]",
                 "imageGalleryCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.computeGallery, 'none')]",
                 "imageTemplateCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.imageTemplate, 'none')]",
-                "imageVersionDisasterRecoveryLocation": "[if(equals(steps('imageManagement').imageVersion.disasterRecovery, true), steps('imageManagement').imageVersion.disasterRecoveryLocation, '')]",
+                "imageVersionDisasterRecoveryLocation": "[if(equals(steps('imageManagement').imageVersion.disasterRecovery, true), steps('imageManagement').imageVersion.disasterRecoveryLocation.name, '')]",
                 "imageVersionPrimaryLocation": "[steps('imageManagement').imageVersion.primaryLocation]",
                 "imageVersionStorageAccountType": "[steps('imageManagement').imageVersion.storageAccountType]",
                 "logAnalyticsWorkspaceCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.logAnalyticsWorkspace, 'none')]",
