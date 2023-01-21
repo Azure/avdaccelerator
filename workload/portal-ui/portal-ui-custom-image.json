@@ -121,7 +121,7 @@
                                     "name": "primaryLocation",
                                     "type": "Microsoft.Common.LocationSelector",
                                     "label": "Primary storage location",
-                                    "defaultValue": "[steps('basics').resourceScope.location.displayName]",
+                                    "defaultValue": "[steps('basics').resourceScope.location]",
                                     "toolTip": "Select the primary location to store the Image Version. This location should coincide with your AVD session hosts.",
                                     "resourceTypes": [
                                         "Microsoft.Compute/galleries/images/versions"
