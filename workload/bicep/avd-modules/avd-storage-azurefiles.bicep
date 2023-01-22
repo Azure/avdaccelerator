@@ -152,7 +152,7 @@ param fileShareCustomName string
 // =========== //
 // Variable declaration //
 // =========== //
-
+var varStoragePurposeLower = toLower(storagePurpose)
 var varAvdFileShareLogsDiagnostic = [
     'StorageRead'
     'StorageWrite'
@@ -163,7 +163,6 @@ var varAvdFileShareMetricsDiagnostic = [
 ]
 var varFileShareName = useCustomNaming ? fileShareCustomName : '${varStoragePurposeLower}-pc-${deploymentPrefixLowercase}-001'
 var varWrklStoragePrivateEndpointName = 'pe-${varStorageName}-file'
-var varStoragePurposeLower = toLower(storagePurpose)
 var varStoragePurposeLowerPrefix = substring(varStoragePurposeLower, 0,2)
 var varStorageName = useCustomNaming ? '${storageAccountPrefixCustomName}${varStoragePurposeLower}${deploymentPrefixLowercase}${namingUniqueStringSixChar}' : 'stavd${varStoragePurposeLower}${deploymentPrefixLowercase}${namingUniqueStringSixChar}'
 

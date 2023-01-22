@@ -1136,7 +1136,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (varCreateAvdFslogixDeployment && avdDeploySessionHosts && (avdIdentityServiceProvider != 'AAD')) {
     name: 'FslogixStorage-AzureFiles-${time}'
     params: {
-        storagePurpose: 'Fslogix'
+        storagePurpose: 'fslogix'
         fileShareCustomName: 'fslogix-pc-app1-001'
         identityServiceProvider: avdIdentityServiceProvider
         dscAgentPackageLocation: varDscAgentPackageLocation
@@ -1172,7 +1172,6 @@ module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bic
         storageManagedIdentityResourceId: (varCreateAvdFslogixDeployment||varCreateMsixDeployment) ? deployManagedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
         fileShareMultichannel: (contains(fslogixStorageSku, 'Premium_LRS') || contains(fslogixStorageSku, 'Premium_ZRS')) ? true : false
         storageSku: fslogixStorageSku
-        //marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows['winServer_2022_Datacenter']
         marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows[avdOsImage]
         subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${varAvdVnetworkSubnetName}' : existingVnetSubnetResourceId
         useSharedImage: useSharedImage
@@ -1191,7 +1190,7 @@ module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bic
         avdWrklKeyVault
     ]
 }
-/*
+
 // Msix Storage.
 module deployAvdMsixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (varCreateMsixDeployment && avdDeploySessionHosts && (avdIdentityServiceProvider != 'AAD')) {
     name: 'MsixStorage-AzureFiles-${time}'
@@ -1207,10 +1206,8 @@ module deployAvdMsixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep'
         avdCreateOuForStorageString: varCreateOuForStorageString
         managedIdentityClientId: varStorageManagedIdentityClientId
         storageToDomainScript:  varStorageToDomainScript
-        //storageToDomainScriptArgs: varFslogixStorageToDomainScriptArgs
         storageToDomainScriptUri: varStorageToDomainScriptUri
         timeZone: varTimeZones[avdSessionHostLocation]
-        //avdWrklStoragePrivateEndpointName: varAvdWrklStoragePrivateEndpointName
         applicationSecurityGroupResourceId: createAvdVnet ? '${avdNetworking.outputs.avdApplicationSecurityGroupResourceId}' : ''
         computeObjectsRgName: varAvdComputeObjectsRgName
         domainJoinUserName: avdDomainJoinUserName
@@ -1234,10 +1231,8 @@ module deployAvdMsixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep'
         storageManagedIdentityResourceId: (varCreateAvdFslogixDeployment||varCreateMsixDeployment) ? deployManagedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
         fileShareMultichannel: (contains(msixStorageSku, 'Premium_LRS') || contains(msixStorageSku, 'Premium_ZRS')) ? true : false
         storageSku: msixStorageSku
-        //marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows['winServer_2022_Datacenter']
         marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows[avdOsImage]
         subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${varAvdVnetworkSubnetName}' : existingVnetSubnetResourceId
-        //managementVmName: varManagementVmName
         useSharedImage: useSharedImage
         tags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
@@ -1255,7 +1250,7 @@ module deployAvdMsixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep'
         avdWrklKeyVault
     ]
 }
-*/
+
 // Session hosts.
 module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.bicep' = if (avdDeploySessionHosts) {
     name: 'Deploy-and-Configure-AVD-SessionHosts-${time}'
