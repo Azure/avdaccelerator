@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "4350846682485197204"
+      "templateHash": "6339669449367389168"
     }
   },
   "parameters": {
@@ -941,7 +941,7 @@
     "varAvdNetworkObjectsRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdNetworkObjectsRgCustomName'), format('rg-avd-{0}-network', variables('varAvdComputeStorageResourcesNamingStandard')))]",
     "varAvdComputeObjectsRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdComputeObjectsRgCustomName'), format('rg-avd-{0}-pool-compute', variables('varAvdComputeStorageResourcesNamingStandard')))]",
     "varAvdStorageObjectsRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdStorageObjectsRgCustomName'), format('rg-avd-{0}-storage', variables('varAvdComputeStorageResourcesNamingStandard')))]",
-    "varAvdMonitoringRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdMonitoringRgCustomName'), format('rg-avd-{0}-monitoring', variables('varAvdSessionHostLocationAcronym')))]",
+    "varAvdMonitoringRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdMonitoringRgCustomName'), format('rg-avd-{0}-monitoring', variables('varAvdManagementPlaneLocationAcronym')))]",
     "varAvdVnetworkName": "[if(parameters('avdUseCustomNaming'), parameters('avdVnetworkCustomName'), format('vnet-avd-{0}-001', variables('varAvdComputeStorageResourcesNamingStandard')))]",
     "varAvdVnetworkSubnetName": "[if(parameters('avdUseCustomNaming'), parameters('avdVnetworkSubnetCustomName'), format('snet-avd-{0}-001', variables('varAvdComputeStorageResourcesNamingStandard')))]",
     "varAvdNetworksecurityGroupName": "[if(parameters('avdUseCustomNaming'), parameters('avdNetworksecurityGroupCustomName'), format('nsg-avd-{0}-001', variables('varAvdComputeStorageResourcesNamingStandard')))]",
