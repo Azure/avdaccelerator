@@ -8,28 +8,33 @@
             "steps": [
                 {
                     "name": "basics",
-                    "label": "Basics",
+                    "label": "Deployment Basics",
                     "elements": [
                         {
-                            "name": "infoPreReq",
-                            "type": "Microsoft.Common.InfoBox",
-                            "options": {
-                                "text": "PREREQUISITES REQUIRED \n\nThere are prerequisites that must be setup in your Azure environment to successfully deploy this AVD Landing Zone Accelerator. Click here to review the prerequisites in the Getting Started guide.",
-                                "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started-custom-image-build.md",
-                                "style": "Warning"
-                            }
-                        },
-                        {
                             "name": "deploymentInfo",
-                            "type": "Microsoft.Common.TextBlock",
+                            "type": "Microsoft.Common.Section",
                             "visible": true,
-                            "options": {
-                                "text": "The subscription and region selected below will be used for most of the resources deployed in this solution. The replication regions for the image version will be the only exception and those regions will be defined in the next step. The regions listed in the menu below are the only regions that support Azure Image Builder image templates. Please ensure to select the appropriate options for your environment.",
-                                "link": {
-                                    "label": "Click here to learn about the supported Azure Image Builder regions.",
-                                    "uri": "https://learn.microsoft.com/en-us/azure/virtual-machines/image-builder-overview?tabs=azure-powershell#regions"
+                            "label": "Important Information",
+                            "elements": [
+                                {
+                                    "name": "infoPreReq",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "options": {
+                                        "text": "PREREQUISITES REQUIRED \n\nThere are prerequisites that must be setup in your Azure environment to successfully deploy this AVD Landing Zone Accelerator. Click here to review the prerequisites in the Getting Started guide.",
+                                        "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started-custom-image-build.md",
+                                        "style": "Warning"
+                                    }
+                                },
+                                {
+                                    "name": "deploymentInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "options": {
+										"style": "Info",
+                                        "text": "The subscription and region selected below will be used for most of the resources deployed in this solution. The replication regions for the image version will be the only exception and those regions will be defined in the next step. The regions listed in the menu below are the only regions that support Azure Image Builder image templates. Please ensure to select the appropriate options for your environment.",
+                                        "uri": "https://learn.microsoft.com/azure/virtual-machines/image-builder-overview?tabs=azure-powershell#regions"										
+                                    }
                                 }
-                            }
+                            ]
                         },
                         {
                             "name": "resourceScope",
@@ -116,7 +121,7 @@
                                     "name": "primaryLocation",
                                     "type": "Microsoft.Common.LocationSelector",
                                     "label": "Primary storage location",
-                                    "defaultValue": "[steps('basics').resourceScope.location.displayName]",
+                                    "defaultValue": "[steps('basics').resourceScope.location]",
                                     "toolTip": "Select the primary location to store the Image Version. This location should coincide with your AVD session hosts.",
                                     "resourceTypes": [
                                         "Microsoft.Compute/galleries/images/versions"
@@ -945,8 +950,8 @@
                 "imageDefinitionSecurityType": "[steps('imageManagement').imageDefinitionFeatures.securityType]",
                 "imageGalleryCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.computeGallery, 'none')]",
                 "imageTemplateCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.imageTemplate, 'none')]",
-                "imageVersionDisasterRecoveryLocation": "[if(equals(steps('imageManagement').imageVersion.disasterRecovery, true), steps('imageManagement').imageVersion.disasterRecoveryLocation, '')]",
-                "imageVersionPrimaryLocation": "[steps('imageManagement').imageVersion.primaryLocation]",
+                "imageVersionDisasterRecoveryLocation": "[if(equals(steps('imageManagement').imageVersion.disasterRecovery, true), steps('imageManagement').imageVersion.disasterRecoveryLocation.name, '')]",
+                "imageVersionPrimaryLocation": "[steps('imageManagement').imageVersion.primaryLocation.name]",
                 "imageVersionStorageAccountType": "[steps('imageManagement').imageVersion.storageAccountType]",
                 "logAnalyticsWorkspaceCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.logAnalyticsWorkspace, 'none')]",
                 "operatingSystemImage": "[steps('imageManagement').operatingSystem.versionSelection]",
