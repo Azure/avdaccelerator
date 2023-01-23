@@ -4,47 +4,111 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.9.1.41621",
-      "templateHash": "3461495227549313504"
+      "version": "0.12.40.16777",
+      "templateHash": "15976249282457830545"
     }
   },
   "parameters": {
-    "sharedServicesLocation": {
+    "alertsActionGroupCustomName": {
       "type": "string",
-      "defaultValue": "eastus",
+      "defaultValue": "ag-aib",
       "metadata": {
-        "description": "Optional. Location to deploy the resources in this solution, except the image template. (Default: eastus)"
+        "description": "Optional. Custom name for Action Group."
       }
     },
-    "sharedServicesSubId": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. AVD shared services subscription ID, multiple subscriptions scenario."
-      }
-    },
-    "imageVersionDisasterRecoveryLocation": {
+    "alertsDistributionGroup": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Disaster recovery location for Image Version. (Default:\"\")"
+        "description": "Optional. Input the email distribution list for alert notifications when AIB builds succeed or fail."
       }
     },
-    "imageVersionStorageAccountType": {
+    "applicationNameTag": {
       "type": "string",
-      "defaultValue": "Standard_LRS",
+      "defaultValue": "Contoso-App",
       "metadata": {
-        "description": "Optional. Determine the Storage Account Type for the Image Version distributed by the Image Template. (Default: Standard_LRS)"
+        "description": "Optional. Details about the application."
+      }
+    },
+    "automationAccountCustomName": {
+      "type": "string",
+      "defaultValue": "aa-avd",
+      "metadata": {
+        "description": "Optional. Custom name for the Automation Account."
+      }
+    },
+    "buildSchedule": {
+      "type": "string",
+      "defaultValue": "Recurring",
+      "metadata": {
+        "description": "Optional. Determine whether to build the image template one time or check daily for a new marketplace image and auto build when found. (Default: Recurring)"
       },
       "allowedValues": [
-        "Standard_LRS",
-        "Standard_ZRS"
+        "OneTime",
+        "Recurring"
       ]
     },
-    "aibLocation": {
+    "costCenterTag": {
+      "type": "string",
+      "defaultValue": "Contoso-CC",
+      "metadata": {
+        "description": "Optional. Cost center of owner team. (Defualt: Contoso-CC)"
+      }
+    },
+    "criticalityCustomTag": {
+      "type": "string",
+      "defaultValue": "Contoso-Critical",
+      "metadata": {
+        "description": "Optional. Tag value for custom criticality value. (Default: Contoso-Critical)"
+      }
+    },
+    "criticalityTag": {
+      "type": "string",
+      "defaultValue": "Low",
+      "metadata": {
+        "description": "Optional. criticality of each workload. (Default: Low)"
+      },
+      "allowedValues": [
+        "Low",
+        "Medium",
+        "High",
+        "Mission-critical",
+        "Custom"
+      ]
+    },
+    "customNaming": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Determine whether to enable custom naming for the Azure resources. (Default: false)"
+      }
+    },
+    "dataClassificationTag": {
+      "type": "string",
+      "defaultValue": "Non-business",
+      "metadata": {
+        "description": "Optional. Sensitivity of data hosted (Default: Non-business)"
+      },
+      "allowedValues": [
+        "Non-business",
+        "Public",
+        "General",
+        "Confidential",
+        "Highly Confidential"
+      ]
+    },
+    "departmentTag": {
+      "type": "string",
+      "defaultValue": "Contoso-AVD",
+      "metadata": {
+        "description": "Optional. Department that owns the deployment, (Dafult: Contoso-AVD)"
+      }
+    },
+    "deploymentLocation": {
       "type": "string",
       "defaultValue": "eastus",
       "metadata": {
-        "description": "Optional. Azure Image Builder location. (Default: eastus)"
+        "description": "Required. Location to deploy the resources in this solution, except the image template. (Default: eastus)"
       },
       "allowedValues": [
         "australiaeast",
@@ -73,6 +137,8 @@
         "uksouth",
         "ukwest",
         "usgovarizona",
+        "usgoviowa",
+        "usgovtexas",
         "usgovvirginia",
         "westcentralus",
         "westeurope",
@@ -81,16 +147,141 @@
         "westus3"
       ]
     },
-    "buildSchedule": {
-      "type": "string",
-      "defaultValue": "Recurring",
+    "enableMonitoringAlerts": {
+      "type": "bool",
+      "defaultValue": false,
       "metadata": {
-        "description": "Optional. Determine whether to build the image template one time or check daily for a new marketplace image and auto build when found. (Default: Recurring)"
+        "description": "Optional. Set to deploy monitoring and alerts for the build automation (Default: false)."
+      }
+    },
+    "enableResourceTags": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Apply tags on resources and resource groups. (Default: false)"
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable usage and telemetry feedback to Microsoft."
+      }
+    },
+    "environmentTag": {
+      "type": "string",
+      "defaultValue": "Dev",
+      "metadata": {
+        "description": "Optional. Deployment environment of the application, workload. (Default: Dev)"
       },
       "allowedValues": [
-        "OneTime",
-        "Recurring"
+        "Prod",
+        "Dev",
+        "Staging"
       ]
+    },
+    "existingLogAnalyticsWorkspaceResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Existing Azure log analytics workspace resource ID to capture build logs. (Default: )"
+      }
+    },
+    "existingSubnetName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Input the name of the subnet for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: \"\")"
+      }
+    },
+    "existingVirtualNetworkResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Input the resource ID for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: \"\")"
+      }
+    },
+    "imageBuildNameTag": {
+      "type": "string",
+      "defaultValue": "AVD-Image",
+      "metadata": {
+        "description": "Optional. The name of workload for tagging purposes. (Default: AVD-Image)"
+      }
+    },
+    "imageDefinitionCustomName": {
+      "type": "string",
+      "defaultValue": "avd-win11-21h2",
+      "metadata": {
+        "description": "Optional. Custom name for Image Definition. (Default: avd-win11-21h2)"
+      },
+      "maxLength": 64
+    },
+    "imageDefinitionSecurityType": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "metadata": {
+        "description": "Optional. Choose the Security Type of the Image Definition. (Default: Standard)"
+      },
+      "allowedValues": [
+        "Standard",
+        "TrustedLaunch",
+        "ConfidentialVM",
+        "ConfidentialVMSupported"
+      ]
+    },
+    "imageGalleryCustomName": {
+      "type": "string",
+      "defaultValue": "gal_avd_use2_001",
+      "metadata": {
+        "description": "Optional. Custom name for Image Gallery. (Default: gal_avd_use2_001)"
+      },
+      "maxLength": 64
+    },
+    "imageTemplateCustomName": {
+      "type": "string",
+      "defaultValue": "it-avd-win11-22h2",
+      "metadata": {
+        "description": "Optional. Custom name for Image Template. (Default: it-avd-win11-21h2)"
+      },
+      "maxLength": 260
+    },
+    "imageVersionDisasterRecoveryLocation": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Disaster recovery replication location for Image Version. (Default:\"\")"
+      }
+    },
+    "imageVersionPrimaryLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Primary replication location for Image Version. (Default:)"
+      }
+    },
+    "imageVersionStorageAccountType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "metadata": {
+        "description": "Optional. Determine the Storage Account Type for the Image Version distributed by the Image Template. (Default: Standard_LRS)"
+      },
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_ZRS"
+      ]
+    },
+    "logAnalyticsWorkspaceCustomName": {
+      "type": "string",
+      "defaultValue": "log-avd",
+      "metadata": {
+        "description": "Optional. Custom name for the Log Analytics Workspace."
+      }
+    },
+    "logAnalyticsWorkspaceDataRetention": {
+      "type": "int",
+      "defaultValue": 30,
+      "metadata": {
+        "description": "Optional. Set the data retention in the number of days for the Log Analytics Workspace. (Default: 30)"
+      }
     },
     "operatingSystemImage": {
       "type": "string",
@@ -109,220 +300,6 @@
         "win11_22h2_office"
       ]
     },
-    "imageDefinitionSecurityType": {
-      "type": "string",
-      "defaultValue": "Standard",
-      "metadata": {
-        "description": "Optional. Choose the Security Type of the Image Definition. (Default: Standard)"
-      },
-      "allowedValues": [
-        "Standard",
-        "TrustedLaunch",
-        "ConfidentialVM",
-        "ConfidentialVMSupported"
-      ]
-    },
-    "useExistingVirtualNetwork": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Set to deploy Azure Image Builder to existing virtual network. (Default: false)"
-      }
-    },
-    "existingLogAnalyticsWorkspaceResourceId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Existing Azure log analytics workspace resource ID to capture build logs. (Default: )"
-      }
-    },
-    "existingVirtualNetworkResourceId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Input the resource ID for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: \"\")"
-      }
-    },
-    "existingSubnetName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Input the name of the subnet for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: \"\")"
-      }
-    },
-    "rdpShortPath": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Determine whether to enable RDP Short Path for Managed Networks. (Default: false)"
-      }
-    },
-    "screenCaptureProtection": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Determine whether to enable Screen Capture Protection. (Default: false)"
-      }
-    },
-    "logAnalyticsWorkspaceDataRetention": {
-      "type": "int",
-      "defaultValue": 30,
-      "metadata": {
-        "description": "Optional. Set the data retention in the number of days for the Log Analytics Workspace. (Default: 30)"
-      }
-    },
-    "enableMonitoringAlerts": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Set to deploy monitoring and alerts for the build automation (Default: false)."
-      }
-    },
-    "alertsDistributionGroup": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Input the email distribution list for alert notifications when AIB builds succeed or fail."
-      }
-    },
-    "customNaming": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Determine whether to enable custom naming for the Azure resources. (Default: false)"
-      }
-    },
-    "alertsActionGroupCustomName": {
-      "type": "string",
-      "defaultValue": "ag-aib",
-      "metadata": {
-        "description": "Optional. Custom name for Action Group."
-      }
-    },
-    "automationAccountCustomName": {
-      "type": "string",
-      "defaultValue": "aa-avd",
-      "metadata": {
-        "description": "Optional. Custom name for the Automation Account."
-      }
-    },
-    "logAnalyticsWorkspaceCustomName": {
-      "type": "string",
-      "defaultValue": "log-avd",
-      "metadata": {
-        "description": "Optional. Custom name for the Log Analytics Workspace."
-      }
-    },
-    "resourceGroupCustomName": {
-      "type": "string",
-      "defaultValue": "rg-avd-use2-shared-services",
-      "metadata": {
-        "description": "Optional. Custom name for Resource Group. (Default: rg-avd-use2-shared-services)"
-      },
-      "maxLength": 90
-    },
-    "imageGalleryCustomName": {
-      "type": "string",
-      "defaultValue": "gal_avd_use2_001",
-      "metadata": {
-        "description": "Optional. Custom name for Image Gallery. (Default: gal_avd_use2_001)"
-      },
-      "maxLength": 64
-    },
-    "imageDefinitionCustomName": {
-      "type": "string",
-      "defaultValue": "avd-win11-21h2",
-      "metadata": {
-        "description": "Optional. Custom name for Image Definition. (Default: avd-win11-21h2)"
-      },
-      "maxLength": 64
-    },
-    "imageTemplateCustomName": {
-      "type": "string",
-      "defaultValue": "it-avd-win11-22h2",
-      "metadata": {
-        "description": "Optional. Custom name for Image Template. (Default: it-avd-win11-21h2)"
-      },
-      "maxLength": 260
-    },
-    "userAssignedManagedIdentityCustomName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Custom name for User Assigned Identity. (Default: id-avd)"
-      },
-      "maxLength": 128
-    },
-    "enableResourceTags": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Apply tags on resources and resource groups. (Default: false)"
-      }
-    },
-    "imageBuildNameTag": {
-      "type": "string",
-      "defaultValue": "AVD-Image",
-      "metadata": {
-        "description": "Optional. The name of workload for tagging purposes. (Default: AVD-Image)"
-      }
-    },
-    "workloadNameTag": {
-      "type": "string",
-      "defaultValue": "Contoso-Workload",
-      "metadata": {
-        "description": "Optional. Reference to the size of the VM for your workloads (Default: Contoso-Workload)"
-      }
-    },
-    "dataClassificationTag": {
-      "type": "string",
-      "defaultValue": "Non-business",
-      "metadata": {
-        "description": "Optional. Sensitivity of data hosted (Default: Non-business)"
-      },
-      "allowedValues": [
-        "Non-business",
-        "Public",
-        "General",
-        "Confidential",
-        "Highly Confidential"
-      ]
-    },
-    "departmentTag": {
-      "type": "string",
-      "defaultValue": "Contoso-AVD",
-      "metadata": {
-        "description": "Optional. Department that owns the deployment, (Dafult: Contoso-AVD)"
-      }
-    },
-    "criticalityTag": {
-      "type": "string",
-      "defaultValue": "Low",
-      "metadata": {
-        "description": "Optional. criticality of each workload. (Default: Low)"
-      },
-      "allowedValues": [
-        "Low",
-        "Medium",
-        "High",
-        "Mission-critical",
-        "Custom"
-      ]
-    },
-    "criticalityCustomTag": {
-      "type": "string",
-      "defaultValue": "Contoso-Critical",
-      "metadata": {
-        "description": "Optional. Tag value for custom criticality value. (Default: Contoso-Critical)"
-      }
-    },
-    "applicationNameTag": {
-      "type": "string",
-      "defaultValue": "Contoso-App",
-      "metadata": {
-        "description": "Optional. Details about the application."
-      }
-    },
     "operationsTeamTag": {
       "type": "string",
       "defaultValue": "workload-admins@Contoso.com",
@@ -337,24 +314,33 @@
         "description": "Optional. Organizational owner of the AVD deployment. (Default: Contoso-Owner)"
       }
     },
-    "costCenterTag": {
-      "type": "string",
-      "defaultValue": "Contoso-CC",
+    "rdpShortPath": {
+      "type": "bool",
+      "defaultValue": false,
       "metadata": {
-        "description": "Optional. Cost center of owner team. (Defualt: Contoso-CC)"
+        "description": "Optional. Determine whether to enable RDP Short Path for Managed Networks. (Default: false)"
       }
     },
-    "environmentTag": {
+    "resourceGroupCustomName": {
       "type": "string",
-      "defaultValue": "Dev",
+      "defaultValue": "rg-avd-use2-shared-services",
       "metadata": {
-        "description": "Optional. Deployment environment of the application, workload. (Default: Dev)"
+        "description": "Optional. Custom name for Resource Group. (Default: rg-avd-use2-shared-services)"
       },
-      "allowedValues": [
-        "Prod",
-        "Dev",
-        "Staging"
-      ]
+      "maxLength": 90
+    },
+    "screenCaptureProtection": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Determine whether to enable Screen Capture Protection. (Default: false)"
+      }
+    },
+    "sharedServicesSubId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. AVD shared services subscription ID, multiple subscriptions scenario."
+      }
     },
     "time": {
       "type": "string",
@@ -363,26 +349,58 @@
         "description": "Do not modify, used to set unique value for resource deployment."
       }
     },
-    "enableTelemetry": {
+    "useExistingVirtualNetwork": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
-        "description": "Enable usage and telemetry feedback to Microsoft."
+        "description": "Optional. Set to deploy Azure Image Builder to existing virtual network. (Default: false)"
+      }
+    },
+    "userAssignedManagedIdentityCustomName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Custom name for User Assigned Identity. (Default: id-avd)"
+      },
+      "maxLength": 128
+    },
+    "workloadNameTag": {
+      "type": "string",
+      "defaultValue": "Contoso-Workload",
+      "metadata": {
+        "description": "Optional. Reference to the size of the VM for your workloads (Default: Contoso-Workload)"
       }
     }
   },
   "variables": {
-    "varAzureCloudName": "[environment().name]",
     "varActionGroupName": "[if(parameters('customNaming'), parameters('alertsActionGroupCustomName'), format('ag-avd-{0}', variables('varNamingStandard')))]",
-    "varNamingStandard": "[format('{0}', variables('varLocationAcronym'))]",
-    "varLocationLowercase": "[toLower(parameters('sharedServicesLocation'))]",
-    "varResourceGroupName": "[if(parameters('customNaming'), parameters('resourceGroupCustomName'), format('rg-avd-{0}-shared-services', variables('varNamingStandard')))]",
-    "varImageGalleryName": "[if(parameters('customNaming'), parameters('imageGalleryCustomName'), format('gal_avd_{0}', variables('varNamingStandard')))]",
-    "varUserAssignedManagedIdentityName": "[if(parameters('customNaming'), parameters('userAssignedManagedIdentityCustomName'), format('id-aib-{0}', variables('varNamingStandard')))]",
-    "varLogAnalyticsWorkspaceName": "[if(parameters('customNaming'), parameters('logAnalyticsWorkspaceCustomName'), format('log-avd-{0}', variables('varNamingStandard')))]",
-    "varImageDefinitionName": "[if(parameters('customNaming'), parameters('imageDefinitionCustomName'), format('avd-{0}', parameters('operatingSystemImage')))]",
-    "varImageTemplateName": "[if(parameters('customNaming'), parameters('imageTemplateCustomName'), format('it-avd-{0}', parameters('operatingSystemImage')))]",
+    "varAlerts": "[if(parameters('enableMonitoringAlerts'), createArray(createObject('name', 'Azure Image Builder - Build Failure', 'description', 'Sends an error alert when a build fails on an image template for Azure Image Builder.', 'severity', 0, 'evaluationFrequency', 'PT5M', 'windowSize', 'PT5M', 'criterias', createObject('allOf', createArray(createObject('query', 'AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| where ResultDescription has \"Image Template build failed\"', 'timeAggregation', 'Count', 'dimensions', createArray(createObject('name', 'ResultDescription', 'operator', 'Include', 'values', createArray('*'))), 'operator', 'GreaterThanOrEqual', 'threshold', 1, 'failingPeriods', createObject('numberOfEvaluationPeriods', 1, 'minFailingPeriodsToAlert', 1))))), createObject('name', 'Azure Image Builder - Build Success', 'description', 'Sends an informational alert when a build succeeds on an image template for Azure Image Builder.', 'severity', 3, 'evaluationFrequency', 'PT5M', 'windowSize', 'PT5M', 'criterias', createObject('allOf', createArray(createObject('query', 'AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| where ResultDescription has \"Image Template build succeeded\"', 'timeAggregation', 'Count', 'dimensions', createArray(createObject('name', 'ResultDescription', 'operator', 'Include', 'values', createArray('*'))), 'operator', 'GreaterThanOrEqual', 'threshold', 1, 'failingPeriods', createObject('numberOfEvaluationPeriods', 1, 'minFailingPeriodsToAlert', 1)))))), createArray())]",
     "varAutomationAccountName": "[if(parameters('customNaming'), parameters('automationAccountCustomName'), format('aa-avd-{0}', variables('varNamingStandard')))]",
+    "varAzureCloudName": "[environment().name]",
+    "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
+    "varCommonResourceTags": "[if(parameters('enableResourceTags'), createObject('ImageBuildName', parameters('imageBuildNameTag'), 'WorkloadName', parameters('workloadNameTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('criticalityTag'), 'Custom'), parameters('criticalityCustomTag'), parameters('criticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'OpsTeam', parameters('operationsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag'), 'Environment', parameters('environmentTag')), createObject())]",
+    "varCustomizationSteps": "[union(variables('varScriptCustomizers'), variables('varRemainingCustomizers'))]",
+    "varImageDefinitionName": "[if(parameters('customNaming'), parameters('imageDefinitionCustomName'), format('avd-{0}', parameters('operatingSystemImage')))]",
+    "varImageGalleryName": "[if(parameters('customNaming'), parameters('imageGalleryCustomName'), format('gal_avd_{0}', variables('varNamingStandard')))]",
+    "varImageReplicationRegions": "[if(empty(parameters('imageVersionDisasterRecoveryLocation')), createArray(parameters('imageVersionPrimaryLocation')), createArray(parameters('imageVersionPrimaryLocation'), parameters('imageVersionDisasterRecoveryLocation')))]",
+    "varImageTemplateBuildAutomation": "[if(equals(variables('varAzureCloudName'), 'AzureCloud'), createArray(createObject('resourceGroup', variables('varResourceGroupName'), 'name', 'Image Template Build Automation', 'description', 'Allow Image Template build automation using a Managed Identity on an Automation Account.', 'actions', createArray('Microsoft.VirtualMachineImages/imageTemplates/run/action', 'Microsoft.VirtualMachineImages/imageTemplates/read', 'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/versions/read', 'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/read', 'Microsoft.Compute/locations/publishers/artifacttypes/offers/read', 'Microsoft.Compute/locations/publishers/read'))), createArray())]",
+    "varImageTemplateContributorRole": [
+      {
+        "resourceGroup": "[variables('varResourceGroupName')]",
+        "name": "Image Template Contributor",
+        "description": "Allow the creation and management of images",
+        "actions": [
+          "Microsoft.Compute/galleries/read",
+          "Microsoft.Compute/galleries/images/read",
+          "Microsoft.Compute/galleries/images/versions/read",
+          "Microsoft.Compute/galleries/images/versions/write",
+          "Microsoft.Compute/images/read",
+          "Microsoft.Compute/images/write",
+          "Microsoft.Compute/images/delete"
+        ]
+      }
+    ],
+    "varImageTemplateName": "[if(parameters('customNaming'), parameters('imageTemplateCustomName'), format('it-avd-{0}', parameters('operatingSystemImage')))]",
     "varLocationAcronym": "[variables('varLocationAcronyms')[variables('varLocationLowercase')]]",
     "varLocationAcronyms": {
       "australiacentral": "auc",
@@ -433,65 +451,19 @@
       "westus2": "wus2",
       "westus3": "wus3"
     },
-    "varTimeZone": "[variables('varTimeZones')[parameters('aibLocation')]]",
-    "varTimeZones": {
-      "australiacentral": "AUS Eastern Standard time",
-      "australiacentral2": "AUS Eastern Standard time",
-      "australiaeast": "AUS Eastern Standard time",
-      "australiasoutheast": "AUS Eastern Standard time",
-      "brazilsouth": "E. South America Standard time",
-      "brazilsoutheast": "E. South America Standard time",
-      "canadacentral": "Eastern Standard time",
-      "canadaeast": "Eastern Standard time",
-      "centralindia": "India Standard time",
-      "centralus": "Central Standard time",
-      "chinaeast": "China Standard time",
-      "chinaeast2": "China Standard time",
-      "chinanorth": "China Standard time",
-      "chinanorth2": "China Standard time",
-      "eastasia": "China Standard time",
-      "eastus": "Eastern Standard time",
-      "eastus2": "Eastern Standard time",
-      "francecentral": "Central Europe Standard time",
-      "francesouth": "Central Europe Standard time",
-      "germanynorth": "Central Europe Standard time",
-      "germanywestcentral": "Central Europe Standard time",
-      "japaneast": "Tokyo Standard time",
-      "japanwest": "Tokyo Standard time",
-      "jioindiacentral": "India Standard time",
-      "jioindiawest": "India Standard time",
-      "koreacentral": "Korea Standard time",
-      "koreasouth": "Korea Standard time",
-      "northcentralus": "Central Standard time",
-      "northeurope": "GMT Standard time",
-      "norwayeast": "Central Europe Standard time",
-      "norwaywest": "Central Europe Standard time",
-      "southafricanorth": "South Africa Standard time",
-      "southafricawest": "South Africa Standard time",
-      "southcentralus": "Central Standard time",
-      "southindia": "India Standard time",
-      "southeastasia": "Singapore Standard time",
-      "swedencentral": "Central Europe Standard time",
-      "switzerlandnorth": "Central Europe Standard time",
-      "switzerlandwest": "Central Europe Standard time",
-      "uaecentral": "Arabian Standard time",
-      "uaenorth": "Arabian Standard time",
-      "uksouth": "GMT Standard time",
-      "ukwest": "GMT Standard time",
-      "usgovarizona": "Mountain Standard time",
-      "usgoviowa": "Central Standard time",
-      "usgovtexas": "Central Standard time",
-      "usgovvirginia": "Eastern Standard time",
-      "westcentralus": "Mountain Standard time",
-      "westeurope": "Central Europe Standard time",
-      "westindia": "India Standard time",
-      "westus": "Pacific Standard time",
-      "westus2": "Pacific Standard time",
-      "westus3": "Mountain Standard time"
-    },
-    "varCommonResourceTags": "[if(parameters('enableResourceTags'), createObject('ImageBuildName', parameters('imageBuildNameTag'), 'WorkloadName', parameters('workloadNameTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('criticalityTag'), 'Custom'), parameters('criticalityCustomTag'), parameters('criticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'OpsTeam', parameters('operationsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag'), 'Environment', parameters('environmentTag')), createObject())]",
-    "varImageReplicationRegions": "[if(empty(parameters('imageVersionDisasterRecoveryLocation')), createArray(parameters('sharedServicesLocation')), createArray(parameters('sharedServicesLocation'), parameters('imageVersionDisasterRecoveryLocation')))]",
-    "varVmSize": "Standard_D4s_v3",
+    "varLocationLowercase": "[toLower(parameters('deploymentLocation'))]",
+    "varLogAnalyticsWorkspaceName": "[if(parameters('customNaming'), parameters('logAnalyticsWorkspaceCustomName'), format('log-avd-{0}', variables('varNamingStandard')))]",
+    "varModules": [
+      {
+        "name": "Az.Accounts",
+        "uri": "https://www.powershellgallery.com/api/v2/package"
+      },
+      {
+        "name": "Az.ImageBuilder",
+        "uri": "https://www.powershellgallery.com/api/v2/package"
+      }
+    ],
+    "varNamingStandard": "[format('{0}', variables('varLocationAcronym'))]",
     "varOperatingSystemImageDefinitions": {
       "win10_21h2": {
         "osType": "Windows",
@@ -566,20 +538,7 @@
         "version": "latest"
       }
     },
-    "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
-    "varTelemetryId": "[format('pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-{0}', parameters('sharedServicesLocation'))]",
     "varRdpShortPathCustomizer": "[if(parameters('rdpShortPath'), createArray(createObject('type', 'PowerShell', 'name', 'rdpShortPath', 'runElevated', true(), 'runAsSystem', true(), 'scriptUri', format('{0}scripts/Set-RdpShortpath.ps1', variables('varBaseScriptUri')))), createArray())]",
-    "varScreenCaptureProtectionCustomizer": "[if(parameters('screenCaptureProtection'), createArray(createObject('type', 'PowerShell', 'name', 'screenCaptureProtection', 'runElevated', true(), 'runAsSystem', true(), 'scriptUri', format('{0}scripts/Set-ScreenCaptureProtection.ps1', variables('varBaseScriptUri')))), createArray())]",
-    "varVdotCustomizer": [
-      {
-        "type": "PowerShell",
-        "name": "VirtualDesktopOptimizationTool",
-        "runElevated": true,
-        "runAsSystem": true,
-        "scriptUri": "[format('{0}scripts/Set-VirtualDesktopOptimizations.ps1', variables('varBaseScriptUri'))]"
-      }
-    ],
-    "varScriptCustomizers": "[union(variables('varRdpShortPathCustomizer'), variables('varScreenCaptureProtectionCustomizer'), variables('varVdotCustomizer'))]",
     "varRemainingCustomizers": [
       {
         "type": "WindowsRestart",
@@ -625,37 +584,79 @@
         "restarttimeout": "10m"
       }
     ],
-    "varCustomizationSteps": "[union(variables('varScriptCustomizers'), variables('varRemainingCustomizers'))]",
-    "varAlerts": "[if(parameters('enableMonitoringAlerts'), createArray(createObject('name', 'Azure Image Builder - Build Failure', 'description', 'Sends an error alert when a build fails on an image template for Azure Image Builder.', 'severity', 0, 'evaluationFrequency', 'PT5M', 'windowSize', 'PT5M', 'criterias', createObject('allOf', createArray(createObject('query', 'AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| where ResultDescription has \"Image Template build failed\"', 'timeAggregation', 'Count', 'dimensions', createArray(createObject('name', 'ResultDescription', 'operator', 'Include', 'values', createArray('*'))), 'operator', 'GreaterThanOrEqual', 'threshold', 1, 'failingPeriods', createObject('numberOfEvaluationPeriods', 1, 'minFailingPeriodsToAlert', 1))))), createObject('name', 'Azure Image Builder - Build Success', 'description', 'Sends an informational alert when a build succeeds on an image template for Azure Image Builder.', 'severity', 3, 'evaluationFrequency', 'PT5M', 'windowSize', 'PT5M', 'criterias', createObject('allOf', createArray(createObject('query', 'AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| where ResultDescription has \"Image Template build succeeded\"', 'timeAggregation', 'Count', 'dimensions', createArray(createObject('name', 'ResultDescription', 'operator', 'Include', 'values', createArray('*'))), 'operator', 'GreaterThanOrEqual', 'threshold', 1, 'failingPeriods', createObject('numberOfEvaluationPeriods', 1, 'minFailingPeriodsToAlert', 1)))))), createArray())]",
-    "varModules": [
+    "varResourceGroupName": "[if(parameters('customNaming'), parameters('resourceGroupCustomName'), format('rg-avd-{0}-shared-services', variables('varNamingStandard')))]",
+    "varRoles": "[union(variables('varVirtualNetworkJoinRole'), variables('varImageTemplateBuildAutomation'), variables('varImageTemplateContributorRole'))]",
+    "varScreenCaptureProtectionCustomizer": "[if(parameters('screenCaptureProtection'), createArray(createObject('type', 'PowerShell', 'name', 'screenCaptureProtection', 'runElevated', true(), 'runAsSystem', true(), 'scriptUri', format('{0}scripts/Set-ScreenCaptureProtection.ps1', variables('varBaseScriptUri')))), createArray())]",
+    "varScriptCustomizers": "[union(variables('varRdpShortPathCustomizer'), variables('varScreenCaptureProtectionCustomizer'), variables('varVdotCustomizer'))]",
+    "varTelemetryId": "[format('pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-{0}', parameters('deploymentLocation'))]",
+    "varTimeZone": "[variables('varTimeZones')[parameters('deploymentLocation')]]",
+    "varTimeZones": {
+      "australiacentral": "AUS Eastern Standard time",
+      "australiacentral2": "AUS Eastern Standard time",
+      "australiaeast": "AUS Eastern Standard time",
+      "australiasoutheast": "AUS Eastern Standard time",
+      "brazilsouth": "E. South America Standard time",
+      "brazilsoutheast": "E. South America Standard time",
+      "canadacentral": "Eastern Standard time",
+      "canadaeast": "Eastern Standard time",
+      "centralindia": "India Standard time",
+      "centralus": "Central Standard time",
+      "chinaeast": "China Standard time",
+      "chinaeast2": "China Standard time",
+      "chinanorth": "China Standard time",
+      "chinanorth2": "China Standard time",
+      "eastasia": "China Standard time",
+      "eastus": "Eastern Standard time",
+      "eastus2": "Eastern Standard time",
+      "francecentral": "Central Europe Standard time",
+      "francesouth": "Central Europe Standard time",
+      "germanynorth": "Central Europe Standard time",
+      "germanywestcentral": "Central Europe Standard time",
+      "japaneast": "Tokyo Standard time",
+      "japanwest": "Tokyo Standard time",
+      "jioindiacentral": "India Standard time",
+      "jioindiawest": "India Standard time",
+      "koreacentral": "Korea Standard time",
+      "koreasouth": "Korea Standard time",
+      "northcentralus": "Central Standard time",
+      "northeurope": "GMT Standard time",
+      "norwayeast": "Central Europe Standard time",
+      "norwaywest": "Central Europe Standard time",
+      "southafricanorth": "South Africa Standard time",
+      "southafricawest": "South Africa Standard time",
+      "southcentralus": "Central Standard time",
+      "southindia": "India Standard time",
+      "southeastasia": "Singapore Standard time",
+      "swedencentral": "Central Europe Standard time",
+      "switzerlandnorth": "Central Europe Standard time",
+      "switzerlandwest": "Central Europe Standard time",
+      "uaecentral": "Arabian Standard time",
+      "uaenorth": "Arabian Standard time",
+      "uksouth": "GMT Standard time",
+      "ukwest": "GMT Standard time",
+      "usgovarizona": "Mountain Standard time",
+      "usgoviowa": "Central Standard time",
+      "usgovtexas": "Central Standard time",
+      "usgovvirginia": "Eastern Standard time",
+      "westcentralus": "Mountain Standard time",
+      "westeurope": "Central Europe Standard time",
+      "westindia": "India Standard time",
+      "westus": "Pacific Standard time",
+      "westus2": "Pacific Standard time",
+      "westus3": "Mountain Standard time"
+    },
+    "varUserAssignedManagedIdentityName": "[if(parameters('customNaming'), parameters('userAssignedManagedIdentityCustomName'), format('id-aib-{0}', variables('varNamingStandard')))]",
+    "varVdotCustomizer": [
       {
-        "name": "Az.Accounts",
-        "uri": "https://www.powershellgallery.com/api/v2/package"
-      },
-      {
-        "name": "Az.ImageBuilder",
-        "uri": "https://www.powershellgallery.com/api/v2/package"
+        "type": "PowerShell",
+        "name": "VirtualDesktopOptimizationTool",
+        "runElevated": true,
+        "runAsSystem": true,
+        "scriptUri": "[format('{0}scripts/Set-VirtualDesktopOptimizations.ps1', variables('varBaseScriptUri'))]"
       }
     ],
     "varVirtualNetworkJoinRole": "[if(parameters('useExistingVirtualNetwork'), createArray(createObject('resourceGroup', split(parameters('existingVirtualNetworkResourceId'), '/')[4], 'name', 'Virtual Network Join', 'description', 'Allow resources to join a subnet', 'actions', createArray('Microsoft.Network/virtualNetworks/read', 'Microsoft.Network/virtualNetworks/subnets/read', 'Microsoft.Network/virtualNetworks/subnets/join/action'))), createArray())]",
-    "varImageTemplateBuildAutomation": "[if(equals(variables('varAzureCloudName'), 'AzureCloud'), createArray(createObject('resourceGroup', variables('varResourceGroupName'), 'name', 'Image Template Build Automation', 'description', 'Allow Image Template build automation using a Managed Identity on an Automation Account.', 'actions', createArray('Microsoft.VirtualMachineImages/imageTemplates/run/action', 'Microsoft.VirtualMachineImages/imageTemplates/read', 'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/versions/read', 'Microsoft.Compute/locations/publishers/artifacttypes/offers/skus/read', 'Microsoft.Compute/locations/publishers/artifacttypes/offers/read', 'Microsoft.Compute/locations/publishers/read'))), createArray())]",
-    "varImageTemplateContributorRole": [
-      {
-        "resourceGroup": "[variables('varResourceGroupName')]",
-        "name": "Image Template Contributor",
-        "description": "Allow the creation and management of images",
-        "actions": [
-          "Microsoft.Compute/galleries/read",
-          "Microsoft.Compute/galleries/images/read",
-          "Microsoft.Compute/galleries/images/versions/read",
-          "Microsoft.Compute/galleries/images/versions/write",
-          "Microsoft.Compute/images/read",
-          "Microsoft.Compute/images/write",
-          "Microsoft.Compute/images/delete"
-        ]
-      }
-    ],
-    "varRoles": "[union(variables('varVirtualNetworkJoinRole'), variables('varImageTemplateBuildAutomation'), variables('varImageTemplateContributorRole'))]"
+    "varVmSize": "Standard_D4s_v3"
   },
   "resources": [
     {
@@ -663,7 +664,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2021-04-01",
       "name": "[variables('varTelemetryId')]",
-      "location": "[parameters('sharedServicesLocation')]",
+      "location": "[parameters('deploymentLocation')]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -689,7 +690,7 @@
             "value": "[variables('varResourceGroupName')]"
           },
           "location": {
-            "value": "[parameters('sharedServicesLocation')]"
+            "value": "[parameters('deploymentLocation')]"
           },
           "tags": {
             "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
@@ -701,8 +702,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "14783688509579789983"
+              "version": "0.12.40.16777",
+              "templateHash": "14371000484120805163"
             }
           },
           "parameters": {
@@ -780,8 +781,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "10450840011999083691"
+                      "version": "0.12.40.16777",
+                      "templateHash": "480946558336396542"
                     }
                   },
                   "parameters": {
@@ -877,8 +878,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "16928789004797899732"
+                      "version": "0.12.40.16777",
+                      "templateHash": "10287774166509004715"
                     }
                   },
                   "parameters": {
@@ -1150,8 +1151,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "9481140246360261895"
+              "version": "0.12.40.16777",
+              "templateHash": "14905381042805460898"
             }
           },
           "parameters": {
@@ -1274,7 +1275,7 @@
             "value": "[variables('varUserAssignedManagedIdentityName')]"
           },
           "location": {
-            "value": "[parameters('sharedServicesLocation')]"
+            "value": "[parameters('deploymentLocation')]"
           },
           "tags": {
             "value": "[if(parameters('enableResourceTags'), variables('varCommonResourceTags'), createObject())]"
@@ -1286,8 +1287,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "8698373901450909994"
+              "version": "0.12.40.16777",
+              "templateHash": "109459918124135444"
             }
           },
           "parameters": {
@@ -1378,8 +1379,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "14219231684130369343"
+                      "version": "0.12.40.16777",
+                      "templateHash": "17666925374910611943"
                     }
                   },
                   "resources": []
@@ -1416,8 +1417,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "8417334281874654716"
+                      "version": "0.12.40.16777",
+                      "templateHash": "7063219950530784819"
                     }
                   },
                   "parameters": {
@@ -1490,14 +1491,14 @@
             },
             "principalId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))).principalId]",
+              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), '2018-11-30').principalId]",
               "metadata": {
                 "description": "The principal ID of the user assigned identity"
               }
             },
             "clientId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))).clientId]",
+              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), '2018-11-30').clientId]",
               "metadata": {
                 "description": "The client ID of the user assigned identity"
               }
@@ -1533,10 +1534,10 @@
         "mode": "Incremental",
         "parameters": {
           "roleDefinitionIdOrName": {
-            "value": "[reference(subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Role-Definition_{0}_{1}', range(0, length(variables('varRoles')))[range(0, length(variables('varRoles')))[copyIndex()]], parameters('time')))).outputs.resourceId.value]"
+            "value": "[reference(subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Role-Definition_{0}_{1}', range(0, length(variables('varRoles')))[range(0, length(variables('varRoles')))[copyIndex()]], parameters('time'))), '2020-10-01').outputs.resourceId.value]"
           },
           "principalId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time')))).outputs.principalId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time'))), '2020-10-01').outputs.principalId.value]"
           },
           "principalType": {
             "value": "ServicePrincipal"
@@ -1548,8 +1549,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "9859371193324748216"
+              "version": "0.12.40.16777",
+              "templateHash": "9412286705087142511"
             }
           },
           "parameters": {
@@ -2003,7 +2004,7 @@
             "value": "Contributor"
           },
           "principalId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time')))).outputs.principalId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time'))), '2020-10-01').outputs.principalId.value]"
           },
           "principalType": {
             "value": "ServicePrincipal"
@@ -2015,8 +2016,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "9859371193324748216"
+              "version": "0.12.40.16777",
+              "templateHash": "9412286705087142511"
             }
           },
           "parameters": {
@@ -2468,7 +2469,7 @@
             "value": "[variables('varImageGalleryName')]"
           },
           "location": {
-            "value": "[parameters('sharedServicesLocation')]"
+            "value": "[parameters('deploymentLocation')]"
           },
           "galleryDescription": {
             "value": "Azure Virtual Desktops Images"
@@ -2483,8 +2484,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "12731249912316536935"
+              "version": "0.12.40.16777",
+              "templateHash": "14397254289915009110"
             }
           },
           "parameters": {
@@ -2642,8 +2643,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "7892851158577114860"
+                      "version": "0.12.40.16777",
+                      "templateHash": "12027616316044904819"
                     }
                   },
                   "parameters": {
@@ -2832,8 +2833,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "5981290112062642089"
+                      "version": "0.12.40.16777",
+                      "templateHash": "14849269997372505808"
                     }
                   },
                   "parameters": {
@@ -3005,8 +3006,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "2817078292358730346"
+                              "version": "0.12.40.16777",
+                              "templateHash": "12885985551814078207"
                             }
                           },
                           "parameters": {
@@ -3255,8 +3256,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "10495842637943511695"
+                      "version": "0.12.40.16777",
+                      "templateHash": "429157153520114264"
                     }
                   },
                   "parameters": {
@@ -3567,8 +3568,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "7947699355204941196"
+                              "version": "0.12.40.16777",
+                              "templateHash": "18290663259485060426"
                             }
                           },
                           "parameters": {
@@ -3787,7 +3788,7 @@
         "mode": "Incremental",
         "parameters": {
           "galleryName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Compute-Gallery_{0}', parameters('time')))).outputs.name.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Compute-Gallery_{0}', parameters('time'))), '2020-10-01').outputs.name.value]"
           },
           "name": {
             "value": "[variables('varImageDefinitionName')]"
@@ -3808,7 +3809,7 @@
             "value": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].sku]"
           },
           "location": {
-            "value": "[parameters('aibLocation')]"
+            "value": "[parameters('deploymentLocation')]"
           },
           "hyperVGeneration": {
             "value": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].hyperVGeneration]"
@@ -3826,8 +3827,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "10495842637943511695"
+              "version": "0.12.40.16777",
+              "templateHash": "429157153520114264"
             }
           },
           "parameters": {
@@ -4138,8 +4139,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "7947699355204941196"
+                      "version": "0.12.40.16777",
+                      "templateHash": "18290663259485060426"
                     }
                   },
                   "parameters": {
@@ -4328,13 +4329,13 @@
             "value": "[if(and(not(empty(parameters('existingVirtualNetworkResourceId'))), not(empty(parameters('existingSubnetName')))), format('{0}/subnets/{1}', parameters('existingVirtualNetworkResourceId'), parameters('existingSubnetName')), '')]"
           },
           "userMsiName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time')))).outputs.name.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time'))), '2020-10-01').outputs.name.value]"
           },
           "userMsiResourceGroup": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time')))).outputs.resourceGroupName.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time'))), '2020-10-01').outputs.resourceGroupName.value]"
           },
           "location": {
-            "value": "[parameters('aibLocation')]"
+            "value": "[parameters('deploymentLocation')]"
           },
           "imageReplicationRegions": {
             "value": "[variables('varImageReplicationRegions')]"
@@ -4343,7 +4344,7 @@
             "value": "[parameters('imageVersionStorageAccountType')]"
           },
           "sigImageDefinitionId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Definition_{0}', parameters('time')))).outputs.resourceId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Definition_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value]"
           },
           "vmSize": {
             "value": "[variables('varVmSize')]"
@@ -4370,8 +4371,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "7536271891755774489"
+              "version": "0.12.40.16777",
+              "templateHash": "1039773322430027720"
             }
           },
           "parameters": {
@@ -4708,8 +4709,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "11641969475530404220"
+                      "version": "0.12.40.16777",
+                      "templateHash": "16291747920494961943"
                     }
                   },
                   "parameters": {
@@ -4891,7 +4892,7 @@
         "mode": "Incremental",
         "parameters": {
           "location": {
-            "value": "[parameters('aibLocation')]"
+            "value": "[parameters('deploymentLocation')]"
           },
           "name": {
             "value": "[variables('varLogAnalyticsWorkspaceName')]"
@@ -4912,8 +4913,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "8395107343120616209"
+              "version": "0.12.40.16777",
+              "templateHash": "13231327832909185929"
             }
           },
           "parameters": {
@@ -5110,10 +5111,10 @@
             },
             "diagnosticLogCategoriesToEnable": {
               "type": "array",
-              "defaultValue": [
+              "allowedValues": [
                 "Audit"
               ],
-              "allowedValues": [
+              "defaultValue": [
                 "Audit"
               ],
               "metadata": {
@@ -5122,10 +5123,10 @@
             },
             "diagnosticMetricsToEnable": {
               "type": "array",
-              "defaultValue": [
+              "allowedValues": [
                 "AllMetrics"
               ],
-              "allowedValues": [
+              "defaultValue": [
                 "AllMetrics"
               ],
               "metadata": {
@@ -5277,8 +5278,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "17648491917506894148"
+                      "version": "0.12.40.16777",
+                      "templateHash": "5143271088180555675"
                     }
                   },
                   "parameters": {
@@ -5425,8 +5426,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "7849081054952883324"
+                      "version": "0.12.40.16777",
+                      "templateHash": "13334440349200766786"
                     }
                   },
                   "parameters": {
@@ -5559,8 +5560,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "8135548965741831117"
+                      "version": "0.12.40.16777",
+                      "templateHash": "13048683144445551749"
                     }
                   },
                   "parameters": {
@@ -5702,8 +5703,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "17813271919857514520"
+                      "version": "0.12.40.16777",
+                      "templateHash": "7401659886726985929"
                     }
                   },
                   "parameters": {
@@ -5907,8 +5908,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "6548843704614351376"
+                      "version": "0.12.40.16777",
+                      "templateHash": "1046196110663983352"
                     }
                   },
                   "parameters": {
@@ -6138,8 +6139,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "178727228200358835"
+                      "version": "0.12.40.16777",
+                      "templateHash": "6760594650998879915"
                     }
                   },
                   "parameters": {
@@ -6297,8 +6298,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "5361545670942738292"
+                      "version": "0.12.40.16777",
+                      "templateHash": "4735967619583694769"
                     }
                   },
                   "parameters": {
@@ -6443,7 +6444,7 @@
             },
             "logAnalyticsWorkspaceId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('name'))).customerId]",
+              "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('name')), '2021-06-01').customerId]",
               "metadata": {
                 "description": "The ID associated with the workspace."
               }
@@ -6479,7 +6480,7 @@
             "value": "[format('{0}_wait_{1}', variables('varLogAnalyticsWorkspaceName'), parameters('time'))]"
           },
           "location": {
-            "value": "[parameters('aibLocation')]"
+            "value": "[parameters('deploymentLocation')]"
           },
           "azPowerShellVersion": {
             "value": "6.2"
@@ -6500,8 +6501,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "16430087813232254414"
+              "version": "0.12.40.16777",
+              "templateHash": "951879872069765680"
             }
           },
           "parameters": {
@@ -6721,8 +6722,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "14219231684130369343"
+                      "version": "0.12.40.16777",
+                      "templateHash": "17666925374910611943"
                     }
                   },
                   "resources": []
@@ -6790,14 +6791,14 @@
             "value": [
               {
                 "parameters": {
-                  "ClientId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time')))).outputs.clientId.value]",
+                  "ClientId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time'))), '2020-10-01').outputs.clientId.value]",
                   "EnvironmentName": "[variables('varAzureCloudName')]",
                   "ImageOffer": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].offer]",
                   "ImagePublisher": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].publisher]",
                   "ImageSku": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].sku]",
-                  "Location": "[parameters('aibLocation')]",
+                  "Location": "[parameters('deploymentLocation')]",
                   "SubscriptionId": "[parameters('sharedServicesSubId')]",
-                  "TemplateName": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Template_{0}', parameters('time')))).outputs.name.value]",
+                  "TemplateName": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Template_{0}', parameters('time'))), '2020-10-01').outputs.name.value]",
                   "TemplateResourceGroupName": "[variables('varResourceGroupName')]",
                   "TenantId": "[subscription().tenantId]"
                 },
@@ -6807,7 +6808,7 @@
             ]
           },
           "location": {
-            "value": "[parameters('sharedServicesLocation')]"
+            "value": "[parameters('deploymentLocation')]"
           },
           "runbooks": {
             "value": [
@@ -6843,7 +6844,7 @@
           },
           "userAssignedIdentities": {
             "value": {
-              "[format('{0}', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time')))).outputs.resourceId.value)]": {}
+              "[format('{0}', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity_{0}', parameters('time'))), '2020-10-01').outputs.resourceId.value)]": {}
             }
           }
         },
@@ -6853,8 +6854,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "8941018540570129333"
+              "version": "0.12.40.16777",
+              "templateHash": "14733519058203055817"
             }
           },
           "parameters": {
@@ -7078,12 +7079,12 @@
             },
             "diagnosticLogCategoriesToEnable": {
               "type": "array",
-              "defaultValue": [
+              "allowedValues": [
                 "JobLogs",
                 "JobStreams",
                 "DscNodeStatus"
               ],
-              "allowedValues": [
+              "defaultValue": [
                 "JobLogs",
                 "JobStreams",
                 "DscNodeStatus"
@@ -7094,10 +7095,10 @@
             },
             "diagnosticMetricsToEnable": {
               "type": "array",
-              "defaultValue": [
+              "allowedValues": [
                 "AllMetrics"
               ],
-              "allowedValues": [
+              "defaultValue": [
                 "AllMetrics"
               ],
               "metadata": {
@@ -7249,8 +7250,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "998035822890902706"
+                      "version": "0.12.40.16777",
+                      "templateHash": "5070371254132906086"
                     }
                   },
                   "parameters": {
@@ -7417,8 +7418,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "18105978985833386257"
+                      "version": "0.12.40.16777",
+                      "templateHash": "10559340512698905348"
                     }
                   },
                   "parameters": {
@@ -7616,8 +7617,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "4781293380104897124"
+                      "version": "0.12.40.16777",
+                      "templateHash": "4111940734800906537"
                     }
                   },
                   "parameters": {
@@ -7822,8 +7823,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "7744968029522857053"
+                      "version": "0.12.40.16777",
+                      "templateHash": "4047000284349814730"
                     }
                   },
                   "parameters": {
@@ -7975,8 +7976,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "15809387151852567195"
+                      "version": "0.12.40.16777",
+                      "templateHash": "18443026777054248266"
                     }
                   },
                   "parameters": {
@@ -8110,8 +8111,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "7849081054952883324"
+                      "version": "0.12.40.16777",
+                      "templateHash": "13334440349200766786"
                     }
                   },
                   "parameters": {
@@ -8253,8 +8254,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "178727228200358835"
+                      "version": "0.12.40.16777",
+                      "templateHash": "6760594650998879915"
                     }
                   },
                   "parameters": {
@@ -8490,8 +8491,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "6862861478374040404"
+                      "version": "0.12.40.16777",
+                      "templateHash": "13925680790812293203"
                     }
                   },
                   "parameters": {
@@ -8551,10 +8552,6 @@
                     },
                     "updateClassifications": {
                       "type": "array",
-                      "defaultValue": [
-                        "Critical",
-                        "Security"
-                      ],
                       "allowedValues": [
                         "Critical",
                         "Security",
@@ -8565,6 +8562,10 @@
                         "Tools",
                         "Updates",
                         "Other"
+                      ],
+                      "defaultValue": [
+                        "Critical",
+                        "Security"
                       ],
                       "metadata": {
                         "description": "Optional. Update classification included in the deployment schedule."
@@ -8691,7 +8692,6 @@
                     },
                     "weekDays": {
                       "type": "array",
-                      "defaultValue": [],
                       "allowedValues": [
                         "Monday",
                         "Tuesday",
@@ -8701,13 +8701,13 @@
                         "Saturday",
                         "Sunday"
                       ],
+                      "defaultValue": [],
                       "metadata": {
                         "description": "Optional. Required when used with frequency 'Week'. Specified the day of the week to run the deployment schedule."
                       }
                     },
                     "monthDays": {
                       "type": "array",
-                      "defaultValue": [],
                       "allowedValues": [
                         1,
                         2,
@@ -8741,6 +8741,7 @@
                         30,
                         31
                       ],
+                      "defaultValue": [],
                       "metadata": {
                         "description": "Optional. Can be used with frequency 'Month'. Provides the specific days of the month to run the deployment schedule."
                       }
@@ -8972,8 +8973,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "8135314669366542936"
+                      "version": "0.12.40.16777",
+                      "templateHash": "10822360476021329408"
                     }
                   },
                   "parameters": {
@@ -9145,8 +9146,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "16187863982608119979"
+                              "version": "0.12.40.16777",
+                              "templateHash": "7658136598979661650"
                             }
                           },
                           "parameters": {
@@ -9288,8 +9289,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.9.1.41621",
-                              "templateHash": "13567230122761999541"
+                              "version": "0.12.40.16777",
+                              "templateHash": "4825234583608650334"
                             }
                           },
                           "parameters": {
@@ -9483,8 +9484,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "12310558393359425594"
+                      "version": "0.12.40.16777",
+                      "templateHash": "13177717396070031189"
                     }
                   },
                   "parameters": {
@@ -9670,10 +9671,10 @@
             "value": "[variables('varModules')[range(0, length(variables('varModules')))[copyIndex()]].name]"
           },
           "location": {
-            "value": "[parameters('sharedServicesLocation')]"
+            "value": "[parameters('deploymentLocation')]"
           },
           "automationAccountName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Automation-Account_{0}', parameters('time')))).outputs.name.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Automation-Account_{0}', parameters('time'))), '2020-10-01').outputs.name.value]"
           },
           "uri": {
             "value": "[variables('varModules')[range(0, length(variables('varModules')))[copyIndex()]].uri]"
@@ -9685,8 +9686,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "998035822890902706"
+              "version": "0.12.40.16777",
+              "templateHash": "5070371254132906086"
             }
           },
           "parameters": {
@@ -9846,8 +9847,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "8359453223486318806"
+              "version": "0.12.40.16777",
+              "templateHash": "1661863640781598734"
             }
           },
           "parameters": {
@@ -10008,8 +10009,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "14219231684130369343"
+                      "version": "0.12.40.16777",
+                      "templateHash": "17666925374910611943"
                     }
                   },
                   "resources": []
@@ -10046,8 +10047,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "14497193181046752873"
+                      "version": "0.12.40.16777",
+                      "templateHash": "8493921122479350298"
                     }
                   },
                   "parameters": {
@@ -10149,7 +10150,7 @@
         "mode": "Incremental",
         "parameters": {
           "location": {
-            "value": "[parameters('sharedServicesLocation')]"
+            "value": "[parameters('deploymentLocation')]"
           },
           "name": {
             "value": "[variables('varAlerts')[range(0, length(variables('varAlerts')))[copyIndex()]].name]"
@@ -10203,8 +10204,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "12745805778985373721"
+              "version": "0.12.40.16777",
+              "templateHash": "8290438401723420028"
             }
           },
           "parameters": {
@@ -10436,8 +10437,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "6725254698305148741"
+                      "version": "0.12.40.16777",
+                      "templateHash": "5541330818616749720"
                     }
                   },
                   "parameters": {
