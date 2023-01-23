@@ -39,8 +39,8 @@ param avdApplicationGroupIdentitiesIds array
 @description('Deploy scaling plan.')
 param avdDeployScalingPlan bool
 
-@description('FSlogix Managed Identity name.')
-param fslogixManagedIdentityName string
+@description('Storage managed identity name.')
+param storageManagedIdentityName string
 
 @description('GUID for built role Reader.')
 param readerRoleId string
@@ -51,8 +51,8 @@ param storageAccountContributorRoleId string
 @description('GUID for built in role ID of Desktop Virtualization Power On Off Contributor.')
 param avdVmPowerStateContributor string
 
-@description('Optional. Deploy Fslogix setup.')
-param createAvdFslogixDeployment bool
+@description('Optional. Deploy Storage setup.')
+param createStorageDeployment bool
 
 @description('Required. Tags to be applied to resources')
 param avdTags object
@@ -64,23 +64,23 @@ param time string = utcNow()
 // Deployments //
 // =========== //
 
-// FSLogix managed identity.
-module fslogixManagedIdentity '../../../carml/1.2.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = if (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD')) {
+// Managed identity for fslogix/msix app attach
+module managedIdentity '../../../carml/1.2.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = if (createStorageDeployment && (avdIdentityServiceProvider != 'AAD')) {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
-  name: 'fslogix-Managed-Identity-${time}'
+  name: 'Managed-Identity-${time}'
   params: {
-    name: fslogixManagedIdentityName
+    name: storageManagedIdentityName
     location: avdSessionHostLocation
     tags: avdTags
   }
 }
 
 // Introduce wait for management VM to be ready.
-module fslogixManagedIdentityWait '../../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD')) {
+module managedIdentityWait '../../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (createStorageDeployment && (avdIdentityServiceProvider != 'AAD')) {
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
-  name: 'FSLogix-Identity-Wait-${time}'
+  name: 'Storage-Identity-Wait-${time}'
   params: {
-      name: 'AVD-fslogixManagedIdentityWait-${time}'
+      name: 'AVD-storageManagedIdentityWait-${time}'
       location: avdSessionHostLocation
       azPowerShellVersion: '6.2'
       cleanupPreference: 'Always'
@@ -94,7 +94,7 @@ module fslogixManagedIdentityWait '../../../carml/1.0.0/Microsoft.Resources/depl
       '''
   }
   dependsOn: [
-    fslogixManagedIdentity
+    managedIdentity
   ]
 }
 
@@ -120,7 +120,7 @@ module startVMonConnectRole '../../../carml/1.2.0/Microsoft.Authorization/roleDe
 
 // RBAC role Assignments.
 // Start VM on connect.
-module startVMonConnectRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (createStartVmOnConnectCustomRole) {
+module startVMonConnectRoleAssignment '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (createStartVmOnConnectCustomRole) {
   name: 'Start-VM-OnConnect-RoleAssign-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
   params: {
@@ -132,32 +132,32 @@ module startVMonConnectRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/
   ]
 }
 
-// FSLogix.
-module fslogixRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD')) {
-  name: 'fslogix-UserAIdentity-RoleAssign-${time}'
+// Storage contributor.
+module roleAssignment '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (createStorageDeployment && (avdIdentityServiceProvider != 'AAD')) {
+  name: 'Storage-UserAIdentity-RoleAssign-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
   params: {
     roleDefinitionIdOrName: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${storageAccountContributorRoleId}'
-    principalId: createAvdFslogixDeployment ? fslogixManagedIdentity.outputs.principalId: ''
+    principalId: createStorageDeployment ? managedIdentity.outputs.principalId: ''
   }
   dependsOn: [
-    fslogixManagedIdentityWait
+    managedIdentityWait
   ]
 }
-//FSLogix reader.
-module fslogixReaderRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD')) {
-  name: 'fslogix-UserAIdentity-ReaderRoleAssign-${time}'
+// Storage reader.
+module readerRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (createStorageDeployment && (avdIdentityServiceProvider != 'AAD')) {
+  name: 'Storage-UserAIdentity-ReaderRoleAssign-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
   params: {
     roleDefinitionIdOrName: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${readerRoleId}'
-    principalId: createAvdFslogixDeployment ? fslogixManagedIdentity.outputs.principalId: ''
+    principalId: createStorageDeployment ? managedIdentity.outputs.principalId: ''
   }
   dependsOn: [
-    fslogixManagedIdentityWait
+    managedIdentityWait
   ]
 }
 
-//Scaling plan compute RG.
+// Scaling plan compute RG.
 module scalingPlanRoleAssignCompute '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (avdDeployScalingPlan) {
   name: 'Scaling-Plan-Assign-Compute-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
@@ -168,7 +168,7 @@ module scalingPlanRoleAssignCompute '../../../carml/1.2.0/Microsoft.Authorizatio
   dependsOn: []
 }
 
-//Scaling plan service objects RG.
+// Scaling plan service objects RG.
 module scalingPlanRoleAssignServiceObjects '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (avdDeployScalingPlan) {
   name: 'Scaling-Plan-Assign-Service-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
@@ -179,6 +179,7 @@ module scalingPlanRoleAssignServiceObjects '../../../carml/1.2.0/Microsoft.Autho
   dependsOn: []
 }
 
+// AAD login access.
 module avdAadIdentityLoginAccess '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' =  [for avdApplicationGropupIdentityId in avdApplicationGroupIdentitiesIds: if (avdIdentityServiceProvider == 'AAD' && !empty(avdApplicationGroupIdentitiesIds)) {
   name: 'AAD-VM-Role-Assign-${take('${avdApplicationGropupIdentityId}', 6)}-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
@@ -193,5 +194,5 @@ module avdAadIdentityLoginAccess '../../../carml/1.2.0/Microsoft.Authorization/r
 // =========== //
 // Outputs //
 // =========== //
-output fslogixManagedIdentityResourceId string = (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD')) ? fslogixManagedIdentity.outputs.resourceId: ''
-output fslogixManagedIdentityClientId string = (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD')) ? fslogixManagedIdentity.outputs.clientId: ''
+output managedIdentityResourceId string = (createStorageDeployment && (avdIdentityServiceProvider != 'AAD')) ? managedIdentity.outputs.resourceId: ''
+output managedIdentityClientId string = (createStorageDeployment && (avdIdentityServiceProvider != 'AAD')) ? managedIdentity.outputs.clientId: ''
