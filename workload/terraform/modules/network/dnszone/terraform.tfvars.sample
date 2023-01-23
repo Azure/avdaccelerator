@@ -1,0 +1,6 @@
+//tested last on a hashicorp/azurerm v3.33.0.
+avdLocation = "eastus"
+prefix      = "mod2"
+rg_network  = "network"  #rg-avd-<location>-<prefix>-network
+vnet        = "vnet-avd" #vnet-avd-<azure region>-<prefix>-<nnn>
+snet        = "snet-avd" #snet-avd-<azure region>-<prefix>-<nnn>

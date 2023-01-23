@@ -1,4 +1,4 @@
-﻿# OS Optimizations for WVD
+# OS Optimizations for WVD
 Write-Host 'AIB Customization: OS Optimizations for WVD'
 $appName = 'optimize'
 $drive = 'C:\'
@@ -21,7 +21,7 @@ $osOptURL = 'https://raw.githubusercontent.com/The-Virtual-Desktop-Team/Virtual-
 $osOptURLexe = 'optimize.ps1'
 Invoke-WebRequest -Uri $osOptURL -OutFile $osOptURLexe
 
-# Patch: overide the Win10_VirtualDesktop_Optimize.ps1 - setting 'Set-NetAdapterAdvancedProperty'(see readme.md)
+# Patch: override the Win10_VirtualDesktop_Optimize.ps1 - setting 'Set-NetAdapterAdvancedProperty'(see readme.md)
 Write-Host 'Patch: Disabling Set-NetAdapterAdvancedProperty'
 $updatePath = 'C:\optimize\Virtual-Desktop-Optimization-Tool-main\Win10_VirtualDesktop_Optimize.ps1'
  ((Get-Content -Path $updatePath -Raw) -replace 'Set-NetAdapterAdvancedProperty -DisplayName "Send Buffer Size" -DisplayValue 4MB', '#Set-NetAdapterAdvancedProperty -DisplayName "Send Buffer Size" -DisplayValue 4MB') | Set-Content -Path $updatePath
@@ -33,7 +33,7 @@ $updatePath = 'C:\optimize\Virtual-Desktop-Optimization-Tool-main\Windows_VDOT.p
  ((Get-Content -Path $updatePath -Raw) -replace 'Set-NetAdapterAdvancedProperty -DisplayName "Send Buffer Size" -DisplayValue 4MB', '#Set-NetAdapterAdvancedProperty -DisplayName "Send Buffer Size" -DisplayValue 4MB') | Set-Content -Path $updatePath
 
 
-# Patch: overide the REG UNLOAD, needs GC before, otherwise will Access Deny unload(see readme.md)
+# Patch: override the REG UNLOAD, needs GC before, otherwise will Access Deny unload(see readme.md)
 
 [System.Collections.ArrayList]$file = Get-Content $updatePath
 $insert = @()
@@ -46,7 +46,7 @@ for ($i = 0; $i -lt $file.count; $i++) {
 #add gc and sleep
 $insert | ForEach-Object { $file.insert($_, "                 Write-Host 'Patch closing handles and runnng GC before reg unload' `n              `$newKey.Handle.close()` `n              [gc]::collect() `n                Start-Sleep -Seconds 15 ") }
 
-### Setting the RDP Shortpath.
+### Setting the RDP ShortPath.
 Write-Host 'Configuring RDP ShortPath'
 
 $WinstationsKey = 'HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations'
@@ -56,8 +56,8 @@ if (Test-Path $WinstationsKey) {
     New-ItemProperty -Path $WinstationsKey -Name 'UdpPortNumber' -ErrorAction:SilentlyContinue -PropertyType:dword -Value 3390 -Force
 }
 
-Write-Host 'Settin up the Windows Firewall Rue for RDP ShortPath'
-New-NetFirewallRule -DisplayName 'Remote Desktop - Shortpath (UDP-In)' -Action Allow -Description 'Inbound rule for the Remote Desktop service to allow RDP traffic. [UDP 3390]' -Group '@FirewallAPI.dll,-28752' -Name 'RemoteDesktop-UserMode-In-Shortpath-UDP' -PolicyStore PersistentStore -Profile Domain, Private -Service TermService -Protocol udp -LocalPort 3390 -Program '%SystemRoot%\system32\svchost.exe' -Enabled:True
+Write-Host 'Setting up the Windows Firewall Rule for RDP ShortPath'
+New-NetFirewallRule -DisplayName 'Remote Desktop - ShortPath (UDP-In)' -Action Allow -Description 'Inbound rule for the Remote Desktop service to allow RDP traffic. [UDP 3390]' -Group '@FirewallAPI.dll,-28752' -Name 'RemoteDesktop-UserMode-In-ShortPath-UDP' -PolicyStore PersistentStore -Profile Domain, Private -Service TermService -Protocol udp -LocalPort 3390 -Program '%SystemRoot%\system32\svchost.exe' -Enabled:True
 
 ### Setting the Screen Protection
 
@@ -82,7 +82,5 @@ Start-Sleep -Seconds 60
 
 #Write-Host 'Running new AIB Customization script'
 .\Windows_VDOT.ps1 -Verbose -AcceptEULA
+
 Write-Host 'AIB Customization: Finished OS Optimizations script Windows_VDOT.ps1'
-
-
-

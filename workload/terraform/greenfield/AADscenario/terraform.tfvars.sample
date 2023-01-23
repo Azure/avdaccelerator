@@ -49,5 +49,14 @@ aad_group_name = "avdusersgroup" #user group must pre-created on your AD server 
 spoke_subscription_id = "Your Spoke Subscription ID"
 hub_subscription_id   = "Your Hub Subscription ID"
 
+#FsLogix
+id_provider                 = "ADDS"
+azure_cloud_environment     = "AzureCloud"
+custom_ou                   = "true"
+create_new_ou               = "false"
+fslogix_sharename           = "fslogix"
+file_url                    = "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/Manual-DSC-Storage-Scripts.ps1"
+file_name                   = "Manual-DSC-Storage-Scripts.ps1"
+dsc_path                    = "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip"
 
 
