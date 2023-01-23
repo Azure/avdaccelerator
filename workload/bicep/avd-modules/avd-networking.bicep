@@ -88,7 +88,7 @@ param varAvdVirtualNetworkMetricsDiagnostic array = [
 // Network security group.
 module avdNetworksecurityGroup '../../../carml/1.2.0/Microsoft.Network/networkSecurityGroups/deploy.bicep' = if (createAvdVnet) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdNetworkObjectsRgName}')
-    name: 'AVD-NSG-${time}'
+    name: 'NSG-${time}'
     params: {
         name: avdNetworksecurityGroupName
         location: avdSessionHostLocation
@@ -103,7 +103,7 @@ module avdNetworksecurityGroup '../../../carml/1.2.0/Microsoft.Network/networkSe
 // Application security group.
 module avdApplicationSecurityGroup '../../../carml/1.2.0/Microsoft.Network/applicationSecurityGroups/deploy.bicep' = if (createAvdVnet) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
-    name: 'AVD-ASG-${time}'
+    name: 'ASG-${time}'
     params: {
         name: avdApplicationSecurityGroupName
         location: avdSessionHostLocation
@@ -115,7 +115,7 @@ module avdApplicationSecurityGroup '../../../carml/1.2.0/Microsoft.Network/appli
 // Route table.
 module avdRouteTable '../../../carml/1.2.0/Microsoft.Network/routeTables/deploy.bicep' = if (createAvdVnet) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdNetworkObjectsRgName}')
-    name: 'AVD-UDR-${time}'
+    name: 'Route-Table-${time}'
     params: {
         name: avdRouteTableName
         location: avdSessionHostLocation
@@ -127,7 +127,7 @@ module avdRouteTable '../../../carml/1.2.0/Microsoft.Network/routeTables/deploy.
 // Virtual network.
 module avdVirtualNetwork '../../../carml/1.2.0/Microsoft.Network/virtualNetworks/deploy.bicep' = if (createAvdVnet) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdNetworkObjectsRgName}')
-    name: 'AVD-vNet-${time}'
+    name: 'vNet-${time}'
     params: {
         name: avdVnetworkName
         location: avdSessionHostLocation

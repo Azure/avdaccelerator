@@ -146,7 +146,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 // Provision the storage account and Azure Files.
 module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
-    name: 'AVD-Fslogix-Storage-${time}'
+    name: 'Fslogix-Storage-${time}'
     params: {
         name: avdFslogixStorageName
         location: avdSessionHostLocation
@@ -208,7 +208,7 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
 // Provision temporary VM and add it to domain.
 module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.bicep' = {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
-    name: 'Deploy-Mgmt-VM-${time}'
+    name: 'Management-VM-${time}'
     params: {
         name: managementVmName
         location: avdSessionHostLocation
@@ -273,12 +273,12 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
     ]
 }
 
-// Introduce delay for management VM to be ready.
-module managementVmDelay '../../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
+// Introduce Wait for management VM to be ready.
+module managementVmWait '../../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
-    name: 'AVD-Management-VM-Delay-${time}'
+    name: 'Management-VM-Wait-${time}'
     params: {
-        name: 'AVD-userManagedIdentityDelay-${time}'
+        name: 'AVD-userManagedIdentityWait-${time}'
         location: avdSessionHostLocation
         azPowerShellVersion: '6.2'
         cleanupPreference: 'Always'
@@ -299,7 +299,7 @@ module managementVmDelay '../../../carml/1.0.0/Microsoft.Resources/deploymentScr
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
 module addFslogixShareToDomainSript '../../vm-custom-extensions/add-azure-files-to-domain-script.bicep' = { //if(avdIdentityServiceProvider == 'ADDS')  {
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
-    name: 'Add-FslogixStorage-Setup-${time}'
+    name: 'Fslogix-Storage-Setup-${time}'
     params: {
         location: avdSessionHostLocation
         name: managementVM.outputs.name
@@ -309,7 +309,7 @@ module addFslogixShareToDomainSript '../../vm-custom-extensions/add-azure-files-
     }
     dependsOn: [
         fslogixStorage
-        managementVmDelay
+        managementVmWait
     ]
 }
 
