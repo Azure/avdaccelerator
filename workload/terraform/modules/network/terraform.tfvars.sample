@@ -1,0 +1,16 @@
+//tested last on a hashicorp/azurerm v3.33.0.
+avdLocation           = "eastus"
+prefix                = "mod2"
+rg_network            = "network"        #rg-avd-<location>-<prefix>-network
+rt                    = "route-avd"      #route-avd-<azure region>-<prefix>-<nnn>
+nsg                   = "nsg-avd"        #nsg-avd-<azure region>-<prefix>-<nnn>
+vnet                  = "vnet-avd"       #vnet-avd-<azure region>-<prefix>-<nnn>
+snet                  = "snet-avd"       #snet-avd-<azure region>-<prefix>-<nnn>
+pesnet                = "pesnet-avd"     #pesnet-avd-<azure region>-<prefix>-<nnn>
+vnet_range            = ["10.22.0.0/23"] # avd spoke vnet
+subnet_range          = ["10.22.0.0/24"] # avd spoke subnet
+pesubnet_range        = ["10.22.1.0/27"] # avd spoke private endpoint subnet
+ad_vnet               = "infra-network"  # hub vnet name
+ad_rg                 = "infra-rg"       # hub network resource group
+spoke_subscription_id = "Your Spoke Subscription ID"
+hub_subscription_id   = "Your Hub Subscription ID"
