@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "deploymentPrefix": {
-            "value": "<<deploymentPrefix>>"
+            "value": "AVD1"
         },
         "avdUseCustomNaming": {
             "value": false
@@ -149,6 +149,15 @@
         "avdOsImage": {
             "value": "win10_21h2"
         },
+        "securityType": {
+            "value": "Standard"
+        },
+        "secureBootEnabled": {
+            "value": false
+        },
+        "vTpmEnabled": {
+            "value": false
+        },
         "useSharedImage": {
             "value": false
         },
@@ -175,6 +184,6 @@
         },           
         "avdAlaWorkspaceDataRetention": {
             "value": 90
-        }    
+        }
     }
 }
