@@ -35,7 +35,7 @@
         "existingSubnetName": {
             "value": ""
         },
-        "rdpShortPath": {
+        "rdpShortPathManagedNetworks": {
             "value": false
         },
         "screenCaptureProtection": {
