@@ -384,8 +384,8 @@
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": true,
                                     "options": {
-                                        "text": "RDP Short Path for Managed Networks is a beneficial feature under specific conditions. Click here for more information.",
-                                        "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/rdp-shortpath",
+                                        "text": "RDP Shortpath is a feature of AVD that establishes a direct UDP-based transport between a supported Windows Remote Desktop client and AVD session host, this UDP-based transport offers better connection reliability and more consistent latency. It can be configured to used managed networks or to go over public network (default).",
+                                        "uri": "https://learn.microsoft.com/azure/virtual-desktop/rdp-shortpath?tabs=managed-networks",
                                         "style": "Info"
                                     }
                                 },
@@ -393,18 +393,18 @@
                                     "name": "rdpShortPathSelection",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "visible": true,
-                                    "label": "Enable RDP shortpath for managed networks",
-                                    "defaultValue": "No",
+                                    "label": "RDP shortpath for",
+                                    "defaultValue": "Public networks",
                                     "toolTip": "Determine whether to enable RDP short path for managed networks on the AVD session hosts.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Yes",
+                                                "label": "Managed networks",
                                                 "value": true
                                             },
                                             {
-                                                "label": "No",
+                                                "label": "Public networks",
                                                 "value": false
                                             }
                                         ]
@@ -957,7 +957,7 @@
                 "operatingSystemImage": "[steps('imageManagement').operatingSystem.versionSelection]",
                 "operationsTeamTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.operationsTeam, 'none')]",
                 "ownerTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.owner, 'none')]",
-                "rdpShortPath": "[steps('aib').customizers.rdpShortPathSelection]",
+                "rdpShortPathManagedNetworks": "[steps('aib').customizers.rdpShortPathSelection]",
                 "resourceGroupCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.resourceGroup, 'none')]",
                 "screenCaptureProtection": "[steps('aib').customizers.screenCaptureProtectionSelection]",
                 "sharedServicesSubId": "[steps('basics').resourceScope.subscription.subscriptionId]",
