@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "2881490628711264036"
+      "templateHash": "11076101462823108550"
     }
   },
   "parameters": {
@@ -851,6 +851,10 @@
       "canadaeast": "cae",
       "uksouth": "uks",
       "ukwest": "ukw",
+      "usgovarizona": "az",
+      "usgoviowa": "ia",
+      "usgovtexas": "tx",
+      "usgovvirginia": "va",
       "westcentralus": "wcus",
       "westus2": "wus2",
       "koreacentral": "krc",
@@ -937,7 +941,7 @@
     "varAvdNetworkObjectsRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdNetworkObjectsRgCustomName'), format('rg-avd-{0}-network', variables('varAvdComputeStorageResourcesNamingStandard')))]",
     "varAvdComputeObjectsRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdComputeObjectsRgCustomName'), format('rg-avd-{0}-pool-compute', variables('varAvdComputeStorageResourcesNamingStandard')))]",
     "varAvdStorageObjectsRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdStorageObjectsRgCustomName'), format('rg-avd-{0}-storage', variables('varAvdComputeStorageResourcesNamingStandard')))]",
-    "varAvdMonitoringRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdMonitoringRgCustomName'), format('rg-avd-{0}-monitoring', variables('varAvdSessionHostLocationAcronym')))]",
+    "varAvdMonitoringRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdMonitoringRgCustomName'), format('rg-avd-{0}-monitoring', variables('varAvdManagementPlaneLocationAcronym')))]",
     "varAvdVnetworkName": "[if(parameters('avdUseCustomNaming'), parameters('avdVnetworkCustomName'), format('vnet-avd-{0}-001', variables('varAvdComputeStorageResourcesNamingStandard')))]",
     "varAvdVnetworkSubnetName": "[if(parameters('avdUseCustomNaming'), parameters('avdVnetworkSubnetCustomName'), format('snet-avd-{0}-001', variables('varAvdComputeStorageResourcesNamingStandard')))]",
     "varAvdNetworksecurityGroupName": "[if(parameters('avdUseCustomNaming'), parameters('avdNetworksecurityGroupCustomName'), format('nsg-avd-{0}-001', variables('varAvdComputeStorageResourcesNamingStandard')))]",
@@ -14193,7 +14197,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.12.40.16777",
-              "templateHash": "1417381140690746199"
+              "templateHash": "14564780326153759568"
             }
           },
           "parameters": {
@@ -14502,7 +14506,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.12.40.16777",
-                      "templateHash": "17082162793907339231"
+                      "templateHash": "15128178008411652955"
                     }
                   },
                   "parameters": {
@@ -14980,7 +14984,7 @@
                         "description": "The resource group the AVD host pool was deployed into"
                       }
                     },
-                    "hostPoolRestrationInfo": {
+                    "hostPoolRegistrationInfo": {
                       "type": "object",
                       "value": "[reference(resourceId('Microsoft.DesktopVirtualization/hostPools', parameters('name')), '2019-12-10-preview').registrationInfo]",
                       "metadata": {
@@ -16503,7 +16507,7 @@
           "outputs": {
             "hostPooltoken": {
               "type": "string",
-              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time'))), '2020-10-01').outputs.hostPoolRestrationInfo.value.token]"
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', parameters('avdServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time'))), '2020-10-01').outputs.hostPoolRegistrationInfo.value.token]"
             }
           }
         }
@@ -21916,7 +21920,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.12.40.16777",
-              "templateHash": "15411179103460003466"
+              "templateHash": "15716740426720043334"
             }
           },
           "parameters": {
@@ -25393,7 +25397,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.12.40.16777",
-                      "templateHash": "3064960400537351127"
+                      "templateHash": "7761075617829670865"
                     }
                   },
                   "parameters": {
@@ -27011,6 +27015,9 @@
                           "settings": {
                             "value": "[parameters('extensionDomainJoinConfig').settings]"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "protectedSettings": {
                             "value": {
                               "Password": "[parameters('extensionDomainJoinPassword')]"
@@ -27212,6 +27219,9 @@
                           },
                           "settings": {
                             "value": "[parameters('extensionAadJoinConfig').settings]"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
                           },
                           "enableDefaultTelemetry": {
                             "value": "[parameters('enableDefaultTelemetry')]"
@@ -29775,7 +29785,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.12.40.16777",
-              "templateHash": "3721318077111048218"
+              "templateHash": "5477147703263493691"
             }
           },
           "parameters": {
@@ -30647,7 +30657,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.12.40.16777",
-                      "templateHash": "12453280095423533003"
+                      "templateHash": "15684132930491123220"
                     }
                   },
                   "parameters": {
@@ -31086,7 +31096,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.12.40.16777",
-                              "templateHash": "3064960400537351127"
+                              "templateHash": "7761075617829670865"
                             }
                           },
                           "parameters": {
@@ -32704,6 +32714,9 @@
                                   "settings": {
                                     "value": "[parameters('extensionDomainJoinConfig').settings]"
                                   },
+                                  "location": {
+                                    "value": "[parameters('location')]"
+                                  },
                                   "protectedSettings": {
                                     "value": {
                                       "Password": "[parameters('extensionDomainJoinPassword')]"
@@ -32905,6 +32918,9 @@
                                   },
                                   "settings": {
                                     "value": "[parameters('extensionAadJoinConfig').settings]"
+                                  },
+                                  "location": {
+                                    "value": "[parameters('location')]"
                                   },
                                   "enableDefaultTelemetry": {
                                     "value": "[parameters('enableDefaultTelemetry')]"
