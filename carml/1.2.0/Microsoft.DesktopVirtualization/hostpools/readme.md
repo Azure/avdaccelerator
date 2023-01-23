@@ -59,7 +59,6 @@ This module deploys an Azure virtual desktop host pool.
 | :-- | :-- | :-- | :-- |
 | `baseTime` | string | `[utcNow('u')]` | Do not provide a value! This date value is used to generate a registration token. |
 
-
 ### Parameter Usage: `roleAssignments`
 
 Create a role assignment for the given resource. If you want to assign a service principal / managed identity that is created in the same deployment, make sure to also specify the `'principalType'` parameter and set it to `'ServicePrincipal'`. This will ensure the role assignment waits for the principal's propagation in Azure.
@@ -141,6 +140,7 @@ Tag names and tag values can be provided as needed. A tag can be left without a 
 
 | Output Name | Type | Description |
 | :-- | :-- | :-- |
+| `hostPoolRegistrationInfo` | object | The host pool's [registration info](https://learn.microsoft.com/azure/templates/microsoft.desktopvirtualization/hostpools?pivots=deployment-language-bicep#registrationinfo), including token |
 | `name` | string | The name of the AVD host pool |
 | `resourceGroupName` | string | The resource group the AVD host pool was deployed into |
 | `resourceId` | string | The resource ID of the AVD host pool |
