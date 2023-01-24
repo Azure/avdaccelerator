@@ -550,7 +550,7 @@
                                     "name": "sessionHostsRegion",
                                     "type": "Microsoft.Common.LocationSelector",
                                     "label": "Session Hosts Region",
-                                    "defaultValue": "[steps('basics').resourceScope.location.displayName]",
+                                    "defaultValue": "[steps('basics').resourceScope.location.name]",
                                     "toolTip": "Select the region where the session hosts and required resources are to be deployed.",
                                     "resourceTypes": [
                                         "Microsoft.Compute/virtualMachines"
@@ -1771,16 +1771,6 @@
                                 "uri": "https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming",
                                 "style": "Info"
                             }
-                        },
-                        {
-                            "name": "resourceNamingInfo3",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "text": "And abbreviations recommendations for Azure resource types.",
-                                "uri": "https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations",
-                                "style": "Info"
-                            }
                         }
                     ]
                 },
@@ -2066,7 +2056,7 @@
             "parameters": {
                 "deploymentPrefix": "[steps('basics').deploymentPrefix]",
                 "avdManagementPlaneLocation": "[steps('basics').resourceScope.location.name]",
-                "avdSessionHostLocation": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion.location.name]",
+                "avdSessionHostLocation": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion.name]",
                 "avdWorkloadSubsId": "[steps('basics').resourceScope.subscription.subscriptionId]",
                 "avdHostPoolType": "[steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType]",
                 "avdHostPoolLoadBalancerType": "[steps('managementPlane').managementPlaneHostPoolSettings.loadBalancerType]",
