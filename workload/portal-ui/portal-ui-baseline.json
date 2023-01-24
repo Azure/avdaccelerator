@@ -1771,16 +1771,6 @@
                                 "uri": "https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming",
                                 "style": "Info"
                             }
-                        },
-                        {
-                            "name": "resourceNamingInfo3",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "text": "And abbreviations recommendations for Azure resource types.",
-                                "uri": "https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations",
-                                "style": "Info"
-                            }
                         }
                     ]
                 },
