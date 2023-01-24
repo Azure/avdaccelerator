@@ -119,13 +119,16 @@
                                 },
                                 {
                                     "name": "primaryLocation",
-                                    "type": "Microsoft.Common.LocationSelector",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "visible": true,
+                                    "filter": true,
                                     "label": "Primary storage location",
-                                    "defaultValue": "[steps('basics').resourceScope.location]",
+                                    "defaultValue": "[steps('basics').resourceScope.location.displayName]",
                                     "toolTip": "Select the primary location to store the Image Version. This location should coincide with your AVD session hosts.",
-                                    "resourceTypes": [
-                                        "Microsoft.Compute/galleries/images/versions"
-                                    ]
+                                    "constraints": {
+                                        "allowedValues": "[map(filter(steps('basics').locationsApi.value, (item) => not(equals(item.name, 'global'))), (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.name, '\"}')))]",
+                                        "required": true
+                                    }
                                 },
                                 {
                                     "name": "info3",
@@ -170,14 +173,15 @@
                                 },
                                 {
                                     "name": "disasterRecoveryLocation",
-                                    "type": "Microsoft.Common.LocationSelector",
+                                    "type": "Microsoft.Common.DropDown",
                                     "label": "Disaster recovery location",
                                     "defaultValue": "",
+                                    "filter": true,
                                     "toolTip": "Select the disaster recovery location to store the Image Version. This location should coincide with your disaster recovery location for your AVD session hosts.",
-                                    "resourceTypes": [
-                                        "Microsoft.Compute/galleries/images/versions"
-                                    ],
-                                    "allowedValues": "[map(filter(steps('basics').locationsApi.value, (item) => not(equals(item.name, steps('imageManagement').imageVersion.primaryLocation.name))), (item) => parse(concat('\"', item.name, '\"')))]",
+                                    "constraints": {
+                                        "allowedValues": "[map(filter(steps('basics').locationsApi.value, (item) => and(not(equals(item.name, 'global')), not(equals(item.name, steps('imageManagement').imageVersion.primaryLocation)))), (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\":\"', item.name, '\"}')))]",
+                                        "required": true
+                                    },
                                     "visible": "[equals(steps('imageManagement').imageVersion.disasterRecovery, true)]"
                                 }
                             ]
