@@ -5,7 +5,7 @@
 Prior to deploying the Custom Image Build solution, you need to ensure you have met the following prerequisites:
 
 - It is recommended to have already deployed an ALZ architecture (not mandatory) from a template reference implementation available. See [Deploying Enterprise-Scale Architecture in your own environment](https://github.com/Azure/
-- If using an existing virtual network, the deployment will fail if deny private endpoint network policies are enabled. See the following article on disabling them: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy).
+- If using an existing virtual network, the deployment will fail if the private endpoint or private link services network policies are enabled. See the following article on disabling them: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy). and [Disable network policies for Private Link](https://learn.microsoft.com/azure/private-link/disable-private-link-service-network-policy)
 
 ### Subscription requirements
 
