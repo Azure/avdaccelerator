@@ -72,10 +72,10 @@ resource "random_password" "vmpass" {
 }
 # Create Key Vault Secret
 resource "azurerm_key_vault_secret" "localpassword" {
-  name            = "vmlocalpassword"
-  value           = random_password.vmpass.result
-  key_vault_id    = azurerm_key_vault.kv.id
-  content_type    = "Password"
+  name         = "vmlocalpassword"
+  value        = random_password.vmpass.result
+  key_vault_id = azurerm_key_vault.kv.id
+  content_type = "Password"
 }
 
 # Linking DNS Zone to the VNET
