@@ -583,6 +583,16 @@
                                     "placeholder": "Example: OU=session-hosts,OU=avd,DC=contoso,DC=com",
                                     "constraints": {}
                                 },
+                                {
+                                    "name": "warnAvailZones",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": true,
+                                    "options": {
+                                        "text": "Only select 'use availability zones' if the region selected supports them.",
+                                        "uri": "https://learn.microsoft.com/en-us/azure/reliability/availability-zones-service-support#azure-regions-with-availability-zone-support",
+                                        "style": "Warning"
+                                    }
+                                },
                                 { 
                                     "name": "sessionHostsAvailabilitySettings",
                                     "type": "Microsoft.Common.OptionsGroup",
