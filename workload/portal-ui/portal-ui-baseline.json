@@ -1123,23 +1123,23 @@
                             ]
                         },
                         {
-                            "name": "virtualNetworkPeeringInfoBox",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
-                            "options": {
-                                "text": "vNet peering will be created to existing vNet hub with access to identity and DNS services .",
-                                "uri": "https://docs.microsoft.com/azure/architecture/example-scenario/wvd/windows-virtual-desktop?context=/azure/virtual-desktop/context/context",
-                                "style": "info"
-                            }
-                        },
-                        {
                             "name": "hubVirtualNetworkPeering",
                             "type": "Microsoft.Common.Section",
                             "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                             "label": "Existing hub vNet peering information",
                             "elements": [
                                 {
-                                    "name": "hubVirtualNetworkPeeringInfoBox",
+                                    "name": "virtualNetworkPeeringInfoBox1",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true),not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')))]",
+                                    "options": {
+                                        "text": "vNet peering will be created to existing vNet hub with access to identity and DNS services .",
+                                        "uri": "https://docs.microsoft.com/azure/architecture/example-scenario/wvd/windows-virtual-desktop?context=/azure/virtual-desktop/context/context",
+                                        "style": "info"
+                                    }
+                                },
+                                {
+                                    "name": "hubVirtualNetworkPeeringInfoBox2",
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
                                     "options": {
