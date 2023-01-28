@@ -28,7 +28,7 @@ resource "azurerm_network_security_group" "res-0" {
     source_port_range          = "*"
   }
 
-/*
+  /*
   security_rule {
     access                     = "Deny"
     destination_address_prefix = "*"
