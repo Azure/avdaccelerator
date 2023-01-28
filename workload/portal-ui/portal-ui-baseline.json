@@ -555,42 +555,13 @@
                                     }
                                 },
                                 {
-                                    "name": "sessionHostsRegion",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "label": "Session hosts region",
-                                    "defaultValue": "[steps('basics').resourceScope.location.displayName]",
-                                    "toolTip": "Select the region where the session hosts and required resources are to be deployed.",
-                                    "constraints": {
-                                        "required": true,
-                                         "allowedValues": "[map(parse(replace(replace(string(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (value) => equals(value.resourceType, 'operations'))), '[{', '{'), '}]', '}')).locations, (region) => parse(concat('{\"label\":\"', region, '\",\"value\":\"', toLower(replace(region, ' ', '')), '\"}')))]"
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "name": "sessionHostsComputeStorageSection",
-                            "type": "Microsoft.Common.Section",
-                            "visible": "[equals(steps('sessionHosts').deploySessionHosts, true)]",
-                            "label": "General settings",
-                            "tooltip": "This settings apply to compute, storage, image management and key vault resources.",
-                            "elements": [
-                                {
-                                    "name": "identityDomainOuPath",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
-                                    "label": "Session hosts OU path (Optional)",
-                                    "toolTip": "Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU.",
-                                    "placeholder": "Example: OU=session-hosts,OU=avd,DC=contoso,DC=com",
-                                    "constraints": {}
-                                },
-                                {
-                                    "name": "warnAvailZones",
+                                    "name": "infoAvailZones",
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": true,
                                     "options": {
-                                        "text": "Only select 'use availability zones' if the region selected supports them.",
+                                        "text": "If you select 'Use availability zones' below, some regions may not be available for deployment of session hosts because not all regions support Availability Zones. \n\nThe 'Session hosts region' drop down will automatically update based on this selection. If the value changes to blank, select an alternate region or set 'Use availability zones' to 'No'.",
                                         "uri": "https://learn.microsoft.com/en-us/azure/reliability/availability-zones-service-support#azure-regions-with-availability-zone-support",
-                                        "style": "Warning"
+                                        "style": "Info"
                                     }
                                 },
                                 { 
@@ -612,6 +583,35 @@
                                             }
                                         ]
                                     }
+                                },
+                                {
+                                    "name": "sessionHostsRegion",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "Session hosts region",
+                                    "defaultValue": "[steps('basics').resourceScope.location.displayName]",
+                                    "toolTip": "Select the region where the session hosts and required resources are to be deployed.",
+                                    "constraints": {
+                                        "required": true,
+                                         "allowedValues": "[if(equals(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, false), map(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'virtualMachines')), (item) => item.locations)), (item) => parse(concat('{\"label\":\"', item, '\",\"value\":\"', toLower(replace(item, ' ', '')), '\"}'))), map(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'virtualMachines')), (item) => item.zoneMappings)), (item) => parse(concat('{\"label\":\"', item.location, '\",\"value\":\"', toLower(replace(item.location, ' ', '')), '\"}'))))]"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "sessionHostsComputeStorageSection",
+                            "type": "Microsoft.Common.Section",
+                            "visible": "[equals(steps('sessionHosts').deploySessionHosts, true)]",
+                            "label": "General settings",
+                            "tooltip": "This settings apply to compute, storage, image management and key vault resources.",
+                            "elements": [
+                                {
+                                    "name": "identityDomainOuPath",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                                    "label": "Session hosts OU path (Optional)",
+                                    "toolTip": "Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU.",
+                                    "placeholder": "Example: OU=session-hosts,OU=avd,DC=contoso,DC=com",
+                                    "constraints": {}
                                 },
                                 {
                                     "name": "fslogixDeploymentDisabledAad",
@@ -1581,7 +1581,7 @@
                                     "name": "availabilitySetCustomNamePrefix",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Availability set prefix",
-                                    "visible": "[equals(steps('sessionHosts').sessionHostsComputeStorageSection.sessionHostsAvailabilitySettings, false)]",
+                                    "visible": "[equals(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, false)]",
                                     "toolTip": "AVD availability set custom name.",
                                     "placeholder": "Example: avail-avd",
                                     "constraints": {
@@ -2102,7 +2102,7 @@
                 "avdDeployScalingPlan": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, false)]",
                 "createStartVmOnConnectCustomRole": "[if(equals(steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, true), steps('managementPlane').managementPlaneHostPoolScaling.createVmRole, false)]",
                 "avdEnterpriseAppObjectId": "[if(or(equals(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, true), equals(steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, true)), steps('managementPlane').managementPlaneHostPoolScaling.avdEnterpriseApplication.objectId, 'none')]",
-                "avdUseAvailabilityZones": "[steps('sessionHosts').sessionHostsComputeStorageSection.sessionHostsAvailabilitySettings]",
+                "avdUseAvailabilityZones": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings]",
                 "avdDeploySessionHostsCount": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
                 "useSharedImage": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false)]",
                 "avdOsImage": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false), steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11_21h2')]",
