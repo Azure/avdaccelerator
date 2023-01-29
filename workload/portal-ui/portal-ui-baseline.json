@@ -589,10 +589,11 @@
                                     "type": "Microsoft.Common.DropDown",
                                     "label": "Session hosts region",
                                     "defaultValue": "[steps('basics').resourceScope.location.displayName]",
+                                    "filter": true,
                                     "toolTip": "Select the region where the session hosts and required resources are to be deployed.",
                                     "constraints": {
                                         "required": true,
-                                         "allowedValues": "[if(equals(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, false), map(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'virtualMachines')), (item) => item.locations)), (item) => parse(concat('{\"label\":\"', item, '\",\"value\":\"', toLower(replace(item, ' ', '')), '\"}'))), map(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'virtualMachines')), (item) => item.zoneMappings)), (item) => parse(concat('{\"label\":\"', item.location, '\",\"value\":\"', toLower(replace(item.location, ' ', '')), '\"}'))))]"
+                                        "allowedValues": "[if(equals(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, false), map(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'virtualMachines')), (item) => item.locations)), (item) => parse(concat('{\"label\":\"', item, '\",\"value\":\"', toLower(replace(item, ' ', '')), '\"}'))), map(filter(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'virtualMachines')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => parse(concat('{\"label\":\"', item.location, '\",\"value\":\"', toLower(replace(item.location, ' ', '')), '\"}'))))]"
                                     }
                                 }
                             ]
