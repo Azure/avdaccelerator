@@ -860,7 +860,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
                     ImageOffer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
                     ImagePublisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
                     ImageSku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
-                    Location: imageVersionPrimaryLocation //deploymentLocation
+                    Location: deploymentLocation
                     SubscriptionId: sharedServicesSubId
                     TemplateName: imageTemplate.outputs.name
                     TemplateResourceGroupName: varResourceGroupName
