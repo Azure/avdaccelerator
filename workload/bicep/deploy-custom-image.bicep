@@ -737,7 +737,7 @@ module gallery '../../carml/1.3.0/Microsoft.Compute/galleries/deploy.bicep' = {
     name: 'Compute-Gallery_${time}'
     params: {
         name: varImageGalleryName
-        location: deploymentLocation
+        location: imageVersionPrimaryLocation
         galleryDescription: 'Azure Virtual Desktops Images'
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
@@ -758,7 +758,7 @@ module image '../../carml/1.3.0/Microsoft.Compute/galleries/images/deploy.bicep'
         publisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
         offer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
         sku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
-        location: deploymentLocation
+        location: imageVersionPrimaryLocation
         hyperVGeneration: varOperatingSystemImageDefinitions[operatingSystemImage].hyperVGeneration
         securityType: imageDefinitionSecurityType
         tags: enableResourceTags ? varCommonResourceTags : {}
