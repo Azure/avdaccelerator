@@ -36,7 +36,7 @@ resource "azurerm_virtual_network_peering" "peer1" {
   name                         = "peer_${var.prefix}_avdspoke_ad"
   resource_group_name          = azurerm_resource_group.net.name
   virtual_network_name         = azurerm_virtual_network.vnet.name
-  remote_virtual_network_id    = data.azurerm_virtual_network.remote.id 
+  remote_virtual_network_id    = data.azurerm_virtual_network.remote.id
   allow_virtual_network_access = true
   allow_forwarded_traffic      = true
   allow_gateway_transit        = false
@@ -47,7 +47,7 @@ resource "azurerm_virtual_network_peering" "peer2" {
   name                         = "peer_${var.prefix}_ad_avdspoke"
   resource_group_name          = var.ad_rg
   virtual_network_name         = var.ad_vnet
-  remote_virtual_network_id    = azurerm_virtual_network.vnet.id 
+  remote_virtual_network_id    = azurerm_virtual_network.vnet.id
   allow_virtual_network_access = true
   allow_forwarded_traffic      = true
   allow_gateway_transit        = true
