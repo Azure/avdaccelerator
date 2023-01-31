@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "15976249282457830545"
+      "templateHash": "7104169045732624687"
     }
   },
   "parameters": {
@@ -314,7 +314,7 @@
         "description": "Optional. Organizational owner of the AVD deployment. (Default: Contoso-Owner)"
       }
     },
-    "rdpShortPath": {
+    "rdpShortPathManagedNetworks": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
@@ -538,7 +538,7 @@
         "version": "latest"
       }
     },
-    "varRdpShortPathCustomizer": "[if(parameters('rdpShortPath'), createArray(createObject('type', 'PowerShell', 'name', 'rdpShortPath', 'runElevated', true(), 'runAsSystem', true(), 'scriptUri', format('{0}scripts/Set-RdpShortpath.ps1', variables('varBaseScriptUri')))), createArray())]",
+    "varRdpShortPathCustomizer": "[if(parameters('rdpShortPathManagedNetworks'), createArray(createObject('type', 'PowerShell', 'name', 'rdpShortPath', 'runElevated', true(), 'runAsSystem', true(), 'scriptUri', format('{0}scripts/Set-RdpShortpath.ps1', variables('varBaseScriptUri')))), createArray())]",
     "varRemainingCustomizers": [
       {
         "type": "WindowsRestart",
@@ -2469,7 +2469,7 @@
             "value": "[variables('varImageGalleryName')]"
           },
           "location": {
-            "value": "[parameters('deploymentLocation')]"
+            "value": "[parameters('imageVersionPrimaryLocation')]"
           },
           "galleryDescription": {
             "value": "Azure Virtual Desktops Images"
@@ -3809,7 +3809,7 @@
             "value": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].sku]"
           },
           "location": {
-            "value": "[parameters('deploymentLocation')]"
+            "value": "[parameters('imageVersionPrimaryLocation')]"
           },
           "hyperVGeneration": {
             "value": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].hyperVGeneration]"
