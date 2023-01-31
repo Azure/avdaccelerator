@@ -29,7 +29,7 @@
                                     "name": "deploymentInfo",
                                     "type": "Microsoft.Common.InfoBox",
                                     "options": {
-										"style": "Info",
+					"style": "Info",
                                         "text": "The subscription selected in the 'Project details' section below will be used to deploy all resources. \n\nThe region selected in 'Instance details' section below will be used to deploy the AVD management plane resources (workspace, host pool, and application group, etc.). These resource types are not available in all regions, but they are globally replicated.\n\nThe session hosts do not have to be deployed to the same region, therefore you will have the option to select that region on the 'Session Hosts' blade.",
                                         "uri": "https://docs.microsoft.com/azure/virtual-desktop/data-locations"										
                                     }
@@ -547,32 +547,22 @@
                             "tooltip": "The section allows you to specify the region where the compute, storage, and key vault resources are deployed.",
                             "elements": [
                                 {
-                                    "name": "sessionHostsRegion",
-                                    "type": "Microsoft.Common.LocationSelector",
-                                    "label": "Session Hosts Region",
-                                    "defaultValue": "[steps('basics').resourceScope.location.name]",
-                                    "toolTip": "Select the region where the session hosts and required resources are to be deployed.",
-                                    "resourceTypes": [
-                                        "Microsoft.Compute/virtualMachines"
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "name": "sessionHostsComputeStorageSection",
-                            "type": "Microsoft.Common.Section",
-                            "visible": "[equals(steps('sessionHosts').deploySessionHosts, true)]",
-                            "label": "General settings",
-                            "tooltip": "This settings apply to compute, storage, image management and key vault resources.",
-                            "elements": [
+                                    "name": "computeApi",
+                                    "type": "Microsoft.Solutions.ArmApiControl",
+                                    "request": {
+                                        "method": "GET",
+                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Compute/resourceTypes?api-version=2021-04-01')]"
+                                    }
+                                },
                                 {
-                                    "name": "identityDomainOuPath",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
-                                    "label": "Session hosts OU path (Optional)",
-                                    "toolTip": "Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU.",
-                                    "placeholder": "Example: OU=session-hosts,OU=avd,DC=contoso,DC=com",
-                                    "constraints": {}
+                                    "name": "infoAvailZones",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": true,
+                                    "options": {
+                                        "text": "If you select 'Use availability zones' below, some regions may not be available for deployment of session hosts because not all regions support Availability Zones. \n\nThe 'Session hosts region' drop down will automatically update based on this selection. If the value changes to blank, select an alternate region or set 'Use availability zones' to 'No'.",
+                                        "uri": "https://learn.microsoft.com/en-us/azure/reliability/availability-zones-service-support#azure-regions-with-availability-zone-support",
+                                        "style": "Info"
+                                    }
                                 },
                                 { 
                                     "name": "sessionHostsAvailabilitySettings",
@@ -593,6 +583,36 @@
                                             }
                                         ]
                                     }
+                                },
+                                {
+                                    "name": "sessionHostsRegion",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "Session hosts region",
+                                    "defaultValue": "[steps('basics').resourceScope.location.displayName]",
+                                    "filter": true,
+                                    "toolTip": "Select the region where the session hosts and required resources are to be deployed.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": "[if(equals(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, false), map(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'virtualMachines')), (item) => item.locations)), (item) => parse(concat('{\"label\":\"', item, '\",\"value\":\"', toLower(replace(item, ' ', '')), '\"}'))), map(filter(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'virtualMachines')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => parse(concat('{\"label\":\"', item.location, '\",\"value\":\"', toLower(replace(item.location, ' ', '')), '\"}'))))]"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "sessionHostsComputeStorageSection",
+                            "type": "Microsoft.Common.Section",
+                            "visible": "[equals(steps('sessionHosts').deploySessionHosts, true)]",
+                            "label": "General settings",
+                            "tooltip": "This settings apply to compute, storage, image management and key vault resources.",
+                            "elements": [
+                                {
+                                    "name": "identityDomainOuPath",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                                    "label": "Session hosts OU path (Optional)",
+                                    "toolTip": "Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU.",
+                                    "placeholder": "Example: OU=session-hosts,OU=avd,DC=contoso,DC=com",
+                                    "constraints": {}
                                 },
                                 {
                                     "name": "fslogixDeploymentDisabledAad",
@@ -1114,23 +1134,23 @@
                             ]
                         },
                         {
-                            "name": "virtualNetworkPeeringInfoBox",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
-                            "options": {
-                                "text": "vNet peering will be created to existing vNet hub with access to identity and DNS services .",
-                                "uri": "https://docs.microsoft.com/azure/architecture/example-scenario/wvd/windows-virtual-desktop?context=/azure/virtual-desktop/context/context",
-                                "style": "info"
-                            }
-                        },
-                        {
                             "name": "hubVirtualNetworkPeering",
                             "type": "Microsoft.Common.Section",
                             "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                             "label": "Existing hub vNet peering information",
                             "elements": [
                                 {
-                                    "name": "hubVirtualNetworkPeeringInfoBox",
+                                    "name": "virtualNetworkPeeringInfoBox1",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true),not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')))]",
+                                    "options": {
+                                        "text": "vNet peering will be created to existing vNet hub with access to identity and DNS services .",
+                                        "uri": "https://docs.microsoft.com/azure/architecture/example-scenario/wvd/windows-virtual-desktop?context=/azure/virtual-desktop/context/context",
+                                        "style": "info"
+                                    }
+                                },
+                                {
+                                    "name": "hubVirtualNetworkPeeringInfoBox2",
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
                                     "options": {
@@ -1562,7 +1582,7 @@
                                     "name": "availabilitySetCustomNamePrefix",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Availability set prefix",
-                                    "visible": "[equals(steps('sessionHosts').sessionHostsComputeStorageSection.sessionHostsAvailabilitySettings, false)]",
+                                    "visible": "[equals(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, false)]",
                                     "toolTip": "AVD availability set custom name.",
                                     "placeholder": "Example: avail-avd",
                                     "constraints": {
@@ -1769,16 +1789,6 @@
                             "options": {
                                 "text": "AVD accelerator has built-in resource naming automation based and best practices Microsoft Cloud Adoption Framework (CAF) naming convention.",
                                 "uri": "https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming",
-                                "style": "Info"
-                            }
-                        },
-                        {
-                            "name": "resourceNamingInfo3",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "text": "And abbreviations recommendations for Azure resource types.",
-                                "uri": "https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations",
                                 "style": "Info"
                             }
                         }
@@ -2066,7 +2076,7 @@
             "parameters": {
                 "deploymentPrefix": "[steps('basics').deploymentPrefix]",
                 "avdManagementPlaneLocation": "[steps('basics').resourceScope.location.name]",
-                "avdSessionHostLocation": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion.name]",
+                "avdSessionHostLocation": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]",
                 "avdWorkloadSubsId": "[steps('basics').resourceScope.subscription.subscriptionId]",
                 "avdHostPoolType": "[steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType]",
                 "avdHostPoolLoadBalancerType": "[steps('managementPlane').managementPlaneHostPoolSettings.loadBalancerType]",
@@ -2093,7 +2103,7 @@
                 "avdDeployScalingPlan": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, false)]",
                 "createStartVmOnConnectCustomRole": "[if(equals(steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, true), steps('managementPlane').managementPlaneHostPoolScaling.createVmRole, false)]",
                 "avdEnterpriseAppObjectId": "[if(or(equals(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, true), equals(steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, true)), steps('managementPlane').managementPlaneHostPoolScaling.avdEnterpriseApplication.objectId, 'none')]",
-                "avdUseAvailabilityZones": "[steps('sessionHosts').sessionHostsComputeStorageSection.sessionHostsAvailabilitySettings]",
+                "avdUseAvailabilityZones": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings]",
                 "avdDeploySessionHostsCount": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
                 "useSharedImage": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false)]",
                 "avdOsImage": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false), steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11_21h2')]",
