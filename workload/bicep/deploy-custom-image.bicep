@@ -194,7 +194,7 @@ param operationsTeamTag string = 'workload-admins@Contoso.com'
 param ownerTag string = 'workload-owner@Contoso.com'
 
 @description('Optional. Determine whether to enable RDP Short Path for Managed Networks. (Default: false)')
-param rdpShortPath bool = false
+param rdpShortPathManagedNetworks bool = false
 
 @maxLength(90)
 @description('Optional. Custom name for Resource Group. (Default: rg-avd-use2-shared-services)')
@@ -499,7 +499,7 @@ var varOperatingSystemImageDefinitions = {
         version: 'latest'
     }
 }
-var varRdpShortPathCustomizer = rdpShortPath ? [
+var varRdpShortPathCustomizer = rdpShortPathManagedNetworks ? [
     {
         type: 'PowerShell'
         name: 'rdpShortPath'
@@ -737,7 +737,7 @@ module gallery '../../carml/1.3.0/Microsoft.Compute/galleries/deploy.bicep' = {
     name: 'Compute-Gallery_${time}'
     params: {
         name: varImageGalleryName
-        location: deploymentLocation
+        location: imageVersionPrimaryLocation
         galleryDescription: 'Azure Virtual Desktops Images'
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
@@ -758,7 +758,7 @@ module image '../../carml/1.3.0/Microsoft.Compute/galleries/images/deploy.bicep'
         publisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
         offer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
         sku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
-        location: deploymentLocation
+        location: imageVersionPrimaryLocation
         hyperVGeneration: varOperatingSystemImageDefinitions[operatingSystemImage].hyperVGeneration
         securityType: imageDefinitionSecurityType
         tags: enableResourceTags ? varCommonResourceTags : {}

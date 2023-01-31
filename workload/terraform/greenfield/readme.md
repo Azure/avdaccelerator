@@ -19,7 +19,7 @@ To get started with Terraform on Azure check out their [tutorial](https://learn.
 
 ## Prerequisites
 
-- Meet the prerequisites listed [here](https://github.com/Azure/avdaccelerator/wiki/Getting-Started#Getting-Started)
+- Meet the prerequisites listed [here](../../docs/getting-started-baseline.md)
 - Current version of the [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli)
 - Current version of the Terraform CLI
 - An Azure Subscription(s) where you or an identity you manage has `Owner` [RBAC permissions](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner)
@@ -117,8 +117,6 @@ az keyvault secret set --vault-name "<Azure Virtual Desktopkeyvaultdemo>" --name
 4. Run `terraform init` to initialize this directory
 5. Run `terraform plan` to view the planned deployment
 5. Run `terraform apply` to confirm the deployment
-
-## Confirming Deployment
 
 ## Additional References
 
