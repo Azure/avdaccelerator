@@ -3,44 +3,42 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
+
 @description('Resource Group name for the session hosts.')
-param avdComputeObjectsRgName string
+param computeObjectsRgName string
 
 @description('Optional. AVD workload subscription ID, multiple subscriptions scenario.')
-param avdWorkloadSubsId string
+param workloadSubsId string
 
 @description('Required. Virtual machine time zone.')
-param avdTimeZone string
+param timeZone string
 
 @description('Resource Group Name for Azure Files.')
-param avdStorageObjectsRgName string
+param storageObjectsRgName string
 
 @description('Required, The service providing domain services for Azure Virtual Desktop.')
-param avdIdentityServiceProvider string
+param identityServiceProvider string
 
 @description('Resource Group Name for Azure Files.')
-param avdServiceObjectsRgName string
-
-@description('Storage account files priovate endpoint name.')
-param avdWrklStoragePrivateEndpointName string
+param serviceObjectsRgName string
 
 @description('AVD subnet ID.')
-param avdSubnetId string
+param subnetId string
 
 @description('Optional. Create new virtual network.')
 param createAvdVnet bool
 
 @description('Required. Location where to deploy compute services.')
-param avdSessionHostLocation string
+param sessionHostLocation string
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool
 
 @description('Session host VM size.')
-param avdSessionHostsSize string
+param sessionHostsSize string
 
 @description('OS disk type for session host.')
-param avdSessionHostDiskType string
+param sessionHostDiskType string
 
 @description('Market Place OS image')
 param marketPlaceGalleryWindowsManagementVm object
@@ -49,81 +47,112 @@ param marketPlaceGalleryWindowsManagementVm object
 param useSharedImage bool
 
 @description('Source custom image ID.')
-param avdImageTemplateDefinitionId string
+param imageTemplateDefinitionId string
 
-@description('Fslogix Managed Identity Resource ID.')
-param fslogixManagedIdentityResourceId string
+@description('Storage Managed Identity Resource ID.')
+param storageManagedIdentityResourceId string
 
-@description('Fslogix file share SMB multichannel.')
-param avdFslogixFileShareMultichannel bool
+@description('File share SMB multichannel.')
+param fileShareMultichannel bool
 
 @description('Subnet resource ID for the Azure Files private endpoint.')
 param subnetResourceId string
 
 @description('Local administrator username.')
-param avdVmLocalUserName string
+param vmLocalUserName string
 
 @description('Required. AD domain name.')
-param avdIdentityDomainName string
+param identityDomainName string
 
 @description('Required. Keyvault name to get credentials from.')
-param avdWrklKvName string
+param wrklKvName string
 
 @description('Required. AVD session host domain join credentials.')
-param avdDomainJoinUserName string
+param domainJoinUserName string
 
 @description('Optional. OU path to join AVd VMs.')
 param sessionHostOuPath string
 
 @description('Application Security Group (ASG) for the session hosts.')
-param avdApplicationSecurityGroupResourceId string
+param applicationSecurityGroupResourceId string
 
-@description('Azure Fies storage account name.')
-param avdFslogixStorageName string
+@description('*Azure Files storage account SKU.')
+param storageSku string
 
-@description('Azure Files share name.')
-param avdFslogixProfileContainerFileShareName string
-
-@description('Azure Files storage account SKU.')
-param fslogixStorageSku string
-
-@description('Azure File share quota')
-param avdFslogixFileShareQuotaSize int
+@description('*Azure File share quota')
+param fileShareQuotaSize int
 
 @description('Use Azure private DNS zones for private endpoints.')
-param avdVnetPrivateDnsZone bool
+param vnetPrivateDnsZone bool
 
 @description('Use Azure private DNS zones for private endpoints.')
-param avdVnetPrivateDnsZoneFilesId string
-
-@description('Name for management virtual machine. for tools and to join Azure Files to domain.')
-param managementVmName string
+param vnetPrivateDnsZoneFilesId string
 
 @description('Script name for adding storage account to Active Directory.')
 param storageToDomainScript string
-
-@description('Script arguments for adding the storage account to Active Directory.')
-@secure()
-param storageToDomainScriptArgs string
 
 @description('URI for the script for adding the storage account to Active Directory.')
 param storageToDomainScriptUri string
 
 @description('Required. Tags to be applied to resources')
-param avdTags object
+param tags object
+
+@description('Name for management virtual machine. for tools and to join Azure Files to domain.')
+param managementVmName string
 
 @description('Optional. Log analytics workspace for diagnostic logs.')
-param avdAlaWorkspaceResourceId string
+param alaWorkspaceResourceId string
 
 @description('Optional. Diagnostic logs retention.')
-param avdDiagnosticLogsRetentionInDays int
+param diagnosticLogsRetentionInDays int
 
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
+@description('Sets purpose of the storage account.')
+param storagePurpose string
+
+@description('Required. AVD resources custom naming. (Default: false)')
+param useCustomNaming bool
+
+@description('Sets purpose of the storage account.')
+param storageAccountPrefixCustomName string
+
+@description('Deployment Prefix set in main template, in lowercase.')
+param deploymentPrefixLowercase string
+
+@description('Unique name truncated into 6 characters')
+param namingUniqueStringSixChar string
+
+//parameters for domain join
+@description('Sets location of DSC Agent.')
+param dscAgentPackageLocation string
+
+@secure()
+@description('Domain join user password.')
+param domainJoinUserPassword string
+
+@description('Custom OU path for storage.')
+param avdStorageCustomOuPath string
+
+@description('OU Storage Path')
+param avdOuStgPath string
+
+@description('Optional. If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: "")')
+param avdCreateOuForStorageString string
+
+@description('Managed Identity Client ID')
+param managedIdentityClientId string
+
+@maxLength(64)
+@description('Optional. Storage account profile container file share prefix custom name. (Default: storagePurpose-pc-app1-001)')
+param fileShareCustomName string
+
+
 // =========== //
 // Variable declaration //
 // =========== //
+var varStoragePurposeLower = toLower(storagePurpose)
 var varAvdFileShareLogsDiagnostic = [
     'StorageRead'
     'StorageWrite'
@@ -132,6 +161,12 @@ var varAvdFileShareLogsDiagnostic = [
 var varAvdFileShareMetricsDiagnostic = [
     'Transaction'
 ]
+var varFileShareName = useCustomNaming ? fileShareCustomName : '${varStoragePurposeLower}-pc-${deploymentPrefixLowercase}-001'
+var varWrklStoragePrivateEndpointName = 'pe-${varStorageName}-file'
+var varStoragePurposeLowerPrefix = substring(varStoragePurposeLower, 0,2)
+var varStorageName = useCustomNaming ? '${storageAccountPrefixCustomName}${varStoragePurposeLower}${deploymentPrefixLowercase}${namingUniqueStringSixChar}' : 'stavd${varStoragePurposeLower}${deploymentPrefixLowercase}${namingUniqueStringSixChar}'
+
+var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${varStorageName} -StorageAccountRG ${storageObjectsRgName} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment AzureCloud -SubscriptionId ${workloadSubsId} -DomainAdminUserName ${domainJoinUserName} -DomainAdminUserPassword ${domainJoinUserPassword} -CustomOuPath ${avdStorageCustomOuPath} -OUName ${avdOuStgPath} -CreateNewOU ${avdCreateOuForStorageString} -ShareName ${varFileShareName} -ClientId ${managedIdentityClientId} -Verbose'
 
 // =========== //
 // Deployments //
@@ -139,21 +174,21 @@ var varAvdFileShareMetricsDiagnostic = [
 
 // Call on the KV.
 resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
-    name: avdWrklKvName
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
+    name: wrklKvName
+    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
 }
 
 // Provision the storage account and Azure Files.
-module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
-    name: 'Fslogix-Storage-${time}'
+module storageAndFile '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
+    scope: resourceGroup('${workloadSubsId}', '${storageObjectsRgName}')
+    name: 'Storage-${storagePurpose}-${time}'
     params: {
-        name: avdFslogixStorageName
-        location: avdSessionHostLocation
-        storageAccountSku: fslogixStorageSku
+        name: varStorageName
+        location: sessionHostLocation
+        storageAccountSku: storageSku
         allowBlobPublicAccess: false
-        storageAccountKind: ((fslogixStorageSku =~ 'Premium_LRS') || (fslogixStorageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
-        azureFilesIdentityBasedAuthentication: (avdIdentityServiceProvider == 'AADDS') ? {
+        storageAccountKind: ((storageSku =~ 'Premium_LRS') || (storageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
+        azureFilesIdentityBasedAuthentication: (identityServiceProvider == 'AADDS') ? {
             directoryServiceOptions: 'AADDS'
         }: {
             directoryServiceOptions: 'None'
@@ -168,71 +203,71 @@ module fslogixStorage '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
         fileServices: {
             shares: [
                 {
-                    name: avdFslogixProfileContainerFileShareName
-                    sharedQuota: avdFslogixFileShareQuotaSize * 100 //Portal UI steps scale
+                    name: varFileShareName
+                    sharedQuota: fileShareQuotaSize * 100 //Portal UI steps scale
                 }
             ]
-            protocolSettings: avdFslogixFileShareMultichannel ? {
+            protocolSettings: fileShareMultichannel ? {
                 smb: {
                     multichannel: {
-                        enabled: avdFslogixFileShareMultichannel
+                        enabled: fileShareMultichannel
                     }
                 }
             } : {}
-            diagnosticWorkspaceId: avdAlaWorkspaceResourceId
+            diagnosticWorkspaceId: alaWorkspaceResourceId
             diagnosticLogCategoriesToEnable: varAvdFileShareLogsDiagnostic
             diagnosticMetricsToEnable: varAvdFileShareMetricsDiagnostic
         }
-        privateEndpoints: avdVnetPrivateDnsZone ? [
+        privateEndpoints: vnetPrivateDnsZone ? [
             {
-                name: avdWrklStoragePrivateEndpointName
+                name: varWrklStoragePrivateEndpointName
                 subnetResourceId: subnetResourceId
                 service: 'file'
                 privateDnsZoneResourceIds: [
-                    avdVnetPrivateDnsZoneFilesId
+                    vnetPrivateDnsZoneFilesId
                 ]
             }
         ] : [
             {
-                name: avdWrklStoragePrivateEndpointName
+                name: varWrklStoragePrivateEndpointName
                 subnetResourceId: subnetResourceId
                 service: 'file'
             }
         ]
-        tags: avdTags
-        diagnosticWorkspaceId: avdAlaWorkspaceResourceId
-        diagnosticLogsRetentionInDays: avdDiagnosticLogsRetentionInDays
+        tags: tags
+        diagnosticWorkspaceId: alaWorkspaceResourceId
+        diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
     }
 }
 
 // Provision temporary VM and add it to domain.
 module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.bicep' = {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
+    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
     name: 'Management-VM-${time}'
     params: {
         name: managementVmName
-        location: avdSessionHostLocation
-        timeZone: avdTimeZone
+        location: sessionHostLocation
+        timeZone: timeZone
         systemAssignedIdentity: false
         userAssignedIdentities: {
-            '${fslogixManagedIdentityResourceId}': {}
+            '${storageManagedIdentityResourceId}': {}
         }
         encryptionAtHost: encryptionAtHost
         availabilityZone: []
         osType: 'Windows'
         //licenseType: 'Windows_Client'
-        vmSize: avdSessionHostsSize
-        imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinitionId}\'}') : marketPlaceGalleryWindowsManagementVm
+        vmSize: sessionHostsSize
+        imageReference: useSharedImage ? json('{\'id\': \'${imageTemplateDefinitionId}\'}') : marketPlaceGalleryWindowsManagementVm
         //imageReference: marketPlaceGalleryWindowsManagementVm
         osDisk: {
             createOption: 'fromImage'
             deleteOption: 'Delete'
             diskSizeGB: 128
             managedDisk: {
-                storageAccountType: avdSessionHostDiskType
+                storageAccountType: sessionHostDiskType
             }
         }
-        adminUsername: avdVmLocalUserName
+        adminUsername: vmLocalUserName
         adminPassword: avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
         nicConfigurations: [
             {
@@ -242,13 +277,13 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
                 ipConfigurations: createAvdVnet ? [
                     {
                         name: 'ipconfig01'
-                        subnetId: avdSubnetId
-                        applicationSecurityGroups: avdApplicationSecurityGroupResourceId
+                        subnetId: subnetId
+                        applicationSecurityGroups: applicationSecurityGroupResourceId
                     }
                 ] : [
                     {
                         name: 'ipconfig01'
-                        subnetId: avdSubnetId
+                        subnetId: subnetId
                     }
                 ]
             }
@@ -259,27 +294,27 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
         extensionDomainJoinConfig: {
             enabled: true
             settings: {
-                name: avdIdentityDomainName
+                name: identityDomainName
                 ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
-                user: avdDomainJoinUserName
+                user: domainJoinUserName
                 restart: 'true'
                 options: '3'
             }
         }
-        tags: avdTags
+        tags: tags
     }
     dependsOn: [
-        fslogixStorage
+        storageAndFile
     ]
 }
 
-// Introduce Wait for management VM to be ready.
+// Introduce wait for management VM to be ready.
 module managementVmWait '../../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
+    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
     name: 'Management-VM-Wait-${time}'
     params: {
-        name: 'AVD-userManagedIdentityWait-${time}'
-        location: avdSessionHostLocation
+        name: '${storagePurpose}-userManagedIdentityWait-${time}'
+        location: sessionHostLocation
         azPowerShellVersion: '6.2'
         cleanupPreference: 'Always'
         timeout: 'PT10M'
@@ -294,24 +329,31 @@ module managementVmWait '../../../carml/1.0.0/Microsoft.Resources/deploymentScri
     dependsOn: [
         managementVM
     ]
-}
+} 
 
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
-module addFslogixShareToDomainSript '../../vm-custom-extensions/add-azure-files-to-domain-script.bicep' = { //if(avdIdentityServiceProvider == 'ADDS')  {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
-    name: 'Fslogix-Storage-Setup-${time}'
+module addShareToDomainScript '../../vm-custom-extensions/add-azure-files-to-domain-script.bicep' = if(identityServiceProvider == 'ADDS' || identityServiceProvider == 'AADDS')  {
+    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+    name: 'Add-${storagePurpose}-Storage-Setup-${time}'
     params: {
-        location: avdSessionHostLocation
+        location: sessionHostLocation
         name: managementVM.outputs.name
         file: storageToDomainScript
-        ScriptArguments: storageToDomainScriptArgs
+        ScriptArguments: varStorageToDomainScriptArgs
         baseScriptUri: storageToDomainScriptUri
     }
     dependsOn: [
-        fslogixStorage
+        storageAndFile
         managementVmWait
     ]
 }
 
 // Run deployment script to remove the VM --> 0.2 release. 
 // needs user managed identity --> Virtual machine contributor role assignment. Deployment script to assume the identity to delete VM. Include NIC and disks (force)
+ 
+// =========== //
+//   Outputs   //
+// =========== //
+
+output storageAccountName string = storageAndFile.outputs.name
+output fileShareName string = varFileShareName
