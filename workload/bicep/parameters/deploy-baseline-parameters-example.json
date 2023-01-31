@@ -144,7 +144,7 @@
             "value": "Premium_LRS"
         },
         "msixStorageSku": {
-            "value": "Standard_LRS"
+            "value": "Premium_LRS"
         },
         "encryptionAtHost": {
             "value": false
