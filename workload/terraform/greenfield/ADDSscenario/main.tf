@@ -45,3 +45,12 @@ module "personal" {
 }
 */
 
+# optional - Creates the Azure Virtual Desktop Firewall Rules assuming you have a firewall in the hub
+/*
+module "firewall" {
+source = "../../modules/network/firewallrules"
+avdLocation = var.avdLocation
+ad_rg = var.ad_rg
+resource_group_name = var.ad_rg
+}
+*/
