@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "5816280583810337153"
+      "templateHash": "1044855772275349158"
     }
   },
   "parameters": {
@@ -823,6 +823,7 @@
     }
   },
   "variables": {
+    "varAzureCloudName": "[environment().name]",
     "varDeploymentPrefixLowercase": "[toLower(parameters('deploymentPrefix'))]",
     "varAvdSessionHostLocationLowercase": "[toLower(parameters('avdSessionHostLocation'))]",
     "varAvdManagementPlaneLocationLowercase": "[toLower(parameters('avdManagementPlaneLocation'))]",
@@ -21805,7 +21806,7 @@
             "value": "[variables('varStorageToDomainScript')]"
           },
           "storageToDomainScriptArgs": {
-            "value": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -DomainName {3} -IdentityServiceProvider {4} -AzureCloudEnvironment AzureCloud -SubscriptionId {5} -DomainAdminUserName {6} -DomainAdminUserPassword {7} -CustomOuPath {8} -OUName {9} -CreateNewOU {10} -ShareName {11} -ClientId {12} -Verbose', variables('varDscAgentPackageLocation'), variables('varAvdFslogixStorageName'), variables('varAvdStorageObjectsRgName'), parameters('avdIdentityDomainName'), parameters('avdIdentityServiceProvider'), parameters('avdWorkloadSubsId'), parameters('avdDomainJoinUserName'), parameters('avdDomainJoinUserPassword'), variables('varStorageCustomOuPath'), variables('varOuStgPath'), variables('varCreateOuForStorageString'), variables('varAvdFslogixProfileContainerFileShareName'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.fslogixManagedIdentityClientId.value)]"
+            "value": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -DomainName {3} -IdentityServiceProvider {4} -AzureCloudEnvironment {5} -SubscriptionId {6} -DomainAdminUserName {7} -DomainAdminUserPassword {8} -CustomOuPath {9} -OUName {10} -CreateNewOU {11} -ShareName {12} -ClientId {13} -Verbose', variables('varDscAgentPackageLocation'), variables('varAvdFslogixStorageName'), variables('varAvdStorageObjectsRgName'), parameters('avdIdentityDomainName'), parameters('avdIdentityServiceProvider'), variables('varAzureCloudName'), parameters('avdWorkloadSubsId'), parameters('avdDomainJoinUserName'), parameters('avdDomainJoinUserPassword'), variables('varStorageCustomOuPath'), variables('varOuStgPath'), variables('varCreateOuForStorageString'), variables('varAvdFslogixProfileContainerFileShareName'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.fslogixManagedIdentityClientId.value)]"
           },
           "storageToDomainScriptUri": {
             "value": "[variables('varStorageToDomainScriptUri')]"
