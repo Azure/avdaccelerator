@@ -116,7 +116,7 @@ variable "ragworkspace" {
   description = "Name of the Azure Virtual Desktop workspace"
 }
 
-variable "ad_vnet" {
+variable "hub_vnet" {
   type        = string
   description = "Name of domain controller vnet"
 }
@@ -140,9 +140,9 @@ variable "pesubnet_range" {
   description = "Address range for private endpoints subnet"
 }
 
-variable "ad_rg" {
+variable "hub_connectivity_rg" {
   type        = string
-  description = "The resource group for AD VM"
+  description = "The resource group for hub connectivity resources"
 }
 
 variable "avd_users" {
@@ -194,12 +194,6 @@ variable "ou_path" {
 variable "local_admin_username" {
   type        = string
   description = "local admin username"
-}
-
-variable "local_admin_password" {
-  type        = string
-  description = "local admin password"
-  sensitive   = true
 }
 
 variable "image_name" {

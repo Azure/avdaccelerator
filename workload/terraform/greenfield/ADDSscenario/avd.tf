@@ -155,9 +155,8 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
     azurerm_virtual_desktop_host_pool.hostpool
   ]
 
-  log {
+  enabled_log {
     category = "Checkpoint"
-    enabled  = true
 
     retention_policy {
       days    = 7
@@ -165,18 +164,16 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
     }
   }
 
-  log {
+  enabled_log {
     category = "Error"
-    enabled  = true
 
     retention_policy {
       days    = 7
       enabled = true
     }
   }
-  log {
+  enabled_log {
     category = "Management"
-    enabled  = true
 
     retention_policy {
       days    = 7
@@ -184,18 +181,16 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
     }
   }
 
-  log {
+  enabled_log {
     category = "Connection"
-    enabled  = true
 
     retention_policy {
       days    = 7
       enabled = true
     }
   }
-  log {
+  enabled_log {
     category = "HostRegistration"
-    enabled  = true
 
     retention_policy {
       days    = 7
@@ -203,9 +198,8 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
     }
   }
 
-  log {
+  enabled_log {
     category = "AgentHealthStatus"
-    enabled  = true
 
     retention_policy {
       days    = 7
@@ -213,9 +207,8 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
     }
   }
 
-  log {
+  enabled_log {
     category = "NetworkData"
-    enabled  = true
 
     retention_policy {
       days    = 7
@@ -223,9 +216,8 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
     }
   }
 
-  log {
+  enabled_log {
     category = "SessionHostManagement"
-    enabled  = true
 
     retention_policy {
       days    = 7
@@ -244,9 +236,8 @@ resource "azurerm_monitor_diagnostic_setting" "avd-dag1" {
     data.azurerm_log_analytics_workspace.lawksp
   ]
 
-  log {
+  enabled_log {
     category = "Checkpoint"
-    enabled  = true
 
     retention_policy {
       days    = 7
@@ -254,18 +245,16 @@ resource "azurerm_monitor_diagnostic_setting" "avd-dag1" {
     }
   }
 
-  log {
+  enabled_log {
     category = "Error"
-    enabled  = true
 
     retention_policy {
       days    = 7
       enabled = true
     }
   }
-  log {
+  enabled_log {
     category = "Management"
-    enabled  = true
 
     retention_policy {
       days    = 7
@@ -284,9 +273,8 @@ resource "azurerm_monitor_diagnostic_setting" "avd-wksp1" {
     data.azurerm_log_analytics_workspace.lawksp
   ]
 
-  log {
+  enabled_log {
     category = "Checkpoint"
-    enabled  = true
 
     retention_policy {
       days    = 7
@@ -294,18 +282,16 @@ resource "azurerm_monitor_diagnostic_setting" "avd-wksp1" {
     }
   }
 
-  log {
+  enabled_log {
     category = "Error"
-    enabled  = true
 
     retention_policy {
       days    = 7
       enabled = true
     }
   }
-  log {
+  enabled_log {
     category = "Management"
-    enabled  = true
 
     retention_policy {
       days    = 7
@@ -313,9 +299,8 @@ resource "azurerm_monitor_diagnostic_setting" "avd-wksp1" {
     }
   }
 
-  log {
+  enabled_log {
     category = "Feed"
-    enabled  = true
 
     retention_policy {
       days    = 7
