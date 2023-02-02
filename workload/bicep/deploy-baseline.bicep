@@ -136,7 +136,7 @@ param vNetworkGatewayOnHub bool = false
 param createAvdFslogixDeployment bool = true
 
 @description('Optional. Deploy MSIX App Attach setup. (Default: false)')
-param createMsixDeployment bool = false
+param createAvdMsixDeployment bool = true
 
 @description('Optional. Fslogix file share size. (Default: ~1TB)')
 param fslogixFileShareQuotaSize int = 10
@@ -750,7 +750,7 @@ var varCreateOuForStorageString = string(createOuForStorage)
 var allDnsServers = '${customDnsIps},168.63.129.16'
 var varDnsServers = (customDnsIps == 'none') ? []: (split(allDnsServers, ','))
 var varCreateAvdFslogixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: createAvdFslogixDeployment
-var varCreateMsixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: createMsixDeployment
+var varCreateMsixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: createAvdMsixDeployment
 var varCreateStorageDeployment = (varCreateAvdFslogixDeployment||varCreateMsixDeployment == true) ? true: false
 
 var varAvdApplicationGroupIdentitiesIds = !empty(avdApplicationGroupIdentitiesIds) ? (split(avdApplicationGroupIdentitiesIds, ',')): []
@@ -1137,7 +1137,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 }
 
 // Storage.
-module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (varCreateAvdFslogixDeployment && avdDeploySessionHosts && (avdIdentityServiceProvider != 'AAD')) {
+module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (varCreateAvdFslogixDeployment && avdDeploySessionHosts && (avdIdentityServiceProvider != 'AAD')) {
     name: 'Storage-Azure-Files-${time}'
     params: {
         storagePurpose: 'fslogix'
@@ -1291,7 +1291,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         workloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
         createAvdFslogixDeployment: (avdIdentityServiceProvider != 'AAD') ? varCreateAvdFslogixDeployment: false
-        fslogixManagedIdentityResourceId:  (varCreateAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD'))  ? deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId : ''
+        storageManagedIdentityResourceId:  (varCreateStorageDeployment && (avdIdentityServiceProvider != 'AAD'))  ? deployManagedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
         fsLogixScript: (avdIdentityServiceProvider != 'AAD') ? varFsLogixScript: ''
         fsLogixScriptArguments: (avdIdentityServiceProvider != 'AAD') ? varFsLogixScriptArguments: ''
         fslogixScriptUri: (avdIdentityServiceProvider != 'AAD') ? varFslogixScriptUri: ''
