@@ -37,7 +37,7 @@ param sessionHostsCount int
 param createAvdVnet bool
 
 @description('The session host number to begin with for the deployment.')
-param sessionHostCountIndex int
+param avdSessionHostCountIndex int
 
 @description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set.')
 param useAvailabilityZones bool
@@ -154,9 +154,9 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 // Session hosts.
 module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(1, sessionHostsCount): {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
-    name: 'Session-Host-${padLeft((i + sessionHostCountIndex), 3, '0')}-${time}'
+    name: 'Session-Host-${padLeft((i + avdSessionHostCountIndex), 3, '0')}-${time}'
     params: {
-        name: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
+        name: '${sessionHostNamePrefix}-${padLeft((i + avdSessionHostCountIndex), 3, '0')}'
         location: sessionHostLocation
         timeZone: timeZone
         userAssignedIdentities: createAvdFslogixDeployment ? {
@@ -165,7 +165,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
         systemAssignedIdentity: (identityServiceProvider == 'AAD') ? true: false
         availabilityZone: useAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
         encryptionAtHost: encryptionAtHost
-        availabilitySetName: !useAvailabilityZones ? '${availabilitySetNamePrefix}-${padLeft(((1 + (i + sessionHostCountIndex) / maxAvailabilitySetMembersCount)), 3, '0')}': ''
+        availabilitySetName: !useAvailabilityZones ? '${availabilitySetNamePrefix}-${padLeft(((1 + (i + avdSessionHostCountIndex) / maxAvailabilitySetMembersCount)), 3, '0')}': ''
         osType: 'Windows'
         licenseType: 'Windows_Client'
         vmSize: sessionHostsSize
@@ -263,7 +263,7 @@ module addAvdHostsToHostPool '../../vm-custom-extensions/add-avd-session-hosts.b
     params: {
         location: sessionHostLocation
         hostPoolToken: hostPoolToken
-        name: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
+        name: '${sessionHostNamePrefix}-${padLeft((i + avdSessionHostCountIndex), 3, '0')}'
         hostPoolName: hostPoolName
         avdAgentPackageLocation: agentPackageLocation
     }
@@ -275,10 +275,10 @@ module addAvdHostsToHostPool '../../vm-custom-extensions/add-avd-session-hosts.b
 // Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
 module configureFsLogixForAvdHosts '../../vm-custom-extensions/configure-fslogix-session-hosts.bicep' = [for i in range(1, sessionHostsCount): if (createAvdFslogixDeployment && (identityServiceProvider != 'AAD')) {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
-    name: 'Configure-FsLogix-for-${padLeft((i + sessionHostCountIndex), 3, '0')}-${time}'
+    name: 'Configure-FsLogix-for-${padLeft((i + avdSessionHostCountIndex), 3, '0')}-${time}'
     params: {
         location: sessionHostLocation
-        name: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
+        name: '${sessionHostNamePrefix}-${padLeft((i + avdSessionHostCountIndex), 3, '0')}'
         file: fsLogixScript
         FsLogixScriptArguments: fsLogixScriptArguments
         baseScriptUri: fslogixScriptUri
