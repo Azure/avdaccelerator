@@ -7,9 +7,9 @@ variable "resource_group_name" {
   description = "Name of the Resource group in which to deploy network resources"
 }
 
-variable "ad_rg" {
+variable "hub_connectivity_rg" {
   type        = string
-  description = "The resource group for AD VM"
+  description = "The resource group for the hub connectivity resources"
 }
 
 variable "tags" {
