@@ -11,8 +11,8 @@ module "network" {
   nsg                   = "${var.nsg}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
   prefix                = var.prefix
   rt                    = "${var.rt}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
-  ad_rg                 = var.ad_rg
-  ad_vnet               = var.ad_vnet
+  hub_connectivity_rg   = var.hub_connectivity_rg
+  hub_vnet              = var.hub_vnet
   subnet_range          = var.subnet_range
   pesubnet_range        = var.pesubnet_range
   hub_subscription_id   = var.hub_subscription_id
