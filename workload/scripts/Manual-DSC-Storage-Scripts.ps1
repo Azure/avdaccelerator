@@ -55,6 +55,10 @@ param (
         [ValidateNotNullOrEmpty()]
         [string] $DomainAdminUserPassword
 
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $StoragePurpose
+
 )
 
 Write-Host "Downloading the DSCStorageScripts.zip from $DscPath"
