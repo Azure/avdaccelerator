@@ -53,7 +53,7 @@ param (
 	
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $DomainAdminUserPassword
+        [string] $DomainAdminUserPassword,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
