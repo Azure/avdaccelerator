@@ -1090,14 +1090,14 @@
                             "name": "virtualNetworkPrivateDnsZone",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
-                            "label": "Azure private DNS zone (Private endpoints)",
-                            "defaultValue": "Yes",
-                            "toolTip": "It is recommended to use Azure private DNS zones for private endpoint name spaces (ALZ recommended and deployed).",
+                            "label": "Existing Azure private DNS zone",
+                            "defaultValue": "Yes (Recommended)",
+                            "toolTip": "It is recommended to use Azure private DNS zones for private endpoint name spaces, private endpoints will be automatically created for PaaS services (Azure Files and Key Vault) but the private DNS zones are prerequisites required.",
                             "constraints": {
                                 "required": true,
                                 "allowedValues": [
                                     {
-                                        "label": "Yes",
+                                        "label": "Yes (Recommended)",
                                         "value": true
                                     },
                                     {
@@ -1116,19 +1116,36 @@
                                     "name": "virtualNetworkPrivateDnsZoneFilesSelector",
                                     "type": "Microsoft.Solutions.ResourceSelector",
                                     "visible": "[equals(steps('sessionHosts').sessionHostsComputeStorageSection.fslogixDeployment, true)]",
-                                    "label": "File share (privatelink.file.core.windows.net)",
+                                    "label": "Azure files",
                                     "resourceType": "Microsoft.Network/privateDnsZones",
                                     "constraints": {
                                         "required": true
                                     }
                                 },
                                 {
+                                    "name": "infoAzureFiles",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('sessionHosts').sessionHostsComputeStorageSection.fslogixDeployment, true)]",
+                                    "options": {
+                                        "text": "Azure Files private DNS zone naming: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net",
+                                        "style": "info"
+                                    }
+                                },
+                                {
                                     "name": "virtualNetworkPrivateDnsZoneKeyvaultSelector",
                                     "type": "Microsoft.Solutions.ResourceSelector",
-                                    "label": "Key vault (privatelink.vaultcore.azure.net)",
+                                    "label": "Key vault",
                                     "resourceType": "Microsoft.Network/privateDnsZones",
                                     "constraints": {
                                         "required": true
+                                    }
+                                },
+                                {
+                                    "name": "infoKeyVault",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "options": {
+                                        "text": "Key Vault private DNS zone naming: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net",
+                                        "style": "info"
                                     }
                                 }
                             ]
