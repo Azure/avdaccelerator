@@ -55,6 +55,12 @@
         },
         "customNaming": {
             "value": false
-        }          
+        },
+        "imageDefinitionAcceleratedNetworkSupported": {
+            "value": false
+        },
+        "imageDefinitionHibernateSupported": {
+            "value": false
+        }    
     }   
 }
