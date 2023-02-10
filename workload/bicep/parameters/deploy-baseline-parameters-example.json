@@ -184,6 +184,9 @@
         },           
         "avdAlaWorkspaceDataRetention": {
             "value": 90
-        }
+        },
+        "enableAcceleratedNetworking": {
+            "value": false
+        },
     }
 }
