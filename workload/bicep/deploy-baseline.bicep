@@ -136,7 +136,7 @@ param vNetworkGatewayOnHub bool = false
 param createAvdFslogixDeployment bool = true
 
 @description('Optional. Deploy MSIX App Attach setup. (Default: false)')
-param createAvdMsixDeployment bool = true
+param createMsixDeployment bool = true
 
 @description('Optional. Fslogix file share size. (Default: ~1TB)')
 param fslogixFileShareQuotaSize int = 10
@@ -750,7 +750,7 @@ var varCreateOuForStorageString = string(createOuForStorage)
 var allDnsServers = '${customDnsIps},168.63.129.16'
 var varDnsServers = (customDnsIps == 'none') ? []: (split(allDnsServers, ','))
 var varCreateAvdFslogixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: createAvdFslogixDeployment
-var varCreateMsixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: createAvdMsixDeployment
+var varCreateMsixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: createMsixDeployment
 var varCreateStorageDeployment = (varCreateAvdFslogixDeployment||varCreateMsixDeployment == true) ? true: false
 
 var varAvdApplicationGroupIdentitiesIds = !empty(avdApplicationGroupIdentitiesIds) ? (split(avdApplicationGroupIdentitiesIds, ',')): []
