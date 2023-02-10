@@ -252,9 +252,51 @@
                                     }
                                 },
                                 {
+                                    "name": "supportsAcceleratedNetworking",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "visible": true,
+                                    "label": "Supports network acceleration.",
+                                    "defaultValue": "No",
+                                    "toolTip": "Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance. This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes",
+                                                "value": true
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": false
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "supportsHibernation",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "visible": true,
+                                    "label": "Supports hibernation.",
+                                    "defaultValue": "No",
+                                    "toolTip": "This is currently a preview feature and only supports Dsv5 series VMs.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes",
+                                                "value": true
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": false
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
                                     "name": "securityType",
                                     "type": "Microsoft.Common.DropDown",
-                                    "visible": "[or(contains(steps('imageManagement').operatingSystem.versionSelection, 'g2'), contains(steps('imageManagement').operatingSystem.versionSelection, 'win11'))]",
+                                    "visible": true,
                                     "label": "Security type",
                                     "defaultValue": "Standard",
                                     "toolTip": "Security type refers to the different security features available for a virtual machine. Security features like Trusted launch and Confidential Virtual Machines help to improve the security of Azure generation 2 virtual machines. However, additional security features have some limitations, which include not supporting back up, managed disks, and ephemeral OS disks. Learn more about Trusted launch virtual machines at https://learn.microsoft.com/en-us/azure/virtual-machines/trusted-launch and Confidential virtual machines at https://learn.microsoft.com/en-us/azure/confidential-computing/confidential-vm-overview.",
@@ -947,6 +989,8 @@
                 "existingVirtualNetworkResourceId": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').virtualNetworkSelection.id, '')]",
                 "imageBuildNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.imageBuild, 'none')]",
                 "imageDefinitionCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.imageDefinition, 'none')]",
+                "imageDefinitionAcceleratedNetworkSupported": "[steps('imageManagement').imageDefinitionFeatures.supportsAcceleratedNetworking]",
+                "imageDefinitionHibernateSupported": "[steps('imageManagement').imageDefinitionFeatures.supportsHibernation]",
                 "imageDefinitionSecurityType": "[steps('imageManagement').imageDefinitionFeatures.securityType]",
                 "imageGalleryCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.computeGallery, 'none')]",
                 "imageTemplateCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.imageTemplate, 'none')]",
