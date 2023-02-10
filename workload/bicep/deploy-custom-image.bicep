@@ -137,21 +137,6 @@ param imageBuildNameTag string = 'AVD-Image'
 @description('Optional. Custom name for Image Definition. (Default: avd-win11-21h2)')
 param imageDefinitionCustomName string = 'avd-win11-21h2'
 
-@allowed([
-    'Standard'
-    'TrustedLaunch'
-    'ConfidentialVM'
-    'ConfidentialVMSupported'
-])
-@description('Optional. Choose the Security Type of the Image Definition. (Default: Standard)')
-param imageDefinitionSecurityType string = 'Standard'
-
-@description('Optional. The image will support hibernation.')
-@allowed([
-  'true'
-  'false'
-])
-param imageDefinitionHibernateSupported string = 'false'
 
 @description('''Optional. The image supports accelerated networking.
 Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.
@@ -163,6 +148,22 @@ most demanding network workloads on supported VM types.
   'false'
 ])
 param imageDefinitionAcceleratedNetworkSupported string = 'false'
+
+@description('Optional. The image will support hibernation.')
+@allowed([
+  'true'
+  'false'
+])
+param imageDefinitionHibernateSupported string = 'false'
+
+@allowed([
+    'Standard'
+    'TrustedLaunch'
+    'ConfidentialVM'
+    'ConfidentialVMSupported'
+])
+@description('Optional. Choose the Security Type of the Image Definition. (Default: Standard)')
+param imageDefinitionSecurityType string = 'Standard'
 
 @maxLength(64)
 @description('Optional. Custom name for Image Gallery. (Default: gal_avd_use2_001)')
