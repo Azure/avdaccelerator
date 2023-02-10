@@ -766,6 +766,16 @@
                                         ]
                                     }
                                 },
+                                {
+                                    "name": "warningAcceleratedNetworkingSupport",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, true)]",
+                                    "options": {
+                                        "text": "The Compute Gallery Image definition selected must have the 'isAcceleratedNetworkingSupported' feature property set to 'true' if you enable accelerated networking on the session hosts.",
+                                        "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started-baseline.md",
+                                        "style": "Warning"
+                                    }
+                                },
 								{
                                     "name": "acceleratedNetworking",
                                     "type": "Microsoft.Common.OptionsGroup",
