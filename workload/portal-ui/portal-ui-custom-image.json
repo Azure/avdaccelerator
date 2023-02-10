@@ -253,11 +253,11 @@
                                         "allowedValues": [
                                             {
                                                 "label": "Yes",
-                                                "value": true
+                                                "value": "true"
                                             },
                                             {
                                                 "label": "No",
-                                                "value": false
+                                                "value": "false"
                                             }
                                         ]
                                     }
@@ -274,11 +274,11 @@
                                         "allowedValues": [
                                             {
                                                 "label": "Yes",
-                                                "value": true
+                                                "value": "true"
                                             },
                                             {
                                                 "label": "No",
-                                                "value": false
+                                                "value": "false"
                                             }
                                         ]
                                     }

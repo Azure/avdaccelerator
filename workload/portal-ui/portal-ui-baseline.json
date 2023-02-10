@@ -766,6 +766,27 @@
                                         ]
                                     }
                                 },
+								{
+                                    "name": "acceleratedNetworking",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "visible": true,
+                                    "label": "Enable accelerated networking",
+                                    "defaultValue": "Yes",
+                                    "toolTip": "Enables low latency and high throughput on the network interface.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes",
+                                                "value": true
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": false
+                                            }
+                                        ]
+                                    }
+                                },
                                 {
                                     "name": "sessionHostEncryptionAtHostWarning",
                                     "type": "Microsoft.Common.InfoBox",
@@ -2129,6 +2150,7 @@
                 "vTpmEnabled": "[steps('sessionHosts').sessionHostsSecuritySection.vTpmEnabled]",
                 "avdImageTemplateDefinitionId": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage.id, 'none')]",
                 "avdSessionHostDiskType": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskType]",
+				"enableAcceleratedNetworking": "[steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking]",
                 "avdSessionHostsSize": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize, 'Standard_D2s_v4')]",
                 "avdVnetPrivateDnsZone": "[steps('network').virtualNetworkPrivateDnsZone]",
                 "avdVnetPrivateDnsZoneFilesId": "[if(equals(steps('network').virtualNetworkPrivateDnsZone, true), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneFilesSelector.id, '')]",
