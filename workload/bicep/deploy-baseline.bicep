@@ -194,6 +194,12 @@ param avdSessionHostsSize string = 'Standard_D2s_v3'
 @description('Optional. OS disk type for session host. (Defualt: Standard_LRS)')
 param avdSessionHostDiskType string = 'Standard_LRS'
 
+@description('''Optional. Enables accelerated Networking on the session hosts.
+If using a Azure Compute Gallery Image, the Image Definition must have been configured with
+the \'isAcceleratedNetworkSupported\' property set to \'true\'.
+''')
+param enableAcceleratedNetworking bool = true
+
 @allowed([
     'Standard'
     'TrustedLaunch'
@@ -1196,6 +1202,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         avdSessionHostLocation: avdSessionHostLocation
         avdSessionHostNamePrefix: varAvdSessionHostNamePrefix
         avdSessionHostsSize: avdSessionHostsSize
+        enableAcceleratedNetworking: enableAcceleratedNetworking
         securityType: securityType == 'Standard' ? '' : securityType
         secureBootEnabled: secureBootEnabled
         vTpmEnabled: vTpmEnabled
