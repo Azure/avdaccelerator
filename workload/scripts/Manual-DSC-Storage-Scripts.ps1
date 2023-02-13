@@ -84,10 +84,16 @@ $DscCompileCommand="./Configuration.ps1 -StorageAccountName " + $StorageAccountN
 Write-Host "Executing the commmand $DscCompileCommand" 
 Invoke-Expression -Command $DscCompileCommand
 
-$MofFolder='DomainJoinFileShare'
+if ($StoragePurpose -eq 'fslogix') {
+	$MofFolder -eq "DomainJoinFileShare-fslogix"
+	 }
+if ($StoragePurpose -eq 'msix') {
+	$MofFolder -eq "DomainJoinFileShare-msix"
+	 }
+#$MofFolder='DomainJoinFileShare'
 $MofPath=$LocalPath + '\' + $MofFolder
 Write-Host "Generated MOF files here: $MofPath"
 
 Write-Host "Applying MOF files. DSC configuration"
 Set-WSManQuickConfig -Force -Verbose
-Start-DscConfiguration -Path $MofPath -Wait -Verbose
+Start-DscConfiguration -Path $MofPath -Wait -Verbose -force
