@@ -57,6 +57,9 @@ param encryptionAtHost bool
 @description('Session host VM size.')
 param sessionHostsSize string
 
+@description('Optional. Enables accelerated Networking on the session hosts.')
+param enableAcceleratedNetworking bool
+
 @description('Optional. Specifies the securityType of the virtual machine. Must be TrustedLaunch or ConfidentialVM enable UefiSettings.')
 param securityType string
 
@@ -195,7 +198,8 @@ module sessionHosts './avd-session-hosts.bicep' = [for i in range(1, varAvdSessi
     sessionHostLocation: sessionHostLocation
     sessionHostNamePrefix: sessionHostNamePrefix
     createAvdVnet: createAvdVnet
-    sessionHostsSize: sessionHostsSize
+    avdSessionHostsSize: avdSessionHostsSize
+    enableAcceleratedNetworking: enableAcceleratedNetworking
     securityType: securityType
     secureBootEnabled: secureBootEnabled
     vTpmEnabled: vTpmEnabled
