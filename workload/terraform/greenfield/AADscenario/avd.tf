@@ -155,11 +155,10 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
     data.azurerm_log_analytics_workspace.lawksp,
     azurerm_virtual_desktop_host_pool.hostpool
   ]
-  dynamic "log" {
+  dynamic "enabled_log" {
     for_each = var.host_pool_log_categories
     content {
-      category = log.value
-      enabled  = true
+      category = enabled_log.value
     }
   }
 }
@@ -174,11 +173,29 @@ resource "azurerm_monitor_diagnostic_setting" "avd-dag2" {
     data.azurerm_log_analytics_workspace.lawksp,
     azurerm_virtual_desktop_application_group.dag
   ]
-  dynamic "log" {
-    for_each = var.dag_log_categories
-    content {
-      category = log.value
-      enabled  = true
+  enabled_log {
+    category = "Checkpoint"
+
+    retention_policy {
+      days    = 7
+      enabled = true
+    }
+  }
+
+  enabled_log {
+    category = "Error"
+
+    retention_policy {
+      days    = 7
+      enabled = true
+    }
+  }
+  enabled_log {
+    category = "Management"
+
+    retention_policy {
+      days    = 7
+      enabled = true
     }
   }
 }
@@ -193,11 +210,38 @@ resource "azurerm_monitor_diagnostic_setting" "avd-ws" {
     data.azurerm_log_analytics_workspace.lawksp,
     azurerm_virtual_desktop_workspace.workspace
   ]
-  dynamic "log" {
-    for_each = var.ws_log_categories
-    content {
-      category = log.value
-      enabled  = true
+  enabled_log {
+    category = "Checkpoint"
+
+    retention_policy {
+      days    = 7
+      enabled = true
+    }
+  }
+
+  enabled_log {
+    category = "Error"
+
+    retention_policy {
+      days    = 7
+      enabled = true
+    }
+  }
+  enabled_log {
+    category = "Management"
+
+    retention_policy {
+      days    = 7
+      enabled = true
+    }
+  }
+
+  enabled_log {
+    category = "Feed"
+
+    retention_policy {
+      days    = 7
+      enabled = true
     }
   }
 }
