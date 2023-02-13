@@ -57,6 +57,9 @@ param secureBootEnabled bool
 @description('Optional. Specifies whether the virtual TPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch to enable UefiSettings.')
 param vTpmEnabled bool
 
+@description('Optional. Enable accelerated networking on the session host VMs.')
+param enableAcceleratedNetworking bool
+
 @description('OS disk type for session host.')
 param sessionHostDiskType string
 
@@ -187,7 +190,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
             {
                 nicSuffix: 'nic-001-'
                 deleteOption: 'Delete'
-                enableAcceleratedNetworking: false
+                enableAcceleratedNetworking: enableAcceleratedNetworking
                 ipConfigurations: createAvdVnet ? [
                     {
                         name: 'ipconfig01'
