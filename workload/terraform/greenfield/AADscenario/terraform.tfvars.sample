@@ -3,7 +3,7 @@ Terraform v1.3.7
 on windows_amd64
 + provider registry.terraform.io/azure/azapi v1.1.0
 + provider registry.terraform.io/hashicorp/azuread v2.25.0
-+ provider registry.terraform.io/hashicorp/azurerm v3.33.0
++ provider registry.terraform.io/hashicorp/azurerm v3.41.0
 + provider registry.terraform.io/hashicorp/local v2.2.3
 + provider registry.terraform.io/hashicorp/random v3.3.2
 + provider registry.terraform.io/hashicorp/time v0.8.0
@@ -20,8 +20,8 @@ rg_image_name  = "image-resources"
 rg_fslogix     = "fslogix-resources"
 
 hostpool = "vdpool" #vdpool-<azure region>-<prefix>
-//personalpool = "vdpool"
-//raghostpool  = "vdpool"
+personalpool = "vdpool"
+raghostpool  = "vdpool"
 workspace    = "vdws" #vdws-<azure region>-<prefix>-<nnn>
 pworkspace   = "vdws"
 ragworkspace = "vdws"
@@ -45,26 +45,15 @@ vm_size               = "Standard_D8s_v5"
 vnet_range            = ["10.10.1.0/24"] #replace with your IP addresses
 subnet_range          = ["10.10.1.0/26"] #replace with your IP addresses
 pesubnet_range        = ["10.10.1.192/28"] # avd spoke private endpoint subnet replace with your IP addresses
-allow_list_ip         = ["10.28.83.128/32"] #replace with your IP addresses
+allow_list_ip         = ["10.28.83.128/30"] #replace with your IP addresses
 dns_servers           = ["10.0.1.1", "168.63.129.16"] #replace with your custom DNS addresses
 aad_group_name        = "avdusersgroup" #user group must pre-created on your AD server and sync to Azure AD
-ad_vnet               = "infra-network"
-ad_rg                 = "infra-rg"
+hub_vnet              = "infra-network"
+hub_connectivity_rg   = "infra-rg"
 rdsh_count            = 2
 image_name            = "avdImage-microsoftwindowsdesktop-office-365-win11-21h2-avd-m365"
 image_rg              = "rg-eastus-avd-AIBdemoAVD-shared-resources"
 gallery_name          = "avdgallery_eastus_AIBdemoAVD"
 spoke_subscription_id = "Your Spoke Subscription ID"
 hub_subscription_id   = "Your Hub Subscription ID"
-
-#FsLogix
-id_provider                 = "ADDS"
-azure_cloud_environment     = "AzureCloud"
-custom_ou                   = "true"
-create_new_ou               = "false"
-fslogix_sharename           = "fslogix"
-file_url                    = "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/Manual-DSC-Storage-Scripts.ps1"
-file_name                   = "Manual-DSC-Storage-Scripts.ps1"
-dsc_path                    = "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip"
-
 

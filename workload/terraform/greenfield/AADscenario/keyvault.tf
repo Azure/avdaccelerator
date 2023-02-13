@@ -40,7 +40,7 @@ resource "azurerm_key_vault_access_policy" "deploy" {
 # Get Private DNS Zone for the Key Vault Private Endpoints
 data "azurerm_private_dns_zone" "pe-vaultdns-zone" {
   name                = "privatelink.vaultcore.azure.net"
-  resource_group_name = var.ad_rg
+  resource_group_name = var.hub_connectivity_rg
   provider            = azurerm.hub
 }
 
@@ -86,7 +86,7 @@ resource "azurerm_key_vault_secret" "localpassword" {
 # Linking DNS Zone to the VNET
 resource "azurerm_private_dns_zone_virtual_network_link" "vaultlink" {
   name                  = "keydnsvnet_link"
-  resource_group_name   = var.ad_rg
+  resource_group_name   = var.hub_connectivity_rg
   private_dns_zone_name = data.azurerm_private_dns_zone.pe-vaultdns-zone.name
   virtual_network_id    = data.azurerm_virtual_network.vnet.id
 
