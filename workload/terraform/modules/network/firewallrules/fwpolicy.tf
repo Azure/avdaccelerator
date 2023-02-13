@@ -1,6 +1,6 @@
 resource "azurerm_firewall_policy" "fw_policy" {
   name                = "AVD-FW-Policy"
-  resource_group_name = var.rg_network
+  resource_group_name = var.hub_connectivity_rg
   location            = var.avdLocation
   tags                = var.tags
   sku                 = "Premium"

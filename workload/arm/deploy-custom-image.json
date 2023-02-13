@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "7104169045732624687"
+      "templateHash": "9101245893480841794"
     }
   },
   "parameters": {
@@ -215,6 +215,28 @@
         "description": "Optional. Custom name for Image Definition. (Default: avd-win11-21h2)"
       },
       "maxLength": 64
+    },
+    "imageDefinitionAcceleratedNetworkSupported": {
+      "type": "string",
+      "defaultValue": "false",
+      "allowedValues": [
+        "true",
+        "false"
+      ],
+      "metadata": {
+        "description": "Optional. The image supports accelerated networking.\r\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\r\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the\r\nmost demanding network workloads on supported VM types.\r\n"
+      }
+    },
+    "imageDefinitionHibernateSupported": {
+      "type": "string",
+      "defaultValue": "false",
+      "allowedValues": [
+        "true",
+        "false"
+      ],
+      "metadata": {
+        "description": "Optional. The image will support hibernation."
+      }
     },
     "imageDefinitionSecurityType": {
       "type": "string",
@@ -2485,7 +2507,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.12.40.16777",
-              "templateHash": "14397254289915009110"
+              "templateHash": "6003255835965326914"
             }
           },
           "parameters": {
@@ -3257,7 +3279,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.12.40.16777",
-                      "templateHash": "429157153520114264"
+                      "templateHash": "9125552147111901095"
                     }
                   },
                   "parameters": {
@@ -3392,6 +3414,28 @@
                         "description": "Optional. The security type of the image. Requires a hyperVGeneration V2."
                       }
                     },
+                    "isHibernateSupported": {
+                      "type": "string",
+                      "defaultValue": "false",
+                      "allowedValues": [
+                        "true",
+                        "false"
+                      ],
+                      "metadata": {
+                        "description": "Optional. The image will support hibernation."
+                      }
+                    },
+                    "isAcceleratedNetworkSupported": {
+                      "type": "string",
+                      "defaultValue": "false",
+                      "allowedValues": [
+                        "true",
+                        "false"
+                      ],
+                      "metadata": {
+                        "description": "Optional. The image supports accelerated networking.\r\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\r\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the\r\nmost demanding network workloads on supported VM types.\r\n"
+                      }
+                    },
                     "imageDefinitionDescription": {
                       "type": "string",
                       "defaultValue": "",
@@ -3510,7 +3554,7 @@
                           }
                         },
                         "hyperVGeneration": "[if(not(empty(parameters('hyperVGeneration'))), parameters('hyperVGeneration'), if(not(empty(parameters('securityType'))), 'V2', 'V1'))]",
-                        "features": "[if(and(not(empty(parameters('securityType'))), not(equals(parameters('securityType'), 'Standard'))), createArray(createObject('name', 'SecurityType', 'value', parameters('securityType'))), null())]",
+                        "features": "[if(and(not(empty(parameters('securityType'))), not(equals(parameters('securityType'), 'Standard'))), createArray(createObject('name', 'SecurityType', 'value', parameters('securityType')), createObject('name', 'IsAcceleratedNetworkSupported', 'value', parameters('isAcceleratedNetworkSupported')), createObject('name', 'IsHibernateSupported', 'value', parameters('isHibernateSupported'))), createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', parameters('isAcceleratedNetworkSupported')), createObject('name', 'IsHibernateSupported', 'value', parameters('isHibernateSupported'))))]",
                         "description": "[parameters('imageDefinitionDescription')]",
                         "eula": "[parameters('eula')]",
                         "privacyStatementUri": "[parameters('privacyStatementUri')]",
@@ -3814,6 +3858,12 @@
           "hyperVGeneration": {
             "value": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].hyperVGeneration]"
           },
+          "isAcceleratedNetworkSupported": {
+            "value": "[parameters('imageDefinitionAcceleratedNetworkSupported')]"
+          },
+          "isHibernateSupported": {
+            "value": "[parameters('imageDefinitionHibernateSupported')]"
+          },
           "securityType": {
             "value": "[parameters('imageDefinitionSecurityType')]"
           },
@@ -3828,7 +3878,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.12.40.16777",
-              "templateHash": "429157153520114264"
+              "templateHash": "9125552147111901095"
             }
           },
           "parameters": {
@@ -3963,6 +4013,28 @@
                 "description": "Optional. The security type of the image. Requires a hyperVGeneration V2."
               }
             },
+            "isHibernateSupported": {
+              "type": "string",
+              "defaultValue": "false",
+              "allowedValues": [
+                "true",
+                "false"
+              ],
+              "metadata": {
+                "description": "Optional. The image will support hibernation."
+              }
+            },
+            "isAcceleratedNetworkSupported": {
+              "type": "string",
+              "defaultValue": "false",
+              "allowedValues": [
+                "true",
+                "false"
+              ],
+              "metadata": {
+                "description": "Optional. The image supports accelerated networking.\r\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\r\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the\r\nmost demanding network workloads on supported VM types.\r\n"
+              }
+            },
             "imageDefinitionDescription": {
               "type": "string",
               "defaultValue": "",
@@ -4081,7 +4153,7 @@
                   }
                 },
                 "hyperVGeneration": "[if(not(empty(parameters('hyperVGeneration'))), parameters('hyperVGeneration'), if(not(empty(parameters('securityType'))), 'V2', 'V1'))]",
-                "features": "[if(and(not(empty(parameters('securityType'))), not(equals(parameters('securityType'), 'Standard'))), createArray(createObject('name', 'SecurityType', 'value', parameters('securityType'))), null())]",
+                "features": "[if(and(not(empty(parameters('securityType'))), not(equals(parameters('securityType'), 'Standard'))), createArray(createObject('name', 'SecurityType', 'value', parameters('securityType')), createObject('name', 'IsAcceleratedNetworkSupported', 'value', parameters('isAcceleratedNetworkSupported')), createObject('name', 'IsHibernateSupported', 'value', parameters('isHibernateSupported'))), createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', parameters('isAcceleratedNetworkSupported')), createObject('name', 'IsHibernateSupported', 'value', parameters('isHibernateSupported'))))]",
                 "description": "[parameters('imageDefinitionDescription')]",
                 "eula": "[parameters('eula')]",
                 "privacyStatementUri": "[parameters('privacyStatementUri')]",

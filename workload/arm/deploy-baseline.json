@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "5816280583810337153"
+      "templateHash": "17896966959515292050"
     }
   },
   "parameters": {
@@ -411,6 +411,13 @@
       "defaultValue": "Standard_LRS",
       "metadata": {
         "description": "Optional. OS disk type for session host. (Defualt: Standard_LRS)"
+      }
+    },
+    "enableAcceleratedNetworking": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enables accelerated Networking on the session hosts.\r\nIf using a Azure Compute Gallery Image, the Image Definition must have been configured with\r\nthe \\'isAcceleratedNetworkSupported\\' property set to \\'true\\'.\r\n"
       }
     },
     "securityType": {
@@ -823,6 +830,7 @@
     }
   },
   "variables": {
+    "varAzureCloudName": "[environment().name]",
     "varDeploymentPrefixLowercase": "[toLower(parameters('deploymentPrefix'))]",
     "varAvdSessionHostLocationLowercase": "[toLower(parameters('avdSessionHostLocation'))]",
     "varAvdManagementPlaneLocationLowercase": "[toLower(parameters('avdManagementPlaneLocation'))]",
@@ -21805,7 +21813,7 @@
             "value": "[variables('varStorageToDomainScript')]"
           },
           "storageToDomainScriptArgs": {
-            "value": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -DomainName {3} -IdentityServiceProvider {4} -AzureCloudEnvironment AzureCloud -SubscriptionId {5} -DomainAdminUserName {6} -DomainAdminUserPassword {7} -CustomOuPath {8} -OUName {9} -CreateNewOU {10} -ShareName {11} -ClientId {12} -Verbose', variables('varDscAgentPackageLocation'), variables('varAvdFslogixStorageName'), variables('varAvdStorageObjectsRgName'), parameters('avdIdentityDomainName'), parameters('avdIdentityServiceProvider'), parameters('avdWorkloadSubsId'), parameters('avdDomainJoinUserName'), parameters('avdDomainJoinUserPassword'), variables('varStorageCustomOuPath'), variables('varOuStgPath'), variables('varCreateOuForStorageString'), variables('varAvdFslogixProfileContainerFileShareName'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.fslogixManagedIdentityClientId.value)]"
+            "value": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -DomainName {3} -IdentityServiceProvider {4} -AzureCloudEnvironment {5} -SubscriptionId {6} -DomainAdminUserName {7} -DomainAdminUserPassword {8} -CustomOuPath {9} -OUName {10} -CreateNewOU {11} -ShareName {12} -ClientId {13} -Verbose', variables('varDscAgentPackageLocation'), variables('varAvdFslogixStorageName'), variables('varAvdStorageObjectsRgName'), parameters('avdIdentityDomainName'), parameters('avdIdentityServiceProvider'), variables('varAzureCloudName'), parameters('avdWorkloadSubsId'), parameters('avdDomainJoinUserName'), parameters('avdDomainJoinUserPassword'), variables('varStorageCustomOuPath'), variables('varOuStgPath'), variables('varCreateOuForStorageString'), variables('varAvdFslogixProfileContainerFileShareName'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.fslogixManagedIdentityClientId.value)]"
           },
           "storageToDomainScriptUri": {
             "value": "[variables('varStorageToDomainScriptUri')]"
@@ -29711,6 +29719,9 @@
           "avdSessionHostsSize": {
             "value": "[parameters('avdSessionHostsSize')]"
           },
+          "enableAcceleratedNetworking": {
+            "value": "[parameters('enableAcceleratedNetworking')]"
+          },
           "securityType": {
             "value": "[if(equals(parameters('securityType'), 'Standard'), '', parameters('securityType'))]"
           },
@@ -29785,7 +29796,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.12.40.16777",
-              "templateHash": "5477147703263493691"
+              "templateHash": "17586195789913858540"
             }
           },
           "parameters": {
@@ -29895,6 +29906,12 @@
               "type": "string",
               "metadata": {
                 "description": "Session host VM size."
+              }
+            },
+            "enableAcceleratedNetworking": {
+              "type": "bool",
+              "metadata": {
+                "description": "Optional. Enables accelerated Networking on the session hosts."
               }
             },
             "securityType": {
@@ -30580,6 +30597,9 @@
                   "avdSessionHostsSize": {
                     "value": "[parameters('avdSessionHostsSize')]"
                   },
+                  "enableAcceleratedNetworking": {
+                    "value": "[parameters('enableAcceleratedNetworking')]"
+                  },
                   "securityType": {
                     "value": "[parameters('securityType')]"
                   },
@@ -30657,7 +30677,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.12.40.16777",
-                      "templateHash": "15684132930491123220"
+                      "templateHash": "9857683665514995577"
                     }
                   },
                   "parameters": {
@@ -30767,6 +30787,12 @@
                       "type": "bool",
                       "metadata": {
                         "description": "Optional. Specifies whether the virtual TPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch to enable UefiSettings."
+                      }
+                    },
+                    "enableAcceleratedNetworking": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Optional. Enable accelerated networking on the session host VMs."
                       }
                     },
                     "avdSessionHostDiskType": {
@@ -31021,7 +31047,7 @@
                               {
                                 "nicSuffix": "nic-001-",
                                 "deleteOption": "Delete",
-                                "enableAcceleratedNetworking": false,
+                                "enableAcceleratedNetworking": "[parameters('enableAcceleratedNetworking')]",
                                 "ipConfigurations": "[if(parameters('createAvdVnet'), createArray(createObject('name', 'ipconfig01', 'subnetId', parameters('avdSubnetId'), 'applicationSecurityGroups', parameters('avdApplicationSecurityGroupResourceId'))), createArray(createObject('name', 'ipconfig01', 'subnetId', parameters('avdSubnetId'))))]"
                               }
                             ]
