@@ -206,6 +206,12 @@ param avdSessionHostsSize string = 'Standard_D2s_v3'
 @description('Optional. OS disk type for session host. (Defualt: Standard_LRS)')
 param avdSessionHostDiskType string = 'Standard_LRS'
 
+@description('''Optional. Enables accelerated Networking on the session hosts.
+If using a Azure Compute Gallery Image, the Image Definition must have been configured with
+the \'isAcceleratedNetworkSupported\' property set to \'true\'.
+''')
+param enableAcceleratedNetworking bool = true
+
 @allowed([
     'Standard'
     'TrustedLaunch'
@@ -436,6 +442,7 @@ param enableTelemetry bool = true
 // Variable declaration //
 // =========== //
 // Resource naming
+var varAzureCloudName = environment().name
 var varDeploymentPrefixLowercase = toLower(deploymentPrefix)
 var varAvdSessionHostLocationLowercase = toLower(avdSessionHostLocation)
 var varAvdManagementPlaneLocationLowercase = toLower(avdManagementPlaneLocation)
@@ -745,7 +752,7 @@ var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
 var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
 var varDefaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers': 'Computers'
 var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
-var varStorageManagedIdentityClientId = deployManagedIdentitiesRoleAssign.outputs.managedIdentityClientId
+var varStorageToDomainScriptArgs = '-DscPath ${varDscAgentPackageLocation} -StorageAccountName ${varAvdFslogixStorageName} -StorageAccountRG ${varAvdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -IdentityServiceProvider ${avdIdentityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -CustomOuPath ${varStorageCustomOuPath} -OUName ${varOuStgPath} -CreateNewOU ${varCreateOuForStorageString} -ShareName ${varAvdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
 var varCreateOuForStorageString = string(createOuForStorage)
 var allDnsServers = '${customDnsIps},168.63.129.16'
 var varDnsServers = (customDnsIps == 'none') ? []: (split(allDnsServers, ','))
@@ -1277,10 +1284,11 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         identityDomainName: avdIdentityDomainName
         avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
         sessionHostOuPath: avdOuPath
-        sessionHostDiskType: avdSessionHostDiskType
-        sessionHostLocation: avdSessionHostLocation
-        sessionHostNamePrefix: varAvdSessionHostNamePrefix
-        sessionHostsSize: avdSessionHostsSize
+        avdSessionHostDiskType: avdSessionHostDiskType
+        avdSessionHostLocation: avdSessionHostLocation
+        avdSessionHostNamePrefix: varAvdSessionHostNamePrefix
+        avdSessionHostsSize: avdSessionHostsSize
+        enableAcceleratedNetworking: enableAcceleratedNetworking
         securityType: securityType == 'Standard' ? '' : securityType
         secureBootEnabled: secureBootEnabled
         vTpmEnabled: vTpmEnabled
