@@ -41,11 +41,11 @@ variable "pesnet" {
   description = "Name of subnet"
 }
 
-variable "ad_rg" {
+variable "hub_connectivity_rg" {
   type        = string
   description = "The resource group for AD VM"
 }
-variable "ad_vnet" {
+variable "hub_vnet" {
   type        = string
   description = "Name of domain controller vnet"
 }
@@ -177,3 +177,4 @@ variable "dag_log_categories" {
 variable "ws_log_categories" {
   description = "value of the log categories to be enabled for the host pool"
 }
+
