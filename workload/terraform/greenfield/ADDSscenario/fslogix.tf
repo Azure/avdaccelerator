@@ -27,7 +27,7 @@ resource "azurerm_windows_virtual_machine" "fslogixvm" {
   #admin_username = "${var.prefix}-admin"
   #admin_password = random_password.password.result
   admin_username = var.local_admin_username
-  admin_password = var.local_admin_password
+  admin_password = azurerm_key_vault_secret.localpassword.value
   computer_name  = "${var.prefix}-fslogixvm"
 
   os_disk {

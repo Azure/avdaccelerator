@@ -170,7 +170,7 @@ The following module usage examples are retrieved from the content of the files 
 
 ```bicep
 module galleries './Microsoft.Compute/galleries/deploy.bicep' = {
-  name: '${uniqueString(deployment().name)}-test-cgcom'
+  name: '${uniqueString(deployment().name, location)}-test-cgcom'
   params: {
     // Required parameters
     name: '<<namePrefix>>cgcom001'
@@ -219,6 +219,52 @@ module galleries './Microsoft.Compute/galleries/deploy.bicep' = {
           }
         ]
         sku: '2022-datacenter-azure-edition'
+      }
+      {
+        hyperVGeneration: 'V2'
+        isHibernateSupported: 'true'
+        maxRecommendedMemory: 16
+        maxRecommendedvCPUs: 8
+        minRecommendedMemory: 4
+        minRecommendedvCPUs: 2
+        name: '<<namePrefix>>-az-imgd-ws-003'
+        offer: 'WindowsServer'
+        osState: 'Generalized'
+        osType: 'Windows'
+        publisher: 'MicrosoftWindowsServer'
+        roleAssignments: [
+          {
+            principalIds: [
+              '<managedIdentityPrincipalId>'
+            ]
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        sku: '2022-datacenter-azure-edition-hibernate'
+      }
+      {
+        hyperVGeneration: 'V2'
+        isAcceleratedNetworkSupported: 'true'
+        maxRecommendedMemory: 16
+        maxRecommendedvCPUs: 8
+        minRecommendedMemory: 4
+        minRecommendedvCPUs: 2
+        name: '<<namePrefix>>-az-imgd-ws-004'
+        offer: 'WindowsServer'
+        osState: 'Generalized'
+        osType: 'Windows'
+        publisher: 'MicrosoftWindowsServer'
+        roleAssignments: [
+          {
+            principalIds: [
+              '<managedIdentityPrincipalId>'
+            ]
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        sku: '2022-datacenter-azure-edition-accnet'
       }
       {
         hyperVGeneration: 'V2'
@@ -340,6 +386,52 @@ module galleries './Microsoft.Compute/galleries/deploy.bicep' = {
         },
         {
           "hyperVGeneration": "V2",
+          "isHibernateSupported": "true",
+          "maxRecommendedMemory": 16,
+          "maxRecommendedvCPUs": 8,
+          "minRecommendedMemory": 4,
+          "minRecommendedvCPUs": 2,
+          "name": "<<namePrefix>>-az-imgd-ws-003",
+          "offer": "WindowsServer",
+          "osState": "Generalized",
+          "osType": "Windows",
+          "publisher": "MicrosoftWindowsServer",
+          "roleAssignments": [
+            {
+              "principalIds": [
+                "<managedIdentityPrincipalId>"
+              ],
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Reader"
+            }
+          ],
+          "sku": "2022-datacenter-azure-edition-hibernate"
+        },
+        {
+          "hyperVGeneration": "V2",
+          "isAcceleratedNetworkSupported": "true",
+          "maxRecommendedMemory": 16,
+          "maxRecommendedvCPUs": 8,
+          "minRecommendedMemory": 4,
+          "minRecommendedvCPUs": 2,
+          "name": "<<namePrefix>>-az-imgd-ws-004",
+          "offer": "WindowsServer",
+          "osState": "Generalized",
+          "osType": "Windows",
+          "publisher": "MicrosoftWindowsServer",
+          "roleAssignments": [
+            {
+              "principalIds": [
+                "<managedIdentityPrincipalId>"
+              ],
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Reader"
+            }
+          ],
+          "sku": "2022-datacenter-azure-edition-accnet"
+        },
+        {
+          "hyperVGeneration": "V2",
           "maxRecommendedMemory": 16,
           "maxRecommendedvCPUs": 4,
           "minRecommendedMemory": 4,
@@ -389,6 +481,51 @@ module galleries './Microsoft.Compute/galleries/deploy.bicep' = {
           "roleDefinitionIdOrName": "Reader"
         }
       ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<h3>Example 2: Min</h3>
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module galleries './Microsoft.Compute/galleries/deploy.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-test-cgmin'
+  params: {
+    // Required parameters
+    name: '<<namePrefix>>cgmin001'
+    // Non-required parameters
+    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "<<namePrefix>>cgmin001"
+    },
+    // Non-required parameters
+    "enableDefaultTelemetry": {
+      "value": "<enableDefaultTelemetry>"
     }
   }
 }
