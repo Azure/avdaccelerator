@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "2073429462201506029"
+      "templateHash": "4620391113154739270"
     }
   },
   "parameters": {
@@ -16596,7 +16596,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.12.40.16777",
-              "templateHash": "842165281193155362"
+              "templateHash": "10096254528541634730"
             }
           },
           "parameters": {
@@ -17305,7 +17305,7 @@
               ]
             },
             {
-              "condition": "[parameters('enableStartVmOnConnect')]",
+              "condition": "[and(parameters('enableStartVmOnConnect'), not(parameters('avdDeployScalingPlan')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
               "name": "[format('Start-OnConnect-RolAssignComp-{0}', parameters('time'))]",
@@ -17765,7 +17765,7 @@
               }
             },
             {
-              "condition": "[parameters('enableStartVmOnConnect')]",
+              "condition": "[and(parameters('enableStartVmOnConnect'), not(parameters('avdDeployScalingPlan')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
               "name": "[format('Start-OnConnect-RolAssignServ-{0}', parameters('time'))]",
