@@ -136,7 +136,7 @@ param vNetworkGatewayOnHub bool = false
 param createAvdFslogixDeployment bool = true
 
 @description('Optional. Deploy MSIX App Attach setup. (Default: false)')
-param createMsixDeployment bool = false
+param createMsixDeployment bool = true
 
 @description('Optional. Fslogix file share size. (Default: ~1TB)')
 param fslogixFileShareQuotaSize int = 10
@@ -205,6 +205,12 @@ param avdSessionHostsSize string = 'Standard_D2s_v3'
 
 @description('Optional. OS disk type for session host. (Defualt: Standard_LRS)')
 param avdSessionHostDiskType string = 'Standard_LRS'
+
+@description('''Optional. Enables accelerated Networking on the session hosts.
+If using a Azure Compute Gallery Image, the Image Definition must have been configured with
+the \'isAcceleratedNetworkSupported\' property set to \'true\'.
+''')
+param enableAcceleratedNetworking bool = true
 
 @allowed([
     'Standard'
@@ -436,6 +442,7 @@ param enableTelemetry bool = true
 // Variable declaration //
 // =========== //
 // Resource naming
+var varAzureCloudName = environment().name
 var varDeploymentPrefixLowercase = toLower(deploymentPrefix)
 var varAvdSessionHostLocationLowercase = toLower(avdSessionHostLocation)
 var varAvdManagementPlaneLocationLowercase = toLower(avdManagementPlaneLocation)
@@ -727,7 +734,7 @@ var varMarketPlaceGalleryWindows = {
     }
 }
 
-var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
+var varBaseScriptUri = 'https://raw.githubusercontent.com/moisesjgomez/avdaccelerator/msix/workload/'
 
 var varFslogixScriptUri = '${varBaseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
 var varFsLogixScript = './Set-FSLogixRegKeys.ps1'
@@ -739,13 +746,13 @@ var varAvdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environmen
 var varStorageAccountContributorRoleId = '17d1049b-9a84-46fb-8f53-869881c3d3ab'
 var varReaderRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 var varAvdVmPowerStateContributor = '40c5ff49-9181-41f8-ae61-143b0e78555e'
-var varDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip'
+var varDscAgentPackageLocation = 'https://github.com/moisesjgomez/avdaccelerator/blob/msix/workload/scripts/DSCStorageScripts.zip'
 var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
 var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
 var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
 var varDefaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers': 'Computers'
 var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
-var varStorageManagedIdentityClientId = deployManagedIdentitiesRoleAssign.outputs.managedIdentityClientId
+var varStorageToDomainScriptArgs = '-DscPath ${varDscAgentPackageLocation} -StorageAccountName ${varAvdFslogixStorageName} -StorageAccountRG ${varAvdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -IdentityServiceProvider ${avdIdentityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -CustomOuPath ${varStorageCustomOuPath} -OUName ${varOuStgPath} -CreateNewOU ${varCreateOuForStorageString} -ShareName ${varAvdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
 var varCreateOuForStorageString = string(createOuForStorage)
 var allDnsServers = '${customDnsIps},168.63.129.16'
 var varDnsServers = (customDnsIps == 'none') ? []: (split(allDnsServers, ','))
@@ -1137,7 +1144,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 }
 
 // Storage.
-module deployAvdStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (varCreateAvdFslogixDeployment && avdDeploySessionHosts && (avdIdentityServiceProvider != 'AAD')) {
+module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (varCreateAvdFslogixDeployment && avdDeploySessionHosts && (avdIdentityServiceProvider != 'AAD')) {
     name: 'Storage-Azure-Files-${time}'
     params: {
         storagePurpose: 'fslogix'
@@ -1277,10 +1284,11 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         identityDomainName: avdIdentityDomainName
         avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
         sessionHostOuPath: avdOuPath
-        sessionHostDiskType: avdSessionHostDiskType
-        sessionHostLocation: avdSessionHostLocation
-        sessionHostNamePrefix: varAvdSessionHostNamePrefix
-        sessionHostsSize: avdSessionHostsSize
+        avdSessionHostDiskType: avdSessionHostDiskType
+        avdSessionHostLocation: avdSessionHostLocation
+        avdSessionHostNamePrefix: varAvdSessionHostNamePrefix
+        avdSessionHostsSize: avdSessionHostsSize
+        enableAcceleratedNetworking: enableAcceleratedNetworking
         securityType: securityType == 'Standard' ? '' : securityType
         secureBootEnabled: secureBootEnabled
         vTpmEnabled: vTpmEnabled
@@ -1291,7 +1299,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         workloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
         createAvdFslogixDeployment: (avdIdentityServiceProvider != 'AAD') ? varCreateAvdFslogixDeployment: false
-        fslogixManagedIdentityResourceId:  (varCreateAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD'))  ? deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityResourceId : ''
+        storageManagedIdentityResourceId:  (varCreateStorageDeployment && (avdIdentityServiceProvider != 'AAD'))  ? deployManagedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
         fsLogixScript: (avdIdentityServiceProvider != 'AAD') ? varFsLogixScript: ''
         fsLogixScriptArguments: (avdIdentityServiceProvider != 'AAD') ? varFsLogixScriptArguments: ''
         fslogixScriptUri: (avdIdentityServiceProvider != 'AAD') ? varFslogixScriptUri: ''

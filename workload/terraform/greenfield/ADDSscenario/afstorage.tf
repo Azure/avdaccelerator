@@ -12,6 +12,11 @@ resource "azurerm_storage_account" "storage" {
   enable_https_traffic_only = true
   tags                      = local.tags
 
+  network_rules {
+    default_action = "Deny"
+    bypass         = ["AzureServices", "Metrics", "Logging"]
+    ip_rules       = local.allow_list_ip
+  }
 
   identity {
     type = "SystemAssigned"
@@ -41,7 +46,7 @@ resource "azurerm_role_assignment" "af_role" {
 # Get Private DNS Zone for the Storage Private Endpoints
 data "azurerm_private_dns_zone" "pe-filedns-zone" {
   name                = "privatelink.file.core.windows.net"
-  resource_group_name = var.ad_rg
+  resource_group_name = var.hub_connectivity_rg
   provider            = azurerm.hub
 }
 resource "azurerm_private_endpoint" "afpe" {
@@ -65,20 +70,10 @@ resource "azurerm_private_endpoint" "afpe" {
   }
 }
 
-# Deny Traffic from Public Networks with white list exceptions
-resource "azurerm_storage_account_network_rules" "stfw" {
-  storage_account_id = azurerm_storage_account.storage.id
-  default_action     = "Deny"
-  bypass             = ["AzureServices", "Metrics", "Logging"]
-  ip_rules           = local.white_list_ip
-  depends_on = [azurerm_storage_share.FSShare,
-    azurerm_private_endpoint.afpe,
-  azurerm_role_assignment.af_role]
-}
-
+# Linking DNS Zone to the existing DNS Zone in the Hub VNET
 resource "azurerm_private_dns_zone_virtual_network_link" "filelink" {
   name                  = "azfilelink"
-  resource_group_name   = var.ad_rg
+  resource_group_name   = var.hub_connectivity_rg
   private_dns_zone_name = data.azurerm_private_dns_zone.pe-filedns-zone.name
   virtual_network_id    = data.azurerm_virtual_network.vnet.id
 
