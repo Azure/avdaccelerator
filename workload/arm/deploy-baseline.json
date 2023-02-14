@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "12516897934642029410"
+      "templateHash": "2073429462201506029"
     }
   },
   "parameters": {
@@ -16596,7 +16596,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.12.40.16777",
-              "templateHash": "3420765682049422330"
+              "templateHash": "842165281193155362"
             }
           },
           "parameters": {
@@ -17308,7 +17308,7 @@
               "condition": "[parameters('enableStartVmOnConnect')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
-              "name": "[format('Start-VM-OnConnect-RoleAssign-{0}', parameters('time'))]",
+              "name": "[format('Start-OnConnect-RolAssignComp-{0}', parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('avdWorkloadSubsId'))]",
               "resourceGroup": "[format('{0}', parameters('avdComputeObjectsRgName'))]",
               "properties": {
@@ -17768,7 +17768,7 @@
               "condition": "[parameters('enableStartVmOnConnect')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
-              "name": "[format('Start-VM-OnConnect-RoleAssign-{0}', parameters('time'))]",
+              "name": "[format('Start-OnConnect-RolAssignServ-{0}', parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('avdWorkloadSubsId'))]",
               "resourceGroup": "[format('{0}', parameters('avdServiceObjectsRgName'))]",
               "properties": {
@@ -20080,7 +20080,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
-              "name": "[format('AAD-VM-Role-Assign-{0}-{1}', take(format('{0}', parameters('avdApplicationGroupIdentitiesIds')[copyIndex()]), 6), parameters('time'))]",
+              "name": "[format('AAD-VM-Role-AssignComp-{0}-{1}', take(format('{0}', parameters('avdApplicationGroupIdentitiesIds')[copyIndex()]), 6), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('avdWorkloadSubsId'))]",
               "resourceGroup": "[format('{0}', parameters('avdComputeObjectsRgName'))]",
               "properties": {
@@ -20544,7 +20544,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
-              "name": "[format('AAD-VM-Role-Assign-{0}-{1}', take(format('{0}', parameters('avdApplicationGroupIdentitiesIds')[copyIndex()]), 6), parameters('time'))]",
+              "name": "[format('AAD-VM-Role-AssignServ-{0}-{1}', take(format('{0}', parameters('avdApplicationGroupIdentitiesIds')[copyIndex()]), 6), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('avdWorkloadSubsId'))]",
               "resourceGroup": "[format('{0}', parameters('avdComputeObjectsRgName'))]",
               "properties": {
