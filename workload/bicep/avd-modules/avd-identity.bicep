@@ -132,9 +132,9 @@ module startVMonConnectRoleAssignment '../../../carml/1.2.0/Microsoft.Authorizat
   ]
 }
 
-// FSLogix storage contributor.
-module fslogixRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (createAvdFslogixDeployment && (avdIdentityServiceProvider != 'AAD')) {
-  name: 'fslogix-UserAIdentity-RoleAssign-${time}'
+// Storage contributor.
+module contributorRoleAssign '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (createStorageDeployment && (avdIdentityServiceProvider != 'AAD')) {
+  name: 'UserAIdentity-ContributorRoleAssign-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgName}')
   params: {
     roleDefinitionIdOrName: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${storageAccountContributorRoleId}'

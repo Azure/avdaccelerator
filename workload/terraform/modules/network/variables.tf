@@ -55,11 +55,11 @@ variable "tags" {
   }
 }
 
-variable "ad_rg" {
+variable "hub_connectivity_rg" {
   type        = string
   description = "The resource group for AD VM"
 }
-variable "ad_vnet" {
+variable "hub_vnet" {
   type        = string
   description = "Name of domain controller vnet"
 }
