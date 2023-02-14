@@ -137,6 +137,25 @@ param imageBuildNameTag string = 'AVD-Image'
 @description('Optional. Custom name for Image Definition. (Default: avd-win11-21h2)')
 param imageDefinitionCustomName string = 'avd-win11-21h2'
 
+
+@description('''Optional. The image supports accelerated networking.
+Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.
+This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the
+most demanding network workloads on supported VM types.
+''')
+@allowed([
+  'true'
+  'false'
+])
+param imageDefinitionAcceleratedNetworkSupported string = 'false'
+
+@description('Optional. The image will support hibernation.')
+@allowed([
+  'true'
+  'false'
+])
+param imageDefinitionHibernateSupported string = 'false'
+
 @allowed([
     'Standard'
     'TrustedLaunch'
@@ -760,6 +779,8 @@ module image '../../carml/1.3.0/Microsoft.Compute/galleries/images/deploy.bicep'
         sku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
         location: imageVersionPrimaryLocation
         hyperVGeneration: varOperatingSystemImageDefinitions[operatingSystemImage].hyperVGeneration
+        isAcceleratedNetworkSupported: imageDefinitionAcceleratedNetworkSupported
+        isHibernateSupported: imageDefinitionHibernateSupported
         securityType: imageDefinitionSecurityType
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
