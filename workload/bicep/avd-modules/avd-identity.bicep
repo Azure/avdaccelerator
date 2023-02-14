@@ -103,7 +103,7 @@ module fslogixManagedIdentityWait '../../../carml/1.0.0/Microsoft.Resources/depl
 
 // RBAC role Assignments.
 // Start VM on connect compute RG.
-module startVMonConnectRoleAssignCompute '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (enableStartVmOnConnect) {
+module startVMonConnectRoleAssignCompute '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (enableStartVmOnConnect && !avdDeployScalingPlan) {
   name: 'Start-OnConnect-RolAssignComp-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
   params: {
@@ -113,7 +113,7 @@ module startVMonConnectRoleAssignCompute '../../../carml/1.2.0/Microsoft.Authori
 }
 
 // Start VM on connect service objects RG.
-module startVMonConnectRoleAssignServiceObjects '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (enableStartVmOnConnect) {
+module startVMonConnectRoleAssignServiceObjects '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (enableStartVmOnConnect && !avdDeployScalingPlan) {
   name: 'Start-OnConnect-RolAssignServ-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
   params: {
