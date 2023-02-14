@@ -53,7 +53,11 @@ param (
 	
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $DomainAdminUserPassword
+        [string] $DomainAdminUserPassword,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $StoragePurpose
 
 )
 
@@ -75,15 +79,21 @@ Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 Install-Module 'PSDscResources' -Force
 
 
-$DscCompileCommand="./Configuration.ps1 -StorageAccountName " + $StorageAccountName +  " -StorageAccountRG " + $StorageAccountRG + " -ShareName " + $ShareName + " -SubscriptionId " + $SubscriptionId + " -ClientId " + $ClientId +" -DomainName " + $DomainName + " -IdentityServiceProvider " + $IdentityServiceProvider + " -AzureCloudEnvironment " + $AzureCloudEnvironment + " -CustomOuPath " + $CustomOuPath + " -OUName """ + $OUName + """ -CreateNewOU " + $CreateNewOU + " -DomainAdminUserName " + $DomainAdminUserName + " -DomainAdminUserPassword " + $DomainAdminUserPassword + " -Verbose"
+$DscCompileCommand="./Configuration.ps1 -StorageAccountName " + $StorageAccountName +  " -StorageAccountRG " + $StorageAccountRG+  " -StoragePurpose " + $StoragePurpose +" -ShareName " + $ShareName + " -SubscriptionId " + $SubscriptionId + " -ClientId " + $ClientId +" -DomainName " + $DomainName + " -IdentityServiceProvider " + $IdentityServiceProvider + " -AzureCloudEnvironment " + $AzureCloudEnvironment + " -CustomOuPath " + $CustomOuPath + " -OUName """ + $OUName + """ -CreateNewOU " + $CreateNewOU + " -DomainAdminUserName " + $DomainAdminUserName + " -DomainAdminUserPassword " + $DomainAdminUserPassword + " -Verbose"
 
 Write-Host "Executing the commmand $DscCompileCommand" 
 Invoke-Expression -Command $DscCompileCommand
 
-$MofFolder='DomainJoinFileShare'
+if ($StoragePurpose -eq 'fslogix') {
+	$MofFolder -eq "DomainJoinFileShare-fslogix"
+	 }
+if ($StoragePurpose -eq 'msix') {
+	$MofFolder -eq "DomainJoinFileShare-msix"
+	 }
+#$MofFolder='DomainJoinFileShare'
 $MofPath=$LocalPath + '\' + $MofFolder
 Write-Host "Generated MOF files here: $MofPath"
 
 Write-Host "Applying MOF files. DSC configuration"
 Set-WSManQuickConfig -Force -Verbose
-Start-DscConfiguration -Path $MofPath -Wait -Verbose
+Start-DscConfiguration -Path $MofPath -Wait -Verbose -force
