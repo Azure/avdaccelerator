@@ -471,7 +471,7 @@
                                     "visible": "[equals(steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, true)]",
                                     "options": {
                                         "text": "Deployment will automatically grant role 'Desktop Virtualization Power On Contributor' to Azure virtual Desktop enterprise application (AppID: 9cdead84-a844-4324-93f2-b2e6bb768d07)",
-                                        "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/start-virtual-machine-connect?tabs=azure-portal",
+                                        "uri": "https://learn.microsoft.com/azure/virtual-desktop/start-virtual-machine-connect?tabs=azure-portal",
                                         "style": "Info"
                                     }
                                 },
@@ -481,7 +481,7 @@
                                     "visible": "[equals(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, true)]",
                                     "options": {
                                         "text": "Deployment will automatically grant role 'Desktop Virtualization Power On Off Contributor' to Azure virtual Desktop enterprise application (AppID: 9cdead84-a844-4324-93f2-b2e6bb768d07)",
-                                        "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/start-virtual-machine-connect?tabs=azure-portal",
+                                        "uri": "https://learn.microsoft.com/azure/virtual-desktop/autoscale-scaling-plan",
                                         "style": "Info"
                                     }
                                 },
