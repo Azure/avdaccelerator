@@ -104,7 +104,7 @@ module fslogixManagedIdentityWait '../../../carml/1.0.0/Microsoft.Resources/depl
 // RBAC role Assignments.
 // Start VM on connect compute RG.
 module startVMonConnectRoleAssignCompute '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (enableStartVmOnConnect) {
-  name: 'Start-VM-OnConnect-RoleAssign-${time}'
+  name: 'Start-OnConnect-RolAssignComp-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
   params: {
     roleDefinitionIdOrName: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${desktopVirtualizationPowerOnContributorRoleId}'
@@ -114,7 +114,7 @@ module startVMonConnectRoleAssignCompute '../../../carml/1.2.0/Microsoft.Authori
 
 // Start VM on connect service objects RG.
 module startVMonConnectRoleAssignServiceObjects '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (enableStartVmOnConnect) {
-  name: 'Start-VM-OnConnect-RoleAssign-${time}'
+  name: 'Start-OnConnect-RolAssignServ-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgName}')
   params: {
     roleDefinitionIdOrName: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${desktopVirtualizationPowerOnContributorRoleId}'
@@ -171,7 +171,7 @@ module scalingPlanRoleAssignServiceObjects '../../../carml/1.2.0/Microsoft.Autho
 
 // VM AAD access roles compute RG.
 module avdAadIdentityLoginAccessCompute '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' =  [for avdApplicationGropupIdentityId in avdApplicationGroupIdentitiesIds: if (avdIdentityServiceProvider == 'AAD' && !empty(avdApplicationGroupIdentitiesIds)) {
-  name: 'AAD-VM-Role-Assign-${take('${avdApplicationGropupIdentityId}', 6)}-${time}'
+  name: 'AAD-VM-Role-AssignComp-${take('${avdApplicationGropupIdentityId}', 6)}-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
   params: {
     roleDefinitionIdOrName: 'Virtual Machine User Login' 
@@ -182,7 +182,7 @@ module avdAadIdentityLoginAccessCompute '../../../carml/1.2.0/Microsoft.Authoriz
 
 // VM AAD access roles service objects RG.
 module avdAadIdentityLoginAccessServiceObjects '../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' =  [for avdApplicationGropupIdentityId in avdApplicationGroupIdentitiesIds: if (avdIdentityServiceProvider == 'AAD' && !empty(avdApplicationGroupIdentitiesIds)) {
-  name: 'AAD-VM-Role-Assign-${take('${avdApplicationGropupIdentityId}', 6)}-${time}'
+  name: 'AAD-VM-Role-AssignServ-${take('${avdApplicationGropupIdentityId}', 6)}-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdComputeObjectsRgName}')
   params: {
     roleDefinitionIdOrName: 'Virtual Machine User Login' 
