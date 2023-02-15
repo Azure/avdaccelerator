@@ -68,9 +68,6 @@
         "avdStartVmOnConnect": {
             "value": true
         },
-        "createStartVmOnConnectCustomRole": {
-            "value": true
-        },
         "avdDeployRappGroup": {
             "value": false
         },
@@ -184,6 +181,9 @@
         },           
         "avdAlaWorkspaceDataRetention": {
             "value": 90
-        }
+        },
+        "enableAcceleratedNetworking": {
+            "value": false
+        },
     }
 }
