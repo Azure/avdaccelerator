@@ -60,28 +60,20 @@ param (
         [string] $StoragePurpose
 
 )
-
         
 Write-Host "Downloading the DSCStorageScripts.zip from $DscPath"
 $DscArhive="DSCStorageScripts.zip"
-$appName = 'DSCStorageScripts'
+$appName = 'DSCStorageScripts-'+$StoragePurpose
 $drive = 'C:\Packages'
 New-Item -Path $drive -Name $appName -ItemType Directory -ErrorAction SilentlyContinue
-#
-if ($StoragePurpose -eq 'fslogix') {
-	$LocalPath = "C:\Packages\DSCStorageScripts-fslogix"
-	 }
-if ($StoragePurpose -eq 'msix') {
-	$LocalPath = "C:\Packages\DSCStorageScripts-msix"
-	 }
+
 Write-Host "Setting DSC local path to $LocalPath"
-#$LocalPath = "C:\Packages\DSCStorageScripts"
-#
+$LocalPath = $drive+'\DSCStorageScripts-'+$StoragePurpose
 $OutputPath = $LocalPath + '\' + $DscArhive
 Invoke-WebRequest -Uri $DscPath -OutFile $OutputPath
 
 Write-Host "Expanding the archive $DscArchive" 
-Expand-Archive -LiteralPath 'C:\\Packages\\DSCStorageScripts\\DSCStorageScripts.zip' -DestinationPath $Localpath -Force -Verbose
+Expand-Archive -LiteralPath $OutputPath -DestinationPath $Localpath -Force -Verbose
 
 Set-Location -Path $LocalPath
 
@@ -101,3 +93,6 @@ Write-Host "Generated MOF files here: $MofPath"
 Write-Host "Applying MOF files. DSC configuration"
 Set-WSManQuickConfig -Force -Verbose
 Start-DscConfiguration -Path $MofPath -Wait -Verbose -force
+
+Write-Host "DSC extension run clean up"
+Remove-Item -Path $MofPath -Force -Recurse
