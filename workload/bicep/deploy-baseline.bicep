@@ -734,25 +734,23 @@ var varMarketPlaceGalleryWindows = {
     }
 }
 
-var varBaseScriptUri = 'https://raw.githubusercontent.com/moisesjgomez/avdaccelerator/msix/workload/'
-
+var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/msix/workload/'
 var varFslogixScriptUri = '${varBaseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
 var varFsLogixScript = './Set-FSLogixRegKeys.ps1'
 var varFslogixFileShareName = deployAvdFslogixStorageAzureFiles.outputs.fileShareName
 var varFslogixSharePath = '\\\\${varAvdFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
 var varFsLogixScriptArguments = '-volumeshare ${varFslogixSharePath}'
-
 var varAvdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
 var varStorageAccountContributorRoleId = '17d1049b-9a84-46fb-8f53-869881c3d3ab'
 var varReaderRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 var varAvdVmPowerStateContributor = '40c5ff49-9181-41f8-ae61-143b0e78555e'
-var varDscAgentPackageLocation = 'https://github.com/moisesjgomez/avdaccelerator/blob/msix/workload/scripts/DSCStorageScripts.zip'
+var varDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/msix/workload/scripts/DSCStorageScripts.zip'
 var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
 var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
 var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
 var varDefaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers': 'Computers'
 var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
-var varStorageToDomainScriptArgs = '-DscPath ${varDscAgentPackageLocation} -StorageAccountName ${varAvdFslogixStorageName} -StorageAccountRG ${varAvdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -IdentityServiceProvider ${avdIdentityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -CustomOuPath ${varStorageCustomOuPath} -OUName ${varOuStgPath} -CreateNewOU ${varCreateOuForStorageString} -ShareName ${varAvdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
+//var varStorageToDomainScriptArgs = '-DscPath ${varDscAgentPackageLocation} -StorageAccountName ${varAvdFslogixStorageName} -StorageAccountRG ${varAvdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -IdentityServiceProvider ${avdIdentityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -CustomOuPath ${varStorageCustomOuPath} -OUName ${varOuStgPath} -CreateNewOU ${varCreateOuForStorageString} -ShareName ${varFslogixFileShareName} -ClientId ${deployManagedIdentitiesRoleAssign.outputs.managedIdentityClientId} -Verbose'
 var varCreateOuForStorageString = string(createOuForStorage)
 var allDnsServers = '${customDnsIps},168.63.129.16'
 var varDnsServers = (customDnsIps == 'none') ? []: (split(allDnsServers, ','))
@@ -1156,7 +1154,7 @@ module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bic
         managementVmName: varManagementVmName
         avdOuStgPath: varOuStgPath
         avdCreateOuForStorageString: varCreateOuForStorageString
-        managedIdentityClientId: varStorageManagedIdentityClientId
+        managedIdentityClientId: (varCreateAvdFslogixDeployment||varCreateMsixDeployment) ? deployManagedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
         storageToDomainScript:  varStorageToDomainScript
         storageToDomainScriptUri: varStorageToDomainScriptUri
         timeZone: varTimeZones[avdSessionHostLocation]
@@ -1215,7 +1213,7 @@ module deployAvdMsixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep'
         managementVmName: varManagementVmName
         avdOuStgPath: varOuStgPath
         avdCreateOuForStorageString: varCreateOuForStorageString
-        managedIdentityClientId: varStorageManagedIdentityClientId
+        managedIdentityClientId: (varCreateAvdFslogixDeployment||varCreateMsixDeployment) ? deployManagedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
         storageToDomainScript:  varStorageToDomainScript
         storageToDomainScriptUri: varStorageToDomainScriptUri
         timeZone: varTimeZones[avdSessionHostLocation]
@@ -1284,10 +1282,10 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         identityDomainName: avdIdentityDomainName
         avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
         sessionHostOuPath: avdOuPath
-        avdSessionHostDiskType: avdSessionHostDiskType
-        avdSessionHostLocation: avdSessionHostLocation
-        avdSessionHostNamePrefix: varAvdSessionHostNamePrefix
-        avdSessionHostsSize: avdSessionHostsSize
+        sessionHostDiskType: avdSessionHostDiskType
+        sessionHostLocation: avdSessionHostLocation
+        sessionHostNamePrefix: varAvdSessionHostNamePrefix
+        sessionHostsSize: avdSessionHostsSize
         enableAcceleratedNetworking: enableAcceleratedNetworking
         securityType: securityType == 'Standard' ? '' : securityType
         secureBootEnabled: secureBootEnabled
