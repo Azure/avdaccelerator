@@ -61,12 +61,22 @@ param (
 
 )
 
+        
 Write-Host "Downloading the DSCStorageScripts.zip from $DscPath"
 $DscArhive="DSCStorageScripts.zip"
 $appName = 'DSCStorageScripts'
 $drive = 'C:\Packages'
 New-Item -Path $drive -Name $appName -ItemType Directory -ErrorAction SilentlyContinue
-$LocalPath = "C:\Packages\DSCStorageScripts"
+#
+if ($StoragePurpose -eq 'fslogix') {
+	$LocalPath = "C:\Packages\DSCStorageScripts-fslogix"
+	 }
+if ($StoragePurpose -eq 'msix') {
+	$LocalPath = "C:\Packages\DSCStorageScripts-msix"
+	 }
+Write-Host "Setting DSC local path to $LocalPath"
+#$LocalPath = "C:\Packages\DSCStorageScripts"
+#
 $OutputPath = $LocalPath + '\' + $DscArhive
 Invoke-WebRequest -Uri $DscPath -OutFile $OutputPath
 
@@ -84,13 +94,7 @@ $DscCompileCommand="./Configuration.ps1 -StorageAccountName " + $StorageAccountN
 Write-Host "Executing the commmand $DscCompileCommand" 
 Invoke-Expression -Command $DscCompileCommand
 
-if ($StoragePurpose -eq 'fslogix') {
-	$MofFolder -eq "DomainJoinFileShare-fslogix"
-	 }
-if ($StoragePurpose -eq 'msix') {
-	$MofFolder -eq "DomainJoinFileShare-msix"
-	 }
-#$MofFolder='DomainJoinFileShare'
+$MofFolder='DomainJoinFileShare'
 $MofPath=$LocalPath + '\' + $MofFolder
 Write-Host "Generated MOF files here: $MofPath"
 

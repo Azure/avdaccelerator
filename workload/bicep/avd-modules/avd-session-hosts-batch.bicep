@@ -198,7 +198,7 @@ module sessionHosts './avd-session-hosts.bicep' = [for i in range(1, varAvdSessi
     sessionHostLocation: sessionHostLocation
     sessionHostNamePrefix: sessionHostNamePrefix
     createAvdVnet: createAvdVnet
-    avdSessionHostsSize: avdSessionHostsSize
+    sessionHostsSize: sessionHostsSize
     enableAcceleratedNetworking: enableAcceleratedNetworking
     securityType: securityType
     secureBootEnabled: secureBootEnabled
