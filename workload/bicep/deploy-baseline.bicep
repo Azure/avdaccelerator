@@ -90,9 +90,6 @@ param avhHostPoolMaxSessions int = 5
 @description('Optional. AVD host pool start VM on Connect. (Default: true)')
 param avdStartVmOnConnect bool = true
 
-@description('Optional. Create custom Start VM on connect role. (Default: true)')
-param createStartVmOnConnectCustomRole bool = true
-
 @description('Optional. AVD deploy remote app application group. (Default: false)')
 param avdDeployRappGroup bool = false
 
@@ -193,6 +190,12 @@ param avdSessionHostsSize string = 'Standard_D2s_v3'
 
 @description('Optional. OS disk type for session host. (Defualt: Standard_LRS)')
 param avdSessionHostDiskType string = 'Standard_LRS'
+
+@description('''Optional. Enables accelerated Networking on the session hosts.
+If using a Azure Compute Gallery Image, the Image Definition must have been configured with
+the \'isAcceleratedNetworkSupported\' property set to \'true\'.
+''')
+param enableAcceleratedNetworking bool = true
 
 @allowed([
     'Standard'
@@ -725,7 +728,8 @@ var varFsLogixScriptArguments = '-volumeshare ${varFslogixSharePath}'
 var varAvdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
 var varStorageAccountContributorRoleId = '17d1049b-9a84-46fb-8f53-869881c3d3ab'
 var varReaderRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-var varAvdVmPowerStateContributor = '40c5ff49-9181-41f8-ae61-143b0e78555e'
+var varDesktopVirtualizationPowerOnContributorRoleId = '489581de-a3bd-480d-9518-53dea7416b33'
+var varDesktopVirtualizationPowerOnOffContributorRoleId = '40c5ff49-9181-41f8-ae61-143b0e78555e'
 var varDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip'
 var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
 var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
@@ -1009,13 +1013,14 @@ module deployAvdManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
         avdServiceObjectsRgName: varAvdServiceObjectsRgName
         avdStorageObjectsRgName: varAvdStorageObjectsRgName
         avdWorkloadSubsId: avdWorkloadSubsId
-        createStartVmOnConnectCustomRole: createStartVmOnConnectCustomRole
         fslogixManagedIdentityName: varFslogixManagedIdentityName
         readerRoleId: varReaderRoleId
+        enableStartVmOnConnect: avdStartVmOnConnect
         avdManagementPlaneLocation: avdManagementPlaneLocation
         avdIdentityServiceProvider: avdIdentityServiceProvider
         storageAccountContributorRoleId: varStorageAccountContributorRoleId
-        avdVmPowerStateContributor: varAvdVmPowerStateContributor
+        desktopVirtualizationPowerOnContributorRoleId: varDesktopVirtualizationPowerOnContributorRoleId
+        desktopVirtualizationPowerOnOffContributorRoleId: varDesktopVirtualizationPowerOnOffContributorRoleId
         createAvdFslogixDeployment: varCreateAvdFslogixDeployment
         avdApplicationGroupIdentitiesIds: varAvdApplicationGroupIdentitiesIds
         avdTags: createResourceTags ? union(varCommonResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
@@ -1196,6 +1201,7 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         avdSessionHostLocation: avdSessionHostLocation
         avdSessionHostNamePrefix: varAvdSessionHostNamePrefix
         avdSessionHostsSize: avdSessionHostsSize
+        enableAcceleratedNetworking: enableAcceleratedNetworking
         securityType: securityType == 'Standard' ? '' : securityType
         secureBootEnabled: secureBootEnabled
         vTpmEnabled: vTpmEnabled
