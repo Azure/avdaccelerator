@@ -443,7 +443,7 @@
                                     "visible": "[equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal')]",
                                     "label": "Start VM on connect",
                                     "defaultValue": "Yes (Recommended)",
-                                    "toolTip": "If powered off, start VM once user connects. ",
+                                    "toolTip": "If VM is powered off (deallocated), VM will be started automatically once user connects. ",
                                     "constraints": {
                                         "required": false,
                                         "allowedValues": [
@@ -459,55 +459,40 @@
                                     }
                                 },
                                 {
-                                    "name": "createVmRole",
-                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "name": "avdEnterpriseApplication",
+                                    "type": "Microsoft.Solutions.GraphApiControl",
+                                    "request": {
+                                        "method": "GET",
+                                        "path": "/v1.0/serviceprincipals?$filter=appId eq '9cdead84-a844-4324-93f2-b2e6bb768d07'"                          }
+                                },
+                                {
+                                    "name": "startVmOnConnectRoleInfo",
+                                    "type": "Microsoft.Common.InfoBox",
                                     "visible": "[equals(steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, true)]",
-                                    "label": "Create start VM on connect role",
-                                    "defaultValue": "Yes (Required if using Start VM On Connect)",
-                                    "toolTip": "Create custom Azure IAM role for Start VM on Connect",
-                                    "constraints": {
-                                        "required": false,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes (Required if using Start VM On Connect)",
-                                                "value": true
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": false
-                                            }
-                                        ]
+                                    "options": {
+                                        "text": "Deployment will automatically grant role 'Desktop Virtualization Power On Contributor' to Azure virtual Desktop enterprise application (AppID: 9cdead84-a844-4324-93f2-b2e6bb768d07)",
+                                        "uri": "https://learn.microsoft.com/azure/virtual-desktop/start-virtual-machine-connect?tabs=azure-portal",
+                                        "style": "Info"
                                     }
                                 },
                                 {
-                                    "name": "avdEnterpriseApplication",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "visible": "[or(equals(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, true), equals(steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, true))]",
-                                    "label": "AVD enterprise application ObjectID",
-                                    "defaultValue": "",
-                                    "toolTip": "Provide the ObjectID of the enterprise application Azure Virtual Desktop (Name can also be displayed as 'Windows Virtual Desktops'). To get the ObjectID got to Azure AD > Enterprise applications, remove all filters and search for 'Virtual Desktops' and copy the OjectID that is paired with the Application ID: 9cdead84-a844-4324-93f2-b2e6bb768d07.",
-                                    "constraints": {
-                                        "required": true
+                                    "name": "scalingPlanRoleInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, true)]",
+                                    "options": {
+                                        "text": "Deployment will automatically grant role 'Desktop Virtualization Power On Off Contributor' to Azure virtual Desktop enterprise application (AppID: 9cdead84-a844-4324-93f2-b2e6bb768d07)",
+                                        "uri": "https://learn.microsoft.com/azure/virtual-desktop/autoscale-scaling-plan",
+                                        "style": "Info"
                                     }
                                 },
                                 {
                                     "name": "scalingPlanInfo",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
+                                    "visible": "[equals(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, true)]",
                                     "options": {
                                         "text": "Session hosts can be excluded from the scaling plan by assigning the tag name Exclude-avdScalingPlanName, if not using custom resource naming and example of default tag name is Exclude-vdscaling-eus2-app1-001.",
                                         "uri": "https://docs.microsoft.com/azure/virtual-desktop/autoscale-scenarios#scenario-4-how-do-exclusion-tags-work",
                                         "style": "Info"
-                                    }
-                                },
-                                {
-                                    "name": "vmRoleWarning",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[equals(steps('managementPlane').managementPlaneHostPoolScaling.createVmRole, false)]",
-                                    "options": {
-                                        "text": "Start VM on Connect will not work without a custom role definition. If you enable start on connect, but do not specify a custom role VM's will not start on-demand. Only select no if this custom role already exists and is assigned to your AVD subscription.",
-                                        "uri": "https://docs.microsoft.com/azure/virtual-desktop/start-virtual-machine-connect",
-                                        "style": "Warning"
                                     }
                                 }
                             ]
@@ -762,6 +747,37 @@
                                             {
                                                 "label": "Premium",
                                                 "value": "Premium_LRS"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "warningAcceleratedNetworkingSupport",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, true)]",
+                                    "options": {
+                                        "text": "The Compute Gallery Image definition selected must have the 'isAcceleratedNetworkSupported' feature property set to 'true' if you enable accelerated networking on the session hosts.",
+                                        "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started-baseline.md",
+                                        "style": "Warning"
+                                    }
+                                },
+								{
+                                    "name": "acceleratedNetworking",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "visible": true,
+                                    "label": "Enable accelerated networking",
+                                    "defaultValue": "Yes",
+                                    "toolTip": "Enables low latency and high throughput on the network interface.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes",
+                                                "value": true
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": false
                                             }
                                         ]
                                     }
@@ -1090,14 +1106,14 @@
                             "name": "virtualNetworkPrivateDnsZone",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
-                            "label": "Azure private DNS zone (Private endpoints)",
-                            "defaultValue": "Yes",
-                            "toolTip": "It is recommended to use Azure private DNS zones for private endpoint name spaces (ALZ recommended and deployed).",
+                            "label": "Existing Azure private DNS zone",
+                            "defaultValue": "Yes (Recommended)",
+                            "toolTip": "It is recommended to use Azure private DNS zones for private endpoint name spaces, private endpoints will be automatically created for PaaS services (Azure Files and Key Vault) but the private DNS zones are prerequisites required.",
                             "constraints": {
                                 "required": true,
                                 "allowedValues": [
                                     {
-                                        "label": "Yes",
+                                        "label": "Yes (Recommended)",
                                         "value": true
                                     },
                                     {
@@ -1116,19 +1132,36 @@
                                     "name": "virtualNetworkPrivateDnsZoneFilesSelector",
                                     "type": "Microsoft.Solutions.ResourceSelector",
                                     "visible": "[equals(steps('sessionHosts').sessionHostsComputeStorageSection.fslogixDeployment, true)]",
-                                    "label": "File share (privatelink.file.core.windows.net)",
+                                    "label": "Azure files",
                                     "resourceType": "Microsoft.Network/privateDnsZones",
                                     "constraints": {
                                         "required": true
                                     }
                                 },
                                 {
+                                    "name": "infoAzureFiles",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('sessionHosts').sessionHostsComputeStorageSection.fslogixDeployment, true)]",
+                                    "options": {
+                                        "text": "Azure Files private DNS zone naming: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net",
+                                        "style": "info"
+                                    }
+                                },
+                                {
                                     "name": "virtualNetworkPrivateDnsZoneKeyvaultSelector",
                                     "type": "Microsoft.Solutions.ResourceSelector",
-                                    "label": "Key vault (privatelink.vaultcore.azure.net)",
+                                    "label": "Key vault",
                                     "resourceType": "Microsoft.Network/privateDnsZones",
                                     "constraints": {
                                         "required": true
+                                    }
+                                },
+                                {
+                                    "name": "infoKeyVault",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "options": {
+                                        "text": "Key Vault private DNS zone naming: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net",
+                                        "style": "info"
                                     }
                                 }
                             ]
@@ -1243,13 +1276,13 @@
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
                             "label": "Deploy monitoring",
-                            "defaultValue": "Yes (Recommended)",
+                            "defaultValue": "No",
                             "toolTip": "Deploy monitoring settings and if selected deploy Azure log analytics workspace.",
                             "constraints": {
                                 "required": true,
                                 "allowedValues": [
                                     {
-                                        "label": "Yes (Recommended)",
+                                        "label": "Yes",
                                         "value": true
                                     },
                                     {
@@ -2101,8 +2134,7 @@
                 "avdDeploySessionHosts": "[steps('sessionHosts').deploySessionHosts]",
                 "avdStartVmOnConnect": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, false)]",
                 "avdDeployScalingPlan": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, false)]",
-                "createStartVmOnConnectCustomRole": "[if(equals(steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, true), steps('managementPlane').managementPlaneHostPoolScaling.createVmRole, false)]",
-                "avdEnterpriseAppObjectId": "[if(or(equals(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, true), equals(steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, true)), steps('managementPlane').managementPlaneHostPoolScaling.avdEnterpriseApplication.objectId, 'none')]",
+                "avdEnterpriseAppObjectId":   "[first(map(steps('managementPlane').managementPlaneHostPoolScaling.avdEnterpriseApplication.value, (item) => item.id))]",
                 "avdUseAvailabilityZones": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings]",
                 "avdDeploySessionHostsCount": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
                 "useSharedImage": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false)]",
@@ -2112,6 +2144,7 @@
                 "vTpmEnabled": "[steps('sessionHosts').sessionHostsSecuritySection.vTpmEnabled]",
                 "avdImageTemplateDefinitionId": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage.id, 'none')]",
                 "avdSessionHostDiskType": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskType]",
+				"enableAcceleratedNetworking": "[steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking]",
                 "avdSessionHostsSize": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize, 'Standard_D2s_v4')]",
                 "avdVnetPrivateDnsZone": "[steps('network').virtualNetworkPrivateDnsZone]",
                 "avdVnetPrivateDnsZoneFilesId": "[if(equals(steps('network').virtualNetworkPrivateDnsZone, true), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneFilesSelector.id, '')]",
