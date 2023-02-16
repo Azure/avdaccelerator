@@ -349,9 +349,14 @@ param avdSessionHostCustomNamePrefix string = 'vm-avd-app1'
 param avdAvailabilitySetCustomNamePrefix string = 'avail-avd'
 
 @maxLength(5)
-@description('Optional. AVD fslogix and MSIX app attach storage account prefix custom name. (Default: stavd)')
+@description('Optional. AVD FSLogix and MSIX app attach storage account prefix custom name. (Default: stavd)')
 param storageAccountPrefixCustomName string = 'stavd'
 
+@description('Optional. FSLogix file share name. (Default: fslogix-pc-app1-001)')
+param fslogixFileShareCustomName string = 'fslogix-pc-app1-001'
+
+@description('Optional. FSLogix file share name. (Default: fslogix-pc-app1-001)')
+param msixFileShareCustomName string = 'msix-pc-app1-001'
 
 //@maxLength(64)
 //@description('Optional. AVD fslogix storage account office container file share prefix custom name. (Default: fslogix-oc-app1-001)')
@@ -1146,7 +1151,7 @@ module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bic
     name: 'Storage-Azure-Files-${time}'
     params: {
         storagePurpose: 'fslogix'
-        fileShareCustomName: 'fslogix-pc-app1-001'
+        fileShareCustomName: fslogixFileShareCustomName
         identityServiceProvider: avdIdentityServiceProvider
         dscAgentPackageLocation: varDscAgentPackageLocation
         domainJoinUserPassword: avdDomainJoinUserPassword
@@ -1205,7 +1210,7 @@ module deployAvdMsixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep'
     name: 'MsixStorage-AzureFiles-${time}'
     params: {
         storagePurpose: 'msix'
-        fileShareCustomName: 'msix-pc-app1-001'
+        fileShareCustomName: msixFileShareCustomName
         identityServiceProvider: avdIdentityServiceProvider
         dscAgentPackageLocation: varDscAgentPackageLocation
         domainJoinUserPassword: avdDomainJoinUserPassword
