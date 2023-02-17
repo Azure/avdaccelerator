@@ -33,7 +33,6 @@
   - When Personal is selected:
     - **Machine assignment** - Select either Automatic or Direct.
     - **Start VM on connect** - Choose if you want the host pool to be configured to allow users starting session hosts on demand.
-    - **Create start VM on connect role** - Choose if you want to create start VM on connect custom role.
 - **Session hosts** blade
   - **Deploy sessions hosts** - You can choose to not deploy session hosts just the AVD service objects.
   - **Session host region** - Provide the region to where you want to deploy the session hosts. This defaults to the Management Plane region but can be changed.
