@@ -350,7 +350,7 @@ var varImageReplicationRegions = empty(imageVersionDisasterRecoveryLocation) ? [
 var varImageTemplateBuildAutomation = varAzureCloudName == 'AzureCloud' ? [
     {
         resourceGroup: varResourceGroupName
-        name: 'Image Template Build Automation ${automationAccountCustomName}'
+        name: 'Image Template Build Automation'
         description: 'Allow Image Template build automation using a Managed Identity on an Automation Account.'
         actions: [
             'Microsoft.VirtualMachineImages/imageTemplates/run/action'
@@ -365,7 +365,7 @@ var varImageTemplateBuildAutomation = varAzureCloudName == 'AzureCloud' ? [
 var varImageTemplateContributorRole = [
     {
         resourceGroup: varResourceGroupName
-        name: 'Image Template Contributor ${automationAccountCustomName}'
+        name: 'Image Template Contributor'
         description: 'Allow the creation and management of images'
         actions: [
             'Microsoft.Compute/galleries/read'
@@ -656,7 +656,7 @@ var varVdotCustomizer = [
 var varVirtualNetworkJoinRole = useExistingVirtualNetwork ? [
     {
         resourceGroup: split(existingVirtualNetworkResourceId, '/')[4]
-        name: 'Virtual Network Join ${automationAccountCustomName}'
+        name: 'Virtual Network Join'
         description: 'Allow resources to join a subnet'
         actions: [
             'Microsoft.Network/virtualNetworks/read'
@@ -779,6 +779,9 @@ module image '../../carml/1.3.0/Microsoft.Compute/galleries/images/deploy.bicep'
         isAcceleratedNetworkSupported: imageDefinitionAcceleratedNetworkSupported
         isHibernateSupported: imageDefinitionHibernateSupported
         securityType: imageDefinitionSecurityType
+        //productName: operatingSystemImage
+        //planName: varOperatingSystemImageDefinitions[operatingSystemImage].offer
+        //planPublisherName: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
