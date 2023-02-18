@@ -137,22 +137,21 @@ param imageBuildNameTag string = 'AVD-Image'
 @description('Optional. Custom name for Image Definition. (Default: avd-win11-21h2)')
 param imageDefinitionCustomName string = 'avd-win11-21h2'
 
-
 @description('''Optional. The image supports accelerated networking.
 Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.
 This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the
 most demanding network workloads on supported VM types.
 ''')
 @allowed([
-  'true'
-  'false'
+    'true'
+    'false'
 ])
 param imageDefinitionAcceleratedNetworkSupported string = 'false'
 
 @description('Optional. The image will support hibernation.')
 @allowed([
-  'true'
-  'false'
+    'true'
+    'false'
 ])
 param imageDefinitionHibernateSupported string = 'false'
 
@@ -251,7 +250,6 @@ param userAssignedManagedIdentityCustomName string = ''
 @description('Optional. Reference to the size of the VM for your workloads (Default: Contoso-Workload)')
 param workloadNameTag string = 'Contoso-Workload'
 
-
 // =========== //
 // Variables   //
 // =========== //
@@ -320,7 +318,7 @@ var varAlerts = enableMonitoringAlerts ? [
             ]
         }
     }
-]: []
+] : []
 var varAutomationAccountName = customNaming ? automationAccountCustomName : 'aa-avd-${varNamingStandard}'
 // Placeholder for future feature
 // var varAvdContainerName = customNaming ? avdContainerCustomName : 'avd-artifacts'
@@ -352,7 +350,7 @@ var varImageReplicationRegions = empty(imageVersionDisasterRecoveryLocation) ? [
 var varImageTemplateBuildAutomation = varAzureCloudName == 'AzureCloud' ? [
     {
         resourceGroup: varResourceGroupName
-        name: 'Image Template Build Automation'
+        name: 'Image Template Build Automation ${automationAccountCustomName}'
         description: 'Allow Image Template build automation using a Managed Identity on an Automation Account.'
         actions: [
             'Microsoft.VirtualMachineImages/imageTemplates/run/action'
@@ -367,7 +365,7 @@ var varImageTemplateBuildAutomation = varAzureCloudName == 'AzureCloud' ? [
 var varImageTemplateContributorRole = [
     {
         resourceGroup: varResourceGroupName
-        name: 'Image Template Contributor'
+        name: 'Image Template Contributor ${automationAccountCustomName}'
         description: 'Allow the creation and management of images'
         actions: [
             'Microsoft.Compute/galleries/read'
@@ -463,7 +461,7 @@ var varOperatingSystemImageDefinitions = {
         hyperVGeneration: 'V1'
         version: 'latest'
     }
-	win10_22h2_g2: {
+    win10_22h2_g2: {
         osType: 'Windows'
         osState: 'Generalized'
         offer: 'windows-10'
@@ -658,7 +656,7 @@ var varVdotCustomizer = [
 var varVirtualNetworkJoinRole = useExistingVirtualNetwork ? [
     {
         resourceGroup: split(existingVirtualNetworkResourceId, '/')[4]
-        name: 'Virtual Network Join'
+        name: 'Virtual Network Join ${automationAccountCustomName}'
         description: 'Allow resources to join a subnet'
         actions: [
             'Microsoft.Network/virtualNetworks/read'
@@ -668,7 +666,6 @@ var varVirtualNetworkJoinRole = useExistingVirtualNetwork ? [
     }
 ] : []
 var varVmSize = 'Standard_D4s_v3'
-
 
 // =========== //
 // Deployments //
@@ -859,7 +856,7 @@ module workspaceWait '../../carml/1.0.0/Microsoft.Resources/deploymentScripts/de
     dependsOn: [
         workspace
     ]
-  }
+}
 
 // Automation account.
 module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccounts/deploy.bicep' = {
@@ -921,7 +918,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
     }
     dependsOn: empty(existingLogAnalyticsWorkspaceResourceId) ? [
         workspaceWait
-    ]: []
+    ] : []
 }
 
 // Automation accounts.
@@ -1018,5 +1015,5 @@ module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryR
     }
     dependsOn: empty(existingLogAnalyticsWorkspaceResourceId) ? [
         workspaceWait
-    ]: []
+    ] : []
 }]
