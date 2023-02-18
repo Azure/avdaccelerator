@@ -24,13 +24,13 @@
             "value": ""
         },
         "criticalityTag": {
-            "value": ""
+            "value": "Medium"
         },
         "customNaming": {
             "value": false
         },
         "dataClassificationTag": {
-            "value": ""
+            "value": "General"
         },
         "departmentTag": {
             "value": ""
@@ -48,7 +48,7 @@
             "value": true
         },
         "environmentTag": {
-            "value": ""
+            "value": "Dev"
         },
         "existingLogAnalyticsWorkspaceResourceId": {
             "value": ""

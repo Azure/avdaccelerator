@@ -347,10 +347,11 @@ var varImageReplicationRegions = empty(imageVersionDisasterRecoveryLocation) ? [
     imageVersionDisasterRecoveryLocation
 ]
 // Image template permissions are currently (1/6/23) not supported in Azure US Government
+var varImageTemplateBuildAutomationName = 'Image Template Build Automation'
 var varImageTemplateBuildAutomation = varAzureCloudName == 'AzureCloud' ? [
     {
         resourceGroup: varResourceGroupName
-        name: 'Image Template Build Automation'
+        name: varImageTemplateBuildAutomationName
         description: 'Allow Image Template build automation using a Managed Identity on an Automation Account.'
         actions: [
             'Microsoft.VirtualMachineImages/imageTemplates/run/action'
@@ -362,10 +363,11 @@ var varImageTemplateBuildAutomation = varAzureCloudName == 'AzureCloud' ? [
         ]
     }
 ] : []
+var varImageTemplateContributorRoleName = 'Image Template Contributor'
 var varImageTemplateContributorRole = [
     {
         resourceGroup: varResourceGroupName
-        name: 'Image Template Contributor'
+        name: varImageTemplateContributorRoleName
         description: 'Allow the creation and management of images'
         actions: [
             'Microsoft.Compute/galleries/read'
@@ -571,7 +573,11 @@ var varRemainingCustomizers = [
     }
 ]
 var varResourceGroupName = customNaming ? resourceGroupCustomName : 'rg-avd-${varNamingStandard}-shared-services'
+//var varRoles = union(varVirtualNetworkJoinRoleExistingRoleCheck, varRolesimageTemplateBuildAutomationExistingRoleCheck, varImageTemplateContributorRoleExistingRoleCheck)
 var varRoles = union(varVirtualNetworkJoinRole, varImageTemplateBuildAutomation, varImageTemplateContributorRole)
+//var varRolesimageTemplateBuildAutomationExistingRoleCheck = empty(imageTemplateBuildAutomationExistingRoleCheck.id) ? varImageTemplateBuildAutomation : []
+//var varImageTemplateContributorRoleExistingRoleCheck = empty(imageTemplateContributorExistingRoleCheck.id) ? varImageTemplateContributorRole : []
+//var varVirtualNetworkJoinRoleExistingRoleCheck = empty(virtualNetworkJoinExistingRoleCheck.id) ? varVirtualNetworkJoinRole : []
 var varScreenCaptureProtectionCustomizer = screenCaptureProtection ? [
     {
         type: 'PowerShell'
@@ -653,10 +659,11 @@ var varVdotCustomizer = [
         scriptUri: '${varBaseScriptUri}scripts/Set-VirtualDesktopOptimizations.ps1'
     }
 ]
+var varVirtualNetworkJoinRoleName = 'Virtual Network Join'
 var varVirtualNetworkJoinRole = useExistingVirtualNetwork ? [
     {
         resourceGroup: split(existingVirtualNetworkResourceId, '/')[4]
-        name: 'Virtual Network Join'
+        name: varVirtualNetworkJoinRoleName
         description: 'Allow resources to join a subnet'
         actions: [
             'Microsoft.Network/virtualNetworks/read'
@@ -695,8 +702,24 @@ module avdSharedResourcesRg '../../carml/1.0.0/Microsoft.Resources/resourceGroup
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
 }
+/*
+// Role definition check Image Template Build Automation.
+resource imageTemplateBuildAutomationExistingRoleCheck 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+    name: varImageTemplateBuildAutomationName
+}
 
-// Role definition.
+// Role definition check Image Template Contributor.
+resource imageTemplateContributorExistingRoleCheck 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+    name: varImageTemplateContributorRoleName
+}
+
+// Role definition check Image Template Build Automation.
+resource virtualNetworkJoinExistingRoleCheck 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+    name: varVirtualNetworkJoinRoleName
+}
+*/
+
+// Role definition deployment.
 module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinitions/subscription/deploy.bicep' = [for i in range(0, length(varRoles)): {
     scope: subscription(sharedServicesSubId)
     name: 'Role-Definition_${i}_${time}'
@@ -709,6 +732,11 @@ module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinition
             '/subscriptions/${sharedServicesSubId}'
         ]
     }
+    //dependsOn: [
+    //    imageTemplateBuildAutomationExistingRoleCheck
+    //    virtualNetworkJoinExistingRoleCheck
+    //    imageTemplateContributorExistingRoleCheck
+    //]
 }]
 
 // Managed identity.
@@ -963,7 +991,8 @@ module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/module
     dependsOn: [
         avdSharedResourcesRg
     ]
-} */
+} 
+*/
 
 // Action groups.
 module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bicep' = if (enableMonitoringAlerts) {
