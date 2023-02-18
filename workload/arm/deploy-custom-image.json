@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "9101245893480841794"
+      "templateHash": "1385167216647479521"
     }
   },
   "parameters": {
@@ -2507,7 +2507,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.12.40.16777",
-              "templateHash": "6003255835965326914"
+              "templateHash": "5262700209155557866"
             }
           },
           "parameters": {
@@ -3279,7 +3279,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.12.40.16777",
-                      "templateHash": "9125552147111901095"
+                      "templateHash": "4805523983350870778"
                     }
                   },
                   "parameters": {
@@ -3559,11 +3559,6 @@
                         "eula": "[parameters('eula')]",
                         "privacyStatementUri": "[parameters('privacyStatementUri')]",
                         "releaseNoteUri": "[parameters('releaseNoteUri')]",
-                        "purchasePlan": {
-                          "product": "[if(not(empty(parameters('productName'))), parameters('productName'), null())]",
-                          "name": "[if(not(empty(parameters('planName'))), parameters('planName'), null())]",
-                          "publisher": "[if(not(empty(parameters('planPublisherName'))), parameters('planPublisherName'), null())]"
-                        },
                         "endOfLifeDate": "[parameters('endOfLife')]",
                         "disallowed": {
                           "diskTypes": "[parameters('excludedDiskTypes')]"
@@ -3878,7 +3873,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.12.40.16777",
-              "templateHash": "9125552147111901095"
+              "templateHash": "4805523983350870778"
             }
           },
           "parameters": {
@@ -4158,11 +4153,6 @@
                 "eula": "[parameters('eula')]",
                 "privacyStatementUri": "[parameters('privacyStatementUri')]",
                 "releaseNoteUri": "[parameters('releaseNoteUri')]",
-                "purchasePlan": {
-                  "product": "[if(not(empty(parameters('productName'))), parameters('productName'), null())]",
-                  "name": "[if(not(empty(parameters('planName'))), parameters('planName'), null())]",
-                  "publisher": "[if(not(empty(parameters('planPublisherName'))), parameters('planPublisherName'), null())]"
-                },
                 "endOfLifeDate": "[parameters('endOfLife')]",
                 "disallowed": {
                   "diskTypes": "[parameters('excludedDiskTypes')]"
