@@ -4,15 +4,18 @@ resource "azurerm_route_table" "udr" {
   resource_group_name           = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_network}"
   disable_bgp_route_propagation = false
 
+  # Optional uncomment to set a route
+  /*
   route {
-    name           = "route1"
-    address_prefix = "10.1.0.0/16"
-    next_hop_type  = "VnetLocal"
+    name                   = "defaultroute"
+    address_prefix         = "0.0.0.0/0"
+    next_hop_type          = "VirtualAppliance"
+    next_hop_in_ip_address = var.next_hop_ip
   }
 
   tags = local.tags
+*/
 }
-
 resource "azurerm_subnet_route_table_association" "udrasso" {
   subnet_id      = azurerm_subnet.subnet.id
   route_table_id = azurerm_route_table.udr.id
