@@ -3,7 +3,7 @@ Terraform v1.3.7
 on windows_amd64
 + provider registry.terraform.io/azure/azapi v1.1.0
 + provider registry.terraform.io/hashicorp/azuread v2.25.0
-+ provider registry.terraform.io/hashicorp/azurerm v3.41.0
++ provider registry.terraform.io/hashicorp/azurerm v3.44.1
 + provider registry.terraform.io/hashicorp/local v2.2.3
 + provider registry.terraform.io/hashicorp/random v3.3.2
 + provider registry.terraform.io/hashicorp/time v0.8.0
@@ -50,10 +50,16 @@ dns_servers           = ["10.0.1.1", "168.63.129.16"] #replace with your custom 
 aad_group_name        = "avdusersgroup" #user group must pre-created on your AD server and sync to Azure AD
 hub_vnet              = "infra-network"
 hub_connectivity_rg   = "infra-rg"
+hub_dns_zone_rg           = "js-privatedns"
 rdsh_count            = 2
+next_hop_ip               = "10.100.0.4" # next hop ip address
+fw_policy                 = "fwpol-hub"  # fw policy name
 image_name            = "avdImage-microsoftwindowsdesktop-office-365-win11-21h2-avd-m365"
 image_rg              = "rg-eastus-avd-AIBdemoAVD-shared-resources"
 gallery_name          = "avdgallery_eastus_AIBdemoAVD"
 spoke_subscription_id = "Your Spoke Subscription ID"
 hub_subscription_id   = "Your Hub Subscription ID"
-
+identity_subscription_id  = "Your Hub Subscription ID"
+avdshared_subscription_id = "Your Hub Subscription ID"
+identity_rg               = "infra-rg"      # identity subscription resource group
+identity_vnet             = "infra-network" # identity subscription vnet name
