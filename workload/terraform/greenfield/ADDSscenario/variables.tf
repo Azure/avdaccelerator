@@ -26,6 +26,10 @@ variable "rg_avdi" {
   description = "Name of the Resource group in which to deploy avd service objects"
 }
 
+variable "identity_rg" {
+  type        = string
+  description = "Name of the Resource group in which to identity resources are deployed"
+}
 
 variable "rg_fslogix" {
   description = "Resource group FSLogix VM"
@@ -54,6 +58,11 @@ variable "nsg" {
 variable "rt" {
   type        = string
   description = "Name of the route table"
+}
+
+variable "identity_vnet" {
+  type        = string
+  description = "Name of the vnet in which to identity resources are deployed"
 }
 
 variable "dag" {
@@ -205,7 +214,6 @@ variable "gallery_name" {
   type        = string
   description = "Name of the shared image gallery name"
 }
-
 variable "image_rg" {
   type        = string
   description = "Image Gallery resource group"
@@ -227,6 +235,15 @@ variable "spoke_subscription_id" {
   description = "Spoke Subscription id"
 }
 
+variable "identity_subscription_id" {
+  type        = string
+  description = "identity Subscription id"
+}
+
+variable "avdshared_subscription_id" {
+  type        = string
+  description = "Spoke Subscription id"
+}
 
 variable "file_name" {
   description = "The name of the PowerShell script that the CustomScriptExtention runs"
@@ -281,9 +298,22 @@ variable "create_new_ou" {
     condition     = contains(["true", "false"], var.create_new_ou)
     error_message = "Valid values: true or false."
   }
-
 }
 
 variable "fslogix_sharename" {
   description = "The name of the FsLogix File share name"
+}
+
+variable "hub_dns_zone_rg" {
+  description = "The resource group for the hub DNS zone"
+}
+
+variable "next_hop_ip" {
+  type        = string
+  description = "Next hop IP address"
+}
+
+variable "fw_policy" {
+  type        = string
+  description = "Name of the firewall policy"
 }
