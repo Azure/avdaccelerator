@@ -1019,7 +1019,7 @@
                                     "name": "msixDeployment",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "label": "Create MSIX App Attach storage",
-                                    "defaultValue": "Yes",
+                                    "defaultValue": "No",
                                     "toolTip": "Deploys MSIX App Attach containers and permissions setup.",
                                     "constraints": {
                                         "required": true,
