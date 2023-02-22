@@ -6,6 +6,17 @@ variable "rg_network" {
   description = "Name of the Resource group in which to deploy network resources"
 }
 
+variable "identity_rg" {
+  type        = string
+  description = "Name of the Resource group in which to identity resources are deployed"
+}
+
+variable "identity_vnet" {
+  type        = string
+  description = "Name of the vnet in which to identity resources are deployed"
+
+}
+
 variable "vnet" {
   type        = string
   description = "Name of avd vnet"
@@ -45,8 +56,19 @@ variable "pesubnet_range" {
 }
 variable "prefix" {
   type        = string
-  description = "Prefix of the name of the AVD machine(s)"
+  description = "Prefix of the name of the AVD resources"
 }
+
+variable "next_hop_ip" {
+  type        = string
+  description = "Next hop IP address"
+}
+
+variable "fw_policy" {
+  type        = string
+  description = "Name of the firewall policy"
+}
+
 variable "tags" {
   type = map(any)
   default = {
@@ -70,4 +92,9 @@ variable "hub_subscription_id" {
 variable "spoke_subscription_id" {
   type        = string
   description = "Spoke Subscription id"
+}
+
+variable "identity_subscription_id" {
+  type        = string
+  description = "Identity Subscription id"
 } 
