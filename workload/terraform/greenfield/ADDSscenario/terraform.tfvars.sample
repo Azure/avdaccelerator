@@ -59,6 +59,8 @@ image_rg              = "rg-eastus-avd-AIBdemoAVD-shared-resources"
 gallery_name          = "avdgallery_eastus_AIBdemoAVD"
 spoke_subscription_id = "Your spoke subscription ID"
 hub_subscription_id   = "pre-existing hub subscription ID"
+identity_subscription_id  = "pre-existing hub subscription ID"
+avdshared_subscription_id = "pre-existing hub subscription ID"
 
 #FsLogix
 id_provider             = "ADDS"
@@ -75,6 +77,9 @@ avd_users = [
   "avduser02@contoso.net"
 ] #the list of users must pre-created on your AD server and sync to Azure AD
 
-
+fw_policy     = "fwpol-hub" # fw policy name
+identity_rg   = "infra-rg"      # identity subscription resource group
+identity_vnet = "infra-network" # identity subscription vnet name
+next_hop_ip   = "10.100.0.4"    # next hop ip address
 
 
