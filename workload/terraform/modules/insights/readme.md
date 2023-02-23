@@ -4,6 +4,8 @@ The module is to help developers create their own Terraform deployment for Azure
 
 * One Log Analytics Workspaces to be used the AVD environment. It is recommended to use a single Log Analytics Workspace for [AVDI](https://learn.microsoft.com/en-us/azure/virtual-desktop/insights)
 * Enable data collection in the Log Analytics workspace
+  
+Note: There are other configuration to complete the setup of AVDI. That code is included in the [avd.tf](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/greenfield/ADDSscenario/avd.tf) and [host.tf](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/greenfield/ADDSscenario/host.tf) in the scenario.
 
 Enjoy it by following steps:
 
