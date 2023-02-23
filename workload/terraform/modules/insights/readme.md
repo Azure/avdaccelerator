@@ -9,7 +9,7 @@ Enjoy it by following steps:
 
 1. Copy the insights module files from [avdi modules](../modules/../insights/)  
 2. Decide on a  "Prefix" which will be included in all the deployed resources name. Resource Groups and resource names are derived from the Prefix parameter. Pick a unique resource prefix that is 3-4 alphanumeric characters in length without whitespaces
-3. Modify the terraform.tfvars.sample with your values and rename to terraform.tfvars to define the desired names, location, networking, and prefix variables
+3. Modify the terraform.tfvars.sample with your values and rename to terraform.tfvars to define the desired names, location, and prefix variables
 4. Before deploying, confirm that you have logged on to the correct subscription
 5. Change directory to the folder that contains the terraform files
 6. Run `terraform init` to initialize this directory
