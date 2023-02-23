@@ -138,7 +138,7 @@ param avdFslogixFileShareQuotaSize int = 10
 @description('Optional. Deploy new session hosts. (Default: true)')
 param avdDeploySessionHosts bool = true
 
-@description('Optional. Deploy AVD monitoring resources and setings. (Default: true)')
+@description('Optional. Deploy AVD monitoring resources and setings. (Default: false)')
 param avdDeployMonitoring bool = false
 
 @description('Optional. Deploy AVD Azure log analytics workspace. (Default: true)')
