@@ -154,7 +154,7 @@ param avdAlaWorkspaceDataRetention int = 90
 param alaExistingWorkspaceResourceId string = ''
 
 @description('Required. Create and assign custom Azure Policy for NSG flow logs and network security')
-param deployCustomPolicyNetworking bool = false 
+param deployCustomPolicyNetworking bool = false
 
 @description('Optional. Deploy Azure storage account for flow logs. (Default: false)')
 param deployStgAccountForFlowLogs bool = false
@@ -164,7 +164,7 @@ param stgAccountForFlowLogsId string = ''
 
 @minValue(1)
 @maxValue(999)
-@description('Optional. Cuantity of session hosts to deploy. (Default: 1)')
+@description('Optional. Quantity of session hosts to deploy. (Default: 1)')
 param avdDeploySessionHostsCount int = 1
 
 @description('Optional. The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 0)')
@@ -351,7 +351,7 @@ param avdWrklKvPrefixCustomName string = 'kv-avd'
 //
 
 // Resource tagging
-// 
+//
 @description('Optional. Apply tags on resources and resource groups. (Default: false)')
 param createResourceTags bool = false
 
@@ -762,7 +762,7 @@ var varCommonResourceTags = createResourceTags ? {
 
 var varAllComputeStorageTags = {
     DomainName: avdIdentityDomainName
-    JoinType: avdIdentityServiceProvider 
+    JoinType: avdIdentityServiceProvider
 }
 
 var varAvdCostManagementParentResourceTag = {
@@ -874,7 +874,7 @@ module validation 'avd-modules/avd-validation.bicep' = {
     PooledHostPool: PooledHostPool
     RecoveryServices: RecoveryServices
     SasToken: SasToken
-    ScriptsUri: ScriptsUri    
+    ScriptsUri: ScriptsUri
     SecurityPrincipalIds: SecurityPrincipalObjectIds
     SecurityPrincipalNames: SecurityPrincipalNames
     SessionHostCount: SessionHostCount
@@ -917,7 +917,7 @@ module deployAzurePolicyNetworking './avd-modules/avd-azure-policy-networking.bi
     name: (length('Enable-Azure-Policy-for-Netwok-Security-${time}') > 64) ? take('Enable-Azure-Policy-for-Netwok-Security-${time}',64) : 'Enable-Azure-Policy-for-Netwok-Security-${time}'
     params: {
         alaWorkspaceResourceId: (avdDeployMonitoring && deployAlaWorkspace) ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId
-        alaWorkspaceId: (avdDeployMonitoring && deployAlaWorkspace) ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceId : alaExistingWorkspaceResourceId 
+        alaWorkspaceId: (avdDeployMonitoring && deployAlaWorkspace) ? deployMonitoringDiagnosticSettings.outputs.avdAlaWorkspaceId : alaExistingWorkspaceResourceId
         avdManagementPlaneLocation: avdManagementPlaneLocation
         avdWorkloadSubsId: avdWorkloadSubsId
         avdMonitoringRgName: varAvdMonitoringRgName
@@ -1109,7 +1109,7 @@ module avdWrklKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep
             ]
         }
         tags: createResourceTags ? union(varCommonResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
-        
+
     }
     dependsOn: [
         avdBaselineResourceGroups
@@ -1232,4 +1232,3 @@ module deployAndConfigureAvdSessionHosts './avd-modules/avd-session-hosts-batch.
         avdWrklKeyVault
     ]
 }
-
