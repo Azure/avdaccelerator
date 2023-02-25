@@ -123,6 +123,9 @@ Azure platform landing zone has already been deployed in accordance with the [CA
 
 [(Back to top)](#table-of-contents)
 
+## Estimated Cost
+A breakdown of [estimated cost for this deployment](infracost-base.html)
+
 ## Reporting issues
 
 Microsoft Support is not yet handling issues for any published tools in this repository. However, we would like to welcome you to open issues using GitHub [issues](https://github.com/Azure/avdaccelerator/issues) to collaborate and improve these tools.
