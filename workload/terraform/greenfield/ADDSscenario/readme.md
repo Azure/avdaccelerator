@@ -10,10 +10,10 @@ This accelerator is to be used as starter kit and you can expand its functionali
 
 - [Prerequisites](#prerequisites)  
 - [Planning](#planning)
-- [AVD Spoke Network](#AVD-Network)
-- [AVD Baseline](#AVD-Baseline)   
-- [Backend Setup](#Backends)  
-- [Terraform file Structure](#Files)  
+- [AVD Spoke Network](#avd-network)
+- [AVD Baseline](#avd-baseline)
+- [Backend Setup](#backends)  
+- [Terraform file Structure](#files)  
 
 This guide describes how to deploy Azure Virtual Desktop Accelerator using the [Terraform](https://www.terraform.io/).
 To get started with Terraform on Azure check out their [tutorial](https://learn.hashicorp.com/collections/terraform/azure-get-started/).
@@ -32,9 +32,9 @@ To get started with Terraform on Azure check out their [tutorial](https://learn.
 
 The deployments will require a "Prefix" which will be included in all the deployed resources name.
 Resource Groups and resource names are derived from the `Prefix` parameter. Pick a unique resource prefix that is 3-5 alphanumeric characters in length without whitespaces.
- 
+
 ## AVD-Network
- 
+
 Azure Virtual Desktop resources and dependent services for establishing the Azure Virtual Desktop spoke network:
 
 - Network Security group
@@ -104,10 +104,10 @@ The Azure Virtual Desktop Baseline Terraform files are all written as individual
 | terraform.tfvars.sample    | This file contains the values for the variables change per your requirements |
 
 Validated on provider versions:
+
 - hashicorp/random v3.3.2
 - hashicorp/azuread v2.26.1
 - hashicorp/azurerm v3.22.0
-
 
 ![AVD Baseline diagram](../../../docs/diagrams/avd-accelerator-terraform-baseline-image.png)
 
@@ -181,7 +181,8 @@ az keyvault secret set --vault-name "<Azure Virtual Desktopkeyvaultdemo>" --name
 5. Run `terraform plan` to view the planned deployment
 5. Run `terraform apply` to confirm the deployment
 
-## Confirming Deployment
+## Estimated Cost
+A breakdown of [estimated cost for this deployment](infracost-base.html)
 
 ## Additional References
 
