@@ -110,7 +110,7 @@ module avdNetworksecurityGroup '../../../carml/1.2.0/Microsoft.Network/networkSe
                     sourcePortRange: '*'
                     destinationPortRange: '443'
                     protocol: 'Tcp'
-                    sourceAddressPrefix: '*'
+                    sourceAddressPrefix: 'VirtualNetwork'
                 }
             }
             {
@@ -124,7 +124,7 @@ module avdNetworksecurityGroup '../../../carml/1.2.0/Microsoft.Network/networkSe
                     sourcePortRange: '*'
                     destinationPortRange: '8443'
                     protocol: 'Tcp'
-                    sourceAddressPrefix: '*'
+                    sourceAddressPrefix: 'VirtualNetwork'
                 }
             }
             {
@@ -138,7 +138,7 @@ module avdNetworksecurityGroup '../../../carml/1.2.0/Microsoft.Network/networkSe
                     sourcePortRange: '*'
                     destinationPortRange: '443'
                     protocol: 'Tcp'
-                    sourceAddressPrefix: '*'
+                    sourceAddressPrefix: 'VirtualNetwork'
                 }
             }
             {
@@ -152,7 +152,7 @@ module avdNetworksecurityGroup '../../../carml/1.2.0/Microsoft.Network/networkSe
                     sourcePortRange: '*'
                     destinationPortRange: '443'
                     protocol: 'Tcp'
-                    sourceAddressPrefix: '*'
+                    sourceAddressPrefix: 'VirtualNetwork'
                 }
             }
             {
@@ -166,7 +166,7 @@ module avdNetworksecurityGroup '../../../carml/1.2.0/Microsoft.Network/networkSe
                     sourcePortRange: '*'
                     destinationPortRange: '1688'
                     protocol: 'Tcp'
-                    sourceAddressPrefix: '*'
+                    sourceAddressPrefix: 'VirtualNetwork'
                 }
             }
             {
@@ -180,7 +180,7 @@ module avdNetworksecurityGroup '../../../carml/1.2.0/Microsoft.Network/networkSe
                     sourcePortRange: '*'
                     destinationPortRange: '80'
                     protocol: 'Tcp'
-                    sourceAddressPrefix: '*'
+                    sourceAddressPrefix: 'VirtualNetwork'
                 }
             }
             {
@@ -189,12 +189,12 @@ module avdNetworksecurityGroup '../../../carml/1.2.0/Microsoft.Network/networkSe
                     priority: 150
                     access: 'Allow'
                     description: 'Session host traffic to Azure instance metadata'
-                    destinationAddressPrefix: '*'
+                    destinationAddressPrefix: 'VirtualNetwork'
                     direction: 'Inbound'
                     sourcePortRange: '*'
                     destinationPortRange: '3390'
                     protocol: 'Udp'
-                    sourceAddressPrefix: '*'
+                    sourceAddressPrefix: 'VirtualNetwork'
                 }
             }
         ]
