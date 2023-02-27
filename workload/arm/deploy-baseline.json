@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "11323697894457015232"
+      "templateHash": "16072309590152303780"
     }
   },
   "parameters": {
@@ -345,7 +345,7 @@
       "type": "int",
       "defaultValue": 1,
       "metadata": {
-        "description": "Optional. Cuantity of session hosts to deploy. (Default: 1)"
+        "description": "Optional. Quantity of session hosts to deploy. (Default: 1)"
       },
       "maxValue": 999,
       "minValue": 1
@@ -11370,7 +11370,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "3522959794062535073"
+              "templateHash": "10306526633043492734"
             }
           },
           "parameters": {
@@ -11501,26 +11501,20 @@
               "metadata": {
                 "description": "Do not modify, used to set unique value for resource deployment"
               }
-            },
-            "varAvdNetworkSecurityGroupDiagnostic": {
-              "type": "array",
-              "defaultValue": [
-                "NetworkSecurityGroupEvent",
-                "NetworkSecurityGroupRuleCounter"
-              ]
-            },
-            "varAvdVirtualNetworkLogsDiagnostic": {
-              "type": "array",
-              "defaultValue": [
-                "VMProtectionAlerts"
-              ]
-            },
-            "varAvdVirtualNetworkMetricsDiagnostic": {
-              "type": "array",
-              "defaultValue": [
-                "AllMetrics"
-              ]
             }
+          },
+          "variables": {
+            "varAvdNetworkSecurityGroupDiagnostic": [
+              "NetworkSecurityGroupEvent",
+              "NetworkSecurityGroupRuleCounter"
+            ],
+            "varAvdVirtualNetworkLogsDiagnostic": [
+              "VMProtectionAlerts"
+            ],
+            "varAvdVirtualNetworkMetricsDiagnostic": [
+              "AllMetrics"
+            ],
+            "varCreateAvdStaicRoute": true
           },
           "resources": [
             {
@@ -11552,7 +11546,109 @@
                     "value": "[parameters('avdDiagnosticLogsRetentionInDays')]"
                   },
                   "diagnosticLogCategoriesToEnable": {
-                    "value": "[parameters('varAvdNetworkSecurityGroupDiagnostic')]"
+                    "value": "[variables('varAvdNetworkSecurityGroupDiagnostic')]"
+                  },
+                  "securityRules": {
+                    "value": [
+                      {
+                        "name": "AVDServiceTraffic",
+                        "properties": {
+                          "priority": 100,
+                          "access": "Allow",
+                          "description": "Session host traffic to AVD control plane",
+                          "destinationAddressPrefix": "WindowsVirtualDesktop",
+                          "direction": "Outbound",
+                          "sourcePortRange": "*",
+                          "destinationPortRange": "443",
+                          "protocol": "Tcp",
+                          "sourceAddressPrefix": "VirtualNetwork"
+                        }
+                      },
+                      {
+                        "name": "AzureCloud",
+                        "properties": {
+                          "priority": 110,
+                          "access": "Allow",
+                          "description": "Session host traffic to Azure cloud services",
+                          "destinationAddressPrefix": "AzureCloud",
+                          "direction": "Outbound",
+                          "sourcePortRange": "*",
+                          "destinationPortRange": "8443",
+                          "protocol": "Tcp",
+                          "sourceAddressPrefix": "VirtualNetwork"
+                        }
+                      },
+                      {
+                        "name": "AzureMonitor",
+                        "properties": {
+                          "priority": 120,
+                          "access": "Allow",
+                          "description": "Session host traffic to Azure Monitor",
+                          "destinationAddressPrefix": "AzureMonitor",
+                          "direction": "Outbound",
+                          "sourcePortRange": "*",
+                          "destinationPortRange": "443",
+                          "protocol": "Tcp",
+                          "sourceAddressPrefix": "VirtualNetwork"
+                        }
+                      },
+                      {
+                        "name": "AzureMarketPlace",
+                        "properties": {
+                          "priority": 130,
+                          "access": "Allow",
+                          "description": "Session host traffic to Azure Monitor",
+                          "destinationAddressPrefix": "AzureFrontDoor.Frontend",
+                          "direction": "Outbound",
+                          "sourcePortRange": "*",
+                          "destinationPortRange": "443",
+                          "protocol": "Tcp",
+                          "sourceAddressPrefix": "VirtualNetwork"
+                        }
+                      },
+                      {
+                        "name": "WindowsActivationKMS",
+                        "properties": {
+                          "priority": 140,
+                          "access": "Allow",
+                          "description": "Session host traffic to Windows license activation services",
+                          "destinationAddressPrefix": "23.102.135.246",
+                          "direction": "Outbound",
+                          "sourcePortRange": "*",
+                          "destinationPortRange": "1688",
+                          "protocol": "Tcp",
+                          "sourceAddressPrefix": "VirtualNetwork"
+                        }
+                      },
+                      {
+                        "name": "AzureInstanceMetadata",
+                        "properties": {
+                          "priority": 150,
+                          "access": "Allow",
+                          "description": "Session host traffic to Azure instance metadata",
+                          "destinationAddressPrefix": "169.254.169.254",
+                          "direction": "Outbound",
+                          "sourcePortRange": "*",
+                          "destinationPortRange": "80",
+                          "protocol": "Tcp",
+                          "sourceAddressPrefix": "VirtualNetwork"
+                        }
+                      },
+                      {
+                        "name": "RDPShortpath",
+                        "properties": {
+                          "priority": 150,
+                          "access": "Allow",
+                          "description": "Session host traffic to Azure instance metadata",
+                          "destinationAddressPrefix": "VirtualNetwork",
+                          "direction": "Inbound",
+                          "sourcePortRange": "*",
+                          "destinationPortRange": "3390",
+                          "protocol": "Udp",
+                          "sourceAddressPrefix": "VirtualNetwork"
+                        }
+                      }
+                    ]
                   }
                 },
                 "template": {
@@ -12512,6 +12608,9 @@
                   },
                   "tags": {
                     "value": "[parameters('avdTags')]"
+                  },
+                  "routes": {
+                    "value": "[if(variables('varCreateAvdStaicRoute'), createArray(createObject('name', 'AVDControlPlane', 'properties', createObject('addressPrefix', 'WindowsVirtualDesktop', 'hasBgpOverride', true(), 'nextHopType', 'Internet'))), createArray())]"
                   }
                 },
                 "template": {
@@ -12829,10 +12928,10 @@
                     "value": "[parameters('avdDiagnosticLogsRetentionInDays')]"
                   },
                   "diagnosticLogCategoriesToEnable": {
-                    "value": "[parameters('varAvdVirtualNetworkLogsDiagnostic')]"
+                    "value": "[variables('varAvdVirtualNetworkLogsDiagnostic')]"
                   },
                   "diagnosticMetricsToEnable": {
-                    "value": "[parameters('varAvdVirtualNetworkMetricsDiagnostic')]"
+                    "value": "[variables('varAvdVirtualNetworkMetricsDiagnostic')]"
                   }
                 },
                 "template": {
