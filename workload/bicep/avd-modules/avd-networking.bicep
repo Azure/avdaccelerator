@@ -183,6 +183,20 @@ module avdNetworksecurityGroup '../../../carml/1.2.0/Microsoft.Network/networkSe
                     sourceAddressPrefix: '*'
                 }
             }
+            {
+                name: 'RDPShortpath'
+                properties: {
+                    priority: 150
+                    access: 'Allow'
+                    description: 'Session host traffic to Azure instance metadata'
+                    destinationAddressPrefix: '*'
+                    direction: 'Inbound'
+                    sourcePortRange: '*'
+                    destinationPortRange: '3390'
+                    protocol: 'Udp'
+                    sourceAddressPrefix: '*'
+                }
+            }
         ]
     }
     dependsOn: []
