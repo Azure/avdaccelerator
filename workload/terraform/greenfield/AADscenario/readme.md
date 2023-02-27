@@ -136,6 +136,7 @@ Azure platform landing zone has already been deployed in accordance with the [CA
 
 A breakdown of estimated cost for this deployment. Adjust to sku will change the estimates.
 ![AAD scenario Cost Estimate](../../../docs/diagrams/terraform-AADscenario-cost-estimate.png)
+
 58 were free:
 - 20 x azurerm_log_analytics_datasource_windows_performance_counter
 - 9 x azurerm_log_analytics_datasource_windows_event
