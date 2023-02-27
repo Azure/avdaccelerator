@@ -174,7 +174,6 @@
                                     "defaultValue": "Groups",
                                     "toolTip": "Select the type of identities that will be entered in the 'Identities ObjectIDs' field.",
                                     "constraints": {
-                                        "required": true,
                                         "allowedValues": [
                                             {
                                                 "label": "Groups",
