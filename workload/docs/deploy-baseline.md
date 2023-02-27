@@ -13,7 +13,7 @@
     - Azure Active Directory (AAD).
     - Active Directory (AD DS).
     - Azure AD Domain Services (AAD DS).
-  - **AVD users' role assignment** - These identities will be granted access to AVD application groups (role "Desktop Virtualization User"). 
+  - **AVD users' role assignment** - These identities will be granted access to AVD application groups (role "Desktop Virtualization User").
     - Identity type - Select the type of identities that will be entered in the 'Identities ObjectIDs' field.
     - Identities ObjectIDs - Comma separated list of identities (ObjectIDs) to be granted access to AVD published items and to create sessions on VMs and single sign-on (SSO) when using AAD as identity provider.
     - Note: when using AAD as identity service provider, an additional role (virtual machine user login) will be granted to compute resource group during deployment.
