@@ -224,7 +224,7 @@ module avdRouteTable '../../../carml/1.2.0/Microsoft.Network/routeTables/deploy.
         tags: avdTags
         routes: varCreateAvdStaicRoute ? [
             {
-              name: 'AVDControlPlane'
+              name: 'AVDServiceTraffic'
               properties: {
                 addressPrefix: 'WindowsVirtualDesktop'
                 hasBgpOverride: true

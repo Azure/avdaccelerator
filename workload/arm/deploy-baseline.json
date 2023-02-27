@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "16072309590152303780"
+      "templateHash": "6220035828514641797"
     }
   },
   "parameters": {
@@ -11370,7 +11370,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "10306526633043492734"
+              "templateHash": "9330023316799737406"
             }
           },
           "parameters": {
@@ -12610,7 +12610,7 @@
                     "value": "[parameters('avdTags')]"
                   },
                   "routes": {
-                    "value": "[if(variables('varCreateAvdStaicRoute'), createArray(createObject('name', 'AVDControlPlane', 'properties', createObject('addressPrefix', 'WindowsVirtualDesktop', 'hasBgpOverride', true(), 'nextHopType', 'Internet'))), createArray())]"
+                    "value": "[if(variables('varCreateAvdStaicRoute'), createArray(createObject('name', 'AVDServiceTraffic', 'properties', createObject('addressPrefix', 'WindowsVirtualDesktop', 'hasBgpOverride', true(), 'nextHopType', 'Internet'))), createArray())]"
                   }
                 },
                 "template": {
