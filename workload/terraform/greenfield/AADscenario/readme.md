@@ -124,7 +124,8 @@ Azure platform landing zone has already been deployed in accordance with the [CA
 [(Back to top)](#table-of-contents)
 
 ## Estimated Cost
-A breakdown of [estimated cost for this deployment](infracost-base.html)
+A breakdown of <a href="infracost-base.html" target="_blank">estimated cost for this deployment</a>
+
 
 ## Reporting issues
 
