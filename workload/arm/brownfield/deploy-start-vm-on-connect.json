@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "8617953725589473011"
+      "templateHash": "12288580635554303874"
     }
   },
   "parameters": {
@@ -57,7 +57,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.11.1.770",
-              "templateHash": "13053669573969732847"
+              "templateHash": "7966980510785700796"
             }
           },
           "parameters": {
@@ -69,7 +69,7 @@
           "outputs": {
             "info": {
               "type": "object",
-              "value": "[reference(resourceId('Microsoft.DesktopVirtualization/hostPools', parameters('hostPoolName')), '2022-10-14-preview')]"
+              "value": "[reference(resourceId('Microsoft.DesktopVirtualization/hostPools', parameters('hostPoolName')), '2021-07-12')]"
             }
           }
         }
@@ -109,7 +109,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.11.1.770",
-              "templateHash": "7369296844205788240"
+              "templateHash": "7509959415051683049"
             }
           },
           "parameters": {
@@ -132,7 +132,7 @@
           "resources": [
             {
               "type": "Microsoft.DesktopVirtualization/hostPools",
-              "apiVersion": "2022-10-14-preview",
+              "apiVersion": "2021-07-12",
               "name": "[parameters('hostPoolName')]",
               "location": "[parameters('location')]",
               "properties": {

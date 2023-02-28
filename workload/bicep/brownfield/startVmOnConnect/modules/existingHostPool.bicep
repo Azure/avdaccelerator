@@ -1,7 +1,7 @@
 param hostPoolName string
 
 
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2022-10-14-preview' existing = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2021-07-12' existing = {
   name: hostPoolName
 }
 
