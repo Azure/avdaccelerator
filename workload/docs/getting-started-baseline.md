@@ -11,9 +11,19 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
 - You have the appropriate [licenses](https://docs.microsoft.com/azure/virtual-desktop/prerequisites#operating-systems-and-licenses) for proper AVD entitlement.
 - If the new AVD workload will be connected (peered) with a Hub VNet, contributor permissions are required on the referenced Hub VNet.
 - If using existing Virtual Networks, the deployment will fail if deny private endpoint network policies is enabled. See the following article on disabling them: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy).
-- Private DNS zones for Azure files (privatelink.file.core.windows.net) and keyvault private (privatelink.vaultcore.azure.net) endpoints resolution.
+- Private DNS zones for Azure files and keyvault private endpoints name resolution. The private DNS zones will need to be linked to the AVD subnet when not using custom DNS servers, or to the vNet where the custom DNS servers are connected where they are configured on the AVD vNet.
+  - Azure Commercial: privatelink.file.core.windows.net (Azure Files) and privatelink.vaultcore.azure.net (Key Vault).
+  - Azure Government: privatelink.file.core.usgovcloudapi.net (Azure Files) and privatelink.vaultcore.usgovcloudapi.net (Key Vault).
 - When enabling Start VM on Connect or Scaling Plans features, it is required to provide the ObjectID for the enterprise application Azure Virtual Desktop (Name can also be displayed as 'Windows Virtual Desktops'). To get the ObjectID got to Azure AD > Enterprise applications, remove all filters and search for 'Virtual Desktops' and copy the OjectID that is paired with the Application ID: 9cdead84-a844-4324-93f2-b2e6bb768d07.
 - ObjectId of the **Windows Virtual Desktop** Enterprise Application (with Application Id **9cdead84-a844-4324-93f2-b2e6bb768d07**). This ObjectId is unique for each tenant and is used to give permissions for the [Start VM on Connect](https://docs.microsoft.com/azure/virtual-desktop/start-virtual-machine-connect) feature.
+- Account used for portal UI deployment, needs to be able to query Azure AD tenant and get the ObjectID of the Azure Virtual Desktop enterprise app, query will be executed by the automation using the user context.
+- Virtual network subnet used for AVD session host deployment, needs to access the following:
+  - [list of URLs](https://learn.microsoft.com/azure/virtual-desktop/safe-url-list?tabs=azure#session-host-virtual-machines) session host VMs need to access for Azure Virtual Desktop (During and after deployment).
+  - List of URLs required during deployment:
+    - <https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/Set-FSLogixRegKeys.ps1>
+    - <https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/Manual-DSC-Storage-Scripts.ps1>
+    - <https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip>
+    - <https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration_09-08-2022.zip>
 
 ### Subscription requirements
 
@@ -42,7 +52,7 @@ The templates and scripts need to be executed from an execution environment, the
 
 | Deployment Type | Link |
 |:--|:--|
-| Azure portal UI |[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json) |
+| Azure portal UI |[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json)|
 | Command line (Bicep/ARM) |[![Powershell/Azure CLI](./icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/readme.md) |
 | Terraform |[![Terraform](./icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md) |
 
