@@ -23,6 +23,7 @@ var varResourceGroupName = split(hostPoolResourceId, '/')[4]
 // Deployments //
 // =========== //
 
+// Role Assignment.
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(avdObjectId, varDesktopVirtualizationPowerOnContributorId, subscription().id)
   properties: {
@@ -31,6 +32,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
+// Gets properities of the exisiting AVD host pool.
 module existingHostPool 'modules/existingHostPool.bicep' = {
   name: 'get-existing-hostPool'
   scope: resourceGroup(varResourceGroupName)
@@ -39,6 +41,7 @@ module existingHostPool 'modules/existingHostPool.bicep' = {
   }
 }
 
+// Enables Start VM On Connect on the AVD host pool.
 module hostPool 'modules/hostPool.bicep' = {
   name: varHostPoolName
   scope: resourceGroup(varResourceGroupName)
