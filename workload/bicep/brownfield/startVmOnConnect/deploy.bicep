@@ -1,0 +1,52 @@
+targetScope = 'subscription'
+
+
+// ========== //
+// Parameters //
+// ========== //
+
+param avdObjectId string
+param hostPoolResourceId string
+param location string = deployment().location
+
+
+// =========== //
+// Variables   //
+// =========== //
+
+var varHostPoolName = split(hostPoolResourceId, '/')[8]
+var varDesktopVirtualizationPowerOnContributorId = '489581de-a3bd-480d-9518-53dea7416b33'
+var varResourceGroupName = split(hostPoolResourceId, '/')[4]
+
+
+// =========== //
+// Deployments //
+// =========== //
+
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(avdObjectId, varDesktopVirtualizationPowerOnContributorId, subscription().id)
+  properties: {
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', varDesktopVirtualizationPowerOnContributorId)
+    principalId: avdObjectId
+  }
+}
+
+module existingHostPool 'modules/existingHostPool.bicep' = {
+  name: 'get-existing-hostPool'
+  scope: resourceGroup(varResourceGroupName)
+  params: {
+    hostPoolName: varHostPoolName
+  }
+}
+
+module hostPool 'modules/hostPool.bicep' = {
+  name: varHostPoolName
+  scope: resourceGroup(varResourceGroupName)
+  params: {
+    hostPoolName: varHostPoolName
+    hostPoolType: existingHostPool.outputs.info.hostPoolType
+    loadBalancerType: existingHostPool.outputs.info.loadBalancerType
+    location: location
+    preferredAppGroupType: existingHostPool.outputs.info.preferredAppGroupType
+  }
+}
