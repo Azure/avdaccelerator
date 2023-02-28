@@ -1,3 +1,7 @@
+// ========== //
+// Parameters //
+// ========== //
+
 param hostPoolName string
 param hostPoolType string
 param loadBalancerType string
@@ -5,6 +9,11 @@ param location string
 param preferredAppGroupType string
 
 
+// ========== //
+// Deployments //
+// ========== //
+
+// Host pool.
 resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2021-07-12' = {
   name: hostPoolName
   location: location
