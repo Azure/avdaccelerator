@@ -1,0 +1,153 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.11.1.770",
+      "templateHash": "8617953725589473011"
+    }
+  },
+  "parameters": {
+    "avdObjectId": {
+      "type": "string"
+    },
+    "hostPoolResourceId": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[deployment().location]"
+    }
+  },
+  "variables": {
+    "varHostPoolName": "[split(parameters('hostPoolResourceId'), '/')[8]]",
+    "varDesktopVirtualizationPowerOnContributorId": "489581de-a3bd-480d-9518-53dea7416b33",
+    "varResourceGroupName": "[split(parameters('hostPoolResourceId'), '/')[4]]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(parameters('avdObjectId'), variables('varDesktopVirtualizationPowerOnContributorId'), subscription().id)]",
+      "properties": {
+        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('varDesktopVirtualizationPowerOnContributorId'))]",
+        "principalId": "[parameters('avdObjectId')]"
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "get-existing-hostPool",
+      "resourceGroup": "[variables('varResourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "hostPoolName": {
+            "value": "[variables('varHostPoolName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.11.1.770",
+              "templateHash": "13053669573969732847"
+            }
+          },
+          "parameters": {
+            "hostPoolName": {
+              "type": "string"
+            }
+          },
+          "resources": [],
+          "outputs": {
+            "info": {
+              "type": "object",
+              "value": "[reference(resourceId('Microsoft.DesktopVirtualization/hostPools', parameters('hostPoolName')), '2022-10-14-preview')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[variables('varHostPoolName')]",
+      "resourceGroup": "[variables('varResourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "hostPoolName": {
+            "value": "[variables('varHostPoolName')]"
+          },
+          "hostPoolType": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('varResourceGroupName')), 'Microsoft.Resources/deployments', 'get-existing-hostPool')).outputs.info.value.hostPoolType]"
+          },
+          "loadBalancerType": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('varResourceGroupName')), 'Microsoft.Resources/deployments', 'get-existing-hostPool')).outputs.info.value.loadBalancerType]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "preferredAppGroupType": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('varResourceGroupName')), 'Microsoft.Resources/deployments', 'get-existing-hostPool')).outputs.info.value.preferredAppGroupType]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.11.1.770",
+              "templateHash": "7369296844205788240"
+            }
+          },
+          "parameters": {
+            "hostPoolName": {
+              "type": "string"
+            },
+            "hostPoolType": {
+              "type": "string"
+            },
+            "loadBalancerType": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "preferredAppGroupType": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DesktopVirtualization/hostPools",
+              "apiVersion": "2022-10-14-preview",
+              "name": "[parameters('hostPoolName')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "hostPoolType": "[parameters('hostPoolType')]",
+                "loadBalancerType": "[parameters('loadBalancerType')]",
+                "preferredAppGroupType": "[parameters('preferredAppGroupType')]",
+                "startVMOnConnect": true
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('varResourceGroupName')), 'Microsoft.Resources/deployments', 'get-existing-hostPool')]"
+      ]
+    }
+  ]
+}
