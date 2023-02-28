@@ -5,7 +5,7 @@ param location string
 param preferredAppGroupType string
 
 
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2022-10-14-preview' = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2021-07-12' = {
   name: hostPoolName
   location: location
   properties: {
