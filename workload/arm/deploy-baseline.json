@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "6220035828514641797"
+      "templateHash": "5771136587267787253"
     }
   },
   "parameters": {
@@ -2737,7 +2737,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "1541421147566465184"
+              "templateHash": "3056712998594667644"
             }
           },
           "parameters": {
@@ -4905,7 +4905,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[format('AVD-avdAlaWorkspaceWait-{0}', parameters('time'))]"
+                    "value": "[format('AVD-alaWorkspaceWait-{0}', parameters('time'))]"
                   },
                   "location": {
                     "value": "[parameters('avdManagementPlaneLocation')]"
@@ -22771,7 +22771,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "17535735295968825468"
+              "templateHash": "13436344006861113404"
             }
           },
           "parameters": {
@@ -26207,7 +26207,7 @@
                   "nicConfigurations": {
                     "value": [
                       {
-                        "nicSuffix": "nic-01-",
+                        "nicSuffix": "nic-001-",
                         "deleteOption": "Delete",
                         "enableAcceleratedNetworking": false,
                         "ipConfigurations": "[if(parameters('createAvdVnet'), createArray(createObject('name', 'ipconfig01', 'subnetId', parameters('avdSubnetId'), 'applicationSecurityGroups', parameters('avdApplicationSecurityGroupResourceId'))), createArray(createObject('name', 'ipconfig01', 'subnetId', parameters('avdSubnetId'))))]"
@@ -30108,7 +30108,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[format('AVD-userManagedIdentityWait-{0}', parameters('time'))]"
+                    "value": "[format('AVD-managementVmWait-{0}', parameters('time'))]"
                   },
                   "location": {
                     "value": "[parameters('avdSessionHostLocation')]"
