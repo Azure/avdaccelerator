@@ -2,6 +2,7 @@
 // Parameters //
 // ========== //
 
+@description('Required. The name of the host pool.')
 param hostPoolName string
 
 
