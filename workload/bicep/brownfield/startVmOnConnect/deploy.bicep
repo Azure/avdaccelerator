@@ -5,8 +5,13 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
+@description('Required. The object ID for the Azure Virtual Desktop application in Azure AD.')
 param avdObjectId string
+
+@description('Required. The resource ID for the host pool to enable Start VM On Connect on.')
 param hostPoolResourceId string
+
+@description('Optional. The location for the host pool to enable Start VM On Connect on.')
 param location string = deployment().location
 
 
