@@ -5,19 +5,28 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "12288580635554303874"
+      "templateHash": "16937064627619843469"
     }
   },
   "parameters": {
     "avdObjectId": {
-      "type": "string"
+      "type": "string",
+      "metadata": {
+        "description": "Required. The object ID for the Azure Virtual Desktop application in Azure AD."
+      }
     },
     "hostPoolResourceId": {
-      "type": "string"
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource ID for the host pool to enable Start VM On Connect on."
+      }
     },
     "location": {
       "type": "string",
-      "defaultValue": "[deployment().location]"
+      "defaultValue": "[deployment().location]",
+      "metadata": {
+        "description": "Optional. The location for the host pool to enable Start VM On Connect on."
+      }
     }
   },
   "variables": {
@@ -57,12 +66,15 @@
             "_generator": {
               "name": "bicep",
               "version": "0.11.1.770",
-              "templateHash": "7966980510785700796"
+              "templateHash": "17706530224982074795"
             }
           },
           "parameters": {
             "hostPoolName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the host pool."
+              }
             }
           },
           "resources": [],
@@ -109,24 +121,39 @@
             "_generator": {
               "name": "bicep",
               "version": "0.11.1.770",
-              "templateHash": "7509959415051683049"
+              "templateHash": "9889324264160468472"
             }
           },
           "parameters": {
             "hostPoolName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the host pool."
+              }
             },
             "hostPoolType": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The type of host pool."
+              }
             },
             "loadBalancerType": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The type of load balancer for the host pool."
+              }
             },
             "location": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The location of the host pool."
+              }
             },
             "preferredAppGroupType": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The preferred app group type for the host pool."
+              }
             }
           },
           "resources": [
