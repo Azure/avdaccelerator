@@ -31,16 +31,16 @@ resource "azurerm_key_vault_access_policy" "deploy" {
   object_id      = data.azurerm_client_config.current.object_id
   application_id = data.azurerm_client_config.current.client_id
 
-  key_permissions         = ["Get", "List", "Update", "Create", "Import", "Delete", "Recover", ]
-  secret_permissions      = ["Get", "List", "Set", "Delete", "Purge", "Recover", ]
-  certificate_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Purge", "Recover", ]
-  storage_permissions     = ["Get", "List", "Update", "Delete", ]
+  key_permissions         = ["Get", "List", "Update", "Create", "Import", "Delete", "Recover", "Purge"]
+  secret_permissions      = ["Get", "List", "Set", "Delete", "Purge", "Recover"]
+  certificate_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Purge", "Recover"] 
+  storage_permissions     = ["Get", "List", "Update", "Delete"]
 }
 
 # Get Private DNS Zone for the Key Vault Private Endpoints
 data "azurerm_private_dns_zone" "pe-vaultdns-zone" {
   name                = "privatelink.vaultcore.azure.net"
-  resource_group_name = var.hub_connectivity_rg
+  resource_group_name = var.hub_dns_zone_rg
   provider            = azurerm.hub
 }
 
@@ -85,8 +85,8 @@ resource "azurerm_key_vault_secret" "localpassword" {
 
 # Linking DNS Zone to the VNET
 resource "azurerm_private_dns_zone_virtual_network_link" "vaultlink" {
-  name                  = "keydnsvnet_link"
-  resource_group_name   = var.hub_connectivity_rg
+  name                  = "keydnsvnet_link-${var.prefix}"
+  resource_group_name   = var.hub_dns_zone_rg
   private_dns_zone_name = data.azurerm_private_dns_zone.pe-vaultdns-zone.name
   virtual_network_id    = data.azurerm_virtual_network.vnet.id
 
