@@ -1,66 +1,82 @@
 # Naming standard
 
-:page_with_curl: **Note:** The baseline deployment will ask for a "Prefix" which will be included in all the deployed resources.
+:page_with_curl: **Note:** The baseline deployment will ask for a "deploymentPrefix" which will be included in all the deployed resources.
 The naming of resources is hard coded in the templates but can also be modified as required prior to deployment.
 
 ## Resource naming for the baseline deployment
 
-### AVD Management plane
+### Service Objects (AVD management plane)
 
 | Resource Name | Resource Type | Description |
 |:--|:--|:--|
-| `rg-avd-{Azure Region}-{Prefix}-service-objects` | Resource Group | Contains related AVD service objects |
-| `vdws-{Azure Region}-{Prefix}-{nnn}` | AVD Workspace | |
-| `vdpool-{Azure Region}-{Prefix}` | AVD Host pool | |
-| `vdag-desktop-{Azure Region}-{Prefix}-{nnn}` | AVD Application group (Desktop) | |
-| `vdag-rapp-{Azure Region}-{Prefix}-{nnn}` | AVD Application group (RemoteApp) | |
-| `kv-avd-{Azure Region}-{Prefix}-{uniquestring}` | Key vault | |
-| `id-avd-fslogix-{AzureRegion}-{Prefix}` | Managed identity | |
+| `rg-avd-{AzureRegionAcronym}-{deploymentPrefix}-service-objects` | Resource Group | Contains related AVD service objects. |
+| `vdws-{AzureRegionAcronym}-{deploymentPrefix}-{nnn}` | AVD Workspace | |
+| `vdpool-{AzureRegionAcronym}-{deploymentPrefix}-{nnn}` | AVD Host pool | |
+| `vdag-desktop-{AzureRegionAcronym}-{deploymentPrefix}-{nnn}` | AVD Application group (Desktop) | |
+| `vdag-rapp-{AzureRegionAcronym}-{deploymentPrefix}-{nnn}` | AVD Application group (RemoteApp) | |
+| `vdscaling-{AzureRegionAcronym}-{deploymentPrefix}-{nnn}` | AVD Scaling Plan | |
+| `kv-avd-{AzureRegionAcronym}-{deploymentPrefix}-{uniqueString}` | Key vault | |
+| `pe-kv-avd-{AzureRegionAcronym}-{deploymentPrefix}-{uniqueString}-vault` | Private endpoint | Private endpoint attached to key vault. |
+| `nic-{nn}-pe-kv-avd-{AzureRegionAcronym}-{deploymentPrefix}-{uniqueString}-vault` | Network Interface | Network interface attached to key vault private endpoint. |
+| `AVD-managementVmWait-{Timestamp}` | Deployment script | Introduce wait time after management VM creation. |
+| `vm-mgmt-{deploymentPrefix}` | Virtual Machine | VM used to run management tasks (FSLogix, NTFS permissions, etc.). |
+| `osdisk-{nnn}-vm-mgmt-{deploymentPrefix}` | Disk | OS disk attached to management VM. |
+| `nic-{nnn}-vm-mgmt-{deploymentPrefix}` | Network Interface | Network interface attached to management VM. |
 
-### Compute naming
+### Pool Compute naming (Session hosts)
 
-| Resource Name | Resource Type |
-|:--|:--|
-| `rg-avd-{AzureRegion}-{Prefix}-pool-compute` | Resource Group |
-| `avail-avd-{AzureRegion}-{Prefix}-{nnn}` | Availability set |
-| `osdisk-{AzureRegion}-avd-{Prefix}-{nnn}` | Disk |
-| `nic-{nn}-{VM name}` | Network Interface |
-| `vm-avd-{Prefix}-{nn}` | Virtual Machine |
+| Resource Name | Resource Type | Description |
+|:--|:--|:--|
+| `rg-avd-{AzureRegion}-{deploymentPrefix}-pool-compute` | Resource Group | |
+| `asg-avd-{AzureRegion}-{deploymentPrefix}-{nnn}` | Application Security Group | |
+| `avail-avd-{AzureRegion}-{deploymentPrefix}-{nnn}` | Availability set | Deployed when not using availability zones. |
+| `osdisk-{nnn}-vm-avd-{deploymentPrefix}-{nnn}` | Disk | OS disk attached to session hosts. |
+| `nic-{nnn}-vm-avd-{deploymentPrefix}-{nnn}` | Network Interface | NEtwork interface attached to session hosts. |
+| `vm-avd-{deploymentPrefix}-{nnn}` | Virtual Machine | |
 
-### FSLogix Storage naming
+### Storage naming (FSLogix)
 
-| Resource Name | Resource Type |
-|:--|:--|
-| `rg-avd-{AzureRegion}-{Prefix}-storage` | Resource Group |
-| `stavd-{unique string}` | Storage account |
-| `pe-{storage account name}-file` | Private endpoint |
-| `nic-{nn}-{private endpoint name}` | Network Interface |
-| `vm-fs-dj-{Prefix}` | Virtual Machine |
+| Resource Name | Resource Type | Description |
+|:--|:--|:--|
+| `rg-avd-{AzureRegion}-{deploymentPrefix}-storage` | Resource Group | |
+| `id-avd-fslogix-{AzureRegion}-{deploymentPrefix}` | Managed identity | Identity used for FSLogix setup. |
+| `AVD-fslogixManagedIdentityWait-{Timestamp}` | Deployment script | Introduce wait time after managed identity creation. |
+| `stavd{deploymentPrefix}{uniqueString}` | Storage account | FSLogix file shares. |
+| `pe-stavd{deploymentPrefix}{uniqueString}-file` | Private endpoint | Private endpoint attached to storage account files service. |
+| `nic-{nn}-pe-stavd{deploymentPrefix}{uniqueString}-file` | Network Interface | Network interface attached to storage account's private endpoint. |
 
 ### Network naming
 
-| Resource Name | Resource Type |
-|:--|:--|
-| `rg-avd-{Azure Region}-{Prefix}-network` | Resource Group |
-| `nsg-avd-{Azure Region}-{Prefix}-{nnn}` | Network Security Group |
-| `route-avd-{Azure Region}-{Prefix}-{nnn}` | Route Table |
-| `vnet-avd-{Azure Region}-{Prefix}-{nnn}` | Virtual Network |
-| `snet-avd-{Azure Region}-{Prefix}-{nnn}` | Virtual Network |
+| Resource Name | Resource Type | |
+|:--|:--|:--|
+| `rg-avd-{AzureRegionAcronym}-{deploymentPrefix}-network` | Resource Group | |
+| `nsg-avd-{AzureRegionAcronym}-{deploymentPrefix}-{nnn}` | Network Security Group | |
+| `route-avd-{AzureRegionAcronym}-{deploymentPrefix}-{nnn}` | Route Table | |
+| `vnet-avd-{AzureRegionAcronym}-{deploymentPrefix}-{nnn}` | Virtual Network | |
+| `snet-avd-{AzureRegionAcronym}-{deploymentPrefix}-{nnn}` | Virtual Network Subnet | |
+| `peer-avd-{AzureRegionAcronym}-{deploymentPrefix}-{nnn}-{uniqueString}` | Virtual Network Peering | |
+
+### Monitoring naming
+
+| Resource Name | Resource Type | |
+|:--|:--|:--|
+| `rg-avd-{AzureRegionAcronym}-monitoring` | Resource Group | |
+| `AVD-alaWorkspaceWait-{Timestamp}` | Deployment Script | Introduce wait time after log analytics workspace creation. |
+| `log-avd-{AzureRegionAcronym}` | Log Analytics Workspace | |
 
 ### Resource naming for the custom image deployment
 
-#### AVD custom image naming
+#### AVD Custom Image naming
 
-| Resource Name | Resource Type |
-|:--|:--|
-| `rg-{Azure Region}-avd-shared-resources` | Resource Group |
-| `gal-avd-{Azure Region}-{nnn}` | Azure compute gallery |
-| `avd_image_definition_{Image name}` | Image Template |
-| `kv-avd-{Azure Region}-{unique-string}` | Key vault |
-| `id-avd-deployscript-{Azure Region}` | Managed Identity |
-| `id-avd-imagebuilder-{Azure Region}` | Managed Identity |
-| `stavd{unique string}` | Storage account |
-| `avd_imagedefinition{image name}` | VM image definition |
+| Resource Name | Resource Type | |
+|:--|:--|:--|
+| `rg-avd-{AzureRegionAcronym}-shared-services` | Resource Group | |
+| `aa-avd-{AzureRegionAcronym}` | Automation Account | |
+| `aib-build-automation` | Automation Account Runbook| |
+| `id-aib-{AzureRegionAcronym}` | Managed Identity | Used to grant access to Azure Image Builder. |
+| `it-avd-{osVersion}` | Image Template | |
+| `avd-{osVersion}` | VM Image Definition | |
+| `gal_avd_{AzureRegionAcronym}` | Azure compute gallery | |
 
 ### Resource naming example
 
