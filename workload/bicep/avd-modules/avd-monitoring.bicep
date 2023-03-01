@@ -70,7 +70,7 @@ module avdAlaWorkspaceWait '../../../carml/1.0.0/Microsoft.Resources/deploymentS
   scope: resourceGroup('${avdWorkloadSubsId}', '${avdMonitoringRgName}')
   name: 'ALA-Workspace-Wait-${time}'
   params: {
-      name: 'AVD-avdAlaWorkspaceWait-${time}'
+      name: 'AVD-alaWorkspaceWait-${time}'
       location: avdManagementPlaneLocation
       azPowerShellVersion: '6.2'
       cleanupPreference: 'Always'
