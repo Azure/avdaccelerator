@@ -51,7 +51,7 @@ New-AzSubscriptionDeployment `
   -avdVnetPrivateDnsZoneKeyvaultId "<PrivateDnsZoneKeyvaultId>" `
   -avdDeployMonitoring $true `
   -deployAlaWorkspace $true `
-  -Location "eastus2"
+  -Location "eastus"
 ```
 
 ## Optional: Custom Image Build deployment
@@ -63,6 +63,8 @@ az deployment create \
   --template-file workload/bicep/deploy-custom-image.bicep \
   --parameters @workload/bicep/parameters/deploy-custom-image-parameters-example.json \
   --parameters sharedServicesSubId="<subscriptionId>" \
+  --deploymentLocation="eastus" \
+  --imageVersionPrimaryLocation="eastus" \
   --Location "eastus"
 ```
 
@@ -73,7 +75,9 @@ New-AzSubscriptionDeployment `
   -TemplateFile workload/bicep/deploy-custom-image.bicep `
   -TemplateParameterFile workload/bicep/parameters/deploy-custom-image-parameters-example.json `
   -sharedServicesSubId "<subscriptionId>" `
-  -Location "eastus2"
+  -deploymentLocation "eastus" `
+  -imageVersionPrimaryLocation "eastus" `
+  -Location "eastus"
 ```
 
 ## Contributing
