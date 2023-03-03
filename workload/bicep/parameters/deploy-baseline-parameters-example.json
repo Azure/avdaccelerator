@@ -68,9 +68,6 @@
         "avdStartVmOnConnect": {
             "value": true
         },
-        "createStartVmOnConnectCustomRole": {
-            "value": true
-        },
         "avdDeployRappGroup": {
             "value": false
         },
