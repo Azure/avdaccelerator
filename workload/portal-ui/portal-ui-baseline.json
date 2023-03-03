@@ -174,7 +174,6 @@
                                     "defaultValue": "Groups",
                                     "toolTip": "Select the type of identities that will be entered in the 'Identities ObjectIDs' field.",
                                     "constraints": {
-                                        "required": true,
                                         "allowedValues": [
                                             {
                                                 "label": "Groups",
@@ -443,7 +442,7 @@
                                     "visible": "[equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal')]",
                                     "label": "Start VM on connect",
                                     "defaultValue": "Yes (Recommended)",
-                                    "toolTip": "If powered off, start VM once user connects. ",
+                                    "toolTip": "If VM is powered off (deallocated), VM will be started automatically once user connects. ",
                                     "constraints": {
                                         "required": false,
                                         "allowedValues": [
@@ -459,55 +458,40 @@
                                     }
                                 },
                                 {
-                                    "name": "createVmRole",
-                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "name": "avdEnterpriseApplication",
+                                    "type": "Microsoft.Solutions.GraphApiControl",
+                                    "request": {
+                                        "method": "GET",
+                                        "path": "/v1.0/serviceprincipals?$filter=appId eq '9cdead84-a844-4324-93f2-b2e6bb768d07'"                          }
+                                },
+                                {
+                                    "name": "startVmOnConnectRoleInfo",
+                                    "type": "Microsoft.Common.InfoBox",
                                     "visible": "[equals(steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, true)]",
-                                    "label": "Create start VM on connect role",
-                                    "defaultValue": "Yes (Required if using Start VM On Connect)",
-                                    "toolTip": "Create custom Azure IAM role for Start VM on Connect",
-                                    "constraints": {
-                                        "required": false,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes (Required if using Start VM On Connect)",
-                                                "value": true
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": false
-                                            }
-                                        ]
+                                    "options": {
+                                        "text": "Deployment will automatically grant role 'Desktop Virtualization Power On Contributor' to Azure virtual Desktop enterprise application (AppID: 9cdead84-a844-4324-93f2-b2e6bb768d07)",
+                                        "uri": "https://learn.microsoft.com/azure/virtual-desktop/start-virtual-machine-connect?tabs=azure-portal",
+                                        "style": "Info"
                                     }
                                 },
                                 {
-                                    "name": "avdEnterpriseApplication",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "visible": "[or(equals(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, true), equals(steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, true))]",
-                                    "label": "AVD enterprise application ObjectID",
-                                    "defaultValue": "",
-                                    "toolTip": "Provide the ObjectID of the enterprise application Azure Virtual Desktop (Name can also be displayed as 'Windows Virtual Desktops'). To get the ObjectID got to Azure AD > Enterprise applications, remove all filters and search for 'Virtual Desktops' and copy the OjectID that is paired with the Application ID: 9cdead84-a844-4324-93f2-b2e6bb768d07.",
-                                    "constraints": {
-                                        "required": true
+                                    "name": "scalingPlanRoleInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, true)]",
+                                    "options": {
+                                        "text": "Deployment will automatically grant role 'Desktop Virtualization Power On Off Contributor' to Azure virtual Desktop enterprise application (AppID: 9cdead84-a844-4324-93f2-b2e6bb768d07)",
+                                        "uri": "https://learn.microsoft.com/azure/virtual-desktop/autoscale-scaling-plan",
+                                        "style": "Info"
                                     }
                                 },
                                 {
                                     "name": "scalingPlanInfo",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
+                                    "visible": "[equals(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, true)]",
                                     "options": {
                                         "text": "Session hosts can be excluded from the scaling plan by assigning the tag name Exclude-avdScalingPlanName, if not using custom resource naming and example of default tag name is Exclude-vdscaling-eus2-app1-001.",
                                         "uri": "https://docs.microsoft.com/azure/virtual-desktop/autoscale-scenarios#scenario-4-how-do-exclusion-tags-work",
                                         "style": "Info"
-                                    }
-                                },
-                                {
-                                    "name": "vmRoleWarning",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[equals(steps('managementPlane').managementPlaneHostPoolScaling.createVmRole, false)]",
-                                    "options": {
-                                        "text": "Start VM on Connect will not work without a custom role definition. If you enable start on connect, but do not specify a custom role VM's will not start on-demand. Only select no if this custom role already exists and is assigned to your AVD subscription.",
-                                        "uri": "https://docs.microsoft.com/azure/virtual-desktop/start-virtual-machine-connect",
-                                        "style": "Warning"
                                     }
                                 }
                             ]
@@ -2149,8 +2133,7 @@
                 "avdDeploySessionHosts": "[steps('sessionHosts').deploySessionHosts]",
                 "avdStartVmOnConnect": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, false)]",
                 "avdDeployScalingPlan": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, false)]",
-                "createStartVmOnConnectCustomRole": "[if(equals(steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, true), steps('managementPlane').managementPlaneHostPoolScaling.createVmRole, false)]",
-                "avdEnterpriseAppObjectId": "[if(or(equals(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, true), equals(steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, true)), steps('managementPlane').managementPlaneHostPoolScaling.avdEnterpriseApplication.objectId, 'none')]",
+                "avdEnterpriseAppObjectId":   "[first(map(steps('managementPlane').managementPlaneHostPoolScaling.avdEnterpriseApplication.value, (item) => item.id))]",
                 "avdUseAvailabilityZones": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings]",
                 "avdDeploySessionHostsCount": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
                 "useSharedImage": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false)]",
