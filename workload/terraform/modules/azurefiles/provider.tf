@@ -2,7 +2,6 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=3.44.1"
     }
     azuread = {
       source  = "hashicorp/azuread"
@@ -10,8 +9,7 @@ terraform {
     }
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.3.2"
-    }
+     }
     local = {
       source  = "hashicorp/local"
       version = "~> 2.2.3"
@@ -21,7 +19,6 @@ terraform {
     }
     time = {
       source  = "hashicorp/time"
-      version = "~> 0.8.0"
     }
   }
 }
@@ -55,16 +52,4 @@ provider "azurerm" {
   features {}
   alias           = "spoke"
   subscription_id = var.spoke_subscription_id
-}
-
-provider "azurerm" {
-  features {}
-  alias           = "avdshared"
-  subscription_id = var.avdshared_subscription_id
-}
-
-provider "azurerm" {
-  features {}
-  alias           = "identity"
-  subscription_id = var.identity_subscription_id
 }
