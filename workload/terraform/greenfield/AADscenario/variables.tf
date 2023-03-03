@@ -26,6 +26,16 @@ variable "rg_avdi" {
   description = "Name of the Resource group in which to deploy avd service objects"
 }
 
+variable "identity_rg" {
+  type        = string
+  description = "Name of the Resource group in which to identity resources are deployed"
+}
+
+variable "identity_vnet" {
+  type        = string
+  description = "Name of the vnet in which to identity resources are deployed"
+}
+
 variable "vnet" {
   type        = string
   description = "Name of avd vnet"
@@ -166,6 +176,15 @@ variable "spoke_subscription_id" {
   description = "Spoke Subscription id"
 }
 
+variable "identity_subscription_id" {
+  type        = string
+  description = "Spoke Subscription id"
+}
+
+variable "avdshared_subscription_id" {
+  type        = string
+  description = "Spoke Subscription id"
+}
 variable "host_pool_log_categories" {
   description = "value of the log categories to be enabled for the host pool"
 }
@@ -178,3 +197,16 @@ variable "ws_log_categories" {
   description = "value of the log categories to be enabled for the host pool"
 }
 
+variable "next_hop_ip" {
+  type        = string
+  description = "Next hop IP address"
+}
+
+variable "fw_policy" {
+  type        = string
+  description = "Name of the firewall policy"
+}
+
+variable "hub_dns_zone_rg" {
+  description = "The resource group for the hub DNS zone"
+}

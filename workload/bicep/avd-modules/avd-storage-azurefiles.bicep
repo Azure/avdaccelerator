@@ -271,7 +271,7 @@ module managementVM '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/depl
         adminPassword: avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
         nicConfigurations: [
             {
-                nicSuffix: 'nic-01-'
+                nicSuffix: 'nic-001-'
                 deleteOption: 'Delete'
                 enableAcceleratedNetworking: false
                 ipConfigurations: createAvdVnet ? [
@@ -313,8 +313,8 @@ module managementVmWait '../../../carml/1.0.0/Microsoft.Resources/deploymentScri
     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
     name: 'Management-VM-Wait-${time}'
     params: {
-        name: '${storagePurpose}-userManagedIdentityWait-${time}'
-        location: sessionHostLocation
+        name: 'AVD-managementVmWait-${time}'
+        location: avdSessionHostLocation
         azPowerShellVersion: '6.2'
         cleanupPreference: 'Always'
         timeout: 'PT10M'
