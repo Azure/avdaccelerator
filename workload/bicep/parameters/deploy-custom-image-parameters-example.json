@@ -1,66 +1,129 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "sharedServicesSubId": {
-            "value": "<<SubscriptionID>>"
-        },
-        "sharedServicesLocation": {
-            "value": "eastus"
-        },
-        "imageVersionDisasterRecoveryLocation": {
+        "alertsActionGroupCustomName": {
             "value": ""
         },
-        "imageVersionStorageAccountType": {
-            "value": "Standard_LRS"
+        "alertsDistributionGroup": {
+            "value": ""
         },
-        "deploymentLocation": {
-            "value": "eastus"
+        "applicationNameTag": {
+            "value": ""
+        },
+        "automationAccountCustomName": {
+            "value": ""
         },
         "buildSchedule": {
             "value": "Recurring"
         },
-        "operatingSystemImage": {
-            "value": "win10_21h2"
-        },
-        "useExistingVirtualNetwork": {
-            "value": false
-        },
-        "existingLogAnalyticsWorkspaceResourceId": {
+        "costCenterTag": {
             "value": ""
         },
-        "existingVirtualNetworkResourceId": {
+        "criticalityCustomTag": {
+            "value": ""
+        },
+        "criticalityTag": {
+            "value": "Medium"
+        },
+        "customNaming": {
+            "value": false
+        },
+        "dataClassificationTag": {
+            "value": "General"
+        },
+        "departmentTag": {
+            "value": ""
+        },
+        "deploymentLocation": {
+            "value": "eastus"
+        },
+        "enableMonitoringAlerts": {
+            "value": false
+        },
+        "enableResourceTags": {
+            "value": false
+        },
+        "enableTelemetry": {
+            "value": true
+        },
+        "environmentTag": {
+            "value": "Dev"
+        },
+        "existingLogAnalyticsWorkspaceResourceId": {
             "value": ""
         },
         "existingSubnetName": {
             "value": ""
         },
-        "rdpShortPathManagedNetworks": {
-            "value": false
+        "existingVirtualNetworkResourceId": {
+            "value": ""
         },
-        "screenCaptureProtection": {
-            "value": false
+        "imageBuildNameTag": {
+            "value": ""
+        },
+        "imageDefinitionCustomName": {
+            "value": ""
+        },
+        "imageDefinitionAcceleratedNetworkSupported": {
+            "value": "true"
+        },
+        "imageDefinitionHibernateSupported": {
+            "value": "false"
+        },
+        "imageDefinitionSecurityType": {
+            "value": "Standard"
+        },
+        "imageGalleryCustomName": {
+            "value": ""
+        },
+        "imageTemplateCustomName": {
+            "value": ""
+        },
+        "imageVersionDisasterRecoveryLocation": {
+            "value": ""
+        },
+        "imageVersionPrimaryLocation": {
+            "value": "eastus"
+        },
+        "imageVersionStorageAccountType": {
+            "value": "Standard_LRS"
+        },
+        "logAnalyticsWorkspaceCustomName": {
+            "value": ""
         },
         "logAnalyticsWorkspaceDataRetention": {
             "value": 30
         },
-        "enableMonitoringAlerts": {
-            "value": false
+        "operatingSystemImage": {
+            "value": "win11_22h2"
         },
-        "alertsDistributionGroup": {
+        "operationsTeamTag": {
             "value": ""
         },
-        "enableResourceTags": {
+        "ownerTag": {
+            "value": ""
+        },
+        "rdpShortPathManagedNetworks": {
             "value": false
         },
-        "customNaming": {
+        "resourceGroupCustomName": {
+            "value": ""
+        },
+        "screenCaptureProtection": {
             "value": false
         },
-        "imageDefinitionAcceleratedNetworkSupported": {
+        "sharedServicesSubId": {
+            "value": "<<SubscriptionID>>"
+        },
+        "useExistingVirtualNetwork": {
             "value": false
         },
-        "imageDefinitionHibernateSupported": {
-            "value": false
-        }    
-    }   
+        "userAssignedManagedIdentityCustomName": {
+            "value": ""
+        },
+        "workloadNameTag": {
+            "value": ""
+        }
+    }
 }
