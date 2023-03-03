@@ -137,22 +137,21 @@ param imageBuildNameTag string = 'AVD-Image'
 @description('Optional. Custom name for Image Definition. (Default: avd-win11-21h2)')
 param imageDefinitionCustomName string = 'avd-win11-21h2'
 
-
 @description('''Optional. The image supports accelerated networking.
 Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.
 This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the
 most demanding network workloads on supported VM types.
 ''')
 @allowed([
-  'true'
-  'false'
+    'true'
+    'false'
 ])
 param imageDefinitionAcceleratedNetworkSupported string = 'false'
 
 @description('Optional. The image will support hibernation.')
 @allowed([
-  'true'
-  'false'
+    'true'
+    'false'
 ])
 param imageDefinitionHibernateSupported string = 'false'
 
@@ -251,7 +250,6 @@ param userAssignedManagedIdentityCustomName string = ''
 @description('Optional. Reference to the size of the VM for your workloads (Default: Contoso-Workload)')
 param workloadNameTag string = 'Contoso-Workload'
 
-
 // =========== //
 // Variables   //
 // =========== //
@@ -320,7 +318,7 @@ var varAlerts = enableMonitoringAlerts ? [
             ]
         }
     }
-]: []
+] : []
 var varAutomationAccountName = customNaming ? automationAccountCustomName : 'aa-avd-${varNamingStandard}'
 // Placeholder for future feature
 // var varAvdContainerName = customNaming ? avdContainerCustomName : 'avd-artifacts'
@@ -349,10 +347,11 @@ var varImageReplicationRegions = empty(imageVersionDisasterRecoveryLocation) ? [
     imageVersionDisasterRecoveryLocation
 ]
 // Image template permissions are currently (1/6/23) not supported in Azure US Government
+var varImageTemplateBuildAutomationName = 'Image Template Build Automation'
 var varImageTemplateBuildAutomation = varAzureCloudName == 'AzureCloud' ? [
     {
         resourceGroup: varResourceGroupName
-        name: 'Image Template Build Automation'
+        name: varImageTemplateBuildAutomationName
         description: 'Allow Image Template build automation using a Managed Identity on an Automation Account.'
         actions: [
             'Microsoft.VirtualMachineImages/imageTemplates/run/action'
@@ -364,10 +363,11 @@ var varImageTemplateBuildAutomation = varAzureCloudName == 'AzureCloud' ? [
         ]
     }
 ] : []
+var varImageTemplateContributorRoleName = 'Image Template Contributor'
 var varImageTemplateContributorRole = [
     {
         resourceGroup: varResourceGroupName
-        name: 'Image Template Contributor'
+        name: varImageTemplateContributorRoleName
         description: 'Allow the creation and management of images'
         actions: [
             'Microsoft.Compute/galleries/read'
@@ -463,7 +463,7 @@ var varOperatingSystemImageDefinitions = {
         hyperVGeneration: 'V1'
         version: 'latest'
     }
-	win10_22h2_g2: {
+    win10_22h2_g2: {
         osType: 'Windows'
         osState: 'Generalized'
         offer: 'windows-10'
@@ -573,7 +573,11 @@ var varRemainingCustomizers = [
     }
 ]
 var varResourceGroupName = customNaming ? resourceGroupCustomName : 'rg-avd-${varNamingStandard}-shared-services'
+//var varRoles = union(varVirtualNetworkJoinRoleExistingRoleCheck, varRolesimageTemplateBuildAutomationExistingRoleCheck, varImageTemplateContributorRoleExistingRoleCheck)
 var varRoles = union(varVirtualNetworkJoinRole, varImageTemplateBuildAutomation, varImageTemplateContributorRole)
+//var varRolesimageTemplateBuildAutomationExistingRoleCheck = empty(imageTemplateBuildAutomationExistingRoleCheck.id) ? varImageTemplateBuildAutomation : []
+//var varImageTemplateContributorRoleExistingRoleCheck = empty(imageTemplateContributorExistingRoleCheck.id) ? varImageTemplateContributorRole : []
+//var varVirtualNetworkJoinRoleExistingRoleCheck = empty(virtualNetworkJoinExistingRoleCheck.id) ? varVirtualNetworkJoinRole : []
 var varScreenCaptureProtectionCustomizer = screenCaptureProtection ? [
     {
         type: 'PowerShell'
@@ -655,10 +659,11 @@ var varVdotCustomizer = [
         scriptUri: '${varBaseScriptUri}scripts/Set-VirtualDesktopOptimizations.ps1'
     }
 ]
+var varVirtualNetworkJoinRoleName = 'Virtual Network Join'
 var varVirtualNetworkJoinRole = useExistingVirtualNetwork ? [
     {
         resourceGroup: split(existingVirtualNetworkResourceId, '/')[4]
-        name: 'Virtual Network Join'
+        name: varVirtualNetworkJoinRoleName
         description: 'Allow resources to join a subnet'
         actions: [
             'Microsoft.Network/virtualNetworks/read'
@@ -668,7 +673,6 @@ var varVirtualNetworkJoinRole = useExistingVirtualNetwork ? [
     }
 ] : []
 var varVmSize = 'Standard_D4s_v3'
-
 
 // =========== //
 // Deployments //
@@ -698,8 +702,24 @@ module avdSharedResourcesRg '../../carml/1.0.0/Microsoft.Resources/resourceGroup
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
 }
+/*
+// Role definition check Image Template Build Automation.
+resource imageTemplateBuildAutomationExistingRoleCheck 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+    name: varImageTemplateBuildAutomationName
+}
 
-// Role definition.
+// Role definition check Image Template Contributor.
+resource imageTemplateContributorExistingRoleCheck 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+    name: varImageTemplateContributorRoleName
+}
+
+// Role definition check Image Template Build Automation.
+resource virtualNetworkJoinExistingRoleCheck 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+    name: varVirtualNetworkJoinRoleName
+}
+*/
+
+// Role definition deployment.
 module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinitions/subscription/deploy.bicep' = [for i in range(0, length(varRoles)): {
     scope: subscription(sharedServicesSubId)
     name: 'Role-Definition_${i}_${time}'
@@ -712,6 +732,11 @@ module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinition
             '/subscriptions/${sharedServicesSubId}'
         ]
     }
+    //dependsOn: [
+    //    imageTemplateBuildAutomationExistingRoleCheck
+    //    virtualNetworkJoinExistingRoleCheck
+    //    imageTemplateContributorExistingRoleCheck
+    //]
 }]
 
 // Managed identity.
@@ -782,6 +807,9 @@ module image '../../carml/1.3.0/Microsoft.Compute/galleries/images/deploy.bicep'
         isAcceleratedNetworkSupported: imageDefinitionAcceleratedNetworkSupported
         isHibernateSupported: imageDefinitionHibernateSupported
         securityType: imageDefinitionSecurityType
+        //productName: operatingSystemImage
+        //planName: varOperatingSystemImageDefinitions[operatingSystemImage].offer
+        //planPublisherName: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
@@ -859,7 +887,7 @@ module workspaceWait '../../carml/1.0.0/Microsoft.Resources/deploymentScripts/de
     dependsOn: [
         workspace
     ]
-  }
+}
 
 // Automation account.
 module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccounts/deploy.bicep' = {
@@ -921,7 +949,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
     }
     dependsOn: empty(existingLogAnalyticsWorkspaceResourceId) ? [
         workspaceWait
-    ]: []
+    ] : []
 }
 
 // Automation accounts.
@@ -963,7 +991,8 @@ module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/module
     dependsOn: [
         avdSharedResourcesRg
     ]
-} */
+} 
+*/
 
 // Action groups.
 module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bicep' = if (enableMonitoringAlerts) {
@@ -1018,5 +1047,5 @@ module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryR
     }
     dependsOn: empty(existingLogAnalyticsWorkspaceResourceId) ? [
         workspaceWait
-    ]: []
+    ] : []
 }]

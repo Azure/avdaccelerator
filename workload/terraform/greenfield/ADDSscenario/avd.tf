@@ -16,7 +16,7 @@ resource "azurerm_virtual_desktop_host_pool" "hostpool" {
   name                     = "${var.hostpool}-${substr(var.avdLocation, 0, 5)}-${var.prefix}" //var.hostpool
   friendly_name            = "${var.hostpool}-${substr(var.avdLocation, 0, 5)}-${var.prefix}" //var.hostpool
   validate_environment     = true
-  custom_rdp_properties    = "drivestoredirect:s:*;audiomode:i:0;videoplaybackmode:i:1;redirectclipboard:i:1;redirectprinters:i:1;devicestoredirect:s:*;redirectcomports:i:1;redirectsmartcards:i:1;usbdevicestoredirect:s:*;enablecredsspsupport:i:1;use multimon:i:1"
+  custom_rdp_properties    = "drivestoredirect:s:*;audiomode:i:0;videoplaybackmode:i:1;redirectclipboard:i:1;redirectprinters:i:1;devicestoredirect:s:*;redirectcomports:i:1;redirectsmartcards:i:1;usbdevicestoredirect:s:*;enablecredsspsupport:i:1;use multimon:i:0"
   description              = "${var.prefix} Pooled HostPool"
   type                     = "Pooled"
   maximum_sessions_allowed = 16
@@ -140,7 +140,8 @@ data "azurerm_log_analytics_workspace" "lawksp" {
     azurerm_virtual_desktop_workspace.workspace,
     azurerm_virtual_desktop_host_pool.hostpool,
     azurerm_virtual_desktop_application_group.dag,
-    azurerm_virtual_desktop_workspace_application_group_association.ws-dag
+    azurerm_virtual_desktop_workspace_application_group_association.ws-dag,
+    module.avdi
   ]
 }
 
