@@ -1253,7 +1253,7 @@
                                 {
                                     "name": "virtualNetworkPrivateDnsZoneFilesSelector",
                                     "type": "Microsoft.Solutions.ResourceSelector",
-                                    "visible": "[equals(steps('storage').storageFslogix.fslogixDeployment, true)]",
+                                    "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageMsix.msixDeployment, true))]",
                                     "label": "Azure files",
                                     "resourceType": "Microsoft.Network/privateDnsZones",
                                     "constraints": {
@@ -1263,7 +1263,7 @@
                                 {
                                     "name": "infoAzureFiles",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[equals(steps('storage').storageFslogix.fslogixDeployment, true)]",
+                                    "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageMsix.msixDeployment, true))]",
                                     "options": {
                                         "text": "Azure Files private DNS zone naming: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net",
                                         "style": "info"
@@ -1785,7 +1785,7 @@
                                     "name": "storageObjectsRgCustomName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Resource group",
-                                    "visible": "[equals(steps('storage').storageFslogix.fslogixDeployment, true)]",
+                                    "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageMsix.msixDeployment, true))]",
                                     "toolTip": "AVD storage resources (Storage account, file shares, files private endpoints, temporary domain join VM) resource group custom name.",
                                     "placeholder": "Example: rg-avd-use2-app1-storage",
                                     "constraints": {
@@ -1798,7 +1798,7 @@
                                     "name": "storageAccountPrefixCustomName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Storage account prefix",
-                                    "visible": "[equals(steps('storage').storageFslogix.fslogixDeployment, true)]",
+                                    "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageMsix.msixDeployment, true))]",
                                     "toolTip": "AVD storage account prefix custom name.",
                                     "placeholder": "Example: stavd",
                                     "constraints": {
