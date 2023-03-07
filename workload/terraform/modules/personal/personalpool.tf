@@ -1,25 +1,31 @@
+# Create a Resource Group for Personal Session Hosts
+resource "azurerm_resource_group" "rg" {
+  name     = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_personal}"
+  location = var.avdLocation
+}
+
 resource "random_uuid" "example" {}
 
-# Create AVD workspace vdws-{AzureRegionAcronym}-{deploymentPrefix}-{nnn}
-resource "azurerm_virtual_desktop_workspace" "workspace" {
-  name                = "${var.workspace}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001" //var.workspace
+# Create AVD workspace vdws-{AzureRegionAcronym}-{deploymentPrefix}-{nnn} pworkspace
+resource "azurerm_virtual_desktop_workspace" "pworkspace" {
+  name                = "${var.pworkspace}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  friendly_name       = "${var.prefix} Workspace"
-  description         = "${var.prefix} Workspace"
+  friendly_name       = "${var.prefix} Personal Workspace"
+  description         = "${var.prefix} Personal Workspace"
 }
 
 # Create AVD host pool
-resource "azurerm_virtual_desktop_host_pool" "hostpool" {
+resource "azurerm_virtual_desktop_host_pool" "personalpool" {
   location                 = azurerm_resource_group.rg.location
   resource_group_name      = azurerm_resource_group.rg.name
-  name                     = "${var.hostpool}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001" //var.hostpool
-  friendly_name            = "${var.hostpool}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001" //var.hostpool
+  name                     = "${var.personalpool}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001"
+  friendly_name            = "${var.personalpool}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001"
   validate_environment     = true
   custom_rdp_properties    = "drivestoredirect:s:*;audiomode:i:0;videoplaybackmode:i:1;redirectclipboard:i:1;redirectprinters:i:1;devicestoredirect:s:*;redirectcomports:i:1;redirectsmartcards:i:1;usbdevicestoredirect:s:*;enablecredsspsupport:i:1;use multimon:i:0"
-  description              = "${var.prefix} Pooled HostPool"
-  type                     = "Pooled"
-  maximum_sessions_allowed = 16
+  description              = "${var.prefix} Personal HostPool"
+  type                     = "Personal"
+  maximum_sessions_allowed = 1
   load_balancer_type       = "DepthFirst" #[BreadthFirst DepthFirst]
 
 
@@ -49,86 +55,29 @@ resource "azurerm_role_assignment" "power" {
   depends_on                       = [data.azurerm_role_definition.power_role]
 }
 
-# autoscale settings scenario 1 https://docs.microsoft.com/azure/virtual-desktop/autoscale-scenarios
-resource "azurerm_virtual_desktop_scaling_plan" "scplan" {
-  name                = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.scplan}-001" //var.scplan
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  friendly_name       = "Scaling Plan Example"
-  description         = "Demo Scaling Plan"
-  time_zone           = "Eastern Standard Time"
-  schedule {
-    name                                 = "Weekdays"
-    days_of_week                         = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-    ramp_up_start_time                   = "05:00"
-    ramp_up_load_balancing_algorithm     = "BreadthFirst"
-    ramp_up_minimum_hosts_percent        = 30
-    ramp_up_capacity_threshold_percent   = 30
-    peak_start_time                      = "09:00"
-    peak_load_balancing_algorithm        = "BreadthFirst"
-    ramp_down_start_time                 = "19:00"
-    ramp_down_load_balancing_algorithm   = "DepthFirst"
-    ramp_down_minimum_hosts_percent      = 10
-    ramp_down_force_logoff_users         = false
-    ramp_down_wait_time_minutes          = 45
-    ramp_down_notification_message       = "Please log off in the next 45 minutes..."
-    ramp_down_capacity_threshold_percent = 5
-    ramp_down_stop_hosts_when            = "ZeroSessions"
-    off_peak_start_time                  = "22:00"
-    off_peak_load_balancing_algorithm    = "DepthFirst"
-  }
-  schedule {
-    name                                 = "Weekend"
-    days_of_week                         = ["Saturday", "Sunday"]
-    ramp_up_start_time                   = "09:00"
-    ramp_up_load_balancing_algorithm     = "BreadthFirst"
-    ramp_up_minimum_hosts_percent        = 30
-    ramp_up_capacity_threshold_percent   = 10
-    peak_start_time                      = "10:00"
-    peak_load_balancing_algorithm        = "BreadthFirst"
-    ramp_down_start_time                 = "16:00"
-    ramp_down_load_balancing_algorithm   = "DepthFirst"
-    ramp_down_minimum_hosts_percent      = 10
-    ramp_down_force_logoff_users         = false
-    ramp_down_wait_time_minutes          = 45
-    ramp_down_notification_message       = "Please log of in the next 45 minutes..."
-    ramp_down_capacity_threshold_percent = 5
-    ramp_down_stop_hosts_when            = "ZeroSessions"
-    off_peak_start_time                  = "20:00"
-    off_peak_load_balancing_algorithm    = "DepthFirst"
-  }
-  tags = local.tags
-
-  depends_on = [azurerm_role_assignment.power]
-
-  host_pool {
-    hostpool_id          = azurerm_virtual_desktop_host_pool.hostpool.id
-    scaling_plan_enabled = true
-  }
-}
 
 resource "azurerm_virtual_desktop_host_pool_registration_info" "registrationinfo" {
-  hostpool_id = azurerm_virtual_desktop_host_pool.hostpool.id
+  hostpool_id = azurerm_virtual_desktop_host_pool.personalpool.id
   # Generating RFC3339Time for the expiration of the token. 
   expiration_date = timeadd(timestamp(), "48h")
 }
 
-# Create AVD DAG
-resource "azurerm_virtual_desktop_application_group" "dag" {
+# Create AVD pag
+resource "azurerm_virtual_desktop_application_group" "pag" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  host_pool_id        = azurerm_virtual_desktop_host_pool.hostpool.id
+  host_pool_id        = azurerm_virtual_desktop_host_pool.personalpool.id
   type                = "Desktop"
-  name                = "${var.dag}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001" //var.dag
+  name                = "${var.pag}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001" //var.pag
   friendly_name       = "Desktop AppGroup"
   description         = "AVD Desktop application group"
-  depends_on          = [azurerm_virtual_desktop_host_pool.hostpool, azurerm_virtual_desktop_workspace.workspace]
+  depends_on          = [azurerm_virtual_desktop_host_pool.personalpool, azurerm_virtual_desktop_workspace.pworkspace]
 }
 
-# Associate Workspace and DAG
+# Associate Workspace and pag
 resource "azurerm_virtual_desktop_workspace_application_group_association" "ws-dag" {
-  application_group_id = azurerm_virtual_desktop_application_group.dag.id
-  workspace_id         = azurerm_virtual_desktop_workspace.workspace.id
+  application_group_id = azurerm_virtual_desktop_application_group.pag.id
+  workspace_id         = azurerm_virtual_desktop_workspace.pworkspace.id
 }
 
 # Get Log Analytics Workspace data
@@ -137,23 +86,22 @@ data "azurerm_log_analytics_workspace" "lawksp" {
   resource_group_name = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_avdi}"
 
   depends_on = [
-    azurerm_virtual_desktop_workspace.workspace,
-    azurerm_virtual_desktop_host_pool.hostpool,
-    azurerm_virtual_desktop_application_group.dag,
+    azurerm_virtual_desktop_workspace.pworkspace,
+    azurerm_virtual_desktop_host_pool.personalpool,
+    azurerm_virtual_desktop_application_group.pag,
     azurerm_virtual_desktop_workspace_application_group_association.ws-dag,
-    module.avdi
   ]
 }
 
 # Create Diagnostic Settings for AVD Host Pool
 resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
   name                       = "AVD-Diag"
-  target_resource_id         = azurerm_virtual_desktop_host_pool.hostpool.id
+  target_resource_id         = azurerm_virtual_desktop_host_pool.personalpool.id
   log_analytics_workspace_id = data.azurerm_log_analytics_workspace.lawksp.id
 
   depends_on = [
     data.azurerm_log_analytics_workspace.lawksp,
-    azurerm_virtual_desktop_host_pool.hostpool
+    azurerm_virtual_desktop_host_pool.personalpool
   ]
 
   enabled_log {
@@ -228,9 +176,9 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
 }
 
 # Create Diagnostic Settings for AVD Desktop App Group
-resource "azurerm_monitor_diagnostic_setting" "avd-dag1" {
+resource "azurerm_monitor_diagnostic_setting" "avd-pag1" {
   name                       = "AVD-Diag"
-  target_resource_id         = azurerm_virtual_desktop_application_group.dag.id
+  target_resource_id         = azurerm_virtual_desktop_application_group.pag.id
   log_analytics_workspace_id = data.azurerm_log_analytics_workspace.lawksp.id
 
   depends_on = [
@@ -267,7 +215,7 @@ resource "azurerm_monitor_diagnostic_setting" "avd-dag1" {
 # Create Diagnostic Settings for AVD Workspace
 resource "azurerm_monitor_diagnostic_setting" "avd-wksp1" {
   name                       = "AVD-Diag"
-  target_resource_id         = azurerm_virtual_desktop_workspace.workspace.id
+  target_resource_id         = azurerm_virtual_desktop_workspace.pworkspace.id
   log_analytics_workspace_id = data.azurerm_log_analytics_workspace.lawksp.id
 
   depends_on = [

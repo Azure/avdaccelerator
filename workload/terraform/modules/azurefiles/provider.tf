@@ -1,15 +1,15 @@
 terraform {
   required_providers {
     azurerm = {
-      source  = "hashicorp/azurerm"
+      source = "hashicorp/azurerm"
     }
     azuread = {
       source  = "hashicorp/azuread"
       version = "~> 2.25.0"
     }
     random = {
-      source  = "hashicorp/random"
-     }
+      source = "hashicorp/random"
+    }
     local = {
       source  = "hashicorp/local"
       version = "~> 2.2.3"
@@ -18,7 +18,7 @@ terraform {
       source = "Azure/azapi"
     }
     time = {
-      source  = "hashicorp/time"
+      source = "hashicorp/time"
     }
   }
 }
