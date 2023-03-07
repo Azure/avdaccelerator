@@ -20,7 +20,7 @@ resource "random_string" "random" {
 data "azurerm_virtual_network" "vnet" {
   name                = "${var.vnet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"              //var.vnet
   resource_group_name = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_network}" //var.rg_network
-
+  provider            = azurerm.hub
   depends_on = [
     module.network
   ]
