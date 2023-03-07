@@ -1,19 +1,9 @@
 variable "avdLocation" {
-  description = "Location of the resource group."
-}
-
-variable "resource_group_name" {
-  type        = string
-  description = "Name of the Resource group in which to deploy network resources"
+  description = "The Azure region."
 }
 variable "prefix" {
   type        = string
   description = "Prefix of the name of the AVD resources"
-}
-
-variable "next_hop_ip" {
-  type        = string
-  description = "Next hop IP address"
 }
 
 variable "fw_policy" {
@@ -24,6 +14,16 @@ variable "fw_policy" {
 variable "hub_connectivity_rg" {
   type        = string
   description = "The resource group for the hub connectivity resources"
+}
+
+variable "hub_subscription_id" {
+  type        = string
+  description = "Hub Subscription id"
+}
+
+variable "hub_vnet" {
+  type        = string
+  description = "Hub VNet name"
 }
 
 variable "tags" {
