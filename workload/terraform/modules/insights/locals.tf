@@ -3,4 +3,3 @@
     source             = "https://github.com/Azure/avdaccelerator/tree/main/workload/terraform/avdbaseline"
     cm-resource-parent = azurerm_virtual_desktop_host_pool.hostpool.id
   }
-

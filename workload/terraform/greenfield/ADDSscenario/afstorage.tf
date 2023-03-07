@@ -49,6 +49,7 @@ data "azurerm_private_dns_zone" "pe-filedns-zone" {
   resource_group_name = var.hub_dns_zone_rg
   provider            = azurerm.hub
 }
+
 resource "azurerm_private_endpoint" "afpe" {
   name                = "pe-${local.storage_name}-file"
   location            = azurerm_resource_group.rg_storage.location
