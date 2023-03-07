@@ -1,9 +1,9 @@
 resource "azurerm_route_table" "udr" {
-  name                          = var.rt
+  name                          = "var.rt-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001" #route-avd-{AzureRegionAcronym}-{deploymentPrefix}-{nnn}
   location                      = azurerm_resource_group.net.location
   resource_group_name           = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_network}"
   disable_bgp_route_propagation = false
-
+  tags = local.tags
   # Optional uncomment to set a route
   /*
   route {
