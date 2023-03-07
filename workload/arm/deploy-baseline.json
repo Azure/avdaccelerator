@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.14.85.62628",
-      "templateHash": "48972237274864645"
+      "templateHash": "15561562389185902911"
     }
   },
   "parameters": {
@@ -36862,9 +36862,9 @@
           "createAvdFslogixDeployment": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createObject('value', variables('varCreateAvdFslogixDeployment')), createObject('value', false()))]",
           "storageManagedIdentityResourceId": "[if(and(variables('varCreateStorageDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'AAD'))), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.managedIdentityResourceId.value), createObject('value', ''))]",
           "fsLogixScript": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createObject('value', variables('varFsLogixScript')), createObject('value', ''))]",
-          "fsLogixScriptArguments": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createObject('value', format('-volumeshare {0}', format('\\\\{0}.file.{1}\\{2}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2020-10-01').outputs.storageAccountName.value, environment().suffixes.storage, reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2020-10-01').outputs.fileShareName.value))), createObject('value', ''))]",
+          "fsLogixScriptArguments": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createObject('value', format('-volumeshare {0}', format('\\\\{0}.file.{1}\\{2}', if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2020-10-01').outputs.storageAccountName.value, ''), environment().suffixes.storage, if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2020-10-01').outputs.fileShareName.value, '')))), createObject('value', ''))]",
           "fslogixScriptUri": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createObject('value', variables('varFslogixScriptUri')), createObject('value', ''))]",
-          "fslogixSharePath": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createObject('value', format('\\\\{0}.file.{1}\\{2}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2020-10-01').outputs.storageAccountName.value, environment().suffixes.storage, reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2020-10-01').outputs.fileShareName.value)), createObject('value', ''))]",
+          "fslogixSharePath": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createObject('value', format('\\\\{0}.file.{1}\\{2}', if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2020-10-01').outputs.storageAccountName.value, ''), environment().suffixes.storage, if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2020-10-01').outputs.fileShareName.value, ''))), createObject('value', ''))]",
           "hostPoolToken": {
             "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('HostPool-AppGroups-{0}', parameters('time'))), '2020-10-01').outputs.hostPooltoken.value]"
           },
