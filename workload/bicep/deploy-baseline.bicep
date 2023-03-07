@@ -1148,7 +1148,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 
 // Storage.
 module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (varCreateAvdFslogixDeployment && avdDeploySessionHosts && (avdIdentityServiceProvider != 'AAD')) {
-    name: 'Fslogix-Storage-Azure-Files-${time}'
+    name: 'Storage-Fslogix-Azure-Files-${time}'
     params: {
         storagePurpose: 'fslogix'
         fileShareCustomName: fslogixFileShareCustomName
@@ -1207,7 +1207,7 @@ module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bic
 
 // Msix Storage.
 module deployAvdMsixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (varCreateMsixDeployment && avdDeploySessionHosts && (avdIdentityServiceProvider != 'AAD')) {
-    name: 'Msix-Storage-AzureFiles-${time}'
+    name: 'Storage-Msix-AzureFiles-${time}'
     params: {
         storagePurpose: 'msix'
         fileShareCustomName: msixFileShareCustomName
