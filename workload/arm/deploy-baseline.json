@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.14.85.62628",
-      "templateHash": "6250596711064219227"
+      "templateHash": "48972237274864645"
     }
   },
   "parameters": {
@@ -21376,7 +21376,7 @@
       "condition": "[and(and(variables('varCreateAvdFslogixDeployment'), parameters('avdDeploySessionHosts')), not(equals(parameters('avdIdentityServiceProvider'), 'AAD')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('Fslogix-Storage-Azure-Files-{0}', parameters('time'))]",
+      "name": "[format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -29068,7 +29068,7 @@
       "condition": "[and(and(variables('varCreateMsixDeployment'), parameters('avdDeploySessionHosts')), not(equals(parameters('avdIdentityServiceProvider'), 'AAD')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('Msix-Storage-AzureFiles-{0}', parameters('time'))]",
+      "name": "[format('Storage-Msix-AzureFiles-{0}', parameters('time'))]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -36752,7 +36752,7 @@
         "[subscriptionResourceId(parameters('avdWorkloadSubsId'), 'Microsoft.Resources/deployments', format('Deploy-{0}-{1}', variables('varAvdStorageObjectsRgName'), parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varAvdServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Workload-KeyVault-{0}', parameters('time')))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Fslogix-Storage-Azure-Files-{0}', parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]"
       ]
@@ -36862,9 +36862,9 @@
           "createAvdFslogixDeployment": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createObject('value', variables('varCreateAvdFslogixDeployment')), createObject('value', false()))]",
           "storageManagedIdentityResourceId": "[if(and(variables('varCreateStorageDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'AAD'))), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.managedIdentityResourceId.value), createObject('value', ''))]",
           "fsLogixScript": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createObject('value', variables('varFsLogixScript')), createObject('value', ''))]",
-          "fsLogixScriptArguments": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createObject('value', format('-volumeshare {0}', format('\\\\{0}.file.{1}\\{2}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Fslogix-Storage-Azure-Files-{0}', parameters('time'))), '2020-10-01').outputs.storageAccountName.value, environment().suffixes.storage, reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Fslogix-Storage-Azure-Files-{0}', parameters('time'))), '2020-10-01').outputs.fileShareName.value))), createObject('value', ''))]",
+          "fsLogixScriptArguments": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createObject('value', format('-volumeshare {0}', format('\\\\{0}.file.{1}\\{2}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2020-10-01').outputs.storageAccountName.value, environment().suffixes.storage, reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2020-10-01').outputs.fileShareName.value))), createObject('value', ''))]",
           "fslogixScriptUri": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createObject('value', variables('varFslogixScriptUri')), createObject('value', ''))]",
-          "fslogixSharePath": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createObject('value', format('\\\\{0}.file.{1}\\{2}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Fslogix-Storage-Azure-Files-{0}', parameters('time'))), '2020-10-01').outputs.storageAccountName.value, environment().suffixes.storage, reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Fslogix-Storage-Azure-Files-{0}', parameters('time'))), '2020-10-01').outputs.fileShareName.value)), createObject('value', ''))]",
+          "fslogixSharePath": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createObject('value', format('\\\\{0}.file.{1}\\{2}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2020-10-01').outputs.storageAccountName.value, environment().suffixes.storage, reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2020-10-01').outputs.fileShareName.value)), createObject('value', ''))]",
           "hostPoolToken": {
             "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('HostPool-AppGroups-{0}', parameters('time'))), '2020-10-01').outputs.hostPooltoken.value]"
           },
@@ -42125,7 +42125,7 @@
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('HostPool-AppGroups-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varAvdServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Workload-KeyVault-{0}', parameters('time')))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Fslogix-Storage-Azure-Files-{0}', parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]"
       ]
