@@ -862,7 +862,7 @@ module avdBaselineResourceGroups '../../carml/1.2.0/Microsoft.Resources/resource
 }]
 
 // Storage.
-module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if ((varCreateAvdFslogixDeployment||varCreateMsixDeployment) && (avdIdentityServiceProvider != 'AAD')) {
+module avdBaselineStorageResourceGroup '../../carml/1.2.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (varCreateStorageDeployment && (avdIdentityServiceProvider != 'AAD')) {
     scope: subscription(avdWorkloadSubsId)
     name: 'Deploy-${varAvdStorageObjectsRgName}-${time}'
     params: {
