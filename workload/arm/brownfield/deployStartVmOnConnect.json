@@ -1,0 +1,180 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.11.1.770",
+      "templateHash": "16937064627619843469"
+    }
+  },
+  "parameters": {
+    "avdObjectId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The object ID for the Azure Virtual Desktop application in Azure AD."
+      }
+    },
+    "hostPoolResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource ID for the host pool to enable Start VM On Connect on."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[deployment().location]",
+      "metadata": {
+        "description": "Optional. The location for the host pool to enable Start VM On Connect on."
+      }
+    }
+  },
+  "variables": {
+    "varHostPoolName": "[split(parameters('hostPoolResourceId'), '/')[8]]",
+    "varDesktopVirtualizationPowerOnContributorId": "489581de-a3bd-480d-9518-53dea7416b33",
+    "varResourceGroupName": "[split(parameters('hostPoolResourceId'), '/')[4]]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(parameters('avdObjectId'), variables('varDesktopVirtualizationPowerOnContributorId'), subscription().id)]",
+      "properties": {
+        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('varDesktopVirtualizationPowerOnContributorId'))]",
+        "principalId": "[parameters('avdObjectId')]"
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "get-existing-hostPool",
+      "resourceGroup": "[variables('varResourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "hostPoolName": {
+            "value": "[variables('varHostPoolName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.11.1.770",
+              "templateHash": "17706530224982074795"
+            }
+          },
+          "parameters": {
+            "hostPoolName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the host pool."
+              }
+            }
+          },
+          "resources": [],
+          "outputs": {
+            "info": {
+              "type": "object",
+              "value": "[reference(resourceId('Microsoft.DesktopVirtualization/hostPools', parameters('hostPoolName')), '2021-07-12')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[variables('varHostPoolName')]",
+      "resourceGroup": "[variables('varResourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "hostPoolName": {
+            "value": "[variables('varHostPoolName')]"
+          },
+          "hostPoolType": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('varResourceGroupName')), 'Microsoft.Resources/deployments', 'get-existing-hostPool')).outputs.info.value.hostPoolType]"
+          },
+          "loadBalancerType": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('varResourceGroupName')), 'Microsoft.Resources/deployments', 'get-existing-hostPool')).outputs.info.value.loadBalancerType]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "preferredAppGroupType": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('varResourceGroupName')), 'Microsoft.Resources/deployments', 'get-existing-hostPool')).outputs.info.value.preferredAppGroupType]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.11.1.770",
+              "templateHash": "9889324264160468472"
+            }
+          },
+          "parameters": {
+            "hostPoolName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the host pool."
+              }
+            },
+            "hostPoolType": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The type of host pool."
+              }
+            },
+            "loadBalancerType": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The type of load balancer for the host pool."
+              }
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The location of the host pool."
+              }
+            },
+            "preferredAppGroupType": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The preferred app group type for the host pool."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DesktopVirtualization/hostPools",
+              "apiVersion": "2021-07-12",
+              "name": "[parameters('hostPoolName')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "hostPoolType": "[parameters('hostPoolType')]",
+                "loadBalancerType": "[parameters('loadBalancerType')]",
+                "preferredAppGroupType": "[parameters('preferredAppGroupType')]",
+                "startVMOnConnect": true
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('varResourceGroupName')), 'Microsoft.Resources/deployments', 'get-existing-hostPool')]"
+      ]
+    }
+  ]
+}
