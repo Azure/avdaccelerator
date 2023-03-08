@@ -1159,7 +1159,7 @@ module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bic
         managementVmName: varManagementVmName
         avdOuStgPath: varOuStgPath
         avdCreateOuForStorageString: varCreateOuForStorageString
-        managedIdentityClientId: (varCreateAvdFslogixDeployment||varCreateMsixDeployment) ? deployManagedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
+        managedIdentityClientId: varCreateStorageDeployment ? deployManagedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
         storageToDomainScript:  varStorageToDomainScript
         storageToDomainScriptUri: varStorageToDomainScriptUri
         timeZone: varTimeZones[avdSessionHostLocation]
@@ -1183,7 +1183,7 @@ module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bic
         vnetPrivateDnsZoneFilesId: avdVnetPrivateDnsZoneFilesId
         workloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
-        storageManagedIdentityResourceId: (varCreateAvdFslogixDeployment||varCreateMsixDeployment) ? deployManagedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
+        storageManagedIdentityResourceId: varCreateStorageDeployment ? deployManagedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
         fileShareMultichannel: (contains(fslogixStorageSku, 'Premium_LRS') || contains(fslogixStorageSku, 'Premium_ZRS')) ? true : false
         storageSku: fslogixStorageSku
         marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows[avdOsImage]
@@ -1218,7 +1218,7 @@ module deployAvdMsixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep'
         managementVmName: varManagementVmName
         avdOuStgPath: varOuStgPath
         avdCreateOuForStorageString: varCreateOuForStorageString
-        managedIdentityClientId: (varCreateAvdFslogixDeployment||varCreateMsixDeployment) ? deployManagedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
+        managedIdentityClientId: varCreateStorageDeployment ? deployManagedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
         storageToDomainScript:  varStorageToDomainScript
         storageToDomainScriptUri: varStorageToDomainScriptUri
         timeZone: varTimeZones[avdSessionHostLocation]
@@ -1242,7 +1242,7 @@ module deployAvdMsixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep'
         vnetPrivateDnsZoneFilesId: avdVnetPrivateDnsZoneFilesId
         workloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
-        storageManagedIdentityResourceId: (varCreateAvdFslogixDeployment||varCreateMsixDeployment) ? deployManagedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
+        storageManagedIdentityResourceId: varCreateStorageDeployment ? deployManagedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
         fileShareMultichannel: (contains(msixStorageSku, 'Premium_LRS') || contains(msixStorageSku, 'Premium_ZRS')) ? true : false
         storageSku: msixStorageSku
         marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows[avdOsImage]
