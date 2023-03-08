@@ -31,8 +31,8 @@ param(
 	[string] $CustomOuPath,
 
 	[Parameter(Mandatory = $true)]
-    [ValidateNotNullOrEmpty()]
-    [string] $IdentityServiceProvider,
+      [ValidateNotNullOrEmpty()]
+      [string] $IdentityServiceProvider,
 
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
@@ -45,6 +45,10 @@ param(
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
 	[string] $CreateNewOU,
+
+      [Parameter(Mandatory = $true)]
+      [ValidateNotNullOrEmpty()]
+      [string] $StoragePurpose,
 
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
@@ -139,9 +143,17 @@ Write-Log "Setting up the default permission of $defaultPermission to storage ac
 $account = Set-AzStorageAccount -ResourceGroupName $StorageAccountRG -AccountName $StorageAccountName -DefaultSharePermission $defaultPermission
 $account.AzureFilesIdentityBasedAuth
 
-# Remove Administrators from full control 
+# Remove Administrators from full control
 
-$DriveLetter = "Y"
+
+if ($StoragePurpose -eq 'fslogix') {
+	$DriveLetter -eq "Y"
+	 }
+if ($StoragePurpose -eq 'msix') {
+	$DriveLetter -eq "X"
+	 }
+Write-Log "Mounting $StoragePurpose storage account on Drive $DriveLetter"
+		
 $FileShareLocation = '\\'+ $StorageAccountName + '.file.core.windows.net\'+$ShareName
 $StorageAccountNameFull = $StorageAccountName + '.file.core.windows.net'
 $connectTestResult = Test-NetConnection -ComputerName $StorageAccountNameFull -Port 445
