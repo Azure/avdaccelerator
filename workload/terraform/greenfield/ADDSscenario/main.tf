@@ -6,6 +6,30 @@ module "avdi" {
   rg_avdi     = var.rg_avdi
 }
 
+# Creates the Azure Virtual Desktop Spoke Network resources
+module "network" {
+  source                   = "../../modules/network"
+  avdLocation              = var.avdLocation
+  rg_network               = var.rg_network
+  vnet                     = var.vnet
+  snet                     = var.snet
+  pesnet                   = var.pesnet
+  vnet_range               = var.vnet_range
+  nsg                      = "${var.nsg}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
+  prefix                   = var.prefix
+  rt                       = "${var.rt}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
+  hub_connectivity_rg      = var.hub_connectivity_rg
+  hub_vnet                 = var.hub_vnet
+  subnet_range             = var.subnet_range
+  pesubnet_range           = var.pesubnet_range
+  next_hop_ip              = var.next_hop_ip
+  fw_policy                = var.fw_policy
+  hub_subscription_id      = var.hub_subscription_id
+  spoke_subscription_id    = var.spoke_subscription_id
+  identity_subscription_id = var.identity_subscription_id
+  identity_rg              = var.identity_rg
+  identity_vnet            = var.identity_vnet
+}
 
 
 
@@ -42,15 +66,5 @@ module "personal" {
   rfc3339        = var.rfc3339
   pag            = "${var.pag}-${substr(var.avdLocation,0,5)}-${var.prefix}" //var.pag
   depends_on     = [module.avdi.avdLocation]
-}
-*/
-
-# optional - Creates the Azure Virtual Desktop Firewall Rules assuming you have a firewall in the hub
-/*
-module "firewall" {
-  source              = "../../modules/network/firewallrules"
-  avdLocation         = var.avdLocation
-  hub_connectivity_rg = var.hub_connectivity_rg
-  resource_group_name = var.hub_connectivity_rg
 }
 */

@@ -32,3 +32,5 @@ override.tf.json
 
 # Ignore CLI configuration files
 .terraformrc
+.infracost/terraform_modules
+.infracost/*

@@ -192,11 +192,11 @@ resource image 'Microsoft.Compute/galleries/images@2022-03-03' = {
     eula: eula
     privacyStatementUri: privacyStatementUri
     releaseNoteUri: releaseNoteUri
-    purchasePlan: {
-      product: !empty(productName) ? productName : null
-      name: !empty(planName) ? planName : null
-      publisher: !empty(planPublisherName) ? planPublisherName : null
-    }
+    //purchasePlan: {
+    //  product: !empty(productName) ? productName : null
+    //  name: !empty(planName) ? planName : null
+    //  publisher: !empty(planPublisherName) ? planPublisherName : null
+    //}
     endOfLifeDate: endOfLife
     disallowed: {
       diskTypes: excludedDiskTypes
