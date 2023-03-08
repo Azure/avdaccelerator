@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.14.85.62628",
-      "templateHash": "15561562389185902911"
+      "templateHash": "14417988565228714338"
     }
   },
   "parameters": {
@@ -21411,7 +21411,7 @@
           "avdCreateOuForStorageString": {
             "value": "[variables('varCreateOuForStorageString')]"
           },
-          "managedIdentityClientId": "[if(or(variables('varCreateAvdFslogixDeployment'), variables('varCreateMsixDeployment')), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.managedIdentityClientId.value), createObject('value', ''))]",
+          "managedIdentityClientId": "[if(variables('varCreateStorageDeployment'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.managedIdentityClientId.value), createObject('value', ''))]",
           "storageToDomainScript": {
             "value": "[variables('varStorageToDomainScript')]"
           },
@@ -21477,7 +21477,7 @@
           "encryptionAtHost": {
             "value": "[parameters('encryptionAtHost')]"
           },
-          "storageManagedIdentityResourceId": "[if(or(variables('varCreateAvdFslogixDeployment'), variables('varCreateMsixDeployment')), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.managedIdentityResourceId.value), createObject('value', ''))]",
+          "storageManagedIdentityResourceId": "[if(variables('varCreateStorageDeployment'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.managedIdentityResourceId.value), createObject('value', ''))]",
           "fileShareMultichannel": "[if(or(contains(parameters('fslogixStorageSku'), 'Premium_LRS'), contains(parameters('fslogixStorageSku'), 'Premium_ZRS')), createObject('value', true()), createObject('value', false()))]",
           "storageSku": {
             "value": "[parameters('fslogixStorageSku')]"
@@ -29103,7 +29103,7 @@
           "avdCreateOuForStorageString": {
             "value": "[variables('varCreateOuForStorageString')]"
           },
-          "managedIdentityClientId": "[if(or(variables('varCreateAvdFslogixDeployment'), variables('varCreateMsixDeployment')), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.managedIdentityClientId.value), createObject('value', ''))]",
+          "managedIdentityClientId": "[if(variables('varCreateStorageDeployment'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.managedIdentityClientId.value), createObject('value', ''))]",
           "storageToDomainScript": {
             "value": "[variables('varStorageToDomainScript')]"
           },
@@ -29169,7 +29169,7 @@
           "encryptionAtHost": {
             "value": "[parameters('encryptionAtHost')]"
           },
-          "storageManagedIdentityResourceId": "[if(or(variables('varCreateAvdFslogixDeployment'), variables('varCreateMsixDeployment')), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.managedIdentityResourceId.value), createObject('value', ''))]",
+          "storageManagedIdentityResourceId": "[if(variables('varCreateStorageDeployment'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.managedIdentityResourceId.value), createObject('value', ''))]",
           "fileShareMultichannel": "[if(or(contains(parameters('msixStorageSku'), 'Premium_LRS'), contains(parameters('msixStorageSku'), 'Premium_ZRS')), createObject('value', true()), createObject('value', false()))]",
           "storageSku": {
             "value": "[parameters('msixStorageSku')]"
