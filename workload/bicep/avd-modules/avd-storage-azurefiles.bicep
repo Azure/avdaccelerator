@@ -166,7 +166,7 @@ var varWrklStoragePrivateEndpointName = 'pe-${varStorageName}-file'
 var varStoragePurposeLowerPrefix = substring(varStoragePurposeLower, 0,2)
 var varStorageName = useCustomNaming ? '${storageAccountPrefixCustomName}${varStoragePurposeLower}${deploymentPrefixLowercase}${namingUniqueStringSixChar}' : 'stavd${varStoragePurposeLower}${deploymentPrefixLowercase}${namingUniqueStringSixChar}'
 
-var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${varStorageName} -StorageAccountRG ${storageObjectsRgName} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment AzureCloud -SubscriptionId ${workloadSubsId} -DomainAdminUserName ${domainJoinUserName} -DomainAdminUserPassword ${domainJoinUserPassword} -CustomOuPath ${avdStorageCustomOuPath} -OUName ${avdOuStgPath} -CreateNewOU ${avdCreateOuForStorageString} -ShareName ${varFileShareName} -ClientId ${managedIdentityClientId} -Verbose'
+var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${varStorageName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment AzureCloud -SubscriptionId ${workloadSubsId} -DomainAdminUserName ${domainJoinUserName} -DomainAdminUserPassword ${domainJoinUserPassword} -CustomOuPath ${avdStorageCustomOuPath} -OUName ${avdOuStgPath} -CreateNewOU ${avdCreateOuForStorageString} -ShareName ${varFileShareName} -ClientId ${managedIdentityClientId} -Verbose'
 
 // =========== //
 // Deployments //
@@ -187,6 +187,7 @@ module storageAndFile '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
         location: sessionHostLocation
         storageAccountSku: storageSku
         allowBlobPublicAccess: false
+        publicNetworkAccess: 'Disabled'
         storageAccountKind: ((storageSku =~ 'Premium_LRS') || (storageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
         azureFilesIdentityBasedAuthentication: (identityServiceProvider == 'AADDS') ? {
             directoryServiceOptions: 'AADDS'
@@ -314,7 +315,7 @@ module managementVmWait '../../../carml/1.0.0/Microsoft.Resources/deploymentScri
     name: 'Management-VM-Wait-${time}'
     params: {
         name: 'AVD-managementVmWait-${time}'
-        location: avdSessionHostLocation
+        location: sessionHostLocation
         azPowerShellVersion: '6.2'
         cleanupPreference: 'Always'
         timeout: 'PT10M'

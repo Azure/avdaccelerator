@@ -5,7 +5,7 @@ param storageAccountName string
 param storageAccountRG string
 param domainName string
 param AzureCloudEnvironment string
-
+param storagePurpose string
 
 
 @secure()
@@ -35,6 +35,7 @@ resource addAzureFilesToDomain 'Microsoft.Compute/virtualMachines/extensions@202
         DomainName: domainName
         AzureCloudEnvironment: AzureCloudEnvironment
         DomainAdminUserName: domainAdminUsername
+        StoragePurpose: storagePurpose
       } 
     }
     protectedSettings: {
