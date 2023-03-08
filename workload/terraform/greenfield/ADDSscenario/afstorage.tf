@@ -46,7 +46,7 @@ resource "azurerm_role_assignment" "af_role" {
 # Get Private DNS Zone for the Storage Private Endpoints
 data "azurerm_private_dns_zone" "pe-filedns-zone" {
   name                = "privatelink.file.core.windows.net"
-  resource_group_name = var.hub_connectivity_rg
+  resource_group_name = var.hub_dns_zone_rg
   provider            = azurerm.hub
 }
 resource "azurerm_private_endpoint" "afpe" {
@@ -73,7 +73,7 @@ resource "azurerm_private_endpoint" "afpe" {
 # Linking DNS Zone to the existing DNS Zone in the Hub VNET
 resource "azurerm_private_dns_zone_virtual_network_link" "filelink" {
   name                  = "azfilelink"
-  resource_group_name   = var.hub_connectivity_rg
+  resource_group_name   = var.hub_dns_zone_rg
   private_dns_zone_name = data.azurerm_private_dns_zone.pe-filedns-zone.name
   virtual_network_id    = data.azurerm_virtual_network.vnet.id
 
