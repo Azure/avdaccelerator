@@ -1,4 +1,4 @@
-# AVD accelerator baseline deployment walk through
+# AVD Accelerator Baseline Deployment Walk Through
 
 | Portal UI Experience (ARM) |
 | ------------------------------------------------------------ |
@@ -70,7 +70,11 @@
 
 Take a look at the [Naming Standard and Tagging](./resource-naming.md) page for further information.
 
-## Other deployment Options
+## Redeployment Considerations
+
+We redeploying the baseline automation with the same deployment prefix value, clean up of previously created resource groups or at least their contained resources will need to be removed before the new deployment is executed, this will prevent the duplication of resources (key vaults and storage accounts) and conflicts of IP range overlap when creating the AVD virtual network.
+
+## Other Deployment Options
 
 We have these other options available:
 
