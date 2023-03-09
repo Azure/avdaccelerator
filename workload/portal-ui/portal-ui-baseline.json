@@ -248,7 +248,7 @@
                                     "defaultValue": "",
                                     "constraints": {
                                         "regex": "^(?!.*[aA]dministrator).*$",
-                                        "validationMessage": "This user name can't be used, it is reserved word.",
+                                        "validationMessage": "This username can't be used, it is a reserved word.",
                                         "required": true
 
                                     }
