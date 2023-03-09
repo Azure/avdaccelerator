@@ -247,7 +247,10 @@
                                     "placeholder": "Example: avdadmin",
                                     "defaultValue": "",
                                     "constraints": {
+                                        "regex": "^(?!.*[aA]dministrator).*$",
+                                        "validationMessage": "This user name can't be used, it is reserved word.",
                                         "required": true
+
                                     }
                                 },
                                 {
