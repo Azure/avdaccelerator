@@ -39,16 +39,19 @@
   - **Session host region** - Provide the region to where you want to deploy the session hosts. This defaults to the Management Plane region but can be changed.
   - **Session hosts OU path (Optional)** - Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU. If left empty the computer account will be created in the default Computers OU. Example: OU=avd,DC=contoso,DC=com.
   - **Use availability zones** - If you select no an Availability set will be created instead and session hosts will be created in the availability set. If you select yes the accelerator  will distribute compute and storage resources across availability zones.
-  - **Use FSLogix profile management**: Deploys FSLogix containers and session host setup for user's profiles.
-  - **Create OU for FSLogix storage account** - It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly. If yes, it will create a new OU, if no, you will need to provide the desired name for the OU.
-  - **Azure Files share SKU** - Select the desired SKU based on the availability required.
-  - **FSLogix file share size** Choose the desired size in 100GB increments. Minimum size is 100GB.
   - **VM size** -  Select the SKU size for the session hosts.
   - **VM count** - Select the number of session hosts to deploy.
   - **OS disk type** - Select the OS Disk SKU type. Premium is recommended.
   - **End to end encryption** - If you want data stored on the session host  encrypted at rest and flow encrypted to the Storage service.
   - **OS image source** - Select a marketplace image or from the Azure Compute Gallery.
   - **OS version or image** - Choose the OS version or desired image from the Azure compute gallery.
+- **Storage** blade
+  - **Use FSLogix profile management**: Deploys FSLogix containers and session host setup for user's profiles.
+  - **FSLogix Azure Files share SKU** - Select the desired SKU based on the availability required.
+  - **FSLogix file share size** Choose the desired size in 100GB increments. Minimum size is 100GB.
+  - **Use MSIX App Attach**: Deploys MSIX App Attach container for MSIX app packages.
+  - **MSIX App Attach Azure Files share SKU** - Select the desired SKU based on the availability required.
+  - **MSIX App Attach file share size** Choose the desired size in 100GB increments. Minimum size is 100GB.
 - **Network connectivity** blade
   - **New** - Select if you want to create a new VNet to be used for session hosts.
     - **Virtual network** - Enter the IP block in CIDR notation to allocate to the VNet.
