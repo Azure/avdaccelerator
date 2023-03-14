@@ -604,7 +604,7 @@ var varAvdScalingPlanSchedules = [
         rampDownCapacityThresholdPct: 90
         rampDownForceLogoffUsers: true
         rampDownLoadBalancingAlgorithm: 'DepthFirst'
-        rampDownMinimumHostsPct: 10
+        rampDownMinimumHostsPct: 0 //10
         rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
         rampDownStartTime: {
             hour: 18
@@ -639,7 +639,7 @@ var varAvdScalingPlanSchedules = [
         rampDownCapacityThresholdPct: 90
         rampDownForceLogoffUsers: true
         rampDownLoadBalancingAlgorithm: 'DepthFirst'
-        rampDownMinimumHostsPct: 5
+        rampDownMinimumHostsPct: 0
         rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
         rampDownStartTime: {
             hour: 16
@@ -649,7 +649,7 @@ var varAvdScalingPlanSchedules = [
         rampDownWaitTimeMinutes: 30
         rampUpCapacityThresholdPct: 90
         rampUpLoadBalancingAlgorithm: 'DepthFirst'
-        rampUpMinimumHostsPct: 5
+        rampUpMinimumHostsPct: 0
         rampUpStartTime: {
             hour: 9
             minute: 0
@@ -986,7 +986,7 @@ module avdManagementPLane 'avd-modules/avd-management-plane.bicep' = {
         avdPersonalAssignType: avdPersonalAssignType
         avdManagementPlaneLocation: avdManagementPlaneLocation
         avdServiceObjectsRgName: varAvdServiceObjectsRgName
-        avdStartVmOnConnect: avdStartVmOnConnect
+        avdStartVmOnConnect: (avdHostPoolType == 'Pooled') ? avdDeployScalingPlan:  avdStartVmOnConnect
         avdWorkloadSubsId: avdWorkloadSubsId
         avdIdentityServiceProvider: avdIdentityServiceProvider
         avdApplicationGroupIdentitiesIds: varAvdApplicationGroupIdentitiesIds
