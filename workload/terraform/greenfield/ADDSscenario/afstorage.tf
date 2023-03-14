@@ -11,6 +11,7 @@ resource "azurerm_storage_account" "storage" {
   account_kind              = "FileStorage"
   enable_https_traffic_only = true
   tags                      = local.tags
+  provider                  = azurerm.spoke
 
   network_rules {
     default_action = "Deny"
@@ -56,6 +57,7 @@ resource "azurerm_private_endpoint" "afpe" {
   resource_group_name = azurerm_resource_group.rg_storage.name
   subnet_id           = data.azurerm_subnet.subnet.id
   tags                = local.tags
+  provider            = azurerm.spoke
 
   lifecycle { ignore_changes = [tags] }
 
@@ -64,6 +66,7 @@ resource "azurerm_private_endpoint" "afpe" {
     private_connection_resource_id = azurerm_storage_account.storage.id
     is_manual_connection           = false
     subresource_names              = ["file"]
+
   }
   private_dns_zone_group {
     name                 = "dns-file-${var.prefix}"
@@ -73,10 +76,11 @@ resource "azurerm_private_endpoint" "afpe" {
 
 # Linking DNS Zone to the existing DNS Zone in the Hub VNET
 resource "azurerm_private_dns_zone_virtual_network_link" "filelink" {
-  name                  = "azfilelink"
+  name                  = "azfilelink-${var.prefix}"
   resource_group_name   = var.hub_dns_zone_rg
   private_dns_zone_name = data.azurerm_private_dns_zone.pe-filedns-zone.name
   virtual_network_id    = data.azurerm_virtual_network.vnet.id
+  provider              = azurerm.hub
 
   lifecycle { ignore_changes = [tags] }
 }

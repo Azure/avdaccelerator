@@ -245,6 +245,19 @@ variable "avdshared_subscription_id" {
   description = "Spoke Subscription id"
 }
 
+variable "host_pool_log_categories" {
+  description = "value of the log categories to be enabled for the host pool"
+}
+
+variable "dag_log_categories" {
+  description = "value of the log categories to be enabled for the host pool"
+}
+
+variable "ws_log_categories" {
+  description = "value of the log categories to be enabled for the host pool"
+}
+
+
 variable "hub_dns_zone_rg" {
   description = "The resource group for the hub DNS zone"
 }
