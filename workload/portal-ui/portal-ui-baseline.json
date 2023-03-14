@@ -243,11 +243,14 @@
                                     "name": "identityLocalUserName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Username",
-                                    "toolTip": "Provide username for session host local admin account.",
+                                    "toolTip": "Provide username for session host local admin account. Administrator can't be used as username, it is reserved by the system.",
                                     "placeholder": "Example: '***REMOVED***'",
                                     "defaultValue": "",
                                     "constraints": {
+                                        "regex": "^(?!.*[aA]dministrator).*$",
+                                        "validationMessage": "This username can't be used, it is a reserved word.",
                                         "required": true
+
                                     }
                                 },
                                 {
