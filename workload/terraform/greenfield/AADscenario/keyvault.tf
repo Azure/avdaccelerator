@@ -33,7 +33,7 @@ resource "azurerm_key_vault_access_policy" "deploy" {
 
   key_permissions         = ["Get", "List", "Update", "Create", "Import", "Delete", "Recover", "Purge"]
   secret_permissions      = ["Get", "List", "Set", "Delete", "Purge", "Recover"]
-  certificate_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Purge", "Recover"] 
+  certificate_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Purge", "Recover"]
   storage_permissions     = ["Get", "List", "Update", "Delete"]
 }
 
