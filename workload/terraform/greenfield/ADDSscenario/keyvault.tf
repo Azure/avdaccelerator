@@ -6,6 +6,7 @@ resource "azurerm_key_vault" "kv" {
   sku_name                 = "standard"
   purge_protection_enabled = true
   tags                     = local.tags
+  enable_rbac_authorization = true
 
   depends_on = [
     azurerm_resource_group.rg,
@@ -80,10 +81,10 @@ resource "azurerm_key_vault_secret" "localpassword" {
 
 # Linking DNS Zone to the existing DNS Zone in the Hub VNET
 resource "azurerm_private_dns_zone_virtual_network_link" "vaultlink" {
-  name                  = "keydnsvnet_link"
+  name                  = "keydnsvnet_link-${var.prefix}"
   resource_group_name   = var.hub_dns_zone_rg
   private_dns_zone_name = data.azurerm_private_dns_zone.pe-vaultdns-zone.name
   virtual_network_id    = data.azurerm_virtual_network.vnet.id
-
+  provider              = azurerm.hub
   lifecycle { ignore_changes = [tags] }
 }

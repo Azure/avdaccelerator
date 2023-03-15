@@ -1,11 +1,11 @@
-variable "rg_so" {
+variable "rg_personal" {
   type        = string
   description = "Name of the Resource group in which to deploy service objects"
 }
 
-variable "rg_shared_name" {
+variable "rg_avdi" {
   type        = string
-  description = "Name of the Resource group in which to deploy shared resources"
+  description = "Name of the Resource group in which to deploy avd service objects"
 }
 
 variable "prefix" {
@@ -32,15 +32,7 @@ variable "avdLocation" {
   description = "Location of the resource group."
 }
 
-variable "rfc3339" {
+variable "aad_group_name" {
   type        = string
-  description = "Registration token expiration"
-}
-
-variable "tags" {
-  type = map(any)
-  default = {
-    environment = "poc"
-    source      = "https://github.com/Azure/avdaccelerator/tree/main/workload/terraform/avdbaseline"
-  }
+  description = "Azure Active Directory Group for AVD users"
 }
