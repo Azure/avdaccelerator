@@ -1,4 +1,5 @@
-# Create a Resource Group for Storage
+# Create a Resource Group for Storage 
+# rg-avd-{AzureRegion}-{deploymentPrefix}-storage
 resource "azurerm_resource_group" "rg_storage" {
   location = var.avdLocation
   name     = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_stor}"
@@ -6,36 +7,25 @@ resource "azurerm_resource_group" "rg_storage" {
 }
 
 # Create a Resource Group for AVD Host Pool, Application Group, Workspace (Service Object)
+# rg-avd-{AzureRegionAcronym}-{deploymentPrefix}-service-objects
 resource "azurerm_resource_group" "rg" {
   name     = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_so}"
   location = var.avdLocation
 }
 
 # Create a Resource Group for Pool Session Hosts
+# rg-avd-{AzureRegion}-{deploymentPrefix}-pool-compute
 resource "azurerm_resource_group" "shrg" {
   name     = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_pool}"
   location = var.avdLocation
   tags     = local.tags
 }
 
-
-# Create a Resource Group for FSLogix temp Hosts
-resource "azurerm_resource_group" "rg_fslogix" {
-  name     = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_fslogix}"
-  location = var.avdLocation
-  tags     = local.tags
-}
-
 /*
-# Create a Resource Group for Personal Session Hosts
-resource "azurerm_resource_group" "shp" {
-  name     = var.rg_personal
-  location = var.avdLocation
-}
-
 # Create a Resource Group for RemoteApp Session Hosts
 resource "azurerm_resource_group" "shpr" {
-  name     = var.rg_remoteapp  
+  name     = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_remoteapp}"
   location = var.avdLocation
+  tags     = local.tags
 }
 */
