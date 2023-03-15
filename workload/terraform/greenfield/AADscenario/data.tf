@@ -16,7 +16,7 @@ resource "random_string" "random" {
   special = false
 }
 
-# Get network subnet data
+# Get network vnet data
 data "azurerm_virtual_network" "vnet" {
   name                = "${var.vnet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"              //var.vnet
   resource_group_name = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_network}" //var.rg_network

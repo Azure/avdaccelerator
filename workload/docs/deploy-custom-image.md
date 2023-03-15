@@ -36,7 +36,7 @@ We have these other options available:
 | Deployment Type | Link |
 |:--|:--|
 |Command line (Bicep/ARM) |[![Powershell/Azure CLI](./icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/bicep/readme.md) |
-|Terraform |[![Terraform](./icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/main/workload/terraform/readme.md) |
+|Terraform |[![Terraform](./icons/terraform.png)]( https://github.com/Azure/avdaccelerator/tree/main/workload/terraform/customimage) |
 
 ## Next Steps
 

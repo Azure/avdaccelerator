@@ -1,6 +1,6 @@
 resource "azurerm_network_security_group" "res-0" {
   location            = azurerm_resource_group.net.location
-  name                = var.nsg
+  name                = "nsg-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001" # nsg-avd-{AzureRegionAcronym}-{deploymentPrefix}-{nnn}
   resource_group_name = azurerm_resource_group.net.name
   tags                = local.tags
 
