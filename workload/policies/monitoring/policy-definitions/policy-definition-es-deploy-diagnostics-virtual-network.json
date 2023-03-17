@@ -6,7 +6,7 @@
     "properties": {
       "policyType": "Custom",
       "mode": "Indexed",
-      "displayName": "Custom - Deploy Diagnostic Settings for Virtual Network to Log Analytics workspace",
+      "displayName": "Custom - Deploy Diagnostic Settings for Virtual Network to Log Analytics Workspace",
       "description": "Custom - Deploys the diagnostic settings for Virtual Network to stream to a Log Analytics workspace when any Virtual Network which is missing this diagnostic settings is created or updated. The Policy will set the diagnostic with all metrics and category enabled",
       "metadata": {
         "version": "1.0.0",
