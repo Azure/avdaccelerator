@@ -19,10 +19,11 @@ resource "random_string" "AVD_local_password" {
 }
 
 resource "azurerm_network_interface" "avd_vm_nic" {
-  count               = var.rdsh_count
-  name                = "${var.prefix}-${count.index + 1}-nic"
-  resource_group_name = azurerm_resource_group.shrg.name
-  location            = azurerm_resource_group.shrg.location
+  count                         = var.rdsh_count
+  name                          = "${var.prefix}-${count.index + 1}-nic"
+  resource_group_name           = azurerm_resource_group.shrg.name
+  location                      = azurerm_resource_group.shrg.location
+  enable_accelerated_networking = true
 
   ip_configuration {
     name                          = "nic${count.index + 1}_config"
