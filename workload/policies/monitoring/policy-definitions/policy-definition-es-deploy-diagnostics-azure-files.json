@@ -6,7 +6,7 @@
     "properties": {
       "policyType": "Custom",
       "mode": "All",
-      "displayName": "Custom - Configure diagnostic settings for File Services to Log Analytics workspace",
+      "displayName": "Custom - Deploy Diagnostic Settings for Azure Files to Log Analytics Workspace",
       "description": "Custom - Deploys the diagnostic settings for File Services to stream resource logs to a Log Analytics workspace when any file Service which is missing this diagnostic settings is created or updated.",
       "metadata": {
           "version": "1.0.0",
