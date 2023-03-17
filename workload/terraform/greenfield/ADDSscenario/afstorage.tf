@@ -29,6 +29,10 @@ resource "azurerm_storage_share" "FSShare" {
   quota                = "100"
   enabled_protocol     = "SMB"
   storage_account_name = azurerm_storage_account.storage.name
+
+  depends_on = [
+    azurerm_storage_account.storage
+  ]
 }
 
 
