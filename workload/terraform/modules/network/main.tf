@@ -1,5 +1,5 @@
 resource "azurerm_virtual_network" "vnet" {
-  name                = "${var.vnet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
+  name                = "${var.vnet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001"
   address_space       = var.vnet_range
   location            = azurerm_resource_group.net.location
   resource_group_name = azurerm_resource_group.net.name
@@ -10,7 +10,7 @@ resource "azurerm_virtual_network" "vnet" {
 }
 
 resource "azurerm_subnet" "subnet" {
-  name                                      = "${var.snet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
+  name                                      = "${var.snet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001"
   resource_group_name                       = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_network}"
   virtual_network_name                      = azurerm_virtual_network.vnet.name
   address_prefixes                          = var.subnet_range
@@ -19,7 +19,7 @@ resource "azurerm_subnet" "subnet" {
 }
 
 resource "azurerm_subnet" "pesubnet" {
-  name                                      = "${var.pesnet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
+  name                                      = "${var.pesnet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001"
   resource_group_name                       = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_network}"
   virtual_network_name                      = azurerm_virtual_network.vnet.name
   address_prefixes                          = var.pesubnet_range
@@ -87,8 +87,8 @@ module "firewall" {
   source              = "./firewallrules"
   avdLocation         = var.avdLocation
   prefix              = var.prefix
-  next_hop_ip         = var.next_hop_ip
   fw_policy           = var.fw_policy
+  hub_subscription_id = var.hub_subscription_id
   hub_connectivity_rg = var.hub_connectivity_rg
-  resource_group_name = var.hub_connectivity_rg
-}
+  hub_vnet            = var.hub_vnet
+  }
