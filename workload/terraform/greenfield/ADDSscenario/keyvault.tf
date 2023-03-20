@@ -6,7 +6,6 @@ resource "azurerm_key_vault" "kv" {
   sku_name                 = "standard"
   purge_protection_enabled = true
   tags                     = local.tags
-  enable_rbac_authorization = true
 
   depends_on = [
     azurerm_resource_group.rg,
@@ -23,6 +22,12 @@ resource "azurerm_key_vault" "kv" {
     bypass         = "AzureServices"
     ip_rules       = local.allow_list_ip
   }
+}
+
+resource "azurerm_role_assignment" "keysp" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Secrets Officer"
+  principal_id         = data.azurerm_client_config.current.object_id
 }
 
 resource "azurerm_key_vault_access_policy" "deploy" {
