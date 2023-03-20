@@ -115,7 +115,7 @@ param avdVnetworkAddressPrefixes string = '10.10.0.0/23'
 param avdVnetworkSubnetAddressPrefix string = '10.10.0.0/23'
 
 @description('Optional. custom DNS servers IPs.')
-param customDnsIps string = 'none'
+param customDnsIps string = ''
 
 @description('Optional. Use Azure private DNS zones for private endpoints. (Default: false)')
 param avdVnetPrivateDnsZone bool = false
@@ -738,8 +738,8 @@ var varDefaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? 'AADDC C
 var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
 var varStorageToDomainScriptArgs = '-DscPath ${varDscAgentPackageLocation} -StorageAccountName ${varAvdFslogixStorageName} -StorageAccountRG ${varAvdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -IdentityServiceProvider ${avdIdentityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -CustomOuPath ${varStorageCustomOuPath} -OUName ${varOuStgPath} -CreateNewOU ${varCreateOuForStorageString} -ShareName ${varAvdFslogixProfileContainerFileShareName} -ClientId ${deployAvdManagedIdentitiesRoleAssign.outputs.fslogixManagedIdentityClientId} -Verbose'
 var varCreateOuForStorageString = string(createOuForStorage)
-var allDnsServers = '${customDnsIps},168.63.129.16'
-var varDnsServers = (customDnsIps == 'none') ? []: (split(allDnsServers, ','))
+var varAllDnsServers = '${customDnsIps},168.63.129.16'
+var varDnsServers = empty(customDnsIps) ? []: (split(varAllDnsServers, ','))
 var varCreateAvdFslogixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: createAvdFslogixDeployment
 var varAvdApplicationGroupIdentitiesIds = !empty(avdApplicationGroupIdentitiesIds) ? (split(avdApplicationGroupIdentitiesIds, ',')): []
 var varCreateAvdVnetPeering = !empty(existingHubVnetResourceId) ? true: false
