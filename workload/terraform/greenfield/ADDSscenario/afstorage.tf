@@ -13,12 +13,6 @@ resource "azurerm_storage_account" "storage" {
   tags                      = local.tags
   provider                  = azurerm.spoke
 
-  network_rules {
-    default_action = "Deny"
-    bypass         = ["AzureServices", "Metrics", "Logging"]
-    ip_rules       = local.allow_list_ip
-  }
-
   identity {
     type = "SystemAssigned"
   }
@@ -29,8 +23,24 @@ resource "azurerm_storage_share" "FSShare" {
   quota                = "100"
   enabled_protocol     = "SMB"
   storage_account_name = azurerm_storage_account.storage.name
+
+  depends_on = [
+    azurerm_storage_account.storage
+  ]
 }
 
+
+# Deny Traffic from Public Networks with white list exceptions
+resource "azurerm_storage_account_network_rules" "stfw" {
+  storage_account_id = azurerm_storage_account.storage.id
+  default_action     = "Deny"
+  bypass             = ["AzureServices", "Metrics", "Logging"]
+  ip_rules           = local.allow_list_ip
+
+  depends_on = [azurerm_storage_share.FSShare,
+    azurerm_private_endpoint.afpe,
+  azurerm_role_assignment.af_role]
+}
 
 ## Azure built-in roles
 ## https://docs.microsoft.com/azure/role-based-access-control/built-in-roles
@@ -59,6 +69,9 @@ resource "azurerm_private_endpoint" "afpe" {
   tags                = local.tags
   provider            = azurerm.spoke
 
+  depends_on = [
+    azurerm_storage_share.FSShare
+  ]
   lifecycle { ignore_changes = [tags] }
 
   private_service_connection {
