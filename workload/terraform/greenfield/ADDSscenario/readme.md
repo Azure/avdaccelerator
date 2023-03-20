@@ -124,7 +124,7 @@ Validated on provider versions:
 2. Change your terminal into that new subdirectory:
 
 ```bash
-  cd workload/terraform/greenfield/AADscenario
+  cd workload/terraform/greenfield/ADDSscenario
   az account list --output table
   az account set --subscription 'Your AVD workload subscription ID'
 ```
