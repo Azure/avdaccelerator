@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.14.46.61228",
-      "templateHash": "12572197126657799295"
+      "templateHash": "11012307925443294923"
     }
   },
   "parameters": {
@@ -231,7 +231,7 @@
     },
     "customDnsIps": {
       "type": "string",
-      "defaultValue": "none",
+      "defaultValue": "",
       "metadata": {
         "description": "Optional. custom DNS servers IPs."
       }
@@ -1127,8 +1127,8 @@
     "varDefaultStorageOuPath": "[if(equals(parameters('avdIdentityServiceProvider'), 'AADDS'), 'AADDC Computers', 'Computers')]",
     "varStorageCustomOuPath": "[if(not(empty(parameters('storageOuPath'))), 'true', 'false')]",
     "varCreateOuForStorageString": "[string(parameters('createOuForStorage'))]",
-    "allDnsServers": "[format('{0},168.63.129.16', parameters('customDnsIps'))]",
-    "varDnsServers": "[if(equals(parameters('customDnsIps'), 'none'), createArray(), split(variables('allDnsServers'), ','))]",
+    "varAllDnsServers": "[format('{0},168.63.129.16', parameters('customDnsIps'))]",
+    "varDnsServers": "[if(empty(parameters('customDnsIps')), createArray(), split(variables('varAllDnsServers'), ','))]",
     "varCreateAvdFslogixDeployment": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), false(), parameters('createAvdFslogixDeployment'))]",
     "varAvdApplicationGroupIdentitiesIds": "[if(not(empty(parameters('avdApplicationGroupIdentitiesIds'))), split(parameters('avdApplicationGroupIdentitiesIds'), ','), createArray())]",
     "varCreateAvdVnetPeering": "[if(not(empty(parameters('existingHubVnetResourceId'))), true(), false())]",
