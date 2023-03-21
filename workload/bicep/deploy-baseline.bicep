@@ -1034,7 +1034,6 @@ module deployManagedIdentitiesRoleAssign 'avd-modules/avd-identity.bicep' = {
         avdServiceObjectsRgName: varAvdServiceObjectsRgName
         avdStorageObjectsRgName: varAvdStorageObjectsRgName
         avdWorkloadSubsId: avdWorkloadSubsId
-        createStartVmOnConnectCustomRole: createStartVmOnConnectCustomRole
         storageManagedIdentityName: varStorageManagedIdentityName
         readerRoleId: varReaderRoleId
         enableStartVmOnConnect: avdStartVmOnConnect
