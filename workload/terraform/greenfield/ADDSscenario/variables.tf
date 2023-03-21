@@ -245,64 +245,18 @@ variable "avdshared_subscription_id" {
   description = "Spoke Subscription id"
 }
 
-variable "file_name" {
-  description = "The name of the PowerShell script that the CustomScriptExtention runs"
+variable "host_pool_log_categories" {
+  description = "value of the log categories to be enabled for the host pool"
 }
 
-variable "file_url" {
-  description = "The URL for the file_name"
+variable "dag_log_categories" {
+  description = "value of the log categories to be enabled for the host pool"
 }
 
-variable "dsc_path" {
-  description = "Path to download the dsc script from"
+variable "ws_log_categories" {
+  description = "value of the log categories to be enabled for the host pool"
 }
 
-variable "id_provider" {
-  description = "The Identity Provider for FsLogix."
-  validation {
-    condition     = contains(["ADDS", "AAD, AADDS"], var.id_provider)
-    error_message = "Valid values are ADDS, AAD or AADDS."
-  }
-}
-
-variable "azure_cloud_environment" {
-  description = "The Azure Cloud Environment"
-  validation {
-    condition     = contains(["AzureCloud", "AzureGovCloud"], var.azure_cloud_environment)
-    error_message = "Valid values are AzureCloud or AzureGovCloud."
-  }
-}
-
-variable "domain_admin_user" {
-  description = "The name of the user to join the FSLogix Storage Account to the domain. Format: User@domain.TLD"
-}
-
-variable "domain_admin_password" {
-  description = "The password of the user to join the FsLogix Storage Account to the domain. "
-}
-
-variable "custom_ou" {
-  description = "If false, the storage account will be joined to the default computer OU"
-  default     = "true"
-  validation {
-    condition     = contains(["true", "false"], var.custom_ou)
-    error_message = "Valid values: true or false."
-
-  }
-}
-
-variable "create_new_ou" {
-  description = "If true, the OU in the OU_name variable will be created"
-  default     = "false"
-  validation {
-    condition     = contains(["true", "false"], var.create_new_ou)
-    error_message = "Valid values: true or false."
-  }
-}
-
-variable "fslogix_sharename" {
-  description = "The name of the FsLogix File share name"
-}
 
 variable "hub_dns_zone_rg" {
   description = "The resource group for the hub DNS zone"

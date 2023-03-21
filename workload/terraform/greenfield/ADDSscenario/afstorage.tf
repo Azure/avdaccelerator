@@ -11,12 +11,7 @@ resource "azurerm_storage_account" "storage" {
   account_kind              = "FileStorage"
   enable_https_traffic_only = true
   tags                      = local.tags
-
-  network_rules {
-    default_action = "Deny"
-    bypass         = ["AzureServices", "Metrics", "Logging"]
-    ip_rules       = local.allow_list_ip
-  }
+  provider                  = azurerm.spoke
 
   identity {
     type = "SystemAssigned"
@@ -28,8 +23,24 @@ resource "azurerm_storage_share" "FSShare" {
   quota                = "100"
   enabled_protocol     = "SMB"
   storage_account_name = azurerm_storage_account.storage.name
+
+  depends_on = [
+    azurerm_storage_account.storage
+  ]
 }
 
+
+# Deny Traffic from Public Networks with white list exceptions
+resource "azurerm_storage_account_network_rules" "stfw" {
+  storage_account_id = azurerm_storage_account.storage.id
+  default_action     = "Deny"
+  bypass             = ["AzureServices", "Metrics", "Logging"]
+  ip_rules           = local.allow_list_ip
+
+  depends_on = [azurerm_storage_share.FSShare,
+    azurerm_private_endpoint.afpe,
+  azurerm_role_assignment.af_role]
+}
 
 ## Azure built-in roles
 ## https://docs.microsoft.com/azure/role-based-access-control/built-in-roles
@@ -49,13 +60,18 @@ data "azurerm_private_dns_zone" "pe-filedns-zone" {
   resource_group_name = var.hub_dns_zone_rg
   provider            = azurerm.hub
 }
+
 resource "azurerm_private_endpoint" "afpe" {
   name                = "pe-${local.storage_name}-file"
   location            = azurerm_resource_group.rg_storage.location
   resource_group_name = azurerm_resource_group.rg_storage.name
   subnet_id           = data.azurerm_subnet.subnet.id
   tags                = local.tags
+  provider            = azurerm.spoke
 
+  depends_on = [
+    azurerm_storage_share.FSShare
+  ]
   lifecycle { ignore_changes = [tags] }
 
   private_service_connection {
@@ -63,6 +79,7 @@ resource "azurerm_private_endpoint" "afpe" {
     private_connection_resource_id = azurerm_storage_account.storage.id
     is_manual_connection           = false
     subresource_names              = ["file"]
+
   }
   private_dns_zone_group {
     name                 = "dns-file-${var.prefix}"
@@ -72,10 +89,11 @@ resource "azurerm_private_endpoint" "afpe" {
 
 # Linking DNS Zone to the existing DNS Zone in the Hub VNET
 resource "azurerm_private_dns_zone_virtual_network_link" "filelink" {
-  name                  = "azfilelink"
+  name                  = "azfilelink-${var.prefix}"
   resource_group_name   = var.hub_dns_zone_rg
   private_dns_zone_name = data.azurerm_private_dns_zone.pe-filedns-zone.name
   virtual_network_id    = data.azurerm_virtual_network.vnet.id
+  provider              = azurerm.hub
 
   lifecycle { ignore_changes = [tags] }
 }

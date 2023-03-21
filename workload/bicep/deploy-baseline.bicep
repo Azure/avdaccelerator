@@ -115,7 +115,7 @@ param avdVnetworkAddressPrefixes string = '10.10.0.0/23'
 param avdVnetworkSubnetAddressPrefix string = '10.10.0.0/23'
 
 @description('Optional. custom DNS servers IPs.')
-param customDnsIps string = 'none'
+param customDnsIps string = ''
 
 @description('Optional. Use Azure private DNS zones for private endpoints. (Default: false)')
 param avdVnetPrivateDnsZone bool = false
@@ -620,7 +620,7 @@ var varAvdScalingPlanSchedules = [
         rampDownCapacityThresholdPct: 90
         rampDownForceLogoffUsers: true
         rampDownLoadBalancingAlgorithm: 'DepthFirst'
-        rampDownMinimumHostsPct: 10
+        rampDownMinimumHostsPct: 0 //10
         rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
         rampDownStartTime: {
             hour: 18
@@ -655,7 +655,7 @@ var varAvdScalingPlanSchedules = [
         rampDownCapacityThresholdPct: 90
         rampDownForceLogoffUsers: true
         rampDownLoadBalancingAlgorithm: 'DepthFirst'
-        rampDownMinimumHostsPct: 5
+        rampDownMinimumHostsPct: 0
         rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
         rampDownStartTime: {
             hour: 16
@@ -665,7 +665,7 @@ var varAvdScalingPlanSchedules = [
         rampDownWaitTimeMinutes: 30
         rampUpCapacityThresholdPct: 90
         rampUpLoadBalancingAlgorithm: 'DepthFirst'
-        rampUpMinimumHostsPct: 5
+        rampUpMinimumHostsPct: 0
         rampUpStartTime: {
             hour: 9
             minute: 0
@@ -755,8 +755,8 @@ var varDefaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? 'AADDC C
 var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
 //var varStorageToDomainScriptArgs = '-DscPath ${varDscAgentPackageLocation} -StorageAccountName ${varAvdFslogixStorageName} -StorageAccountRG ${varAvdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -IdentityServiceProvider ${avdIdentityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -CustomOuPath ${varStorageCustomOuPath} -OUName ${varOuStgPath} -CreateNewOU ${varCreateOuForStorageString} -ShareName ${varFslogixFileShareName} -ClientId ${deployManagedIdentitiesRoleAssign.outputs.managedIdentityClientId} -Verbose'
 var varCreateOuForStorageString = string(createOuForStorage)
-var allDnsServers = '${customDnsIps},168.63.129.16'
-var varDnsServers = (customDnsIps == 'none') ? []: (split(allDnsServers, ','))
+var varAllDnsServers = '${customDnsIps},168.63.129.16'
+var varDnsServers = empty(customDnsIps) ? []: (split(varAllDnsServers, ','))
 var varCreateAvdFslogixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: createAvdFslogixDeployment
 var varCreateMsixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: createMsixDeployment
 var varCreateStorageDeployment = (varCreateAvdFslogixDeployment||varCreateMsixDeployment == true) ? true: false
@@ -1007,7 +1007,7 @@ module avdManagementPLane 'avd-modules/avd-management-plane.bicep' = {
         avdPersonalAssignType: avdPersonalAssignType
         avdManagementPlaneLocation: avdManagementPlaneLocation
         avdServiceObjectsRgName: varAvdServiceObjectsRgName
-        avdStartVmOnConnect: avdStartVmOnConnect
+        avdStartVmOnConnect: (avdHostPoolType == 'Pooled') ? avdDeployScalingPlan:  avdStartVmOnConnect
         avdWorkloadSubsId: avdWorkloadSubsId
         avdIdentityServiceProvider: avdIdentityServiceProvider
         avdApplicationGroupIdentitiesIds: varAvdApplicationGroupIdentitiesIds
