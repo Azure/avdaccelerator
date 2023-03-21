@@ -1144,7 +1144,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
     scope: resourceGroup('${avdWorkloadSubsId}', '${varAvdServiceObjectsRgName}')
 }
 
-// Storage.
+// FSLogix Storage.
 module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep' = if (varCreateAvdFslogixDeployment && avdDeploySessionHosts && (avdIdentityServiceProvider != 'AAD')) {
     name: 'Storage-Fslogix-Azure-Files-${time}'
     params: {
