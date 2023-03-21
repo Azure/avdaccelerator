@@ -24,6 +24,12 @@ resource "azurerm_key_vault" "kv" {
   }
 }
 
+resource "azurerm_role_assignment" "keysp" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Secrets Officer"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
 resource "azurerm_key_vault_access_policy" "deploy" {
   key_vault_id = azurerm_key_vault.kv.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
@@ -80,10 +86,10 @@ resource "azurerm_key_vault_secret" "localpassword" {
 
 # Linking DNS Zone to the existing DNS Zone in the Hub VNET
 resource "azurerm_private_dns_zone_virtual_network_link" "vaultlink" {
-  name                  = "keydnsvnet_link"
+  name                  = "keydnsvnet_link-${var.prefix}"
   resource_group_name   = var.hub_dns_zone_rg
   private_dns_zone_name = data.azurerm_private_dns_zone.pe-vaultdns-zone.name
   virtual_network_id    = data.azurerm_virtual_network.vnet.id
-
+  provider              = azurerm.hub
   lifecycle { ignore_changes = [tags] }
 }
