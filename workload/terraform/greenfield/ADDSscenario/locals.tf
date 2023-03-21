@@ -1,5 +1,5 @@
 locals {
-  keyvault_name      = lower("kv-avd-${var.prefix}-${random_string.random.id}")
+  keyvault_name      = lower("kv-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${random_string.random.id}")
   storage_name       = lower(replace("stavd${var.prefix}${random_string.random.id}", "-", ""))
   allow_list_ip      = var.allow_list_ip
   white_list_ip      = ["0.0.0.0"]
@@ -10,4 +10,3 @@ locals {
     cm-resource-parent = azurerm_virtual_desktop_host_pool.hostpool.id
   }
 }
-
