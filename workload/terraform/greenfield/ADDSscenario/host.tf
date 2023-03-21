@@ -19,10 +19,11 @@ resource "random_string" "AVD_local_password" {
 }
 
 resource "azurerm_network_interface" "avd_vm_nic" {
-  count               = var.rdsh_count
-  name                = "${var.prefix}-${count.index + 1}-nic"
-  resource_group_name = azurerm_resource_group.shrg.name
-  location            = azurerm_resource_group.shrg.location
+  count                         = var.rdsh_count
+  name                          = "${var.prefix}-${count.index + 1}-nic"
+  resource_group_name           = azurerm_resource_group.shrg.name
+  location                      = azurerm_resource_group.shrg.location
+  enable_accelerated_networking = true
 
   ip_configuration {
     name                          = "nic${count.index + 1}_config"
@@ -57,7 +58,7 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   availability_set_id        = azurerm_availability_set.aset.id
   admin_username             = var.local_admin_username
   admin_password             = azurerm_key_vault_secret.localpassword.value
-  encryption_at_host_enabled = true
+  encryption_at_host_enabled = true //'Microsoft.Compute/EncryptionAtHost' feature is must be enabled in the subscription for this setting to work https://learn.microsoft.com/en-us/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell
   tags                       = local.tags
   os_disk {
     name                 = "${lower(var.prefix)}-${count.index + 1}"
