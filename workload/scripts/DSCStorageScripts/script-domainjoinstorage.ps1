@@ -31,8 +31,8 @@ param(
 	[string] $CustomOuPath,
 
 	[Parameter(Mandatory = $true)]
-      [ValidateNotNullOrEmpty()]
-      [string] $IdentityServiceProvider,
+    [ValidateNotNullOrEmpty()]
+    [string] $IdentityServiceProvider,
 
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
@@ -46,9 +46,9 @@ param(
 	[ValidateNotNullOrEmpty()]
 	[string] $CreateNewOU,
 
-      [Parameter(Mandatory = $true)]
-      [ValidateNotNullOrEmpty()]
-      [string] $StoragePurpose,
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $StoragePurpose,
 
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
