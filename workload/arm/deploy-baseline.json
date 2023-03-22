@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "12405708077332499918"
+      "templateHash": "2293938517208714189"
     }
   },
   "parameters": {
@@ -392,19 +392,27 @@
         "description": "Optional. Sets the number of update domains for the availability set. (Defualt: 5)"
       }
     },
-    "fslogixStorageSku": {
+    "fslogixStoragePerformance": {
       "type": "string",
-      "defaultValue": "Premium_LRS",
+      "defaultValue": "Premium",
       "metadata": {
-        "description": "Optional. Storage account SKU for FSLogix storage. Recommended tier is Premium LRS or Premium ZRS. (when available) (Defualt: Premium_LRS)"
-      }
+        "description": "Optional. Storage account SKU for FSLogix storage. Recommended tier is Premium (Defualt: Premium)"
+      },
+      "allowedValues": [
+        "Standard",
+        "Premium"
+      ]
     },
-    "msixStorageSku": {
+    "msixStoragePerformance": {
       "type": "string",
-      "defaultValue": "Premium_LRS",
+      "defaultValue": "Premium",
       "metadata": {
-        "description": "Optional. Storage account SKU for MSIX storage. Recommended tier is Premium LRS or Premium ZRS. (when available) (Defualt: Premium_LRS) test"
-      }
+        "description": "Optional. Storage account SKU for MSIX storage. Recommended tier is Premium. (Defualt: Premium)"
+      },
+      "allowedValues": [
+        "Standard",
+        "Premium"
+      ]
     },
     "encryptionAtHost": {
       "type": "bool",
@@ -707,7 +715,7 @@
       "type": "string",
       "defaultValue": "msix-pc-app1-001",
       "metadata": {
-        "description": "Optional. FSLogix file share name. (Default: fslogix-pc-app1-001)"
+        "description": "Optional. MSIX file share name. (Default: fslogix-pc-app1-001)"
       }
     },
     "avdWrklKvPrefixCustomName": {
@@ -994,6 +1002,8 @@
     "varAvdSessionHostNamePrefix": "[if(parameters('avdUseCustomNaming'), parameters('avdSessionHostCustomNamePrefix'), format('vm-avd-{0}', variables('varDeploymentPrefixLowercase')))]",
     "varAvdAvailabilitySetNamePrefix": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('avdAvailabilitySetCustomNamePrefix'), variables('varAvdSessionHostLocationAcronym'), variables('varDeploymentPrefixLowercase')), format('avail-avd-{0}-{1}', variables('varAvdSessionHostLocationAcronym'), variables('varDeploymentPrefixLowercase')))]",
     "varStorageManagedIdentityName": "[format('id-avd-storage-{0}-{1}', variables('varAvdSessionHostLocationAcronym'), variables('varDeploymentPrefixLowercase'))]",
+    "varFslogixStorageSku": "[if(parameters('avdUseAvailabilityZones'), format('{0}_ZRS', parameters('fslogixStoragePerformance')), format('{0}_LRS', parameters('fslogixStoragePerformance')))]",
+    "varMsixStorageSku": "[if(parameters('avdUseAvailabilityZones'), format('{0}_ZRS', parameters('msixStoragePerformance')), format('{0}_LRS', parameters('msixStoragePerformance')))]",
     "varManagementVmName": "[format('vm-mgmt-{0}', variables('varDeploymentPrefixLowercase'))]",
     "varAvdAlaWorkspaceName": "[if(parameters('avdUseCustomNaming'), parameters('avdAlaWorkspaceCustomName'), format('log-avd-{0}', variables('varAvdManagementPlaneLocationAcronym')))]",
     "varStgAccountForFlowLogsName": "[if(parameters('avdUseCustomNaming'), format('{0}{1}flowlogs{2}', parameters('storageAccountPrefixCustomName'), variables('varDeploymentPrefixLowercase'), variables('varAvdNamingUniqueStringSixChar')), format('stavd{0}flowlogs{1}', variables('varDeploymentPrefixLowercase'), variables('varAvdNamingUniqueStringSixChar')))]",
@@ -22319,9 +22329,9 @@
             "value": "[parameters('encryptionAtHost')]"
           },
           "storageManagedIdentityResourceId": "[if(variables('varCreateStorageDeployment'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.managedIdentityResourceId.value), createObject('value', ''))]",
-          "fileShareMultichannel": "[if(or(contains(parameters('fslogixStorageSku'), 'Premium_LRS'), contains(parameters('fslogixStorageSku'), 'Premium_ZRS')), createObject('value', true()), createObject('value', false()))]",
+          "fileShareMultichannel": "[if(equals(parameters('fslogixStoragePerformance'), 'Premium'), createObject('value', true()), createObject('value', false()))]",
           "storageSku": {
-            "value": "[parameters('fslogixStorageSku')]"
+            "value": "[variables('varFslogixStorageSku')]"
           },
           "marketPlaceGalleryWindowsManagementVm": {
             "value": "[variables('varMarketPlaceGalleryWindows')[parameters('avdOsImage')]]"
@@ -30011,9 +30021,9 @@
             "value": "[parameters('encryptionAtHost')]"
           },
           "storageManagedIdentityResourceId": "[if(variables('varCreateStorageDeployment'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time'))), '2020-10-01').outputs.managedIdentityResourceId.value), createObject('value', ''))]",
-          "fileShareMultichannel": "[if(or(contains(parameters('msixStorageSku'), 'Premium_LRS'), contains(parameters('msixStorageSku'), 'Premium_ZRS')), createObject('value', true()), createObject('value', false()))]",
+          "fileShareMultichannel": "[if(equals(parameters('msixStoragePerformance'), 'Premium'), createObject('value', true()), createObject('value', false()))]",
           "storageSku": {
-            "value": "[parameters('msixStorageSku')]"
+            "value": "[variables('varMsixStorageSku')]"
           },
           "marketPlaceGalleryWindowsManagementVm": {
             "value": "[variables('varMarketPlaceGalleryWindows')[parameters('avdOsImage')]]"
