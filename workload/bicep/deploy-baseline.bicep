@@ -188,11 +188,19 @@ param avdAsFaultDomainCount int = 2
 @description('Optional. Sets the number of update domains for the availability set. (Defualt: 5)')
 param avdAsUpdateDomainCount int = 5
 
-@description('Optional. Storage account SKU for FSLogix storage. Recommended tier is Premium LRS or Premium ZRS. (when available) (Defualt: Premium_LRS)')
-param fslogixStorageSku string = 'Premium_LRS'
+@allowed([
+    'Standard'
+    'Premium'
+])
+@description('Optional. Storage account SKU for FSLogix storage. Recommended tier is Premium (Defualt: Premium)')
+param fslogixStoragePerformance string = 'Premium'
 
-@description('Optional. Storage account SKU for MSIX storage. Recommended tier is Premium LRS or Premium ZRS. (when available) (Defualt: Premium_LRS) test')
-param msixStorageSku string = 'Premium_LRS'
+@allowed([
+    'Standard'
+    'Premium'
+])
+@description('Optional. Storage account SKU for MSIX storage. Recommended tier is Premium. (Defualt: Premium)')
+param msixStoragePerformance string = 'Premium'
 
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool = false
@@ -352,7 +360,7 @@ param storageAccountPrefixCustomName string = 'stavd'
 @description('Optional. FSLogix file share name. (Default: fslogix-pc-app1-001)')
 param fslogixFileShareCustomName string = 'fslogix-pc-app1-001'
 
-@description('Optional. FSLogix file share name. (Default: fslogix-pc-app1-001)')
+@description('Optional. MSIX file share name. (Default: fslogix-pc-app1-001)')
 param msixFileShareCustomName string = 'msix-pc-app1-001'
 
 //@maxLength(64)
@@ -362,8 +370,6 @@ param msixFileShareCustomName string = 'msix-pc-app1-001'
 @maxLength(6)
 @description('Optional. AVD keyvault prefix custom name. (Default: kv-avd)')
 param avdWrklKvPrefixCustomName string = 'kv-avd'
-
-
 
 //
 // Resource tagging
@@ -591,6 +597,8 @@ var varAvdSessionHostNamePrefix = avdUseCustomNaming ? avdSessionHostCustomNameP
 var varAvdAvailabilitySetNamePrefix = avdUseCustomNaming ? '${avdAvailabilitySetCustomNamePrefix}-${varAvdSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}' : 'avail-avd-${varAvdSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
 var varStorageManagedIdentityName = 'id-avd-storage-${varAvdSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
 var varAvdFslogixStorageName = createAvdFslogixDeployment ? deployAvdFslogixStorageAzureFiles.outputs.storageAccountName : ''
+var varFslogixStorageSku = avdUseAvailabilityZones ? '${fslogixStoragePerformance}_ZRS': '${fslogixStoragePerformance}_LRS'
+var varMsixStorageSku = avdUseAvailabilityZones ? '${msixStoragePerformance}_ZRS': '${msixStoragePerformance}_LRS'
 var varManagementVmName = 'vm-mgmt-${varDeploymentPrefixLowercase}'
 //var varAvdMsixStorageName = deployAvdMsixStorageAzureFiles.outputs.storageAccountName
 //var varAvdWrklStoragePrivateEndpointName = 'pe-stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}-file'
@@ -760,7 +768,6 @@ var varDnsServers = empty(customDnsIps) ? []: (split(varAllDnsServers, ','))
 var varCreateAvdFslogixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: createAvdFslogixDeployment
 var varCreateMsixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: createMsixDeployment
 var varCreateStorageDeployment = (varCreateAvdFslogixDeployment||varCreateMsixDeployment == true) ? true: false
-
 var varAvdApplicationGroupIdentitiesIds = !empty(avdApplicationGroupIdentitiesIds) ? (split(avdApplicationGroupIdentitiesIds, ',')): []
 var varCreateAvdVnetPeering = !empty(existingHubVnetResourceId) ? true: false
 
@@ -1182,8 +1189,8 @@ module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bic
         workloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
         storageManagedIdentityResourceId: varCreateStorageDeployment ? deployManagedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
-        fileShareMultichannel: (contains(fslogixStorageSku, 'Premium_LRS') || contains(fslogixStorageSku, 'Premium_ZRS')) ? true : false
-        storageSku: fslogixStorageSku
+        fileShareMultichannel: (fslogixStoragePerformance == 'Premium') ? true : false
+        storageSku: varFslogixStorageSku
         marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows[avdOsImage]
         subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${varAvdVnetworkSubnetName}' : existingVnetSubnetResourceId
         useSharedImage: useSharedImage
@@ -1241,8 +1248,8 @@ module deployAvdMsixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep'
         workloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
         storageManagedIdentityResourceId: varCreateStorageDeployment ? deployManagedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
-        fileShareMultichannel: (contains(msixStorageSku, 'Premium_LRS') || contains(msixStorageSku, 'Premium_ZRS')) ? true : false
-        storageSku: msixStorageSku
+        fileShareMultichannel: (msixStoragePerformance == 'Premium') ? true : false
+        storageSku: varMsixStorageSku
         marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows[avdOsImage]
         subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${varAvdVnetworkSubnetName}' : existingVnetSubnetResourceId
         useSharedImage: useSharedImage
