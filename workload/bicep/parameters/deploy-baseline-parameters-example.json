@@ -137,11 +137,11 @@
         "avdAsUpdateDomainCount": {
             "value": 5
         },
-        "fslogixStorageSku": {
-            "value": "Premium_LRS"
+        "fslogixStoragePerformance": {
+            "value": "Premium"
         },
-        "msixStorageSku": {
-            "value": "Premium_LRS"
+        "msixStoragePerformance": {
+            "value": "Premium"
         },
         "encryptionAtHost": {
             "value": false
