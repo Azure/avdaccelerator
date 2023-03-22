@@ -555,7 +555,7 @@
                                     "name": "sessionHostsAvailabilitySettings",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "label": "Use availability zones",
-                                    "defaultValue": "No",
+                                    "defaultValue": "Yes",
                                     "toolTip": "Distribute compute resources across availability zones. If 'No' is selected then an availability set will be created to host the VMs.",
                                     "constraints": {
                                         "required": true,
@@ -1018,7 +1018,7 @@
                                     "visible": "[equals(steps('storage').storageMsix.msixDeployment, true)]",
                                     "label": "File share sku",
                                     "filter": true,
-                                    "defaultValue": "Premium_LRS",
+                                    "defaultValue": "Premium",
                                     "toolTip": "Storage account performance for MSIX App Attach storage. Recommended tier is Premium.",
                                     "constraints": {
                                         "required": true,
