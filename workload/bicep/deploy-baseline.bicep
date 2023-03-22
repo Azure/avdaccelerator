@@ -112,7 +112,7 @@ param existingHubVnetResourceId string = ''
 param avdVnetworkAddressPrefixes string = '10.10.0.0/23'
 
 @description('Optional. AVD virtual network subnet address prefix. (Default: 10.10.0.0/23)')
-param avdVnetworkSubnetAddressPrefix string = '10.10.0.0/23'
+param avdVnetworkSubnetAddressPrefix string = '10.10.0.0/24'
 
 @description('Optional. custom DNS servers IPs.')
 param customDnsIps string = ''
