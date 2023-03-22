@@ -1111,7 +1111,7 @@
                             "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                             "label": "Subnet address prefix",
                             "toolTip": "Virtual network subnet for AVD virtual machines",
-                            "placeholder": "Example: 10.10.0.0/23",
+                            "placeholder": "Example: 10.10.0.0/24",
                             "constraints": {
                                 "required": true,
                                 "regex": "^(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(?:\/(1[0-9]|2[0-4]))$",
