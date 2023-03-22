@@ -951,30 +951,20 @@
                                     "visible": "[equals(steps('storage').storageFslogix.fslogixDeployment, true)]",
                                     "label": "File share sku",
                                     "filter": true,
-                                    "defaultValue": "Premium_LRS",
-                                    "toolTip": "Storage account SKU for FSLogix storage. Recommended tier is Premium_ZRS when available otherwise Premium_LRS.",
+                                    "defaultValue": "Premium",
+                                    "toolTip": "Storage account performance for FSLogix storage. Recommended tier is Premium.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Premium_LRS",
+                                                "label": "Premium",
                                                 "description": "",
-                                                "value": "Premium_LRS"
+                                                "value": "Premium"
                                             },
                                             {
-                                                "label": "Premium_ZRS (When available)",
+                                                "label": "Standard",
                                                 "description": "",
-                                                "value": "Premium_ZRS"
-                                            },
-                                            {
-                                                "label": "Standard_LRS",
-                                                "description": "",
-                                                "value": "Standard_LRS"
-                                            },
-                                            {
-                                                "label": "Standard_ZRS (When available)",
-                                                "description": "",
-                                                "value": "Standard_ZRS"
+                                                "value": "Standard"
                                             }
                                         ]
                                     }
@@ -1029,29 +1019,19 @@
                                     "label": "File share sku",
                                     "filter": true,
                                     "defaultValue": "Premium_LRS",
-                                    "toolTip": "Storage account SKU for MSIX App Attach storage. Recommended tier is Premium_ZRS when available otherwise Premium_LRS.",
+                                    "toolTip": "Storage account performance for MSIX App Attach storage. Recommended tier is Premium.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Premium_LRS",
+                                                "label": "Premium",
                                                 "description": "",
-                                                "value": "Premium_LRS"
+                                                "value": "Premium"
                                             },
                                             {
-                                                "label": "Premium_ZRS (When available)",
+                                                "label": "Standard",
                                                 "description": "",
-                                                "value": "Premium_ZRS"
-                                            },
-                                            {
-                                                "label": "Standard_LRS",
-                                                "description": "",
-                                                "value": "Standard_LRS"
-                                            },
-                                            {
-                                                "label": "Standard_ZRS (When available)",
-                                                "description": "",
-                                                "value": "Standard_ZRS"
+                                                "value": "Standard"
                                             }
                                         ]
                                     }
@@ -2258,9 +2238,7 @@
                 "createAvdVnet": "[steps('network').createAvdVirtualNetwork]",
                 "avdVnetworkAddressPrefixes": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkSize, '10.10.0.0/23')]",
                 "avdVnetworkSubnetAddressPrefix": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkSubnetSize, '10.10.0.0/23')]",
-
                 "customDnsIps": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkDns, '')]",
-                
                 "existingHubVnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.existingHubVirtualNetwork, '')]",
                 "vNetworkGatewayOnHub": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.hubVirtualNetworkGateway, false)]",
                 "existingVnetSubnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, false), steps('network').virtualNetworkSubnetSelectorName, 'none')]",
@@ -2283,10 +2261,10 @@
                 "avdVnetPrivateDnsZoneFilesId": "[if(equals(steps('network').virtualNetworkPrivateDnsZone, true), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneFilesSelector.id, '')]",
                 "avdVnetPrivateDnsZoneKeyvaultId": "[if(equals(steps('network').virtualNetworkPrivateDnsZone, true), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneKeyvaultSelector.id, '')]",
                 "createAvdFslogixDeployment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), false, steps('storage').storageFslogix.fslogixDeployment)]",
-                "fslogixStorageSku": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.fslogixStorageAccountSku, 'Standard_LRS')]",
+                "fslogixStoragePerformance": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.fslogixStorageAccountSku, 'Standard_LRS')]",
                 "avdFslogixFileShareQuotaSize": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.sessionHostsFslogixFileShareQuota, 1 )]",
                 "createMsixDeployment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), false, steps('storage').storageMsix.msixDeployment)]",
-                "msixStorageSku": "[if(equals(steps('storage').storageMsix.msixDeployment, true), steps('storage').storageMsix.msixStorageAccountSku, 'Standard_LRS')]",
+                "msixStoragePerformance": "[if(equals(steps('storage').storageMsix.msixDeployment, true), steps('storage').storageMsix.msixStorageAccountSku, 'Standard_LRS')]",
                 "msixFileShareQuotaSize": "[if(equals(steps('storage').storageMsix.msixDeployment, true), steps('storage').storageMsix.sessionHostsMsixFileShareQuota, 1 )]",
                 "storageOuPath": "[steps('storage').storageGeneralSettings.identityDomainOuPathStorageExisting]",
                 "avdUseCustomNaming": "[steps('resourceNaming').resourceNamingSelection]",

@@ -47,10 +47,10 @@
   - **OS version or image** - Choose the OS version or desired image from the Azure compute gallery.
 - **Storage** blade
   - **Use FSLogix profile management**: Deploys FSLogix containers and session host setup for user's profiles.
-  - **FSLogix Azure Files share SKU** - Select the desired SKU based on the availability required.
+  - **FSLogix Azure Files share Performance** - Select the desired performance.
   - **FSLogix file share size** Choose the desired size in 100GB increments. Minimum size is 100GB.
   - **Use MSIX App Attach**: Deploys MSIX App Attach container for MSIX app packages.
-  - **MSIX App Attach Azure Files share SKU** - Select the desired SKU based on the availability required.
+  - **MSIX App Attach Azure Files share Performance** - Select the desired performance.
   - **MSIX App Attach file share size** Choose the desired size in 100GB increments. Minimum size is 100GB.
 - **Network connectivity** blade
   - **New** - Select if you want to create a new VNet to be used for session hosts.
