@@ -11,6 +11,12 @@ param(
 	[string]$FileShareName,
 	
 	[Parameter(Mandatory)]
+	[int]$QuotaIncreaseAmountInGb,
+
+	[Parameter(Mandatory)]
+	[int]$QuotaIncreaseThresholdInGb,
+
+	[Parameter(Mandatory)]
 	[string]$StorageAccountName,
 
 	[Parameter(Mandatory)]
@@ -42,21 +48,21 @@ Write-Output "[$StorageAccountName] [$FileShareName] Share Usage: $([math]::Roun
 $StorageAccount = Get-AzStorageAccount -ResourceGroupName $StorageAccountResourceGroupName -AccountName $StorageAccountName
 
 
-# No scaling if no usage
+# No increase if no usage
 if($UsedCapacity -eq 0)
 {
 	Write-Output "[$StorageAccountName] [$FileShareName] Share Usage is 0GB. No Changes."
 }
-# Increases share quota by 100GB if less than 100GB remains on the share
+# Increase file share quota
 else
 {
-	if (($ProvisionedCapacity - ($UsedCapacity / ([Math]::Pow(2,30)))) -lt 100) {
-		Write-Output "[$StorageAccountName] [$FileShareName] Share Usage has surpassed the Share Quota remaining threshold of 100GB. Increasing the file share quota by 100GB." 
-		$Quota = $ProvisionedCapacity + 100
+	if (($ProvisionedCapacity - ($UsedCapacity / ([Math]::Pow(2,30)))) -lt $QuotaIncreaseThresholdInGb) {
+		Write-Output "[$StorageAccountName] [$FileShareName] Share Usage has surpassed the Share Quota remaining threshold of $($QuotaIncreaseThresholdInGb)GB. Increasing the file share quota by $($QuotaIncreaseAmountInGb)GB." 
+		$Quota = $ProvisionedCapacity + $QuotaIncreaseAmountInGb
 		Update-AzRmStorageShare -StorageAccount $StorageAccount -Name $FileShareName -QuotaGiB $Quota | Out-Null
 		Write-Output "[$StorageAccountName] [$FileShareName] New Capacity: $($Quota)GB"
 	}
 	else {
-		Write-Output "[$StorageAccountName] [$FileShareName] Share Usage is below Share Quota remaining threshold of 100GB. No Changes."
+		Write-Output "[$StorageAccountName] [$FileShareName] Share Usage is below Share Quota remaining threshold of $($QuotaIncreaseThresholdInGb)GB. No Changes."
 	}
 }
