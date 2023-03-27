@@ -183,7 +183,6 @@ var varCommonResourceTags = enableResourceTags ? {
   Owner: ownerTag
   CostCenter: costCenterTag
   Environment: environmentTag
-
 } : {}
 var varExistingAutomationAccountName = empty(existingAutomationAccountResourceId) ? '' : split(existingAutomationAccountResourceId, '/')[8]
 var varExistingAutomationAccountResourceGroupName = empty(existingAutomationAccountResourceId) ? '' :  split(existingAutomationAccountResourceId, '/')[4]
@@ -248,7 +247,6 @@ var varLocationLowercase = toLower(deploymentLocation)
 var varLogAnalyticsWorkspaceName = customNaming ? logAnalyticsWorkspaceCustomName : 'log-avd-${varNamingStandard}'
 var varNamingStandard = '${varLocationAcronym}'
 var varResourceGroupName = customNaming ? resourceGroupCustomName : 'rg-avd-${varNamingStandard}-shared-services'
-
 var varRunbookName = 'Auto-Increase-Premium-File-Share-Quota'
 var varScheduleName = '${varStorageAccountName}_${varFileShareName}_'
 var varStorageAccountName = split(fileShareResourceId, '/')[8]
@@ -313,7 +311,6 @@ var varTimeZones = {
     westus3: 'Mountain Standard Time'
 }
 
-
 // =========== //
 // Deployments //
 // =========== //
@@ -368,6 +365,7 @@ module workspaceWait '../../../../carml/1.0.0/Microsoft.Resources/deploymentScri
   ]
 }
 
+// Get existing automation account
 module automationAccount_Existing 'modules/existingAutomationAccount.bicep' = if(!(empty(existingAutomationAccountResourceId))) {
   name: 'Existing_Automation-Account_${time}'
   scope: resourceGroup(sharedServicesSubscriptionId, varAutomationAccountScope)
@@ -376,6 +374,7 @@ module automationAccount_Existing 'modules/existingAutomationAccount.bicep' = if
   }
 }
 
+// Deploy new automation account
 module automationAccount_New '../../../../carml/1.2.1/Microsoft.Automation/automationAccounts/deploy.bicep' = {
   scope: resourceGroup(sharedServicesSubscriptionId, varAutomationAccountScope)
   name: 'Automation-Account_${time}'
@@ -460,6 +459,7 @@ module automationAccount_New '../../../../carml/1.2.1/Microsoft.Automation/autom
   }
 }
 
+// Role assignment
 module roleAssignments '../../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = {
   name: 'Role-Assignment_${time}'
   scope: resourceGroup(varStorageAccountSubscriptionId, varStorageAccountResourceGroupName)
@@ -470,6 +470,7 @@ module roleAssignments '../../../../carml/1.2.0/Microsoft.Authorization/roleAssi
   }
 }
 
+// Alerts action group
 module actionGroup '../../../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bicep' = if (enableMonitoringAlerts) {
   scope: resourceGroup(sharedServicesSubscriptionId, varResourceGroupName)
   name: 'Action-Group_${time}'
@@ -492,6 +493,7 @@ module actionGroup '../../../../carml/1.0.0/Microsoft.Insights/actionGroups/depl
   ]
 }
 
+// Scheduled query rules
 module scheduledQueryRules '../../../../carml/1.2.1/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(varAlerts)): if (enableMonitoringAlerts) {
   scope: resourceGroup(sharedServicesSubscriptionId, varResourceGroupName)
   name: 'Scheduled-Query-Rule_${i}_${time}'
