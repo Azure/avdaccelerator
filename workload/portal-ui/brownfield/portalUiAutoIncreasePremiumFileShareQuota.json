@@ -31,7 +31,8 @@
                             "type": "Microsoft.Common.ResourceScope",
                             "location": {
                                 "resourceTypes": [
-                                    "Microsoft.Storage/storageAccounts/fileServices/shares"
+                                    "Microsoft.Automation/automationAccounts",
+                                    "Microsoft.OperationalInsights/workspaces"
                                 ]
                             }
                         },
@@ -46,8 +47,7 @@
                             },
                             "options": {
                                 "filter": {
-                                    "subscription": "onBasics",
-                                    "location": "onBasics"
+                                    "subscription": "onBasics"
                                 }
                             }
                         },
