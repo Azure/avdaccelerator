@@ -31,7 +31,6 @@
                             "type": "Microsoft.Common.ResourceScope",
                             "location": {
                                 "resourceTypes": [
-                                    "Microsoft.Storage/storageAccounts",
                                     "Microsoft.Automation/automationAccounts",
                                     "Microsoft.OperationalInsights/workspaces"
                                 ]
