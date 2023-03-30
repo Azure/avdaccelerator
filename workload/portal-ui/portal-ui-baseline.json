@@ -555,7 +555,7 @@
                                     "name": "sessionHostsAvailabilitySettings",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "label": "Use availability zones",
-                                    "defaultValue": "No",
+                                    "defaultValue": "Yes",
                                     "toolTip": "Distribute compute resources across availability zones. If 'No' is selected then an availability set will be created to host the VMs.",
                                     "constraints": {
                                         "required": true,
@@ -600,94 +600,6 @@
                                     "toolTip": "Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU.",
                                     "placeholder": "Example: OU=session-hosts,OU=avd,DC=contoso,DC=com",
                                     "constraints": {}
-                                },
-                                {
-                                    "name": "fslogixDeploymentDisabledAad",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
-                                    "options": {
-                                        "text": "FSLogix for Azure AD joined session hosts is currently not globally available (GA).",
-                                        "style": "Info"
-                                    }
-                                },
-                                {
-                                    "name": "fslogixDeployment",
-                                    "type": "Microsoft.Common.OptionsGroup",
-                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
-                                    "label": "Use FSLogix profile management",
-                                    "defaultValue": "Yes",
-                                    "toolTip": "Deploys FSLogix containers and session host setup for user's profiles.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes",
-                                                "value": true
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": false
-                                            }
-                                        ]
-                                    }
-                                },	
-                                {
-                                    "name": "identityDomainOuPathStorageExisting",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "visible": "[equals(steps('sessionHosts').sessionHostsComputeStorageSection.fslogixDeployment, true)]",
-                                    "label": "Existing storage OU path (Optional)",
-                                    "toolTip": "Provide OU where to locate storage account file share, if not provided session hosts will be placed on the default (computers) OU.",
-                                    "placeholder": "Example: OU=storage,OU=avd,DC=contoso,DC=com",
-                                    "constraints": {}
-                                },
-                                {
-                                    "name": "storageAccountSku",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "visible": "[equals(steps('sessionHosts').sessionHostsComputeStorageSection.fslogixDeployment, true)]",
-                                    "label": "File share sku",
-                                    "filter": true,
-                                    "defaultValue": "Premium_LRS",
-                                    "toolTip": "Storage account SKU for FSLogix storage. Recommended tier is Premium_ZRS when avaiable otherwise Premium_LRS.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Premium_LRS",
-                                                "description": "",
-                                                "value": "Premium_LRS"
-                                            },
-                                            {
-                                                "label": "Premium_ZRS (When available)",
-                                                "description": "",
-                                                "value": "Premium_ZRS"
-                                            },
-                                            {
-                                                "label": "Standard_LRS",
-                                                "description": "",
-                                                "value": "Standard_LRS"
-                                            },
-                                            {
-                                                "label": "Standard_ZRS (When available)",
-                                                "description": "",
-                                                "value": "Standard_ZRS"
-                                            }
-                                        ]
-                                    }
-                                },
-                                {
-                                    "name": "sessionHostsFslogixFileShareQuota",
-                                    "type": "Microsoft.Common.Slider",
-                                    "visible": "[equals (steps('sessionHosts').sessionHostsComputeStorageSection.fslogixDeployment, true)]",
-                                    "label": "File share size",
-                                    "subLabel": "x 100GB",
-                                    "toolTip": "Size of Azure File share quota, the maximum sizes are 5TB for standard SKU and 100TB for premium SKU",
-                                    "min": 1,
-                                    "max": 100,
-                                    "defaultValue": 1,
-                                    "showStepMarkers": true,
-                                    "constraints": {
-                                        "required": true
-                                    }
                                 }
                             ]
                         },
@@ -969,6 +881,181 @@
                     ]
                 },
                 {
+                    "name": "storage",
+                    "label": "Storage",
+                    "elements": [
+                        {
+                            "name": "StorageDeploymentLocationAndAvailability",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                            "options": {
+                                "text": "Storage resources will be deployed on the same location and with the same availability settings selected on the Session Hosts section.",
+                                "style": "Info"
+                            }
+                        },
+                        {
+                            "name": "StorageDeploymentDisabledAad",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
+                            "options": {
+                                "text": "FSLogix and MSIX app attach storage for Azure AD joined session hosts are currently not globally available (GA).",
+                                "style": "Info"
+                            }
+                        },
+                        {
+                            "name": "storageGeneralSettings",
+                            "type": "Microsoft.Common.Section",
+                            "label": "General settings:",
+                            "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                            "elements": [
+                                {
+                                    "name": "identityDomainOuPathStorageExisting",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                                    "label": "Custom OU path (Optional)",
+                                    "toolTip": "Provide OU where to locate storage account file share. If not provided, file share will be placed on the default (computers) OU.",
+                                    "placeholder": "Example: OU=storage,OU=avd,DC=contoso,DC=com",
+                                    "constraints": {}
+                                }
+                            ]
+                        },
+                        {
+                            "name": "storageFslogix",
+                            "type": "Microsoft.Common.Section",
+                            "label": "FSLogix settings:",
+                            "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                            "elements": [
+                                {
+                                    "name": "fslogixDeployment",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "label": "Use FSLogix profile management",
+                                    "defaultValue": "Yes",
+                                    "toolTip": "Deploys FSLogix containers and session host setup for user's profiles.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes",
+                                                "value": true
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": false
+                                            }
+                                        ]
+                                    }
+                                },	
+                                {
+                                    "name": "fslogixStorageAccountSku",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "visible": "[equals(steps('storage').storageFslogix.fslogixDeployment, true)]",
+                                    "label": "File share peformance",
+                                    "filter": true,
+                                    "defaultValue": "Premium",
+                                    "toolTip": "Storage account performance for FSLogix storage. Recommended tier is Premium.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Premium",
+                                                "description": "",
+                                                "value": "Premium"
+                                            },
+                                            {
+                                                "label": "Standard",
+                                                "description": "",
+                                                "value": "Standard"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "sessionHostsFslogixFileShareQuota",
+                                    "type": "Microsoft.Common.Slider",
+                                    "visible": "[equals (steps('storage').storageFslogix.fslogixDeployment, true)]",
+                                    "label": "File share size",
+                                    "subLabel": "x 100GB",
+                                    "toolTip": "Size of Azure File share quota, the maximum sizes are 5TB for standard SKU and 100TB for premium SKU",
+                                    "min": 1,
+                                    "max": 100,
+                                    "defaultValue": 1,
+                                    "showStepMarkers": true,
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "storageMsix",
+                            "type": "Microsoft.Common.Section",
+                            "label": "MSIX App Attach settings:",
+                            "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                            "elements": [
+                                {
+                                    "name": "msixDeployment",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "label": "Create MSIX App Attach storage",
+                                    "defaultValue": "No",
+                                    "toolTip": "Deploys MSIX App Attach containers and permissions setup.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes",
+                                                "value": true
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": false
+                                            }
+                                        ]
+                                    }
+                                },	
+                                {
+                                    "name": "msixStorageAccountSku",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "visible": "[equals(steps('storage').storageMsix.msixDeployment, true)]",
+                                    "label": "File share performance",
+                                    "filter": true,
+                                    "defaultValue": "Premium",
+                                    "toolTip": "Storage account performance for MSIX App Attach storage. Recommended tier is Premium.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Premium",
+                                                "description": "",
+                                                "value": "Premium"
+                                            },
+                                            {
+                                                "label": "Standard",
+                                                "description": "",
+                                                "value": "Standard"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "sessionHostsMsixFileShareQuota",
+                                    "type": "Microsoft.Common.Slider",
+                                    "visible": "[equals (steps('storage').storageMsix.msixDeployment, true)]",
+                                    "label": "File share size",
+                                    "subLabel": "x 100GB",
+                                    "toolTip": "Size of Azure File share quota, the maximum sizes are 5TB for standard SKU and 100TB for premium SKU",
+                                    "min": 1,
+                                    "max": 100,
+                                    "defaultValue": 1,
+                                    "showStepMarkers": true,
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
                     "name": "network",
                     "label": "Network connectivity",
                     "type": "Microsoft.Common.Section",
@@ -1024,7 +1111,7 @@
                             "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                             "label": "Subnet address prefix",
                             "toolTip": "Virtual network subnet for AVD virtual machines",
-                            "placeholder": "Example: 10.10.0.0/23",
+                            "placeholder": "Example: 10.10.0.0/24",
                             "constraints": {
                                 "required": true,
                                 "regex": "^(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(?:\/(1[0-9]|2[0-4]))$",
@@ -1133,7 +1220,7 @@
                                 {
                                     "name": "virtualNetworkPrivateDnsZoneFilesSelector",
                                     "type": "Microsoft.Solutions.ResourceSelector",
-                                    "visible": "[equals(steps('sessionHosts').sessionHostsComputeStorageSection.fslogixDeployment, true)]",
+                                    "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageMsix.msixDeployment, true))]",
                                     "label": "Azure files",
                                     "resourceType": "Microsoft.Network/privateDnsZones",
                                     "constraints": {
@@ -1143,7 +1230,7 @@
                                 {
                                     "name": "infoAzureFiles",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[equals(steps('sessionHosts').sessionHostsComputeStorageSection.fslogixDeployment, true)]",
+                                    "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageMsix.msixDeployment, true))]",
                                     "options": {
                                         "text": "Azure Files private DNS zone naming: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net",
                                         "style": "info"
@@ -1631,24 +1718,33 @@
                         {
                             "name": "resourceNamingStorage",
                             "type": "Microsoft.Common.Section",
-                            "label": "FSLogix storage naming:",
+                            "label": "Storage naming:",
                             "visible": "[equals(steps('resourceNaming').resourceNamingSelection, true)]",
                             "elements": [
                                 {
                                     "name": "resourceNamingStorageInfo1",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[equals(steps('sessionHosts').sessionHostsComputeStorageSection.fslogixDeployment, false)]",
+                                    "visible": "[equals(steps('storage').storageFslogix.fslogixDeployment, false)]",
                                     "options": {
-                                        "text": "Current deployment configuration is not creating storage (FSLogix) resources.",
+                                        "text": "Current deployment configuration is not creating storage resources for FSLogix.",
                                         "style": "Info"
                                     }
                                 },
                                 {
                                     "name": "resourceNamingStorageInfo2",
                                     "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('storage').storageMsix.msixDeployment, false)]",
+                                    "options": {
+                                        "text": "Current deployment configuration is not creating storage resources for MSIX App Attach.",
+                                        "style": "Info"
+                                    }
+                                },
+                                {
+                                    "name": "resourceNamingStorageInfo3",
+                                    "type": "Microsoft.Common.InfoBox",
                                     "visible": "[equals(steps('sessionHosts').deploySessionHosts, false)]",
                                     "options": {
-                                        "text": "Current deployment configuration is not creating storage (FSLogix) resources.",
+                                        "text": "Current deployment configuration is not creating storage resources.",
                                         "style": "Info"
                                     }
                                 },
@@ -1656,7 +1752,7 @@
                                     "name": "storageObjectsRgCustomName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Resource group",
-                                    "visible": "[equals(steps('sessionHosts').sessionHostsComputeStorageSection.fslogixDeployment, true)]",
+                                    "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageMsix.msixDeployment, true))]",
                                     "toolTip": "AVD storage resources (Storage account, file shares, files private endpoints, temporary domain join VM) resource group custom name.",
                                     "placeholder": "Example: rg-avd-use2-app1-storage",
                                     "constraints": {
@@ -1666,11 +1762,11 @@
                                     }
                                 },
                                 {
-                                    "name": "fslogixStorageCustomName",
+                                    "name": "storageAccountPrefixCustomName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Storage account prefix",
-                                    "visible": "[equals(steps('sessionHosts').sessionHostsComputeStorageSection.fslogixDeployment, true)]",
-                                    "toolTip": "AVD fslogix storage account prefix custom name.",
+                                    "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageMsix.msixDeployment, true))]",
+                                    "toolTip": "AVD storage account prefix custom name.",
                                     "placeholder": "Example: stavd",
                                     "constraints": {
                                         "required": true,
@@ -1679,12 +1775,25 @@
                                     }
                                 },
                                 {
-                                    "name": "fslogixProfileContainerFileShareCustomName",
+                                    "name": "fslogixFileShareCustomName",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Profile container file share",
-                                    "visible": "[equals(steps('sessionHosts').sessionHostsComputeStorageSection.fslogixDeployment, true)]",
+                                    "label": "FSLogix Profile container file share",
+                                    "visible": "[equals(steps('storage').storageFslogix.fslogixDeployment, true)]",
                                     "toolTip": "AVD fslogix storage account profile container file share prefix custom name.",
                                     "placeholder": "Example: fslogix-pc-app1-001",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
+                                        "validationMessage": "Value must be 1-64 characters."
+                                    }
+                                },
+                                {
+                                    "name": "msixFileShareCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "MSIX App Attach container file share",
+                                    "visible": "[equals(steps('storage').storageMsix.msixDeployment, true)]",
+                                    "toolTip": "AVD MSIX App Attach storage account container file share prefix custom name.",
+                                    "placeholder": "Example: msix-pc-app1-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -2129,9 +2238,7 @@
                 "createAvdVnet": "[steps('network').createAvdVirtualNetwork]",
                 "avdVnetworkAddressPrefixes": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkSize, '10.10.0.0/23')]",
                 "avdVnetworkSubnetAddressPrefix": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkSubnetSize, '10.10.0.0/23')]",
-
                 "customDnsIps": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkDns, '')]",
-                
                 "existingHubVnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.existingHubVirtualNetwork, '')]",
                 "vNetworkGatewayOnHub": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.hubVirtualNetworkGateway, false)]",
                 "existingVnetSubnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, false), steps('network').virtualNetworkSubnetSelectorName, 'none')]",
@@ -2153,10 +2260,13 @@
                 "avdVnetPrivateDnsZone": "[steps('network').virtualNetworkPrivateDnsZone]",
                 "avdVnetPrivateDnsZoneFilesId": "[if(equals(steps('network').virtualNetworkPrivateDnsZone, true), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneFilesSelector.id, '')]",
                 "avdVnetPrivateDnsZoneKeyvaultId": "[if(equals(steps('network').virtualNetworkPrivateDnsZone, true), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneKeyvaultSelector.id, '')]",
-                "createAvdFslogixDeployment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), false, steps('sessionHosts').sessionHostsComputeStorageSection.fslogixDeployment)]",
-                "fslogixStorageSku": "[if(equals(steps('sessionHosts').sessionHostsComputeStorageSection.fslogixDeployment, true), steps('sessionHosts').sessionHostsComputeStorageSection.storageAccountSku, 'Standard_LRS')]",
-                "avdFslogixFileShareQuotaSize": "[if(equals(steps('sessionHosts').sessionHostsComputeStorageSection.fslogixDeployment, true), steps('sessionHosts').sessionHostsComputeStorageSection.sessionHostsFslogixFileShareQuota, 1 )]",
-                "storageOuPath": "[steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPathStorageExisting]",
+                "createAvdFslogixDeployment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), false, steps('storage').storageFslogix.fslogixDeployment)]",
+                "fslogixStoragePerformance": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.fslogixStorageAccountSku, 'Standard')]",
+                "avdFslogixFileShareQuotaSize": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.sessionHostsFslogixFileShareQuota, 1 )]",
+                "createMsixDeployment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), false, steps('storage').storageMsix.msixDeployment)]",
+                "msixStoragePerformance": "[if(equals(steps('storage').storageMsix.msixDeployment, true), steps('storage').storageMsix.msixStorageAccountSku, 'Standard')]",
+                "msixFileShareQuotaSize": "[if(equals(steps('storage').storageMsix.msixDeployment, true), steps('storage').storageMsix.sessionHostsMsixFileShareQuota, 1 )]",
+                "storageOuPath": "[steps('storage').storageGeneralSettings.identityDomainOuPathStorageExisting]",
                 "avdUseCustomNaming": "[steps('resourceNaming').resourceNamingSelection]",
                 "avdServiceObjectsRgCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.serviceObjectsRgCustomName, 'none')]",
                 "avdNetworkObjectsRgCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingNetwork.networkObjectsRgCustomName, 'none')]",
@@ -2178,8 +2288,9 @@
                 "avdApplicationGroupCustomFriendlyNameRapp": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.applicationGroupCustomFriendlyNameRemoteApp, 'none')]",
                 "avdSessionHostCustomNamePrefix": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.sessionHostCustomNamePrefix, 'none')]",
                 "avdAvailabilitySetCustomNamePrefix": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.availabilitySetCustomNamePrefix, 'none')]",
-                "avdFslogixStoragePrefixCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.fslogixStorageCustomName, 'none')]",
-                "avdFslogixProfileContainerFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.fslogixProfileContainerFileShareCustomName, 'none')]",
+                "storageAccountPrefixCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.storageAccountPrefixCustomName, 'none')]",
+                "fslogixFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.fslogixFileShareCustomName, 'none')]",
+                "msixFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.msixFileShareCustomName, 'none')]",
                 "avdWrklKvPrefixCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.workloadKvCustomName, 'none')]",
                 "createResourceTags": "[steps('resourceTagging').resourceTaggingSelection]",
                 "workloadNameTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsWorkloadName, 'none')]",
