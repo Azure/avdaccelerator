@@ -53,21 +53,27 @@ param (
 	
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $DomainAdminUserPassword
+        [string] $DomainAdminUserPassword,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $StoragePurpose
 
 )
-
+        
 Write-Host "Downloading the DSCStorageScripts.zip from $DscPath"
 $DscArhive="DSCStorageScripts.zip"
-$appName = 'DSCStorageScripts'
+$appName = 'DSCStorageScripts-'+$StoragePurpose
 $drive = 'C:\Packages'
 New-Item -Path $drive -Name $appName -ItemType Directory -ErrorAction SilentlyContinue
-$LocalPath = "C:\Packages\DSCStorageScripts"
+
+Write-Host "Setting DSC local path to $LocalPath"
+$LocalPath = $drive+'\DSCStorageScripts-'+$StoragePurpose
 $OutputPath = $LocalPath + '\' + $DscArhive
 Invoke-WebRequest -Uri $DscPath -OutFile $OutputPath
 
 Write-Host "Expanding the archive $DscArchive" 
-Expand-Archive -LiteralPath 'C:\\Packages\\DSCStorageScripts\\DSCStorageScripts.zip' -DestinationPath $Localpath -Force -Verbose
+Expand-Archive -LiteralPath $OutputPath -DestinationPath $Localpath -Force -Verbose
 
 Set-Location -Path $LocalPath
 
@@ -75,7 +81,7 @@ Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 Install-Module 'PSDscResources' -Force
 
 
-$DscCompileCommand="./Configuration.ps1 -StorageAccountName " + $StorageAccountName +  " -StorageAccountRG " + $StorageAccountRG + " -ShareName " + $ShareName + " -SubscriptionId " + $SubscriptionId + " -ClientId " + $ClientId +" -DomainName " + $DomainName + " -IdentityServiceProvider " + $IdentityServiceProvider + " -AzureCloudEnvironment " + $AzureCloudEnvironment + " -CustomOuPath " + $CustomOuPath + " -OUName """ + $OUName + """ -CreateNewOU " + $CreateNewOU + " -DomainAdminUserName " + $DomainAdminUserName + " -DomainAdminUserPassword " + $DomainAdminUserPassword + " -Verbose"
+$DscCompileCommand="./Configuration.ps1 -StorageAccountName " + $StorageAccountName +  " -StorageAccountRG " + $StorageAccountRG+  " -StoragePurpose " + $StoragePurpose +" -ShareName " + $ShareName + " -SubscriptionId " + $SubscriptionId + " -ClientId " + $ClientId +" -DomainName " + $DomainName + " -IdentityServiceProvider " + $IdentityServiceProvider + " -AzureCloudEnvironment " + $AzureCloudEnvironment + " -CustomOuPath " + $CustomOuPath + " -OUName """ + $OUName + """ -CreateNewOU " + $CreateNewOU + " -DomainAdminUserName " + $DomainAdminUserName + " -DomainAdminUserPassword " + $DomainAdminUserPassword + " -Verbose"
 
 Write-Host "Executing the commmand $DscCompileCommand" 
 Invoke-Expression -Command $DscCompileCommand
@@ -86,4 +92,7 @@ Write-Host "Generated MOF files here: $MofPath"
 
 Write-Host "Applying MOF files. DSC configuration"
 Set-WSManQuickConfig -Force -Verbose
-Start-DscConfiguration -Path $MofPath -Wait -Verbose
+Start-DscConfiguration -Path $MofPath -Wait -Verbose -force
+
+Write-Host "DSC extension run clean up"
+Remove-Item -Path $MofPath -Force -Recurse
