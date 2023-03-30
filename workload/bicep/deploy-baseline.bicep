@@ -761,7 +761,6 @@ var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
 var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
 var varDefaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers': 'Computers'
 var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
-//var varStorageToDomainScriptArgs = '-DscPath ${varDscAgentPackageLocation} -StorageAccountName ${varAvdFslogixStorageName} -StorageAccountRG ${varAvdStorageObjectsRgName} -DomainName ${avdIdentityDomainName} -IdentityServiceProvider ${avdIdentityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${avdWorkloadSubsId} -DomainAdminUserName ${avdDomainJoinUserName} -DomainAdminUserPassword ${avdDomainJoinUserPassword} -CustomOuPath ${varStorageCustomOuPath} -OUName ${varOuStgPath} -CreateNewOU ${varCreateOuForStorageString} -ShareName ${varFslogixFileShareName} -ClientId ${deployManagedIdentitiesRoleAssign.outputs.managedIdentityClientId} -Verbose'
 var varCreateOuForStorageString = string(createOuForStorage)
 var varAllDnsServers = '${customDnsIps},168.63.129.16'
 var varDnsServers = empty(customDnsIps) ? []: (split(varAllDnsServers, ','))
