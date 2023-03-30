@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "9761551844728936751"
+      "templateHash": "3047536159071304758"
     }
   },
   "parameters": {
@@ -22365,7 +22365,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.15.31.15270",
-              "templateHash": "14730084866433643033"
+              "templateHash": "15489141811974964864"
             }
           },
           "parameters": {
@@ -22655,6 +22655,7 @@
             }
           },
           "variables": {
+            "varAzureCloudName": "[environment().name]",
             "varStoragePurposeLower": "[toLower(parameters('storagePurpose'))]",
             "varAvdFileShareLogsDiagnostic": [
               "StorageRead",
@@ -22668,7 +22669,7 @@
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', variables('varStorageName'))]",
             "varStoragePurposeLowerPrefix": "[substring(variables('varStoragePurposeLower'), 0, 2)]",
             "varStorageName": "[if(parameters('useCustomNaming'), format('{0}{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varStoragePurposeLower'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')), format('stavd{0}{1}{2}', variables('varStoragePurposeLower'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')))]",
-            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment AzureCloud -SubscriptionId {6} -DomainAdminUserName {7} -DomainAdminUserPassword {8} -CustomOuPath {9} -OUName {10} -CreateNewOU {11} -ShareName {12} -ClientId {13} -Verbose', parameters('dscAgentPackageLocation'), variables('varStorageName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('domainJoinUserPassword'), parameters('avdStorageCustomOuPath'), parameters('avdOuStgPath'), parameters('avdCreateOuForStorageString'), variables('varFileShareName'), parameters('managedIdentityClientId'))]"
+            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -DomainAdminUserPassword {9} -CustomOuPath {10} -OUName {11} -CreateNewOU {12} -ShareName {13} -ClientId {14} -Verbose', parameters('dscAgentPackageLocation'), variables('varStorageName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('domainJoinUserPassword'), parameters('avdStorageCustomOuPath'), parameters('avdOuStgPath'), parameters('avdCreateOuForStorageString'), variables('varFileShareName'), parameters('managedIdentityClientId'))]"
           },
           "resources": [
             {
@@ -30057,7 +30058,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.15.31.15270",
-              "templateHash": "14730084866433643033"
+              "templateHash": "15489141811974964864"
             }
           },
           "parameters": {
@@ -30347,6 +30348,7 @@
             }
           },
           "variables": {
+            "varAzureCloudName": "[environment().name]",
             "varStoragePurposeLower": "[toLower(parameters('storagePurpose'))]",
             "varAvdFileShareLogsDiagnostic": [
               "StorageRead",
@@ -30360,7 +30362,7 @@
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', variables('varStorageName'))]",
             "varStoragePurposeLowerPrefix": "[substring(variables('varStoragePurposeLower'), 0, 2)]",
             "varStorageName": "[if(parameters('useCustomNaming'), format('{0}{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varStoragePurposeLower'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')), format('stavd{0}{1}{2}', variables('varStoragePurposeLower'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')))]",
-            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment AzureCloud -SubscriptionId {6} -DomainAdminUserName {7} -DomainAdminUserPassword {8} -CustomOuPath {9} -OUName {10} -CreateNewOU {11} -ShareName {12} -ClientId {13} -Verbose', parameters('dscAgentPackageLocation'), variables('varStorageName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('domainJoinUserPassword'), parameters('avdStorageCustomOuPath'), parameters('avdOuStgPath'), parameters('avdCreateOuForStorageString'), variables('varFileShareName'), parameters('managedIdentityClientId'))]"
+            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -DomainAdminUserPassword {9} -CustomOuPath {10} -OUName {11} -CreateNewOU {12} -ShareName {13} -ClientId {14} -Verbose', parameters('dscAgentPackageLocation'), variables('varStorageName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('domainJoinUserPassword'), parameters('avdStorageCustomOuPath'), parameters('avdOuStgPath'), parameters('avdCreateOuForStorageString'), variables('varFileShareName'), parameters('managedIdentityClientId'))]"
           },
           "resources": [
             {
