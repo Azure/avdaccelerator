@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "2045748010699096699"
+      "templateHash": "9761551844728936751"
     }
   },
   "parameters": {
@@ -1144,7 +1144,7 @@
         "version": "latest"
       }
     },
-    "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/msix/workload/",
+    "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
     "varFslogixScriptUri": "[format('{0}scripts/Set-FSLogixRegKeys.ps1', variables('varBaseScriptUri'))]",
     "varFsLogixScript": "./Set-FSLogixRegKeys.ps1",
     "varAvdAgentPackageLocation": "[format('https://wvdportalstorageblob.blob.{0}/galleryartifacts/Configuration_09-08-2022.zip', environment().suffixes.storage)]",
@@ -1152,7 +1152,7 @@
     "varReaderRoleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
     "varDesktopVirtualizationPowerOnContributorRoleId": "489581de-a3bd-480d-9518-53dea7416b33",
     "varDesktopVirtualizationPowerOnOffContributorRoleId": "40c5ff49-9181-41f8-ae61-143b0e78555e",
-    "varDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/msix/workload/scripts/DSCStorageScripts.zip",
+    "varDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip",
     "varStorageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-Storage-Scripts.ps1', variables('varBaseScriptUri'))]",
     "varStorageToDomainScript": "./Manual-DSC-Storage-Scripts.ps1",
     "varOuStgPath": "[if(not(empty(parameters('storageOuPath'))), format('\"{0}\"', parameters('storageOuPath')), format('\"{0}\"', variables('varDefaultStorageOuPath')))]",
