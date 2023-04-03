@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.11.1.770",
-      "templateHash": "16937064627619843469"
+      "version": "0.15.31.15270",
+      "templateHash": "11003409013316039652"
     }
   },
   "parameters": {
@@ -65,8 +65,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "17706530224982074795"
+              "version": "0.15.31.15270",
+              "templateHash": "7284457608745048329"
             }
           },
           "parameters": {
@@ -102,16 +102,16 @@
             "value": "[variables('varHostPoolName')]"
           },
           "hostPoolType": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('varResourceGroupName')), 'Microsoft.Resources/deployments', 'get-existing-hostPool')).outputs.info.value.hostPoolType]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('varResourceGroupName')), 'Microsoft.Resources/deployments', 'get-existing-hostPool'), '2020-10-01').outputs.info.value.hostPoolType]"
           },
           "loadBalancerType": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('varResourceGroupName')), 'Microsoft.Resources/deployments', 'get-existing-hostPool')).outputs.info.value.loadBalancerType]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('varResourceGroupName')), 'Microsoft.Resources/deployments', 'get-existing-hostPool'), '2020-10-01').outputs.info.value.loadBalancerType]"
           },
           "location": {
             "value": "[parameters('location')]"
           },
           "preferredAppGroupType": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('varResourceGroupName')), 'Microsoft.Resources/deployments', 'get-existing-hostPool')).outputs.info.value.preferredAppGroupType]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('varResourceGroupName')), 'Microsoft.Resources/deployments', 'get-existing-hostPool'), '2020-10-01').outputs.info.value.preferredAppGroupType]"
           }
         },
         "template": {
@@ -120,8 +120,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "9889324264160468472"
+              "version": "0.15.31.15270",
+              "templateHash": "17175959320519452492"
             }
           },
           "parameters": {
