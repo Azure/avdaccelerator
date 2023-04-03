@@ -1,8 +1,8 @@
 resource "random_uuid" "example" {}
 
-# Create AVD workspace vdws-{AzureRegionAcronym}-{deploymentPrefix}-{nnn}
+# Create AVD workspace
 resource "azurerm_virtual_desktop_workspace" "workspace" {
-  name                = "${var.workspace}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001" //var.workspace
+  name                = "${var.workspace}-${substr(var.avdLocation, 0, 5)}-${var.prefix}" //var.workspace
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   friendly_name       = "${var.prefix} Workspace"
@@ -13,19 +13,18 @@ resource "azurerm_virtual_desktop_workspace" "workspace" {
 resource "azurerm_virtual_desktop_host_pool" "hostpool" {
   location                 = azurerm_resource_group.rg.location
   resource_group_name      = azurerm_resource_group.rg.name
-  name                     = "${var.hostpool}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001" //var.hostpool
-  friendly_name            = "${var.hostpool}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001" //var.hostpool
+  name                     = "${var.hostpool}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
+  friendly_name            = "${var.hostpool}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
   validate_environment     = true
-  custom_rdp_properties    = "drivestoredirect:s:*;audiomode:i:0;videoplaybackmode:i:1;redirectclipboard:i:1;redirectprinters:i:1;devicestoredirect:s:*;redirectcomports:i:1;redirectsmartcards:i:1;usbdevicestoredirect:s:*;enablecredsspsupport:i:1;use multimon:i:0"
+  custom_rdp_properties    = "drivestoredirect:s:*;audiomode:i:0;videoplaybackmode:i:1;redirectclipboard:i:1;redirectprinters:i:1;devicestoredirect:s:*;redirectcomports:i:1;redirectsmartcards:i:1;usbdevicestoredirect:s:*;enablecredsspsupport:i:1;redirectwebauthn:i:1;use multimon:i:0;targetisaadjoined:i:1;enablerdsaadauth:i:1;autoreconnection enabled:i:1"
   description              = "${var.prefix} Pooled HostPool"
   type                     = "Pooled"
   maximum_sessions_allowed = 16
   load_balancer_type       = "DepthFirst" #[BreadthFirst DepthFirst]
+  start_vm_on_connect      = true
 
+  depends_on = [azurerm_resource_group.rg]
 
-  depends_on = [
-    azurerm_resource_group.rg
-  ]
   lifecycle {
     ignore_changes = all
   }
@@ -48,9 +47,10 @@ resource "azurerm_role_assignment" "power" {
   skip_service_principal_aad_check = true
   depends_on                       = [data.azurerm_role_definition.power_role]
 }
+
 # autoscale settings scenario 1 https://docs.microsoft.com/azure/virtual-desktop/autoscale-scenarios
 resource "azurerm_virtual_desktop_scaling_plan" "scplan" {
-  name                = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}" //var.scplan
+  name                = "${var.scplan}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   friendly_name       = "Scaling Plan Example"
@@ -118,7 +118,7 @@ resource "azurerm_virtual_desktop_application_group" "dag" {
   resource_group_name = azurerm_resource_group.rg.name
   host_pool_id        = azurerm_virtual_desktop_host_pool.hostpool.id
   type                = "Desktop"
-  name                = "${var.dag}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001" //var.dag
+  name                = "${var.dag}-${substr(var.avdLocation, 0, 5)}-${var.prefix}" //var.dag
   friendly_name       = "Desktop AppGroup"
   description         = "AVD Desktop application group"
   depends_on          = [azurerm_virtual_desktop_host_pool.hostpool, azurerm_virtual_desktop_workspace.workspace]
@@ -130,13 +130,13 @@ resource "azurerm_virtual_desktop_workspace_application_group_association" "ws-d
   workspace_id         = azurerm_virtual_desktop_workspace.workspace.id
 }
 
+
 # Get Log Analytics Workspace data
 data "azurerm_log_analytics_workspace" "lawksp" {
-  name                = lower(replace("law-avd-${substr(var.avdLocation, 0, 5)}", "-", ""))
+  name                = lower(replace("law-avd-${var.prefix}", "-", ""))
   resource_group_name = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_avdi}"
 
   depends_on = [
-    data.azurerm_log_analytics_workspace.lawksp,
     azurerm_virtual_desktop_workspace.workspace,
     azurerm_virtual_desktop_host_pool.hostpool,
     azurerm_virtual_desktop_application_group.dag,
@@ -147,7 +147,7 @@ data "azurerm_log_analytics_workspace" "lawksp" {
 
 # Create Diagnostic Settings for AVD Host Pool
 resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
-  name                       = "AVD-Diag"
+  name                       = "diag-avd-${var.prefix}"
   target_resource_id         = azurerm_virtual_desktop_host_pool.hostpool.id
   log_analytics_workspace_id = data.azurerm_log_analytics_workspace.lawksp.id
 
@@ -155,55 +155,103 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
     data.azurerm_log_analytics_workspace.lawksp,
     azurerm_virtual_desktop_host_pool.hostpool
   ]
-
   dynamic "enabled_log" {
     for_each = var.host_pool_log_categories
     content {
       category = enabled_log.value
     }
   }
-  lifecycle {
-    ignore_changes = [log]
-  }
 }
 
 # Create Diagnostic Settings for AVD Desktop App Group
-resource "azurerm_monitor_diagnostic_setting" "avd-dag1" {
+resource "azurerm_monitor_diagnostic_setting" "avd-dag2" {
   name                       = "diag-avd-${var.prefix}"
   target_resource_id         = azurerm_virtual_desktop_application_group.dag.id
   log_analytics_workspace_id = data.azurerm_log_analytics_workspace.lawksp.id
 
   depends_on = [
-    data.azurerm_log_analytics_workspace.lawksp
+    data.azurerm_log_analytics_workspace.lawksp,
+    azurerm_virtual_desktop_application_group.dag
   ]
-  dynamic "enabled_log" {
-    for_each = var.dag_log_categories
-    content {
-      category = enabled_log.value
+  enabled_log {
+    category = "Checkpoint"
+
+    retention_policy {
+      days    = 7
+      enabled = true
     }
   }
-  lifecycle {
-    ignore_changes = [log]
+
+  enabled_log {
+    category = "Error"
+
+    retention_policy {
+      days    = 7
+      enabled = true
+    }
+  }
+  enabled_log {
+    category = "Management"
+
+    retention_policy {
+      days    = 7
+      enabled = true
+    }
   }
 }
 
 # Create Diagnostic Settings for AVD Workspace
-resource "azurerm_monitor_diagnostic_setting" "avd-wksp1" {
-  name                       = "AVD-Diag"
+resource "azurerm_monitor_diagnostic_setting" "avd-ws" {
+  name                       = "diag-avd-${var.prefix}"
   target_resource_id         = azurerm_virtual_desktop_workspace.workspace.id
   log_analytics_workspace_id = data.azurerm_log_analytics_workspace.lawksp.id
 
   depends_on = [
-    data.azurerm_log_analytics_workspace.lawksp
+    data.azurerm_log_analytics_workspace.lawksp,
+    azurerm_virtual_desktop_workspace.workspace
   ]
 
-  dynamic "enabled_log" {
+    dynamic "enabled_log" {
     for_each = var.ws_log_categories
     content {
       category = enabled_log.value
     }
   }
-  lifecycle {
-    ignore_changes = [log]
+}
+  /*
+  enabled_log {
+    category = "Checkpoint"
+
+    retention_policy {
+      days    = 7
+      enabled = true
+    }
+  }
+
+  enabled_log {
+    category = "Error"
+
+    retention_policy {
+      days    = 7
+      enabled = true
+    }
+  }
+  enabled_log {
+    category = "Management"
+
+    retention_policy {
+      days    = 7
+      enabled = true
+    }
+  }
+
+  enabled_log {
+    category = "Feed"
+
+    retention_policy {
+      days    = 7
+      enabled = true
+    }
   }
 }
+*/
