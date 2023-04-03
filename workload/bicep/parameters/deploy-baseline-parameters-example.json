@@ -110,7 +110,13 @@
         "createAvdFslogixDeployment": {
             "value": true
         },
-        "avdFslogixFileShareQuotaSize": {
+        "createMsixDeployment": {
+            "value": false
+        },
+        "fslogixFileShareQuotaSize": {
+            "value": 10
+        },
+        "msixFileShareQuotaSize": {
             "value": 10
         },
         "avdDeploySessionHosts": {
@@ -131,8 +137,11 @@
         "avdAsUpdateDomainCount": {
             "value": 5
         },
-        "fslogixStorageSku": {
-            "value": "Premium_LRS"
+        "fslogixStoragePerformance": {
+            "value": "Premium"
+        },
+        "msixStoragePerformance": {
+            "value": "Premium"
         },
         "encryptionAtHost": {
             "value": false
@@ -144,7 +153,7 @@
             "value": "Standard_LRS"
         },
         "avdOsImage": {
-            "value": "win10_21h2"
+            "value": "win11_21h2"
         },
         "securityType": {
             "value": "Standard"
