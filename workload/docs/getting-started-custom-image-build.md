@@ -42,7 +42,7 @@ The templates and scripts need to be executed from an execution environment. Her
 
 ## What will be deployed
 
-The Custom Image Build solution creates a new image from the Azure marketplace in an Azure compute gallery, optimized, patched and ready to be used. This deployment is optional and you can customize to extend functionality, like adding additional scripts to further customize your images.
+The **Custom Image Build** creates a new image from the Azure marketplace in an Azure compute gallery, optimized, patched and ready to be used. This deployment is optional and you can customize to extend functionality, like adding additional scripts to further customize your images.
 
 It is preferable to have a new subscription, adhering to the Azure Landing Zone guidance. However, the solution can also be deployed to an existing subscription. See [Resource Organization](https://docs.microsoft.com/azure/cloud-adoption-framework/scenarios/wvd/design-area-resource-organization) for further information.
 
