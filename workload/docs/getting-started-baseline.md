@@ -63,9 +63,7 @@ Greenfield deployment of AVD Landing Zone is suitable if you are looking at bran
 
 ## What will be deployed
 
-This reference implementation consists of 2 deployments:
-
-**AVD baseline**. AVD workload and necessary resources to allow for feature add-ins, connectivity and monitoring as per operational best practices.
+The **AVD baseline** deploys AVD workload resources and necessary resources to allow for feature add-ins (like connectivity and monitoring) as per operational best practices.
 
 It is preferable to have a new subscriptions for each deployment respectively, adhering to the Azure Landing Zone guidance. However, they can also be deployed to existing subscriptions and single subscription if required, see [Resource Organization](https://docs.microsoft.com/azure/cloud-adoption-framework/scenarios/wvd/design-area-resource-organization) for further information.
 
