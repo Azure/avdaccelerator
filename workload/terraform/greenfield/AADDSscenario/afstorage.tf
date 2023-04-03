@@ -1,3 +1,9 @@
+resource "azurerm_user_assigned_identity" "mi" {
+  name                = "id-avd-fslogix-eus-${var.prefix}"
+  resource_group_name = azurerm_resource_group.rg_storage.name
+  location            = azurerm_resource_group.rg_storage.location
+}
+
 ## Azure Storage Accounts requires a globally unique names
 ## https://docs.microsoft.com/azure/storage/common/storage-account-overview
 ## Create a File Storage Account 
@@ -11,37 +17,21 @@ resource "azurerm_storage_account" "storage" {
   account_kind              = "FileStorage"
   enable_https_traffic_only = true
   tags                      = local.tags
-  provider                  = azurerm.spoke
-
   identity {
     type = "SystemAssigned"
   }
 }
 
 resource "azurerm_storage_share" "FSShare" {
-  name                 = "fslogix"
-  quota                = "100"
-  enabled_protocol     = "SMB"
+  name             = "fslogix"
+  quota            = "100"
+  enabled_protocol = "SMB"
+
+
   storage_account_name = azurerm_storage_account.storage.name
-
-  depends_on = [
-    azurerm_storage_account.storage
-  ]
-
+  depends_on           = [azurerm_storage_account.storage]
 }
 
-
-# Deny Traffic from Public Networks with white list exceptions
-resource "azurerm_storage_account_network_rules" "stfw" {
-  storage_account_id = azurerm_storage_account.storage.id
-  default_action     = "Deny"
-  bypass             = ["AzureServices", "Metrics", "Logging"]
-  ip_rules           = local.allow_list_ip
-
-  depends_on = [azurerm_storage_share.FSShare,
-    azurerm_private_endpoint.afpe,
-  azurerm_role_assignment.af_role]
-}
 
 ## Azure built-in roles
 ## https://docs.microsoft.com/azure/role-based-access-control/built-in-roles
@@ -68,19 +58,12 @@ resource "azurerm_private_endpoint" "afpe" {
   resource_group_name = azurerm_resource_group.rg_storage.name
   subnet_id           = data.azurerm_subnet.subnet.id
   tags                = local.tags
-  provider            = azurerm.spoke
-
-  depends_on = [
-    azurerm_storage_share.FSShare
-  ]
-  lifecycle { ignore_changes = [tags] }
 
   private_service_connection {
     name                           = "psc-file-${var.prefix}"
     private_connection_resource_id = azurerm_storage_account.storage.id
     is_manual_connection           = false
     subresource_names              = ["file"]
-
   }
   private_dns_zone_group {
     name                 = "dns-file-${var.prefix}"
@@ -88,13 +71,22 @@ resource "azurerm_private_endpoint" "afpe" {
   }
 }
 
-# Linking DNS Zone to the existing DNS Zone in the Hub VNET
+# Deny Traffic from Public Networks with white list exceptions
+resource "azurerm_storage_account_network_rules" "stfw" {
+  storage_account_id = azurerm_storage_account.storage.id
+  default_action     = "Deny"
+  bypass             = ["AzureServices", "Metrics", "Logging"]
+  ip_rules           = local.allow_list_ip
+  depends_on = [azurerm_storage_share.FSShare,
+    azurerm_private_endpoint.afpe,
+  azurerm_role_assignment.af_role]
+}
+
 resource "azurerm_private_dns_zone_virtual_network_link" "filelink" {
   name                  = "azfilelink-${var.prefix}"
   resource_group_name   = var.hub_dns_zone_rg
   private_dns_zone_name = data.azurerm_private_dns_zone.pe-filedns-zone.name
   virtual_network_id    = data.azurerm_virtual_network.vnet.id
-  provider              = azurerm.hub
 
   lifecycle { ignore_changes = [tags] }
 }
