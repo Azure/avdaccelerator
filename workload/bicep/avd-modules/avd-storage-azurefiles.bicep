@@ -164,8 +164,9 @@ var varAvdFileShareMetricsDiagnostic = [
 ]
 var varFileShareName = useCustomNaming ? fileShareCustomName : '${varStoragePurposeLower}-pc-${deploymentPrefixLowercase}-001'
 var varWrklStoragePrivateEndpointName = 'pe-${varStorageName}-file'
-var varStoragePurposeLowerPrefix = substring(varStoragePurposeLower, 0,2)
-var varStorageName = useCustomNaming ? '${storageAccountPrefixCustomName}${varStoragePurposeLower}${deploymentPrefixLowercase}${namingUniqueStringSixChar}' : 'stavd${varStoragePurposeLower}${deploymentPrefixLowercase}${namingUniqueStringSixChar}'
+//var varStoragePurposeLowerPrefix = substring(varStoragePurposeLower, 0,2)
+var varStoragePurposeAcronym = (storagePurpose == 'fslogix') ? 'fsl': ((storagePurpose == 'msix') ? 'msx': '')
+var varStorageName = useCustomNaming ? '${storageAccountPrefixCustomName}${varStoragePurposeAcronym}${deploymentPrefixLowercase}${namingUniqueStringSixChar}' : 'st${varStoragePurposeAcronym}${deploymentPrefixLowercase}${namingUniqueStringSixChar}'
 var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${varStorageName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -DomainAdminUserName ${domainJoinUserName} -DomainAdminUserPassword ${domainJoinUserPassword} -CustomOuPath ${avdStorageCustomOuPath} -OUName ${avdOuStgPath} -CreateNewOU ${avdCreateOuForStorageString} -ShareName ${varFileShareName} -ClientId ${managedIdentityClientId} -Verbose'
 
 // =========== //
