@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "3047536159071304758"
+      "templateHash": "10066119167767589550"
     }
   },
   "parameters": {
@@ -37743,7 +37743,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.15.31.15270",
-              "templateHash": "17025784635270121377"
+              "templateHash": "12792368790341891621"
             }
           },
           "parameters": {
@@ -38616,7 +38616,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.15.31.15270",
-                      "templateHash": "18241581116988903293"
+                      "templateHash": "12081490192280644611"
                     }
                   },
                   "parameters": {
@@ -39005,22 +39005,6 @@
                             "value": {
                               "enabled": "[if(equals(parameters('identityServiceProvider'), 'AAD'), true(), false())]",
                               "settings": "[if(parameters('createIntuneEnrollment'), createObject('mdmId', '0000000a-0000-0000-c000-000000000000'), createObject())]"
-                            }
-                          },
-                          "extensionAntiMalwareConfig": {
-                            "value": {
-                              "enabled": true,
-                              "settings": {
-                                "AntimalwareEnabled": true,
-                                "RealtimeProtectionEnabled": "true",
-                                "ScheduledScanSettings": {
-                                  "isEnabled": "true",
-                                  "day": "7",
-                                  "time": "120",
-                                  "scanType": "Quick"
-                                },
-                                "Exclusions": "[if(parameters('createAvdFslogixDeployment'), createObject('Extensions', '*.vhd;*.vhdx', 'Paths', format('\"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;{0}\\*\\*.VHD;{1}\\*\\*.VHDX', parameters('fslogixSharePath'), parameters('fslogixSharePath')), 'Processes', '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'), createObject())]"
-                              }
                             }
                           },
                           "extensionMonitoringAgentConfig": {
