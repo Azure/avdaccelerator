@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "10066119167767589550"
+      "templateHash": "18066320030906639551"
     }
   },
   "parameters": {
@@ -22365,7 +22365,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.15.31.15270",
-              "templateHash": "15489141811974964864"
+              "templateHash": "4809565399811907292"
             }
           },
           "parameters": {
@@ -22667,8 +22667,8 @@
             ],
             "varFileShareName": "[if(parameters('useCustomNaming'), parameters('fileShareCustomName'), format('{0}-pc-{1}-001', variables('varStoragePurposeLower'), parameters('deploymentPrefixLowercase')))]",
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', variables('varStorageName'))]",
-            "varStoragePurposeLowerPrefix": "[substring(variables('varStoragePurposeLower'), 0, 2)]",
-            "varStorageName": "[if(parameters('useCustomNaming'), format('{0}{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varStoragePurposeLower'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')), format('stavd{0}{1}{2}', variables('varStoragePurposeLower'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')))]",
+            "varStoragePurposePrefix": "[if(equals(parameters('storagePurpose'), 'fslogix'), 'fsl', if(equals(parameters('storagePurpose'), 'msix'), 'msx', ''))]",
+            "varStorageName": "[if(parameters('useCustomNaming'), format('{0}{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varStoragePurposePrefix'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')), format('st{0}{1}{2}', variables('varStoragePurposePrefix'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')))]",
             "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -DomainAdminUserPassword {9} -CustomOuPath {10} -OUName {11} -CreateNewOU {12} -ShareName {13} -ClientId {14} -Verbose', parameters('dscAgentPackageLocation'), variables('varStorageName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('domainJoinUserPassword'), parameters('avdStorageCustomOuPath'), parameters('avdOuStgPath'), parameters('avdCreateOuForStorageString'), variables('varFileShareName'), parameters('managedIdentityClientId'))]"
           },
           "resources": [
@@ -30058,7 +30058,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.15.31.15270",
-              "templateHash": "15489141811974964864"
+              "templateHash": "4809565399811907292"
             }
           },
           "parameters": {
@@ -30360,8 +30360,8 @@
             ],
             "varFileShareName": "[if(parameters('useCustomNaming'), parameters('fileShareCustomName'), format('{0}-pc-{1}-001', variables('varStoragePurposeLower'), parameters('deploymentPrefixLowercase')))]",
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', variables('varStorageName'))]",
-            "varStoragePurposeLowerPrefix": "[substring(variables('varStoragePurposeLower'), 0, 2)]",
-            "varStorageName": "[if(parameters('useCustomNaming'), format('{0}{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varStoragePurposeLower'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')), format('stavd{0}{1}{2}', variables('varStoragePurposeLower'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')))]",
+            "varStoragePurposePrefix": "[if(equals(parameters('storagePurpose'), 'fslogix'), 'fsl', if(equals(parameters('storagePurpose'), 'msix'), 'msx', ''))]",
+            "varStorageName": "[if(parameters('useCustomNaming'), format('{0}{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varStoragePurposePrefix'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')), format('st{0}{1}{2}', variables('varStoragePurposePrefix'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')))]",
             "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -DomainAdminUserPassword {9} -CustomOuPath {10} -OUName {11} -CreateNewOU {12} -ShareName {13} -ClientId {14} -Verbose', parameters('dscAgentPackageLocation'), variables('varStorageName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('domainJoinUserPassword'), parameters('avdStorageCustomOuPath'), parameters('avdOuStgPath'), parameters('avdCreateOuForStorageString'), variables('varFileShareName'), parameters('managedIdentityClientId'))]"
           },
           "resources": [
