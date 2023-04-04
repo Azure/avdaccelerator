@@ -42,11 +42,11 @@ The naming of resources is hard coded in the templates but can also be modified 
 | `id-avd-storage-{AzureRegion}-{deploymentPrefix}` | Managed identity | Identity used for FSLogix setup. |
 | `AVD-storageManagedIdentityWait-{Timestamp}` | Deployment script | Introduce wait time after managed identity creation. |
 | `stfsl{deploymentPrefix}{uniqueString}` | Storage account | FSLogix file shares. |
-| `pe-stavdfslogix{deploymentPrefix}{uniqueString}-file` | Private endpoint | Private endpoint attached to FSLogix storage account files service. |
-| `nic-{nn}-pe-stavdfslogix{deploymentPrefix}{uniqueString}-file` | Network Interface | Network interface attached to FSLogix storage account's private endpoint. |
+| `pe-stfsl{deploymentPrefix}{uniqueString}-file` | Private endpoint | Private endpoint attached to FSLogix storage account files service. |
+| `nic-{nn}-pe-stfsl{deploymentPrefix}{uniqueString}-file` | Network Interface | Network interface attached to FSLogix storage account's private endpoint. |
 | `stmsx{deploymentPrefix}{uniqueString}` | Storage account | MSIX App Attach file shares. |
-| `pe-stavdmsix{deploymentPrefix}{uniqueString}-file` | Private endpoint | Private endpoint attached to MSIX App Attach storage account files service. |
-| `nic-{nn}-pe-stavdmsix{deploymentPrefix}{uniqueString}-file` | Network Interface | Network interface attached to MSIX App Attach storage account's private endpoint. |
+| `pe-stmsx{deploymentPrefix}{uniqueString}-file` | Private endpoint | Private endpoint attached to MSIX App Attach storage account files service. |
+| `nic-{nn}-pe-stmsx{deploymentPrefix}{uniqueString}-file` | Network Interface | Network interface attached to MSIX App Attach storage account's private endpoint. |
 
 ### Network naming
 
