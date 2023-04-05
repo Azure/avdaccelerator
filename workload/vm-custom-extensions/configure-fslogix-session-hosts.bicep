@@ -5,7 +5,7 @@ param file string
 param FsLogixScriptArguments string
 
 resource fslogixconfigure 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = {
-  name: '${name}/configurefslogix'
+  name: '${name}/FSlogixSetup'
   location: location
   properties: {
     publisher: 'Microsoft.Compute'
