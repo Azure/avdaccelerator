@@ -228,6 +228,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
             //    enabled: (identityServiceProvider == 'AAD') ? true: false
             //}
         // Enable and Configure Microsoft Malware.
+        /*
         extensionAntiMalwareConfig: {
             enabled: true
             settings: {
@@ -246,6 +247,7 @@ module avdSessionHosts '../../../carml/1.2.0/Microsoft.Compute/virtualMachines/d
                 } : {}
             }
         }
+        */
         // Enable monitoring agent
         //extensionMonitoringAgentConfig:{
         //    enabled: deployMonitoring
