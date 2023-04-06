@@ -7,6 +7,7 @@ resource "azurerm_key_vault" "kv" {
   purge_protection_enabled    = true
   enabled_for_disk_encryption = true
   tags                        = local.tags
+  enabled_for_deployment      = true
 
   depends_on = [
     azurerm_resource_group.rg,
@@ -32,9 +33,9 @@ resource "azurerm_role_assignment" "keysp" {
 }
 
 resource "azurerm_key_vault_access_policy" "deploy" {
-  key_vault_id = azurerm_key_vault.kv.id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = azurerm_role_assignment.keysp.principal_id
+  key_vault_id   = azurerm_key_vault.kv.id
+  tenant_id      = data.azurerm_client_config.current.tenant_id
+  object_id      = data.azurerm_client_config.current.object_id
 
   key_permissions         = ["Get", "List", "Encrypt", "Decrypt", "Update", "Create", "Import", "Delete", "Recover", ]
   secret_permissions      = ["Get", "List", "Set", "Delete", "Purge", "Recover", ]
@@ -83,6 +84,12 @@ resource "azurerm_key_vault_secret" "localpassword" {
   value        = random_password.vmpass.result
   key_vault_id = azurerm_key_vault.kv.id
   content_type = "Password"
+
+  lifecycle { ignore_changes = [tags] }
+
+  depends_on = [
+    azurerm_key_vault_access_policy.deploy
+  ]
 }
 
 # Linking DNS Zone to the existing DNS Zone in the Hub VNET
@@ -92,5 +99,6 @@ resource "azurerm_private_dns_zone_virtual_network_link" "vaultlink" {
   private_dns_zone_name = data.azurerm_private_dns_zone.pe-vaultdns-zone.name
   virtual_network_id    = data.azurerm_virtual_network.vnet.id
   provider              = azurerm.hub
+
   lifecycle { ignore_changes = [tags] }
 }
