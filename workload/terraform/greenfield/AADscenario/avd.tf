@@ -133,7 +133,7 @@ resource "azurerm_virtual_desktop_workspace_application_group_association" "ws-d
 
 # Get Log Analytics Workspace data
 data "azurerm_log_analytics_workspace" "lawksp" {
-  name                = lower(replace("law-avd-${var.prefix}", "-", ""))
+  name                = lower(replace("law-avd-${substr(var.avdLocation, 0, 5)}", "-", ""))
   resource_group_name = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_avdi}"
 
   depends_on = [
