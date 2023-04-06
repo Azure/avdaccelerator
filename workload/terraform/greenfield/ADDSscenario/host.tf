@@ -119,7 +119,6 @@ PROTECTED_SETTINGS
     ignore_changes = [settings, protected_settings]
   }
 
-
 }
 
 
