@@ -21,7 +21,7 @@ The naming of resources is hard coded in the templates but can also be modified 
 | `AVD-managementVmWait-{Timestamp}` | Deployment script | Introduce wait time after management VM creation. |
 | `vm-mgmt-{deploymentPrefix}` | Virtual Machine | VM used to run management tasks (FSLogix, NTFS permissions, etc.). |
 | `osdisk-{nnn}-vm-mgmt-{deploymentPrefix}` | Disk | OS disk attached to management VM. |
-| `nic-{nnn}-vm-mgmt-{deploymentPrefix}` | Network Interface | Network interface attached to management VM. |
+| `nic-{nn}-vm-mgmt-{deploymentPrefix}` | Network Interface | Network interface attached to management VM. |
 
 ### Pool Compute naming (Session hosts)
 
@@ -31,7 +31,7 @@ The naming of resources is hard coded in the templates but can also be modified 
 | `asg-avd-{AzureRegion}-{deploymentPrefix}-{nnn}` | Application Security Group | |
 | `avail-avd-{AzureRegion}-{deploymentPrefix}-{nnn}` | Availability set | Deployed when not using availability zones. |
 | `osdisk-{nnn}-vm-avd-{deploymentPrefix}-{nnn}` | Disk | OS disk attached to session hosts. |
-| `nic-{nnn}-vm-avd-{deploymentPrefix}-{nnn}` | Network Interface | NEtwork interface attached to session hosts. |
+| `nic-{nn}-vm-avd-{deploymentPrefix}-{nnn}` | Network Interface | NEtwork interface attached to session hosts. |
 | `vm-avd-{deploymentPrefix}-{nnn}` | Virtual Machine | |
 
 ### Storage naming (FSLogix & MSIX App Attach)
