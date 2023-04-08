@@ -32,20 +32,25 @@ resource "azurerm_virtual_desktop_host_pool" "hostpool" {
 }
 
 #Autoscale is currently only available in the public cloud.
+data "azurerm_role_definition" "power_role" {
+  name = "Desktop Virtualization Power On Off Contributor"
+}
+
 data "azuread_service_principal" "spn" {
   application_id = "9cdead84-a844-4324-93f2-b2e6bb768d07"
 }
 
 resource "azurerm_role_assignment" "power" {
-  scope                            = data.azurerm_subscription.current.id
-  role_definition_name             = "Desktop Virtualization Power On Off Contributor"
-  principal_id                     = data.azuread_service_principal.spn.object_id
+  name                             = random_uuid.example.result
+  scope                            = azurerm_resource_group.rg.id
+  role_definition_id               = data.azurerm_role_definition.power_role.role_definition_id
+  principal_id                     = data.azuread_service_principal.spn.application_id
   skip_service_principal_aad_check = true
+  depends_on                       = [data.azurerm_role_definition.power_role]
 }
-
 # autoscale settings scenario 1 https://docs.microsoft.com/azure/virtual-desktop/autoscale-scenarios
 resource "azurerm_virtual_desktop_scaling_plan" "scplan" {
-  name                = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.scplan}" //var.scplan
+  name                = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}" //var.scplan
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   friendly_name       = "Scaling Plan Example"
@@ -93,7 +98,7 @@ resource "azurerm_virtual_desktop_scaling_plan" "scplan" {
   }
   tags = local.tags
 
-  depends_on = [azurerm_role_assignment.power]
+  depends_on = [azurerm_role_assignment.power, azurerm_virtual_desktop_host_pool.hostpool]
 
   host_pool {
     hostpool_id          = azurerm_virtual_desktop_host_pool.hostpool.id
@@ -157,6 +162,9 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
       category = enabled_log.value
     }
   }
+  lifecycle {
+    ignore_changes = [log]
+  }
 }
 
 # Create Diagnostic Settings for AVD Desktop App Group
@@ -173,6 +181,9 @@ resource "azurerm_monitor_diagnostic_setting" "avd-dag1" {
     content {
       category = enabled_log.value
     }
+  }
+  lifecycle {
+    ignore_changes = [log]
   }
 }
 
@@ -191,5 +202,8 @@ resource "azurerm_monitor_diagnostic_setting" "avd-wksp1" {
     content {
       category = enabled_log.value
     }
+  }
+  lifecycle {
+    ignore_changes = [log]
   }
 }

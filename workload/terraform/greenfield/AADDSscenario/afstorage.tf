@@ -1,5 +1,5 @@
 resource "azurerm_user_assigned_identity" "mi" {
-  name                = "id-avd-usermi-eus-${var.prefix}"
+  name                = "id-avd-fslogix-eus-${var.prefix}"
   resource_group_name = azurerm_resource_group.rg_storage.name
   location            = azurerm_resource_group.rg_storage.location
 }
@@ -56,7 +56,7 @@ resource "azurerm_private_endpoint" "afpe" {
   name                = "pe-${local.storage_name}-file"
   location            = azurerm_resource_group.rg_storage.location
   resource_group_name = azurerm_resource_group.rg_storage.name
-  subnet_id           = data.azurerm_subnet.pesubnet.id
+  subnet_id           = data.azurerm_subnet.subnet.id
   tags                = local.tags
 
   private_service_connection {
@@ -77,7 +77,8 @@ resource "azurerm_storage_account_network_rules" "stfw" {
   default_action     = "Deny"
   bypass             = ["AzureServices", "Metrics", "Logging"]
   ip_rules           = local.allow_list_ip
-  depends_on = [azurerm_private_endpoint.afpe,
+  depends_on = [azurerm_storage_share.FSShare,
+    azurerm_private_endpoint.afpe,
   azurerm_role_assignment.af_role]
 }
 
@@ -86,7 +87,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "filelink" {
   resource_group_name   = var.hub_dns_zone_rg
   private_dns_zone_name = data.azurerm_private_dns_zone.pe-filedns-zone.name
   virtual_network_id    = data.azurerm_virtual_network.vnet.id
-  provider              = azurerm.hub
 
   lifecycle { ignore_changes = [tags] }
 }
+
