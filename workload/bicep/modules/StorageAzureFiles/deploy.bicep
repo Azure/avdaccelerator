@@ -220,6 +220,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
             {
                 name: varWrklStoragePrivateEndpointName
                 subnetResourceId: privateEndpointSubnetId
+                customNetworkInterfaceName: 'nic-01-${varWrklStoragePrivateEndpointName}'
                 service: 'file'
                 privateDnsZoneResourceIds: [
                     vnetPrivateDnsZoneFilesId
@@ -229,6 +230,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
             {
                 name: varWrklStoragePrivateEndpointName
                 subnetResourceId: privateEndpointSubnetId
+                customNetworkInterfaceName: 'nic-01-${varWrklStoragePrivateEndpointName}'
                 service: 'file'
             }
         ]
