@@ -316,7 +316,7 @@ var varTimeZones = {
 // =========== //
 
 // AVD Shared Services Resource Group
-module avdSharedResourcesRg '../../../../carml/1.0.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
+module avdSharedResourcesRg '../../../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
   scope: subscription(sharedServicesSubscriptionId)
   name: 'Resource-Group_${time}'
   params: {
@@ -327,7 +327,7 @@ module avdSharedResourcesRg '../../../../carml/1.0.0/Microsoft.Resources/resourc
 }
 
 // Log Analytics Workspace
-module workspace '../../../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
+module workspace '../../../../carml/1.3.0/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
   scope: resourceGroup(sharedServicesSubscriptionId, varResourceGroupName)
   name: 'Log-Analytics-Workspace_${time}'
   params: {
@@ -343,11 +343,11 @@ module workspace '../../../../carml/1.2.1/Microsoft.OperationalInsights/workspac
 }
 
 // Introduce wait after log analitics workspace creation.
-module workspaceWait '../../../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
+module workspaceWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
   scope: resourceGroup(sharedServicesSubscriptionId, varResourceGroupName)
   name: 'Log-Analytics-Workspace-Wait_${time}'
   params: {
-      name: '${varLogAnalyticsWorkspaceName}_wait_${time}'
+      name: 'Log-Analytics-Workspace-Wait_${time}'
       location: deploymentLocation
       azPowerShellVersion: '6.2'
       cleanupPreference: 'Always'
@@ -375,7 +375,7 @@ module automationAccount_Existing 'modules/existingAutomationAccount.bicep' = if
 }
 
 // Deploy new automation account
-module automationAccount_New '../../../../carml/1.2.1/Microsoft.Automation/automationAccounts/deploy.bicep' = {
+module automationAccount_New '../../../../carml/1.3.0/Microsoft.Automation/automationAccounts/deploy.bicep' = {
   scope: resourceGroup(sharedServicesSubscriptionId, varAutomationAccountScope)
   name: 'Automation-Account_${time}'
   params: {
@@ -460,7 +460,7 @@ module automationAccount_New '../../../../carml/1.2.1/Microsoft.Automation/autom
 }
 
 // Role assignment
-module roleAssignments '../../../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = {
+module roleAssignments '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = {
   name: 'Role-Assignment_${time}'
   scope: resourceGroup(varStorageAccountSubscriptionId, varStorageAccountResourceGroupName)
   params: {
@@ -471,7 +471,7 @@ module roleAssignments '../../../../carml/1.2.0/Microsoft.Authorization/roleAssi
 }
 
 // Alerts action group
-module actionGroup '../../../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bicep' = if (enableMonitoringAlerts) {
+module actionGroup '../../../../carml/1.3.0/Microsoft.Insights/actionGroups/deploy.bicep' = if (enableMonitoringAlerts) {
   scope: resourceGroup(sharedServicesSubscriptionId, varResourceGroupName)
   name: 'Action-Group_${time}'
   params: {
@@ -494,7 +494,7 @@ module actionGroup '../../../../carml/1.0.0/Microsoft.Insights/actionGroups/depl
 }
 
 // Scheduled query rules
-module scheduledQueryRules '../../../../carml/1.2.1/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(varAlerts)): if (enableMonitoringAlerts) {
+module scheduledQueryRules '../../../../carml/1.3.0/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(varAlerts)): if (enableMonitoringAlerts) {
   scope: resourceGroup(sharedServicesSubscriptionId, varResourceGroupName)
   name: 'Scheduled-Query-Rule_${i}_${time}'
   params: {
