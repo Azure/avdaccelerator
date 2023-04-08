@@ -195,6 +195,8 @@ module applicationGroups '../../../../carml/1.3.0/Microsoft.DesktopVirtualizatio
     applicationGroupType: applicationGroup.applicationGroupType
     hostpoolName: hostPool.outputs.name
     tags: tags
+    applications: [
+    ]
     roleAssignments: !empty(applicationGroupIdentitiesIds) ? [
       {
       roleDefinitionIdOrName: 'Desktop Virtualization User'

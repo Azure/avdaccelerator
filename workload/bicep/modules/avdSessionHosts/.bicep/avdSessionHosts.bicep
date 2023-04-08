@@ -224,43 +224,131 @@ module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
                 mdmId: '0000000a-0000-0000-c000-000000000000'
             }: {}
         }
-            //}: {
-            //    enabled: (identityServiceProvider == 'AAD') ? true: false
-            //}
-        // Enable and Configure Microsoft Malware.
-        extensionAntiMalwareConfig: {
-            enabled: true
-            settings: {
-                AntimalwareEnabled: true
-                RealtimeProtectionEnabled: 'true'
-                ScheduledScanSettings: {
-                    isEnabled: 'true'
-                    day: '7' // Day of the week for scheduled scan (1-Sunday, 2-Monday, ..., 7-Saturday)
-                    time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
-                    scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
-                }
-                Exclusions: createAvdFslogixDeployment ? {
-                    Extensions: '*.vhd;*.vhdx'
-                    Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${fslogixSharePath}\\*\\*.VHD;${fslogixSharePath}\\*\\*.VHDX'
-                    Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
-                } : {}
-            }
-        }
-        // Enable monitoring agent
-        extensionMonitoringAgentConfig:{
-            enabled: deployMonitoring
-        }
-        monitoringWorkspaceId: alaWorkspaceResourceId
-        tags: tags
         nicdiagnosticMetricsToEnable: varNicDiagnosticMetricsToEnable
-        diagnosticWorkspaceId: alaWorkspaceResourceId
         diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
+        tags: tags
     }
-    dependsOn: []
+    dependsOn: [
+        wrklKeyVaultget
+    ]
+}]
+
+// Introduce wait for session hosts to be ready.
+module sessionHostsWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
+    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+    name: 'Session-Hosts-Wait-${time}'
+    params: {
+        name: 'Session-Hosts-Wait-${time}'
+        location: sessionHostLocation
+        azPowerShellVersion: '8.3.0'
+        cleanupPreference: 'Always'
+        timeout: 'PT10M'
+        scriptContent: '''
+        Write-Host "Start"
+        Get-Date
+        Start-Sleep -Seconds 60
+        Write-Host "Stop"
+        Get-Date
+        '''
+    }
+    dependsOn: [
+        sessionHosts
+    ]
+} 
+
+// Add antimalware extension to session host.
+module sessionHostsAntimalwareExtension '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, sessionHostsCount): {
+    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
+    name: 'SH-Antimalware-${padLeft((i + sessionHostCountIndex), 3, '0')}-${time}'
+    params: {
+        location: sessionHostLocation
+        virtualMachineName: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
+        name: 'MicrosoftAntiMalware'
+        publisher: 'Microsoft.Azure.Security'
+        type: 'IaaSAntimalware'
+        typeHandlerVersion: '1.3'
+        autoUpgradeMinorVersion: true
+        enableAutomaticUpgrade: false
+        settings: {
+            AntimalwareEnabled: true
+            RealtimeProtectionEnabled: 'true'
+            ScheduledScanSettings: {
+                isEnabled: 'true'
+                day: '7' // Day of the week for scheduled scan (1-Sunday, 2-Monday, ..., 7-Saturday)
+                time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
+                scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
+            }
+            Exclusions: createAvdFslogixDeployment ? {
+                Extensions: '*.vhd;*.vhdx'
+                Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${fslogixSharePath}\\*\\*.VHD;${fslogixSharePath}\\*\\*.VHDX'
+                Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
+            } : {}
+        }
+        enableDefaultTelemetry: false
+    }
+    dependsOn: [
+        sessionHostsWait
+    ]
+}]
+
+// Introduce wait for antimalware extension to complete to be ready.
+module antimalwareExtensionWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
+    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+    name: 'Session-Hosts-Wait-${time}'
+    params: {
+        name: 'Session-Hosts-Wait-${time}'
+        location: sessionHostLocation
+        azPowerShellVersion: '8.3.0'
+        cleanupPreference: 'Always'
+        timeout: 'PT10M'
+        scriptContent: '''
+        Write-Host "Start"
+        Get-Date
+        Start-Sleep -Seconds 120
+        Write-Host "Stop"
+        Get-Date
+        '''
+    }
+    dependsOn: [
+        sessionHostsAntimalwareExtension
+    ]
+} 
+
+// Call to the ALA workspace.
+resource alaWorkspaceGet 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(alaWorkspaceResourceId)) {
+    scope: az.resourceGroup(split(alaWorkspaceResourceId, '/')[2], split(alaWorkspaceResourceId, '/')[4])
+    name: last(split(alaWorkspaceResourceId, '/'))!
+}
+
+// Add monitoring extension to session host.
+module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, sessionHostsCount): if (deployMonitoring) {
+    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
+    name: 'SH-Monitoring-${padLeft((i + sessionHostCountIndex), 3, '0')}-${time}'
+    params: {
+        location: sessionHostLocation
+        virtualMachineName: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
+        name: 'MicrosoftMonitoringAgent'
+        publisher: 'Microsoft.EnterpriseCloud.Monitoring'
+        type: 'Windows'
+        typeHandlerVersion: '1.0'
+        autoUpgradeMinorVersion: true
+        enableAutomaticUpgrade: false
+        settings: {
+          workspaceId: alaWorkspaceResourceId
+        }
+        protectedSettings: {
+          workspaceKey: alaWorkspaceGet.listKeys().primarySharedKey
+        }
+        enableDefaultTelemetry: false
+    }
+    dependsOn: [
+        antimalwareExtensionWait
+        alaWorkspaceGet
+    ]
 }]
 
 // Add session hosts to AVD Host pool.
-module addAvdHostsToHostPool '../../../../vm-custom-extensions/add-avd-session-hosts.bicep' = [for i in range(1, sessionHostsCount): {
+module addAvdHostsToHostPool '../../../../vm-custom-extensions/add-avd-session-hosts.bicep' = [for i in range(1, sessionHostsCount): if (deployMonitoring) {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
     name: 'HP-Join-${padLeft((i + sessionHostCountIndex), 3, '0')}-to-HP-${time}'
     params: {
@@ -272,6 +360,8 @@ module addAvdHostsToHostPool '../../../../vm-custom-extensions/add-avd-session-h
     }
     dependsOn: [
         sessionHosts
+        antimalwareExtensionWait
+        sessionHostsMonitoring
     ]
 }]
 
@@ -288,5 +378,6 @@ module configureFsLogixForAvdHosts '../../../../vm-custom-extensions/configure-f
     }
     dependsOn: [
         sessionHosts
+        addAvdHostsToHostPool
     ]
 }]
