@@ -1105,6 +1105,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
             {
                 name: varWrklKvPrivateEndpointName
                 subnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetSubnetResourceId
+                customNetworkInterfaceName: 'nic-01-${varWrklKvPrivateEndpointName}'
                 service: 'vault'
                 privateDnsZoneResourceIds: [
                     avdVnetPrivateDnsZoneKeyvaultId
@@ -1114,6 +1115,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
             {
                 name: varWrklKvPrivateEndpointName
                 subnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetSubnetResourceId
+                customNetworkInterfaceName: 'nic-01-${varWrklKvPrivateEndpointName}'
                 service: 'vault'
             }
         ]
