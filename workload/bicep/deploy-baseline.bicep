@@ -1338,6 +1338,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         diagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
     dependsOn: [
+        fslogixStorageAzureFiles
         baselineResourceGroups
         networking
         wrklKeyVault
