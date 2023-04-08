@@ -13,6 +13,7 @@ resource "azurerm_firewall_policy_rule_collection_group" "fw_policy_rule_collect
     data.azurerm_firewall_policy.fw_policy
   ]
 
+
   ### Required Network Rules for AVD
   network_rule_collection {
     name     = "AVD-Network-Rule-Collection"
