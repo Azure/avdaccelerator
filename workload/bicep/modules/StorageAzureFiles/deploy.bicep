@@ -315,7 +315,7 @@ module managementVmWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentS
     params: {
         name: 'Management-VM-Wait-${time}'
         location: sessionHostLocation
-        azPowerShellVersion: '6.2'
+        azPowerShellVersion: '8.3.0'
         cleanupPreference: 'Always'
         timeout: 'PT10M'
         scriptContent: '''

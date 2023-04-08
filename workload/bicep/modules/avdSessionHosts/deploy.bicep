@@ -196,7 +196,7 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varAvd
     imageTemplateDefinitionId: avdImageTemplateDefinitionId
     sessionHostOuPath: sessionHostOuPath
     sessionHostsCount: i == varAvdSessionHostBatchCount && varDivisionRemainderValue > 0 ? varDivisionRemainderValue : varMaxSessionHostsPerTemplateDeployment
-    sessionHostCountIndex: i == 1 ? sessionHostCountIndex : ((i - 1) * varMaxSessionHostsPerTemplateDeployment) + sessionHostCountIndex
+    sessionHostCountIndex: i == 1 ? sessionHostCountIndex : (((i - 1) * varMaxSessionHostsPerTemplateDeployment) + sessionHostCountIndex)
     sessionHostDiskType: sessionHostDiskType
     sessionHostLocation: sessionHostLocation
     sessionHostNamePrefix: sessionHostNamePrefix
