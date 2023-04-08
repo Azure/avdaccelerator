@@ -36,12 +36,3 @@ data "azurerm_subnet" "subnet" {
     module.network
   ]
 }
-data "azurerm_subnet" "pesubnet" {
-  name                 = "${var.pesnet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001"        //var.snet
-  resource_group_name  = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_network}" //var.rg_network
-  virtual_network_name = "${var.vnet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001"          //var.vnet
-  provider             = azurerm.spoke
-  depends_on = [
-    module.network
-  ]
-}

@@ -133,7 +133,7 @@ resource "azurerm_virtual_desktop_workspace_application_group_association" "ws-d
 
 # Get Log Analytics Workspace data
 data "azurerm_log_analytics_workspace" "lawksp" {
-  name                = lower(replace("law-avd-${substr(var.avdLocation, 0, 5)}", "-", ""))
+  name                = lower(replace("law-avd-${var.prefix}", "-", ""))
   resource_group_name = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_avdi}"
 
   depends_on = [
@@ -211,14 +211,14 @@ resource "azurerm_monitor_diagnostic_setting" "avd-ws" {
     azurerm_virtual_desktop_workspace.workspace
   ]
 
-  dynamic "enabled_log" {
+    dynamic "enabled_log" {
     for_each = var.ws_log_categories
     content {
       category = enabled_log.value
     }
   }
 }
-/*
+  /*
   enabled_log {
     category = "Checkpoint"
 
