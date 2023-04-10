@@ -25,6 +25,9 @@ param serviceObjectsRgName string
 @description('AVD subnet ID.')
 param avdSubnetId string
 
+@description('Optional. Enable accelerated networking on the session host VMs.')
+param enableAcceleratedNetworking bool
+
 @description('Private endpoint subnet ID.')
 param privateEndpointSubnetId string
 
@@ -273,7 +276,7 @@ module managementVM '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
             {
                 nicSuffix: 'nic-001-'
                 deleteOption: 'Delete'
-                enableAcceleratedNetworking: false
+                enableAcceleratedNetworking: enableAcceleratedNetworking
                 ipConfigurations: createAvdVnet ? [
                     {
                         name: 'ipconfig01'

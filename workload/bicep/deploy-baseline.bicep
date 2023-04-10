@@ -1204,6 +1204,7 @@ module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if 
         storageObjectsRgName: varStorageObjectsRgName
         avdSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkAvdSubnetName}' : existingVnetSubnetResourceId
         privateEndpointSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetSubnetResourceId
+        enableAcceleratedNetworking: enableAcceleratedNetworking
         createAvdVnet: createAvdVnet
         vmLocalUserName: avdVmLocalUserName
         vnetPrivateDnsZone: avdVnetPrivateDnsZone
@@ -1261,6 +1262,7 @@ module msixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (va
         storageObjectsRgName: varStorageObjectsRgName
         avdSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkAvdSubnetName}' : existingVnetSubnetResourceId
         privateEndpointSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetSubnetResourceId
+        enableAcceleratedNetworking: enableAcceleratedNetworking
         createAvdVnet: createAvdVnet
         vmLocalUserName: avdVmLocalUserName
         vnetPrivateDnsZone: avdVnetPrivateDnsZone
@@ -1292,6 +1294,7 @@ module msixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (va
 module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySessionHosts) {
     name: 'Session-Hosts-${time}'
     params: {
+
         agentPackageLocation: varAgentPackageLocation
         computeTimeZone: varTimeZones[avdSessionHostLocation]
         applicationSecurityGroupResourceId: createAvdVnet ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
