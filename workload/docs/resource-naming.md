@@ -33,6 +33,8 @@ The naming of resources is hard coded in the templates but can also be modified 
 | `osdisk-{nnn}-vm-avd-{deploymentPrefix}-{nnn}` | Disk | OS disk attached to session hosts. |
 | `nic-{nn}-vm-avd-{deploymentPrefix}-{nnn}` | Network Interface | NEtwork interface attached to session hosts. |
 | `vm-avd-{deploymentPrefix}-{nnn}` | Virtual Machine | |
+| `AntiMal-Extension-Wait-{Timestamp}` | Deployment script | Introduce wait time after antimalware extension configuration. |
+| `Session-Hosts-Wait-{Timestamp}` | Deployment script | Introduce wait time after session host creation. |
 
 ### Storage naming (FSLogix & MSIX App Attach)
 
@@ -40,7 +42,7 @@ The naming of resources is hard coded in the templates but can also be modified 
 |:--|:--|:--|
 | `rg-avd-{AzureRegion}-{deploymentPrefix}-storage` | Resource Group | |
 | `id-avd-storage-{AzureRegion}-{deploymentPrefix}` | Managed identity | Identity used for FSLogix setup. |
-| `AVD-storageManagedIdentityWait-{Timestamp}` | Deployment script | Introduce wait time after managed identity creation. |
+| `Managed-Identity-Wait-{Timestamp}` | Deployment script | Introduce wait time after managed identity creation. |
 | `stfsl{deploymentPrefix}{uniqueString}` | Storage account | FSLogix file shares. |
 | `pe-stfsl{deploymentPrefix}{uniqueString}-file` | Private endpoint | Private endpoint attached to FSLogix storage account files service. |
 | `nic-{nn}-pe-stfsl{deploymentPrefix}{uniqueString}-file` | Network Interface | Network interface attached to FSLogix storage account's private endpoint. |
@@ -64,7 +66,7 @@ The naming of resources is hard coded in the templates but can also be modified 
 | Resource Name | Resource Type | |
 |:--|:--|:--|
 | `rg-avd-{AzureRegionAcronym}-monitoring` | Resource Group | |
-| `AVD-alaWorkspaceWait-{Timestamp}` | Deployment Script | Introduce wait time after log analytics workspace creation. |
+| `Log-Analytics-Workspace-Wait-{Timestamp}` | Deployment Script | Introduce wait time after log analytics workspace creation. |
 | `log-avd-{AzureRegionAcronym}` | Log Analytics Workspace | |
 
 ### Resource naming for the custom image deployment
