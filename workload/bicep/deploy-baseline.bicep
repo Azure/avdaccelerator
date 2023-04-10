@@ -7,7 +7,7 @@ targetScope = 'subscription'
 @minLength(2)
 @maxLength(4)
 @description('Required. The name of the resource group to deploy.')
-param deploymentPrefix string = ''
+param deploymentPrefix string = 'AVD1'
 
 @description('Optional. Location where to deploy compute services. (Default: eastus2)')
 param avdSessionHostLocation string = 'eastus2'
