@@ -339,7 +339,7 @@ module managementVmWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentS
 } 
 
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
-module addShareToDomainScript '../../../bicep/modules/storageAzureFiles/.bicep/azureFilesDomainJoinScript.bicep' = if(identityServiceProvider == 'ADDS' || identityServiceProvider == 'AADDS')  {
+module addShareToDomainScript './.bicep/azureFilesDomainJoinScript.bicep' = if(identityServiceProvider == 'ADDS' || identityServiceProvider == 'AADDS')  {
     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
     name: 'Add-${storagePurpose}-Storage-Setup-${time}'
     params: {
