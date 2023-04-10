@@ -2,10 +2,10 @@
 #$avdDomainJoinUserPassword = Read-Host -Prompt "Domain join password" -AsSecureString
 
 $Location = 'southcentralus'
-$VNETCIDR = '10.23.0.0/23'
-$AVDCIDR = '10.23.0.0/24'
-$PECIDR = '10.23.1.0/27'
-$Prefix = 'ig73'
+$VNETCIDR = '10.27.0.0/23'
+$AVDCIDR = '10.27.0.0/24'
+$PECIDR = '10.27.1.0/27'
+$Prefix = 'ig77'
 New-AzSubscriptionDeployment `
 -TemplateFile 'C:\Users\dcontreras\Downloads\avdaccelerator\avdaccelerator\workload\bicep\deploy-baseline.bicep' `
 -TemplateParameterFile 'C:\Users\dcontreras\Downloads\avdaccelerator\avdaccelerator\workload\bicep\parameters\deploy-baseline-parameters-example.json' `
@@ -28,7 +28,7 @@ New-AzSubscriptionDeployment `
 -avdHostPoolType 'Pooled' `
 -avdSessionHostLocation $Location `
 -avdManagementPlaneLocation $Location `
--avdDeploySessionHostsCount '4' `
+-avdDeploySessionHostsCount '6' `
 -avdIdentityServiceProvider 'ADDS' `
 -customDnsIps '10.40.135.4' `
 -securityType 'Standard' `
@@ -43,7 +43,7 @@ New-AzSubscriptionDeployment `
 -createMsixDeployment $true `
 -secureBootEnabled $true `
 -vTpmEnabled $true `
--avdUseAvailabilityZones $false `
+-avdUseAvailabilityZones $true `
 -avdVnetPrivateDnsZone $true `
 -avdDeployScalingPlan $true `
 -avdDeploySessionHosts $true `
