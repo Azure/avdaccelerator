@@ -100,6 +100,9 @@ param tags object
 @description('Name for management virtual machine. for tools and to join Azure Files to domain.')
 param managementVmName string
 
+@description('Optional. AVD Accelerator will deploy with private endpoints by default.')
+param usePrivateEndpoint bool
+
 @description('Optional. Log analytics workspace for diagnostic logs.')
 param alaWorkspaceResourceId string
 
@@ -187,8 +190,9 @@ module storageAndFile '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
         name: varStorageName
         location: sessionHostLocation
         storageAccountSku: storageSku
+        //allowBlobPublicAccess: usePrivateEndpoint ? false : true
         allowBlobPublicAccess: false
-        publicNetworkAccess: 'Disabled'
+        publicNetworkAccess: usePrivateEndpoint ? 'Disabled' : 'Enabled'
         storageAccountKind: ((storageSku =~ 'Premium_LRS') || (storageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
         azureFilesIdentityBasedAuthentication: (identityServiceProvider == 'AADDS') ? {
             directoryServiceOptions: 'AADDS'
@@ -196,12 +200,12 @@ module storageAndFile '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
             directoryServiceOptions: 'None'
         }
         storageAccountAccessTier: 'Hot'
-        networkAcls: {
+        networkAcls: usePrivateEndpoint ? {
             bypass: 'AzureServices'
             defaultAction: 'Deny'
             virtualNetworkRules: []
             ipRules: []
-        }
+        } : {}
         fileServices: {
             shares: [
                 {
@@ -220,7 +224,7 @@ module storageAndFile '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
             diagnosticLogCategoriesToEnable: varAvdFileShareLogsDiagnostic
             diagnosticMetricsToEnable: varAvdFileShareMetricsDiagnostic
         }
-        privateEndpoints: vnetPrivateDnsZone ? [
+        privateEndpoints: usePrivateEndpoint ? ( vnetPrivateDnsZone ? [
             {
                 name: varWrklStoragePrivateEndpointName
                 subnetResourceId: subnetResourceId
@@ -235,7 +239,7 @@ module storageAndFile '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
                 subnetResourceId: subnetResourceId
                 service: 'file'
             }
-        ]
+        ]) : []
         tags: tags
         diagnosticWorkspaceId: alaWorkspaceResourceId
         diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
