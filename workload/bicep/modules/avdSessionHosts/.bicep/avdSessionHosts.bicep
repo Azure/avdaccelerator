@@ -318,12 +318,72 @@ module antimalwareExtensionWait '../../../../../carml/1.3.0/Microsoft.Resources/
     ]
 } 
 
+// Add session hosts to AVD Host pool.
+module addAvdHostsToHostPool './registerSessionHostsOnHopstPool.bicep' = [for i in range(1, sessionHostsCount): {
+    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
+    name: 'HP-Join-${padLeft((i + sessionHostCountIndex), 3, '0')}-to-HP-${time}'
+    params: {
+        location: sessionHostLocation
+        hostPoolToken: hostPoolToken
+        name: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
+        hostPoolName: hostPoolName
+        avdAgentPackageLocation: agentPackageLocation
+    }
+    dependsOn: [
+        sessionHosts
+        antimalwareExtensionWait
+    ]
+}]
+
+// Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
+module configureFsLogixForAvdHosts './configureFslogixOnSessionHosts.bicep' = [for i in range(1, sessionHostsCount): if (createAvdFslogixDeployment && (identityServiceProvider != 'AAD')) {
+    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
+    name: 'Configure-FsLogix-for-${padLeft((i + sessionHostCountIndex), 3, '0')}-${time}'
+    params: {
+        location: sessionHostLocation
+        name: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
+        file: fsLogixScript
+        fsLogixScriptArguments: fsLogixScriptArguments
+        baseScriptUri: fslogixScriptUri
+    }
+    dependsOn: [
+        sessionHosts
+        addAvdHostsToHostPool
+    ]
+}]
+
+// Introduce wait for antimalware extension to complete to be ready.
+module addAvdHostsToHostPoolWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
+    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
+    name: 'Host-Pool-Registration-Wait-${time}'
+    params: {
+        name: 'Host-Pool-Registration-Wait-${time}'
+        location: sessionHostLocation
+        azPowerShellVersion: '8.3.0'
+        cleanupPreference: 'Always'
+        timeout: 'PT10M'
+        scriptContent: '''
+        Write-Host "Start"
+        Get-Date
+        Start-Sleep -Seconds 120
+        Write-Host "Stop"
+        Get-Date
+        '''
+    }
+    dependsOn: [
+        antimalwareExtensionWait
+        addAvdHostsToHostPool
+        configureFsLogixForAvdHosts
+    ]
+} 
+
+
 // Call to the ALA workspace.
 resource alaWorkspaceGet 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(alaWorkspaceResourceId)) {
     scope: az.resourceGroup(split(alaWorkspaceResourceId, '/')[2], split(alaWorkspaceResourceId, '/')[4])
     name: last(split(alaWorkspaceResourceId, '/'))!
 }
-/*
+
 // Add monitoring extension to session host.
 module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, sessionHostsCount): if (deployMonitoring) {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
@@ -346,42 +406,7 @@ module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virt
         enableDefaultTelemetry: false
     }
     dependsOn: [
-        antimalwareExtensionWait
+        addAvdHostsToHostPoolWait
         alaWorkspaceGet
-    ]
-}]
-*/
-// Add session hosts to AVD Host pool.
-module addAvdHostsToHostPool '../../../../bicep/modules/avdSessionHosts/.bicep/registerSessionHostsOnHopstPool.bicep' = [for i in range(1, sessionHostsCount): if (deployMonitoring) {
-    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
-    name: 'HP-Join-${padLeft((i + sessionHostCountIndex), 3, '0')}-to-HP-${time}'
-    params: {
-        location: sessionHostLocation
-        hostPoolToken: hostPoolToken
-        name: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
-        hostPoolName: hostPoolName
-        avdAgentPackageLocation: agentPackageLocation
-    }
-    dependsOn: [
-        sessionHosts
-        antimalwareExtensionWait
-        //sessionHostsMonitoring
-    ]
-}]
-
-// Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
-module configureFsLogixForAvdHosts '../../../../bicep/modules/avdSessionHosts/.bicep/configureFslogixOnSessionHosts.bicep' = [for i in range(1, sessionHostsCount): if (createAvdFslogixDeployment && (identityServiceProvider != 'AAD')) {
-    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
-    name: 'Configure-FsLogix-for-${padLeft((i + sessionHostCountIndex), 3, '0')}-${time}'
-    params: {
-        location: sessionHostLocation
-        name: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
-        file: fsLogixScript
-        fsLogixScriptArguments: fsLogixScriptArguments
-        baseScriptUri: fslogixScriptUri
-    }
-    dependsOn: [
-        sessionHosts
-        addAvdHostsToHostPool
     ]
 }]

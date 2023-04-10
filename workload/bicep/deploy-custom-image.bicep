@@ -969,7 +969,7 @@ module modules '../../carml/1.3.0/Microsoft.Automation/automationAccounts/module
 // Commenting out for future feature release
 /* module storageAccount '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'Storage-Account_${time}'
+    name: 'Storage-Account-${time}'
     params: {
         name: varStorageAccountName
         location: deploymentLocation
