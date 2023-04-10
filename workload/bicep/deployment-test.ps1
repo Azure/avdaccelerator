@@ -1,11 +1,11 @@
 #$avdVmLocalUserPassword = Read-Host -Prompt "Local user password" -AsSecureString
 #$avdDomainJoinUserPassword = Read-Host -Prompt "Domain join password" -AsSecureString
 
-$Location = 'eastus'
-$VNETCIDR = '10.19.0.0/23'
-$AVDCIDR = '10.19.0.0/24'
-$PECIDR = '10.19.1.0/27'
-$Prefix = 'ig69'
+$Location = 'southcentralus'
+$VNETCIDR = '10.23.0.0/23'
+$AVDCIDR = '10.23.0.0/24'
+$PECIDR = '10.23.1.0/27'
+$Prefix = 'ig73'
 New-AzSubscriptionDeployment `
 -TemplateFile 'C:\Users\dcontreras\Downloads\avdaccelerator\avdaccelerator\workload\bicep\deploy-baseline.bicep' `
 -TemplateParameterFile 'C:\Users\dcontreras\Downloads\avdaccelerator\avdaccelerator\workload\bicep\parameters\deploy-baseline-parameters-example.json' `
