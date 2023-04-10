@@ -318,7 +318,7 @@ var varTimeZones = {
 // AVD Shared Services Resource Group
 module avdSharedResourcesRg '../../../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
   scope: subscription(sharedServicesSubscriptionId)
-  name: 'Resource-Group_${time}'
+  name: 'Resource-Group-${time}'
   params: {
       name: varResourceGroupName
       location: deploymentLocation
@@ -329,7 +329,7 @@ module avdSharedResourcesRg '../../../../carml/1.3.0/Microsoft.Resources/resourc
 // Log Analytics Workspace
 module workspace '../../../../carml/1.3.0/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
   scope: resourceGroup(sharedServicesSubscriptionId, varResourceGroupName)
-  name: 'Log-Analytics-Workspace_${time}'
+  name: 'Log-Analytics-Workspace-${time}'
   params: {
       location: deploymentLocation
       name: varLogAnalyticsWorkspaceName
@@ -345,9 +345,9 @@ module workspace '../../../../carml/1.3.0/Microsoft.OperationalInsights/workspac
 // Introduce wait after log analitics workspace creation.
 module workspaceWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
   scope: resourceGroup(sharedServicesSubscriptionId, varResourceGroupName)
-  name: 'Log-Analytics-Workspace-Wait_${time}'
+  name: 'Log-Analytics-Workspace-Wait-${time}'
   params: {
-      name: 'Log-Analytics-Workspace-Wait_${time}'
+      name: 'Log-Analytics-Workspace-Wait-${time}'
       location: deploymentLocation
       azPowerShellVersion: '8.3.0'
       cleanupPreference: 'Always'
@@ -367,7 +367,7 @@ module workspaceWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScri
 
 // Get existing automation account
 module automationAccount_Existing 'modules/existingAutomationAccount.bicep' = if(!(empty(existingAutomationAccountResourceId))) {
-  name: 'Existing_Automation-Account_${time}'
+  name: 'Existing_Automation-Account-${time}'
   scope: resourceGroup(sharedServicesSubscriptionId, varAutomationAccountScope)
   params:{
     automationAccountName: varExistingAutomationAccountName
@@ -377,7 +377,7 @@ module automationAccount_Existing 'modules/existingAutomationAccount.bicep' = if
 // Deploy new automation account
 module automationAccount_New '../../../../carml/1.3.0/Microsoft.Automation/automationAccounts/deploy.bicep' = {
   scope: resourceGroup(sharedServicesSubscriptionId, varAutomationAccountScope)
-  name: 'Automation-Account_${time}'
+  name: 'Automation-Account-${time}'
   params: {
     diagnosticLogCategoriesToEnable: [
       'JobLogs'
@@ -461,7 +461,7 @@ module automationAccount_New '../../../../carml/1.3.0/Microsoft.Automation/autom
 
 // Role assignment
 module roleAssignments '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = {
-  name: 'Role-Assignment_${time}'
+  name: 'Role-Assignment-${time}'
   scope: resourceGroup(varStorageAccountSubscriptionId, varStorageAccountResourceGroupName)
   params: {
       roleDefinitionIdOrName: 'Storage Account Contributor'
@@ -473,7 +473,7 @@ module roleAssignments '../../../../carml/1.3.0/Microsoft.Authorization/roleAssi
 // Alerts action group
 module actionGroup '../../../../carml/1.3.0/Microsoft.Insights/actionGroups/deploy.bicep' = if (enableMonitoringAlerts) {
   scope: resourceGroup(sharedServicesSubscriptionId, varResourceGroupName)
-  name: 'Action-Group_${time}'
+  name: 'Action-Group-${time}'
   params: {
       location: 'global'
       groupShortName: 'aib-email'
@@ -496,7 +496,7 @@ module actionGroup '../../../../carml/1.3.0/Microsoft.Insights/actionGroups/depl
 // Scheduled query rules
 module scheduledQueryRules '../../../../carml/1.3.0/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(varAlerts)): if (enableMonitoringAlerts) {
   scope: resourceGroup(sharedServicesSubscriptionId, varResourceGroupName)
-  name: 'Scheduled-Query-Rule_${i}_${time}'
+  name: 'Scheduled-Query-Rule-${i}-${time}'
   params: {
       location: deploymentLocation
       name: varAlerts[i].name
