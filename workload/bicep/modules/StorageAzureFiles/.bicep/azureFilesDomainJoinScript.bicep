@@ -1,12 +1,30 @@
+// ========== //
+// Parameters //
+// ========== //
+
+@description('Extension deployment name.')
 param name string
+
+@description('Location where to deploy compute services.')
 param location string
+
+@description('Location for the AVD agent installation package.')
 param baseScriptUri string
+
+
 param file string
 @secure()
+
+
 param ScriptArguments string
 
+// =========== //
+// Deployments //
+// =========== //
+
+// Add Azure Files to AD DS domain.
 resource dscStorageScript 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = {
-  name: '${name}/dscStorageScript'
+  name: '${name}/AzureFilesDomainJoin'
   location: location
   properties: {
     publisher: 'Microsoft.Compute'

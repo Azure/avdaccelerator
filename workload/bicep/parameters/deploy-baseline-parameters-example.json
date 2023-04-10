@@ -195,7 +195,7 @@
             "value": 90
         },
         "enableAcceleratedNetworking": {
-            "value": false
-        },
+            "value": true
+        }
     }
 }
