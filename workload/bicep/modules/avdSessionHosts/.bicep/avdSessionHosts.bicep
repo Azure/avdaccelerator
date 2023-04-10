@@ -235,7 +235,7 @@ module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
 
 // Introduce wait for session hosts to be ready.
 module sessionHostsWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
-    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
     name: 'Session-Hosts-Wait-${time}'
     params: {
         name: 'Session-Hosts-Wait-${time}'
@@ -293,7 +293,7 @@ module sessionHostsAntimalwareExtension '../../../../../carml/1.3.0/Microsoft.Co
 
 // Introduce wait for antimalware extension to complete to be ready.
 module antimalwareExtensionWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
-    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
     name: 'AntiMal-Extension-Wait-${time}'
     params: {
         name: 'AntiMal-Extension-Wait-${time}'
