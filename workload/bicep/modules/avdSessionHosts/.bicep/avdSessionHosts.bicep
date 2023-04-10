@@ -195,7 +195,11 @@ module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
                     {
                         name: 'ipconfig01'
                         subnetResourceId: subnetId
-                        applicationSecurityGroups: applicationSecurityGroupResourceId
+                        applicationSecurityGroups: [
+                            {
+                                id: applicationSecurityGroupResourceId
+                            }
+                        ] 
                     }
                 ] : [
                     {
@@ -348,7 +352,7 @@ module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virt
 }]
 */
 // Add session hosts to AVD Host pool.
-module addAvdHostsToHostPool '../../../../vm-custom-extensions/add-avd-session-hosts.bicep' = [for i in range(1, sessionHostsCount): if (deployMonitoring) {
+module addAvdHostsToHostPool '../../../../bicep/modules/avdSessionHosts/.bicep/registerSessionHostsOnHopstPool.bicep' = [for i in range(1, sessionHostsCount): if (deployMonitoring) {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
     name: 'HP-Join-${padLeft((i + sessionHostCountIndex), 3, '0')}-to-HP-${time}'
     params: {
@@ -366,14 +370,14 @@ module addAvdHostsToHostPool '../../../../vm-custom-extensions/add-avd-session-h
 }]
 
 // Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
-module configureFsLogixForAvdHosts '../../../../vm-custom-extensions/configure-fslogix-session-hosts.bicep' = [for i in range(1, sessionHostsCount): if (createAvdFslogixDeployment && (identityServiceProvider != 'AAD')) {
+module configureFsLogixForAvdHosts '../../../../bicep/modules/avdSessionHosts/.bicep/configureFslogixOnSessionHosts.bicep' = [for i in range(1, sessionHostsCount): if (createAvdFslogixDeployment && (identityServiceProvider != 'AAD')) {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
     name: 'Configure-FsLogix-for-${padLeft((i + sessionHostCountIndex), 3, '0')}-${time}'
     params: {
         location: sessionHostLocation
         name: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
         file: fsLogixScript
-        FsLogixScriptArguments: fsLogixScriptArguments
+        fsLogixScriptArguments: fsLogixScriptArguments
         baseScriptUri: fslogixScriptUri
     }
     dependsOn: [
