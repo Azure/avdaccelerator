@@ -294,9 +294,9 @@ module sessionHostsAntimalwareExtension '../../../../../carml/1.3.0/Microsoft.Co
 // Introduce wait for antimalware extension to complete to be ready.
 module antimalwareExtensionWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
-    name: 'Session-Hosts-Wait-${time}'
+    name: 'AntiMal-Extension-Wait-${time}'
     params: {
-        name: 'Session-Hosts-Wait-${time}'
+        name: 'AntiMal-Extension-Wait-${time}'
         location: sessionHostLocation
         azPowerShellVersion: '8.3.0'
         cleanupPreference: 'Always'
@@ -319,7 +319,7 @@ resource alaWorkspaceGet 'Microsoft.OperationalInsights/workspaces@2021-06-01' e
     scope: az.resourceGroup(split(alaWorkspaceResourceId, '/')[2], split(alaWorkspaceResourceId, '/')[4])
     name: last(split(alaWorkspaceResourceId, '/'))!
 }
-
+/*
 // Add monitoring extension to session host.
 module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, sessionHostsCount): if (deployMonitoring) {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
@@ -346,7 +346,7 @@ module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virt
         alaWorkspaceGet
     ]
 }]
-
+*/
 // Add session hosts to AVD Host pool.
 module addAvdHostsToHostPool '../../../../vm-custom-extensions/add-avd-session-hosts.bicep' = [for i in range(1, sessionHostsCount): if (deployMonitoring) {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
@@ -361,7 +361,7 @@ module addAvdHostsToHostPool '../../../../vm-custom-extensions/add-avd-session-h
     dependsOn: [
         sessionHosts
         antimalwareExtensionWait
-        sessionHostsMonitoring
+        //sessionHostsMonitoring
     ]
 }]
 
