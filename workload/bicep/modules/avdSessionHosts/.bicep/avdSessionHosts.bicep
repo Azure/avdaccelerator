@@ -379,7 +379,7 @@ module addAvdHostsToHostPoolWait '../../../../../carml/1.3.0/Microsoft.Resources
 
 
 // Call to the ALA workspace.
-resource alaWorkspaceGet 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(alaWorkspaceResourceId)) {
+resource alaWorkspaceGet 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(alaWorkspaceResourceId) && deployMonitoring) {
     scope: az.resourceGroup(split(alaWorkspaceResourceId, '/')[2], split(alaWorkspaceResourceId, '/')[4])
     name: last(split(alaWorkspaceResourceId, '/'))!
 }
@@ -393,7 +393,7 @@ module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virt
         virtualMachineName: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
         name: 'MicrosoftMonitoringAgent'
         publisher: 'Microsoft.EnterpriseCloud.Monitoring'
-        type: 'Windows'
+        type: 'MicrosoftMonitoringAgent'
         typeHandlerVersion: '1.0'
         autoUpgradeMinorVersion: true
         enableAutomaticUpgrade: false
@@ -401,7 +401,7 @@ module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virt
           workspaceId: alaWorkspaceResourceId
         }
         protectedSettings: {
-          workspaceKey: alaWorkspaceGet.listKeys().primarySharedKey
+          workspaceKey: !empty(alaWorkspaceResourceId) ? alaWorkspaceGet.listKeys().primarySharedKey: ''
         }
         enableDefaultTelemetry: false
     }
