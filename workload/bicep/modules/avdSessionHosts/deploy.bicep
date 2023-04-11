@@ -155,7 +155,6 @@ var availabilitySetCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue 
 // =========== //
 
 // Call on the hotspool.
-//resource getHostPool 'Microsoft.DesktopVirtualization/hostPools@2021-01-14-preview' existing = {
 resource getHostPool 'Microsoft.DesktopVirtualization/hostPools@2019-12-10-preview' existing = {
   name: hostPoolName
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
