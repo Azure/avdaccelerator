@@ -1192,9 +1192,30 @@
                             }
                         },
                         {
-                            "name": "virtualNetworkPrivateDnsZone",
+                            "name": "usePrivateEndpoint",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
+                            "label": "Use Private Endpoints",
+                            "defaultValue": "Yes (Recommended)",
+                            "toolTip": "Enables Private Endpoints for Key Vault and Storage Resources. It is recommended to use Azure Private Endpoints to keep all traffic to PaaS services on the Azure backbone.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "Yes (Recommended)",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "No",
+                                        "value": false
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "virtualNetworkPrivateDnsZone",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": "[equals(steps('network').usePrivateEndpoint, true)]",
                             "label": "Existing Azure private DNS zone",
                             "defaultValue": "Yes (Recommended)",
                             "toolTip": "It is recommended to use Azure private DNS zones for private endpoint name spaces, private endpoints will be automatically created for PaaS services (Azure Files and Key Vault) but the private DNS zones are prerequisites required.",
