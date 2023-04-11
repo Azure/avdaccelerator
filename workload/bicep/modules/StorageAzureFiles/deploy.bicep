@@ -246,10 +246,10 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
 }
 
 // Call on the VM.
-//resource managementVMget 'Microsoft.Compute/virtualMachines@2022-11-01' existing = {
-//    name: managementVmName
-//    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
-//}
+resource managementVMget 'Microsoft.Compute/virtualMachines@2022-11-01' existing = {
+    name: managementVmName
+    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+}
 
 // Provision temporary VM and add it to domain.
 module managementVM '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = { //if (empty(managementVMget.name != managementVmName)) {
@@ -324,7 +324,7 @@ module managementVM '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
 }
 
 // Introduce wait for management VM to be ready.
-module managementVmWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = { //if (empty(managementVMget.id)) {
+module managementVmWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (managementVMget.name != managementVmName) {
     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
     name: 'Management-VM-Wait-${time}'
     params: {
