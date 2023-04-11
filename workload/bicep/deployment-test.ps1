@@ -2,10 +2,10 @@
 #$avdDomainJoinUserPassword = Read-Host -Prompt "Domain join password" -AsSecureString
 
 $Location = 'southcentralus'
-$VNETCIDR = '10.27.0.0/23'
-$AVDCIDR = '10.27.0.0/24'
-$PECIDR = '10.27.1.0/27'
-$Prefix = 'ig77'
+$VNETCIDR = '172.32.0.0/16'
+$AVDCIDR = '172.32.1.0/24'
+$PECIDR = '172.32.2.0/27'
+$Prefix = 'ig89'
 New-AzSubscriptionDeployment `
 -TemplateFile 'C:\Users\dcontreras\Downloads\avdaccelerator\avdaccelerator\workload\bicep\deploy-baseline.bicep' `
 -TemplateParameterFile 'C:\Users\dcontreras\Downloads\avdaccelerator\avdaccelerator\workload\bicep\parameters\deploy-baseline-parameters-example.json' `
@@ -28,7 +28,7 @@ New-AzSubscriptionDeployment `
 -avdHostPoolType 'Pooled' `
 -avdSessionHostLocation $Location `
 -avdManagementPlaneLocation $Location `
--avdDeploySessionHostsCount '6' `
+-avdDeploySessionHostsCount '1' `
 -avdIdentityServiceProvider 'ADDS' `
 -customDnsIps '10.40.135.4' `
 -securityType 'Standard' `
@@ -38,7 +38,7 @@ New-AzSubscriptionDeployment `
 -avdApplicationGroupIdentitiesIds '93e03feb-fc7f-4431-988e-3ec4ccfce68f' `
 -deployAlaWorkspace $true `
 -deployCustomPolicyMonitoring $false `
--avdDeployMonitoring $false `
+-avdDeployMonitoring $true `
 -createAvdFslogixDeployment $true `
 -createMsixDeployment $true `
 -secureBootEnabled $true `
