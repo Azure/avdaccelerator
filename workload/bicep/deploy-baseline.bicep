@@ -1124,43 +1124,43 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
         secrets: {
             secureList: (avdIdentityServiceProvider != 'AAD') ? [
                 {
-                    name: 'avdVmLocalUserPassword'
+                    name: 'vmLocalUserPassword'
                     value: avdVmLocalUserPassword
                     contentType: 'Session host local user credentials'
                 }
                 {
-                    name: 'avdVmLocalUserName'
+                    name: 'vmLocalUserName'
                     value: avdVmLocalUserName
                     contentType: 'Session host local user credentials'
                 }
                 {
-                    name: 'avdDomainJoinUserName'
+                    name: 'domainJoinUserName'
                     value: avdDomainJoinUserName
                     contentType: 'Domain join credentials'
                 }
                 {
-                    name: 'avdDomainJoinUserPassword'
+                    name: 'domainJoinUserPassword'
                     value: avdDomainJoinUserPassword
                     contentType: 'Domain join credentials'
                 }
             ] : [
                 {
-                    name: 'avdVmLocalUserPassword'
+                    name: 'vmLocalUserPassword'
                     value: avdVmLocalUserPassword
                     contentType: 'Session host local user credentials'
                 }
                 {
-                    name: 'avdVmLocalUserName'
+                    name: 'vmLocalUserName'
                     value: avdVmLocalUserName
                     contentType: 'Session host local user credentials'
                 }
                 {
-                    name: 'avdDomainJoinUserName'
+                    name: 'domainJoinUserName'
                     value: 'AAD-Joined-Deployment-No-Domain-Credentials'
                     contentType: 'Domain join credentials'
                 }
                 {
-                    name: 'avdDomainJoinUserPassword'
+                    name: 'domainJoinUserPassword'
                     value: 'AAD-Joined-Deployment-No-Domain-Credentials'
                     contentType: 'Domain join credentials'
                 }

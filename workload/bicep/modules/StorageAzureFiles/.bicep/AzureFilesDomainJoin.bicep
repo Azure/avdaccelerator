@@ -9,62 +9,40 @@ param name string
 param location string
 
 @description('Location for the AVD agent installation package.')
-param dscAgentPackageLocation string
+param baseScriptUri string
 
-@description('Storage account name.')
-param storageAccountName string
+param file string
 
-@description('Resource Group Name for Azure Files.')
-param storageAccountRG string
+@description('Arguments for domain join script.')
+param scriptArguments string
 
-@description('AD domain name.')
-param domainName string
-
-@description('Azure cloud environment.')
-param AzureCloudEnvironment string
-
-@description('Sets purpose of the storage account.')
-param storagePurpose string
-
-@description('Domain join account password.')
 @secure()
-param domainAdminPassword string
+@description('Domain join user password.')
+param  domainJoinUserPassword string
 
-@description('Domain join account username.')
-param domainAdminUsername string
+// =========== //
+// Variable declaration //
+// =========== //
+
+var varscriptArgumentsWithPassword = '${scriptArguments}"${domainJoinUserPassword}" '
 
 // =========== //
 // Deployments //
 // =========== //
 
 // Add Azure Files to AD DS domain.
-resource addAzureFilesToDomain 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = {
+resource dscStorageScript 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = {
   name: '${name}/AzureFilesDomainJoin'
   location: location
   properties: {
-    publisher: 'Microsoft.PowerShell'
-    type: 'DSC'
-    typeHandlerVersion: '2.73'
+    publisher: 'Microsoft.Compute'
+    type: 'CustomScriptExtension'
+    typeHandlerVersion: '1.10'
     autoUpgradeMinorVersion: true
-    settings: {
-      configuration: {
-        url: dscAgentPackageLocation
-        script: 'Configuration.ps1'
-        function: 'DomainJoinFileShare'
-      }
-      configurationArguments: {
-        storageAccountName: storageAccountName
-        storageAccountRG: storageAccountRG
-        DomainName: domainName
-        AzureCloudEnvironment: AzureCloudEnvironment
-        DomainAdminUserName: domainAdminUsername
-        StoragePurpose: storagePurpose
-      } 
-    }
+    settings: {}
     protectedSettings: {
-      configurationArguments: {
-        DomainAdminUserPassword: domainAdminPassword
-      } 
+      fileUris: array(baseScriptUri)
+      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File ${file} ${varscriptArgumentsWithPassword}'
     }
   }
 }
