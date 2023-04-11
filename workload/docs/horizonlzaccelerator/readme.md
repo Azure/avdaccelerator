@@ -206,44 +206,44 @@ The following list of common metrics should be monitored for any Horizon Cloud o
 Note that thresholds for metrics should be set based on differentiated values for expected norms in most situations. Resource-based metrics should be measured as a percentage of capacity of the given resource versus the total capacity available for that resource. 
 
 - End-User Connection Statistics 
--- Successful Connections 
--- Unsuccessful Connections 
+  - Successful Connections 
+  - Unsuccessful Connections 
 - End User Experience Statistics 
--- Session Latency 
--- Protocol Latency 
--- Packet Loss 
--- Average Logon Execution Time 
+  - Session Latency 
+  - Protocol Latency 
+  - Packet Loss 
+  - Average Logon Execution Time 
 - Platform  Metrics 
--- Number of Unique Users 
--- Number of User Sessions 
--- Number of VDI Sessions 
--- Number of Shared-Desktop Sessions 
--- Number of Application Sessions 
--- Number of currently Active Sessions 
--- Number of users impacted by User Experience issues (see above list) 
--- User distribution across Horizon Pods 
--- Number of available desktops 
--- Number of available muti-user farms 
+  - Number of Unique Users 
+  - Number of User Sessions 
+  - Number of VDI Sessions 
+  - Number of Shared-Desktop Sessions 
+  - Number of Application Sessions 
+  - Number of currently Active Sessions 
+  - Number of users impacted by User Experience issues (see above list) 
+  - User distribution across Horizon Pods 
+  - Number of available desktops 
+  - Number of available muti-user farms 
 - User Metrics 
--- User resource consumption (CPU, Memory, Disk IOPS) 
--- User bandwidth consumption 
--- Number of active sessions 
--- Number of active desktops 
--- Number of active applications 
--- Login Time 
--- Client Information 
--- Process / Application Information 
+  - User resource consumption (CPU, Memory, Disk IOPS) 
+  - User bandwidth consumption 
+  - Number of active sessions 
+  - Number of active desktops 
+  - Number of active applications 
+  - Login Time 
+  - Client Information 
+  - Process / Application Information 
 - Infrastructure 
--- Critical Network services Available 
---- DNS, DHCP, NTP 
---- Active Directory 
---- Network connectivity  
---- User Connectivity 
--- Critical Platform components available 
---- Network Throughout 
---- Network Latency 
---- Storage Throughput 
---- Storage Latency 
+  - Critical Network services Available 
+    - DNS, DHCP, NTP 
+    - Active Directory 
+    - Network connectivity  
+    - User Connectivity 
+  - Critical Platform components available 
+    - Network Throughout 
+    - Network Latency 
+    - Storage Throughput 
+    - Storage Latency 
 
 ## Resources 
 
