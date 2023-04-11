@@ -54,7 +54,8 @@ This scenario is ideal if:
 - You can select which Vnets and subnets are allowed to be used for desktop capacity. If you are using multiple Vnets for user capacity, you need to set up virtual networking peering between the Vnets in use. See [Virtual network peering](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-peering-overview). 
 
 
-Insert Image #1 Here
+**Horizon Cloud on AVD - Network Reference Architecture**
+[![Diagram of the Horizon Cloud on Azure hybrid connectivity scenario](../diagrams/horizon-cloud-azure-virtual-desktop-architecture-1.png)](./diagrams/horizon-cloud-azure-virtual-desktop-architecture-1.png#lightbox)
 
 
 Details on network topology and connectivity for each platform are discussed below. 
@@ -70,7 +71,8 @@ Horizon Cloud Service provides a single cloud control plane, run by Vmware, that
 Vmware is responsible for hosting the Horizon Cloud Service control plane and providing feature updates and enhancements for a software-as-a-service experience. The Horizon Cloud Service is an application service that runs in multiple Microsoft Azure regions. 
 
 
-Insert Image #2 Here
+**Horizon Cloud on AVD - Deployment Reference Architecture**
+[![Diagram of the Horizon Cloud on Azure hybrid deployment scenario](../diagrams/horizon-cloud-azure-virtual-desktop-architecture-2.png)](./diagrams/horizon-cloud-azure-virtual-desktop-architecture-2.png#lightbox)
 
 
 You can find more details on what a typical Horizon Cloud on Microsoft Azure deployment looks like by reviewing the [Horizon Cloud on Microsoft Azure Architecture](https://techzone.vmware.com/resource/horizon-cloud-on-microsoft-azure-architecture) document on Vmware TechZone. 
@@ -96,7 +98,8 @@ Horizon offers flexible deployment options across private and public clouds, fro
 
 
 
-Insert Image #3 Here
+**Horizon Cloud on AVD - Multi Cloud Deployment Reference Architecture**
+[![Diagram of the Horizon Cloud on Azure multi-cloud deployment scenario](../diagrams/horizon-cloud-azure-virtual-desktop-architecture-3.png)](./diagrams/horizon-cloud-azure-virtual-desktop-architecture-3.png#lightbox)
 
 
 
