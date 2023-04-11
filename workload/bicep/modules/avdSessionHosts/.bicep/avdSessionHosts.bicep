@@ -304,9 +304,9 @@ module sessionHostsAntimalwareExtension '../../../../../carml/1.3.0/Microsoft.Co
 // Introduce wait for antimalware extension to complete to be ready.
 module antimalwareExtensionWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
-    name: 'AntiMal-Extension-Wait-${time}'
+    name: 'Antimalware-Extension-Wait-${time}'
     params: {
-        name: 'AntiMal-Extension-Wait-${time}'
+        name: 'Antimalware-Extension-Wait-${time}'
         location: sessionHostLocation
         azPowerShellVersion: '8.3.0'
         cleanupPreference: 'Always'
