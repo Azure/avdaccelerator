@@ -2,10 +2,10 @@
 #$avdDomainJoinUserPassword = Read-Host -Prompt "Domain join password" -AsSecureString
 
 $Location = 'southcentralus'
-$VNETCIDR = '172.37.0.0/16'
-$AVDCIDR = '172.37.1.0/24'
-$PECIDR = '172.37.2.0/27'
-$Prefix = 'ig94'
+$VNETCIDR = '172.38.0.0/16'
+$AVDCIDR = '172.38.1.0/24'
+$PECIDR = '172.38.2.0/27'
+$Prefix = 'ig95'
 New-AzSubscriptionDeployment `
 -TemplateFile 'C:\Users\dcontreras\Downloads\avdaccelerator\avdaccelerator\workload\bicep\deploy-baseline.bicep' `
 -TemplateParameterFile 'C:\Users\dcontreras\Downloads\avdaccelerator\avdaccelerator\workload\bicep\parameters\deploy-baseline-parameters-example.json' `
