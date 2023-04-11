@@ -18,7 +18,7 @@ VMware and Microsoft partnered together to accelerate the future of work. Employ
 
 This reference implementation adheres to the architecture and best practices of the Cloud Adoption Framework's Azure landing zones with a particular focus on the enterprise-scale design principles. Although this implementation can be deployed in any Azure environment that complies with the [prerequisites](https://github.com/Azure/avdaccelerator/wiki/Getting-Started#Getting-Started), It is recommended to use this solution after implementing an enterprise-scale landing zone, [enterprise-scale overview](../../ready/enterprise-scale/index.md) and [implementation guidance](../../ready/enterprise-scale/implementation.md) before deploying the enterprise-scale for Desktop Virtualization solution.
 
-## Design areas – Identity and access management 
+# Design areas – Identity and access management 
 One method of accessing Horizon desktops and applications is through Workspace ONE Access. This requires integration between the Horizon Cloud Service and Workspace ONE Access using the SAML 2.0 standard to establish mutual trust, which is essential for single sign-on (SSO) functionality. 
 
 ### Identity and Access Management Design Considerations and Recommendations
@@ -152,7 +152,7 @@ VMware Dynamic Environment Manager delivers personalization and centrally manage
 
 User-specific Windows desktop and application settings can be applied in the context of client device, location, or other conditions. Policies are enforced when users log in, launch an app, reconnect, or when some other triggering event occurs. Dynamic Environment Manager also has a feature for configuring folder redirection for storing personal user data, including documents, pictures, and so on. 
 
-# Recommended Content
+## Recommended Content
 The resources below describe how resources are managed within Horizon Cloud on Microsoft Azure: 
 
 - [Horizon Cloud on Microsoft Azure Architecture](https://techzone.vmware.com/resource/horizon-cloud-on-microsoft-azure-architecture) – This asset describes the details of an implementation of a Horizon Cloud on Microsoft Azure pod, along with how to expand. It also covers the types of Microsoft Azure resources that it requires. 
