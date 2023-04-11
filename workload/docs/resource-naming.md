@@ -33,7 +33,7 @@ The naming of resources is hard coded in the templates but can also be modified 
 | `osdisk-{nnn}-vm-avd-{deploymentPrefix}-{nnn}` | Disk | OS disk attached to session hosts. |
 | `nic-{nn}-vm-avd-{deploymentPrefix}-{nnn}` | Network Interface | NEtwork interface attached to session hosts. |
 | `vm-avd-{deploymentPrefix}-{nnn}` | Virtual Machine | |
-| `AntiMal-Extension-Wait-{Timestamp}` | Deployment script | Introduce wait time after antimalware extension configuration. |
+| `Antimalware-Extension-Wait-{Timestamp}` | Deployment script | Introduce wait time after antimalware extension configuration. |
 | `Session-Hosts-Wait-{Timestamp}` | Deployment script | Introduce wait time after session host creation. |
 
 ### Storage naming (FSLogix & MSIX App Attach)
