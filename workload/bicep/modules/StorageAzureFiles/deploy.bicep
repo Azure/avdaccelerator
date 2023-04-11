@@ -167,7 +167,7 @@ var varWrklStoragePrivateEndpointName = 'pe-${varStorageName}-file'
 //var varStoragePurposeLowerPrefix = substring(varStoragePurposeLower, 0,2)
 var varStoragePurposeAcronym = (storagePurpose == 'fslogix') ? 'fsl': ((storagePurpose == 'msix') ? 'msx': '')
 var varStorageName = useCustomNaming ? '${storageAccountPrefixCustomName}${varStoragePurposeAcronym}${deploymentPrefixLowercase}${namingUniqueStringSixChar}' : 'st${varStoragePurposeAcronym}${deploymentPrefixLowercase}${namingUniqueStringSixChar}'
-var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${varStorageName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -DomainAdminUserName ${domainJoinUserName} -DomainAdminUserPassword "" -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -CreateNewOU ${createOuForStorageString} -ShareName ${varFileShareName} -ClientId ${managedIdentityClientId} -Verbose'
+var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${varStorageName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -DomainAdminUserName ${domainJoinUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -CreateNewOU ${createOuForStorageString} -ShareName ${varFileShareName} -ClientId ${managedIdentityClientId} -Verbose -DomainAdminUserPassword '
 // =========== //
 // Deployments //
 // =========== //
@@ -245,8 +245,14 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
     }
 }
 
+// Call on the VM.
+//resource managementVMget 'Microsoft.Compute/virtualMachines@2022-11-01' existing = {
+//    name: managementVmName
+//    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+//}
+
 // Provision temporary VM and add it to domain.
-module managementVM '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = {
+module managementVM '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = { //if (empty(managementVMget.name != managementVmName)) {
     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
     name: 'Management-VM-${time}'
     params: {
@@ -273,7 +279,7 @@ module managementVM '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
             }
         }
         adminUsername: vmLocalUserName
-        adminPassword: avdWrklKeyVaultget.getSecret('avdVmLocalUserPassword')
+        adminPassword: avdWrklKeyVaultget.getSecret('vmLocalUserPassword')
         nicConfigurations: [
             {
                 nicSuffix: 'nic-001-'
@@ -299,7 +305,7 @@ module managementVM '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
         ]
         // Join domain
         allowExtensionOperations: true
-        extensionDomainJoinPassword: avdWrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
+        extensionDomainJoinPassword: avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
         extensionDomainJoinConfig: {
             enabled: true
             settings: {
@@ -318,7 +324,7 @@ module managementVM '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
 }
 
 // Introduce wait for management VM to be ready.
-module managementVmWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
+module managementVmWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = { //if (empty(managementVMget.id)) {
     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
     name: 'Management-VM-Wait-${time}'
     params: {
@@ -341,14 +347,15 @@ module managementVmWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentS
 } 
 
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
-module addShareToDomainScript './.bicep/azureFilesDomainJoinScript.bicep' = if(identityServiceProvider == 'ADDS' || identityServiceProvider == 'AADDS')  {
+module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = if(identityServiceProvider == 'ADDS' || identityServiceProvider == 'AADDS')  {
     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
     name: 'Add-${storagePurpose}-Storage-Setup-${time}'
     params: {
         location: sessionHostLocation
         name: managementVM.outputs.name
         file: storageToDomainScript
-        ScriptArguments: varStorageToDomainScriptArgs
+        scriptArguments: varStorageToDomainScriptArgs
+        domainJoinUserPassword: avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
         baseScriptUri: storageToDomainScriptUri
     }
     dependsOn: [

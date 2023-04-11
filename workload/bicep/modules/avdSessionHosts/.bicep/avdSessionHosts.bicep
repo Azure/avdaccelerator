@@ -185,7 +185,7 @@ module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
             }
         }
         adminUsername: vmLocalUserName
-        adminPassword: wrklKeyVaultget.getSecret('avdVmLocalUserPassword')
+        adminPassword: wrklKeyVaultget.getSecret('vmLocalUserPassword')
         nicConfigurations: [
             {
                 nicSuffix: 'nic-01-'
@@ -210,7 +210,7 @@ module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
             }
         ]
         // ADDS or AADDS domain join.
-        extensionDomainJoinPassword: wrklKeyVaultget.getSecret('avdDomainJoinUserPassword')
+        extensionDomainJoinPassword: wrklKeyVaultget.getSecret('domainJoinUserPassword')
         extensionDomainJoinConfig: {
             enabled: (identityServiceProvider == 'AAD') ? false: true
             settings: {
@@ -228,7 +228,13 @@ module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
                 mdmId: '0000000a-0000-0000-c000-000000000000'
             }: {}
         }
-        nicdiagnosticMetricsToEnable: varNicDiagnosticMetricsToEnable
+        // Enable monitoring agent
+        extensionMonitoringAgentConfig: deployMonitoring ? {
+            enabled: deployMonitoring
+        }: {}
+        monitoringWorkspaceId: deployMonitoring ? alaWorkspaceResourceId : ''
+        nicdiagnosticMetricsToEnable: deployMonitoring ? varNicDiagnosticMetricsToEnable : []
+        diagnosticWorkspaceId: deployMonitoring ? alaWorkspaceResourceId : ''
         diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
         tags: tags
     }
@@ -376,37 +382,3 @@ module addAvdHostsToHostPoolWait '../../../../../carml/1.3.0/Microsoft.Resources
         configureFsLogixForAvdHosts
     ]
 } 
-
-
-// Call to the ALA workspace.
-resource alaWorkspaceGet 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(alaWorkspaceResourceId) && deployMonitoring) {
-    scope: az.resourceGroup(split(alaWorkspaceResourceId, '/')[2], split(alaWorkspaceResourceId, '/')[4])
-    name: last(split(alaWorkspaceResourceId, '/'))!
-}
-
-// Add monitoring extension to session host.
-module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, sessionHostsCount): if (deployMonitoring) {
-    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
-    name: 'SH-Monitoring-${padLeft((i + sessionHostCountIndex), 3, '0')}-${time}'
-    params: {
-        location: sessionHostLocation
-        virtualMachineName: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
-        name: 'MicrosoftMonitoringAgent'
-        publisher: 'Microsoft.EnterpriseCloud.Monitoring'
-        type: 'MicrosoftMonitoringAgent'
-        typeHandlerVersion: '1.0'
-        autoUpgradeMinorVersion: true
-        enableAutomaticUpgrade: false
-        settings: {
-          workspaceId: alaWorkspaceResourceId
-        }
-        protectedSettings: {
-          workspaceKey: !empty(alaWorkspaceResourceId) ? alaWorkspaceGet.listKeys().primarySharedKey: ''
-        }
-        enableDefaultTelemetry: false
-    }
-    dependsOn: [
-        addAvdHostsToHostPoolWait
-        alaWorkspaceGet
-    ]
-}]
