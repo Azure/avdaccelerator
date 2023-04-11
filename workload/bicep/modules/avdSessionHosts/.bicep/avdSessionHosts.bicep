@@ -229,13 +229,13 @@ module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
             }: {}
         }
         // Enable monitoring agent
-        extensionMonitoringAgentConfig: deployMonitoring ? {
-            enabled: deployMonitoring
-        }: {}
-        monitoringWorkspaceId: deployMonitoring ? alaWorkspaceResourceId : ''
-        nicdiagnosticMetricsToEnable: deployMonitoring ? varNicDiagnosticMetricsToEnable : []
-        diagnosticWorkspaceId: deployMonitoring ? alaWorkspaceResourceId : ''
-        diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
+        //extensionMonitoringAgentConfig: deployMonitoring ? {
+        //    enabled: deployMonitoring
+        //}: {}
+        //monitoringWorkspaceId: deployMonitoring ? alaWorkspaceResourceId : ''
+        //nicdiagnosticMetricsToEnable: deployMonitoring ? varNicDiagnosticMetricsToEnable : []
+        //diagnosticWorkspaceId: deployMonitoring ? alaWorkspaceResourceId : ''
+        //diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
         tags: tags
     }
     dependsOn: [
