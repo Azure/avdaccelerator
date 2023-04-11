@@ -120,13 +120,13 @@ param vNetworkPrivateEndpointSubnetAddressPrefix string = '10.10.1.0/27'
 @description('Optional. custom DNS servers IPs.')
 param customDnsIps string = ''
 
-@description('Optional. Use Azure private DNS zones for private endpoints. (Default: false)')
-param avdVnetPrivateDnsZone bool = false
+@description('Optional. Use Azure private DNS zones for private endpoints. (Default: true)')
+param avdVnetPrivateDnsZone bool = true
 
-@description('Optional. Use Azure private DNS zones for private endpoints. (Default: false)')
+@description('Optional. Use Azure private DNS zones for private endpoints. (Default: )')
 param avdVnetPrivateDnsZoneFilesId string = ''
 
-@description('Optional. Use Azure private DNS zones for private endpoints. (Default: false)')
+@description('Optional. Use Azure private DNS zones for private endpoints. (Default: )')
 param avdVnetPrivateDnsZoneKeyvaultId string = ''
 
 @description('Optional. Does the hub contains a virtual network gateway. (Default: false)')
@@ -609,8 +609,8 @@ var varApplicationGroupNameRapp = avdUseCustomNaming ? avdApplicationGroupCustom
 var varApplicationGroupFriendlyNameRapp = avdUseCustomNaming ? avdApplicationGroupCustomFriendlyNameRapp : 'Apps-${deploymentPrefix}-${avdManagementPlaneLocation}-001'
 var varScalingPlanName = avdUseCustomNaming ? avdScalingPlanCustomName : 'vdscaling-${varManagementPlaneNamingStandard}-001'
 var varScalingPlanExclusionTag = 'Exclude-${varScalingPlanName}'
-var varScalingPlanWeekdaysScheduleName = 'Weekdays-${varDeploymentPrefixLowercase}'
-var varScalingPlanWeekendScheduleName = 'Weekend-${varDeploymentPrefixLowercase}'
+var varScalingPlanWeekdaysScheduleName = 'Weekdays-${varManagementPlaneNamingStandard}'
+var varScalingPlanWeekendScheduleName = 'Weekend-${varManagementPlaneNamingStandard}'
 var varWrklKvName = avdUseCustomNaming ? '${avdWrklKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringSixChar}' : 'kv-avd-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringSixChar}' // max length limit 24 characters
 var varWrklKvPrivateEndpointName = 'pe-kv-avd-${varDeploymentPrefixLowercase}-${varNamingUniqueStringSixChar}-vault'
 var varSessionHostNamePrefix = avdUseCustomNaming ? avdSessionHostCustomNamePrefix : 'vm-avd-${varDeploymentPrefixLowercase}'
@@ -1107,9 +1107,11 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
                 subnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetSubnetResourceId
                 customNetworkInterfaceName: 'nic-01-${varWrklKvPrivateEndpointName}'
                 service: 'vault'
-                privateDnsZoneResourceIds: [
-                    avdVnetPrivateDnsZoneKeyvaultId
-                ]
+                privateDnsZoneGroup: {
+                    privateDNSResourceIds: [
+                        avdVnetPrivateDnsZoneKeyvaultId
+                    ] 
+                }
             }
         ] : [
             {
