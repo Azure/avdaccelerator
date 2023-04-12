@@ -102,8 +102,11 @@ param avdDeployScalingPlan bool = true
 @description('Optional. Create new virtual network. (Default: true)')
 param createAvdVnet bool = true
 
-@description('Optional. Existing virtual network subnet. (Default: "")')
-param existingVnetSubnetResourceId string = ''
+@description('Optional. Existing virtual network subnet for AVD. (Default: "")')
+param existingVnetAvdSubnetResourceId string = ''
+
+@description('Optional. Existing virtual network subnet for private endpoints. (Default: "")')
+param existingVnetPrivateEndpointSubnetResourceId string = ''
 
 @description('Required. Existing hub virtual network for perring.')
 param existingHubVnetResourceId string = ''
@@ -1110,7 +1113,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
         privateEndpoints: avdVnetPrivateDnsZone ? [
             {
                 name: varWrklKvPrivateEndpointName
-                subnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetSubnetResourceId
+                subnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
                 customNetworkInterfaceName: 'nic-01-${varWrklKvPrivateEndpointName}'
                 service: 'vault'
                 privateDnsZoneGroup: {
@@ -1122,7 +1125,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
         ] : [
             {
                 name: varWrklKvPrivateEndpointName
-                subnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetSubnetResourceId
+                subnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
                 customNetworkInterfaceName: 'nic-01-${varWrklKvPrivateEndpointName}'
                 service: 'vault'
             }
@@ -1210,8 +1213,8 @@ module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if 
         sessionHostLocation: avdSessionHostLocation
         sessionHostsSize: avdSessionHostsSize
         storageObjectsRgName: varStorageObjectsRgName
-        avdSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkAvdSubnetName}' : existingVnetSubnetResourceId
-        privateEndpointSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetSubnetResourceId
+        avdSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkAvdSubnetName}' : existingVnetAvdSubnetResourceId
+        privateEndpointSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
         enableAcceleratedNetworking: enableAcceleratedNetworking
         createAvdVnet: createAvdVnet
         vmLocalUserName: avdVmLocalUserName
@@ -1268,8 +1271,8 @@ module msixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (va
         sessionHostLocation: avdSessionHostLocation
         sessionHostsSize: avdSessionHostsSize
         storageObjectsRgName: varStorageObjectsRgName
-        avdSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkAvdSubnetName}' : existingVnetSubnetResourceId
-        privateEndpointSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetSubnetResourceId
+        avdSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkAvdSubnetName}' : existingVnetAvdSubnetResourceId
+        privateEndpointSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
         enableAcceleratedNetworking: enableAcceleratedNetworking
         createAvdVnet: createAvdVnet
         vmLocalUserName: avdVmLocalUserName
@@ -1329,7 +1332,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         securityType: securityType == 'Standard' ? '' : securityType
         secureBootEnabled: secureBootEnabled
         vTpmEnabled: vTpmEnabled
-        subnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkAvdSubnetName}' : existingVnetSubnetResourceId
+        subnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkAvdSubnetName}' : existingVnetAvdSubnetResourceId
         createAvdVnet: createAvdVnet
         useAvailabilityZones: avdUseAvailabilityZones
         vmLocalUserName: avdVmLocalUserName

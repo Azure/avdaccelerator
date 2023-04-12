@@ -80,7 +80,10 @@
         "createAvdVnet": {
             "value": true
         },
-        "existingVnetSubnetResourceId": {
+        "existingVnetAvdSubnetResourceId": {
+            "value": ""
+        },
+        "existingVnetPrivateEndpointSubnetResourceId": {
             "value": ""
         },
         "existingHubVnetResourceId": {
