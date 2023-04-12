@@ -27,7 +27,7 @@ Azure Virtual Desktop resources and dependent services for establishing the base
 ## Cost Breakdown
 
 A breakdown of estimated cost for this deployment. Adjust to sku will change the estimates.
-![Cost Estimate](.\diagrams\cost-estimate.png)
+![Cost Estimate](./diagrams/cost-estimate.png)
 
 
 58 were free:
