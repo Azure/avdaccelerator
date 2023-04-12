@@ -101,7 +101,7 @@ param tags object
 param managementVmName string
 
 @description('Optional. AVD Accelerator will deploy with private endpoints by default.')
-param usePrivateEndpoint bool
+param deployPrivateEndpointKeyvaultStorage bool
 
 @description('Optional. Log analytics workspace for diagnostic logs.')
 param alaWorkspaceResourceId string
@@ -190,9 +190,9 @@ module storageAndFile '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
         name: varStorageName
         location: sessionHostLocation
         storageAccountSku: storageSku
-        //allowBlobPublicAccess: usePrivateEndpoint ? false : true
+        //allowBlobPublicAccess: deployPrivateEndpointKeyvaultStorage ? false : true
         allowBlobPublicAccess: false
-        publicNetworkAccess: usePrivateEndpoint ? 'Disabled' : 'Enabled'
+        publicNetworkAccess: deployPrivateEndpointKeyvaultStorage ? 'Disabled' : 'Enabled'
         storageAccountKind: ((storageSku =~ 'Premium_LRS') || (storageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
         azureFilesIdentityBasedAuthentication: (identityServiceProvider == 'AADDS') ? {
             directoryServiceOptions: 'AADDS'
@@ -200,7 +200,7 @@ module storageAndFile '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
             directoryServiceOptions: 'None'
         }
         storageAccountAccessTier: 'Hot'
-        networkAcls: usePrivateEndpoint ? {
+        networkAcls: deployPrivateEndpointKeyvaultStorage ? {
             bypass: 'AzureServices'
             defaultAction: 'Deny'
             virtualNetworkRules: []
@@ -224,7 +224,7 @@ module storageAndFile '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
             diagnosticLogCategoriesToEnable: varAvdFileShareLogsDiagnostic
             diagnosticMetricsToEnable: varAvdFileShareMetricsDiagnostic
         }
-        privateEndpoints: usePrivateEndpoint ? ( vnetPrivateDnsZone ? [
+        privateEndpoints: deployPrivateEndpointKeyvaultStorage ? ( vnetPrivateDnsZone ? [
             {
                 name: varWrklStoragePrivateEndpointName
                 subnetResourceId: subnetResourceId
