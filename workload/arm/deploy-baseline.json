@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "804713251578024757"
+      "templateHash": "10741661770803266187"
     }
   },
   "parameters": {
@@ -44784,7 +44784,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.1.55165",
-              "templateHash": "12166597021867344709"
+              "templateHash": "7795951926562256195"
             }
           },
           "parameters": {
@@ -45701,7 +45701,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.16.1.55165",
-                      "templateHash": "12386349138710882924"
+                      "templateHash": "12134845689866575449"
                     }
                   },
                   "parameters": {
@@ -46092,7 +46092,6 @@
                               "settings": "[if(parameters('createIntuneEnrollment'), createObject('mdmId', '0000000a-0000-0000-c000-000000000000'), createObject())]"
                             }
                           },
-                          "monitoringWorkspaceId": "[if(parameters('deployMonitoring'), createObject('value', parameters('alaWorkspaceResourceId')), createObject('value', ''))]",
                           "nicdiagnosticMetricsToEnable": "[if(parameters('deployMonitoring'), createObject('value', variables('varNicDiagnosticMetricsToEnable')), createObject('value', createArray()))]",
                           "diagnosticWorkspaceId": "[if(parameters('deployMonitoring'), createObject('value', parameters('alaWorkspaceResourceId')), createObject('value', ''))]",
                           "diagnosticLogsRetentionInDays": {
