@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "10741661770803266187"
+      "templateHash": "857081336785454716"
     }
   },
   "parameters": {
@@ -873,6 +873,13 @@
         "Staging "
       ]
     },
+    "removePostDeploymentTempResources": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Remove resources not needed afdter deployment. (Default: false)"
+      }
+    },
     "time": {
       "type": "string",
       "defaultValue": "[utcNow()]",
@@ -1186,9 +1193,12 @@
     "varReaderRoleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
     "varDesktopVirtualizationPowerOnContributorRoleId": "489581de-a3bd-480d-9518-53dea7416b33",
     "varDesktopVirtualizationPowerOnOffContributorRoleId": "40c5ff49-9181-41f8-ae61-143b0e78555e",
-    "varDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip",
+    "varStorageAzureFilesDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip",
+    "varTempResourcesCleanUpDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/postDeploymentTempResourcesCleanUp.zip",
     "varStorageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-Storage-Scripts.ps1', variables('varBaseScriptUri'))]",
+    "varPostDeploymentTempResuorcesCleanUpScriptUri": "[format('{0}scripts/postDeploymentTempResuorcesCleanUp.ps1', variables('varBaseScriptUri'))]",
     "varStorageToDomainScript": "./Manual-DSC-Storage-Scripts.ps1",
+    "varPostDeploymentTempResuorcesCleanUpScript": "./PostDeploymentTempResuorcesCleanUp.ps1",
     "varOuStgPath": "[if(not(empty(parameters('storageOuPath'))), format('\"{0}\"', parameters('storageOuPath')), format('\"{0}\"', variables('varDefaultStorageOuPath')))]",
     "varDefaultStorageOuPath": "[if(equals(parameters('avdIdentityServiceProvider'), 'AADDS'), 'AADDC Computers', 'Computers')]",
     "varStorageCustomOuPath": "[if(not(empty(parameters('storageOuPath'))), 'true', 'false')]",
@@ -26511,7 +26521,7 @@
             "value": "[parameters('avdIdentityServiceProvider')]"
           },
           "dscAgentPackageLocation": {
-            "value": "[variables('varDscAgentPackageLocation')]"
+            "value": "[variables('varStorageAzureFilesDscAgentPackageLocation')]"
           },
           "storageCustomOuPath": {
             "value": "[variables('varStorageCustomOuPath')]"
@@ -35593,7 +35603,7 @@
             "value": "[parameters('avdIdentityServiceProvider')]"
           },
           "dscAgentPackageLocation": {
-            "value": "[variables('varDscAgentPackageLocation')]"
+            "value": "[variables('varStorageAzureFilesDscAgentPackageLocation')]"
           },
           "storageCustomOuPath": {
             "value": "[variables('varStorageCustomOuPath')]"
@@ -51944,6 +51954,172 @@
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Workload-KeyVault-{0}', parameters('time')))]"
+      ]
+    },
+    {
+      "condition": "[parameters('removePostDeploymentTempResources')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('CleanUp-Temp-Resources-{0}', parameters('time'))]",
+      "subscriptionId": "[format('{0}', parameters('avdWorkloadSubsId'))]",
+      "resourceGroup": "[format('{0}', variables('varServiceObjectsRgName'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('avdSessionHostLocation')]"
+          },
+          "managementVmName": {
+            "value": "[variables('varManagementVmName')]"
+          },
+          "scriptFile": {
+            "value": "[variables('varPostDeploymentTempResuorcesCleanUpScript')]"
+          },
+          "baseScriptUri": {
+            "value": "[variables('varPostDeploymentTempResuorcesCleanUpScriptUri')]"
+          },
+          "azureCloudName": {
+            "value": "[variables('varAzureCloudName')]"
+          },
+          "dscAgentPackageLocation": {
+            "value": "[variables('varTempResourcesCleanUpDscAgentPackageLocation')]"
+          },
+          "subscriptionId": {
+            "value": "[parameters('avdWorkloadSubsId')]"
+          },
+          "serviceObjectsRgName": {
+            "value": "[variables('varServiceObjectsRgName')]"
+          },
+          "computeObjectsRgName": {
+            "value": "[variables('varComputeObjectsRgName')]"
+          },
+          "storageObjectsRgName": {
+            "value": "[variables('varStorageObjectsRgName')]"
+          },
+          "networkObjectsRgName": {
+            "value": "[variables('varNetworkObjectsRgName')]"
+          },
+          "monitoringObjectsRgName": {
+            "value": "[variables('varMonitoringRgName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.16.1.55165",
+              "templateHash": "6408459388459996502"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Location where to deploy compute services."
+              }
+            },
+            "baseScriptUri": {
+              "type": "string",
+              "metadata": {
+                "description": "Location for the AVD agent installation package."
+              }
+            },
+            "azureCloudName": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure cloud."
+              }
+            },
+            "managementVmName": {
+              "type": "string",
+              "metadata": {
+                "description": "Virtual machine name to deploy the DSC extension to."
+              }
+            },
+            "scriptFile": {
+              "type": "string",
+              "metadata": {
+                "description": "Script file name."
+              }
+            },
+            "dscAgentPackageLocation": {
+              "type": "string",
+              "metadata": {
+                "description": "DSC package location."
+              }
+            },
+            "subscriptionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Subscription ID."
+              }
+            },
+            "serviceObjectsRgName": {
+              "type": "string",
+              "metadata": {
+                "description": "Service objects resource group name."
+              }
+            },
+            "computeObjectsRgName": {
+              "type": "string",
+              "metadata": {
+                "description": "Compute objects resource group name."
+              }
+            },
+            "storageObjectsRgName": {
+              "type": "string",
+              "metadata": {
+                "description": "Storage objects resource group name."
+              }
+            },
+            "networkObjectsRgName": {
+              "type": "string",
+              "metadata": {
+                "description": "Network objects resource group name."
+              }
+            },
+            "monitoringObjectsRgName": {
+              "type": "string",
+              "metadata": {
+                "description": "Monitoring objects resource group name."
+              }
+            }
+          },
+          "variables": {
+            "varPostDeploymentTempResuorcesCleanUpScriptArgs": "[format('-dscPath {0} -subscriptionId {1} -serviceObjectsRgName {2} -computeObjectsRgName {3} -storageObjectsRgName {4} -networkObjectsRgName {5} -monitoringObjectsRgName {6} -azureCloudEnvironment {7} -managmentVmName {8} -Verbose', parameters('dscAgentPackageLocation'), parameters('subscriptionId'), parameters('serviceObjectsRgName'), parameters('computeObjectsRgName'), parameters('storageObjectsRgName'), parameters('networkObjectsRgName'), parameters('monitoringObjectsRgName'), parameters('azureCloudName'), parameters('managementVmName'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Compute/virtualMachines/extensions",
+              "apiVersion": "2022-08-01",
+              "name": "[format('{0}/DeploymentCleanUp', parameters('managementVmName'))]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.10",
+                "autoUpgradeMinorVersion": false,
+                "settings": {},
+                "protectedSettings": {
+                  "fileUris": "[array(parameters('baseScriptUri'))]",
+                  "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File {0} {1}', parameters('scriptFile'), variables('varPostDeploymentTempResuorcesCleanUpScriptArgs'))]"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('HostPool-AppGroups-{0}', parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Msix-AzureFiles-{0}', parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Session-Hosts-{0}', parameters('time')))]"
       ]
     }
   ]
