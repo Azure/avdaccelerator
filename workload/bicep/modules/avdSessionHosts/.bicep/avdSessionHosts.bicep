@@ -403,7 +403,7 @@ module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virt
         autoUpgradeMinorVersion: true
         enableAutomaticUpgrade: false
         settings: {
-          workspaceId: alaWorkspaceResourceId
+          workspaceId: !empty(alaWorkspaceResourceId) ? reference(alaWorkspaceGet.id, alaWorkspaceGet.apiVersion).customerId : ''
         }
         protectedSettings: {
           workspaceKey: !empty(alaWorkspaceResourceId) ? alaWorkspaceGet.listKeys().primarySharedKey: ''
