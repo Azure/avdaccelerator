@@ -118,7 +118,7 @@ param avdVnetworkSubnetAddressPrefix string = '10.10.0.0/24'
 param customDnsIps string = ''
 
 @description('Optional. AVD Accelerator will deploy with private endpoints by default.')
-param usePrivateEndpoint bool = true
+param deployPrivateEndpointKeyvaultStorage bool = true
 
 @description('Optional. Use Azure private DNS zones for private endpoints. (Default: false)')
 param avdVnetPrivateDnsZone bool = false
@@ -1071,14 +1071,14 @@ module avdWrklKeyVault '../../carml/1.2.0/Microsoft.KeyVault/vaults/deploy.bicep
         enableRbacAuthorization: false
         enablePurgeProtection: true
         softDeleteRetentionInDays: 7
-        publicNetworkAccess: usePrivateEndpoint ? 'disabled' : 'enabled'
-        networkAcls: usePrivateEndpoint ? {
+        publicNetworkAccess: deployPrivateEndpointKeyvaultStorage ? 'disabled' : 'enabled'
+        networkAcls: deployPrivateEndpointKeyvaultStorage ? {
             bypass: 'AzureServices'
             defaultAction: 'Deny'
             virtualNetworkRules: []
             ipRules: []
         } : {}
-        privateEndpoints: usePrivateEndpoint ? (avdVnetPrivateDnsZone ? [
+        privateEndpoints: deployPrivateEndpointKeyvaultStorage ? (avdVnetPrivateDnsZone ? [
             {
                 name: varAvdWrklKvPrivateEndpointName
                 subnetResourceId: createAvdVnet ? '${avdNetworking.outputs.avdVirtualNetworkResourceId}/subnets/${varAvdVnetworkSubnetName}' : existingVnetSubnetResourceId
@@ -1165,7 +1165,7 @@ module deployAvdFslogixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bic
         domainJoinUserPassword: avdDomainJoinUserPassword
         avdStorageCustomOuPath: varStorageCustomOuPath
         managementVmName: varManagementVmName
-        usePrivateEndpoint: usePrivateEndpoint
+        deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
         avdOuStgPath: varOuStgPath
         avdCreateOuForStorageString: varCreateOuForStorageString
         managedIdentityClientId: varCreateStorageDeployment ? deployManagedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
@@ -1225,7 +1225,7 @@ module deployAvdMsixStorageAzureFiles 'avd-modules/avd-storage-azurefiles.bicep'
         domainJoinUserPassword: avdDomainJoinUserPassword
         avdStorageCustomOuPath: varStorageCustomOuPath
         managementVmName: varManagementVmName
-        usePrivateEndpoint: usePrivateEndpoint
+        deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
         avdOuStgPath: varOuStgPath
         avdCreateOuForStorageString: varCreateOuForStorageString
         managedIdentityClientId: varCreateStorageDeployment ? deployManagedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
