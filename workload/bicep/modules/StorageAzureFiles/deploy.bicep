@@ -246,10 +246,10 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
 }
 
 // Call on the VM.
-resource managementVMget 'Microsoft.Compute/virtualMachines@2022-11-01' existing = {
-    name: managementVmName
-    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
-}
+//resource managementVMget 'Microsoft.Compute/virtualMachines@2022-11-01' existing = {
+//    name: managementVmName
+//    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+//}
 
 // Provision temporary VM and add it to domain.
 module managementVM '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = {
@@ -363,9 +363,6 @@ module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = if(identit
         managementVmWait
     ]
 }
-
-// Run deployment script to remove the VM --> 0.2 release. 
-// needs user managed identity --> Virtual machine contributor role assignment. Deployment script to assume the identity to delete VM. Include NIC and disks (force)
  
 // =========== //
 //   Outputs   //
