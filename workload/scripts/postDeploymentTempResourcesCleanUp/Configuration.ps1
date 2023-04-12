@@ -1,99 +1,141 @@
 <#
     .SYNOPSIS
-        A DSC configuration file for clean up resources
+        A DSC configuration file for domain joining storage account
 
     .DESCRIPTION
-        This script will be run on the management VM.
+        This script will be run on a domain joined session host under domain admin credentials.
 #>
 
 param
 (    
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
-    [string] $dscPath,  
+    [string] $StorageAccountName,
 
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
-    [string] $subscriptionId,
+    [string] $StorageAccountRG,
 
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
-    [string] $serviceObjectsRgName,
+    [string] $ShareName,
 
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
-    [string] $computeObjectsRgName,
+    [string] $DomainName,
 
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
-    [string] $storageObjectsRgName,
+    [string] $CustomOuPath,
 
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
-    [string] $networkObjectsRgName,
+    [string] $IdentityServiceProvider,
 
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
-    [string] $monitoringObjectsRgName,
+    [string] $AzureCloudEnvironment,
 
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
-    [string] $azureCloudEnvironment,
+    [string] $SubscriptionId,
 
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
-    [string] $managementVmName
+    [string] $ClientId,
+
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $OUName,
+
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $CreateNewOU,
+
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $StoragePurpose,
+
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $DomainAdminUserName,
+	
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $DomainAdminUserPassword
 )
 
 
-Configuration temResourcesCleanUp
+Configuration DomainJoinFileShare
 {
     param
     (    
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $dscPath,  
-    
+        [string] $StorageAccountName,
+
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $subscriptionId,
-    
+        [string] $StorageAccountRG,
+
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $serviceObjectsRgName,
-    
+        [string] $ShareName,
+
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $computeObjectsRgName,
-    
+        [string] $DomainName,
+
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $storageObjectsRgName,
-    
+        [string] $CustomOuPath,
+
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $networkObjectsRgName,
-    
+        [string] $IdentityServiceProvider,
+
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $monitoringObjectsRgName,
-    
+        [string] $AzureCloudEnvironment,
+
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $azureCloudEnvironment,
-    
+        [string] $SubscriptionId,
+
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $managementVmName
+        [string] $ClientId,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $OUName,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $CreateNewOU,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $StoragePurpose,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $DomainAdminUserName,
+	
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $DomainAdminUserPassword
     )
     
     # Import the module that contains the File resource.
     Import-DscResource -ModuleName PsDesiredStateConfiguration
+    $secStringPassword = ConvertTo-SecureString $DomainAdminUserPassword -AsPlainText -Force
+    $DomainAdminCred = New-Object System.Management.Automation.PSCredential ($DomainAdminUserName, $secStringPassword)
 
     $ErrorActionPreference = 'Stop'
     
     $ScriptPath = [system.io.path]::GetDirectoryName($PSCommandPath)
-    . (Join-Path $ScriptPath "logger.ps1")
+    . (Join-Path $ScriptPath "Logger.ps1")
     
     Node localhost
     {
@@ -109,10 +151,10 @@ Configuration temResourcesCleanUp
                 return @{'Result' = '' }
             }
             SetScript            = {
-                . (Join-Path $using:ScriptPath "logger.ps1")
+                . (Join-Path $using:ScriptPath "Logger.ps1")
                 try {
-                    Write-Log "Cleaning up temporal deployment resources"
-                    & "$using:ScriptPath\postDeploymentTempResourcesCleanUp.ps1" -StorageAccountName $Using:StorageAccountName -StorageAccountRG $Using:StorageAccountRG -SubscriptionId $Using:SubscriptionId -ClientId $Using:ClientId -ShareName $Using:ShareName -DomainName $Using:DomainName -IdentityServiceProvider $Using:IdentityServiceProvider -AzureCloudEnvironment $Using:AzureCloudEnvironment -CustomOuPath $Using:CustomOuPath -OUName $Using:OUName -CreateNewOU $Using:CreateNewOU -StoragePurpose $Using:StoragePurpose
+                    Write-Log "DSC DomainJoinStorage SetScript Domain joining storage account $Using:StorageAccountName"
+                    & "$using:ScriptPath\Script-DomainJoinStorage.ps1" -StorageAccountName $Using:StorageAccountName -StorageAccountRG $Using:StorageAccountRG -SubscriptionId $Using:SubscriptionId -ClientId $Using:ClientId -ShareName $Using:ShareName -DomainName $Using:DomainName -IdentityServiceProvider $Using:IdentityServiceProvider -AzureCloudEnvironment $Using:AzureCloudEnvironment -CustomOuPath $Using:CustomOuPath -OUName $Using:OUName -CreateNewOU $Using:CreateNewOU -StoragePurpose $Using:StoragePurpose
 
                     Write-Log "Successfully domain joined and/or NTFS permission set on Storage account"
                 }
