@@ -454,6 +454,9 @@ param costCenterTag string = 'Contoso-CC'
 param environmentTypeTag string = 'Dev'
 //
 
+@description('Remove resources not needed afdter deployment. (Default: false)')
+param removePostDeploymentTempResources bool = false
+
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
@@ -775,9 +778,12 @@ var varStorageAccountContributorRoleId = '17d1049b-9a84-46fb-8f53-869881c3d3ab'
 var varReaderRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 var varDesktopVirtualizationPowerOnContributorRoleId = '489581de-a3bd-480d-9518-53dea7416b33'
 var varDesktopVirtualizationPowerOnOffContributorRoleId = '40c5ff49-9181-41f8-ae61-143b0e78555e'
-var varDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip'
+var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip'
+var varTempResourcesCleanUpDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/postDeploymentTempResourcesCleanUp.zip'
 var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
+var varPostDeploymentTempResuorcesCleanUpScriptUri = '${varBaseScriptUri}scripts/postDeploymentTempResuorcesCleanUp.ps1'
 var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
+var varPostDeploymentTempResuorcesCleanUpScript = './PostDeploymentTempResuorcesCleanUp.ps1'
 var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
 var varDefaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers': 'Computers'
 var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
@@ -1182,7 +1188,7 @@ module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if 
         storagePurpose: 'fslogix'
         fileShareCustomName: fslogixFileShareCustomName
         identityServiceProvider: avdIdentityServiceProvider
-        dscAgentPackageLocation: varDscAgentPackageLocation
+        dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
         storageCustomOuPath: varStorageCustomOuPath
         managementVmName: varManagementVmName
         ouStgPath: varOuStgPath
@@ -1240,7 +1246,7 @@ module msixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (va
         storagePurpose: 'msix'
         fileShareCustomName: msixFileShareCustomName
         identityServiceProvider: avdIdentityServiceProvider
-        dscAgentPackageLocation: varDscAgentPackageLocation
+        dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
         storageCustomOuPath: varStorageCustomOuPath
         managementVmName: varManagementVmName
         ouStgPath: varOuStgPath
@@ -1349,3 +1355,32 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         wrklKeyVault
     ]
 }
+
+// Post deployment resources clean up.
+module addShareToDomainScript './modules/postDeploymentTempResourcesCleanUp/deploy.bicep' = if (removePostDeploymentTempResources)  {
+    scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
+    name: 'CleanUp-Temp-Resources-${time}'
+    params: {
+        location: avdSessionHostLocation
+        managementVmName: varManagementVmName
+        scriptFile: varPostDeploymentTempResuorcesCleanUpScript
+        //scriptArguments: varPostDeploymentTempResuorcesCleanUpScriptArgs
+        baseScriptUri: varPostDeploymentTempResuorcesCleanUpScriptUri
+        azureCloudName: varAzureCloudName
+        dscAgentPackageLocation: varTempResourcesCleanUpDscAgentPackageLocation
+        subscriptionId: avdWorkloadSubsId
+        serviceObjectsRgName: varServiceObjectsRgName
+        computeObjectsRgName: varComputeObjectsRgName
+        storageObjectsRgName: varStorageObjectsRgName
+        networkObjectsRgName: varNetworkObjectsRgName
+        monitoringObjectsRgName: varMonitoringRgName
+    }
+    dependsOn: [
+        sessionHosts
+        msixStorageAzureFiles
+        fslogixStorageAzureFiles
+        managementPLane
+        networking
+    ]
+}
+
