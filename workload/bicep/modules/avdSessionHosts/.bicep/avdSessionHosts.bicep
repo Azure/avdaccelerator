@@ -232,7 +232,7 @@ module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
         //extensionMonitoringAgentConfig: deployMonitoring ? {
         //    enabled: deployMonitoring
         //}: {}
-        monitoringWorkspaceId: deployMonitoring ? alaWorkspaceResourceId : ''
+        //monitoringWorkspaceId: deployMonitoring ? alaWorkspaceResourceId : ''
         nicdiagnosticMetricsToEnable: deployMonitoring ? varNicDiagnosticMetricsToEnable : []
         diagnosticWorkspaceId: deployMonitoring ? alaWorkspaceResourceId : ''
         diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
