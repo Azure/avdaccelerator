@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "10099235443277428475"
+      "templateHash": "15800881792876038792"
     }
   },
   "parameters": {
@@ -1192,7 +1192,7 @@
         "version": "latest"
       }
     },
-    "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
+    "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/carml-paranVarNaming-peSubnet/workload/",
     "varFslogixScriptUri": "[format('{0}scripts/Set-FSLogixRegKeys.ps1', variables('varBaseScriptUri'))]",
     "varFsLogixScript": "./Set-FSLogixRegKeys.ps1",
     "varAgentPackageLocation": "[format('https://wvdportalstorageblob.blob.{0}/galleryartifacts/Configuration_09-08-2022.zip', environment().suffixes.storage)]",
@@ -1200,8 +1200,8 @@
     "varReaderRoleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
     "varDesktopVirtualizationPowerOnContributorRoleId": "489581de-a3bd-480d-9518-53dea7416b33",
     "varDesktopVirtualizationPowerOnOffContributorRoleId": "40c5ff49-9181-41f8-ae61-143b0e78555e",
-    "varStorageAzureFilesDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip",
-    "varTempResourcesCleanUpDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/postDeploymentTempResourcesCleanUp.zip",
+    "varStorageAzureFilesDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/carml-paranVarNaming-peSubnet/workload/scripts/DSCStorageScripts.zip",
+    "varTempResourcesCleanUpDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/carml-paranVarNaming-peSubnet/workload/scripts/postDeploymentTempResourcesCleanUp.zip",
     "varStorageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-Storage-Scripts.ps1', variables('varBaseScriptUri'))]",
     "varPostDeploymentTempResuorcesCleanUpScriptUri": "[format('{0}scripts/postDeploymentTempResuorcesCleanUp.ps1', variables('varBaseScriptUri'))]",
     "varStorageToDomainScript": "./Manual-DSC-Storage-Scripts.ps1",
