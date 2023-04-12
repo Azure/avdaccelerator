@@ -1154,10 +1154,10 @@
                             }
                         },
                         {
-                            "name": "virtualNetworkSelectorId",
+                            "name": "avdVirtualNetworkSelectorId",
                             "type": "Microsoft.Solutions.ResourceSelector",
                             "visible": "[equals(steps('network').createAvdVirtualNetwork, false)]",
-                            "label": "Virtual network",
+                            "label": "AVD virtual network",
                             "resourceType": "Microsoft.Network/virtualNetworks",
                             "constraints": {
                                 "required": true
@@ -1170,16 +1170,16 @@
                             }
                         },
                         {
-                            "name": "subnetApi",
+                            "name": "avdSubnetApi",
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
                                 "method": "GET",
-                                "path": "[concat(steps('network').virtualNetworkSelectorId.id, '/subnets?api-version=2021-03-01')]"
+                                "path": "[concat(steps('network').avdVirtualNetworkSelectorId.id, '/subnets?api-version=2021-03-01')]"
                             }
                         },
                         {
-                            "name": "virtualNetworkSubnetSelectorName",
-                            "label": "Subnet",
+                            "name": "virtualNetworkAvdSubnetSelectorName",
+                            "label": "AVD subnet",
                             "type": "Microsoft.Common.DropDown",
                             "visible": "[equals(steps('network').createAvdVirtualNetwork, false)]",
                             "defaultValue": "",
@@ -1190,7 +1190,48 @@
                             "filterPlaceholder": "Filter items ...",
                             "multiLine": true,
                             "constraints": {
-                                "allowedValues": "[map(steps('network').subnetApi.value,(item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\",\"description\":\"', 'Resource Group: ', last(take(split(item.id, '/'), 5)), '\"}')))]",
+                                "allowedValues": "[map(steps('network').avdSubnetApi.value,(item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\",\"description\":\"', 'Resource Group: ', last(take(split(item.id, '/'), 5)), '\"}')))]",
+                                "required": true
+                            }
+                        },
+                        {
+                            "name": "privateEndpointVirtualNetworkSelectorId",
+                            "type": "Microsoft.Solutions.ResourceSelector",
+                            "visible": "[equals(steps('network').createAvdVirtualNetwork, false)]",
+                            "label": "Private endpoint virtual network",
+                            "resourceType": "Microsoft.Network/virtualNetworks",
+                            "constraints": {
+                                "required": true
+                            },
+                            "options": {
+                                "filter": {
+                                    "subscription": "onBasics",
+                                    "location": "[steps('SessionHosts').SessionHostsRegionSection.SessionHostsRegion.location.displayName]"
+                                }
+                            }
+                        },
+                        {
+                            "name": "privateEndpointSubnetApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('network').privateEndpointVirtualNetworkSelectorId.id, '/subnets?api-version=2021-03-01')]"
+                            }
+                        },
+                        {
+                            "name": "virtualNetworkPrivateEndpointSubnetSelectorName",
+                            "label": "Private endpoint subnet",
+                            "type": "Microsoft.Common.DropDown",
+                            "visible": "[equals(steps('network').createAvdVirtualNetwork, false)]",
+                            "defaultValue": "",
+                            "toolTip": "Select the subnet.",
+                            "multiselect": false,
+                            "selectAll": false,
+                            "filter": true,
+                            "filterPlaceholder": "Filter items ...",
+                            "multiLine": true,
+                            "constraints": {
+                                "allowedValues": "[map(steps('network').privateEndpointSubnetApi.value,(item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\",\"description\":\"', 'Resource Group: ', last(take(split(item.id, '/'), 5)), '\"}')))]",
                                 "required": true
                             }
                         },
@@ -2294,7 +2335,8 @@
                 "customDnsIps": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkDns, '')]",
                 "existingHubVnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.existingHubVirtualNetwork, '')]",
                 "vNetworkGatewayOnHub": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.hubVirtualNetworkGateway, false)]",
-                "existingVnetSubnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, false), steps('network').virtualNetworkSubnetSelectorName, 'none')]",
+                "existingVnetAvdSubnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, false), steps('network').virtualNetworkAvdSubnetSelectorName, 'none')]",
+                "existingVnetPrivateEndpointSubnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, false), steps('network').virtualNetworkPrivateEndpointSubnetSelectorName, 'none')]",
                 "avdDeploySessionHosts": "[steps('sessionHosts').deploySessionHosts]",
                 "avdStartVmOnConnect": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, false)]",
                 "avdDeployScalingPlan": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, false)]",
