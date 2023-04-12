@@ -1192,7 +1192,7 @@
                             }
                         },
                         {
-                            "name": "usePrivateEndpoint",
+                            "name": "deployPrivateEndpointKeyvaultStorage",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
                             "label": "Use Private Endpoints",
@@ -1215,7 +1215,7 @@
                         {
                             "name": "virtualNetworkPrivateDnsZone",
                             "type": "Microsoft.Common.OptionsGroup",
-                            "visible": "[equals(steps('network').usePrivateEndpoint, true)]",
+                            "visible": "[equals(steps('network').deployPrivateEndpointKeyvaultStorage, true)]",
                             "label": "Existing Azure private DNS zone",
                             "defaultValue": "Yes (Recommended)",
                             "toolTip": "It is recommended to use Azure private DNS zones for private endpoint name spaces, private endpoints will be automatically created for PaaS services (Azure Files and Key Vault) but the private DNS zones are prerequisites required.",
@@ -2278,7 +2278,7 @@
                 "avdSessionHostDiskType": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskType]",
 				"enableAcceleratedNetworking": "[steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking]",
                 "avdSessionHostsSize": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize, 'Standard_D2s_v4')]",
-                "usePrivateEndpoint": "[steps('network').usePrivateEndpoint]",
+                "deployPrivateEndpointKeyvaultStorage": "[steps('network').deployPrivateEndpointKeyvaultStorage]",
                 "avdVnetPrivateDnsZone": "[steps('network').virtualNetworkPrivateDnsZone]",
                 "avdVnetPrivateDnsZoneFilesId": "[if(equals(steps('network').virtualNetworkPrivateDnsZone, true), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneFilesSelector.id, '')]",
                 "avdVnetPrivateDnsZoneKeyvaultId": "[if(equals(steps('network').virtualNetworkPrivateDnsZone, true), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneKeyvaultSelector.id, '')]",
