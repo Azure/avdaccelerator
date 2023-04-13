@@ -2,10 +2,10 @@
 #$avdDomainJoinUserPassword = Read-Host -Prompt "Domain join password" -AsSecureString
 
 $Location = 'southcentralus'
-$VNETCIDR = '172.10.0.0/16'
-$AVDCIDR = '172.10.1.0/24'
-$PECIDR = '172.10.2.0/27'
-$Prefix = 'p010'
+$VNETCIDR = '172.24.0.0/16'
+$AVDCIDR = '172.24.1.0/24'
+$PECIDR = '172.24.2.0/27'
+$Prefix = 'p024'
 New-AzSubscriptionDeployment `
 -TemplateFile 'C:\Users\dcontreras\Downloads\avdaccelerator\avdaccelerator\workload\bicep\deploy-baseline.bicep' `
 -TemplateParameterFile 'C:\Users\dcontreras\Downloads\avdaccelerator\avdaccelerator\workload\bicep\parameters\deploy-baseline-parameters-example.json' `
@@ -38,17 +38,18 @@ New-AzSubscriptionDeployment `
 -avdApplicationGroupIdentitiesIds '93e03feb-fc7f-4431-988e-3ec4ccfce68f' `
 -deployAlaWorkspace $true `
 -deployCustomPolicyMonitoring $false `
--avdDeployMonitoring $true `
+-avdDeployMonitoring $false `
 -createAvdFslogixDeployment $true `
--createMsixDeployment $true `
+-createMsixDeployment $false `
 -secureBootEnabled $true `
 -vTpmEnabled $true `
 -avdUseAvailabilityZones $true `
 -avdVnetPrivateDnsZone $true `
--avdDeployScalingPlan $false `
+-avdDeployScalingPlan $true `
 -avdDeploySessionHosts $true `
 -createAvdVnet $true `
 -avdDeployRappGroup $true `
 -verbose
 
+-avdOsImage 'win11_22h2_office' `
 

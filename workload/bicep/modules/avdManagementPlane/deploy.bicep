@@ -3,31 +3,34 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
-@description('Required. Location where to deploy AVD management plane.')
+@description('Location where to deploy AVD management plane.')
 param managementPlaneLocation string
 
-@description('Optional. AVD workload subscription ID, multiple subscriptions scenario.')
+@description('AVD workload subscription ID, multiple subscriptions scenario.')
 param workloadSubsId string
 
-@description('Required. Virtual machine time zone.')
+@description('Virtual machine time zone.')
 param computeTimeZone string
 
-@description('Required, The service providing domain services for Azure Virtual Desktop.')
+@description('The service providing domain services for Azure Virtual Desktop.')
 param identityServiceProvider string
 
-@description('Required, Identity ID to grant RBAC role to access AVD application group.')
+@description('Identity ID to grant RBAC role to access AVD application group.')
 param applicationGroupIdentitiesIds array
 
-@description('Optional, Identity type to grant RBAC role to access AVD application group. (Defualt: "")')
+@description('Identity type to grant RBAC role to access AVD application group.')
 param applicationGroupIdentityType string
+
+@description('AVD OS image source.')
+param osImage string
 
 @description('AVD Resource Group Name for the service objects.')
 param serviceObjectsRgName string
 
-@description('Optional. AVD Application Group Name for the applications.')
+@description('AVD Application Group Name for the applications.')
 param applicationGroupNameRapp string
 
-@description('Optional. AVD Application Group friendly Name for the applications.')
+@description('AVD Application Group friendly Name for the applications.')
 param applicationGroupFriendlyNameRapp string
 
 @description('AVD Application group for the session hosts. Desktop type.')
@@ -39,10 +42,10 @@ param applicationGroupFriendlyNameDesktop string
 @description('AVD Application group app for the session hosts. Desktop type (friendly name).')
 param applicationGroupAppFriendlyNameDesktop string
 
-@description('Optional. AVD deploy remote app application group.')
+@description('AVD deploy remote app application group.')
 param deployRappGroup bool
 
-@description('Optional. AVD deploy scaling plan.')
+@description('AVD deploy scaling plan.')
 param deployScalingPlan bool
 
 @description('AVD Host Pool Name')
@@ -63,7 +66,7 @@ param workSpaceName string
 @description('AVD workspace friendly name.')
 param workSpaceFriendlyName string
 
-@description('Optional. AVD host pool Custom RDP properties.')
+@description('AVD host pool Custom RDP properties.')
 param hostPoolRdpProperties string
 
 @allowed([
@@ -119,7 +122,7 @@ var varDesktopApplicaitonGroups = [
     applicationGroupType: 'Desktop'
   }
 ]
-var varApplicationApplicationGroups = [
+var varRAppApplicationGroups = [
   {
     name: applicationGroupNameRapp
     friendlyName: applicationGroupFriendlyNameRapp
@@ -128,7 +131,68 @@ var varApplicationApplicationGroups = [
   }
 ]
 var varHostPoolRdpPropertiesDomainServiceCheck = (identityServiceProvider == 'AAD') ? '${hostPoolRdpProperties};targetisaadjoined:i:1;enablerdsaadauth:i:1' : hostPoolRdpProperties
-var varFinalApplicationGroups = deployRappGroup ? concat(varDesktopApplicaitonGroups, varApplicationApplicationGroups) : varDesktopApplicaitonGroups
+var varFinalApplicationGroups = deployRappGroup ? concat(varDesktopApplicaitonGroups, varRAppApplicationGroups) : varDesktopApplicaitonGroups
+var varRAppApplicationGroupsStandardApps = [
+  {
+    name: 'Task Manager'
+    description: 'Task Manager'
+    friendlyName: 'Task Manager'
+    showInPortal: true
+    filePath: 'C:\\Windows\\system32\\taskmgr.exe'
+  }
+  {
+    name: 'WordPad'
+    description: 'WordPad'
+    friendlyName: 'WordPad'
+    showInPortal: true
+    filePath: 'C:\\Program Files\\Windows NT\\Accessories\\wordpad.exe'
+  }
+  {
+    name: 'Microsoft Edge'
+    description: 'Microsoft Edge'
+    friendlyName: 'Edge'
+    showInPortal: true
+    filePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+  }
+  {
+    name: 'Remote Desktop Connection'
+    description: 'Remote Desktop Connection'
+    friendlyName: 'Remote Desktop'
+    showInPortal: true
+    filePath: 'C:\\WINDOWS\\system32\\mtsc.exe'
+  }
+]
+var varRAppApplicationGroupsOfficeApps = [
+  {
+    name: 'Microsoft Excel'
+    description: 'Microsoft Excel'
+    friendlyName: 'Excel'
+    showInPortal: true
+    filePath: 'C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE'
+  }
+  {
+    name: 'Microsoft PowerPoint'
+    description: 'Microsoft PowerPoint'
+    friendlyName: 'PowerPoint'
+    showInPortal: true
+    filePath: 'C:\\Program Files\\Microsoft Office\\root\\Office16\\POWERPNT.EXE'
+  }
+  {
+    name: 'Microsoft Word'
+    description: 'Microsoft Word'
+    friendlyName: 'Outlook'
+    showInPortal: true
+    filePath: 'C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE'
+  }
+  {
+    name: 'Microsoft Outlook'
+    description: 'Microsoft Word'
+    friendlyName: 'Word'
+    showInPortal: true
+    filePath: 'C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE'
+  }
+]
+var varRAppApplicationGroupsApps = (contains(osImage, 'office')) ? union(varRAppApplicationGroupsStandardApps, varRAppApplicationGroupsOfficeApps) : varRAppApplicationGroupsStandardApps
 var varHostPoolDiagnostic = [
   //'Checkpoint'
   //'Error'
@@ -195,8 +259,7 @@ module applicationGroups '../../../../carml/1.3.0/Microsoft.DesktopVirtualizatio
     applicationGroupType: applicationGroup.applicationGroupType
     hostpoolName: hostPool.outputs.name
     tags: tags
-    applications: [
-    ]
+    applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsApps : []
     roleAssignments: !empty(applicationGroupIdentitiesIds) ? [
       {
       roleDefinitionIdOrName: 'Desktop Virtualization User'
