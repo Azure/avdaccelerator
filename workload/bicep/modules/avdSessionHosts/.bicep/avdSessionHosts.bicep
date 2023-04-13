@@ -106,7 +106,7 @@ param hostPoolToken string
 param hostPoolName string
 
 @description('Location for the AVD agent installation package.')
-param agentPackageLocation string
+param avdAgentPackageLocation string
 
 @description('Deploy Fslogix setup.')
 param createAvdFslogixDeployment bool
@@ -333,7 +333,7 @@ module addAvdHostsToHostPool './registerSessionHostsOnHopstPool.bicep' = [for i 
         hostPoolToken: hostPoolToken
         name: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
         hostPoolName: hostPoolName
-        avdAgentPackageLocation: agentPackageLocation
+        avdAgentPackageLocation: avdAgentPackageLocation
     }
     dependsOn: [
         sessionHosts
