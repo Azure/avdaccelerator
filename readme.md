@@ -21,9 +21,10 @@ As of today, we have a first reference implementation scenario that is one of th
 
 [Getting Started](/workload/docs/getting-started-baseline.md) deploying Azure Virtual Desktop (AVD) resources and dependent services for establishing the baseline
 
-- AVD resources: workspace, two (2) application groups and host pool
-- [Optional]: new virtual network (VNet) with baseline NSG and route table
-- Azure Files share. Integration with Active Directory
+- AVD resources: workspace, two (2) application groups, scaling plan and a host pool
+- [Optional]: new virtual network (VNet) with NSGs, ASG and route tables
+- Azure Files with Integration to the identity service
+- Key vault
 - Session Hosts
 
 | Deployment Type | Link |
