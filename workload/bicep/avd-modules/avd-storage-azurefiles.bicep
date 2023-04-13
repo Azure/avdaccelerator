@@ -190,7 +190,6 @@ module storageAndFile '../../../carml/1.2.0/Microsoft.Storage/storageAccounts/de
         name: varStorageName
         location: sessionHostLocation
         storageAccountSku: storageSku
-        //allowBlobPublicAccess: deployPrivateEndpointKeyvaultStorage ? false : true
         allowBlobPublicAccess: false
         publicNetworkAccess: deployPrivateEndpointKeyvaultStorage ? 'Disabled' : 'Enabled'
         storageAccountKind: ((storageSku =~ 'Premium_LRS') || (storageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
