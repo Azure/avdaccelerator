@@ -77,6 +77,8 @@ This [diagram](/workload/docs/diagrams/avd-accelerator-resource-organization-nam
   - `avdUseCustomNaming`: false
   - `Unique string`: a1b2c3 (6 characters string calculated by the deployment)
 
+  Cost estimate [here](./cost-estimate.md)
+
 ## Naming standard
 
 The accelerator has built-in resource naming automation based on [Microsoft Cloud Adoption Framework (CAF) best practices for naming convention](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming?WT.mc_id=Portal-Microsoft_Azure_CreateUIDef),  the [recommended abbreviations for Azure resource types](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations?WT.mc_id=Portal-Microsoft_Azure_CreateUIDef) and [suggested tags](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-tagging#minimum-suggested-tags).
