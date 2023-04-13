@@ -106,7 +106,7 @@ param applicationSecurityGroupResourceId string
 param hostPoolName string
 
 @description('Location for the AVD agent installation package.')
-param agentPackageLocation string
+param avdAgentPackageLocation string
 
 @description('Deploy Fslogix setup.')
 param createAvdFslogixDeployment bool
@@ -182,7 +182,7 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varAvd
   scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
   name: 'AVD-SH-Batch-${i-1}-${time}'
   params: {
-    agentPackageLocation: agentPackageLocation
+    avdAgentPackageLocation: avdAgentPackageLocation
     timeZone: computeTimeZone
     applicationSecurityGroupResourceId: applicationSecurityGroupResourceId
     availabilitySetNamePrefix: availabilitySetNamePrefix

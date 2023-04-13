@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "15800881792876038792"
+      "templateHash": "8197527284795458942"
     }
   },
   "parameters": {
@@ -1200,8 +1200,8 @@
     "varReaderRoleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
     "varDesktopVirtualizationPowerOnContributorRoleId": "489581de-a3bd-480d-9518-53dea7416b33",
     "varDesktopVirtualizationPowerOnOffContributorRoleId": "40c5ff49-9181-41f8-ae61-143b0e78555e",
-    "varStorageAzureFilesDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/carml-paranVarNaming-peSubnet/workload/scripts/DSCStorageScripts.zip",
-    "varTempResourcesCleanUpDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/carml-paranVarNaming-peSubnet/workload/scripts/postDeploymentTempResourcesCleanUp.zip",
+    "varStorageAzureFilesDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip",
+    "varTempResourcesCleanUpDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/postDeploymentTempResourcesCleanUp.zip",
     "varStorageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-Storage-Scripts.ps1', variables('varBaseScriptUri'))]",
     "varPostDeploymentTempResuorcesCleanUpScriptUri": "[format('{0}scripts/postDeploymentTempResuorcesCleanUp.ps1', variables('varBaseScriptUri'))]",
     "varStorageToDomainScript": "./Manual-DSC-Storage-Scripts.ps1",
@@ -26648,7 +26648,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.1.55165",
-              "templateHash": "10143861062833100442"
+              "templateHash": "13099421507241176913"
             }
           },
           "parameters": {
@@ -26661,13 +26661,13 @@
             "workloadSubsId": {
               "type": "string",
               "metadata": {
-                "description": "Optional. AVD workload subscription ID, multiple subscriptions scenario."
+                "description": "AVD workload subscription ID, multiple subscriptions scenario."
               }
             },
             "computeTimeZone": {
               "type": "string",
               "metadata": {
-                "description": "Required. Virtual machine time zone."
+                "description": "Virtual machine time zone."
               }
             },
             "storageObjectsRgName": {
@@ -26697,7 +26697,7 @@
             "enableAcceleratedNetworking": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. Enable accelerated networking on the session host VMs."
+                "description": "Enable accelerated networking on the session host VMs."
               }
             },
             "privateEndpointSubnetId": {
@@ -26709,19 +26709,19 @@
             "createAvdVnet": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. Create new virtual network."
+                "description": "Create new virtual network."
               }
             },
             "sessionHostLocation": {
               "type": "string",
               "metadata": {
-                "description": "Required. Location where to deploy compute services."
+                "description": "Location where to deploy compute services."
               }
             },
             "encryptionAtHost": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs."
+                "description": "This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs."
               }
             },
             "sessionHostsSize": {
@@ -26781,19 +26781,19 @@
             "wrklKvName": {
               "type": "string",
               "metadata": {
-                "description": "Required. Keyvault name to get credentials from."
+                "description": "Keyvault name to get credentials from."
               }
             },
             "domainJoinUserName": {
               "type": "string",
               "metadata": {
-                "description": "Required. AVD session host domain join credentials."
+                "description": "AVD session host domain join credentials."
               }
             },
             "sessionHostOuPath": {
               "type": "string",
               "metadata": {
-                "description": "Optional. OU path to join AVd VMs."
+                "description": "OU path to join AVd VMs."
               }
             },
             "applicationSecurityGroupResourceId": {
@@ -26805,7 +26805,7 @@
             "storageSku": {
               "type": "string",
               "metadata": {
-                "description": "*Azure Files storage account SKU."
+                "description": "Azure Files storage account SKU."
               }
             },
             "fileShareQuotaSize": {
@@ -26920,7 +26920,7 @@
             "createOuForStorageString": {
               "type": "string",
               "metadata": {
-                "description": "Optional. If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: \"\")"
+                "description": "If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: \"\")"
               }
             },
             "managedIdentityClientId": {
@@ -26932,7 +26932,7 @@
             "fileShareCustomName": {
               "type": "string",
               "metadata": {
-                "description": "Optional. Storage account profile container file share prefix custom name. (Default: storagePurpose-pc-app1-001)"
+                "description": "Storage account profile container file share prefix custom name."
               },
               "maxLength": 64
             }
@@ -26950,7 +26950,7 @@
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', variables('varStorageName'))]",
             "varStoragePurposeAcronym": "[if(equals(parameters('storagePurpose'), 'fslogix'), 'fsl', if(equals(parameters('storagePurpose'), 'msix'), 'msx', ''))]",
             "varStorageName": "[if(parameters('useCustomNaming'), format('{0}{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varStoragePurposeAcronym'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')), format('st{0}{1}{2}', variables('varStoragePurposeAcronym'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')))]",
-            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -CustomOuPath {9} -OUName {10} -CreateNewOU {11} -ShareName {12} -ClientId {13} -Verbose -DomainAdminUserPassword ', parameters('dscAgentPackageLocation'), variables('varStorageName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('createOuForStorageString'), variables('varFileShareName'), parameters('managedIdentityClientId'))]"
+            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -CustomOuPath {9} -OUName {10} -CreateNewOU {11} -ShareName {12} -ClientId {13}', parameters('dscAgentPackageLocation'), variables('varStorageName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('createOuForStorageString'), variables('varFileShareName'), parameters('managedIdentityClientId'))]"
           },
           "resources": [
             {
@@ -35499,7 +35499,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.16.1.55165",
-                      "templateHash": "5316476625822740437"
+                      "templateHash": "2300209641869617369"
                     }
                   },
                   "parameters": {
@@ -35538,7 +35538,7 @@
                     }
                   },
                   "variables": {
-                    "varscriptArgumentsWithPassword": "[format('{0}\"{1}\" ', parameters('scriptArguments'), parameters('domainJoinUserPassword'))]"
+                    "varscriptArgumentsWithPassword": "[format('{0} -DomainAdminUserPassword {1} -verbose', parameters('scriptArguments'), parameters('domainJoinUserPassword'))]"
                   },
                   "resources": [
                     {
@@ -35730,7 +35730,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.1.55165",
-              "templateHash": "10143861062833100442"
+              "templateHash": "13099421507241176913"
             }
           },
           "parameters": {
@@ -35743,13 +35743,13 @@
             "workloadSubsId": {
               "type": "string",
               "metadata": {
-                "description": "Optional. AVD workload subscription ID, multiple subscriptions scenario."
+                "description": "AVD workload subscription ID, multiple subscriptions scenario."
               }
             },
             "computeTimeZone": {
               "type": "string",
               "metadata": {
-                "description": "Required. Virtual machine time zone."
+                "description": "Virtual machine time zone."
               }
             },
             "storageObjectsRgName": {
@@ -35779,7 +35779,7 @@
             "enableAcceleratedNetworking": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. Enable accelerated networking on the session host VMs."
+                "description": "Enable accelerated networking on the session host VMs."
               }
             },
             "privateEndpointSubnetId": {
@@ -35791,19 +35791,19 @@
             "createAvdVnet": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. Create new virtual network."
+                "description": "Create new virtual network."
               }
             },
             "sessionHostLocation": {
               "type": "string",
               "metadata": {
-                "description": "Required. Location where to deploy compute services."
+                "description": "Location where to deploy compute services."
               }
             },
             "encryptionAtHost": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs."
+                "description": "This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs."
               }
             },
             "sessionHostsSize": {
@@ -35863,19 +35863,19 @@
             "wrklKvName": {
               "type": "string",
               "metadata": {
-                "description": "Required. Keyvault name to get credentials from."
+                "description": "Keyvault name to get credentials from."
               }
             },
             "domainJoinUserName": {
               "type": "string",
               "metadata": {
-                "description": "Required. AVD session host domain join credentials."
+                "description": "AVD session host domain join credentials."
               }
             },
             "sessionHostOuPath": {
               "type": "string",
               "metadata": {
-                "description": "Optional. OU path to join AVd VMs."
+                "description": "OU path to join AVd VMs."
               }
             },
             "applicationSecurityGroupResourceId": {
@@ -35887,7 +35887,7 @@
             "storageSku": {
               "type": "string",
               "metadata": {
-                "description": "*Azure Files storage account SKU."
+                "description": "Azure Files storage account SKU."
               }
             },
             "fileShareQuotaSize": {
@@ -36002,7 +36002,7 @@
             "createOuForStorageString": {
               "type": "string",
               "metadata": {
-                "description": "Optional. If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: \"\")"
+                "description": "If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: \"\")"
               }
             },
             "managedIdentityClientId": {
@@ -36014,7 +36014,7 @@
             "fileShareCustomName": {
               "type": "string",
               "metadata": {
-                "description": "Optional. Storage account profile container file share prefix custom name. (Default: storagePurpose-pc-app1-001)"
+                "description": "Storage account profile container file share prefix custom name."
               },
               "maxLength": 64
             }
@@ -36032,7 +36032,7 @@
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', variables('varStorageName'))]",
             "varStoragePurposeAcronym": "[if(equals(parameters('storagePurpose'), 'fslogix'), 'fsl', if(equals(parameters('storagePurpose'), 'msix'), 'msx', ''))]",
             "varStorageName": "[if(parameters('useCustomNaming'), format('{0}{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varStoragePurposeAcronym'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')), format('st{0}{1}{2}', variables('varStoragePurposeAcronym'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')))]",
-            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -CustomOuPath {9} -OUName {10} -CreateNewOU {11} -ShareName {12} -ClientId {13} -Verbose -DomainAdminUserPassword ', parameters('dscAgentPackageLocation'), variables('varStorageName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('createOuForStorageString'), variables('varFileShareName'), parameters('managedIdentityClientId'))]"
+            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -CustomOuPath {9} -OUName {10} -CreateNewOU {11} -ShareName {12} -ClientId {13}', parameters('dscAgentPackageLocation'), variables('varStorageName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('createOuForStorageString'), variables('varFileShareName'), parameters('managedIdentityClientId'))]"
           },
           "resources": [
             {
@@ -44581,7 +44581,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.16.1.55165",
-                      "templateHash": "5316476625822740437"
+                      "templateHash": "2300209641869617369"
                     }
                   },
                   "parameters": {
@@ -44620,7 +44620,7 @@
                     }
                   },
                   "variables": {
-                    "varscriptArgumentsWithPassword": "[format('{0}\"{1}\" ', parameters('scriptArguments'), parameters('domainJoinUserPassword'))]"
+                    "varscriptArgumentsWithPassword": "[format('{0} -DomainAdminUserPassword {1} -verbose', parameters('scriptArguments'), parameters('domainJoinUserPassword'))]"
                   },
                   "resources": [
                     {

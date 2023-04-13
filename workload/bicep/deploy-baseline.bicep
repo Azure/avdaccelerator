@@ -600,8 +600,6 @@ var varAvdNetworksecurityGroupName = avdUseCustomNaming ? avdNetworksecurityGrou
 var varPrivateEndpointNetworksecurityGroupName = avdUseCustomNaming ? privateEndpointNetworksecurityGroupCustomName : 'nsg-pe-${varComputeStorageResourcesNamingStandard}-001'
 var varAvdRouteTableName = avdUseCustomNaming ? avdRouteTableCustomName : 'route-avd-${varComputeStorageResourcesNamingStandard}-001'
 var varPrivateEndpointRouteTableName = avdUseCustomNaming ? privateEndpointRouteTableCustomName : 'route-pe-${varComputeStorageResourcesNamingStandard}-001'
-
-
 var varApplicationSecurityGroupName = avdUseCustomNaming ? avdApplicationSecurityGroupCustomName : 'asg-avd-${varComputeStorageResourcesNamingStandard}-001'
 var varVnetworkPeeringName = 'peer-avd-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringSixChar}'
 var varWorkSpaceName = avdUseCustomNaming ? avdWorkSpaceCustomName : 'vdws-${varManagementPlaneNamingStandard}-001'
@@ -776,13 +774,13 @@ var varFsLogixScript = './Set-FSLogixRegKeys.ps1'
 var varFslogixFileShareName = createAvdFslogixDeployment ? fslogixStorageAzureFiles.outputs.fileShareName : ''
 var varFslogixSharePath = '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
 var varFsLogixScriptArguments = '-volumeshare ${varFslogixSharePath}'
-var varAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
+var varAvdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
 var varStorageAccountContributorRoleId = '17d1049b-9a84-46fb-8f53-869881c3d3ab'
 var varReaderRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 var varDesktopVirtualizationPowerOnContributorRoleId = '489581de-a3bd-480d-9518-53dea7416b33'
 var varDesktopVirtualizationPowerOnOffContributorRoleId = '40c5ff49-9181-41f8-ae61-143b0e78555e'
-var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/carml-paranVarNaming-peSubnet/workload/scripts/DSCStorageScripts.zip'
-var varTempResourcesCleanUpDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/carml-paranVarNaming-peSubnet/workload/scripts/postDeploymentTempResourcesCleanUp.zip'
+var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip'
+var varTempResourcesCleanUpDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/postDeploymentTempResourcesCleanUp.zip'
 var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
 var varPostDeploymentTempResuorcesCleanUpScriptUri = '${varBaseScriptUri}scripts/postDeploymentTempResuorcesCleanUp.ps1'
 var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
@@ -1031,6 +1029,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
         applicationGroupFriendlyNameDesktop: varApplicationGroupFriendlyName
         applicationGroupAppFriendlyNameDesktop: varApplicationGroupAppFriendlyName
         workSpaceName: varWorkSpaceName
+        osImage: avdOsImage
         workSpaceFriendlyName: varWorkSpaceFriendlyName
         applicationGroupNameRapp: varApplicationGroupNameRapp
         applicationGroupFriendlyNameRapp: varApplicationGroupFriendlyNameRapp
@@ -1306,7 +1305,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
     name: 'Session-Hosts-${time}'
     params: {
 
-        agentPackageLocation: varAgentPackageLocation
+        avdAgentPackageLocation: varAvdAgentPackageLocation
         computeTimeZone: varTimeZones[avdSessionHostLocation]
         applicationSecurityGroupResourceId: createAvdVnet ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
         availabilitySetFaultDomainCount: avdAsFaultDomainCount
