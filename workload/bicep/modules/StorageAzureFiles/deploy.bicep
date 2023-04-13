@@ -7,10 +7,10 @@ targetScope = 'subscription'
 @description('Resource Group name for the session hosts.')
 param computeObjectsRgName string
 
-@description('Optional. AVD workload subscription ID, multiple subscriptions scenario.')
+@description('AVD workload subscription ID, multiple subscriptions scenario.')
 param workloadSubsId string
 
-@description('Required. Virtual machine time zone.')
+@description('Virtual machine time zone.')
 param computeTimeZone string
 
 @description('Resource Group Name for Azure Files.')
@@ -25,19 +25,19 @@ param serviceObjectsRgName string
 @description('AVD subnet ID.')
 param avdSubnetId string
 
-@description('Optional. Enable accelerated networking on the session host VMs.')
+@description('Enable accelerated networking on the session host VMs.')
 param enableAcceleratedNetworking bool
 
 @description('Private endpoint subnet ID.')
 param privateEndpointSubnetId string
 
-@description('Optional. Create new virtual network.')
+@description('Create new virtual network.')
 param createAvdVnet bool
 
-@description('Required. Location where to deploy compute services.')
+@description('Location where to deploy compute services.')
 param sessionHostLocation string
 
-@description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
+@description('This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool
 
 @description('Session host VM size.')
@@ -67,19 +67,19 @@ param vmLocalUserName string
 @description('Required. AD domain name.')
 param identityDomainName string
 
-@description('Required. Keyvault name to get credentials from.')
+@description('Keyvault name to get credentials from.')
 param wrklKvName string
 
-@description('Required. AVD session host domain join credentials.')
+@description('AVD session host domain join credentials.')
 param domainJoinUserName string
 
-@description('Optional. OU path to join AVd VMs.')
+@description('OU path to join AVd VMs.')
 param sessionHostOuPath string
 
 @description('Application Security Group (ASG) for the session hosts.')
 param applicationSecurityGroupResourceId string
 
-@description('*Azure Files storage account SKU.')
+@description('Azure Files storage account SKU.')
 param storageSku string
 
 @description('*Azure File share quota')
@@ -137,14 +137,14 @@ param storageCustomOuPath string
 @description('OU Storage Path')
 param ouStgPath string
 
-@description('Optional. If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: "")')
+@description('If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: "")')
 param createOuForStorageString string
 
 @description('Managed Identity Client ID')
 param managedIdentityClientId string
 
 @maxLength(64)
-@description('Optional. Storage account profile container file share prefix custom name. (Default: storagePurpose-pc-app1-001)')
+@description('Storage account profile container file share prefix custom name.')
 param fileShareCustomName string
 
 
@@ -167,7 +167,8 @@ var varWrklStoragePrivateEndpointName = 'pe-${varStorageName}-file'
 //var varStoragePurposeLowerPrefix = substring(varStoragePurposeLower, 0,2)
 var varStoragePurposeAcronym = (storagePurpose == 'fslogix') ? 'fsl': ((storagePurpose == 'msix') ? 'msx': '')
 var varStorageName = useCustomNaming ? '${storageAccountPrefixCustomName}${varStoragePurposeAcronym}${deploymentPrefixLowercase}${namingUniqueStringSixChar}' : 'st${varStoragePurposeAcronym}${deploymentPrefixLowercase}${namingUniqueStringSixChar}'
-var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${varStorageName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -DomainAdminUserName ${domainJoinUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -CreateNewOU ${createOuForStorageString} -ShareName ${varFileShareName} -ClientId ${managedIdentityClientId} -Verbose -DomainAdminUserPassword '
+var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${varStorageName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -DomainAdminUserName ${domainJoinUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -CreateNewOU ${createOuForStorageString} -ShareName ${varFileShareName} -ClientId ${managedIdentityClientId}'
+
 // =========== //
 // Deployments //
 // =========== //
@@ -252,7 +253,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
 //}
 
 // Provision temporary VM and add it to domain.
-module managementVM '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = {
+module managementVm '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = {
     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
     name: 'Management-VM-${time}'
     params: {
@@ -342,7 +343,7 @@ module managementVmWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentS
         '''
     }
     dependsOn: [
-        managementVM
+        managementVm
     ]
 } 
 
@@ -352,7 +353,7 @@ module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = if(identit
     name: 'Add-${storagePurpose}-Storage-Setup-${time}'
     params: {
         location: sessionHostLocation
-        name: managementVM.outputs.name
+        name: managementVmName
         file: storageToDomainScript
         scriptArguments: varStorageToDomainScriptArgs
         domainJoinUserPassword: avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
