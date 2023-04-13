@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "10622223984702728835"
+      "templateHash": "13695227893871461121"
     }
   },
   "parameters": {
@@ -236,7 +236,7 @@
         "description": "Optional. custom DNS servers IPs."
       }
     },
-    "usePrivateEndpoint": {
+    "deployPrivateEndpointKeyvaultStorage": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
@@ -20786,9 +20786,9 @@
           "softDeleteRetentionInDays": {
             "value": 7
           },
-          "publicNetworkAccess": "[if(parameters('usePrivateEndpoint'), createObject('value', 'disabled'), createObject('value', 'enabled'))]",
-          "networkAcls": "[if(parameters('usePrivateEndpoint'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject()))]",
-          "privateEndpoints": "[if(parameters('usePrivateEndpoint'), if(parameters('avdVnetPrivateDnsZone'), createObject('value', createArray(createObject('name', variables('varAvdWrklKvPrivateEndpointName'), 'subnetResourceId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.avdVirtualNetworkResourceId.value, variables('varAvdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId')), 'service', 'vault', 'privateDnsZoneResourceIds', createArray(parameters('avdVnetPrivateDnsZoneKeyvaultId'))))), createObject('value', createArray(createObject('name', variables('varAvdWrklKvPrivateEndpointName'), 'subnetResourceId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.avdVirtualNetworkResourceId.value, variables('varAvdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId')), 'service', 'vault')))), createObject('value', createArray()))]",
+          "publicNetworkAccess": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), createObject('value', 'disabled'), createObject('value', 'enabled'))]",
+          "networkAcls": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject()))]",
+          "privateEndpoints": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), if(parameters('avdVnetPrivateDnsZone'), createObject('value', createArray(createObject('name', variables('varAvdWrklKvPrivateEndpointName'), 'subnetResourceId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.avdVirtualNetworkResourceId.value, variables('varAvdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId')), 'service', 'vault', 'privateDnsZoneResourceIds', createArray(parameters('avdVnetPrivateDnsZoneKeyvaultId'))))), createObject('value', createArray(createObject('name', variables('varAvdWrklKvPrivateEndpointName'), 'subnetResourceId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.avdVirtualNetworkResourceId.value, variables('varAvdVnetworkSubnetName')), parameters('existingVnetSubnetResourceId')), 'service', 'vault')))), createObject('value', createArray()))]",
           "secrets": {
             "value": {
               "secureList": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createArray(createObject('name', 'avdVmLocalUserPassword', 'value', parameters('avdVmLocalUserPassword'), 'contentType', 'Session host local user credentials'), createObject('name', 'avdVmLocalUserName', 'value', parameters('avdVmLocalUserName'), 'contentType', 'Session host local user credentials'), createObject('name', 'avdDomainJoinUserName', 'value', parameters('avdDomainJoinUserName'), 'contentType', 'Domain join credentials'), createObject('name', 'avdDomainJoinUserPassword', 'value', parameters('avdDomainJoinUserPassword'), 'contentType', 'Domain join credentials')), createArray(createObject('name', 'avdVmLocalUserPassword', 'value', parameters('avdVmLocalUserPassword'), 'contentType', 'Session host local user credentials'), createObject('name', 'avdVmLocalUserName', 'value', parameters('avdVmLocalUserName'), 'contentType', 'Session host local user credentials'), createObject('name', 'avdDomainJoinUserName', 'value', 'AAD-Joined-Deployment-No-Domain-Credentials', 'contentType', 'Domain join credentials'), createObject('name', 'avdDomainJoinUserPassword', 'value', 'AAD-Joined-Deployment-No-Domain-Credentials', 'contentType', 'Domain join credentials')))]"
@@ -22257,8 +22257,8 @@
           "managementVmName": {
             "value": "[variables('varManagementVmName')]"
           },
-          "usePrivateEndpoint": {
-            "value": "[parameters('usePrivateEndpoint')]"
+          "deployPrivateEndpointKeyvaultStorage": {
+            "value": "[parameters('deployPrivateEndpointKeyvaultStorage')]"
           },
           "avdOuStgPath": {
             "value": "[variables('varOuStgPath')]"
@@ -22369,7 +22369,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.2.56959",
-              "templateHash": "15071777707383786591"
+              "templateHash": "130177304817501850"
             }
           },
           "parameters": {
@@ -22565,7 +22565,7 @@
                 "description": "Name for management virtual machine. for tools and to join Azure Files to domain."
               }
             },
-            "usePrivateEndpoint": {
+            "deployPrivateEndpointKeyvaultStorage": {
               "type": "bool",
               "metadata": {
                 "description": "Optional. AVD Accelerator will deploy with private endpoints by default."
@@ -22703,14 +22703,16 @@
                   "storageAccountSku": {
                     "value": "[parameters('storageSku')]"
                   },
-                  "allowBlobPublicAccess": "[if(parameters('usePrivateEndpoint'), createObject('value', false()), createObject('value', true()))]",
-                  "publicNetworkAccess": "[if(parameters('usePrivateEndpoint'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
+                  "allowBlobPublicAccess": {
+                    "value": false
+                  },
+                  "publicNetworkAccess": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "storageAccountKind": "[if(or(equals(toLower(parameters('storageSku')), toLower('Premium_LRS')), equals(toLower(parameters('storageSku')), toLower('Premium_ZRS'))), createObject('value', 'FileStorage'), createObject('value', 'StorageV2'))]",
                   "azureFilesIdentityBasedAuthentication": "[if(equals(parameters('identityServiceProvider'), 'AADDS'), createObject('value', createObject('directoryServiceOptions', 'AADDS')), createObject('value', createObject('directoryServiceOptions', 'None')))]",
                   "storageAccountAccessTier": {
                     "value": "Hot"
                   },
-                  "networkAcls": "[if(parameters('usePrivateEndpoint'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject()))]",
+                  "networkAcls": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject()))]",
                   "fileServices": {
                     "value": {
                       "shares": [
@@ -22725,7 +22727,7 @@
                       "diagnosticMetricsToEnable": "[variables('varAvdFileShareMetricsDiagnostic')]"
                     }
                   },
-                  "privateEndpoints": "[if(parameters('usePrivateEndpoint'), if(parameters('vnetPrivateDnsZone'), createObject('value', createArray(createObject('name', variables('varWrklStoragePrivateEndpointName'), 'subnetResourceId', parameters('subnetResourceId'), 'service', 'file', 'privateDnsZoneResourceIds', createArray(parameters('vnetPrivateDnsZoneFilesId'))))), createObject('value', createArray(createObject('name', variables('varWrklStoragePrivateEndpointName'), 'subnetResourceId', parameters('subnetResourceId'), 'service', 'file')))), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), if(parameters('vnetPrivateDnsZone'), createObject('value', createArray(createObject('name', variables('varWrklStoragePrivateEndpointName'), 'subnetResourceId', parameters('subnetResourceId'), 'service', 'file', 'privateDnsZoneResourceIds', createArray(parameters('vnetPrivateDnsZoneFilesId'))))), createObject('value', createArray(createObject('name', variables('varWrklStoragePrivateEndpointName'), 'subnetResourceId', parameters('subnetResourceId'), 'service', 'file')))), createObject('value', createArray()))]",
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
@@ -29948,8 +29950,8 @@
           "managementVmName": {
             "value": "[variables('varManagementVmName')]"
           },
-          "usePrivateEndpoint": {
-            "value": "[parameters('usePrivateEndpoint')]"
+          "deployPrivateEndpointKeyvaultStorage": {
+            "value": "[parameters('deployPrivateEndpointKeyvaultStorage')]"
           },
           "avdOuStgPath": {
             "value": "[variables('varOuStgPath')]"
@@ -30060,7 +30062,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.2.56959",
-              "templateHash": "15071777707383786591"
+              "templateHash": "130177304817501850"
             }
           },
           "parameters": {
@@ -30256,7 +30258,7 @@
                 "description": "Name for management virtual machine. for tools and to join Azure Files to domain."
               }
             },
-            "usePrivateEndpoint": {
+            "deployPrivateEndpointKeyvaultStorage": {
               "type": "bool",
               "metadata": {
                 "description": "Optional. AVD Accelerator will deploy with private endpoints by default."
@@ -30394,14 +30396,16 @@
                   "storageAccountSku": {
                     "value": "[parameters('storageSku')]"
                   },
-                  "allowBlobPublicAccess": "[if(parameters('usePrivateEndpoint'), createObject('value', false()), createObject('value', true()))]",
-                  "publicNetworkAccess": "[if(parameters('usePrivateEndpoint'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
+                  "allowBlobPublicAccess": {
+                    "value": false
+                  },
+                  "publicNetworkAccess": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "storageAccountKind": "[if(or(equals(toLower(parameters('storageSku')), toLower('Premium_LRS')), equals(toLower(parameters('storageSku')), toLower('Premium_ZRS'))), createObject('value', 'FileStorage'), createObject('value', 'StorageV2'))]",
                   "azureFilesIdentityBasedAuthentication": "[if(equals(parameters('identityServiceProvider'), 'AADDS'), createObject('value', createObject('directoryServiceOptions', 'AADDS')), createObject('value', createObject('directoryServiceOptions', 'None')))]",
                   "storageAccountAccessTier": {
                     "value": "Hot"
                   },
-                  "networkAcls": "[if(parameters('usePrivateEndpoint'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject()))]",
+                  "networkAcls": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject()))]",
                   "fileServices": {
                     "value": {
                       "shares": [
@@ -30416,7 +30420,7 @@
                       "diagnosticMetricsToEnable": "[variables('varAvdFileShareMetricsDiagnostic')]"
                     }
                   },
-                  "privateEndpoints": "[if(parameters('usePrivateEndpoint'), if(parameters('vnetPrivateDnsZone'), createObject('value', createArray(createObject('name', variables('varWrklStoragePrivateEndpointName'), 'subnetResourceId', parameters('subnetResourceId'), 'service', 'file', 'privateDnsZoneResourceIds', createArray(parameters('vnetPrivateDnsZoneFilesId'))))), createObject('value', createArray(createObject('name', variables('varWrklStoragePrivateEndpointName'), 'subnetResourceId', parameters('subnetResourceId'), 'service', 'file')))), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), if(parameters('vnetPrivateDnsZone'), createObject('value', createArray(createObject('name', variables('varWrklStoragePrivateEndpointName'), 'subnetResourceId', parameters('subnetResourceId'), 'service', 'file', 'privateDnsZoneResourceIds', createArray(parameters('vnetPrivateDnsZoneFilesId'))))), createObject('value', createArray(createObject('name', variables('varWrklStoragePrivateEndpointName'), 'subnetResourceId', parameters('subnetResourceId'), 'service', 'file')))), createObject('value', createArray()))]",
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
