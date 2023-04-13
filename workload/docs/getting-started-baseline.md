@@ -77,7 +77,7 @@ This [diagram](/workload/docs/diagrams/avd-accelerator-resource-organization-nam
   - `avdUseCustomNaming`: false
   - `Unique string`: a1b2c3 (6 characters string calculated by the deployment)
 
-For baseline deployment cost estimate, see [cost estimate](./cost-estimate.md).
+For baseline deployment cost estimate, see [here](./cost-estimate.md).
 
 ## Naming standard
 
