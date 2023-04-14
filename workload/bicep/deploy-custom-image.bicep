@@ -693,9 +693,9 @@ resource telemetryDeployment 'Microsoft.Resources/deployments@2021-04-01' = if (
 }
 
 // AVD Shared Services Resource Group.
-module avdSharedResourcesRg '../../carml/1.0.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
+module avdSharedResourcesRg '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
     scope: subscription(sharedServicesSubId)
-    name: 'Resource-Group_${time}'
+    name: 'Resource-Group-${time}'
     params: {
         name: varResourceGroupName
         location: deploymentLocation
@@ -720,10 +720,11 @@ resource virtualNetworkJoinExistingRoleCheck 'Microsoft.Authorization/roleDefini
 */
 
 // Role definition deployment.
-module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinitions/subscription/deploy.bicep' = [for i in range(0, length(varRoles)): {
+module roleDefinitions '../../carml/1.3.0/Microsoft.Authorization/roleDefinitions/subscription/deploy.bicep' = [for i in range(0, length(varRoles)): {
     scope: subscription(sharedServicesSubId)
-    name: 'Role-Definition_${i}_${time}'
+    name: 'Role-Definition-${i}-${time}'
     params: {
+        location: deploymentLocation
         subscriptionId: sharedServicesSubId
         description: varRoles[i].description
         roleName: varRoles[i].name
@@ -740,9 +741,9 @@ module roleDefinitions '../../carml/1.0.0/Microsoft.Authorization/roleDefinition
 }]
 
 // Managed identity.
-module userAssignedManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
+module userAssignedManagedIdentity '../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'User-Assigned-Managed-Identity_${time}'
+    name: 'User-Assigned-Managed-Identity-${time}'
     params: {
         name: varUserAssignedManagedIdentityName
         location: deploymentLocation
@@ -754,8 +755,8 @@ module userAssignedManagedIdentity '../../carml/1.0.0/Microsoft.ManagedIdentity/
 }
 
 // Role assignments.
-module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for i in range(0, length(varRoles)): {
-    name: 'Role-Assignment_${i}_${time}'
+module roleAssignments '../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for i in range(0, length(varRoles)): {
+    name: 'Role-Assignment-${i}-${time}'
     scope: resourceGroup(sharedServicesSubId, varRoles[i].resourceGroup)
     params: {
         roleDefinitionIdOrName: roleDefinitions[i].outputs.resourceId
@@ -765,8 +766,8 @@ module roleAssignments '../../carml/1.2.0/Microsoft.Authorization/roleAssignment
 }]
 
 //// Unique role assignment for Azure US Government since it does not support image template permissions
-module roleAssignment_AzureUSGovernment '../../carml/1.2.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (varAzureCloudName != 'AzureCloud') {
-    name: 'Role-Assignment_MAG_${time}'
+module roleAssignment_AzureUSGovernment '../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (varAzureCloudName != 'AzureCloud') {
+    name: 'Role-Assignment-MAG-${time}'
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     params: {
         roleDefinitionIdOrName: 'Contributor'
@@ -778,7 +779,7 @@ module roleAssignment_AzureUSGovernment '../../carml/1.2.0/Microsoft.Authorizati
 // Compute Gallery.
 module gallery '../../carml/1.3.0/Microsoft.Compute/galleries/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'Compute-Gallery_${time}'
+    name: 'Compute-Gallery-${time}'
     params: {
         name: varImageGalleryName
         location: imageVersionPrimaryLocation
@@ -793,7 +794,7 @@ module gallery '../../carml/1.3.0/Microsoft.Compute/galleries/deploy.bicep' = {
 // Image Definition.
 module image '../../carml/1.3.0/Microsoft.Compute/galleries/images/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'Image-Definition_${time}'
+    name: 'Image-Definition-${time}'
     params: {
         galleryName: gallery.outputs.name
         name: varImageDefinitionName
@@ -821,7 +822,7 @@ module image '../../carml/1.3.0/Microsoft.Compute/galleries/images/deploy.bicep'
 // Image template.
 module imageTemplate '../../carml/1.3.0/Microsoft.VirtualMachineImages/imageTemplates/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'Image-Template_${time}'
+    name: 'Image-Template-${time}'
     params: {
         name: varImageTemplateName
         subnetId: !empty(existingVirtualNetworkResourceId) && !empty(existingSubnetName) ? '${existingVirtualNetworkResourceId}/subnets/${existingSubnetName}' : ''
@@ -851,9 +852,9 @@ module imageTemplate '../../carml/1.3.0/Microsoft.VirtualMachineImages/imageTemp
 }
 
 // Log Analytics Workspace.
-module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
+module workspace '../../carml/1.3.0/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'Log-Analytics-Workspace_${time}'
+    name: 'Log-Analytics-Workspace-${time}'
     params: {
         location: deploymentLocation
         name: varLogAnalyticsWorkspaceName
@@ -867,19 +868,19 @@ module workspace '../../carml/1.2.1/Microsoft.OperationalInsights/workspaces/dep
 }
 
 // Introduce wait after log analitics workspace creation.
-module workspaceWait '../../carml/1.0.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
+module workspaceWait '../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'Log-Analytics-Workspace-Wait_${time}'
+    name: 'Log-Analytics-Workspace-Wait-${time}'
     params: {
-        name: '${varLogAnalyticsWorkspaceName}_wait_${time}'
+        name: 'Log-Analytics-Workspace-Wait-${time}'
         location: deploymentLocation
-        azPowerShellVersion: '6.2'
+        azPowerShellVersion: '8.3.0'
         cleanupPreference: 'Always'
         timeout: 'PT10M'
         scriptContent: '''
         Write-Host "Start"
         Get-Date
-        Start-Sleep -Seconds 120
+        Start-Sleep -Seconds 60
         Write-Host "Stop"
         Get-Date
         '''
@@ -890,9 +891,9 @@ module workspaceWait '../../carml/1.0.0/Microsoft.Resources/deploymentScripts/de
 }
 
 // Automation account.
-module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccounts/deploy.bicep' = {
+module automationAccount '../../carml/1.3.0/Microsoft.Automation/automationAccounts/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'Automation-Account_${time}'
+    name: 'Automation-Account-${time}'
     params: {
         diagnosticLogCategoriesToEnable: [
             'JobLogs'
@@ -924,7 +925,7 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
             {
                 name: 'aib-build-automation'
                 description: 'When this runbook is triggered, last build date is checked on the AIB image template.  If a new marketplace image has been released since that date, a new build is initiated. If a build has never been initiated then it will be start one.'
-                runbookType: 'PowerShell'
+                type: 'PowerShell'
                 // ToDo: Update URL before PR merge
                 uri: 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/New-AzureImageBuilderBuild.ps1'
                 version: '1.0.0.0'
@@ -954,9 +955,9 @@ module automationAccount '../../carml/1.2.1/Microsoft.Automation/automationAccou
 
 // Automation accounts.
 @batchSize(1)
-module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/modules/deploy.bicep' = [for i in range(0, length(varModules)): {
+module modules '../../carml/1.3.0/Microsoft.Automation/automationAccounts/modules/deploy.bicep' = [for i in range(0, length(varModules)): {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'Automation-Account-Module_${i}_${time}'
+    name: 'Automation-Account-Module-${i}-${time}'
     params: {
         name: varModules[i].name
         location: deploymentLocation
@@ -968,7 +969,7 @@ module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/module
 // Commenting out for future feature release
 /* module storageAccount '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'Storage-Account_${time}'
+    name: 'Storage-Account-${time}'
     params: {
         name: varStorageAccountName
         location: deploymentLocation
@@ -995,9 +996,9 @@ module modules '../../carml/1.2.1/Microsoft.Automation/automationAccounts/module
 */
 
 // Action groups.
-module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bicep' = if (enableMonitoringAlerts) {
+module actionGroup '../../carml/1.3.0/Microsoft.Insights/actionGroups/deploy.bicep' = if (enableMonitoringAlerts) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'Action-Group_${time}'
+    name: 'Action-Group-${time}'
     params: {
         location: 'global'
         groupShortName: 'aib-email'
@@ -1018,9 +1019,9 @@ module actionGroup '../../carml/1.0.0/Microsoft.Insights/actionGroups/deploy.bic
 }
 
 // Schedules.
-module scheduledQueryRules '../../carml/1.2.1/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(varAlerts)): if (enableMonitoringAlerts) {
+module scheduledQueryRules '../../carml/1.3.0/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(varAlerts)): if (enableMonitoringAlerts) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'Scheduled-Query-Rule_${i}_${time}'
+    name: 'Scheduled-Query-Rule-${i}-${time}'
     params: {
         location: deploymentLocation
         name: varAlerts[i].name
