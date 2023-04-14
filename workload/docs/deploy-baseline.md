@@ -88,7 +88,9 @@ We have these other options available:
 
 ## Next Steps
 
-- After successful deployment, you can remove the temporary virtual machine (`vm-fs-dj-{deployment-prefix}`) and associated OS disk (`osdisk-001-vm-fs-dj-{deployment-prefix}`) and network interface (`nic-001-vm-fs-dj-{deployment-prefix}`) that was used to provision the storage account for FSLogix purposes.
+- After successful deployment, you can remove the following temporary resources used only during deployment: 
+    - virtual machine (`vm-mgmt-{deployment-prefix}`) and associated OS disk (`vm-mgmt-{deployment-prefix}-disk-os-01`) and network interface (`nic-001-vm-mgmt-{deployment-prefix}`) that was used to provision the storage account for FSLogix purposes.
+    - Deployment scripts used to introduce wait times: Management-VM-Wait-{timestamp}, Managed-Identity-Wait-{timestamp}, Antimalware-Extension-Wait-{timestamp}, Session-Hosts-Wait-{timestamp}, Host-Pool-Registration-Wait-{timestamp}
 - You should assign specific roles, including AVD-specific roles based on your organization’s policies.
 - Preferably enable NSG Flow logs and AVD insights.
 
