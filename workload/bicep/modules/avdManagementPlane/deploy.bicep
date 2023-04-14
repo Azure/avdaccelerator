@@ -87,7 +87,7 @@ param personalAssignType string
   'BreadthFirst'
   'DepthFirst'
 ])
-@description('Required. AVD host pool load balacing type.')
+@description('AVD host pool load balacing type.')
 param hostPoolLoadBalancerType string
 
 @description('Optional. AVD host pool maximum number of user sessions per session host.')
@@ -96,16 +96,16 @@ param hostPoolMaxSessions int
 @description('Optional. AVD host pool start VM on Connect.')
 param startVmOnConnect bool
 
-@description('Required. Tags to be applied to resources')
+@description('Tags to be applied to resources')
 param tags object
 
-@description('Required. Tag to exclude resources from scaling plan.')
+@description('Tag to exclude resources from scaling plan.')
 param scalingPlanExclusionTag string
 
-@description('Optional. Log analytics workspace for diagnostic logs.')
+@description('Log analytics workspace for diagnostic logs.')
 param alaWorkspaceResourceId string
 
-@description('Optional. Diagnostic logs retention.')
+@description('Diagnostic logs retention.')
 param diagnosticLogsRetentionInDays int
 
 @description('Do not modify, used to set unique value for resource deployment.')
