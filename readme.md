@@ -63,6 +63,27 @@ Custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https
 
 _Download a [Visio file](./workload/docs/diagrams/avd-accelerator-baseline-architecture.vsdx) of this architecture._
 
+## Cost Optimization
+
+[How to create a new Azure Workbook](https://learn.microsoft.com/en-us/azure/azure-monitor/visualize/workbooks-create-workbook)
+
+[Cost Optimization workbook](/workbooks/CostOptimization.workbook)
+
+Type of resources covered:
+* Resources distribution per region
+* Tagged vs Untagged Resource Groups
+* Windows VMs and VM scale sets without Azure Hybrid Benefit enabled
+* Azure SQL Databases not using Hybrid Benefit
+* Azure SQL Managed Instances not using Hybrid Benefit
+* Virtual Machines in a Stopped State
+* Virtual Machine Performance
+* Disks
+* Network Interfaces
+* Public IPs
+* Resource Groups
+* Network Security Groups (NSGs)
+* Availability Set
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
