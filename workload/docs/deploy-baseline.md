@@ -55,7 +55,8 @@
 - **Network connectivity** blade
   - **New** - Select if you want to create a new VNet to be used for session hosts.
     - **Virtual network** - Enter the IP block in CIDR notation to allocate to the VNet.
-    - **VNet address range** - Enter IP block in CIDR notation for the new subnet.
+    - **AVD subnet address range** - Enter IP block in CIDR notation for the new AVD subnet.
+    - **Private endpoint subnet address range** - Enter IP block in CIDR notation for the new private endpoint subnet.
     - **VNet DNS servers** - Enter the DNS servers to be set for the VNet. These DNS server should have proper DNS resolution to your AD DS domain and internet.
   - **Azure Private DNS zone** - Select yes to use an existing private DNS zone for Azure File share and Key vault. Select No if you do not want to use private endpoints (Private DNS for Azure files is required for FSLogix deployment to configure NTFS permissions).
   - **Existing hub VNet peering**
