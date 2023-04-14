@@ -3,28 +3,28 @@ targetScope = 'resourceGroup'
 // ========== //
 // Parameters //
 // ========== //
-@description('Required. Location where to deploy compute services.')
+@description('Location where to deploy compute services.')
 param sessionHostLocation string
 
-@description('Optional. Availablity Set name.')
+@description('Availablity Set name.')
 param availabilitySetNamePrefix string
 
-@description('Optional. Availablity Set count.')
+@description('Availablity Set count.')
 param availabilitySetCount int
 
-@description('Optional. Sets the number of fault domains for the availability set.')
+@description('Sets the number of fault domains for the availability set.')
 param availabilitySetFaultDomainCount int
 
-@description('Optional. Sets the number of update domains for the availability set.')
+@description('Sets the number of update domains for the availability set.')
 param availabilitySetUpdateDomainCount int
 
 @description('Resource Group name for the session hosts.')
 param computeObjectsRgName string
 
-@description('Optional. AVD workload subscription ID, multiple subscriptions scenario.')
+@description('AVD workload subscription ID, multiple subscriptions scenario.')
 param workloadSubsId string
 
-@description('Required. Tags to be applied to resources')
+@description('Tags to be applied to resources')
 param tags object
 
 @description('Do not modify, used to set unique value for resource deployment.')

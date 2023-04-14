@@ -64,7 +64,7 @@ param fileShareMultichannel bool
 @description('Local administrator username.')
 param vmLocalUserName string
 
-@description('Required. AD domain name.')
+@description('AD domain name.')
 param identityDomainName string
 
 @description('Keyvault name to get credentials from.')
@@ -97,16 +97,16 @@ param storageToDomainScript string
 @description('URI for the script for adding the storage account to Active Directory.')
 param storageToDomainScriptUri string
 
-@description('Required. Tags to be applied to resources')
+@description('Tags to be applied to resources')
 param tags object
 
 @description('Name for management virtual machine. for tools and to join Azure Files to domain.')
 param managementVmName string
 
-@description('Optional. Log analytics workspace for diagnostic logs.')
+@description('Log analytics workspace for diagnostic logs.')
 param alaWorkspaceResourceId string
 
-@description('Optional. Diagnostic logs retention.')
+@description('Diagnostic logs retention.')
 param diagnosticLogsRetentionInDays int
 
 @description('Do not modify, used to set unique value for resource deployment.')
@@ -115,7 +115,7 @@ param time string = utcNow()
 @description('Sets purpose of the storage account.')
 param storagePurpose string
 
-@description('Required. AVD resources custom naming. (Default: false)')
+@description('AVD resources custom naming.')
 param useCustomNaming bool
 
 @description('Sets purpose of the storage account.')
@@ -137,7 +137,7 @@ param storageCustomOuPath string
 @description('OU Storage Path')
 param ouStgPath string
 
-@description('If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: "")')
+@description('If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain.')
 param createOuForStorageString string
 
 @description('Managed Identity Client ID')
