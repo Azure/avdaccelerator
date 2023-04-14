@@ -6,10 +6,10 @@ targetScope = 'subscription'
 @description('AVD subnet ID.')
 param subnetId string
 
-@description('Required. Location where to deploy compute services.')
+@description('Location where to deploy compute services.')
 param sessionHostLocation string
 
-@description('Required. Virtual machine time zone.')
+@description('Virtual machine time zone.')
 param computeTimeZone string
 
 @description('AVD Session Host prefix.')
@@ -18,10 +18,10 @@ param sessionHostNamePrefix string
 @description('Resource Group name for the session hosts.')
 param computeObjectsRgName string
 
-@description('Required. Name of AVD service objects RG.')
+@description('Name of AVD service objects RG.')
 param serviceObjectsRgName string
 
-@description('Optional. AVD workload subscription ID, multiple subscriptions scenario.')
+@description('AVD workload subscription ID, multiple subscriptions scenario.')
 param workloadSubsId string
 
 @description('Quantity of session hosts to deploy.')
@@ -30,19 +30,19 @@ param deploySessionHostsCount int
 @description('The session host number to begin with for the deployment.')
 param sessionHostCountIndex int
 
-@description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set.')
+@description('Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set.')
 param useAvailabilityZones bool
 
-@description('Optional. Availablity Set name.')
+@description('Availablity Set name.')
 param availabilitySetNamePrefix string
 
-@description('Optional. Sets the number of fault domains for the availability set.')
+@description('Sets the number of fault domains for the availability set.')
 param availabilitySetFaultDomainCount int
 
-@description('Optional. Sets the number of update domains for the availability set.')
+@description('Sets the number of update domains for the availability set.')
 param availabilitySetUpdateDomainCount int
 
-@description('Optional. Create new virtual network.')
+@description('Create new virtual network.')
 param createAvdVnet bool
 
 @description('Required, The service providing domain services for Azure Virtual Desktop.')
@@ -51,22 +51,22 @@ param identityServiceProvider string
 @description('Required, Eronll session hosts on Intune.')
 param createIntuneEnrollment bool
 
-@description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
+@description('This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool
 
 @description('Session host VM size.')
 param sessionHostsSize string
 
-@description('Optional. Enables accelerated Networking on the session hosts.')
+@description('Enables accelerated Networking on the session hosts.')
 param enableAcceleratedNetworking bool
 
-@description('Optional. Specifies the securityType of the virtual machine. Must be TrustedLaunch or ConfidentialVM enable UefiSettings.')
+@description('Specifies the securityType of the virtual machine. Must be TrustedLaunch or ConfidentialVM enable UefiSettings.')
 param securityType string
 
-@description('Optional. Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch to enable UefiSettings.')
+@description('Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch to enable UefiSettings.')
 param secureBootEnabled bool
 
-@description('Optional. Specifies whether virtual TPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch to enable UefiSettings.')
+@description('Specifies whether virtual TPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch to enable UefiSettings.')
 param vTpmEnabled bool
 
 @description('OS disk type for session host.')
@@ -87,16 +87,16 @@ param storageManagedIdentityResourceId string
 @description('Local administrator username.')
 param vmLocalUserName string
 
-@description('Required. Name of keyvault that contains credentials.')
+@description('Name of keyvault that contains credentials.')
 param wrklKvName string
 
-@description('Required. AD domain name.')
+@description('AD domain name.')
 param identityDomainName string
 
-@description('Required. AVD session host domain join credentials.')
+@description('AVD session host domain join credentials.')
 param domainJoinUserName string
 
-@description('Optional. OU path to join AVd VMs.')
+@description('OU path to join AVd VMs.')
 param sessionHostOuPath string
 
 @description('Application Security Group (ASG) for the session hosts.')
@@ -123,16 +123,16 @@ param fslogixSharePath string
 @description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
 
-@description('Required. Tags to be applied to resources')
+@description('Tags to be applied to resources')
 param tags object
 
-@description('Optional. Log analytics workspace for diagnostic logs.')
+@description('Log analytics workspace for diagnostic logs.')
 param alaWorkspaceResourceId string
 
-@description('Optional. Diagnostic logs retention.')
+@description('Diagnostic logs retention.')
 param diagnosticLogsRetentionInDays int
 
-@description('Optional. Deploy AVD monitoring resources and setings. (Default: true)')
+@description('Deploy AVD monitoring resources and setings. (Default: true)')
 param deployMonitoring bool
 
 @description('Do not modify, used to set unique value for resource deployment.')

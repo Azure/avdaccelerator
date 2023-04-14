@@ -3,7 +3,7 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
-@description('Optional. AVD workload subscription ID, multiple subscriptions scenario')
+@description('AVD workload subscription ID, multiple subscriptions scenario')
 param workloadSubsId string
 
 @description('Resource Group Name for the AVD session hosts')
@@ -13,10 +13,10 @@ param computeObjectsRgName string
 @description('Create new virtual network')
 param createVnet bool
 
-@description('Optional. If new virtual network required for the AVD machines. Resource Group name for the virtual network.')
+@description('If new virtual network required for the AVD machines. Resource Group name for the virtual network.')
 param networkObjectsRgName string
 
-@description('Optional. Name of the virtual network if required to be created.')
+@description('Name of the virtual network if required to be created.')
 param vNetworkName string
 
 @description('AVD Network Security Group Name')
@@ -25,13 +25,13 @@ param avdNetworksecurityGroupName string
 @description('Private endpoint Network Security Group Name')
 param privateEndpointNetworksecurityGroupName string
 
-@description('Optional. Created if a new VNet for AVD is created. Application Security Group (ASG) for the session hosts.')
+@description('Created if a new VNet for AVD is created. Application Security Group (ASG) for the session hosts.')
 param applicationSecurityGroupName string
 
-@description('Optional. Created if the new VNet for AVD is created. Route Table name for AVD.')
+@description('Created if the new VNet for AVD is created. Route Table name for AVD.')
 param avdRouteTableName string
 
-@description('Optional. Created if the new VNet for AVD is created. Route Table name for private endpoints.')
+@description('Created if the new VNet for AVD is created. Route Table name for private endpoints.')
 param privateEndpointRouteTableName string
 
 @description('Does the hub contain a virtual network gateway.')
@@ -43,7 +43,7 @@ param existingHubVnetResourceId string
 @description('VNet peering name for AVD VNet to vHub.')
 param vNetworkPeeringName string
 
-@description('Optional. Create virtual network peering to hub.')
+@description('Create virtual network peering to hub.')
 param createVnetPeering bool
 
 @description('AVD VNet address prefixes.')
@@ -64,16 +64,16 @@ param vNetworkPrivateEndpointSubnetAddressPrefix string
 @description('custom DNS servers IPs')
 param dnsServers array
 
-@description('Required. Location where to deploy compute services.')
+@description('Location where to deploy compute services.')
 param sessionHostLocation string = deployment().location
 
-@description('Required. Tags to be applied to resources')
+@description('Tags to be applied to resources')
 param tags object
 
-@description('Optional. Log analytics workspace for diagnostic logs.')
+@description('Log analytics workspace for diagnostic logs.')
 param alaWorkspaceResourceId string
 
-@description('Optional. Diagnostic logs retention.')
+@description('Diagnostic logs retention.')
 param diagnosticLogsRetentionInDays int
 
 @description('Do not modify, used to set unique value for resource deployment')

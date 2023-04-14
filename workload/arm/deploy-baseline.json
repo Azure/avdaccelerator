@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "11511559348190193929"
+      "templateHash": "6912860240081013875"
     }
   },
   "parameters": {
@@ -3100,62 +3100,62 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.1.55165",
-              "templateHash": "12292505342606106419"
+              "templateHash": "18050550081233085619"
             }
           },
           "parameters": {
             "managementPlaneLocation": {
               "type": "string",
               "metadata": {
-                "description": "Required. Location where to deploy AVD management plane."
+                "description": "Location where to deploy AVD management plane."
               }
             },
             "workloadSubsId": {
               "type": "string",
               "metadata": {
-                "description": "Required. AVD workload subscription ID, multiple subscriptions scenario."
+                "description": "AVD workload subscription ID, multiple subscriptions scenario."
               }
             },
             "deployAlaWorkspace": {
               "type": "bool",
               "metadata": {
-                "description": "Required. create new Azure log analytics workspace."
+                "description": "create new Azure log analytics workspace."
               }
             },
             "deployCustomPolicyMonitoring": {
               "type": "bool",
               "metadata": {
-                "description": "Required. Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace."
+                "description": "Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace."
               }
             },
             "alaWorkspaceId": {
               "type": "string",
               "metadata": {
-                "description": "Required. Exisintg Azure log analytics workspace resource."
+                "description": "Exisintg Azure log analytics workspace resource."
               }
             },
             "monitoringRgName": {
               "type": "string",
               "metadata": {
-                "description": "Required. AVD Resource Group Name for monitoring resources."
+                "description": "AVD Resource Group Name for monitoring resources."
               }
             },
             "alaWorkspaceName": {
               "type": "string",
               "metadata": {
-                "description": "Required.  Azure log analytics workspace name."
+                "description": " Azure log analytics workspace name."
               }
             },
             "alaWorkspaceDataRetention": {
               "type": "int",
               "metadata": {
-                "description": "Required.  Azure log analytics workspace name data retention."
+                "description": " Azure log analytics workspace name data retention."
               }
             },
             "tags": {
               "type": "object",
               "metadata": {
-                "description": "Required. Tags to be applied to resources"
+                "description": "Tags to be applied to resources"
               }
             },
             "time": {
@@ -5981,26 +5981,26 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.16.1.55165",
-                      "templateHash": "8383385229689886384"
+                      "templateHash": "948329734844559565"
                     }
                   },
                   "parameters": {
                     "managementPlaneLocation": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. Location where to deploy AVD management plane."
+                        "description": "Location where to deploy AVD management plane."
                       }
                     },
                     "workloadSubsId": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. AVD workload subscription ID, multiple subscriptions scenario."
+                        "description": "AVD workload subscription ID, multiple subscriptions scenario."
                       }
                     },
                     "alaWorkspaceId": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. Exisintg Azure log analytics workspace."
+                        "description": "Exisintg Azure log analytics workspace."
                       }
                     },
                     "time": {
@@ -6905,50 +6905,50 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.16.1.55165",
-                      "templateHash": "13677223399580117646"
+                      "templateHash": "5505319552976077199"
                     }
                   },
                   "parameters": {
                     "managementPlaneLocation": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. Location where to deploy AVD management plane."
+                        "description": "Location where to deploy AVD management plane."
                       }
                     },
                     "workloadSubsId": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. AVD workload subscription ID, multiple subscriptions scenario."
+                        "description": "AVD workload subscription ID, multiple subscriptions scenario."
                       }
                     },
                     "deployAlaWorkspace": {
                       "type": "bool",
                       "metadata": {
-                        "description": "Required. create new Azure log analytics workspace."
+                        "description": "create new Azure log analytics workspace."
                       }
                     },
                     "alaWorkspaceId": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. Exisintg Azure log analytics workspace."
+                        "description": "Exisintg Azure log analytics workspace."
                       }
                     },
                     "monitoringRgName": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. AVD Resource Group Name for monitoring resources."
+                        "description": "AVD Resource Group Name for monitoring resources."
                       }
                     },
                     "alaWorkspaceName": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required.  Azure log analytics workspace name."
+                        "description": " Azure log analytics workspace name."
                       }
                     },
                     "tags": {
                       "type": "object",
                       "metadata": {
-                        "description": "Required. Tags to be applied to resources"
+                        "description": "Tags to be applied to resources"
                       }
                     },
                     "time": {
@@ -7861,57 +7861,57 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.1.55165",
-              "templateHash": "13810184328616834956"
+              "templateHash": "6597097983673535562"
             }
           },
           "parameters": {
             "managementPlaneLocation": {
               "type": "string",
               "metadata": {
-                "description": "Required. Location where to deploy AVD management plane."
+                "description": "Location where to deploy AVD management plane."
               }
             },
             "workloadSubsId": {
               "type": "string",
               "metadata": {
-                "description": "Required. AVD workload subscription ID, multiple subscriptions scenario."
+                "description": "AVD workload subscription ID, multiple subscriptions scenario."
               }
             },
             "monitoringRgName": {
               "type": "string",
               "metadata": {
-                "description": "Required. AVD Resource Group Name for monitoring resources."
+                "description": "AVD Resource Group Name for monitoring resources."
               }
             },
             "stgAccountForFlowLogsName": {
               "type": "string",
               "metadata": {
-                "description": "Required.  Azure Storage Account name."
+                "description": " Azure Storage Account name."
               }
             },
             "alaWorkspaceResourceId": {
               "type": "string",
               "metadata": {
-                "description": "Required.  Azure log analytics workspace Resource Id ."
+                "description": " Azure log analytics workspace Resource Id ."
               }
             },
             "alaWorkspaceId": {
               "type": "string",
               "metadata": {
-                "description": "Required.  Azure log analytics workspace ID."
+                "description": " Azure log analytics workspace ID."
               }
             },
             "stgAccountForFlowLogsId": {
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "Required. Existing Azure Storage account for NSG flow logs. (Default: )"
+                "description": "Existing Azure Storage account for NSG flow logs. (Default: )"
               }
             },
             "tags": {
               "type": "object",
               "metadata": {
-                "description": "Required. Tags to be applied to resources"
+                "description": "Tags to be applied to resources"
               }
             },
             "time": {
@@ -12286,14 +12286,14 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.1.55165",
-              "templateHash": "15796956109435984729"
+              "templateHash": "3837491715724902330"
             }
           },
           "parameters": {
             "workloadSubsId": {
               "type": "string",
               "metadata": {
-                "description": "Optional. AVD workload subscription ID, multiple subscriptions scenario"
+                "description": "AVD workload subscription ID, multiple subscriptions scenario"
               }
             },
             "computeObjectsRgName": {
@@ -12311,13 +12311,13 @@
             "networkObjectsRgName": {
               "type": "string",
               "metadata": {
-                "description": "Optional. If new virtual network required for the AVD machines. Resource Group name for the virtual network."
+                "description": "If new virtual network required for the AVD machines. Resource Group name for the virtual network."
               }
             },
             "vNetworkName": {
               "type": "string",
               "metadata": {
-                "description": "Optional. Name of the virtual network if required to be created."
+                "description": "Name of the virtual network if required to be created."
               }
             },
             "avdNetworksecurityGroupName": {
@@ -12335,19 +12335,19 @@
             "applicationSecurityGroupName": {
               "type": "string",
               "metadata": {
-                "description": "Optional. Created if a new VNet for AVD is created. Application Security Group (ASG) for the session hosts."
+                "description": "Created if a new VNet for AVD is created. Application Security Group (ASG) for the session hosts."
               }
             },
             "avdRouteTableName": {
               "type": "string",
               "metadata": {
-                "description": "Optional. Created if the new VNet for AVD is created. Route Table name for AVD."
+                "description": "Created if the new VNet for AVD is created. Route Table name for AVD."
               }
             },
             "privateEndpointRouteTableName": {
               "type": "string",
               "metadata": {
-                "description": "Optional. Created if the new VNet for AVD is created. Route Table name for private endpoints."
+                "description": "Created if the new VNet for AVD is created. Route Table name for private endpoints."
               }
             },
             "vNetworkGatewayOnHub": {
@@ -12371,7 +12371,7 @@
             "createVnetPeering": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. Create virtual network peering to hub."
+                "description": "Create virtual network peering to hub."
               }
             },
             "vNetworkAddressPrefixes": {
@@ -12414,25 +12414,25 @@
               "type": "string",
               "defaultValue": "[deployment().location]",
               "metadata": {
-                "description": "Required. Location where to deploy compute services."
+                "description": "Location where to deploy compute services."
               }
             },
             "tags": {
               "type": "object",
               "metadata": {
-                "description": "Required. Tags to be applied to resources"
+                "description": "Tags to be applied to resources"
               }
             },
             "alaWorkspaceResourceId": {
               "type": "string",
               "metadata": {
-                "description": "Optional. Log analytics workspace for diagnostic logs."
+                "description": "Log analytics workspace for diagnostic logs."
               }
             },
             "diagnosticLogsRetentionInDays": {
               "type": "int",
               "metadata": {
-                "description": "Optional. Diagnostic logs retention."
+                "description": "Diagnostic logs retention."
               }
             },
             "time": {
@@ -16556,7 +16556,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.1.55165",
-              "templateHash": "7537018810346103297"
+              "templateHash": "10027625784423154991"
             }
           },
           "parameters": {
@@ -16715,7 +16715,7 @@
             "hostPoolLoadBalancerType": {
               "type": "string",
               "metadata": {
-                "description": "Required. AVD host pool load balacing type."
+                "description": "AVD host pool load balacing type."
               },
               "allowedValues": [
                 "BreadthFirst",
@@ -16737,25 +16737,25 @@
             "tags": {
               "type": "object",
               "metadata": {
-                "description": "Required. Tags to be applied to resources"
+                "description": "Tags to be applied to resources"
               }
             },
             "scalingPlanExclusionTag": {
               "type": "string",
               "metadata": {
-                "description": "Required. Tag to exclude resources from scaling plan."
+                "description": "Tag to exclude resources from scaling plan."
               }
             },
             "alaWorkspaceResourceId": {
               "type": "string",
               "metadata": {
-                "description": "Optional. Log analytics workspace for diagnostic logs."
+                "description": "Log analytics workspace for diagnostic logs."
               }
             },
             "diagnosticLogsRetentionInDays": {
               "type": "int",
               "metadata": {
-                "description": "Optional. Diagnostic logs retention."
+                "description": "Diagnostic logs retention."
               }
             },
             "time": {
@@ -19191,26 +19191,26 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.1.55165",
-              "templateHash": "1368483104494081022"
+              "templateHash": "5719601846994524763"
             }
           },
           "parameters": {
             "sessionHostLocation": {
               "type": "string",
               "metadata": {
-                "description": "Required. Location where to deploy AVD session hosts."
+                "description": "Location where to deploy AVD session hosts."
               }
             },
             "managementPlaneLocation": {
               "type": "string",
               "metadata": {
-                "description": "Required. Location where to deploy AVD management plane."
+                "description": "Location where to deploy AVD management plane."
               }
             },
             "workloadSubsId": {
               "type": "string",
               "metadata": {
-                "description": "Optional. AVD workload subscription ID, multiple subscriptions scenario."
+                "description": "AVD workload subscription ID, multiple subscriptions scenario."
               }
             },
             "serviceObjectsRgName": {
@@ -19300,13 +19300,13 @@
             "createStorageDeployment": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. Deploy Storage setup."
+                "description": "Deploy Storage setup."
               }
             },
             "tags": {
               "type": "object",
               "metadata": {
-                "description": "Required. Tags to be applied to resources"
+                "description": "Tags to be applied to resources"
               }
             },
             "time": {
@@ -26716,7 +26716,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.1.55165",
-              "templateHash": "11025753284178771312"
+              "templateHash": "16667400231816995841"
             }
           },
           "parameters": {
@@ -26843,7 +26843,7 @@
             "identityDomainName": {
               "type": "string",
               "metadata": {
-                "description": "Required. AD domain name."
+                "description": "AD domain name."
               }
             },
             "wrklKvName": {
@@ -26909,7 +26909,7 @@
             "tags": {
               "type": "object",
               "metadata": {
-                "description": "Required. Tags to be applied to resources"
+                "description": "Tags to be applied to resources"
               }
             },
             "managementVmName": {
@@ -26921,13 +26921,13 @@
             "alaWorkspaceResourceId": {
               "type": "string",
               "metadata": {
-                "description": "Optional. Log analytics workspace for diagnostic logs."
+                "description": "Log analytics workspace for diagnostic logs."
               }
             },
             "diagnosticLogsRetentionInDays": {
               "type": "int",
               "metadata": {
-                "description": "Optional. Diagnostic logs retention."
+                "description": "Diagnostic logs retention."
               }
             },
             "time": {
@@ -26946,7 +26946,7 @@
             "useCustomNaming": {
               "type": "bool",
               "metadata": {
-                "description": "Required. AVD resources custom naming. (Default: false)"
+                "description": "AVD resources custom naming."
               }
             },
             "storageAccountPrefixCustomName": {
@@ -26988,7 +26988,7 @@
             "createOuForStorageString": {
               "type": "string",
               "metadata": {
-                "description": "If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: \"\")"
+                "description": "If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain."
               }
             },
             "managedIdentityClientId": {
@@ -35797,7 +35797,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.1.55165",
-              "templateHash": "11025753284178771312"
+              "templateHash": "16667400231816995841"
             }
           },
           "parameters": {
@@ -35924,7 +35924,7 @@
             "identityDomainName": {
               "type": "string",
               "metadata": {
-                "description": "Required. AD domain name."
+                "description": "AD domain name."
               }
             },
             "wrklKvName": {
@@ -35990,7 +35990,7 @@
             "tags": {
               "type": "object",
               "metadata": {
-                "description": "Required. Tags to be applied to resources"
+                "description": "Tags to be applied to resources"
               }
             },
             "managementVmName": {
@@ -36002,13 +36002,13 @@
             "alaWorkspaceResourceId": {
               "type": "string",
               "metadata": {
-                "description": "Optional. Log analytics workspace for diagnostic logs."
+                "description": "Log analytics workspace for diagnostic logs."
               }
             },
             "diagnosticLogsRetentionInDays": {
               "type": "int",
               "metadata": {
-                "description": "Optional. Diagnostic logs retention."
+                "description": "Diagnostic logs retention."
               }
             },
             "time": {
@@ -36027,7 +36027,7 @@
             "useCustomNaming": {
               "type": "bool",
               "metadata": {
-                "description": "Required. AVD resources custom naming. (Default: false)"
+                "description": "AVD resources custom naming."
               }
             },
             "storageAccountPrefixCustomName": {
@@ -36069,7 +36069,7 @@
             "createOuForStorageString": {
               "type": "string",
               "metadata": {
-                "description": "If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: \"\")"
+                "description": "If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain."
               }
             },
             "managedIdentityClientId": {
@@ -44867,7 +44867,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.1.55165",
-              "templateHash": "7021963156788814129"
+              "templateHash": "150067324770396363"
             }
           },
           "parameters": {
@@ -44880,13 +44880,13 @@
             "sessionHostLocation": {
               "type": "string",
               "metadata": {
-                "description": "Required. Location where to deploy compute services."
+                "description": "Location where to deploy compute services."
               }
             },
             "computeTimeZone": {
               "type": "string",
               "metadata": {
-                "description": "Required. Virtual machine time zone."
+                "description": "Virtual machine time zone."
               }
             },
             "sessionHostNamePrefix": {
@@ -44904,13 +44904,13 @@
             "serviceObjectsRgName": {
               "type": "string",
               "metadata": {
-                "description": "Required. Name of AVD service objects RG."
+                "description": "Name of AVD service objects RG."
               }
             },
             "workloadSubsId": {
               "type": "string",
               "metadata": {
-                "description": "Optional. AVD workload subscription ID, multiple subscriptions scenario."
+                "description": "AVD workload subscription ID, multiple subscriptions scenario."
               }
             },
             "deploySessionHostsCount": {
@@ -44928,31 +44928,31 @@
             "useAvailabilityZones": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set."
+                "description": "Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set."
               }
             },
             "availabilitySetNamePrefix": {
               "type": "string",
               "metadata": {
-                "description": "Optional. Availablity Set name."
+                "description": "Availablity Set name."
               }
             },
             "availabilitySetFaultDomainCount": {
               "type": "int",
               "metadata": {
-                "description": "Optional. Sets the number of fault domains for the availability set."
+                "description": "Sets the number of fault domains for the availability set."
               }
             },
             "availabilitySetUpdateDomainCount": {
               "type": "int",
               "metadata": {
-                "description": "Optional. Sets the number of update domains for the availability set."
+                "description": "Sets the number of update domains for the availability set."
               }
             },
             "createAvdVnet": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. Create new virtual network."
+                "description": "Create new virtual network."
               }
             },
             "identityServiceProvider": {
@@ -44970,7 +44970,7 @@
             "encryptionAtHost": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs."
+                "description": "This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs."
               }
             },
             "sessionHostsSize": {
@@ -44982,25 +44982,25 @@
             "enableAcceleratedNetworking": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. Enables accelerated Networking on the session hosts."
+                "description": "Enables accelerated Networking on the session hosts."
               }
             },
             "securityType": {
               "type": "string",
               "metadata": {
-                "description": "Optional. Specifies the securityType of the virtual machine. Must be TrustedLaunch or ConfidentialVM enable UefiSettings."
+                "description": "Specifies the securityType of the virtual machine. Must be TrustedLaunch or ConfidentialVM enable UefiSettings."
               }
             },
             "secureBootEnabled": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch to enable UefiSettings."
+                "description": "Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch to enable UefiSettings."
               }
             },
             "vTpmEnabled": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. Specifies whether virtual TPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch to enable UefiSettings."
+                "description": "Specifies whether virtual TPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch to enable UefiSettings."
               }
             },
             "sessionHostDiskType": {
@@ -45042,25 +45042,25 @@
             "wrklKvName": {
               "type": "string",
               "metadata": {
-                "description": "Required. Name of keyvault that contains credentials."
+                "description": "Name of keyvault that contains credentials."
               }
             },
             "identityDomainName": {
               "type": "string",
               "metadata": {
-                "description": "Required. AD domain name."
+                "description": "AD domain name."
               }
             },
             "domainJoinUserName": {
               "type": "string",
               "metadata": {
-                "description": "Required. AVD session host domain join credentials."
+                "description": "AVD session host domain join credentials."
               }
             },
             "sessionHostOuPath": {
               "type": "string",
               "metadata": {
-                "description": "Optional. OU path to join AVd VMs."
+                "description": "OU path to join AVd VMs."
               }
             },
             "applicationSecurityGroupResourceId": {
@@ -45114,25 +45114,25 @@
             "tags": {
               "type": "object",
               "metadata": {
-                "description": "Required. Tags to be applied to resources"
+                "description": "Tags to be applied to resources"
               }
             },
             "alaWorkspaceResourceId": {
               "type": "string",
               "metadata": {
-                "description": "Optional. Log analytics workspace for diagnostic logs."
+                "description": "Log analytics workspace for diagnostic logs."
               }
             },
             "diagnosticLogsRetentionInDays": {
               "type": "int",
               "metadata": {
-                "description": "Optional. Diagnostic logs retention."
+                "description": "Diagnostic logs retention."
               }
             },
             "deployMonitoring": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. Deploy AVD monitoring resources and setings. (Default: true)"
+                "description": "Deploy AVD monitoring resources and setings. (Default: true)"
               }
             },
             "time": {
@@ -45199,38 +45199,38 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.16.1.55165",
-                      "templateHash": "2063595154533533556"
+                      "templateHash": "17453048528052842518"
                     }
                   },
                   "parameters": {
                     "sessionHostLocation": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. Location where to deploy compute services."
+                        "description": "Location where to deploy compute services."
                       }
                     },
                     "availabilitySetNamePrefix": {
                       "type": "string",
                       "metadata": {
-                        "description": "Optional. Availablity Set name."
+                        "description": "Availablity Set name."
                       }
                     },
                     "availabilitySetCount": {
                       "type": "int",
                       "metadata": {
-                        "description": "Optional. Availablity Set count."
+                        "description": "Availablity Set count."
                       }
                     },
                     "availabilitySetFaultDomainCount": {
                       "type": "int",
                       "metadata": {
-                        "description": "Optional. Sets the number of fault domains for the availability set."
+                        "description": "Sets the number of fault domains for the availability set."
                       }
                     },
                     "availabilitySetUpdateDomainCount": {
                       "type": "int",
                       "metadata": {
-                        "description": "Optional. Sets the number of update domains for the availability set."
+                        "description": "Sets the number of update domains for the availability set."
                       }
                     },
                     "computeObjectsRgName": {
@@ -45242,13 +45242,13 @@
                     "workloadSubsId": {
                       "type": "string",
                       "metadata": {
-                        "description": "Optional. AVD workload subscription ID, multiple subscriptions scenario."
+                        "description": "AVD workload subscription ID, multiple subscriptions scenario."
                       }
                     },
                     "tags": {
                       "type": "object",
                       "metadata": {
-                        "description": "Required. Tags to be applied to resources"
+                        "description": "Tags to be applied to resources"
                       }
                     },
                     "time": {
@@ -45784,7 +45784,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.16.1.55165",
-                      "templateHash": "7364000370756662811"
+                      "templateHash": "18197531370346000316"
                     }
                   },
                   "parameters": {
@@ -45797,13 +45797,13 @@
                     "sessionHostLocation": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. Location where to deploy compute services."
+                        "description": "Location where to deploy compute services."
                       }
                     },
                     "timeZone": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. Virtual machine time zone."
+                        "description": "Virtual machine time zone."
                       }
                     },
                     "sessionHostNamePrefix": {
@@ -45815,13 +45815,13 @@
                     "availabilitySetNamePrefix": {
                       "type": "string",
                       "metadata": {
-                        "description": "Optional. Availablity Set name."
+                        "description": "Availablity Set name."
                       }
                     },
                     "maxAvailabilitySetMembersCount": {
                       "type": "int",
                       "metadata": {
-                        "description": "Optional. Availablity Set max members."
+                        "description": "Availablity Set max members."
                       }
                     },
                     "computeObjectsRgName": {
@@ -45839,7 +45839,7 @@
                     "workloadSubsId": {
                       "type": "string",
                       "metadata": {
-                        "description": "Optional. AVD workload subscription ID, multiple subscriptions scenario."
+                        "description": "AVD workload subscription ID, multiple subscriptions scenario."
                       }
                     },
                     "sessionHostsCount": {
@@ -45851,7 +45851,7 @@
                     "createAvdVnet": {
                       "type": "bool",
                       "metadata": {
-                        "description": "Optional. Create new virtual network."
+                        "description": "Create new virtual network."
                       }
                     },
                     "sessionHostCountIndex": {
@@ -45863,13 +45863,13 @@
                     "useAvailabilityZones": {
                       "type": "bool",
                       "metadata": {
-                        "description": "Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set."
+                        "description": "Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set."
                       }
                     },
                     "encryptionAtHost": {
                       "type": "bool",
                       "metadata": {
-                        "description": "Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs."
+                        "description": "This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs."
                       }
                     },
                     "sessionHostsSize": {
@@ -45881,25 +45881,25 @@
                     "securityType": {
                       "type": "string",
                       "metadata": {
-                        "description": "Optional. Specifies the securityType of the virtual machine. It is set as TrustedLaunch to enable UefiSettings."
+                        "description": "Specifies the securityType of the virtual machine. It is set as TrustedLaunch to enable UefiSettings."
                       }
                     },
                     "secureBootEnabled": {
                       "type": "bool",
                       "metadata": {
-                        "description": "Optional. Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch to enable UefiSettings."
+                        "description": "Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch to enable UefiSettings."
                       }
                     },
                     "vTpmEnabled": {
                       "type": "bool",
                       "metadata": {
-                        "description": "Optional. Specifies whether the virtual TPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch to enable UefiSettings."
+                        "description": "Specifies whether the virtual TPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch to enable UefiSettings."
                       }
                     },
                     "enableAcceleratedNetworking": {
                       "type": "bool",
                       "metadata": {
-                        "description": "Optional. Enable accelerated networking on the session host VMs."
+                        "description": "Enable accelerated networking on the session host VMs."
                       }
                     },
                     "sessionHostDiskType": {
@@ -45941,13 +45941,13 @@
                     "identityDomainName": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. AD domain name."
+                        "description": "AD domain name."
                       }
                     },
                     "domainJoinUserName": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. AVD session host domain join credentials."
+                        "description": "AVD session host domain join credentials."
                       }
                     },
                     "identityServiceProvider": {
@@ -45965,13 +45965,13 @@
                     "wrklKvName": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. Name of keyvault that contains credentials."
+                        "description": "Name of keyvault that contains credentials."
                       }
                     },
                     "sessionHostOuPath": {
                       "type": "string",
                       "metadata": {
-                        "description": "Optional. OU path to join AVd VMs"
+                        "description": "OU path to join AVd VMs"
                       }
                     },
                     "applicationSecurityGroupResourceId": {
@@ -46031,25 +46031,25 @@
                     "tags": {
                       "type": "object",
                       "metadata": {
-                        "description": "Required. Tags to be applied to resources"
+                        "description": "Tags to be applied to resources"
                       }
                     },
                     "alaWorkspaceResourceId": {
                       "type": "string",
                       "metadata": {
-                        "description": "Optional. Log analytics workspace for diagnostic logs."
+                        "description": "Log analytics workspace for diagnostic logs."
                       }
                     },
                     "diagnosticLogsRetentionInDays": {
                       "type": "int",
                       "metadata": {
-                        "description": "Optional. Diagnostic logs retention."
+                        "description": "Diagnostic logs retention."
                       }
                     },
                     "deployMonitoring": {
                       "type": "bool",
                       "metadata": {
-                        "description": "Optional. Deploy AVD monitoring resources and setings. (Default: true)"
+                        "description": "Deploy AVD monitoring resources and setings. (Default: true)"
                       }
                     },
                     "time": {
