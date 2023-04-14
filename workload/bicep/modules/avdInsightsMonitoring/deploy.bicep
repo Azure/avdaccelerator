@@ -3,31 +3,31 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
-@description('Required. Location where to deploy AVD management plane.')
+@description('Location where to deploy AVD management plane.')
 param managementPlaneLocation string
 
-@description('Required. AVD workload subscription ID, multiple subscriptions scenario.')
+@description('AVD workload subscription ID, multiple subscriptions scenario.')
 param workloadSubsId string
 
-@description('Required. create new Azure log analytics workspace.')
+@description('create new Azure log analytics workspace.')
 param deployAlaWorkspace bool
 
-@description('Required. Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace.')
+@description('Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace.')
 param deployCustomPolicyMonitoring bool
 
-@description('Required. Exisintg Azure log analytics workspace resource.')
+@description('Exisintg Azure log analytics workspace resource.')
 param alaWorkspaceId string
 
-@description('Required. AVD Resource Group Name for monitoring resources.')
+@description('AVD Resource Group Name for monitoring resources.')
 param monitoringRgName string
 
-@description('Required.  Azure log analytics workspace name.')
+@description(' Azure log analytics workspace name.')
 param alaWorkspaceName string
 
-@description('Required.  Azure log analytics workspace name data retention.')
+@description(' Azure log analytics workspace name data retention.')
 param alaWorkspaceDataRetention int
 
-@description('Required. Tags to be applied to resources')
+@description('Tags to be applied to resources')
 param tags object
 
 @description('Do not modify, used to set unique value for resource deployment.')

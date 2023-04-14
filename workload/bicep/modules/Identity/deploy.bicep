@@ -3,13 +3,13 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
-@description('Required. Location where to deploy AVD session hosts.')
+@description('Location where to deploy AVD session hosts.')
 param sessionHostLocation string
 
-@description('Required. Location where to deploy AVD management plane.')
+@description('Location where to deploy AVD management plane.')
 param managementPlaneLocation string
 
-@description('Optional. AVD workload subscription ID, multiple subscriptions scenario.')
+@description('AVD workload subscription ID, multiple subscriptions scenario.')
 param workloadSubsId string
 
 @description('AVD Resource Group Name for the service objects.')
@@ -54,10 +54,10 @@ param desktopVirtualizationPowerOnContributorRoleId string
 @description('GUID for built in role ID of Desktop Virtualization Power On Off Contributor.')
 param desktopVirtualizationPowerOnOffContributorRoleId string
 
-@description('Optional. Deploy Storage setup.')
+@description('Deploy Storage setup.')
 param createStorageDeployment bool
 
-@description('Required. Tags to be applied to resources')
+@description('Tags to be applied to resources')
 param tags object
 
 @description('Do not modify, used to set unique value for resource deployment.')

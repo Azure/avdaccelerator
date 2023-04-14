@@ -3,28 +3,28 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
-@description('Required. Location where to deploy AVD management plane.')
+@description('Location where to deploy AVD management plane.')
 param managementPlaneLocation string
 
-@description('Required. AVD workload subscription ID, multiple subscriptions scenario.')
+@description('AVD workload subscription ID, multiple subscriptions scenario.')
 param workloadSubsId string
 
-@description('Required. AVD Resource Group Name for monitoring resources.')
+@description('AVD Resource Group Name for monitoring resources.')
 param monitoringRgName string
 
-@description('Required.  Azure Storage Account name.')
+@description(' Azure Storage Account name.')
 param stgAccountForFlowLogsName string
 
-@description('Required.  Azure log analytics workspace Resource Id .')
+@description(' Azure log analytics workspace Resource Id .')
 param alaWorkspaceResourceId string
 
-@description('Required.  Azure log analytics workspace ID.')
+@description(' Azure log analytics workspace ID.')
 param alaWorkspaceId string
 
-@description('Required. Existing Azure Storage account for NSG flow logs. (Default: )')
+@description('Existing Azure Storage account for NSG flow logs. (Default: )')
 param stgAccountForFlowLogsId string = ''
 
-@description('Required. Tags to be applied to resources')
+@description('Tags to be applied to resources')
 param tags object
 
 @description('Do not modify, used to set unique value for resource deployment.')
