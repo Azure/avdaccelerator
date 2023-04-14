@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "14305333570776676980"
+      "templateHash": "7934170273821249305"
     }
   },
   "parameters": {
@@ -3100,7 +3100,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.1.55165",
-              "templateHash": "8500455108625681336"
+              "templateHash": "12292505342606106419"
             }
           },
           "parameters": {
@@ -5674,7 +5674,7 @@
                     "value": "PT10M"
                   },
                   "scriptContent": {
-                    "value": "      Write-Host \"Start\"\r\n      Get-Date\r\n      Start-Sleep -Seconds 120\r\n      Write-Host \"Stop\"\r\n      Get-Date\r\n      "
+                    "value": "      Write-Host \"Start\"\r\n      Get-Date\r\n      Start-Sleep -Seconds 60\r\n      Write-Host \"Stop\"\r\n      Get-Date\r\n      "
                   }
                 },
                 "template": {
@@ -44867,7 +44867,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.1.55165",
-              "templateHash": "18165206253353249397"
+              "templateHash": "7021963156788814129"
             }
           },
           "parameters": {
@@ -45784,7 +45784,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.16.1.55165",
-                      "templateHash": "97862393336154443"
+                      "templateHash": "7364000370756662811"
                     }
                   },
                   "parameters": {
@@ -50992,7 +50992,7 @@
                             "value": "PT10M"
                           },
                           "scriptContent": {
-                            "value": "        Write-Host \"Start\"\r\n        Get-Date\r\n        Start-Sleep -Seconds 120\r\n        Write-Host \"Stop\"\r\n        Get-Date\r\n        "
+                            "value": "        Write-Host \"Start\"\r\n        Get-Date\r\n        Start-Sleep -Seconds 60\r\n        Write-Host \"Stop\"\r\n        Get-Date\r\n        "
                           }
                         },
                         "template": {
@@ -51273,12 +51273,13 @@
                     },
                     {
                       "copy": {
-                        "name": "addAvdHostsToHostPool",
+                        "name": "sessionHostsMonitoring",
                         "count": "[length(range(1, parameters('sessionHostsCount')))]"
                       },
+                      "condition": "[parameters('deployMonitoring')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('HP-Join-{0}-to-HP-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'), parameters('time'))]",
+                      "name": "[format('SH-Monitoring-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'), parameters('time'))]",
                       "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
@@ -51290,17 +51291,39 @@
                           "location": {
                             "value": "[parameters('sessionHostLocation')]"
                           },
-                          "hostPoolToken": {
-                            "value": "[parameters('hostPoolToken')]"
-                          },
-                          "name": {
+                          "virtualMachineName": {
                             "value": "[format('{0}-{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'))]"
                           },
-                          "hostPoolName": {
-                            "value": "[parameters('hostPoolName')]"
+                          "name": {
+                            "value": "MicrosoftMonitoringAgent"
                           },
-                          "avdAgentPackageLocation": {
-                            "value": "[parameters('avdAgentPackageLocation')]"
+                          "publisher": {
+                            "value": "Microsoft.EnterpriseCloud.Monitoring"
+                          },
+                          "type": {
+                            "value": "MicrosoftMonitoringAgent"
+                          },
+                          "typeHandlerVersion": {
+                            "value": "1.0"
+                          },
+                          "autoUpgradeMinorVersion": {
+                            "value": true
+                          },
+                          "enableAutomaticUpgrade": {
+                            "value": false
+                          },
+                          "settings": {
+                            "value": {
+                              "workspaceId": "[if(not(empty(parameters('alaWorkspaceResourceId'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('alaWorkspaceResourceId'), '/')[2], split(parameters('alaWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('alaWorkspaceResourceId'), '/'))), '2021-06-01').customerId, '')]"
+                            }
+                          },
+                          "protectedSettings": {
+                            "value": {
+                              "workspaceKey": "[if(not(empty(parameters('alaWorkspaceResourceId'))), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('alaWorkspaceResourceId'), '/')[2], split(parameters('alaWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('alaWorkspaceResourceId'), '/'))), '2021-06-01').primarySharedKey, '')]"
+                            }
+                          },
+                          "enableDefaultTelemetry": {
+                            "value": false
                           }
                         },
                         "template": {
@@ -51310,181 +51333,168 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.16.1.55165",
-                              "templateHash": "11204267872305651615"
+                              "templateHash": "4278114081099664131"
                             }
                           },
                           "parameters": {
+                            "virtualMachineName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Conditional. The name of the parent virtual machine that extension is provisioned for. Required if the template is used in a standalone deployment."
+                              }
+                            },
                             "name": {
                               "type": "string",
                               "metadata": {
-                                "description": "Extension deployment name."
+                                "description": "Required. The name of the virtual machine extension."
                               }
                             },
                             "location": {
                               "type": "string",
+                              "defaultValue": "[resourceGroup().location]",
                               "metadata": {
-                                "description": "Location where to deploy compute services."
+                                "description": "Optional. The location the extension is deployed to."
                               }
                             },
-                            "avdAgentPackageLocation": {
+                            "publisher": {
                               "type": "string",
                               "metadata": {
-                                "description": "Location for the AVD agent installation package."
+                                "description": "Required. The name of the extension handler publisher."
                               }
                             },
-                            "hostPoolName": {
+                            "type": {
                               "type": "string",
                               "metadata": {
-                                "description": "AVD Host Pool Name"
+                                "description": "Required. Specifies the type of the extension; an example is \"CustomScriptExtension\"."
                               }
                             },
-                            "systemData": {
+                            "typeHandlerVersion": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. Specifies the version of the script handler."
+                              }
+                            },
+                            "autoUpgradeMinorVersion": {
+                              "type": "bool",
+                              "metadata": {
+                                "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true."
+                              }
+                            },
+                            "forceUpdateTag": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
+                              }
+                            },
+                            "settings": {
                               "type": "object",
-                              "defaultValue": {}
-                            },
-                            "hostPoolToken": {
-                              "type": "string",
+                              "defaultValue": {},
                               "metadata": {
-                                "description": "AVD Host Pool registration token"
+                                "description": "Optional. Any object that contains the extension specific settings."
+                              }
+                            },
+                            "protectedSettings": {
+                              "type": "secureObject",
+                              "defaultValue": {},
+                              "metadata": {
+                                "description": "Optional. Any object that contains the extension specific protected settings."
+                              }
+                            },
+                            "supressFailures": {
+                              "type": "bool",
+                              "defaultValue": false,
+                              "metadata": {
+                                "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false."
+                              }
+                            },
+                            "enableAutomaticUpgrade": {
+                              "type": "bool",
+                              "metadata": {
+                                "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
+                              }
+                            },
+                            "enableDefaultTelemetry": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
                               }
                             }
                           },
                           "resources": [
                             {
-                              "type": "Microsoft.Compute/virtualMachines/extensions",
-                              "apiVersion": "2022-08-01",
-                              "name": "[format('{0}/HostPoolRegistration', parameters('name'))]",
-                              "location": "[parameters('location')]",
+                              "condition": "[parameters('enableDefaultTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2021-04-01",
+                              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
                               "properties": {
-                                "publisher": "Microsoft.PowerShell",
-                                "type": "DSC",
-                                "typeHandlerVersion": "2.73",
-                                "autoUpgradeMinorVersion": true,
-                                "settings": {
-                                  "modulesUrl": "[parameters('avdAgentPackageLocation')]",
-                                  "configurationFunction": "Configuration.ps1\\AddSessionHost",
-                                  "properties": {
-                                    "hostPoolName": "[parameters('hostPoolName')]",
-                                    "registrationInfoToken": "[parameters('hostPoolToken')]",
-                                    "aadJoin": false,
-                                    "sessionHostConfigurationLastUpdateTime": "[if(contains(parameters('systemData'), 'hostpoolUpdate'), parameters('systemData').sessionHostConfigurationVersion, '')]"
-                                  }
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": []
                                 }
                               }
+                            },
+                            {
+                              "type": "Microsoft.Compute/virtualMachines/extensions",
+                              "apiVersion": "2022-11-01",
+                              "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
+                              "location": "[parameters('location')]",
+                              "properties": {
+                                "publisher": "[parameters('publisher')]",
+                                "type": "[parameters('type')]",
+                                "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
+                                "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
+                                "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
+                                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
+                                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
+                                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
+                                "suppressFailures": "[parameters('supressFailures')]"
+                              }
                             }
-                          ]
-                        }
-                      },
-                      "dependsOn": [
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('Antimalware-Extension-Wait-{0}', parameters('time')))]",
-                        "sessionHosts"
-                      ]
-                    },
-                    {
-                      "copy": {
-                        "name": "configureFsLogixForAvdHosts",
-                        "count": "[length(range(1, parameters('sessionHostsCount')))]"
-                      },
-                      "condition": "[and(parameters('createAvdFslogixDeployment'), not(equals(parameters('identityServiceProvider'), 'AAD')))]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('Configure-FsLogix-for-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'), parameters('time'))]",
-                      "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
-                      "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
-                      "properties": {
-                        "expressionEvaluationOptions": {
-                          "scope": "inner"
-                        },
-                        "mode": "Incremental",
-                        "parameters": {
-                          "location": {
-                            "value": "[parameters('sessionHostLocation')]"
-                          },
-                          "name": {
-                            "value": "[format('{0}-{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'))]"
-                          },
-                          "file": {
-                            "value": "[parameters('fsLogixScript')]"
-                          },
-                          "fsLogixScriptArguments": {
-                            "value": "[parameters('fsLogixScriptArguments')]"
-                          },
-                          "baseScriptUri": {
-                            "value": "[parameters('fslogixScriptUri')]"
-                          }
-                        },
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "metadata": {
-                            "_generator": {
-                              "name": "bicep",
-                              "version": "0.16.1.55165",
-                              "templateHash": "16311240662909673666"
-                            }
-                          },
-                          "parameters": {
+                          ],
+                          "outputs": {
                             "name": {
                               "type": "string",
                               "metadata": {
-                                "description": "Extension deployment name."
-                              }
+                                "description": "The name of the extension."
+                              },
+                              "value": "[parameters('name')]"
+                            },
+                            "resourceId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource ID of the extension."
+                              },
+                              "value": "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('virtualMachineName'), parameters('name'))]"
+                            },
+                            "resourceGroupName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the Resource Group the extension was created in."
+                              },
+                              "value": "[resourceGroup().name]"
                             },
                             "location": {
                               "type": "string",
                               "metadata": {
-                                "description": "Location where to deploy compute services."
-                              }
-                            },
-                            "baseScriptUri": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "URI for FSlogix configuration script."
-                              }
-                            },
-                            "file": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "FSlogix configuration script file name."
-                              }
-                            },
-                            "fsLogixScriptArguments": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Configuration arguments for FSlogix."
-                              }
+                                "description": "The location the resource was deployed into."
+                              },
+                              "value": "[reference(resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('virtualMachineName'), parameters('name')), '2022-11-01', 'full').location]"
                             }
-                          },
-                          "resources": [
-                            {
-                              "type": "Microsoft.Compute/virtualMachines/extensions",
-                              "apiVersion": "2022-08-01",
-                              "name": "[format('{0}/FSlogixSetup', parameters('name'))]",
-                              "location": "[parameters('location')]",
-                              "properties": {
-                                "publisher": "Microsoft.Compute",
-                                "type": "CustomScriptExtension",
-                                "typeHandlerVersion": "1.10",
-                                "autoUpgradeMinorVersion": true,
-                                "settings": {},
-                                "protectedSettings": {
-                                  "fileUris": "[array(parameters('baseScriptUri'))]",
-                                  "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File {0} {1}', parameters('file'), parameters('fsLogixScriptArguments'))]"
-                                }
-                              }
-                            }
-                          ]
+                          }
                         }
                       },
                       "dependsOn": [
-                        "addAvdHostsToHostPool",
-                        "sessionHosts"
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('Antimalware-Extension-Wait-{0}', parameters('time')))]"
                       ]
                     },
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('Host-Pool-Registration-Wait-{0}', parameters('time'))]",
+                      "name": "[format('SH-Moniroting-Wait-{0}', parameters('time'))]",
                       "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
@@ -51494,7 +51504,7 @@
                         "mode": "Incremental",
                         "parameters": {
                           "name": {
-                            "value": "[format('Host-Pool-Registration-Wait-{0}', parameters('time'))]"
+                            "value": "[format('SH-Moniroting-Wait-{0}', parameters('time'))]"
                           },
                           "location": {
                             "value": "[parameters('sessionHostLocation')]"
@@ -51509,7 +51519,7 @@
                             "value": "PT10M"
                           },
                           "scriptContent": {
-                            "value": "        Write-Host \"Start\"\r\n        Get-Date\r\n        Start-Sleep -Seconds 120\r\n        Write-Host \"Stop\"\r\n        Get-Date\r\n        "
+                            "value": "        Write-Host \"Start\"\r\n        Get-Date\r\n        Start-Sleep -Seconds 60\r\n        Write-Host \"Stop\"\r\n        Get-Date\r\n        "
                           }
                         },
                         "template": {
@@ -51785,20 +51795,18 @@
                         }
                       },
                       "dependsOn": [
-                        "addAvdHostsToHostPool",
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('Antimalware-Extension-Wait-{0}', parameters('time')))]",
-                        "configureFsLogixForAvdHosts"
+                        "sessionHostsMonitoring"
                       ]
                     },
                     {
                       "copy": {
-                        "name": "sessionHostsMonitoring",
+                        "name": "configureFsLogixForAvdHosts",
                         "count": "[length(range(1, parameters('sessionHostsCount')))]"
                       },
-                      "condition": "[parameters('deployMonitoring')]",
+                      "condition": "[and(parameters('createAvdFslogixDeployment'), not(equals(parameters('identityServiceProvider'), 'AAD')))]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('SH-Monitoring-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'), parameters('time'))]",
+                      "name": "[format('Configure-FsLogix-for-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'), parameters('time'))]",
                       "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
@@ -51810,39 +51818,17 @@
                           "location": {
                             "value": "[parameters('sessionHostLocation')]"
                           },
-                          "virtualMachineName": {
+                          "name": {
                             "value": "[format('{0}-{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'))]"
                           },
-                          "name": {
-                            "value": "MicrosoftMonitoringAgent"
+                          "file": {
+                            "value": "[parameters('fsLogixScript')]"
                           },
-                          "publisher": {
-                            "value": "Microsoft.EnterpriseCloud.Monitoring"
+                          "fsLogixScriptArguments": {
+                            "value": "[parameters('fsLogixScriptArguments')]"
                           },
-                          "type": {
-                            "value": "MicrosoftMonitoringAgent"
-                          },
-                          "typeHandlerVersion": {
-                            "value": "1.0"
-                          },
-                          "autoUpgradeMinorVersion": {
-                            "value": true
-                          },
-                          "enableAutomaticUpgrade": {
-                            "value": false
-                          },
-                          "settings": {
-                            "value": {
-                              "workspaceId": "[if(not(empty(parameters('alaWorkspaceResourceId'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('alaWorkspaceResourceId'), '/')[2], split(parameters('alaWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('alaWorkspaceResourceId'), '/'))), '2021-06-01').customerId, '')]"
-                            }
-                          },
-                          "protectedSettings": {
-                            "value": {
-                              "workspaceKey": "[if(not(empty(parameters('alaWorkspaceResourceId'))), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('alaWorkspaceResourceId'), '/')[2], split(parameters('alaWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('alaWorkspaceResourceId'), '/'))), '2021-06-01').primarySharedKey, '')]"
-                            }
-                          },
-                          "enableDefaultTelemetry": {
-                            "value": false
+                          "baseScriptUri": {
+                            "value": "[parameters('fslogixScriptUri')]"
                           }
                         },
                         "template": {
@@ -51852,162 +51838,175 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.16.1.55165",
-                              "templateHash": "4278114081099664131"
+                              "templateHash": "16311240662909673666"
                             }
                           },
                           "parameters": {
-                            "virtualMachineName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Conditional. The name of the parent virtual machine that extension is provisioned for. Required if the template is used in a standalone deployment."
-                              }
-                            },
                             "name": {
                               "type": "string",
                               "metadata": {
-                                "description": "Required. The name of the virtual machine extension."
+                                "description": "Extension deployment name."
                               }
                             },
                             "location": {
                               "type": "string",
-                              "defaultValue": "[resourceGroup().location]",
                               "metadata": {
-                                "description": "Optional. The location the extension is deployed to."
+                                "description": "Location where to deploy compute services."
                               }
                             },
-                            "publisher": {
+                            "baseScriptUri": {
                               "type": "string",
                               "metadata": {
-                                "description": "Required. The name of the extension handler publisher."
+                                "description": "URI for FSlogix configuration script."
                               }
                             },
-                            "type": {
+                            "file": {
                               "type": "string",
                               "metadata": {
-                                "description": "Required. Specifies the type of the extension; an example is \"CustomScriptExtension\"."
+                                "description": "FSlogix configuration script file name."
                               }
                             },
-                            "typeHandlerVersion": {
+                            "fsLogixScriptArguments": {
                               "type": "string",
                               "metadata": {
-                                "description": "Required. Specifies the version of the script handler."
-                              }
-                            },
-                            "autoUpgradeMinorVersion": {
-                              "type": "bool",
-                              "metadata": {
-                                "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true."
-                              }
-                            },
-                            "forceUpdateTag": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
-                              }
-                            },
-                            "settings": {
-                              "type": "object",
-                              "defaultValue": {},
-                              "metadata": {
-                                "description": "Optional. Any object that contains the extension specific settings."
-                              }
-                            },
-                            "protectedSettings": {
-                              "type": "secureObject",
-                              "defaultValue": {},
-                              "metadata": {
-                                "description": "Optional. Any object that contains the extension specific protected settings."
-                              }
-                            },
-                            "supressFailures": {
-                              "type": "bool",
-                              "defaultValue": false,
-                              "metadata": {
-                                "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false."
-                              }
-                            },
-                            "enableAutomaticUpgrade": {
-                              "type": "bool",
-                              "metadata": {
-                                "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
-                              }
-                            },
-                            "enableDefaultTelemetry": {
-                              "type": "bool",
-                              "defaultValue": true,
-                              "metadata": {
-                                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+                                "description": "Configuration arguments for FSlogix."
                               }
                             }
                           },
                           "resources": [
                             {
-                              "condition": "[parameters('enableDefaultTelemetry')]",
-                              "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2021-04-01",
-                              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
-                              "properties": {
-                                "mode": "Incremental",
-                                "template": {
-                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                                  "contentVersion": "1.0.0.0",
-                                  "resources": []
-                                }
-                              }
-                            },
-                            {
                               "type": "Microsoft.Compute/virtualMachines/extensions",
-                              "apiVersion": "2022-11-01",
-                              "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
+                              "apiVersion": "2022-08-01",
+                              "name": "[format('{0}/FSlogixSetup', parameters('name'))]",
                               "location": "[parameters('location')]",
                               "properties": {
-                                "publisher": "[parameters('publisher')]",
-                                "type": "[parameters('type')]",
-                                "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
-                                "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
-                                "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
-                                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
-                                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
-                                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
-                                "suppressFailures": "[parameters('supressFailures')]"
+                                "publisher": "Microsoft.Compute",
+                                "type": "CustomScriptExtension",
+                                "typeHandlerVersion": "1.10",
+                                "autoUpgradeMinorVersion": true,
+                                "settings": {},
+                                "protectedSettings": {
+                                  "fileUris": "[array(parameters('baseScriptUri'))]",
+                                  "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File {0} {1}', parameters('file'), parameters('fsLogixScriptArguments'))]"
+                                }
                               }
                             }
-                          ],
-                          "outputs": {
+                          ]
+                        }
+                      },
+                      "dependsOn": [
+                        "sessionHosts",
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('SH-Moniroting-Wait-{0}', parameters('time')))]"
+                      ]
+                    },
+                    {
+                      "copy": {
+                        "name": "addAvdHostsToHostPool",
+                        "count": "[length(range(1, parameters('sessionHostsCount')))]"
+                      },
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('HP-Join-{0}-to-HP-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'), parameters('time'))]",
+                      "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+                      "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "location": {
+                            "value": "[parameters('sessionHostLocation')]"
+                          },
+                          "hostPoolToken": {
+                            "value": "[parameters('hostPoolToken')]"
+                          },
+                          "name": {
+                            "value": "[format('{0}-{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'))]"
+                          },
+                          "hostPoolName": {
+                            "value": "[parameters('hostPoolName')]"
+                          },
+                          "avdAgentPackageLocation": {
+                            "value": "[parameters('avdAgentPackageLocation')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.16.1.55165",
+                              "templateHash": "11204267872305651615"
+                            }
+                          },
+                          "parameters": {
                             "name": {
                               "type": "string",
                               "metadata": {
-                                "description": "The name of the extension."
-                              },
-                              "value": "[parameters('name')]"
-                            },
-                            "resourceId": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The resource ID of the extension."
-                              },
-                              "value": "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('virtualMachineName'), parameters('name'))]"
-                            },
-                            "resourceGroupName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The name of the Resource Group the extension was created in."
-                              },
-                              "value": "[resourceGroup().name]"
+                                "description": "Extension deployment name."
+                              }
                             },
                             "location": {
                               "type": "string",
                               "metadata": {
-                                "description": "The location the resource was deployed into."
-                              },
-                              "value": "[reference(resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('virtualMachineName'), parameters('name')), '2022-11-01', 'full').location]"
+                                "description": "Location where to deploy compute services."
+                              }
+                            },
+                            "avdAgentPackageLocation": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Location for the AVD agent installation package."
+                              }
+                            },
+                            "hostPoolName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "AVD Host Pool Name"
+                              }
+                            },
+                            "systemData": {
+                              "type": "object",
+                              "defaultValue": {}
+                            },
+                            "hostPoolToken": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "AVD Host Pool registration token"
+                              }
                             }
-                          }
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Compute/virtualMachines/extensions",
+                              "apiVersion": "2022-08-01",
+                              "name": "[format('{0}/HostPoolRegistration', parameters('name'))]",
+                              "location": "[parameters('location')]",
+                              "properties": {
+                                "publisher": "Microsoft.PowerShell",
+                                "type": "DSC",
+                                "typeHandlerVersion": "2.73",
+                                "autoUpgradeMinorVersion": true,
+                                "settings": {
+                                  "modulesUrl": "[parameters('avdAgentPackageLocation')]",
+                                  "configurationFunction": "Configuration.ps1\\AddSessionHost",
+                                  "properties": {
+                                    "hostPoolName": "[parameters('hostPoolName')]",
+                                    "registrationInfoToken": "[parameters('hostPoolToken')]",
+                                    "aadJoin": false,
+                                    "sessionHostConfigurationLastUpdateTime": "[if(contains(parameters('systemData'), 'hostpoolUpdate'), parameters('systemData').sessionHostConfigurationVersion, '')]"
+                                  }
+                                }
+                              }
+                            }
+                          ]
                         }
                       },
                       "dependsOn": [
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('Host-Pool-Registration-Wait-{0}', parameters('time')))]"
+                        "configureFsLogixForAvdHosts",
+                        "sessionHosts",
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('SH-Moniroting-Wait-{0}', parameters('time')))]"
                       ]
                     }
                   ]
