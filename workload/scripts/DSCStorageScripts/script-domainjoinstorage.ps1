@@ -147,10 +147,10 @@ $account.AzureFilesIdentityBasedAuth
 
 
 if ($StoragePurpose -eq 'fslogix') {
-	$DriveLetter -eq "Y"
+	$DriveLetter = 'Y'
 	 }
 if ($StoragePurpose -eq 'msix') {
-	$DriveLetter -eq "X"
+	$DriveLetter = 'X'
 	 }
 Write-Log "Mounting $StoragePurpose storage account on Drive $DriveLetter"
 		
