@@ -146,13 +146,12 @@ $account.AzureFilesIdentityBasedAuth
 # Remove Administrators from full control
 
 
-#if ($StoragePurpose -eq 'fslogix') {
-#	$DriveLetter -eq "Y"
-#	 }
-#if ($StoragePurpose -eq 'msix') {
-#	$DriveLetter -eq "X"
-$DriveLetter = 'X'
-#	 }
+if ($StoragePurpose -eq 'fslogix') {
+	$DriveLetter = 'Y'
+	 }
+if ($StoragePurpose -eq 'msix') {
+	$DriveLetter = 'X'
+	 }
 Write-Log "Mounting $StoragePurpose storage account on Drive $DriveLetter"
 		
 $FileShareLocation = '\\'+ $StorageAccountName + '.file.core.windows.net\'+$ShareName
