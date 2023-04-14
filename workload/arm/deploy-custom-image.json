@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "774849143501895998"
+      "templateHash": "9116043412987587265"
     }
   },
   "parameters": {
@@ -7217,7 +7217,7 @@
             "value": "PT10M"
           },
           "scriptContent": {
-            "value": "        Write-Host \"Start\"\r\n        Get-Date\r\n        Start-Sleep -Seconds 120\r\n        Write-Host \"Stop\"\r\n        Get-Date\r\n        "
+            "value": "        Write-Host \"Start\"\r\n        Get-Date\r\n        Start-Sleep -Seconds 60\r\n        Write-Host \"Stop\"\r\n        Get-Date\r\n        "
           }
         },
         "template": {
