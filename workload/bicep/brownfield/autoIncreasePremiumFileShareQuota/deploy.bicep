@@ -355,7 +355,7 @@ module workspaceWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScri
       scriptContent: '''
       Write-Host "Start"
       Get-Date
-      Start-Sleep -Seconds 120
+      Start-Sleep -Seconds 60
       Write-Host "Stop"
       Get-Date
       '''
