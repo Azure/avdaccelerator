@@ -35,6 +35,7 @@ The naming of resources is hard coded in the templates but can also be modified 
 | `vm-avd-{deploymentPrefix}-{nnn}` | Virtual Machine | |
 | `Antimalware-Extension-Wait-{Timestamp}` | Deployment script | Introduce wait time after antimalware extension configuration. |
 | `Session-Hosts-Wait-{Timestamp}` | Deployment script | Introduce wait time after session host creation. |
+| `SH-Monitoring-Wait-{Timestamp}` | Deployment script | Introduce wait time after session monitoring agent. |
 
 ### Storage naming (FSLogix & MSIX App Attach)
 
