@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "8197527284795458942"
+      "templateHash": "14305333570776676980"
     }
   },
   "parameters": {
@@ -1195,13 +1195,13 @@
     "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/carml-paranVarNaming-peSubnet/workload/",
     "varFslogixScriptUri": "[format('{0}scripts/Set-FSLogixRegKeys.ps1', variables('varBaseScriptUri'))]",
     "varFsLogixScript": "./Set-FSLogixRegKeys.ps1",
-    "varAgentPackageLocation": "[format('https://wvdportalstorageblob.blob.{0}/galleryartifacts/Configuration_09-08-2022.zip', environment().suffixes.storage)]",
+    "varAvdAgentPackageLocation": "[format('https://wvdportalstorageblob.blob.{0}/galleryartifacts/Configuration_09-08-2022.zip', environment().suffixes.storage)]",
     "varStorageAccountContributorRoleId": "17d1049b-9a84-46fb-8f53-869881c3d3ab",
     "varReaderRoleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
     "varDesktopVirtualizationPowerOnContributorRoleId": "489581de-a3bd-480d-9518-53dea7416b33",
     "varDesktopVirtualizationPowerOnOffContributorRoleId": "40c5ff49-9181-41f8-ae61-143b0e78555e",
-    "varStorageAzureFilesDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip",
-    "varTempResourcesCleanUpDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/postDeploymentTempResourcesCleanUp.zip",
+    "varStorageAzureFilesDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/carml-paranVarNaming-peSubnet/workload/scripts/DSCStorageScripts.zip",
+    "varTempResourcesCleanUpDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/carml-paranVarNaming-peSubnet/workload/scripts/postDeploymentTempResourcesCleanUp.zip",
     "varStorageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-Storage-Scripts.ps1', variables('varBaseScriptUri'))]",
     "varPostDeploymentTempResuorcesCleanUpScriptUri": "[format('{0}scripts/postDeploymentTempResuorcesCleanUp.ps1', variables('varBaseScriptUri'))]",
     "varStorageToDomainScript": "./Manual-DSC-Storage-Scripts.ps1",
@@ -16473,6 +16473,9 @@
           "workSpaceName": {
             "value": "[variables('varWorkSpaceName')]"
           },
+          "osImage": {
+            "value": "[parameters('avdOsImage')]"
+          },
           "workSpaceFriendlyName": {
             "value": "[variables('varWorkSpaceFriendlyName')]"
           },
@@ -16553,44 +16556,50 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.1.55165",
-              "templateHash": "4839336235106519920"
+              "templateHash": "7537018810346103297"
             }
           },
           "parameters": {
             "managementPlaneLocation": {
               "type": "string",
               "metadata": {
-                "description": "Required. Location where to deploy AVD management plane."
+                "description": "Location where to deploy AVD management plane."
               }
             },
             "workloadSubsId": {
               "type": "string",
               "metadata": {
-                "description": "Optional. AVD workload subscription ID, multiple subscriptions scenario."
+                "description": "AVD workload subscription ID, multiple subscriptions scenario."
               }
             },
             "computeTimeZone": {
               "type": "string",
               "metadata": {
-                "description": "Required. Virtual machine time zone."
+                "description": "Virtual machine time zone."
               }
             },
             "identityServiceProvider": {
               "type": "string",
               "metadata": {
-                "description": "Required, The service providing domain services for Azure Virtual Desktop."
+                "description": "The service providing domain services for Azure Virtual Desktop."
               }
             },
             "applicationGroupIdentitiesIds": {
               "type": "array",
               "metadata": {
-                "description": "Required, Identity ID to grant RBAC role to access AVD application group."
+                "description": "Identity ID to grant RBAC role to access AVD application group."
               }
             },
             "applicationGroupIdentityType": {
               "type": "string",
               "metadata": {
-                "description": "Optional, Identity type to grant RBAC role to access AVD application group. (Defualt: \"\")"
+                "description": "Identity type to grant RBAC role to access AVD application group."
+              }
+            },
+            "osImage": {
+              "type": "string",
+              "metadata": {
+                "description": "AVD OS image source."
               }
             },
             "serviceObjectsRgName": {
@@ -16602,13 +16611,13 @@
             "applicationGroupNameRapp": {
               "type": "string",
               "metadata": {
-                "description": "Optional. AVD Application Group Name for the applications."
+                "description": "AVD Application Group Name for the applications."
               }
             },
             "applicationGroupFriendlyNameRapp": {
               "type": "string",
               "metadata": {
-                "description": "Optional. AVD Application Group friendly Name for the applications."
+                "description": "AVD Application Group friendly Name for the applications."
               }
             },
             "applicationGroupNameDesktop": {
@@ -16632,13 +16641,13 @@
             "deployRappGroup": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. AVD deploy remote app application group."
+                "description": "AVD deploy remote app application group."
               }
             },
             "deployScalingPlan": {
               "type": "bool",
               "metadata": {
-                "description": "Optional. AVD deploy scaling plan."
+                "description": "AVD deploy scaling plan."
               }
             },
             "hostPoolName": {
@@ -16680,7 +16689,7 @@
             "hostPoolRdpProperties": {
               "type": "string",
               "metadata": {
-                "description": "Optional. AVD host pool Custom RDP properties."
+                "description": "AVD host pool Custom RDP properties."
               }
             },
             "hostPoolType": {
@@ -16766,7 +16775,7 @@
                 "applicationGroupType": "Desktop"
               }
             ],
-            "varApplicationApplicationGroups": [
+            "varRAppApplicationGroups": [
               {
                 "name": "[parameters('applicationGroupNameRapp')]",
                 "friendlyName": "[parameters('applicationGroupFriendlyNameRapp')]",
@@ -16775,7 +16784,68 @@
               }
             ],
             "varHostPoolRdpPropertiesDomainServiceCheck": "[if(equals(parameters('identityServiceProvider'), 'AAD'), format('{0};targetisaadjoined:i:1;enablerdsaadauth:i:1', parameters('hostPoolRdpProperties')), parameters('hostPoolRdpProperties'))]",
-            "varFinalApplicationGroups": "[if(parameters('deployRappGroup'), concat(variables('varDesktopApplicaitonGroups'), variables('varApplicationApplicationGroups')), variables('varDesktopApplicaitonGroups'))]",
+            "varFinalApplicationGroups": "[if(parameters('deployRappGroup'), concat(variables('varDesktopApplicaitonGroups'), variables('varRAppApplicationGroups')), variables('varDesktopApplicaitonGroups'))]",
+            "varRAppApplicationGroupsStandardApps": [
+              {
+                "name": "Task Manager",
+                "description": "Task Manager",
+                "friendlyName": "Task Manager",
+                "showInPortal": true,
+                "filePath": "C:\\Windows\\system32\\taskmgr.exe"
+              },
+              {
+                "name": "WordPad",
+                "description": "WordPad",
+                "friendlyName": "WordPad",
+                "showInPortal": true,
+                "filePath": "C:\\Program Files\\Windows NT\\Accessories\\wordpad.exe"
+              },
+              {
+                "name": "Microsoft Edge",
+                "description": "Microsoft Edge",
+                "friendlyName": "Edge",
+                "showInPortal": true,
+                "filePath": "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
+              },
+              {
+                "name": "Remote Desktop Connection",
+                "description": "Remote Desktop Connection",
+                "friendlyName": "Remote Desktop",
+                "showInPortal": true,
+                "filePath": "C:\\WINDOWS\\system32\\mtsc.exe"
+              }
+            ],
+            "varRAppApplicationGroupsOfficeApps": [
+              {
+                "name": "Microsoft Excel",
+                "description": "Microsoft Excel",
+                "friendlyName": "Excel",
+                "showInPortal": true,
+                "filePath": "C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE"
+              },
+              {
+                "name": "Microsoft PowerPoint",
+                "description": "Microsoft PowerPoint",
+                "friendlyName": "PowerPoint",
+                "showInPortal": true,
+                "filePath": "C:\\Program Files\\Microsoft Office\\root\\Office16\\POWERPNT.EXE"
+              },
+              {
+                "name": "Microsoft Word",
+                "description": "Microsoft Word",
+                "friendlyName": "Outlook",
+                "showInPortal": true,
+                "filePath": "C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE"
+              },
+              {
+                "name": "Microsoft Outlook",
+                "description": "Microsoft Word",
+                "friendlyName": "Word",
+                "showInPortal": true,
+                "filePath": "C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE"
+              }
+            ],
+            "varRAppApplicationGroupsApps": "[if(contains(parameters('osImage'), 'office'), union(variables('varRAppApplicationGroupsStandardApps'), variables('varRAppApplicationGroupsOfficeApps')), variables('varRAppApplicationGroupsStandardApps'))]",
             "varHostPoolDiagnostic": [
               "allLogs"
             ],
@@ -17456,9 +17526,7 @@
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
-                  "applications": {
-                    "value": []
-                  },
+                  "applications": "[if(equals(variables('varFinalApplicationGroups')[copyIndex()].applicationGroupType, 'RemoteApp'), createObject('value', variables('varRAppApplicationGroupsApps')), createObject('value', createArray()))]",
                   "roleAssignments": "[if(not(empty(parameters('applicationGroupIdentitiesIds'))), createObject('value', createArray(createObject('roleDefinitionIdOrName', 'Desktop Virtualization User', 'principalIds', parameters('applicationGroupIdentitiesIds'), 'principalType', parameters('applicationGroupIdentityType')))), createObject('value', createArray()))]",
                   "diagnosticWorkspaceId": {
                     "value": "[parameters('alaWorkspaceResourceId')]"
@@ -26648,7 +26716,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.1.55165",
-              "templateHash": "13099421507241176913"
+              "templateHash": "11025753284178771312"
             }
           },
           "parameters": {
@@ -35472,7 +35540,7 @@
                     "value": "[parameters('sessionHostLocation')]"
                   },
                   "name": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Management-VM-{0}', parameters('time'))), '2022-09-01').outputs.name.value]"
+                    "value": "[parameters('managementVmName')]"
                   },
                   "file": {
                     "value": "[parameters('storageToDomainScript')]"
@@ -35562,7 +35630,6 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Management-VM-{0}', parameters('time')))]",
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Management-VM-Wait-{0}', parameters('time')))]",
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('storageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Storage-{0}-{1}', parameters('storagePurpose'), parameters('time')))]"
               ]
@@ -35730,7 +35797,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.1.55165",
-              "templateHash": "13099421507241176913"
+              "templateHash": "11025753284178771312"
             }
           },
           "parameters": {
@@ -44554,7 +44621,7 @@
                     "value": "[parameters('sessionHostLocation')]"
                   },
                   "name": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Management-VM-{0}', parameters('time'))), '2022-09-01').outputs.name.value]"
+                    "value": "[parameters('managementVmName')]"
                   },
                   "file": {
                     "value": "[parameters('storageToDomainScript')]"
@@ -44644,7 +44711,6 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Management-VM-{0}', parameters('time')))]",
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Management-VM-Wait-{0}', parameters('time')))]",
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('storageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Storage-{0}-{1}', parameters('storagePurpose'), parameters('time')))]"
               ]
@@ -44683,8 +44749,8 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "agentPackageLocation": {
-            "value": "[variables('varAgentPackageLocation')]"
+          "avdAgentPackageLocation": {
+            "value": "[variables('varAvdAgentPackageLocation')]"
           },
           "computeTimeZone": {
             "value": "[variables('varTimeZones')[parameters('avdSessionHostLocation')]]"
@@ -44801,7 +44867,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.1.55165",
-              "templateHash": "7795951926562256195"
+              "templateHash": "18165206253353249397"
             }
           },
           "parameters": {
@@ -45009,7 +45075,7 @@
                 "description": "AVD Host Pool name."
               }
             },
-            "agentPackageLocation": {
+            "avdAgentPackageLocation": {
               "type": "string",
               "metadata": {
                 "description": "Location for the AVD agent installation package."
@@ -45582,8 +45648,8 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "agentPackageLocation": {
-                    "value": "[parameters('agentPackageLocation')]"
+                  "avdAgentPackageLocation": {
+                    "value": "[parameters('avdAgentPackageLocation')]"
                   },
                   "timeZone": {
                     "value": "[parameters('computeTimeZone')]"
@@ -45718,7 +45784,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.16.1.55165",
-                      "templateHash": "12134845689866575449"
+                      "templateHash": "97862393336154443"
                     }
                   },
                   "parameters": {
@@ -45926,7 +45992,7 @@
                         "description": "AVD Host Pool name."
                       }
                     },
-                    "agentPackageLocation": {
+                    "avdAgentPackageLocation": {
                       "type": "string",
                       "metadata": {
                         "description": "Location for the AVD agent installation package."
@@ -51234,7 +51300,7 @@
                             "value": "[parameters('hostPoolName')]"
                           },
                           "avdAgentPackageLocation": {
-                            "value": "[parameters('agentPackageLocation')]"
+                            "value": "[parameters('avdAgentPackageLocation')]"
                           }
                         },
                         "template": {
