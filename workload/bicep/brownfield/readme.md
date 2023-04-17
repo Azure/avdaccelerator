@@ -4,3 +4,4 @@ The brownfield deployments section contains templates to deploy specific feature
 
 - [Start VM On Connect](./startVmOnConnect/readme.md)
 - [Auto Increase Premium File Share](./autoIncreasePremiumFileShareQuota/readme.md)
+- [Cost Optimization Workbook](../../workbooks/costOptimizationWorkbook/readme.md)
