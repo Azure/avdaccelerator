@@ -9,7 +9,7 @@ The main purposes of this Workbook are:
 
 ![image](../../docs/images/costOptimizationWorkbook/CostOptimizationWorkbook.png)
 
-[Cost Optimization workbook](./CostOptimization.workbook)
+[Cost Optimization workbook](https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/workbooks/costOptimizationWorkbook/costOptimization.workbook)
 
 ## Type of resources covered:
 
@@ -51,7 +51,7 @@ Follow this steps:
 ![Edit monitoring workbook](../../docs/images/costOptimizationWorkbook/editworkbook.png)
 
 * Select the _'Gallery Template'_ (step 1)
-* Replace the JSON in the gallery template to the [Cost Optimization workbook](./CostOptimization.workbook) (step 2)
+* Replace the JSON in the gallery template to the [Cost Optimization workbook](https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/workbooks/costOptimizationWorkbook/costOptimization.workbook) (step 2)
 * Click _'Apply'_ (step 3)
 
 ![Apply monitoring workbook](../../docs/images/costOptimizationWorkbook/applyworkbook.png)
