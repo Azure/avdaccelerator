@@ -7,7 +7,7 @@ The main purposes of this Workbook are:
 * Prevent mistakes and misconfiguration.
 * Operation simplification.
 
-![image](../docs/images/costOptimizationWorkbook/CostOptimizationWorkbook.png)
+![image](../../docs/images/costOptimizationWorkbook/CostOptimizationWorkbook.png)
 
 [Cost Optimization workbook](./CostOptimization.workbook)
 
@@ -33,32 +33,32 @@ Importing this Workbook to your Azure environment.
 
 Follow this steps:
 
-* Login to [Azure Portal](https://portal.azure.com/) <img src="../docs/icons/azure.png" width="20" height="20">
+* Login to [Azure Portal](https://portal.azure.com/) <img src="../../docs/icons/azure.png" width="20" height="20">
 * Go to _'Azure Workbooks'_
 
-![Cost optimization workbook 1](../docs/images/costOptimizationWorkbook/costoptworkbook1.png)
+![Cost optimization workbook 1](../../docs/images/costOptimizationWorkbook/costoptworkbook1.png)
 
 * Click on _'+ Create'_
 
-![Create monitoring workbook](../docs/images/costOptimizationWorkbook/createworkbook.png)
+![Create monitoring workbook](../../docs/images/costOptimizationWorkbook/createworkbook.png)
 
 * Click on _'+ New'_
 
-![New monitoring workbook](../docs/images/costOptimizationWorkbook/newworkbook.png)
+![New monitoring workbook](../../docs/images/costOptimizationWorkbook/newworkbook.png)
 
 * Open the Advanced Editor using the _'</>'_ button on the toolbar
 
-![Edit monitoring workbook](../docs/images/costOptimizationWorkbook/editworkbook.png)
+![Edit monitoring workbook](../../docs/images/costOptimizationWorkbook/editworkbook.png)
 
 * Select the _'Gallery Template'_ (step 1)
 * Replace the JSON in the gallery template to the [Cost Optimization workbook](./CostOptimization.workbook) (step 2)
 * Click _'Apply'_ (step 3)
 
-![Apply monitoring workbook](../docs/images/costOptimizationWorkbook/applyworkbook.png)
+![Apply monitoring workbook](../../docs/images/costOptimizationWorkbook/applyworkbook.png)
 
 * Click in the ‘Save’ button on the toolbar
 
-![Save monitoring workbook](../docs/images/costOptimizationWorkbook/saveworkbook.png)
+![Save monitoring workbook](../../docs/images/costOptimizationWorkbook/saveworkbook.png)
 
 * Select a name and where to save the Workbook:
 
@@ -73,9 +73,9 @@ The Workbook is ready to use!
 * From Azure portal search for _'Monitor'_
 * Click on _'Cost Optimization workbook'_ Workbook.
 
-![Monitoring workbook](../docs/images/costOptimizationWorkbook/monitorworkbook.png)
+![Monitoring workbook](../../docs/images/costOptimizationWorkbook/monitorworkbook.png)
 
 Start using the Workbook and review your Cost Optimization workbook.
 Filter by specific subscription is optional.
 
-![Cost optimization workbook](../docs/images/costOptimizationWorkbook/CostOptimizationWorkbook.png)
+![Cost optimization workbook](../../docs/images/costOptimizationWorkbook/CostOptimizationWorkbook.png)
