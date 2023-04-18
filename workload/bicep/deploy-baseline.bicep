@@ -1008,6 +1008,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet) {
         vNetworkPrivateEndpointSubnetName: varVnetworkPrivateEndpointSubnetName
         createVnet: createAvdVnet
         createVnetPeering: varCreateVnetPeering
+        deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
         vNetworkGatewayOnHub: vNetworkGatewayOnHub
         existingHubVnetResourceId: avdIdentityServiceProvider == 'AAD' ? '': existingHubVnetResourceId
         sessionHostLocation: avdSessionHostLocation
