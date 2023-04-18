@@ -21,7 +21,7 @@ The naming of resources is hard coded in the templates but can also be modified 
 | `AVD-managementVmWait-{Timestamp}` | Deployment script | Introduce wait time after management VM creation. |
 | `vm-mgmt-{deploymentPrefix}` | Virtual Machine | VM used to run management tasks (FSLogix, NTFS permissions, etc.). |
 | `osdisk-{nnn}-vm-mgmt-{deploymentPrefix}` | Disk | OS disk attached to management VM. |
-| `nic-{nnn}-vm-mgmt-{deploymentPrefix}` | Network Interface | Network interface attached to management VM. |
+| `nic-{nn}-vm-mgmt-{deploymentPrefix}` | Network Interface | Network interface attached to management VM. |
 
 ### Pool Compute naming (Session hosts)
 
@@ -31,8 +31,11 @@ The naming of resources is hard coded in the templates but can also be modified 
 | `asg-avd-{AzureRegion}-{deploymentPrefix}-{nnn}` | Application Security Group | |
 | `avail-avd-{AzureRegion}-{deploymentPrefix}-{nnn}` | Availability set | Deployed when not using availability zones. |
 | `osdisk-{nnn}-vm-avd-{deploymentPrefix}-{nnn}` | Disk | OS disk attached to session hosts. |
-| `nic-{nnn}-vm-avd-{deploymentPrefix}-{nnn}` | Network Interface | NEtwork interface attached to session hosts. |
+| `nic-{nn}-vm-avd-{deploymentPrefix}-{nnn}` | Network Interface | NEtwork interface attached to session hosts. |
 | `vm-avd-{deploymentPrefix}-{nnn}` | Virtual Machine | |
+| `Antimalware-Extension-Wait-{Timestamp}` | Deployment script | Introduce wait time after antimalware extension configuration. |
+| `Session-Hosts-Wait-{Timestamp}` | Deployment script | Introduce wait time after session host creation. |
+| `SH-Monitoring-Wait-{Timestamp}` | Deployment script | Introduce wait time after session monitoring agent. |
 
 ### Storage naming (FSLogix & MSIX App Attach)
 
@@ -40,7 +43,7 @@ The naming of resources is hard coded in the templates but can also be modified 
 |:--|:--|:--|
 | `rg-avd-{AzureRegion}-{deploymentPrefix}-storage` | Resource Group | |
 | `id-avd-storage-{AzureRegion}-{deploymentPrefix}` | Managed identity | Identity used for FSLogix setup. |
-| `AVD-storageManagedIdentityWait-{Timestamp}` | Deployment script | Introduce wait time after managed identity creation. |
+| `Managed-Identity-Wait-{Timestamp}` | Deployment script | Introduce wait time after managed identity creation. |
 | `stfsl{deploymentPrefix}{uniqueString}` | Storage account | FSLogix file shares. |
 | `pe-stfsl{deploymentPrefix}{uniqueString}-file` | Private endpoint | Private endpoint attached to FSLogix storage account files service. |
 | `nic-{nn}-pe-stfsl{deploymentPrefix}{uniqueString}-file` | Network Interface | Network interface attached to FSLogix storage account's private endpoint. |
@@ -64,7 +67,7 @@ The naming of resources is hard coded in the templates but can also be modified 
 | Resource Name | Resource Type | |
 |:--|:--|:--|
 | `rg-avd-{AzureRegionAcronym}-monitoring` | Resource Group | |
-| `AVD-alaWorkspaceWait-{Timestamp}` | Deployment Script | Introduce wait time after log analytics workspace creation. |
+| `Log-Analytics-Workspace-Wait-{Timestamp}` | Deployment Script | Introduce wait time after log analytics workspace creation. |
 | `log-avd-{AzureRegionAcronym}` | Log Analytics Workspace | |
 
 ### Resource naming for the custom image deployment

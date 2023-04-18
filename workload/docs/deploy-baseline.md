@@ -55,7 +55,8 @@
 - **Network connectivity** blade
   - **New** - Select if you want to create a new VNet to be used for session hosts.
     - **Virtual network** - Enter the IP block in CIDR notation to allocate to the VNet.
-    - **VNet address range** - Enter IP block in CIDR notation for the new subnet.
+    - **AVD subnet address range** - Enter IP block in CIDR notation for the new AVD subnet.
+    - **Private endpoint subnet address range** - Enter IP block in CIDR notation for the new private endpoint subnet.
     - **VNet DNS servers** - Enter the DNS servers to be set for the VNet. These DNS server should have proper DNS resolution to your AD DS domain and internet.
   - **Azure Private DNS zone** - Select yes to use an existing private DNS zone for Azure File share and Key vault. Select No if you do not want to use private endpoints (Private DNS for Azure files is required for FSLogix deployment to configure NTFS permissions).
   - **Existing hub VNet peering**
@@ -88,7 +89,9 @@ We have these other options available:
 
 ## Next Steps
 
-- After successful deployment, you can remove the temporary virtual machine (`vm-fs-dj-{deployment-prefix}`) and associated OS disk (`osdisk-001-vm-fs-dj-{deployment-prefix}`) and network interface (`nic-001-vm-fs-dj-{deployment-prefix}`) that was used to provision the storage account for FSLogix purposes.
+- After successful deployment, you can remove the following temporary resources used only during deployment: 
+    - virtual machine (`vm-mgmt-{deployment-prefix}`) and associated OS disk (`vm-mgmt-{deployment-prefix}-disk-os-01`) and network interface (`nic-001-vm-mgmt-{deployment-prefix}`) that was used to provision the storage account for FSLogix purposes.
+    - Deployment scripts used to introduce wait times: Management-VM-Wait-{timestamp}, Managed-Identity-Wait-{timestamp}, Antimalware-Extension-Wait-{timestamp}, Session-Hosts-Wait-{timestamp}, SH-Moniroting-Wait-{timestamp}.
 - You should assign specific roles, including AVD-specific roles based on your organization’s policies.
 - Preferably enable NSG Flow logs and AVD insights.
 
