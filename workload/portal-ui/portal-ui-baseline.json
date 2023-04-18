@@ -1121,7 +1121,7 @@
                         {
                             "name": "virtualNetworkPrivateEndpointSubnetSize",
                             "type": "Microsoft.Common.TextBox",
-                            "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
+                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true))]",
                             "label": "Private endpoint subnet address prefix",
                             "toolTip": "Virtual network subnet for private endpoints",
                             "placeholder": "Example: 10.10.1.0/27",
@@ -1197,7 +1197,7 @@
                         {
                             "name": "privateEndpointVirtualNetworkSelectorId",
                             "type": "Microsoft.Solutions.ResourceSelector",
-                            "visible": "[equals(steps('network').createAvdVirtualNetwork, false)]",
+                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true))]",
                             "label": "Private endpoint virtual network",
                             "resourceType": "Microsoft.Network/virtualNetworks",
                             "constraints": {
@@ -1222,7 +1222,7 @@
                             "name": "virtualNetworkPrivateEndpointSubnetSelectorName",
                             "label": "Private endpoint subnet",
                             "type": "Microsoft.Common.DropDown",
-                            "visible": "[equals(steps('network').createAvdVirtualNetwork, false)]",
+                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true))]",
                             "defaultValue": "",
                             "toolTip": "Select the subnet.",
                             "multiselect": false,
