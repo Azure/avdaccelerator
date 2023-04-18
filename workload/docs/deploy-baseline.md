@@ -43,7 +43,7 @@
   - **VM count** - Select the number of session hosts to deploy.
   - **OS disk type** - Select the OS Disk SKU type. Premium is recommended.
   - **End to end encryption** - If you want data stored on the session host  encrypted at rest and flow encrypted to the Storage service.
-  - **OS image source** - Select a marketplace image or from the Azure Compute Gallery.
+  - **OS image source** - Select a marketplace image or an image from Azure Compute Gallery (Custom image build deployment will create images in compute gallery).
   - **OS version or image** - Choose the OS version or desired image from the Azure compute gallery.
 - **Storage** blade
   - **Use FSLogix profile management**: Deploys FSLogix containers and session host setup for user's profiles.
