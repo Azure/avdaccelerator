@@ -8,6 +8,7 @@ resource "azurerm_key_vault" "kv" {
   enabled_for_disk_encryption = true
   tags                        = local.tags
   enabled_for_deployment      = true
+  enable_rbac_authorization   = true
 
   depends_on = [
     azurerm_resource_group.rg,
@@ -30,17 +31,6 @@ resource "azurerm_role_assignment" "keysp" {
   scope                = azurerm_key_vault.kv.id
   role_definition_name = "Key Vault Secrets Officer"
   principal_id         = data.azurerm_client_config.current.object_id
-}
-
-resource "azurerm_key_vault_access_policy" "deploy" {
-  key_vault_id   = azurerm_key_vault.kv.id
-  tenant_id      = data.azurerm_client_config.current.tenant_id
-  object_id      = data.azurerm_client_config.current.object_id
-
-  key_permissions         = ["Get", "List", "Encrypt", "Decrypt", "Update", "Create", "Import", "Delete", "Recover", ]
-  secret_permissions      = ["Get", "List", "Set", "Delete", "Purge", "Recover", ]
-  certificate_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Purge", "Recover", ]
-  storage_permissions     = ["Get", "List", "Update", "Delete", ]
 }
 
 # Get Private DNS Zone for the Key Vault Private Endpoints
@@ -88,7 +78,7 @@ resource "azurerm_key_vault_secret" "localpassword" {
   lifecycle { ignore_changes = [tags] }
 
   depends_on = [
-    azurerm_key_vault_access_policy.deploy
+    azurerm_role_assignment.keysp
   ]
 }
 
@@ -101,4 +91,34 @@ resource "azurerm_private_dns_zone_virtual_network_link" "vaultlink" {
   provider              = azurerm.hub
 
   lifecycle { ignore_changes = [tags] }
+}
+
+resource "azurerm_role_assignment" "keystor" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Crypto Service Encryption User"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+# Customer Managed Key for Storage Account
+resource "azurerm_storage_account_customer_managed_key" "cmky" {
+  storage_account_id = azurerm_storage_account.storage.id
+  key_vault_id       = azurerm_key_vault.kv.id
+  key_name           = azurerm_key_vault.kv.name
+  provider           = azurerm.spoke
+
+  depends_on = [
+    azurerm_storage_account.storage, azurerm_key_vault.kv, azurerm_resource_group.rg_storage, azurerm_key_vault_key.stcmky
+  ]
+}
+
+resource "azurerm_key_vault_key" "stcmky" {
+  name         = "stor-key"
+  key_vault_id = azurerm_key_vault.kv.id
+  key_type     = "RSA"
+  key_size     = 2048
+  key_opts     = ["decrypt", "encrypt", "sign", "unwrapKey", "verify", "wrapKey"]
+
+  depends_on = [
+    azurerm_role_assignment.keystor
+  ]
 }

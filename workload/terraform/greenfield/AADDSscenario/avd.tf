@@ -211,14 +211,14 @@ resource "azurerm_monitor_diagnostic_setting" "avd-ws" {
     azurerm_virtual_desktop_workspace.workspace
   ]
 
-    dynamic "enabled_log" {
+  dynamic "enabled_log" {
     for_each = var.ws_log_categories
     content {
       category = enabled_log.value
     }
   }
 }
-  /*
+/*
   enabled_log {
     category = "Checkpoint"
 
