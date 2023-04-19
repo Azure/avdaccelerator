@@ -83,7 +83,7 @@ resource "azurerm_windows_virtual_machine" "res-5" {
   ]
 }
 resource "azurerm_virtual_machine_data_disk_attachment" "res-6" {
-  caching = "ReadOnly"
+  caching            = "ReadOnly"
   create_option      = "Attach"
   lun                = 0
   managed_disk_id    = "/subscriptions/${var.spoke_subscription_id}/resourceGroups/rg-avd-gm/providers/Microsoft.Compute/disks/vm-gmdev_lun_0_2_afed48d7a46d4d2287ae25ead2e6ff98"
