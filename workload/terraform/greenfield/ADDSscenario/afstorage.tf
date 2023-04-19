@@ -18,7 +18,7 @@ resource "azurerm_storage_account" "storage" {
   enable_https_traffic_only = true
   tags                      = local.tags
   identity {
-    type = "SystemAssigned"
+    type = "UserAssigned"
   }
 }
 
@@ -43,6 +43,8 @@ resource "azurerm_role_assignment" "af_role" {
   scope              = azurerm_storage_account.storage.id
   role_definition_id = data.azurerm_role_definition.storage_role.id
   principal_id       = data.azuread_group.adds_group.id
+
+  depends_on = [azurerm_storage_account.storage]
 }
 
 # Get Private DNS Zone for the Storage Private Endpoints
@@ -90,3 +92,4 @@ resource "azurerm_private_dns_zone_virtual_network_link" "filelink" {
 
   lifecycle { ignore_changes = [tags] }
 }
+
