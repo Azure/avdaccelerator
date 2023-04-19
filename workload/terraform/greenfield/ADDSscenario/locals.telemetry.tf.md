@@ -9,7 +9,7 @@ locals {
 
 # The following `can()` is used for when disable_telemetry = true
 locals {
-  telem_random_hex = can(random_id.telem[0].hex) ? random_id.telem[0].hex : local.empty_string
+  telem_random_hex = can(random.telem[0].hex) ? random.telem[0].hex : local.empty_string
 }
 
 # Here we create the ARM templates for the telemetry deployment
