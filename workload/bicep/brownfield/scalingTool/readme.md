@@ -23,19 +23,35 @@ This solution fully deploys the AVD Scaling Tool provided in the [Microsoft Lear
 New-AzResourceGroupDeployment `
     -ResourceGroupName '<Resource Group Name>' `
     -TemplateFile 'https://raw.githubusercontent.com/jamasten/AvdScalingTool/main/solution.json' `
-    -AutomationAccountName '<Automation Account Name>' `
-    -BeginPeakTime '<Start of Peak Usage>' `
-    -EndPeakTime '<End of Peak Usage>' `
-    -ExistingAutomationAccount '<$true or $false>' `
-    -HostPoolName '<Host Pool Name>' `
-    -HostPoolResourceGroupName '<Host Pool Resource Group Name>' `
-    -LimitSecondsToForceLogOffUser '<Number of seconds>' `
-    -LogAnalyticsWorkspaceResourceId '<Log Analytics Workspace Resource ID>' ` 
-    -MinimumNumberOfRdsh '<Number of Session Hosts>' `
-    -SessionHostsResourceGroupName '<Session Hosts Resource Group Name>' `
-    -SessionThresholdPerCPU '<Number of sessions>' `
-    -Tags '<Key / Value pairs of metadata for your resources>' `
-    -TimeDifference '<Time zone offset>' `
+    -ActionGroupCustomName '<Custom name for action group>' `
+    -ApplicationNameTag '<Tag for application name>' `
+    -AutomationAccountCustomName '<Custom name for automation account>' `
+    -BeginPeakTime '<Time when peak usage begins>' `
+    -CostCenterTag '<Tag for cost center>' `
+    -CriticalityCustomTag '<Tag for custom criticality>' `
+    -CriticalityTag '<Tag for criticality>' `
+    -CustomNaming '<Boolean to enable custom naming>' `
+    -DataClassificationTag '<Tag for data classification>' `
+    -DepartmentTag '<Tag for department>' `
+    -DeploymentLocation '<Location for deployment>' `
+    -DistributionGroup '<Email address>' `
+    -EnableMonitoringAlerts '<Boolean to enable monitoring and alerts>' `
+    -EnableResourceTags '<Boolean to enable resource tags>' `
+    -EndPeakTime '<Time when peak usage ends>' `
+    -EnvironmentTag '<Tag for environment>' `
+    -ExistingAutomationAccountResourceId '<Resource ID for existing automation account>' `
+    -ExistingHostPoolResourceId '<Resource ID for existing host pool>' `
+    -ExistingLogAnalyticsWorkspaceResourceId '<Resource ID for existing log analytics workspace>' `
+    -LimitSecondsToForceLogOffUser '<Number of seconds before users are force logged off>' `
+    -LogAnalyticsWorkspaceCustomName '<Custom name for log analytics workspace>' `
+    -MinimumNumberOfRdsh '<Minimum number of session hosts to scale down to during off peak time>' `
+    -OperationsTeamTag '<Tag for operations team>' `
+    -OwnerTag '<Tag for owner>' `
+    -ResourceGroupCustomName '<Custom name for resource group>' `
+    -SessionHostsResourceGroupName '<Name for session hosts resource group>' `
+    -SessionThresholdPerCPU '<Number of sessions per CPU>' `
+    -SharedServicesSubscriptionId '<Subscription ID for shared services subscription>' `
+    -WorkloadNameTag '<Tag for workload name>' `
     -Verbose
 ````
 
@@ -46,17 +62,33 @@ az deployment group create \
     --resource-group '<Resource Group Name>' \
     --template-uri 'https://raw.githubusercontent.com/jamasten/AvdScalingTool/main/solution.json' \
     --parameters \
-        AutomationAccountName='<Automation Account Name>' \
-        BeginPeakTime='<Start of Peak Usage>' \
-        EndPeakTime='<End of Peak Usage>' \
-        ExistingAutomationAccount=' true or false' \
-        HostPoolName='<Host Pool Name>' \
-        HostPoolResourceGroupName='<Host Pool Resource Group Name>' \
-        LimitSecondsToForceLogOffUser='<Number of seconds>' \
-        LogAnalyticsWorkspaceResourceId='<Log Analytics Workspace Resource ID>' \
-        MinimumNumberOfRdsh='<Number of Session Hosts>' \
-        RecurrenceInterval='<Number of minutes for Logic App recurrence>' \
-        SessionHostsResourceGroupName='<Session Hosts Resource Group Name>' \
-        SessionThresholdPerCPU='<Number of sessions>' \
-        TimeDifference='<Time zone offset>' \
+        ActionGroupCustomName='<Custom name for action group>' \
+        ApplicationNameTag='<Tag for application name>' \
+        AutomationAccountCustomName='<Custom name for automation account>' \
+        BeginPeakTime='<Time when peak usage begins>' \
+        CostCenterTag='<Tag for cost center>' \
+        CriticalityCustomTag='<Tag for custom criticality>' \
+        CriticalityTag='<Tag for criticality>' \
+        CustomNaming='<Boolean to enable custom naming>' \
+        DataClassificationTag='<Tag for data classification>' \
+        DepartmentTag='<Tag for department>' \
+        DeploymentLocation='<Location for deployment>' \
+        DistributionGroup='<Email address>' \
+        EnableMonitoringAlerts='<Boolean to enable monitoring and alerts>' \
+        EnableResourceTags='<Boolean to enable resource tags>' \
+        EndPeakTime='<Time when peak usage ends>' \
+        EnvironmentTag='<Tag for environment>' \
+        ExistingAutomationAccountResourceId='<Resource ID for existing automation account>' \
+        ExistingHostPoolResourceId='<Resource ID for existing host pool>' \
+        ExistingLogAnalyticsWorkspaceResourceId='<Resource ID for existing log analytics workspace>' \
+        LimitSecondsToForceLogOffUser='<Number of seconds before users are force logged off>' \
+        LogAnalyticsWorkspaceCustomName='<Custom name for the log analytics workspace>' \
+        MinimumNumberOfRdsh='<Minimum number of session hosts to scale down to during off peak time>' \
+        OperationsTeamTag='<Tag for operations team>' \
+        OwnerTag='<Tag for owner>' \
+        ResourceGroupCustomName='<Custom name for resource group>' \
+        SessionHostsResourceGroupName='<Name for session hosts resource group>' \
+        SessionThresholdPerCPU='<Number of sessions per CPU>' \
+        SharedServicesSubscriptionId='<Subscription ID for shared services subscription>' \
+        WorkloadNameTag='<Tag for workload name>'
 ````
