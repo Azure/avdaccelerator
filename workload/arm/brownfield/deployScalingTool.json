@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "8696211487484584301"
+      "templateHash": "8457065048494407189"
     }
   },
   "parameters": {
@@ -512,7 +512,7 @@
       }
     },
     "varActionGroupName": "[if(parameters('customNaming'), parameters('actionGroupCustomName'), format('ag-avd-{0}', variables('varNamingStandard')))]",
-    "varAlerts": "[if(parameters('enableMonitoringAlerts'), createArray(createObject('name', 'AVD Scaling Tool - Scaling Failed', 'description', 'Sends an error alert when the runbook fails to execute.', 'severity', 0, 'evaluationFrequency', 'PT5M', 'windowSize', 'PT5M', 'criterias', createObject('allOf', createArray(createObject('query', 'AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| where StreamType_s == \"Error\"', 'TimeAggregation', 'Count', 'dimensions', createArray(createObject('name', 'ResultDescription', 'operator', 'Include', 'values', createArray('*'))), 'operator', 'GreaterThanOrEqual', 'threshold', 1, 'failingPeriods', createObject('numberOfEvaluationPeriods', 1, 'minFailingPeriodsToAlert', 1)))))), createArray())]",
+    "varAlerts": "[if(parameters('enableMonitoringAlerts'), createArray(createObject('name', 'AVD Scaling Tool - Scaling Failed', 'description', 'Sends an error alert when the runbook fails to execute.', 'severity', 0, 'evaluationFrequency', 'PT5M', 'windowSize', 'PT5M', 'criterias', createObject('allOf', createArray(createObject('query', 'AzureDiagnostics\n| where ResourceProvider == \"MICROSOFT.AUTOMATION\"\n| where Category  == \"JobStreams\"\n| where StreamType_s == \"Error\"', 'TimeAggregation', 'Count', 'dimensions', createArray(), 'operator', 'GreaterThanOrEqual', 'threshold', 1, 'failingPeriods', createObject('numberOfEvaluationPeriods', 1, 'minFailingPeriodsToAlert', 1)))))), createArray())]",
     "varAutomationAccountName": "[if(parameters('customNaming'), parameters('automationAccountCustomName'), format('aa-avd-{0}', variables('varNamingStandard')))]",
     "varAutomationAccountScope": "[if(empty(parameters('existingAutomationAccountResourceId')), variables('varResourceGroupName'), variables('varExistingAutomationAccountResourceGroupName'))]",
     "varCommonResourceTags": "[if(parameters('enableResourceTags'), createObject('WorkloadName', parameters('workloadNameTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('criticalityTag'), 'Custom'), parameters('criticalityCustomTag'), parameters('criticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'OpsTeam', parameters('operationsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag'), 'Environment', parameters('environmentTag')), createObject())]",
