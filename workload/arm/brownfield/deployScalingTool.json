@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "8457065048494407189"
+      "templateHash": "11710671189513351160"
     }
   },
   "parameters": {
@@ -3432,7 +3432,7 @@
                 "name": "[variables('varRunbookName')]",
                 "description": "When this runbook is triggered, the AVD session hosts will be either turned on or off depending upon the peak hours and active sessions.",
                 "type": "PowerShell",
-                "uri": "https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/scripts/Set-AvdScalingTool.ps1",
+                "uri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/Set-AvdScalingTool.ps1",
                 "version": "1.0.0.0"
               }
             ]
