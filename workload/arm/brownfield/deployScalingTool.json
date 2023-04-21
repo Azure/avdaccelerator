@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "9604287094347410884"
+      "templateHash": "8696211487484584301"
     }
   },
   "parameters": {
@@ -281,47 +281,47 @@
         "timeZone": "Eastern Standard Time"
       },
       "centralindia": {
-        "acronym": "cin",
+        "acronym": "inc",
         "timeDifference": "+5:30",
         "timeZone": "India Standard Time"
       },
       "centralus": {
-        "acronym": "cus",
+        "acronym": "usc",
         "timeDifference": "-6:00",
         "timeZone": "Central Standard Time"
       },
       "chinaeast": {
-        "acronym": "",
+        "acronym": "cne",
         "timeDifference": "+8:00",
         "timeZone": "China Standard Time"
       },
       "chinaeast2": {
-        "acronym": "",
+        "acronym": "cne2",
         "timeDifference": "+8:00",
         "timeZone": "China Standard Time"
       },
       "chinanorth": {
-        "acronym": "",
+        "acronym": "cnn",
         "timeDifference": "+8:00",
         "timeZone": "China Standard Time"
       },
       "chinanorth2": {
-        "acronym": "",
+        "acronym": "cnn2",
         "timeDifference": "+8:00",
         "timeZone": "China Standard Time"
       },
       "eastasia": {
-        "acronym": "eas",
+        "acronym": "ase",
         "timeDifference": "+8:00",
         "timeZone": "China Standard Time"
       },
       "eastus": {
-        "acronym": "eus",
+        "acronym": "use",
         "timeDifference": "-5:00",
         "timeZone": "Eastern Standard Time"
       },
       "eastus2": {
-        "acronym": "eus2",
+        "acronym": "use2",
         "timeDifference": "-5:00",
         "timeZone": "Eastern Standard Time"
       },
@@ -356,12 +356,12 @@
         "timeZone": "Tokyo Standard Time"
       },
       "jioindiacentral": {
-        "acronym": "",
+        "acronym": "injc",
         "timeDifference": "+5:30",
         "timeZone": "India Standard Time"
       },
       "jioindiawest": {
-        "acronym": "",
+        "acronym": "injw",
         "timeDifference": "+5:30",
         "timeZone": "India Standard Time"
       },
@@ -376,12 +376,12 @@
         "timeZone": "Korea Standard Time"
       },
       "northcentralus": {
-        "acronym": "ncus",
+        "acronym": "usnc",
         "timeDifference": "-6:00",
         "timeZone": "Central Standard Time"
       },
       "northeurope": {
-        "acronym": "neu",
+        "acronym": "eun",
         "timeDifference": "0:00",
         "timeZone": "GMT Standard Time"
       },
@@ -406,17 +406,17 @@
         "timeZone": "South Africa Standard Time"
       },
       "southcentralus": {
-        "acronym": "scus",
+        "acronym": "ussc",
         "timeDifference": "-6:00",
         "timeZone": "Central Standard Time"
       },
       "southeastasia": {
-        "acronym": "seas",
+        "acronym": "asse",
         "timeDifference": "+8:00",
         "timeZone": "Singapore Standard Time"
       },
       "southindia": {
-        "acronym": "sin",
+        "acronym": "ins",
         "timeDifference": "+5:30",
         "timeZone": "India Standard Time"
       },
@@ -481,32 +481,32 @@
         "timeZone": "Eastern Standard Time"
       },
       "westcentralus": {
-        "acronym": "wcus",
+        "acronym": "uswc",
         "timeDifference": "-7:00",
         "timeZone": "Mountain Standard Time"
       },
       "westeurope": {
-        "acronym": "weu",
+        "acronym": "euw",
         "timeDifference": "+1:00",
         "timeZone": "Central Europe Standard Time"
       },
       "westindia": {
-        "acronym": "win",
+        "acronym": "inw",
         "timeDifference": "+5:30",
         "timeZone": "India Standard Time"
       },
       "westus": {
-        "acronym": "wus",
+        "acronym": "usw",
         "timeDifference": "-8:00",
         "timeZone": "Pacific Standard Time"
       },
       "westus2": {
-        "acronym": "wus2",
+        "acronym": "usw2",
         "timeDifference": "-8:00",
         "timeZone": "Pacific Standard Time"
       },
       "westus3": {
-        "acronym": "wus3",
+        "acronym": "usw3",
         "timeDifference": "-7:00",
         "timeZone": "Mountain Standard Time"
       }
@@ -6235,7 +6235,7 @@
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varAutomationAccountScope')), 'Microsoft.Resources/deployments', format('Automation-Account-{0}', parameters('time'))), '2022-09-01').outputs.systemAssignedPrincipalId.value]"
           },
           "roleDefinitionIdOrName": {
-            "value": "40c5ff49-9181-41f8-ae61-143b0e78555e"
+            "value": "Desktop Virtualization Power On Off Contributor"
           }
         },
         "template": {
