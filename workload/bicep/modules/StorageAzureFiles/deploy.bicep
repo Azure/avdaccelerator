@@ -104,7 +104,7 @@ param tags object
 param managementVmName string
 
 @description('Optional. AVD Accelerator will deploy with private endpoints by default.')
-param deployPrivateEndpointKeyvaultStorage bool
+param deployPrivateEndpoint bool
 
 @description('Log analytics workspace for diagnostic logs.')
 param alaWorkspaceResourceId string
@@ -191,7 +191,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
         location: sessionHostLocation
         skuName: storageSku
         allowBlobPublicAccess: false
-        publicNetworkAccess: deployPrivateEndpointKeyvaultStorage ? 'Disabled' : 'Enabled'
+        publicNetworkAccess: deployPrivateEndpoint ? 'Disabled' : 'Enabled'
         kind: ((storageSku =~ 'Premium_LRS') || (storageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
         azureFilesIdentityBasedAuthentication: (identityServiceProvider == 'AADDS') ? {
             directoryServiceOptions: 'AADDS'
@@ -199,7 +199,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
             directoryServiceOptions: 'None'
         }
         accessTier: 'Hot'
-        networkAcls: deployPrivateEndpointKeyvaultStorage ? {
+        networkAcls: deployPrivateEndpoint ? {
             bypass: 'AzureServices'
             defaultAction: 'Deny'
             virtualNetworkRules: []
@@ -223,7 +223,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
             diagnosticLogCategoriesToEnable: varAvdFileShareLogsDiagnostic
             diagnosticMetricsToEnable: varAvdFileShareMetricsDiagnostic
         }
-        privateEndpoints: deployPrivateEndpointKeyvaultStorage ? (vnetPrivateDnsZone ? [
+        privateEndpoints: deployPrivateEndpoint ? (vnetPrivateDnsZone ? [
             {
                 name: varWrklStoragePrivateEndpointName
                 subnetResourceId: privateEndpointSubnetId
