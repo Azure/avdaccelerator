@@ -1121,7 +1121,7 @@
                         {
                             "name": "virtualNetworkPrivateEndpointSubnetSize",
                             "type": "Microsoft.Common.TextBox",
-                            "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
+                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true))]",
                             "label": "Private endpoint subnet address prefix",
                             "toolTip": "Virtual network subnet for private endpoints",
                             "placeholder": "Example: 10.10.1.0/27",
@@ -1197,7 +1197,7 @@
                         {
                             "name": "privateEndpointVirtualNetworkSelectorId",
                             "type": "Microsoft.Solutions.ResourceSelector",
-                            "visible": "[equals(steps('network').createAvdVirtualNetwork, false)]",
+                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true))]",
                             "label": "Private endpoint virtual network",
                             "resourceType": "Microsoft.Network/virtualNetworks",
                             "constraints": {
@@ -1222,7 +1222,7 @@
                             "name": "virtualNetworkPrivateEndpointSubnetSelectorName",
                             "label": "Private endpoint subnet",
                             "type": "Microsoft.Common.DropDown",
-                            "visible": "[equals(steps('network').createAvdVirtualNetwork, false)]",
+                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true))]",
                             "defaultValue": "",
                             "toolTip": "Select the subnet.",
                             "multiselect": false,
@@ -1246,9 +1246,30 @@
                             }
                         },
                         {
-                            "name": "virtualNetworkPrivateDnsZone",
+                            "name": "deployPrivateEndpointKeyvaultStorage",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
+                            "label": "Use Private Endpoints",
+                            "defaultValue": "Yes (Recommended)",
+                            "toolTip": "Enables Private Endpoints for Key Vault and Storage Resources. It is recommended to use Azure Private Endpoints to keep all traffic to PaaS services on the Azure backbone.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "Yes (Recommended)",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "No",
+                                        "value": false
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "virtualNetworkPrivateDnsZone",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": "[equals(steps('network').deployPrivateEndpointKeyvaultStorage, true)]",
                             "label": "Existing Azure private DNS zone",
                             "defaultValue": "Yes (Recommended)",
                             "toolTip": "It is recommended to use Azure private DNS zones for private endpoint name spaces, private endpoints will be automatically created for PaaS services (Azure Files and Key Vault) but the private DNS zones are prerequisites required.",
@@ -2331,7 +2352,7 @@
                 "createAvdVnet": "[steps('network').createAvdVirtualNetwork]",
                 "avdVnetworkAddressPrefixes": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkSize, '10.10.0.0/23')]",
                 "vNetworkAvdSubnetAddressPrefix": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkAvdSubnetSize, '10.10.0.0/24')]",
-                "vNetworkPrivateEndpointSubnetAddressPrefix": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkPrivateEndpointSubnetSize, '10.10.1.0/27')]",
+                "vNetworkPrivateEndpointSubnetAddressPrefix": "[if(and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true)), steps('network').virtualNetworkPrivateEndpointSubnetSize, '10.10.1.0/27')]",
                 "customDnsIps": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkDns, '')]",
                 "existingHubVnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.existingHubVirtualNetwork, '')]",
                 "vNetworkGatewayOnHub": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.hubVirtualNetworkGateway, false)]",
@@ -2352,6 +2373,7 @@
                 "avdSessionHostDiskType": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskType]",
 				"enableAcceleratedNetworking": "[steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking]",
                 "avdSessionHostsSize": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize, 'Standard_D2s_v4')]",
+                "deployPrivateEndpointKeyvaultStorage": "[steps('network').deployPrivateEndpointKeyvaultStorage]",
                 "avdVnetPrivateDnsZone": "[steps('network').virtualNetworkPrivateDnsZone]",
                 "avdVnetPrivateDnsZoneFilesId": "[if(equals(steps('network').virtualNetworkPrivateDnsZone, true), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneFilesSelector.id, '')]",
                 "avdVnetPrivateDnsZoneKeyvaultId": "[if(equals(steps('network').virtualNetworkPrivateDnsZone, true), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneKeyvaultSelector.id, '')]",
