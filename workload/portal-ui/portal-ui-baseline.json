@@ -1121,7 +1121,7 @@
                         {
                             "name": "virtualNetworkPrivateEndpointSubnetSize",
                             "type": "Microsoft.Common.TextBox",
-                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true))]",
+                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true))]",
                             "label": "Private endpoint subnet address prefix",
                             "toolTip": "Virtual network subnet for private endpoints",
                             "placeholder": "Example: 10.10.1.0/27",
