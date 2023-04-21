@@ -133,15 +133,7 @@ var varAlerts = enableMonitoringAlerts ? [
               {
                   query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| where StreamType_s == "Error"'
                   TimeAggregation: 'Count'
-                  dimensions: [
-                      {
-                          name: 'ResultDescription'
-                          operator: 'Include'
-                          values: [
-                              '*'
-                          ]
-                      }
-                  ]
+                  dimensions: []
                   operator: 'GreaterThanOrEqual'
                   threshold: 1
                   failingPeriods: {
