@@ -123,7 +123,7 @@ param vNetworkPrivateEndpointSubnetAddressPrefix string = '10.10.1.0/27'
 @description('Optional. custom DNS servers IPs.')
 param customDnsIps string = ''
 
-@description('Optional. AVD Accelerator will deploy with private endpoints by default.')
+@description('Optional. Deploy private endpoints for key vault and storage. (Default: true)')
 param deployPrivateEndpointKeyvaultStorage bool = true
 
 @description('Optional. Use Azure private DNS zones for private endpoints. (Default: true)')
@@ -1008,7 +1008,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet) {
         vNetworkPrivateEndpointSubnetName: varVnetworkPrivateEndpointSubnetName
         createVnet: createAvdVnet
         createVnetPeering: varCreateVnetPeering
-        deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
+        deployPrivateEndpointSubnet: (deployPrivateEndpointKeyvaultStorage == true) ? true : false //adding logic that will be used when also including AVD control plane PEs
         vNetworkGatewayOnHub: vNetworkGatewayOnHub
         existingHubVnetResourceId: avdIdentityServiceProvider == 'AAD' ? '': existingHubVnetResourceId
         sessionHostLocation: avdSessionHostLocation
@@ -1198,7 +1198,7 @@ module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if 
         dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
         storageCustomOuPath: varStorageCustomOuPath
         managementVmName: varManagementVmName
-        deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
+        deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
         ouStgPath: varOuStgPath
         createOuForStorageString: varCreateOuForStorageString
         managedIdentityClientId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
@@ -1257,7 +1257,7 @@ module msixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (va
         dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
         storageCustomOuPath: varStorageCustomOuPath
         managementVmName: varManagementVmName
-        deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
+        deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
         ouStgPath: varOuStgPath
         createOuForStorageString: varCreateOuForStorageString
         managedIdentityClientId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
