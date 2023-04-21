@@ -46,6 +46,9 @@ param vNetworkPeeringName string
 @description('Create virtual network peering to hub.')
 param createVnetPeering bool
 
+@description('Optional. AVD Accelerator will deploy with private endpoints by default.')
+param deployPrivateEndpointSubnet bool 
+
 @description('AVD VNet address prefixes.')
 param vNetworkAddressPrefixes string
 
@@ -217,7 +220,7 @@ module networksecurityGroupAvd '../../../../carml/1.3.0/Microsoft.Network/networ
 }
 
 // Private endpoint network security group.
-module networksecurityGroupPrivateEndpoint '../../../../carml/1.3.0/Microsoft.Network/networkSecurityGroups/deploy.bicep' = if (createVnet) {
+module networksecurityGroupPrivateEndpoint '../../../../carml/1.3.0/Microsoft.Network/networkSecurityGroups/deploy.bicep' = if (createVnet && deployPrivateEndpointSubnet) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'NSG-Private-Endpoint-${time}'
     params: {
@@ -231,7 +234,7 @@ module networksecurityGroupPrivateEndpoint '../../../../carml/1.3.0/Microsoft.Ne
         ]
     }
     dependsOn: []
-}
+} 
 
 // Application security group.
 module applicationSecurityGroup '../../../../carml/1.3.0/Microsoft.Network/applicationSecurityGroups/deploy.bicep' = if (createVnet) {
@@ -268,7 +271,7 @@ module routeTableAvd '../../../../carml/1.3.0/Microsoft.Network/routeTables/depl
 }
 
 // Private endpoint route table.
-module routeTablePrivateEndpoint '../../../../carml/1.3.0/Microsoft.Network/routeTables/deploy.bicep' = if (createVnet) {
+module routeTablePrivateEndpoint '../../../../carml/1.3.0/Microsoft.Network/routeTables/deploy.bicep' = if (createVnet && deployPrivateEndpointSubnet) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'Route-Table-PE-${time}'
     params: {
@@ -308,7 +311,7 @@ module virtualNetwork '../../../../carml/1.3.0/Microsoft.Network/virtualNetworks
                 remotePeeringUseRemoteGateways: false
             }
         ]: []
-        subnets: [
+        subnets: deployPrivateEndpointSubnet ? [
             {
                 name: vNetworkAvdSubnetName
                 addressPrefix: vNetworkAvdSubnetAddressPrefix
@@ -325,7 +328,17 @@ module virtualNetwork '../../../../carml/1.3.0/Microsoft.Network/virtualNetworks
                 networkSecurityGroupId: networksecurityGroupPrivateEndpoint.outputs.resourceId
                 routeTableId: routeTablePrivateEndpoint.outputs.resourceId
             }
+        ] : [
+            {
+                name: vNetworkAvdSubnetName
+                addressPrefix: vNetworkAvdSubnetAddressPrefix
+                privateEndpointNetworkPolicies: 'Disabled'
+                privateLinkServiceNetworkPolicies: 'Enabled'
+                networkSecurityGroupId: networksecurityGroupAvd.outputs.resourceId
+                routeTableId: routeTableAvd.outputs.resourceId
+            }
         ]
+        
         tags: tags
         diagnosticWorkspaceId: alaWorkspaceResourceId
         diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
