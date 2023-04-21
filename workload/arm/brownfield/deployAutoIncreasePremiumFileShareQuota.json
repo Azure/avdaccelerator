@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "202761537985966961"
+      "templateHash": "7053336947038768804"
     }
   },
   "parameters": {
@@ -2844,7 +2844,7 @@
             "value": "PT10M"
           },
           "scriptContent": {
-            "value": "      Write-Host \"Start\"\r\n      Get-Date\r\n      Start-Sleep -Seconds 120\r\n      Write-Host \"Stop\"\r\n      Get-Date\r\n      "
+            "value": "      Write-Host \"Start\"\r\n      Get-Date\r\n      Start-Sleep -Seconds 60\r\n      Write-Host \"Stop\"\r\n      Get-Date\r\n      "
           }
         },
         "template": {
@@ -3229,7 +3229,7 @@
                 "name": "[variables('varRunbookName')]",
                 "description": "When this runbook is triggered, the quota on the Azure Files Premium is checked. If the quota is within the defined threshold, the quota is increased based on the defined increment.",
                 "type": "PowerShell",
-                "uri": "https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/scripts/Set-AzureFilesPremiumShareQuota.ps1",
+                "uri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/Set-AzureFilesPremiumShareQuota.ps1",
                 "version": "1.0.0.0"
               }
             ]
