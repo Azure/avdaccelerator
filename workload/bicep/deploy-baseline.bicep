@@ -123,6 +123,9 @@ param vNetworkPrivateEndpointSubnetAddressPrefix string = '10.10.1.0/27'
 @description('Optional. custom DNS servers IPs.')
 param customDnsIps string = ''
 
+@description('Optional. Deploy private endpoints for key vault and storage. (Default: true)')
+param deployPrivateEndpointKeyvaultStorage bool = true
+
 @description('Optional. Use Azure private DNS zones for private endpoints. (Default: true)')
 param avdVnetPrivateDnsZone bool = true
 
@@ -1005,6 +1008,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet) {
         vNetworkPrivateEndpointSubnetName: varVnetworkPrivateEndpointSubnetName
         createVnet: createAvdVnet
         createVnetPeering: varCreateVnetPeering
+        deployPrivateEndpointSubnet: (deployPrivateEndpointKeyvaultStorage == true) ? true : false //adding logic that will be used when also including AVD control plane PEs
         vNetworkGatewayOnHub: vNetworkGatewayOnHub
         existingHubVnetResourceId: avdIdentityServiceProvider == 'AAD' ? '': existingHubVnetResourceId
         sessionHostLocation: avdSessionHostLocation
@@ -1103,13 +1107,14 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
         enableRbacAuthorization: false
         enablePurgeProtection: true
         softDeleteRetentionInDays: 7
-        networkAcls: {
+        publicNetworkAccess: deployPrivateEndpointKeyvaultStorage ? 'Disabled' : 'Enabled'
+        networkAcls: deployPrivateEndpointKeyvaultStorage ? {
             bypass: 'AzureServices'
             defaultAction: 'Deny'
             virtualNetworkRules: []
             ipRules: []
-        }
-        privateEndpoints: avdVnetPrivateDnsZone ? [
+        } : {}
+        privateEndpoints: deployPrivateEndpointKeyvaultStorage ? (avdVnetPrivateDnsZone ? [
             {
                 name: varWrklKvPrivateEndpointName
                 subnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
@@ -1128,7 +1133,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
                 customNetworkInterfaceName: 'nic-01-${varWrklKvPrivateEndpointName}'
                 service: 'vault'
             }
-        ]
+        ]) : []
         secrets: {
             secureList: (avdIdentityServiceProvider != 'AAD') ? [
                 {
@@ -1193,6 +1198,7 @@ module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if 
         dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
         storageCustomOuPath: varStorageCustomOuPath
         managementVmName: varManagementVmName
+        deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
         ouStgPath: varOuStgPath
         createOuForStorageString: varCreateOuForStorageString
         managedIdentityClientId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
@@ -1251,6 +1257,7 @@ module msixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (va
         dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
         storageCustomOuPath: varStorageCustomOuPath
         managementVmName: varManagementVmName
+        deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
         ouStgPath: varOuStgPath
         createOuForStorageString: varCreateOuForStorageString
         managedIdentityClientId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
