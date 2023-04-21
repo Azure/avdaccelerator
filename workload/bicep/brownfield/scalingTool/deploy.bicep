@@ -81,7 +81,7 @@ param existingHostPoolResourceId string
 @description('Optional. The resource ID for an existing log analytics workspace. This value is required to enable monitoring for the solution.')
 param existingLogAnalyticsWorkspaceResourceId string = ''
 
-@description('The number of seconds to wait before automatically signing out users. If set to 0, any session host VM that has user sessions, will be left untouched.')
+@description('Required. The number of seconds to wait before automatically signing out users. If set to 0, any session host VM that has user sessions, will be left untouched.')
 param limitSecondsToForceLogOffUser string = '0'
 
 @description('Optional. Custom name for the Log Analytics Workspace.')
