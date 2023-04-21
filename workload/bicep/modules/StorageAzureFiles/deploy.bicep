@@ -103,6 +103,9 @@ param tags object
 @description('Name for management virtual machine. for tools and to join Azure Files to domain.')
 param managementVmName string
 
+@description('Optional. AVD Accelerator will deploy with private endpoints by default.')
+param deployPrivateEndpoint bool
+
 @description('Log analytics workspace for diagnostic logs.')
 param alaWorkspaceResourceId string
 
@@ -188,7 +191,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
         location: sessionHostLocation
         skuName: storageSku
         allowBlobPublicAccess: false
-        publicNetworkAccess: 'Disabled'
+        publicNetworkAccess: deployPrivateEndpoint ? 'Disabled' : 'Enabled'
         kind: ((storageSku =~ 'Premium_LRS') || (storageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
         azureFilesIdentityBasedAuthentication: (identityServiceProvider == 'AADDS') ? {
             directoryServiceOptions: 'AADDS'
@@ -196,12 +199,12 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
             directoryServiceOptions: 'None'
         }
         accessTier: 'Hot'
-        networkAcls: {
+        networkAcls: deployPrivateEndpoint ? {
             bypass: 'AzureServices'
             defaultAction: 'Deny'
             virtualNetworkRules: []
             ipRules: []
-        }
+        } : {}
         fileServices: {
             shares: [
                 {
@@ -220,7 +223,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
             diagnosticLogCategoriesToEnable: varAvdFileShareLogsDiagnostic
             diagnosticMetricsToEnable: varAvdFileShareMetricsDiagnostic
         }
-        privateEndpoints: vnetPrivateDnsZone ? [
+        privateEndpoints: deployPrivateEndpoint ? (vnetPrivateDnsZone ? [
             {
                 name: varWrklStoragePrivateEndpointName
                 subnetResourceId: privateEndpointSubnetId
@@ -239,7 +242,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
                 customNetworkInterfaceName: 'nic-01-${varWrklStoragePrivateEndpointName}'
                 service: 'file'
             }
-        ]
+        ]) : []
         tags: tags
         diagnosticWorkspaceId: alaWorkspaceResourceId
         diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
