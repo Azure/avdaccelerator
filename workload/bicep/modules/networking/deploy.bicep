@@ -47,7 +47,7 @@ param vNetworkPeeringName string
 param createVnetPeering bool
 
 @description('Optional. AVD Accelerator will deploy with private endpoints by default.')
-param deployPrivateEndpointKeyvaultStorage bool
+param deployPrivateEndpointSubnet bool 
 
 @description('AVD VNet address prefixes.')
 param vNetworkAddressPrefixes string
@@ -220,7 +220,7 @@ module networksecurityGroupAvd '../../../../carml/1.3.0/Microsoft.Network/networ
 }
 
 // Private endpoint network security group.
-module networksecurityGroupPrivateEndpoint '../../../../carml/1.3.0/Microsoft.Network/networkSecurityGroups/deploy.bicep' = if (createVnet && deployPrivateEndpointKeyvaultStorage) {
+module networksecurityGroupPrivateEndpoint '../../../../carml/1.3.0/Microsoft.Network/networkSecurityGroups/deploy.bicep' = if (createVnet && deployPrivateEndpointSubnet) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'NSG-Private-Endpoint-${time}'
     params: {
@@ -271,7 +271,7 @@ module routeTableAvd '../../../../carml/1.3.0/Microsoft.Network/routeTables/depl
 }
 
 // Private endpoint route table.
-module routeTablePrivateEndpoint '../../../../carml/1.3.0/Microsoft.Network/routeTables/deploy.bicep' = if (createVnet && deployPrivateEndpointKeyvaultStorage) {
+module routeTablePrivateEndpoint '../../../../carml/1.3.0/Microsoft.Network/routeTables/deploy.bicep' = if (createVnet && deployPrivateEndpointSubnet) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'Route-Table-PE-${time}'
     params: {
@@ -311,7 +311,7 @@ module virtualNetwork '../../../../carml/1.3.0/Microsoft.Network/virtualNetworks
                 remotePeeringUseRemoteGateways: false
             }
         ]: []
-        subnets: deployPrivateEndpointKeyvaultStorage ? [
+        subnets: deployPrivateEndpointSubnet ? [
             {
                 name: vNetworkAvdSubnetName
                 addressPrefix: vNetworkAvdSubnetAddressPrefix
