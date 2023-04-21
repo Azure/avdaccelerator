@@ -356,7 +356,7 @@ module roleAssignments'../../../../carml/1.3.0/Microsoft.Authorization/roleAssig
   scope: resourceGroup(varRoleAssignments[i])
   params: {
     principalId: automationAccount_New.outputs.systemAssignedPrincipalId
-    roleDefinitionIdOrName: '40c5ff49-9181-41f8-ae61-143b0e78555e' // Desktop Virtualization Power On Off Contributor
+    roleDefinitionIdOrName: 'Desktop Virtualization Power On Off Contributor'
   }
 }]
 
