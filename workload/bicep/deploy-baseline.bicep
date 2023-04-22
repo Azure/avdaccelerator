@@ -460,8 +460,8 @@ param costCenterTag string = 'Contoso-CC'
 param environmentTypeTag string = 'Dev'
 //
 
-@description('Remove resources not needed afdter deployment. (Default: false)')
-param removePostDeploymentTempResources bool = false
+//@description('Remove resources not needed afdter deployment. (Default: false)')
+//param removePostDeploymentTempResources bool = false
 
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
@@ -1364,7 +1364,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         wrklKeyVault
     ]
 }
-
+/*
 // Post deployment resources clean up.
 module addShareToDomainScript './modules/postDeploymentTempResourcesCleanUp/deploy.bicep' = if (removePostDeploymentTempResources)  {
     scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
@@ -1392,4 +1392,4 @@ module addShareToDomainScript './modules/postDeploymentTempResourcesCleanUp/depl
         networking
     ]
 }
-
+*/
