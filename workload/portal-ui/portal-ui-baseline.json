@@ -394,13 +394,13 @@
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "visible": true,
                                     "label": "Create remote app group",
-                                    "defaultValue": "Yes (Recommended)",
+                                    "defaultValue": "Yes",
                                     "toolTip": "This application group type allows to publish seamless apps instead of full desktops.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Yes (Recommended)",
+                                                "label": "Yes",
                                                 "value": true
                                             },
                                             {
@@ -680,7 +680,7 @@
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "visible": true,
                                     "label": "Enable accelerated networking",
-                                    "defaultValue": "Yes",
+                                    "defaultValue": "Yes (recommended)",
                                     "toolTip": "Enables low latency and high throughput on the network interface.",
                                     "constraints": {
                                         "required": true,
