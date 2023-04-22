@@ -555,13 +555,13 @@
                                     "name": "sessionHostsAvailabilitySettings",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "label": "Use availability zones",
-                                    "defaultValue": "Yes",
+                                    "defaultValue": "Yes (Recommended)",
                                     "toolTip": "Distribute compute resources across availability zones. If 'No' is selected then an availability set will be created to host the VMs.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Yes",
+                                                "label": "Yes (Recommended)",
                                                 "value": true
                                             },
                                             {
@@ -686,7 +686,7 @@
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Yes",
+                                                "label": "Yes (recommended)",
                                                 "value": true
                                             },
                                             {
@@ -929,13 +929,13 @@
                                     "name": "fslogixDeployment",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "label": "Use FSLogix profile management",
-                                    "defaultValue": "Yes",
+                                    "defaultValue": "Yes (recommended)",
                                     "toolTip": "Deploys FSLogix containers and session host setup for user's profiles.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Yes",
+                                                "label": "Yes (recommended)",
                                                 "value": true
                                             },
                                             {
@@ -951,13 +951,13 @@
                                     "visible": "[equals(steps('storage').storageFslogix.fslogixDeployment, true)]",
                                     "label": "File share peformance",
                                     "filter": true,
-                                    "defaultValue": "Premium",
+                                    "defaultValue": "Premium (Recommended)",
                                     "toolTip": "Storage account performance for FSLogix storage. Recommended tier is Premium.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Premium",
+                                                "label": "Premium (Recommended)",
                                                 "description": "",
                                                 "value": "Premium"
                                             },
