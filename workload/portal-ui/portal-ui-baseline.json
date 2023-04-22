@@ -1119,19 +1119,6 @@
                             }
                         },
                         {
-                            "name": "virtualNetworkPrivateEndpointSubnetSize",
-                            "type": "Microsoft.Common.TextBox",
-                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true))]",
-                            "label": "Private endpoint subnet address prefix",
-                            "toolTip": "Virtual network subnet for private endpoints",
-                            "placeholder": "Example: 10.10.1.0/27",
-                            "constraints": {
-                                "required": true,
-                                "regex": "^(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(?:\/(1[0-9]|2[0-7]))$",
-                                "validationMessage": "Invalid CIDR range. The address prefix must be in the range 10 to 27."
-                            }
-                        },
-                        {
                             "name": "virtualNetworkDns",
                             "type": "Microsoft.Common.TextBox",
                             "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
@@ -1213,6 +1200,19 @@
                                         "value": false
                                     }
                                 ]
+                            }
+                        },
+                        {
+                            "name": "virtualNetworkPrivateEndpointSubnetSize",
+                            "type": "Microsoft.Common.TextBox",
+                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true))]",
+                            "label": "Private endpoint subnet address prefix",
+                            "toolTip": "Virtual network subnet for private endpoints",
+                            "placeholder": "Example: 10.10.1.0/27",
+                            "constraints": {
+                                "required": true,
+                                "regex": "^(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(?:\/(1[0-9]|2[0-7]))$",
+                                "validationMessage": "Invalid CIDR range. The address prefix must be in the range 10 to 27."
                             }
                         },
                         {
