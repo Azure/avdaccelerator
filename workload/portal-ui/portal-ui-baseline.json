@@ -929,13 +929,13 @@
                                     "name": "fslogixDeployment",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "label": "Use FSLogix profile management",
-                                    "defaultValue": "Yes (recommended)",
+                                    "defaultValue": "Yes (Recommended)",
                                     "toolTip": "Deploys FSLogix containers and session host setup for user's profiles.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Yes (recommended)",
+                                                "label": "Yes (Recommended)",
                                                 "value": true
                                             },
                                             {
@@ -1018,13 +1018,13 @@
                                     "visible": "[equals(steps('storage').storageMsix.msixDeployment, true)]",
                                     "label": "File share performance",
                                     "filter": true,
-                                    "defaultValue": "Premium",
+                                    "defaultValue": "Premium (Recommended)",
                                     "toolTip": "Storage account performance for MSIX App Attach storage. Recommended tier is Premium.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Premium",
+                                                "label": "Premium (Recommended)",
                                                 "description": "",
                                                 "value": "Premium"
                                             },
