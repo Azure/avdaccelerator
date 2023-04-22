@@ -53,12 +53,19 @@
   - **MSIX App Attach Azure Files share Performance** - Select the desired performance.
   - **MSIX App Attach file share size** Choose the desired size in 100GB increments. Minimum size is 100GB.
 - **Network connectivity** blade
-  - **New** - Select if you want to create a new VNet to be used for session hosts.
-    - **Virtual network** - Enter the IP block in CIDR notation to allocate to the VNet.
-    - **AVD subnet address range** - Enter IP block in CIDR notation for the new AVD subnet.
-    - **Private endpoint subnet address range** - Enter IP block in CIDR notation for the new private endpoint subnet.
-    - **VNet DNS servers** - Enter the DNS servers to be set for the VNet. These DNS server should have proper DNS resolution to your AD DS domain and internet.
-  - **Azure Private DNS zone** - Select yes to use an existing private DNS zone for Azure File share and Key vault. Select No if you do not want to use private endpoints (Private DNS for Azure files is required for FSLogix deployment to configure NTFS permissions).
+  - **Virtual Network** - Select if creating "New"" or use "Existing" virtual network.
+    - **New** - Select if you want to create a new VNet to be used for AVD.
+      - **vNet address range** - Enter the IP block in CIDR notation to allocate to the VNet.
+      - **AVD subnet address prefix** - Enter IP block in CIDR notation for the new AVD subnet.
+      - **Private endpoint subnet address prefix** - Enter IP block in CIDR notation for the new private endpoint subnet.
+      - **Custom DNS servers** - Enter the custom DNS servers IPs to be set on the VNet. These DNS server should have proper DNS resolution to your AD DS domain, internet and Azure private DNS zones for private endpoint resolution.
+    - **Existing** - Select if using existing virtual networks for the AVD deployment.
+      - **AVD virtual network** - Select virtual network to be used for AVD deployment.
+      - **AVD subnet** - Select virtual network subnet to be used for session hosts deployment.
+      - **Private endpoint virtual network** - Select virtual network to be used for private endpoint deployment.
+      - **Private endpoint subnet** - Select virtual network subnet to be used for private endpoint deployment.
+  - **Use private endpoints (Key vault and Azure files)** - Select yes to create private endpoints for key vault and Azure file services, when selecting no public endpoints of the services will be used.
+  - **Existing Azure private DNS zone** - Select yes to use an existing private DNS zone for Azure Files and Key vault. Select No if you do not want to use private endpoints (Private DNS for Azure files is required for FSLogix deployment to configure properly).
   - **Existing hub VNet peering**
     - **Virtual Network** - Select the hub VNet where this new VNet will be peered with.
     - **VNet Gateway on hub** - Select Yes or No if you want to set the use remote gateway option for the VNet peering.
