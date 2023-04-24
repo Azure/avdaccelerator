@@ -22,7 +22,7 @@ This solution fully deploys the AVD Scaling Tool provided in the [Microsoft Lear
 ````powershell
 New-AzResourceGroupDeployment `
     -ResourceGroupName '<Resource Group Name>' `
-    -TemplateFile 'https://raw.githubusercontent.com/Azure/AvdScalingTool/main/solution.json' `
+    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployScalingTool.json' `
     -ActionGroupCustomName '<Custom name for action group>' `
     -ApplicationNameTag '<Tag for application name>' `
     -AutomationAccountCustomName '<Custom name for automation account>' `
@@ -60,7 +60,7 @@ New-AzResourceGroupDeployment `
 ````cli
 az deployment group create \
     --resource-group '<Resource Group Name>' \
-    --template-uri 'https://raw.githubusercontent.com/Azure/AvdScalingTool/main/solution.json' \
+    --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployScalingTool.json' \
     --parameters \
         ActionGroupCustomName='<Custom name for action group>' \
         ApplicationNameTag='<Tag for application name>' \
