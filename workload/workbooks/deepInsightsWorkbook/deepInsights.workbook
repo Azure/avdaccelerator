@@ -5293,6 +5293,6 @@
   "fallbackResourceIds": [
     "Azure Monitor"
   ],
-  "fromTemplateId": "ArmTemplates-/subscriptions/c6aa1fdc-66a8-446e-8b37-7794cd545e44/resourceGroups/Management/providers/microsoft.insights/workbooktemplates/750ec0fd-74d1-4e80-be97-3001485303e8",
+  "fromTemplateId": "ArmTemplates-/subscriptions/2dd6d8b6-f593-4aba-82e4-eb052c568372/resourceGroups/shared-services-rg/providers/microsoft.insights/workbooktemplates/750ec0fd-74d1-4e80-be97-3001485303e8",
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
