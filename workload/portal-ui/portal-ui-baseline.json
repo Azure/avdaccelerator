@@ -394,13 +394,13 @@
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "visible": true,
                                     "label": "Create remote app group",
-                                    "defaultValue": "Yes (Recommended)",
+                                    "defaultValue": "Yes",
                                     "toolTip": "This application group type allows to publish seamless apps instead of full desktops.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Yes (Recommended)",
+                                                "label": "Yes",
                                                 "value": true
                                             },
                                             {
@@ -555,13 +555,13 @@
                                     "name": "sessionHostsAvailabilitySettings",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "label": "Use availability zones",
-                                    "defaultValue": "Yes",
+                                    "defaultValue": "Yes (Recommended)",
                                     "toolTip": "Distribute compute resources across availability zones. If 'No' is selected then an availability set will be created to host the VMs.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Yes",
+                                                "label": "Yes (Recommended)",
                                                 "value": true
                                             },
                                             {
@@ -680,13 +680,13 @@
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "visible": true,
                                     "label": "Enable accelerated networking",
-                                    "defaultValue": "Yes",
+                                    "defaultValue": "Yes (recommended)",
                                     "toolTip": "Enables low latency and high throughput on the network interface.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Yes",
+                                                "label": "Yes (recommended)",
                                                 "value": true
                                             },
                                             {
@@ -929,13 +929,13 @@
                                     "name": "fslogixDeployment",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "label": "Use FSLogix profile management",
-                                    "defaultValue": "Yes",
+                                    "defaultValue": "Yes (Recommended)",
                                     "toolTip": "Deploys FSLogix containers and session host setup for user's profiles.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Yes",
+                                                "label": "Yes (Recommended)",
                                                 "value": true
                                             },
                                             {
@@ -951,13 +951,13 @@
                                     "visible": "[equals(steps('storage').storageFslogix.fslogixDeployment, true)]",
                                     "label": "File share peformance",
                                     "filter": true,
-                                    "defaultValue": "Premium",
+                                    "defaultValue": "Premium (Recommended)",
                                     "toolTip": "Storage account performance for FSLogix storage. Recommended tier is Premium.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Premium",
+                                                "label": "Premium (Recommended)",
                                                 "description": "",
                                                 "value": "Premium"
                                             },
@@ -1018,13 +1018,13 @@
                                     "visible": "[equals(steps('storage').storageMsix.msixDeployment, true)]",
                                     "label": "File share performance",
                                     "filter": true,
-                                    "defaultValue": "Premium",
+                                    "defaultValue": "Premium (Recommended)",
                                     "toolTip": "Storage account performance for MSIX App Attach storage. Recommended tier is Premium.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Premium",
+                                                "label": "Premium (Recommended)",
                                                 "description": "",
                                                 "value": "Premium"
                                             },
@@ -1119,23 +1119,10 @@
                             }
                         },
                         {
-                            "name": "virtualNetworkPrivateEndpointSubnetSize",
-                            "type": "Microsoft.Common.TextBox",
-                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true))]",
-                            "label": "Private endpoint subnet address prefix",
-                            "toolTip": "Virtual network subnet for private endpoints",
-                            "placeholder": "Example: 10.10.1.0/27",
-                            "constraints": {
-                                "required": true,
-                                "regex": "^(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(?:\/(1[0-9]|2[0-7]))$",
-                                "validationMessage": "Invalid CIDR range. The address prefix must be in the range 10 to 27."
-                            }
-                        },
-                        {
                             "name": "virtualNetworkDns",
                             "type": "Microsoft.Common.TextBox",
                             "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
-                            "label": "Custom DNS Servers",
+                            "label": "Custom DNS servers",
                             "defaultValue": "",
                             "placeholder": "Example: 10.10.100.4,10.10.100.5",
                             "toolTip": "Enter multiple IPs separated by a comma, if not provided Azure provided DNS will be used. Azure default DNS server (168.63.129.16) will be added as a last resort.",
@@ -1195,6 +1182,40 @@
                             }
                         },
                         {
+                            "name": "deployPrivateEndpointKeyvaultStorage",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": true,
+                            "label": "Use private endpoints",
+                            "defaultValue": "Yes (Recommended)",
+                            "toolTip": "Enables Private Endpoints for Key Vault and Storage Resources. It is recommended to use Azure Private Endpoints to keep all traffic to PaaS services on the Azure backbone.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "Yes (Recommended)",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "No",
+                                        "value": false
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "virtualNetworkPrivateEndpointSubnetSize",
+                            "type": "Microsoft.Common.TextBox",
+                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true))]",
+                            "label": "Private endpoint subnet address prefix",
+                            "toolTip": "Virtual network subnet for private endpoints",
+                            "placeholder": "Example: 10.10.1.0/27",
+                            "constraints": {
+                                "required": true,
+                                "regex": "^(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(?:\/(1[0-9]|2[0-7]))$",
+                                "validationMessage": "Invalid CIDR range. The address prefix must be in the range 10 to 27."
+                            }
+                        },
+                        {
                             "name": "privateEndpointVirtualNetworkSelectorId",
                             "type": "Microsoft.Solutions.ResourceSelector",
                             "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true))]",
@@ -1246,31 +1267,10 @@
                             }
                         },
                         {
-                            "name": "deployPrivateEndpointKeyvaultStorage",
-                            "type": "Microsoft.Common.OptionsGroup",
-                            "visible": true,
-                            "label": "Use Private Endpoints",
-                            "defaultValue": "Yes (Recommended)",
-                            "toolTip": "Enables Private Endpoints for Key Vault and Storage Resources. It is recommended to use Azure Private Endpoints to keep all traffic to PaaS services on the Azure backbone.",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label": "Yes (Recommended)",
-                                        "value": true
-                                    },
-                                    {
-                                        "label": "No",
-                                        "value": false
-                                    }
-                                ]
-                            }
-                        },
-                        {
                             "name": "virtualNetworkPrivateDnsZone",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": "[equals(steps('network').deployPrivateEndpointKeyvaultStorage, true)]",
-                            "label": "Existing Azure private DNS zone",
+                            "label": "Existing Azure private DNS zones",
                             "defaultValue": "Yes (Recommended)",
                             "toolTip": "It is recommended to use Azure private DNS zones for private endpoint name spaces, private endpoints will be automatically created for PaaS services (Azure Files and Key Vault) but the private DNS zones are prerequisites required.",
                             "constraints": {
