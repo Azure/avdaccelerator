@@ -1,4 +1,4 @@
-# AVD Accelerator Baseline Deployment Walk Through
+# AVD LZA Baseline Deployment Walk Through
 
 | Portal UI Experience (ARM) |
 | ------------------------------------------------------------ |
