@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "16011023030075808650"
+      "templateHash": "4904787294232761044"
     }
   },
   "parameters": {
@@ -303,7 +303,9 @@
       "defaultValue": 30,
       "metadata": {
         "description": "Optional. Set the data retention in the number of days for the Log Analytics Workspace. (Default: 30)"
-      }
+      },
+      "minValue": 30,
+      "maxValue": 720
     },
     "operatingSystemImage": {
       "type": "string",
@@ -4389,7 +4391,7 @@
         "mode": "Incremental",
         "parameters": {
           "galleryName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Compute-Gallery-{0}', parameters('time'))), '2022-09-01').outputs.name.value]"
+            "value": "[variables('varImageGalleryName')]"
           },
           "name": {
             "value": "[variables('varImageDefinitionName')]"
