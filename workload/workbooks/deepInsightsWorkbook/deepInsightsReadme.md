@@ -72,7 +72,7 @@ The Workbook is ready to use!
 * Click on workbooks
 * Click on _'Deep Insights Workbook'_ Workbook.
 
-![Monitoring workbook](../../docs/images/workload/docs/images/deepInsightsWorkbook/deepinsightsworkbook.png)
+![Monitoring workbook](../../docs/images/deepInsightsWorkbook/deepinsightsworkbook.png)
 
 Start using the Workbook and review your Deep Insights workbook.
 Filter by specific subscription is optional.
