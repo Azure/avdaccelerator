@@ -189,6 +189,8 @@ param imageVersionStorageAccountType string = 'Standard_LRS'
 @description('Optional. Custom name for the Log Analytics Workspace.')
 param logAnalyticsWorkspaceCustomName string = 'log-avd'
 
+@maxValue(720)
+@minValue(30)
 @description('Optional. Set the data retention in the number of days for the Log Analytics Workspace. (Default: 30)')
 param logAnalyticsWorkspaceDataRetention int = 30
 
@@ -381,66 +383,20 @@ var varImageTemplateContributorRole = [
     }
 ]
 var varImageTemplateName = customNaming ? imageTemplateCustomName : 'it-avd-${operatingSystemImage}'
-var varLocationAcronym = varLocationAcronyms[varLocationLowercase]
-var varLocationAcronyms = {
-    australiacentral: 'auc'
-    australiacentral2: 'auc2'
-    australiaeast: 'aue'
-    australiasoutheast: 'ause'
-    brazilsouth: 'drs'
-    brazilsoutheast: 'brse'
-    canadacentral: 'cac'
-    canadaeast: 'cae'
-    centralindia: 'cin'
-    centralus: 'cus'
-    eastasia: 'eas'
-    eastus: 'eus'
-    eastus2: 'eus2'
-    francecentral: 'frc'
-    francesouth: 'frs'
-    germanynorth: 'den'
-    germanywestcentral: 'dewc'
-    japaneast: 'jpe'
-    japanwest: 'jpw'
-    koreacentral: 'krc'
-    koreasouth: 'krs'
-    northcentralus: 'ncus'
-    northeurope: 'neu'
-    norwayeast: 'noe'
-    norwaywest: 'now'
-    southafricanorth: 'zan'
-    southafricawest: 'zaw'
-    southcentralus: 'scus'
-    southeastasia: 'seas'
-    southindia: 'sin'
-    swedencentral: 'sec'
-    switzerlandnorth: 'chn'
-    switzerlandwest: 'chw'
-    uaecentral: 'aec'
-    uaenorth: 'aen'
-    uksouth: 'uks'
-    ukwest: 'ukw'
-    usgovarizona: 'az'
-    usgoviowa: 'ia'
-    usgovtexas: 'tx'
-    usgovvirginia: 'va'
-    westcentralus: 'wcus'
-    westeurope: 'weu'
-    westindia: 'win'
-    westus: 'wus'
-    westus2: 'wus2'
-    westus3: 'wus3'
-}
-var varLocationLowercase = toLower(deploymentLocation)
+var varLocationAcronym = varLocations[varLocation].acronym
+var varLocation = toLower(replace(deploymentLocation, ' ', ''))
+var varLocations = loadJsonContent('../variables/locations.json')
 var varLogAnalyticsWorkspaceName = customNaming ? logAnalyticsWorkspaceCustomName : 'log-avd-${varNamingStandard}'
 var varModules = [
     {
         name: 'Az.Accounts'
         uri: 'https://www.powershellgallery.com/api/v2/package'
+        version: '2.12.1'
     }
     {
         name: 'Az.ImageBuilder'
         uri: 'https://www.powershellgallery.com/api/v2/package'
+        version: '0.3.0'
     }
 ]
 var varNamingStandard = '${varLocationAcronym}'
@@ -591,62 +547,8 @@ var varScriptCustomizers = union(varRdpShortPathCustomizer, varScreenCaptureProt
 // Placeholder for future feature
 // var varStorageAccountName = customNaming ? storageAccountCustomName : 'stavd${varNamingStandard}${varUniqueStringSixChar}'
 var varTelemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${deploymentLocation}'
-var varTimeZone = varTimeZones[deploymentLocation]
-var varTimeZones = {
-    australiacentral: 'AUS Eastern Standard time'
-    australiacentral2: 'AUS Eastern Standard time'
-    australiaeast: 'AUS Eastern Standard time'
-    australiasoutheast: 'AUS Eastern Standard time'
-    brazilsouth: 'E. South America Standard time'
-    brazilsoutheast: 'E. South America Standard time'
-    canadacentral: 'Eastern Standard time'
-    canadaeast: 'Eastern Standard time'
-    centralindia: 'India Standard time'
-    centralus: 'Central Standard time'
-    chinaeast: 'China Standard time'
-    chinaeast2: 'China Standard time'
-    chinanorth: 'China Standard time'
-    chinanorth2: 'China Standard time'
-    eastasia: 'China Standard time'
-    eastus: 'Eastern Standard time'
-    eastus2: 'Eastern Standard time'
-    francecentral: 'Central Europe Standard time'
-    francesouth: 'Central Europe Standard time'
-    germanynorth: 'Central Europe Standard time'
-    germanywestcentral: 'Central Europe Standard time'
-    japaneast: 'Tokyo Standard time'
-    japanwest: 'Tokyo Standard time'
-    jioindiacentral: 'India Standard time'
-    jioindiawest: 'India Standard time'
-    koreacentral: 'Korea Standard time'
-    koreasouth: 'Korea Standard time'
-    northcentralus: 'Central Standard time'
-    northeurope: 'GMT Standard time'
-    norwayeast: 'Central Europe Standard time'
-    norwaywest: 'Central Europe Standard time'
-    southafricanorth: 'South Africa Standard time'
-    southafricawest: 'South Africa Standard time'
-    southcentralus: 'Central Standard time'
-    southindia: 'India Standard time'
-    southeastasia: 'Singapore Standard time'
-    swedencentral: 'Central Europe Standard time'
-    switzerlandnorth: 'Central Europe Standard time'
-    switzerlandwest: 'Central Europe Standard time'
-    uaecentral: 'Arabian Standard time'
-    uaenorth: 'Arabian Standard time'
-    uksouth: 'GMT Standard time'
-    ukwest: 'GMT Standard time'
-    usgovarizona: 'Mountain Standard time'
-    usgoviowa: 'Central Standard time'
-    usgovtexas: 'Central Standard time'
-    usgovvirginia: 'Eastern Standard time'
-    westcentralus: 'Mountain Standard time'
-    westeurope: 'Central Europe Standard time'
-    westindia: 'India Standard time'
-    westus: 'Pacific Standard time'
-    westus2: 'Pacific Standard time'
-    westus3: 'Mountain Standard time'
-}
+var varTimeZone = varLocations[varLocation].timeZone
+
 // Placeholder for future feature
 // var varUniqueStringSixChar = take('${uniqueString(sharedServicesSubId, time)}', 6)
 var varUserAssignedManagedIdentityName = customNaming ? userAssignedManagedIdentityCustomName : 'id-aib-${varNamingStandard}'
@@ -678,7 +580,7 @@ var varVmSize = 'Standard_D4s_v3'
 // Deployments //
 // =========== //
 
-//  Telemetry Deployment.
+// Telemetry Deployment.
 resource telemetryDeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
     name: varTelemetryId
     location: deploymentLocation
@@ -796,7 +698,7 @@ module image '../../carml/1.3.0/Microsoft.Compute/galleries/images/deploy.bicep'
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Image-Definition-${time}'
     params: {
-        galleryName: gallery.outputs.name
+        galleryName: varImageGalleryName
         name: varImageDefinitionName
         osState: varOperatingSystemImageDefinitions[operatingSystemImage].osState
         osType: varOperatingSystemImageDefinitions[operatingSystemImage].osType
@@ -963,6 +865,7 @@ module modules '../../carml/1.3.0/Microsoft.Automation/automationAccounts/module
         location: deploymentLocation
         automationAccountName: automationAccount.outputs.name
         uri: varModules[i].uri
+        version: varModules[i].version
     }
 }]
 
