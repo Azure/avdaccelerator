@@ -30,8 +30,8 @@ As of today, we have a first reference implementation scenario that is one of th
 | Deployment Type | Link |
 |:--|:--|
 | Azure portal UI |[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json)|
-| Command line (Bicep/ARM) | [![Powershell/Azure CLI implementation](./workload/docs/icons/powershell.png)](./workload/bicep/readme.md) |
-| Terraform | [![Terraform implementation](./workload/docs/icons/terraform.png)](./workload/terraform/greenfield/readme.md) |
+| Command line (Bicep/ARM) | [![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](./workload/bicep/readme.md) |
+| Terraform | [![Terraform](./workload/docs/icons/terraform.png)](./workload/terraform/greenfield/readme.md) |
 
 [Brownfield deployments](/workload/bicep/brownfield) deploy new features to existing AVD deployments.
 
@@ -54,8 +54,8 @@ Custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https
 | Deployment Type | Link |
 |:--|:--|
 | Azure portal UI | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json) |
-| Command line (Bicep/ARM) | [![Powershell/Azure CLI implementation](./workload/docs/icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/carml-paranVarNaming-peSubnet/workload/bicep/readme.md) |
-| Terraform | [![Terraform implementation](./workload/docs/icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/carml-paranVarNaming-peSubnet/workload/terraform/customimage) |
+| Command line (Bicep/ARM) | [![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/carml-paranVarNaming-peSubnet/workload/bicep/readme.md) |
+| Terraform | [![Terraform](./workload/docs/icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/carml-paranVarNaming-peSubnet/workload/terraform/customimage) |
 
 ## Architectural Diagram
 
