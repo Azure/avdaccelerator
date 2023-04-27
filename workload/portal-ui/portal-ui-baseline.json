@@ -1185,7 +1185,7 @@
                             "name": "deployPrivateEndpointKeyvaultStorage",
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
-                            "label": "Use private endpoints",
+                            "label": "Use private endpoints (Key vault and Storage account)",
                             "defaultValue": "Yes (Recommended)",
                             "toolTip": "Enables Private Endpoints for Key Vault and Storage Resources. It is recommended to use Azure Private Endpoints to keep all traffic to PaaS services on the Azure backbone.",
                             "constraints": {
