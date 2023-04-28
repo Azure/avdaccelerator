@@ -7,7 +7,7 @@ The main purposes of this Workbook are:
 * View and manage errors and unhealthy AVD hosts
 * View bandwidth and latency data as well as logon timing, FSLogix data, etc.
 
-![image](../../docs/images/deepInsightsWorkbook/DeepInsightsWorkbookOverview.png)
+![image](../../docs/images/deepInsightsWorkbook/deepInsightsWorkbookOverview.png)
 
 [Deep Insights workbook](https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/workbooks/deepInsightsWorkbook/deepInsights.workbook)
 
@@ -72,9 +72,9 @@ The Workbook is ready to use!
 * Click on workbooks
 * Click on _'Deep Insights Workbook'_ Workbook.
 
-![Monitoring workbook](../../docs/images/deepInsightsWorkbook/deepinsightsworkbook.png)
+![Monitoring workbook](../../docs/images/deepInsightsWorkbook/deepInsightsWorkbook.png)
 
 Start using the Workbook and review your Deep Insights workbook.
 Filter by specific subscription is optional.
 
-![Deep Insights workbook](../../docs/images/deepInsightsWorkbook/deepinsightsfinal.png)
+![Deep Insights workbook](../../docs/images/deepInsightsWorkbook/deepInsightsFinal.png)
