@@ -3,11 +3,12 @@
 The _'Azure Virtual Desktop Deep Insights Workbook'_ enables you to view and make meaningful inferences from diagnostic data sent to a log analytics workspace.
 
 The main purposes of this Workbook are:
+
 * View overall action sessions on AVD
 * View and manage errors and unhealthy AVD hosts
 * View bandwidth and latency data as well as logon timing, FSLogix data, etc.
 
-![image](./docs/images/deepInsightsWorkbook/deepInsightsWorkbookOverview.png)
+![image](../../docs/images/deepInsightsWorkbook/deepInsightsWorkbookOverview.png)
 
 [Deep Insights workbook](https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/workbooks/deepInsightsWorkbook/deepInsights.workbook)
 
