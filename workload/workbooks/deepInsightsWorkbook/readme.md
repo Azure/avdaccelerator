@@ -7,11 +7,11 @@ The main purposes of this Workbook are:
 * View and manage errors and unhealthy AVD hosts
 * View bandwidth and latency data as well as logon timing, FSLogix data, etc.
 
-![image](../../docs/images/deepInsightsWorkbook/deepInsightsWorkbookOverview.png)
+![image](./docs/images/deepInsightsWorkbook/deepInsightsWorkbookOverview.png)
 
 [Deep Insights workbook](https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/workbooks/deepInsightsWorkbook/deepInsights.workbook)
 
-## Type of resources covered:
+## Type of resources covered
 
 * Connects: both active and inactive along with number of session hosts
 * Errors: unhealthy session hosts broken down by client, IP segment, session host agent, etc.
