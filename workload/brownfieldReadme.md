@@ -10,5 +10,5 @@ The brownfield deployments section contains templates to deploy specific feature
 
 ## Azure Virtual Desktop: Azure monitor workbooks
 
-- [AVD Cost Optimization Workbook](./workbooks/costOptimizationWorkbook/readme.md)
-- [AVD Deep Insights Workbook](./workbooks/deepInsightsWorkbook/readme.md)
+- [Cost Optimization Workbook](./workbooks/costOptimizationWorkbook/readme.md)
+- [Deep Insights Workbook](./workbooks/deepInsightsWorkbook/readme.md)
