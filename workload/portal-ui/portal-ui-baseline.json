@@ -596,7 +596,7 @@
                                     "name": "identityDomainOuPath",
                                     "type": "Microsoft.Common.TextBox",
                                     "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
-                                    "label": "Session hosts OU path (Optional)",
+                                    "label": "Custom OU path (Optional)",
                                     "toolTip": "Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU.",
                                     "placeholder": "Example: OU=session-hosts,OU=avd,DC=contoso,DC=com",
                                     "constraints": {}
@@ -1097,7 +1097,7 @@
                             "type": "Microsoft.Common.TextBox",
                             "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                             "label": "vNet address range",
-                            "toolTip": "Virtual network for AVD virtual machines",
+                            "toolTip": "Virtual network CIDR for AVD virtual machines and PaaS private endpoints",
                             "placeholder": "Example: 10.10.0.0/23",
                             "constraints": {
                                 "required": true,
@@ -1110,7 +1110,7 @@
                             "type": "Microsoft.Common.TextBox",
                             "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                             "label": "AVD subnet address prefix",
-                            "toolTip": "Virtual network subnet for AVD virtual machines",
+                            "toolTip": "Virtual network subnet CIDR for AVD virtual machines",
                             "placeholder": "Example: 10.10.0.0/24",
                             "constraints": {
                                 "required": true,
@@ -1207,7 +1207,7 @@
                             "type": "Microsoft.Common.TextBox",
                             "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true))]",
                             "label": "Private endpoint subnet address prefix",
-                            "toolTip": "Virtual network subnet for private endpoints",
+                            "toolTip": "Virtual network subnet CIDR for private endpoints",
                             "placeholder": "Example: 10.10.1.0/27",
                             "constraints": {
                                 "required": true,
