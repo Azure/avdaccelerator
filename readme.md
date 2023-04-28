@@ -33,7 +33,7 @@ As of today, we have a first reference implementation scenario that is one of th
 | Command line (Bicep/ARM) | [![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](./workload/bicep/readme.md#avd-accelerator-baseline) |
 | Terraform | [![Terraform](./workload/docs/icons/terraform.png)](./workload/terraform/greenfield/readme.md) |
 
-[Brownfield deployments](/workload/bicep/brownfield) deploy new features to existing AVD deployments.
+[Brownfield deployments](/workload/brownfieldReadme.md) deploy new features to existing AVD deployments.
 
 ## Optional: Custom Image Build
 
