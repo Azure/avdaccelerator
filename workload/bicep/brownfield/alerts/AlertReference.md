@@ -1,6 +1,6 @@
 # Alert Reference
 
-[Home](./readme.md) | [PostDeployment](./PostDeploy.md) | [How to Change Thresholds](./ChangeAlertThreshold.md) | [Excel List of Alert Rules](./references/alerts.xlsx) | [Update History](./UpdateHistory.md)
+[Home](./readme.md) | [PostDeployment](./postDeploy.md) | [How to Change Thresholds](./changeAlertThreshold.md) | [Excel List of Alert Rules](./references/alerts.xlsx) | [Update History](./updateHistory.md)
 
 ## Log Analytics Query Based Alerts
 
