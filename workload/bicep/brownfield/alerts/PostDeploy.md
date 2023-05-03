@@ -1,6 +1,6 @@
 # Post Deployment Instructions
 
-[Home](./readme.md) | [How to Change Thresholds](./ChangeAlertThreshold.md) | [Alert Reference](./AlertReference.md) | [Excel List of Alert Rules](./references/alerts.xlsx) | [Update History](./UpdateHistory.md)
+[Home](./readme.md) | [How to Change Thresholds](./changeAlertThreshold.md) | [Alert Reference](./alertReference.md) | [Excel List of Alert Rules](./references/alerts.xlsx) | [Update History](./updateHistory.md)
 
 ## View / Enable Alerts after deployment
 
@@ -10,8 +10,8 @@ You can also review the Alert Action Group and adjust as needed with additional 
 
 1. Open the [Alerts Azure Portal Page](https://portal.azure.com/#blade/Microsoft_Azure_Monitoring/AzureMonitoringBrowseBlade/alertsV2)  
 2. Click on the "Alert rules" section at the top of the page.  
-![Screenshot](./images/AVDAlerts-AlertRules.jpg)  
+![Screenshot](../../../docs/images/alerts/avdAlertRules.jpg)  
 3. Initially the list of alert rules may be filtered out or appear missing.  Simply change the filter to include "disabled" or click the "Clear filters" option.  
-![Screenshot](./images/AVDAlerts-AlertRulesFilter.jpg)  
+![Screenshot](../../../docs/images/alerts/avdAlertRulesFilter.jpg)  
 4. Select the check box next to each you would like to enable and click "Enable" at the top of the page.  
-![Screenshot](./images/AVDAlerts-AlertRulesEnable.jpg)  
+![Screenshot](../../../docs/images/alerts/avdAlertRulesEnable.jpg)
