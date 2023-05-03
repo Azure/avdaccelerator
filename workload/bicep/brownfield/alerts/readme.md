@@ -1,6 +1,6 @@
 # AVD Alerts Solution
 
-[Home](./readme.md) | [PostDeployment](./PostDeploy.md) | [How to Change Thresholds](./ChangeAlertThreshold.md) | [Alert Reference](./AlertReference.md) | [Excel List of Alert Rules](./references/alerts.xlsx) | [Update History](./UpdateHistory.md)
+[Home](./readme.md) | [PostDeployment](./postDeploy.md) | [How to Change Thresholds](./changeAlertThreshold.md) | [Alert Reference](./alertReference.md) | [Excel List of Alert Rules](./references/alerts.xlsx) | [Update History](./updateHistory.md)
 
 ## Description
 
@@ -66,12 +66,12 @@ Table below shows the Alert Names however the number of alert rules created may 
 :two: See the following for custom condition. Note that both Standard and Premium values are incorporated into the alert rule. ['How to create an alert if a file share is throttled'](https://docs.microsoft.com/azure/storage/files/storage-troubleshooting-files-performance#how-to-create-an-alert-if-a-file-share-is-throttled)  
 Service Health - The alert severity cannot be set or changed from 'Verbose'  
 
-[**Alert Reference**](AlertReference.md)
+[**Alert Reference**](alertReference.md)
 
 ## Deployment / Installation
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FJCoreMS%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployAlerts.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FJCoreMS%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAlerts.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FJCoreMS%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployAlerts.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FJCoreMS%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAlerts.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureMS%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployAlerts.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureMS%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAlerts.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureMS%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployAlerts.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureMS%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAlerts.json)
 
-### [PostDeployment](./PostDeploy.md)
+### [PostDeployment](./postDeploy.md)
 
 See the above linked section for information on how to enable and view the alerts created.

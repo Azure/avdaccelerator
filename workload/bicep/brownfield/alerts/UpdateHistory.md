@@ -1,6 +1,6 @@
 # Update History
 
-[Home](./readme.md) | [PostDeployment](./PostDeploy.md) | [How to Change Thresholds](./ChangeAlertThreshold.md) | [Alert Reference](./AlertReference.md) | [Excel List of Alert Rules](./references/alerts.xlsx)
+[Home](./readme.md) | [PostDeployment](./postDeploy.md) | [How to Change Thresholds](./changeAlertThreshold.md) | [Alert Reference](./alertReference.md) | [Excel List of Alert Rules](./references/alerts.xlsx)
 
 ## 4/27/23 - Initial AVD Accelerator Release (v2.0.1)
 
