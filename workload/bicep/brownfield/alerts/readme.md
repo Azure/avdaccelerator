@@ -68,10 +68,57 @@ Service Health - The alert severity cannot be set or changed from 'Verbose'
 
 [**Alert Reference**](alertReference.md)
 
-## Deployment / Installation
+## Deployment
+
+Be sure to review the [PostDeployment](./postDeploy.md) documentation as the alerts are deployed in a disabled state by default. This will guide you through how to see the alerts by adjusting the filter and enabling them.  
+
+The following parameters are optional:
+
+1. AlertNamePrefix (Default will be "AVD" if not used)
+2. StorageAccountResourceIds (Storage Account Alerts will not be deployed if not used)
+3. ANFVolumeResourceIds (Azure NetApp Files Volume Alerts will not be deployed if not used)
+4. Tags (No Tags will be set during deployment if not used)
+
+### Azure Portal UI
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployAlerts.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAlerts.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployAlerts.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAlerts.json)
 
-### [PostDeployment](./postDeploy.md)
+### PowerShell
 
-See the above linked section for information on how to enable and view the alerts created.
+```powershell
+New-AzDeployment `
+    -Location '<Azure location>' `
+    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployAlerts.json' `
+    -AlertNamePrefix '<Alert Name Prefix (Dash will be added after prefix for you.)>' `
+    -DistributionGroup '<The Distribution Group that will receive email alerts for AVD.>' `
+    -Environment '<Must be d, p, or t. (Developement, Production, Test) The environment is which these resources will be deployed.>' `
+    -HostPools '<Array Value surrounded by [] with list of comma seperated Host Pool Resource IDs>' `
+    -LogAnalyticsWorkspaceResourceId '<Resource ID of the Log Analytics Workspace used for AVD Insights>' `
+    -ResourceGroupName '<Resource Group to deploy the Alerts Solution in>' `
+    -ResourceGroupStatus '<Must be "New" or "Existing" denoting whether the Resource Group Name is existing or needs to be created>' `
+    -SessionHostsResourceGroupIds '<Array Value surrounded by [] with a list of comma seperated Resource IDs of the Resource Groups where AVD VMs reside>' `
+    -StorageAccountResourceIds '<Array Value surrounded by [] with a list of comma seperated Resource IDs of the Azure Storage Accounts>' `
+    -ANFVolumeResourceIds '<Array Value surrounded by [] with a list of comma seperated Resource IDs of the Azure NetApp Files Volumes>' `
+    -Tags '<Object value surrounded by {} with comma seperated key pairs for Tagging>' `
+    -Verbose
+```
+
+### Azure CLI
+
+```azurecli
+az deployment sub create \
+    --location '<Azure location>' \
+    --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployAlerts.json' \
+    --parameters \
+      AlertNamePrefix '<Alert Name Prefix (Dash will be added after prefix for you.)>' \
+      DistributionGroup '<The Distribution Group that will receive email alerts for AVD.>' \
+      Environment '<Must be d, p, or t. (Developement, Production, Test) The environment is which these resources will be deployed.>' \
+      HostPools '<Array Value surrounded by [] with list of comma seperated Host Pool Resource IDs>' \
+      LogAnalyticsWorkspaceResourceId '<Resource ID of the Log Analytics Workspace used for AVD Insights>' \
+      ResourceGroupName '<Resource Group to deploy the Alerts Solution in>' \
+      ResourceGroupStatus '<Must be "New" or "Existing" denoting whether the Resource Group Name is existing or needs to be created>' \
+      SessionHostsResourceGroupIds '<Array Value surrounded by [] with a list of comma seperated Resource IDs of the Resource Groups where AVD VMs reside>' \
+      StorageAccountResourceIds '<Array Value surrounded by [] with a list of comma seperated Resource IDs of the Azure Storage Accounts>' \
+      ANFVolumeResourceIds '<Array Value surrounded by [] with a list of comma seperated Resource IDs of the Azure NetApp Files Volumes>' \
+      Tags '<Object value surrounded by {} with comma seperated key pairs for Tagging>'
+```
