@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "16430323156209300699"
+      "templateHash": "13343469391626964931"
     }
   },
   "parameters": {
@@ -44849,7 +44849,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.1.55165",
-              "templateHash": "150067324770396363"
+              "templateHash": "1361717060845068723"
             }
           },
           "parameters": {
@@ -45766,7 +45766,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.16.1.55165",
-                      "templateHash": "18197531370346000316"
+                      "templateHash": "7592035790398728610"
                     }
                   },
                   "parameters": {
@@ -51476,7 +51476,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('SH-Moniroting-Wait-{0}', parameters('time'))]",
+                      "name": "[format('SH-Monitoring-Wait-{0}', parameters('time'))]",
                       "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
@@ -51486,7 +51486,7 @@
                         "mode": "Incremental",
                         "parameters": {
                           "name": {
-                            "value": "[format('SH-Moniroting-Wait-{0}', parameters('time'))]"
+                            "value": "[format('SH-Monitoring-Wait-{0}', parameters('time'))]"
                           },
                           "location": {
                             "value": "[parameters('sessionHostLocation')]"
@@ -51878,7 +51878,7 @@
                       },
                       "dependsOn": [
                         "sessionHosts",
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('SH-Moniroting-Wait-{0}', parameters('time')))]"
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('SH-Monitoring-Wait-{0}', parameters('time')))]"
                       ]
                     },
                     {
@@ -51988,7 +51988,7 @@
                       "dependsOn": [
                         "configureFsLogixForAvdHosts",
                         "sessionHosts",
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('SH-Moniroting-Wait-{0}', parameters('time')))]"
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('SH-Monitoring-Wait-{0}', parameters('time')))]"
                       ]
                     }
                   ]
