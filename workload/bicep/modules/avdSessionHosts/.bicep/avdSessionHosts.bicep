@@ -360,9 +360,9 @@ module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virt
 // Introduce wait for antimalware extension to complete to be ready.
 module sessionHostsMonitoringWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
-    name: 'SH-Moniroting-Wait-${time}'
+    name: 'SH-Monitoring-Wait-${time}'
     params: {
-        name: 'SH-Moniroting-Wait-${time}'
+        name: 'SH-Monitoring-Wait-${time}'
         location: sessionHostLocation
         azPowerShellVersion: '8.3.0'
         cleanupPreference: 'Always'
