@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "674276000096464134"
+      "templateHash": "7699392614857719088"
     }
   },
   "parameters": {
@@ -50,7 +50,6 @@
     },
     "HostPools": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
         "description": "Comma seperated string of Host Pool IDs"
       }
