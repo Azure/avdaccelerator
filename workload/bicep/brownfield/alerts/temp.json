@@ -1,0 +1,7 @@
+{
+    "HostPoolName": "hp-va-personal",
+    "HostPoolResId": "/subscriptions/d5a3b431-5ad0-4a0d-bf86-8fffd2f84554/resourcegroups/rg-va-avd-resources/providers/Microsoft.DesktopVirtualization/hostpools/hp-va-personal",
+    "VMResourceGroup": null,
+    "VMNames": null,
+    "VMResourceIDs": null
+}
