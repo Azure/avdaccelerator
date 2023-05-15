@@ -3,15 +3,6 @@ resource "time_rotating" "avd_token" {
   rotation_days = 1
 }
 
-resource "random_string" "AVD_local_password" {
-  count            = var.rdsh_count
-  length           = 16
-  special          = true
-  min_special      = 2
-  override_special = "*!@#?"
-}
-
-
 resource "azurerm_network_interface" "avd_vm_nic" {
   count               = var.rdsh_count
   name                = "${var.prefix}-${count.index + 1}-nic"
@@ -30,16 +21,16 @@ resource "azurerm_network_interface" "avd_vm_nic" {
 }
 
 resource "azurerm_windows_virtual_machine" "avd_vm" {
-  count                      = var.rdsh_count
-  name                       = "avd-vm-${var.prefix}-${count.index + 1}"
-  resource_group_name        = azurerm_resource_group.shrg.name
-  location                   = azurerm_resource_group.shrg.location
-  availability_set_id        = var.rdsh_count == 0 ? "" : azurerm_availability_set.avdset.*.id[count.index]
-  size                       = var.vm_size
-  network_interface_ids      = ["${azurerm_network_interface.avd_vm_nic.*.id[count.index]}"]
-  provision_vm_agent         = true
-  admin_username             = var.local_admin_username
-  admin_password             = azurerm_key_vault_secret.localpassword.value
+  count                 = var.rdsh_count
+  name                  = "avd-vm-${var.prefix}-${count.index + 1}"
+  resource_group_name   = azurerm_resource_group.shrg.name
+  location              = azurerm_resource_group.shrg.location
+  availability_set_id   = var.rdsh_count == 0 ? "" : azurerm_availability_set.avdset.*.id[count.index]
+  size                  = var.vm_size
+  network_interface_ids = ["${azurerm_network_interface.avd_vm_nic.*.id[count.index]}"]
+  provision_vm_agent    = true
+  admin_username        = var.local_admin_username
+  admin_password        = azurerm_key_vault_secret.localpassword.value
   //encryption_at_host_enabled = true //'Microsoft.Compute/EncryptionAtHost' feature is must be enabled in the subscription for this setting to work https://learn.microsoft.com/en-us/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell
 
   os_disk {
@@ -211,7 +202,7 @@ resource "azurerm_virtual_machine_extension" "cmkde" {
 SETTINGS
 }
 
-# Aveailability Set for VMs
+# Availability Set for VMs
 resource "azurerm_availability_set" "avdset" {
   name                         = "avail-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001"
   resource_group_name          = azurerm_resource_group.shrg.name
