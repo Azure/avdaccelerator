@@ -50,3 +50,7 @@ output "vault_name" {
   value     = azurerm_key_vault.kv.name
   sensitive = false
 }
+output "KeyVaultResourceId" {
+  value     = azurerm_key_vault.kv.id
+  sensitive = false
+}
