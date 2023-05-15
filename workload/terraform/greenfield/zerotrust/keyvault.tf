@@ -118,10 +118,19 @@ resource "azurerm_key_vault_key" "stcmky" {
   name         = "stor-key"
   key_vault_id = azurerm_key_vault.kv.id
   key_type     = "RSA"
-  key_size     = 2048
+  key_size     = 4096
   key_opts     = ["decrypt", "encrypt", "sign", "unwrapKey", "verify", "wrapKey"]
 
   depends_on = [
     azurerm_role_assignment.keystor
   ]
+
+  rotation_policy {
+    automatic {
+      time_before_expiry = "P30D"
+    }
+
+    expire_after         = "P90D"
+    notify_before_expiry = "P29D"
+  }
 }
