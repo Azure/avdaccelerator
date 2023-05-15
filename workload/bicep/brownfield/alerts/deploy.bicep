@@ -30,7 +30,7 @@ param DistributionGroup string
 param Environment string = 't'
 
 @description('Comma seperated string of Host Pool IDs')
-param HostPools array = []
+param HostPools array
 
 @description('Azure Region for Resources.')
 param Location string = deployment().location
