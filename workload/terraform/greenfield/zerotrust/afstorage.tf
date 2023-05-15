@@ -4,6 +4,15 @@ resource "azurerm_user_assigned_identity" "mi" {
   location            = azurerm_resource_group.rg_storage.location
 }
 
+resource "azurerm_role_assignment" "encstor" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Crypto Service Encryption User"
+  principal_id         = azurerm_user_assigned_identity.mi.principal_id
+  depends_on = [
+    time_sleep.wait
+  ]
+}
+
 ## Azure Storage Accounts requires a globally unique names
 ## https://docs.microsoft.com/azure/storage/common/storage-account-overview
 ## Create a File Storage Account 
@@ -19,6 +28,11 @@ resource "azurerm_storage_account" "storage" {
   tags                      = local.tags
   identity {
     type = "SystemAssigned"
+  }
+  lifecycle {
+    ignore_changes = [
+      customer_managed_key
+    ]
   }
 }
 
