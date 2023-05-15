@@ -35,9 +35,9 @@ module actionGroup '../../../../../carml/1.3.0/Microsoft.Insights/actionGroups/d
 }
 
 module metricAlertsVMs 'metricAlertsVMs.bicep' = [for i in range(0, length(HostPools)): {
-  name: 'linked_VMMtrcAlrts_${guid(HostPools[i])}'
+  name: 'linked_VMMtrcAlrts_${split(HostPools[i], '/')[8]}'
   params: {
-    HostPoolInfo: json(HostPoolInfo)[i]
+    HostPoolInfo: array(json(HostPoolInfo))[i]
     MetricAlerts: MetricAlerts
     Enabled: false
     AutoMitigate: false
