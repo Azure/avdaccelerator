@@ -105,7 +105,7 @@ resource "azurerm_role_assignment" "keystor" {
 resource "azurerm_storage_account_customer_managed_key" "cmky" {
   storage_account_id = azurerm_storage_account.storage.id
   key_vault_id       = azurerm_key_vault.kv.id
-  key_name           = azurerm_key_vault.kv.name
+  key_name           = azurerm_key_vault_key.stcmky.name
   provider           = azurerm.spoke
 
   depends_on = [
