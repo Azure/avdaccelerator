@@ -34,6 +34,7 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   name                       = "avd-vm-${var.prefix}-${count.index + 1}"
   resource_group_name        = azurerm_resource_group.shrg.name
   location                   = azurerm_resource_group.shrg.location
+  availability_set_id        = var.rdsh_count == 0 ? "" : azurerm_availability_set.avdset.*.id[count.index]
   size                       = var.vm_size
   network_interface_ids      = ["${azurerm_network_interface.avd_vm_nic.*.id[count.index]}"]
   provision_vm_agent         = true
@@ -144,7 +145,7 @@ PROTECTED_SETTINGS
     data.azurerm_log_analytics_workspace.lawksp
   ]
 }
-/*
+
 # Microsoft Antimalware
 resource "azurerm_virtual_machine_extension" "mal" {
   name                       = "IaaSAntimalware"
@@ -158,10 +159,10 @@ resource "azurerm_virtual_machine_extension" "mal" {
   depends_on = [
     azurerm_virtual_machine_extension.aadjoin,
     azurerm_virtual_machine_extension.vmext_dsc,
-    azurerm_virtual_machine_extension.mma
+    azurerm_virtual_machine_extension.mma,
+    azurerm_virtual_machine_extension.cmkde
   ]
 }
-*/
 
 # Disk Encryption Set
 resource "azurerm_disk_encryption_set" "en-set" {
@@ -182,7 +183,7 @@ resource "azurerm_role_assignment" "ensetusr" {
   scope                = azurerm_key_vault.kv.id
   role_definition_name = "Key Vault Crypto Service Encryption User"
   principal_id         = azurerm_disk_encryption_set.en-set.identity[0].principal_id
-   depends_on = [
+  depends_on = [
     time_sleep.wait
   ]
 }
@@ -196,21 +197,7 @@ resource "azurerm_virtual_machine_extension" "cmkde" {
   type                       = "AzureDiskEncryption"
   type_handler_version       = "2.2"
   auto_upgrade_minor_version = true
-/*
-  settings = <<SETTINGS
-  
-{
-  "EncryptionOperation": "EnableEncryption",
-  "KeyVaultURL": "https://${local.keyvault_name}.vault.azure.net/",
-  "KeyVaultResourceId": "/subscriptions/${var.spoke_subscription_id}/resourceGroups/${var.rg_so}/providers/Microsoft.KeyVault/vaults/${local.keyvault_name}",
-  "KeyEncryptionKeyURL": "https://${local.keyvault_name}.vault.azure.net/keys/azurerm_key_vault_key.stcmky.name/${azurerm_key_vault_key.stcmky.id}",
-  "KeyEncryptionKeyVaultResourceId": "/subscriptions/${var.spoke_subscription_id}/resourceGroups/${var.rg_so}/providers/Microsoft.KeyVault/vaults/${local.keyvault_name}",
-  "KeyEncryptionAlgorithm": "RSA-OAEP",
-  "VolumeType": "ALL"
-}
-SETTINGS
-}
-*/
+
   settings = <<SETTINGS
     {
         "EncryptionOperation": "EnableEncryption",
@@ -222,4 +209,15 @@ SETTINGS
         "VolumeType": "All"
     }
 SETTINGS
+}
+
+# Aveailability Set for VMs
+resource "azurerm_availability_set" "avdset" {
+  name                         = "avail-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001"
+  resource_group_name          = azurerm_resource_group.shrg.name
+  location                     = azurerm_resource_group.shrg.location
+  platform_fault_domain_count  = 2
+  platform_update_domain_count = 5
+  managed                      = true
+  tags                         = local.tags
 }
