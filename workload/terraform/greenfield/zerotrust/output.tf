@@ -54,3 +54,8 @@ output "KeyVaultResourceId" {
   value     = azurerm_key_vault.kv.id
   sensitive = false
 }
+
+output "storge_idnetity" {
+  value     = azurerm_storage_account.storage.identity
+  sensitive = false
+}
