@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "674276000096464134"
+      "templateHash": "16844973709904861537"
     }
   },
   "parameters": {
@@ -50,7 +50,6 @@
     },
     "HostPools": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
         "description": "Comma seperated string of Host Pool IDs"
       }
@@ -7929,7 +7928,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "1803698644333446526"
+              "templateHash": "6741252086715241516"
             }
           },
           "parameters": {
@@ -8506,7 +8505,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "HostPoolInfo": {
-                    "value": "[json(parameters('HostPoolInfo'))[range(0, length(parameters('HostPools')))[copyIndex()]]]"
+                    "value": "[array(json(parameters('HostPoolInfo')))[range(0, length(parameters('HostPools')))[copyIndex()]]]"
                   },
                   "MetricAlerts": {
                     "value": "[parameters('MetricAlerts')]"
