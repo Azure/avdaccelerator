@@ -113,6 +113,7 @@ resource "azurerm_storage_account_customer_managed_key" "cmky" {
   depends_on = [
     azurerm_storage_account.storage, azurerm_key_vault.kv, azurerm_role_assignment.encstor, azurerm_key_vault_key.stcmky, azurerm_user_assigned_identity.mi
   ]
+
 }
 
 # Storage Account Encryption Key
