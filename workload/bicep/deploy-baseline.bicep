@@ -988,7 +988,6 @@ module managedIdentitiesRoleAssign './modules/identity/deploy.bicep' = {
     name: 'Managed-ID-RoleAssign-${time}'
     params: {
         computeObjectsRgName: varComputeObjectsRgName
-        deploySessionHosts: avdDeploySessionHosts
         enterpriseAppObjectId: avdEnterpriseAppObjectId
         deployScalingPlan: avdDeployScalingPlan
         sessionHostLocation: avdSessionHostLocation
@@ -998,7 +997,6 @@ module managedIdentitiesRoleAssign './modules/identity/deploy.bicep' = {
         storageManagedIdentityName: varStorageManagedIdentityName
         readerRoleId: varReaderRoleId
         enableStartVmOnConnect: avdStartVmOnConnect
-        managementPlaneLocation: avdManagementPlaneLocation
         identityServiceProvider: avdIdentityServiceProvider
         storageAccountContributorRoleId: varStorageAccountContributorRoleId
         createStorageDeployment: varCreateStorageDeployment
@@ -1122,7 +1120,6 @@ module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if 
         storageToDomainScriptUri: varStorageToDomainScriptUri
         computeTimeZone: varTimeZones[avdSessionHostLocation]
         applicationSecurityGroupResourceId: createAvdVnet ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
-        computeObjectsRgName: varComputeObjectsRgName
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
@@ -1181,7 +1178,6 @@ module msixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (va
         storageToDomainScriptUri: varStorageToDomainScriptUri
         computeTimeZone: varTimeZones[avdSessionHostLocation]
         applicationSecurityGroupResourceId: createAvdVnet ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
-        computeObjectsRgName: varComputeObjectsRgName
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
