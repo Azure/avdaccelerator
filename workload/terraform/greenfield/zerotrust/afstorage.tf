@@ -47,11 +47,6 @@ resource "azurerm_storage_account" "storage" {
     ]
   }
 
-  customer_managed_key {
-    key_vault_key_id          = azurerm_key_vault_key.stkek.id
-    user_assigned_identity_id = azurerm_user_assigned_identity.mi.id
-  }
-
   azure_files_authentication {
     directory_type = "AADKERB"
   }
