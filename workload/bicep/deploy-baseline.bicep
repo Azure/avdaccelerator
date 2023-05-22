@@ -168,15 +168,6 @@ param avdAlaWorkspaceDataRetention int = 90
 @description('Optional. Existing Azure log analytics workspace resource ID to connect to. (Default: )')
 param alaExistingWorkspaceResourceId string = ''
 
-@description('Required. Create and assign custom Azure Policy for NSG flow logs and network security')
-param deployCustomPolicyNetworking bool = false
-
-@description('Optional. Deploy Azure storage account for flow logs. (Default: false)')
-param deployStgAccountForFlowLogs bool = false
-
-@description('Optional. Existing Azure Storage account Resourece ID for NSG flow logs. (Default: )')
-param stgAccountForFlowLogsId string = ''
-
 @minValue(1)
 @maxValue(999)
 @description('Optional. Quantity of session hosts to deploy. (Default: 1)')
@@ -469,12 +460,10 @@ param time string = utcNow()
 @description('Enable usage and telemetry feedback to Microsoft.')
 param enableTelemetry bool = true
 
-
 // =========== //
 // Variable declaration //
 // =========== //
 // Resource naming
-var varAzureCloudName = environment().name
 var varDeploymentPrefixLowercase = toLower(deploymentPrefix)
 var varSessionHostLocationLowercase = toLower(avdSessionHostLocation)
 var varManagementPlaneLocationLowercase = toLower(avdManagementPlaneLocation)
@@ -586,7 +575,6 @@ var varTimeZones = {
     westus2: 'Pacific Standard Time'
     westus3: 'Mountain Standard Time'
 }
-
 var varNamingUniqueStringSixChar = take('${uniqueString(avdWorkloadSubsId, varDeploymentPrefixLowercase, time)}', 6)
 var varManagementPlaneNamingStandard = '${varManagementPlaneLocationAcronym}-${varDeploymentPrefixLowercase}'
 var varComputeStorageResourcesNamingStandard = '${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
@@ -611,7 +599,6 @@ var varHostPoolName = avdUseCustomNaming ? avdHostPoolCustomName : 'vdpool-${var
 var varHostFriendlyName = avdUseCustomNaming ? avdHostPoolCustomFriendlyName : '${deploymentPrefix}-${avdManagementPlaneLocation}-001'
 var varApplicationGroupNameDesktop = avdUseCustomNaming ? avdApplicationGroupCustomNameDesktop : 'vdag-desktop-${varManagementPlaneNamingStandard}-001'
 var varApplicationGroupFriendlyName = avdUseCustomNaming ? avdApplicationGroupCustomFriendlyName : 'Desktops-${deploymentPrefix}-${avdManagementPlaneLocation}-001'
-var varApplicationGroupAppFriendlyName = 'Desktops-${deploymentPrefix}'
 var varApplicationGroupNameRapp = avdUseCustomNaming ? avdApplicationGroupCustomNameRapp : 'vdag-rapp-${varManagementPlaneNamingStandard}-001'
 var varApplicationGroupFriendlyNameRapp = avdUseCustomNaming ? avdApplicationGroupCustomFriendlyNameRapp : 'Apps-${deploymentPrefix}-${avdManagementPlaneLocation}-001'
 var varScalingPlanName = avdUseCustomNaming ? avdScalingPlanCustomName : 'vdscaling-${varManagementPlaneNamingStandard}-001'
@@ -630,8 +617,6 @@ var varManagementVmName = 'vm-mgmt-${varDeploymentPrefixLowercase}'
 //var varAvdMsixStorageName = deployAvdMsixStorageAzureFiles.outputs.storageAccountName
 //var varAvdWrklStoragePrivateEndpointName = 'pe-stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}-file'
 var varAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName :  'log-avd-${varManagementPlaneLocationAcronym}' //'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
-var varStgAccountForFlowLogsName = avdUseCustomNaming ? '${storageAccountPrefixCustomName}${varDeploymentPrefixLowercase}flowlogs${varNamingUniqueStringSixChar}' : 'stavd${varDeploymentPrefixLowercase}flowlogs${varNamingUniqueStringSixChar}'
-
 var varScalingPlanSchedules = [
     {
         daysOfWeek: [
@@ -707,7 +692,6 @@ var varScalingPlanSchedules = [
         }
     }
 ]
-
 var varMarketPlaceGalleryWindows = {
     win10_21h2: {
         publisher: 'MicrosoftWindowsDesktop'
@@ -770,7 +754,6 @@ var varMarketPlaceGalleryWindows = {
         version: 'latest'
     }
 }
-
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var varFslogixScriptUri = '${varBaseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
 var varFsLogixScript = './Set-FSLogixRegKeys.ps1'
@@ -799,7 +782,6 @@ var varCreateMsixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: cre
 var varCreateStorageDeployment = (varCreateFslogixDeployment||varCreateMsixDeployment == true) ? true: false
 var varApplicationGroupIdentitiesIds = !empty(avdApplicationGroupIdentitiesIds) ? (split(avdApplicationGroupIdentitiesIds, ',')): []
 var varCreateVnetPeering = !empty(existingHubVnetResourceId) ? true: false
-
 // Resource tagging
 // Tag Exclude-${varAvdScalingPlanName} is used by scaling plans to exclude session hosts from scaling. Exmaple: Exclude-vdscal-eus2-app1-001
 var varCommonResourceTags = createResourceTags ? {
@@ -816,21 +798,16 @@ var varCommonResourceTags = createResourceTags ? {
     Environment: environmentTypeTag
 
 } : {}
-
 var varAllComputeStorageTags = {
     DomainName: avdIdentityDomainName
     JoinType: avdIdentityServiceProvider
 }
-
 var varAvdCostManagementParentResourceTag = {
     'cm-resource-parent': '/subscriptions/${avdWorkloadSubsId}}/resourceGroups/${varServiceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${varHostPoolName}'
 }
-
 var varAllResourceTags = union(varCommonResourceTags, varAllComputeStorageTags)
 //
-
 var varTelemetryId = 'pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-${avdManagementPlaneLocation}'
-
 var resourceGroups = [
     {
         purpose: 'Service-Objects'
@@ -971,7 +948,6 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     params: {
         applicationGroupNameDesktop: varApplicationGroupNameDesktop
         applicationGroupFriendlyNameDesktop: varApplicationGroupFriendlyName
-        applicationGroupAppFriendlyNameDesktop: varApplicationGroupAppFriendlyName
         workSpaceName: varWorkSpaceName
         osImage: avdOsImage
         workSpaceFriendlyName: varWorkSpaceFriendlyName
