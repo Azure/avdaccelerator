@@ -216,6 +216,11 @@ variable "identity_subscription_id" {
   description = "identity Subscription id"
 }
 
+variable "enable_disk_encryption" {
+  type        = bool
+  description = "Enable disk encryption"
+  default     = true
+}
 variable "avdshared_subscription_id" {
   type        = string
   description = "Spoke Subscription id"
@@ -253,3 +258,16 @@ variable "disk_encryption_key_set_id" {
   default = null
 }
 
+variable "publisher" {
+  type        = string
+  description = "Publisher of the image"
+}
+variable "offer" {
+  type        = string
+  description = "Offer of the image"
+}
+
+variable "sku" {
+  type        = string
+  description = "SKU of the image"
+}
