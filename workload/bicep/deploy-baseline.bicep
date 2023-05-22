@@ -913,48 +913,6 @@ module baselineStorageResourceGroup '../../carml/1.3.0/Microsoft.Resources/resou
     ]: []
 }
 
-/*
-// Validation Deployment Script
-// This module validates the selected parameter values and collects required data
-module validation 'avd-modules/validation.bicep' = {
-  name: 'AVD-Deployment-Validation-${time}'
-  scope: resourceGroup(avdServiceObjectsRgName)
-  params: {
-    Availability: Availability
-    DiskEncryption: DiskEncryption
-    DiskSku: DiskSku
-    DomainName: DomainName
-    DomainServices: DomainServices
-    EphemeralOsDisk: EphemeralOsDisk
-    ImageSku: ImageSku
-    KerberosEncryption: KerberosEncryption
-    Location: Location
-    ManagedIdentityResourceId: managedIdentity.outputs.resourceIdentifier
-    NamingStandard: NamingStandard
-    PooledHostPool: PooledHostPool
-    RecoveryServices: RecoveryServices
-    SasToken: SasToken
-    ScriptsUri: ScriptsUri
-    SecurityPrincipalIds: SecurityPrincipalObjectIds
-    SecurityPrincipalNames: SecurityPrincipalNames
-    SessionHostCount: SessionHostCount
-    SessionHostIndex: SessionHostIndex
-    StartVmOnConnect: StartVmOnConnect
-    //StorageCount: StorageCount
-    StorageSolution: StorageSolution
-    Tags: createResourceTags ? commonResourceTags : {}
-    Timestamp: time
-    VirtualNetwork: VirtualNetwork
-    VirtualNetworkResourceGroup: VirtualNetworkResourceGroup
-    VmSize: avdSessionHostsSize
-  }
-  dependsOn: [
-    resourceGroups
-    managedIdentity
-  ]
-}
-*/
-
 // Azure Policies for monitoring Diagnostic settings. Performance couunters on new or existing Log Analytics workspace. New workspace if needed.
 module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bicep' = if (avdDeployMonitoring) {
     name: 'Monitoring-${time}'
@@ -970,24 +928,6 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
         tags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
     }
     dependsOn: []
-}
-
-// Azure Policies for network monitorig/security . New storage account/Reuse existing one if needed created for the NSG flow logs
-module azurePoliciesNetworking './modules/azurePolicyNetworking/deploy.bicep' = if (avdDeployMonitoring && deployCustomPolicyNetworking) {
-    name: (length('Enable-Azure-Policy-for-Netwok-Security-${time}') > 64) ? take('Enable-Azure-Policy-for-Netwok-Security-${time}',64) : 'Enable-Azure-Policy-for-Netwok-Security-${time}'
-    params: {
-        alaWorkspaceResourceId: (avdDeployMonitoring && deployAlaWorkspace) ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId
-        alaWorkspaceId: (avdDeployMonitoring && deployAlaWorkspace) ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceId : alaExistingWorkspaceResourceId
-        managementPlaneLocation: avdManagementPlaneLocation
-        workloadSubsId: avdWorkloadSubsId
-        monitoringRgName: varMonitoringRgName
-        stgAccountForFlowLogsId: deployStgAccountForFlowLogs ? '' : stgAccountForFlowLogsId
-        stgAccountForFlowLogsName: deployStgAccountForFlowLogs ? varStgAccountForFlowLogsName : ''
-        tags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
-    }
-    dependsOn: [
-        monitoringDiagnosticSettings
-    ]
 }
 
 // Networking.
