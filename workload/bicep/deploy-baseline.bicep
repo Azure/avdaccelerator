@@ -465,116 +465,13 @@ param enableTelemetry bool = true
 // =========== //
 // Resource naming
 var varDeploymentPrefixLowercase = toLower(deploymentPrefix)
-var varSessionHostLocationLowercase = toLower(avdSessionHostLocation)
-var varManagementPlaneLocationLowercase = toLower(avdManagementPlaneLocation)
-var varSessionHostLocationAcronym = varLocationAcronyms[varSessionHostLocationLowercase]
-var varManagementPlaneLocationAcronym = varLocationAcronyms[varManagementPlaneLocationLowercase]
-var varLocationAcronyms = {
-    eastasia: 'eas'
-    southeastasia: 'seas'
-    centralus: 'cus'
-    eastus: 'eus'
-    eastus2: 'eus2'
-    westus: 'wus'
-    northcentralus: 'ncus'
-    southcentralus: 'scus'
-    northeurope: 'neu'
-    westeurope: 'weu'
-    japanwest: 'jpw'
-    japaneast: 'jpe'
-    brazilsouth: 'brs'
-    australiaeast: 'aue'
-    australiasoutheast: 'ause'
-    southindia: 'sin'
-    centralindia: 'cin'
-    westindia: 'win'
-    canadacentral: 'cac'
-    canadaeast: 'cae'
-    uksouth: 'uks'
-    ukwest: 'ukw'
-    usgovarizona: 'az'
-    usgoviowa: 'ia'
-    usgovtexas: 'tx'
-    usgovvirginia: 'va'
-    westcentralus: 'wcus'
-    westus2: 'wus2'
-    koreacentral: 'krc'
-    koreasouth: 'krs'
-    francecentral: 'frc'
-    francesouth: 'frs'
-    australiacentral: 'auc'
-    australiacentral2: 'auc2'
-    uaecentral: 'aec'
-    uaenorth: 'aen'
-    southafricanorth: 'zan'
-    southafricawest: 'zaw'
-    switzerlandnorth: 'chn'
-    switzerlandwest: 'chw'
-    germanynorth: 'den'
-    germanywestcentral: 'dewc'
-    norwaywest: 'now'
-    norwayeast: 'noe'
-    brazilsoutheast: 'brse'
-    westus3: 'wus3'
-    swedencentral: 'sec'
-}
-var varTimeZones = {
-    australiacentral: 'AUS Eastern Standard Time'
-    australiacentral2: 'AUS Eastern Standard Time'
-    australiaeast: 'AUS Eastern Standard Time'
-    australiasoutheast: 'AUS Eastern Standard Time'
-    brazilsouth: 'E. South America Standard Time'
-    brazilsoutheast: 'E. South America Standard Time'
-    canadacentral: 'Eastern Standard Time'
-    canadaeast: 'Eastern Standard Time'
-    centralindia: 'India Standard Time'
-    centralus: 'Central Standard Time'
-    chinaeast: 'China Standard Time'
-    chinaeast2: 'China Standard Time'
-    chinanorth: 'China Standard Time'
-    chinanorth2: 'China Standard Time'
-    eastasia: 'China Standard Time'
-    eastus: 'Eastern Standard Time'
-    eastus2: 'Eastern Standard Time'
-    francecentral: 'Central Europe Standard Time'
-    francesouth: 'Central Europe Standard Time'
-    germanynorth: 'Central Europe Standard Time'
-    germanywestcentral: 'Central Europe Standard Time'
-    japaneast: 'Tokyo Standard Time'
-    japanwest: 'Tokyo Standard Time'
-    jioindiacentral: 'India Standard Time'
-    jioindiawest: 'India Standard Time'
-    koreacentral: 'Korea Standard Time'
-    koreasouth: 'Korea Standard Time'
-    northcentralus: 'Central Standard Time'
-    northeurope: 'GMT Standard Time'
-    norwayeast: 'Central Europe Standard Time'
-    norwaywest: 'Central Europe Standard Time'
-    southafricanorth: 'South Africa Standard Time'
-    southafricawest: 'South Africa Standard Time'
-    southcentralus: 'Central Standard Time'
-    southindia: 'India Standard Time'
-    southeastasia: 'Singapore Standard Time'
-    swedencentral: 'Central Europe Standard Time'
-    switzerlandnorth: 'Central Europe Standard Time'
-    switzerlandwest: 'Central Europe Standard Time'
-    uaecentral: 'Arabian Standard Time'
-    uaenorth: 'Arabian Standard Time'
-    uksouth: 'GMT Standard Time'
-    ukwest: 'GMT Standard Time'
-    usdodcentral: 'Central Standard Time'
-    usdodeast: 'Eastern Standard Time'
-    usgovarizona: 'Mountain Standard Time'
-    usgoviowa: 'Central Standard Time'
-    usgovtexas: 'Central Standard Time'
-    usgovvirginia: 'Eastern Standard Time'
-    westcentralus: 'Mountain Standard Time'
-    westeurope: 'Central Europe Standard Time'
-    westindia: 'India Standard Time'
-    westus: 'Pacific Standard Time'
-    westus2: 'Pacific Standard Time'
-    westus3: 'Mountain Standard Time'
-}
+var varSessionHostLocationLowercase = toLower(replace(avdSessionHostLocation, ' ', ''))
+var varManagementPlaneLocationLowercase = toLower(replace(avdManagementPlaneLocation, ' ', ''))
+var varSessionHostLocationAcronym = varLocations[varSessionHostLocationLowercase].acronym
+var varManagementPlaneLocationAcronym = varLocations[varManagementPlaneLocationLowercase].acronym
+var varLocations = loadJsonContent('../variables/locations.json')
+var varTimeZoneSessionHosts = varLocations[varSessionHostLocationLowercase].timeZone
+var varTimeZoneManagementPlane = varLocations[varManagementPlaneLocationLowercase].timeZone
 var varNamingUniqueStringSixChar = take('${uniqueString(avdWorkloadSubsId, varDeploymentPrefixLowercase, time)}', 6)
 var varManagementPlaneNamingStandard = '${varManagementPlaneLocationAcronym}-${varDeploymentPrefixLowercase}'
 var varComputeStorageResourcesNamingStandard = '${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
@@ -954,7 +851,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
         applicationGroupNameRapp: varApplicationGroupNameRapp
         applicationGroupFriendlyNameRapp: varApplicationGroupFriendlyNameRapp
         deployRappGroup: avdDeployRappGroup
-        computeTimeZone: varTimeZones[avdSessionHostLocation]
+        computeTimeZone: varTimeZoneSessionHosts
         hostPoolName: varHostPoolName
         hostPoolFriendlyName: varHostFriendlyName
         hostPoolRdpProperties: avdHostPoolRdpProperties
@@ -1118,7 +1015,7 @@ module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if 
         managedIdentityClientId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
         storageToDomainScript:  varStorageToDomainScript
         storageToDomainScriptUri: varStorageToDomainScriptUri
-        computeTimeZone: varTimeZones[avdSessionHostLocation]
+        computeTimeZone: varTimeZoneSessionHosts
         applicationSecurityGroupResourceId: createAvdVnet ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
@@ -1176,7 +1073,7 @@ module msixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (va
         managedIdentityClientId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
         storageToDomainScript:  varStorageToDomainScript
         storageToDomainScriptUri: varStorageToDomainScriptUri
-        computeTimeZone: varTimeZones[avdSessionHostLocation]
+        computeTimeZone: varTimeZoneSessionHosts
         applicationSecurityGroupResourceId: createAvdVnet ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
@@ -1225,7 +1122,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
     params: {
 
         avdAgentPackageLocation: varAvdAgentPackageLocation
-        computeTimeZone: varTimeZones[avdSessionHostLocation]
+        computeTimeZone: varTimeZoneSessionHosts
         applicationSecurityGroupResourceId: createAvdVnet ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
         availabilitySetFaultDomainCount: avdAsFaultDomainCount
         availabilitySetUpdateDomainCount: avdAsUpdateDomainCount
