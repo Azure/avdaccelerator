@@ -4,9 +4,6 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
-@description('Resource Group name for the session hosts.')
-param computeObjectsRgName string
-
 @description('AVD workload subscription ID, multiple subscriptions scenario.')
 param workloadSubsId string
 
