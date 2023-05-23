@@ -168,15 +168,6 @@ param avdAlaWorkspaceDataRetention int = 90
 @description('Optional. Existing Azure log analytics workspace resource ID to connect to. (Default: )')
 param alaExistingWorkspaceResourceId string = ''
 
-@description('Required. Create and assign custom Azure Policy for NSG flow logs and network security')
-param deployCustomPolicyNetworking bool = false
-
-@description('Optional. Deploy Azure storage account for flow logs. (Default: false)')
-param deployStgAccountForFlowLogs bool = false
-
-@description('Optional. Existing Azure Storage account Resourece ID for NSG flow logs. (Default: )')
-param stgAccountForFlowLogsId string = ''
-
 @minValue(1)
 @maxValue(999)
 @description('Optional. Quantity of session hosts to deploy. (Default: 1)')
@@ -469,124 +460,18 @@ param time string = utcNow()
 @description('Enable usage and telemetry feedback to Microsoft.')
 param enableTelemetry bool = true
 
-
 // =========== //
 // Variable declaration //
 // =========== //
 // Resource naming
-var varAzureCloudName = environment().name
 var varDeploymentPrefixLowercase = toLower(deploymentPrefix)
-var varSessionHostLocationLowercase = toLower(avdSessionHostLocation)
-var varManagementPlaneLocationLowercase = toLower(avdManagementPlaneLocation)
-var varSessionHostLocationAcronym = varLocationAcronyms[varSessionHostLocationLowercase]
-var varManagementPlaneLocationAcronym = varLocationAcronyms[varManagementPlaneLocationLowercase]
-var varLocationAcronyms = {
-    eastasia: 'eas'
-    southeastasia: 'seas'
-    centralus: 'cus'
-    eastus: 'eus'
-    eastus2: 'eus2'
-    westus: 'wus'
-    northcentralus: 'ncus'
-    southcentralus: 'scus'
-    northeurope: 'neu'
-    westeurope: 'weu'
-    japanwest: 'jpw'
-    japaneast: 'jpe'
-    brazilsouth: 'brs'
-    australiaeast: 'aue'
-    australiasoutheast: 'ause'
-    southindia: 'sin'
-    centralindia: 'cin'
-    westindia: 'win'
-    canadacentral: 'cac'
-    canadaeast: 'cae'
-    uksouth: 'uks'
-    ukwest: 'ukw'
-    usgovarizona: 'az'
-    usgoviowa: 'ia'
-    usgovtexas: 'tx'
-    usgovvirginia: 'va'
-    westcentralus: 'wcus'
-    westus2: 'wus2'
-    koreacentral: 'krc'
-    koreasouth: 'krs'
-    francecentral: 'frc'
-    francesouth: 'frs'
-    australiacentral: 'auc'
-    australiacentral2: 'auc2'
-    uaecentral: 'aec'
-    uaenorth: 'aen'
-    southafricanorth: 'zan'
-    southafricawest: 'zaw'
-    switzerlandnorth: 'chn'
-    switzerlandwest: 'chw'
-    germanynorth: 'den'
-    germanywestcentral: 'dewc'
-    norwaywest: 'now'
-    norwayeast: 'noe'
-    brazilsoutheast: 'brse'
-    westus3: 'wus3'
-    swedencentral: 'sec'
-}
-var varTimeZones = {
-    australiacentral: 'AUS Eastern Standard Time'
-    australiacentral2: 'AUS Eastern Standard Time'
-    australiaeast: 'AUS Eastern Standard Time'
-    australiasoutheast: 'AUS Eastern Standard Time'
-    brazilsouth: 'E. South America Standard Time'
-    brazilsoutheast: 'E. South America Standard Time'
-    canadacentral: 'Eastern Standard Time'
-    canadaeast: 'Eastern Standard Time'
-    centralindia: 'India Standard Time'
-    centralus: 'Central Standard Time'
-    chinaeast: 'China Standard Time'
-    chinaeast2: 'China Standard Time'
-    chinanorth: 'China Standard Time'
-    chinanorth2: 'China Standard Time'
-    eastasia: 'China Standard Time'
-    eastus: 'Eastern Standard Time'
-    eastus2: 'Eastern Standard Time'
-    francecentral: 'Central Europe Standard Time'
-    francesouth: 'Central Europe Standard Time'
-    germanynorth: 'Central Europe Standard Time'
-    germanywestcentral: 'Central Europe Standard Time'
-    japaneast: 'Tokyo Standard Time'
-    japanwest: 'Tokyo Standard Time'
-    jioindiacentral: 'India Standard Time'
-    jioindiawest: 'India Standard Time'
-    koreacentral: 'Korea Standard Time'
-    koreasouth: 'Korea Standard Time'
-    northcentralus: 'Central Standard Time'
-    northeurope: 'GMT Standard Time'
-    norwayeast: 'Central Europe Standard Time'
-    norwaywest: 'Central Europe Standard Time'
-    southafricanorth: 'South Africa Standard Time'
-    southafricawest: 'South Africa Standard Time'
-    southcentralus: 'Central Standard Time'
-    southindia: 'India Standard Time'
-    southeastasia: 'Singapore Standard Time'
-    swedencentral: 'Central Europe Standard Time'
-    switzerlandnorth: 'Central Europe Standard Time'
-    switzerlandwest: 'Central Europe Standard Time'
-    uaecentral: 'Arabian Standard Time'
-    uaenorth: 'Arabian Standard Time'
-    uksouth: 'GMT Standard Time'
-    ukwest: 'GMT Standard Time'
-    usdodcentral: 'Central Standard Time'
-    usdodeast: 'Eastern Standard Time'
-    usgovarizona: 'Mountain Standard Time'
-    usgoviowa: 'Central Standard Time'
-    usgovtexas: 'Central Standard Time'
-    usgovvirginia: 'Eastern Standard Time'
-    westcentralus: 'Mountain Standard Time'
-    westeurope: 'Central Europe Standard Time'
-    westindia: 'India Standard Time'
-    westus: 'Pacific Standard Time'
-    westus2: 'Pacific Standard Time'
-    westus3: 'Mountain Standard Time'
-}
-
+var varSessionHostLocationLowercase = toLower(replace(avdSessionHostLocation, ' ', ''))
+var varManagementPlaneLocationLowercase = toLower(replace(avdManagementPlaneLocation, ' ', ''))
+var varSessionHostLocationAcronym = varLocations[varSessionHostLocationLowercase].acronym
+var varManagementPlaneLocationAcronym = varLocations[varManagementPlaneLocationLowercase].acronym
+var varLocations = loadJsonContent('../variables/locations.json')
+var varTimeZoneSessionHosts = varLocations[varSessionHostLocationLowercase].timeZone
+var varTimeZoneManagementPlane = varLocations[varManagementPlaneLocationLowercase].timeZone
 var varNamingUniqueStringSixChar = take('${uniqueString(avdWorkloadSubsId, varDeploymentPrefixLowercase, time)}', 6)
 var varManagementPlaneNamingStandard = '${varManagementPlaneLocationAcronym}-${varDeploymentPrefixLowercase}'
 var varComputeStorageResourcesNamingStandard = '${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
@@ -611,7 +496,6 @@ var varHostPoolName = avdUseCustomNaming ? avdHostPoolCustomName : 'vdpool-${var
 var varHostFriendlyName = avdUseCustomNaming ? avdHostPoolCustomFriendlyName : '${deploymentPrefix}-${avdManagementPlaneLocation}-001'
 var varApplicationGroupNameDesktop = avdUseCustomNaming ? avdApplicationGroupCustomNameDesktop : 'vdag-desktop-${varManagementPlaneNamingStandard}-001'
 var varApplicationGroupFriendlyName = avdUseCustomNaming ? avdApplicationGroupCustomFriendlyName : 'Desktops-${deploymentPrefix}-${avdManagementPlaneLocation}-001'
-var varApplicationGroupAppFriendlyName = 'Desktops-${deploymentPrefix}'
 var varApplicationGroupNameRapp = avdUseCustomNaming ? avdApplicationGroupCustomNameRapp : 'vdag-rapp-${varManagementPlaneNamingStandard}-001'
 var varApplicationGroupFriendlyNameRapp = avdUseCustomNaming ? avdApplicationGroupCustomFriendlyNameRapp : 'Apps-${deploymentPrefix}-${avdManagementPlaneLocation}-001'
 var varScalingPlanName = avdUseCustomNaming ? avdScalingPlanCustomName : 'vdscaling-${varManagementPlaneNamingStandard}-001'
@@ -630,8 +514,6 @@ var varManagementVmName = 'vm-mgmt-${varDeploymentPrefixLowercase}'
 //var varAvdMsixStorageName = deployAvdMsixStorageAzureFiles.outputs.storageAccountName
 //var varAvdWrklStoragePrivateEndpointName = 'pe-stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}-file'
 var varAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName :  'log-avd-${varManagementPlaneLocationAcronym}' //'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
-var varStgAccountForFlowLogsName = avdUseCustomNaming ? '${storageAccountPrefixCustomName}${varDeploymentPrefixLowercase}flowlogs${varNamingUniqueStringSixChar}' : 'stavd${varDeploymentPrefixLowercase}flowlogs${varNamingUniqueStringSixChar}'
-
 var varScalingPlanSchedules = [
     {
         daysOfWeek: [
@@ -707,7 +589,6 @@ var varScalingPlanSchedules = [
         }
     }
 ]
-
 var varMarketPlaceGalleryWindows = {
     win10_21h2: {
         publisher: 'MicrosoftWindowsDesktop'
@@ -770,7 +651,6 @@ var varMarketPlaceGalleryWindows = {
         version: 'latest'
     }
 }
-
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var varFslogixScriptUri = '${varBaseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
 var varFsLogixScript = './Set-FSLogixRegKeys.ps1'
@@ -799,7 +679,6 @@ var varCreateMsixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: cre
 var varCreateStorageDeployment = (varCreateFslogixDeployment||varCreateMsixDeployment == true) ? true: false
 var varApplicationGroupIdentitiesIds = !empty(avdApplicationGroupIdentitiesIds) ? (split(avdApplicationGroupIdentitiesIds, ',')): []
 var varCreateVnetPeering = !empty(existingHubVnetResourceId) ? true: false
-
 // Resource tagging
 // Tag Exclude-${varAvdScalingPlanName} is used by scaling plans to exclude session hosts from scaling. Exmaple: Exclude-vdscal-eus2-app1-001
 var varCommonResourceTags = createResourceTags ? {
@@ -816,21 +695,16 @@ var varCommonResourceTags = createResourceTags ? {
     Environment: environmentTypeTag
 
 } : {}
-
 var varAllComputeStorageTags = {
     DomainName: avdIdentityDomainName
     JoinType: avdIdentityServiceProvider
 }
-
 var varAvdCostManagementParentResourceTag = {
     'cm-resource-parent': '/subscriptions/${avdWorkloadSubsId}}/resourceGroups/${varServiceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${varHostPoolName}'
 }
-
 var varAllResourceTags = union(varCommonResourceTags, varAllComputeStorageTags)
 //
-
 var varTelemetryId = 'pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-${avdManagementPlaneLocation}'
-
 var resourceGroups = [
     {
         purpose: 'Service-Objects'
@@ -913,48 +787,6 @@ module baselineStorageResourceGroup '../../carml/1.3.0/Microsoft.Resources/resou
     ]: []
 }
 
-/*
-// Validation Deployment Script
-// This module validates the selected parameter values and collects required data
-module validation 'avd-modules/validation.bicep' = {
-  name: 'AVD-Deployment-Validation-${time}'
-  scope: resourceGroup(avdServiceObjectsRgName)
-  params: {
-    Availability: Availability
-    DiskEncryption: DiskEncryption
-    DiskSku: DiskSku
-    DomainName: DomainName
-    DomainServices: DomainServices
-    EphemeralOsDisk: EphemeralOsDisk
-    ImageSku: ImageSku
-    KerberosEncryption: KerberosEncryption
-    Location: Location
-    ManagedIdentityResourceId: managedIdentity.outputs.resourceIdentifier
-    NamingStandard: NamingStandard
-    PooledHostPool: PooledHostPool
-    RecoveryServices: RecoveryServices
-    SasToken: SasToken
-    ScriptsUri: ScriptsUri
-    SecurityPrincipalIds: SecurityPrincipalObjectIds
-    SecurityPrincipalNames: SecurityPrincipalNames
-    SessionHostCount: SessionHostCount
-    SessionHostIndex: SessionHostIndex
-    StartVmOnConnect: StartVmOnConnect
-    //StorageCount: StorageCount
-    StorageSolution: StorageSolution
-    Tags: createResourceTags ? commonResourceTags : {}
-    Timestamp: time
-    VirtualNetwork: VirtualNetwork
-    VirtualNetworkResourceGroup: VirtualNetworkResourceGroup
-    VmSize: avdSessionHostsSize
-  }
-  dependsOn: [
-    resourceGroups
-    managedIdentity
-  ]
-}
-*/
-
 // Azure Policies for monitoring Diagnostic settings. Performance couunters on new or existing Log Analytics workspace. New workspace if needed.
 module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bicep' = if (avdDeployMonitoring) {
     name: 'Monitoring-${time}'
@@ -970,24 +802,6 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
         tags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
     }
     dependsOn: []
-}
-
-// Azure Policies for network monitorig/security . New storage account/Reuse existing one if needed created for the NSG flow logs
-module azurePoliciesNetworking './modules/azurePolicyNetworking/deploy.bicep' = if (avdDeployMonitoring && deployCustomPolicyNetworking) {
-    name: (length('Enable-Azure-Policy-for-Netwok-Security-${time}') > 64) ? take('Enable-Azure-Policy-for-Netwok-Security-${time}',64) : 'Enable-Azure-Policy-for-Netwok-Security-${time}'
-    params: {
-        alaWorkspaceResourceId: (avdDeployMonitoring && deployAlaWorkspace) ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId
-        alaWorkspaceId: (avdDeployMonitoring && deployAlaWorkspace) ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceId : alaExistingWorkspaceResourceId
-        managementPlaneLocation: avdManagementPlaneLocation
-        workloadSubsId: avdWorkloadSubsId
-        monitoringRgName: varMonitoringRgName
-        stgAccountForFlowLogsId: deployStgAccountForFlowLogs ? '' : stgAccountForFlowLogsId
-        stgAccountForFlowLogsName: deployStgAccountForFlowLogs ? varStgAccountForFlowLogsName : ''
-        tags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
-    }
-    dependsOn: [
-        monitoringDiagnosticSettings
-    ]
 }
 
 // Networking.
@@ -1031,14 +845,13 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     params: {
         applicationGroupNameDesktop: varApplicationGroupNameDesktop
         applicationGroupFriendlyNameDesktop: varApplicationGroupFriendlyName
-        applicationGroupAppFriendlyNameDesktop: varApplicationGroupAppFriendlyName
         workSpaceName: varWorkSpaceName
         osImage: avdOsImage
         workSpaceFriendlyName: varWorkSpaceFriendlyName
         applicationGroupNameRapp: varApplicationGroupNameRapp
         applicationGroupFriendlyNameRapp: varApplicationGroupFriendlyNameRapp
         deployRappGroup: avdDeployRappGroup
-        computeTimeZone: varTimeZones[avdSessionHostLocation]
+        computeTimeZone: varTimeZoneSessionHosts
         hostPoolName: varHostPoolName
         hostPoolFriendlyName: varHostFriendlyName
         hostPoolRdpProperties: avdHostPoolRdpProperties
@@ -1072,7 +885,6 @@ module managedIdentitiesRoleAssign './modules/identity/deploy.bicep' = {
     name: 'Managed-ID-RoleAssign-${time}'
     params: {
         computeObjectsRgName: varComputeObjectsRgName
-        deploySessionHosts: avdDeploySessionHosts
         enterpriseAppObjectId: avdEnterpriseAppObjectId
         deployScalingPlan: avdDeployScalingPlan
         sessionHostLocation: avdSessionHostLocation
@@ -1082,7 +894,6 @@ module managedIdentitiesRoleAssign './modules/identity/deploy.bicep' = {
         storageManagedIdentityName: varStorageManagedIdentityName
         readerRoleId: varReaderRoleId
         enableStartVmOnConnect: avdStartVmOnConnect
-        managementPlaneLocation: avdManagementPlaneLocation
         identityServiceProvider: avdIdentityServiceProvider
         storageAccountContributorRoleId: varStorageAccountContributorRoleId
         createStorageDeployment: varCreateStorageDeployment
@@ -1204,9 +1015,8 @@ module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if 
         managedIdentityClientId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
         storageToDomainScript:  varStorageToDomainScript
         storageToDomainScriptUri: varStorageToDomainScriptUri
-        computeTimeZone: varTimeZones[avdSessionHostLocation]
+        computeTimeZone: varTimeZoneSessionHosts
         applicationSecurityGroupResourceId: createAvdVnet ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
-        computeObjectsRgName: varComputeObjectsRgName
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
@@ -1263,9 +1073,8 @@ module msixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (va
         managedIdentityClientId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
         storageToDomainScript:  varStorageToDomainScript
         storageToDomainScriptUri: varStorageToDomainScriptUri
-        computeTimeZone: varTimeZones[avdSessionHostLocation]
+        computeTimeZone: varTimeZoneSessionHosts
         applicationSecurityGroupResourceId: createAvdVnet ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
-        computeObjectsRgName: varComputeObjectsRgName
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
@@ -1313,7 +1122,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
     params: {
 
         avdAgentPackageLocation: varAvdAgentPackageLocation
-        computeTimeZone: varTimeZones[avdSessionHostLocation]
+        computeTimeZone: varTimeZoneSessionHosts
         applicationSecurityGroupResourceId: createAvdVnet ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
         availabilitySetFaultDomainCount: avdAsFaultDomainCount
         availabilitySetUpdateDomainCount: avdAsUpdateDomainCount

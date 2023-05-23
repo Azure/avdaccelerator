@@ -39,9 +39,6 @@ param applicationGroupNameDesktop string
 @description('AVD Application group for the session hosts. Desktop type (friendly name).')
 param applicationGroupFriendlyNameDesktop string
 
-@description('AVD Application group app for the session hosts. Desktop type (friendly name).')
-param applicationGroupAppFriendlyNameDesktop string
-
 @description('AVD deploy remote app application group.')
 param deployRappGroup bool
 
@@ -114,6 +111,7 @@ param time string = utcNow()
 // =========== //
 // Variable declaration //
 // =========== //
+var varAzureCloudName = environment().name
 var varDesktopApplicaitonGroups = [
   {
     name: applicationGroupNameDesktop
@@ -224,11 +222,11 @@ var varScalingPlanDiagnostic = [
 ]
 
 // =========== //
-// Deployments //
+// Deployments Commercial//
 // =========== //
 
 // Hostpool.
-module hostPool '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/hostpools/deploy.bicep' = {
+module hostPool '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/hostpools/deploy.bicep' = if(varAzureCloudName == 'AzureCloud') {
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
   name: 'HostPool-${time}'
   params: {
@@ -249,7 +247,7 @@ module hostPool '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/hostpoo
 }
 
 // Application groups.
-module applicationGroups '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/applicationgroups/deploy.bicep' = [for applicationGroup in varFinalApplicationGroups: {
+module applicationGroups '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/applicationgroups/deploy.bicep' = [for applicationGroup in varFinalApplicationGroups: if(varAzureCloudName == 'AzureCloud') {
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
   name: 'Application-Group-${applicationGroup.name}-${time}'
   params: {
@@ -257,7 +255,7 @@ module applicationGroups '../../../../carml/1.3.0/Microsoft.DesktopVirtualizatio
     friendlyName: applicationGroup.friendlyName
     location: applicationGroup.location
     applicationGroupType: applicationGroup.applicationGroupType
-    hostpoolName: hostPool.outputs.name
+    hostpoolName: hostPoolName
     tags: tags
     applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsApps : []
     roleAssignments: !empty(applicationGroupIdentitiesIds) ? [
@@ -277,7 +275,7 @@ module applicationGroups '../../../../carml/1.3.0/Microsoft.DesktopVirtualizatio
 }]
 
 // Workspace.
-module workSpace '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/workspaces/deploy.bicep' = {
+module workSpace '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/workspaces/deploy.bicep' = if(varAzureCloudName == 'AzureCloud') {
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
   name: 'Workspace-${time}'
   params: {
@@ -302,7 +300,7 @@ module workSpace '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/worksp
 }
 
 // Scaling plan.
-module scalingPlan '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/scalingplans/deploy.bicep' =  if (deployScalingPlan && (hostPoolType == 'Pooled'))  {
+module scalingPlan '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/scalingplans/deploy.bicep' =  if (deployScalingPlan && (hostPoolType == 'Pooled') && (varAzureCloudName == 'AzureCloud'))  {
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
   name: 'Scaling-Plan-${time}'
   params: {
@@ -327,6 +325,113 @@ module scalingPlan '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/scal
     hostPool
     applicationGroups
     workSpace
+  ]
+}
+
+// =========== //
+// Deployments Gov//
+// =========== //
+
+// Hostpool.
+module hostPoolGov '../../../../carml/1.3.0.gov/Microsoft.DesktopVirtualization/hostpools/deploy.bicep' = if(varAzureCloudName == 'AzureUSGovernment') {
+  scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+  name: 'HostPool-${time}'
+  params: {
+    name: hostPoolName
+    friendlyName: hostPoolFriendlyName
+    location: managementPlaneLocation
+    type: hostPoolType
+    startVMOnConnect: startVmOnConnect
+    customRdpProperty: varHostPoolRdpPropertiesDomainServiceCheck
+    loadBalancerType: hostPoolLoadBalancerType
+    maxSessionLimit: hostPoolMaxSessions
+    personalDesktopAssignmentType: personalAssignType
+    tags: tags
+    diagnosticWorkspaceId: alaWorkspaceResourceId
+    diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
+    diagnosticLogCategoriesToEnable: varHostPoolDiagnostic
+  }
+}
+
+// Application groups.
+module applicationGroupsGov '../../../../carml/1.3.0.gov/Microsoft.DesktopVirtualization/applicationgroups/deploy.bicep' = [for applicationGroup in varFinalApplicationGroups: if(varAzureCloudName == 'AzureUSGovernment') {
+  scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+  name: 'Application-Group-${applicationGroup.name}-${time}'
+  params: {
+    name: applicationGroup.name
+    friendlyName: applicationGroup.friendlyName
+    location: applicationGroup.location
+    applicationGroupType: applicationGroup.applicationGroupType
+    hostpoolName: hostPoolName
+    tags: tags
+    applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsApps : []
+    roleAssignments: !empty(applicationGroupIdentitiesIds) ? [
+      {
+      roleDefinitionIdOrName: 'Desktop Virtualization User'
+      principalIds: applicationGroupIdentitiesIds
+      principalType: applicationGroupIdentityType
+      }
+    ]: []     
+    diagnosticWorkspaceId: alaWorkspaceResourceId
+    diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
+    diagnosticLogCategoriesToEnable: varApplicationGroupDiagnostic
+  }
+  dependsOn: [
+    hostPoolGov
+  ]
+}]
+
+// Workspace.
+module workSpaceGov '../../../../carml/1.3.0.gov/Microsoft.DesktopVirtualization/workspaces/deploy.bicep' = if(varAzureCloudName == 'AzureUSGovernment') {
+  scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+  name: 'Workspace-${time}'
+  params: {
+      name: workSpaceName
+      friendlyName: workSpaceFriendlyName
+      location: managementPlaneLocation
+      appGroupResourceIds: deployRappGroup ? [
+        '/subscriptions/${workloadSubsId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${applicationGroupNameDesktop}'
+        '/subscriptions/${workloadSubsId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${applicationGroupNameRapp}'
+      ]: [
+        '/subscriptions/${workloadSubsId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${applicationGroupNameDesktop}'
+      ]
+      tags: tags
+      diagnosticWorkspaceId: alaWorkspaceResourceId
+      diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
+      diagnosticLogCategoriesToEnable: varWorkspaceDiagnostic
+  }
+  dependsOn: [
+    hostPoolGov
+    applicationGroupsGov
+  ]
+}
+
+// Scaling plan.
+module scalingPlanGov '../../../../carml/1.3.0.gov/Microsoft.DesktopVirtualization/scalingplans/deploy.bicep' =  if (deployScalingPlan && (hostPoolType == 'Pooled') && (varAzureCloudName == 'AzureUSGovernment'))  {
+  scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+  name: 'Scaling-Plan-${time}'
+  params: {
+      name:scalingPlanName
+      location: managementPlaneLocation
+      hostPoolType: 'Pooled' //avdHostPoolType
+      exclusionTag: scalingPlanExclusionTag
+      timeZone: computeTimeZone
+      schedules: scalingPlanSchedules
+      hostPoolReferences: [
+        {
+        hostPoolArmPath: '/subscriptions/${workloadSubsId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${hostPoolName}'
+        scalingPlanEnabled: true
+        }
+      ]
+      tags: tags
+      diagnosticWorkspaceId: alaWorkspaceResourceId
+      diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
+      diagnosticLogCategoriesToEnable: varScalingPlanDiagnostic
+  }
+  dependsOn: [
+    hostPoolGov
+    applicationGroupsGov
+    workSpaceGov
   ]
 }
 
