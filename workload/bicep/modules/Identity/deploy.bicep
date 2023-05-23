@@ -6,9 +6,6 @@ targetScope = 'subscription'
 @description('Location where to deploy AVD session hosts.')
 param sessionHostLocation string
 
-@description('Location where to deploy AVD management plane.')
-param managementPlaneLocation string
-
 @description('AVD workload subscription ID, multiple subscriptions scenario.')
 param workloadSubsId string
 
@@ -23,9 +20,6 @@ param storageObjectsRgName string
 
 @description('Azure Virtual Desktop enterprise application object ID.')
 param enterpriseAppObjectId string
-
-@description('Deploy new session hosts.')
-param deploySessionHosts bool
 
 @description('Configure start VM on connect.')
 param enableStartVmOnConnect bool
