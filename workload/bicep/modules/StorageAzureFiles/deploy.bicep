@@ -314,7 +314,7 @@ module managementVm '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
         allowExtensionOperations: true
         extensionDomainJoinPassword: avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
         extensionDomainJoinConfig: {
-            enabled: true
+            enabled: (identityServiceProvider == 'AAD') ? false: true
             settings: {
                 name: identityDomainName
                 ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
@@ -322,6 +322,10 @@ module managementVm '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
                 restart: 'true'
                 options: '3'
             }
+        }
+        // Azure AD (AAD) Join.
+        extensionAadJoinConfig: {
+            enabled: (identityServiceProvider == 'AAD') ? true: false
         }
         tags: tags
     }
