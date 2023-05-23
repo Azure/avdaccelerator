@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "1786153447899312491"
+      "templateHash": "6284606188796161201"
     }
   },
   "parameters": {
@@ -3245,7 +3245,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "609992084616537383"
+              "templateHash": "10487081446530218243"
             }
           },
           "parameters": {
@@ -5819,7 +5819,7 @@
                     "value": "PT10M"
                   },
                   "scriptContent": {
-                    "value": "      Write-Host \"Start\"\r\n      Get-Date\r\n      Start-Sleep -Seconds 60\r\n      Write-Host \"Stop\"\r\n      Get-Date\r\n      "
+                    "value": "      Write-Host \"Start\"\r\n      Get-Date\r\n      Start-Sleep -Seconds 120\r\n      Write-Host \"Stop\"\r\n      Get-Date\r\n      "
                   }
                 },
                 "template": {
@@ -7011,7 +7011,8 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-{0}', parameters('time')))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-{0}', parameters('time')))]",
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('ALA-Workspace-Wait-{0}', parameters('time')))]"
               ]
             },
             {
@@ -7947,7 +7948,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-{0}', parameters('time')))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('ALA-Workspace-Wait-{0}', parameters('time')))]"
               ]
             }
           ],
