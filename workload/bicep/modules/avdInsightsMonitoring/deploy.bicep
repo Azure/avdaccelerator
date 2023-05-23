@@ -103,7 +103,6 @@ module deployDiagnosticsAzurePolicyForAvd './.bicep/azureMonitoringPolicies.bice
 module deployMonitoringEventsPerformanceSettings './.bicep/monitoringEventsPerformanceCounters.bicep' = if (deployAlaWorkspace) {
   name: 'Events-Performance-${time}'
   params: {
-      managementPlaneLocation: managementPlaneLocation
       deployAlaWorkspace: deployAlaWorkspace
       alaWorkspaceId: deployAlaWorkspace ? '' : alaWorkspaceId
       monitoringRgName: monitoringRgName
