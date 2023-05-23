@@ -53,6 +53,9 @@ param avdApplicationGroupIdentityType string = 'Group'
 @description('Required. AD domain name.')
 param avdIdentityDomainName string = ''
 
+@description('Required. AD domain name.')
+param identityDomainGuid string = ''
+
 @description('Required. AVD session host domain join username.')
 param avdDomainJoinUserName string = ''
 
@@ -674,9 +677,7 @@ var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
 var varCreateOuForStorageString = string(createOuForStorage)
 var varAllDnsServers = '${customDnsIps},168.63.129.16'
 var varDnsServers = empty(customDnsIps) ? []: (split(varAllDnsServers, ','))
-var varCreateFslogixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: createAvdFslogixDeployment
-var varCreateMsixDeployment = (avdIdentityServiceProvider == 'AAD') ? false: createMsixDeployment
-var varCreateStorageDeployment = (varCreateFslogixDeployment||varCreateMsixDeployment == true) ? true: false
+var varCreateStorageDeployment = (createAvdFslogixDeployment||createMsixDeployment == true) ? true: false
 var varApplicationGroupIdentitiesIds = !empty(avdApplicationGroupIdentitiesIds) ? (split(avdApplicationGroupIdentitiesIds, ',')): []
 var varCreateVnetPeering = !empty(existingHubVnetResourceId) ? true: false
 // Resource tagging
@@ -773,7 +774,7 @@ module baselineResourceGroups '../../carml/1.3.0/Microsoft.Resources/resourceGro
 }]
 
 // Storage.
-module baselineStorageResourceGroup '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (varCreateStorageDeployment && (avdIdentityServiceProvider != 'AAD')) {
+module baselineStorageResourceGroup '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (varCreateStorageDeployment) {
     scope: subscription(avdWorkloadSubsId)
     name: 'Deploy-${varStorageObjectsRgName}-${time}'
     params: {
@@ -817,14 +818,14 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet) {
         privateEndpointRouteTableName: varPrivateEndpointRouteTableName
         vNetworkAddressPrefixes: avdVnetworkAddressPrefixes
         vNetworkName: varVnetworkName
-        vNetworkPeeringName: avdIdentityServiceProvider == 'AAD' ? '': varVnetworkPeeringName
+        vNetworkPeeringName: varVnetworkPeeringName
         vNetworkAvdSubnetName: varVnetworkAvdSubnetName
         vNetworkPrivateEndpointSubnetName: varVnetworkPrivateEndpointSubnetName
         createVnet: createAvdVnet
         createVnetPeering: varCreateVnetPeering
         deployPrivateEndpointSubnet: (deployPrivateEndpointKeyvaultStorage == true) ? true : false //adding logic that will be used when also including AVD control plane PEs
         vNetworkGatewayOnHub: vNetworkGatewayOnHub
-        existingHubVnetResourceId: avdIdentityServiceProvider == 'AAD' ? '': existingHubVnetResourceId
+        existingHubVnetResourceId: existingHubVnetResourceId
         sessionHostLocation: avdSessionHostLocation
         vNetworkAvdSubnetAddressPrefix: vNetworkAvdSubnetAddressPrefix
         vNetworkPrivateEndpointSubnetAddressPrefix: vNetworkPrivateEndpointSubnetAddressPrefix
@@ -1000,7 +1001,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
 }
 
 // FSLogix Storage.
-module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (varCreateFslogixDeployment && avdDeploySessionHosts && (avdIdentityServiceProvider != 'AAD')) {
+module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (createAvdFslogixDeployment && avdDeploySessionHosts) {
     name: 'Storage-Fslogix-Azure-Files-${time}'
     params: {
         storagePurpose: 'fslogix'
@@ -1022,6 +1023,7 @@ module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if 
         serviceObjectsRgName: varServiceObjectsRgName
         fileShareQuotaSize: fslogixFileShareQuotaSize
         identityDomainName: avdIdentityDomainName
+        identityDomainGuid: identityDomainGuid
         imageTemplateDefinitionId: avdImageTemplateDefinitionId
         sessionHostOuPath: avdOuPath
         sessionHostDiskType: avdSessionHostDiskType
@@ -1058,7 +1060,7 @@ module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if 
 }
 
 // Msix Storage.
-module msixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (varCreateMsixDeployment && avdDeploySessionHosts && (avdIdentityServiceProvider != 'AAD')) {
+module msixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (createMsixDeployment && avdDeploySessionHosts) {
     name: 'Storage-Msix-AzureFiles-${time}'
     params: {
         storagePurpose: 'msix'
@@ -1080,6 +1082,7 @@ module msixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (va
         serviceObjectsRgName: varServiceObjectsRgName
         fileShareQuotaSize: msixFileShareQuotaSize
         identityDomainName: avdIdentityDomainName
+        identityDomainGuid: identityDomainGuid
         imageTemplateDefinitionId: avdImageTemplateDefinitionId
         sessionHostOuPath: avdOuPath
         sessionHostDiskType: avdSessionHostDiskType
@@ -1153,12 +1156,12 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         vmLocalUserName: avdVmLocalUserName
         workloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
-        createAvdFslogixDeployment: (avdIdentityServiceProvider != 'AAD') ? varCreateFslogixDeployment: false
-        storageManagedIdentityResourceId:  (varCreateStorageDeployment && (avdIdentityServiceProvider != 'AAD'))  ? managedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
-        fsLogixScript: (avdIdentityServiceProvider != 'AAD') ? varFsLogixScript: ''
-        fsLogixScriptArguments: (avdIdentityServiceProvider != 'AAD') ? varFsLogixScriptArguments: ''
-        fslogixScriptUri: (avdIdentityServiceProvider != 'AAD') ? varFslogixScriptUri: ''
-        fslogixSharePath: (avdIdentityServiceProvider != 'AAD') ? varFslogixSharePath: ''
+        createAvdFslogixDeployment: createAvdFslogixDeployment
+        storageManagedIdentityResourceId:  (varCreateStorageDeployment)  ? managedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
+        fsLogixScript: varFsLogixScript
+        fsLogixScriptArguments: varFsLogixScriptArguments
+        fslogixScriptUri: varFslogixScriptUri
+        fslogixSharePath: varFslogixSharePath
         marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
         tags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
