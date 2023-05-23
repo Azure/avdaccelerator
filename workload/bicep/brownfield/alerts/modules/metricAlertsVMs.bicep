@@ -5,9 +5,10 @@ param HostPoolInfo object  // Should be single object from array of objects coll
 param MetricAlerts object
 param Tags object
 param Location string
+param Timestamp string = utcNow()
 
 module metricAlerts_VirtualMachines '../../../../../carml/1.3.0/Microsoft.Insights/metricAlerts/deploy.bicep' = [for i in range(0, length(MetricAlerts.virtualMachines)): if(HostPoolInfo.VMResourceGroup != null) {
-  name: 'carml_${MetricAlerts.virtualMachines[i].name}'
+  name: 'carml_${MetricAlerts.virtualMachines[i].name}_${Timestamp}'
   params: {
     enableDefaultTelemetry: false
     name: replace(MetricAlerts.virtualMachines[i].name, 'xHostPoolNamex', HostPoolInfo.HostPoolName)
