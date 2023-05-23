@@ -87,8 +87,8 @@ param avdPersonalAssignType string = 'Automatic'
 @description('Optional. AVD host pool load balacing type. (Default: BreadthFirst)')
 param avdHostPoolLoadBalancerType string = 'BreadthFirst'
 
-@description('Optional. AVD host pool maximum number of user sessions per session host. (Default: 5)')
-param avhHostPoolMaxSessions int = 5
+@description('Optional. AVD host pool maximum number of user sessions per session host. (Default: 8)')
+param avhHostPoolMaxSessions int = 8
 
 @description('Optional. AVD host pool start VM on Connect. (Default: true)')
 param avdStartVmOnConnect bool = true
@@ -208,8 +208,8 @@ param msixStoragePerformance string = 'Premium'
 @description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool = false
 
-@description('Optional. Session host VM size. (Defualt: Standard_D2s_v3)')
-param avdSessionHostsSize string = 'Standard_D2s_v3'
+@description('Optional. Session host VM size. (Defualt: Standard_D4ads_v5)')
+param avdSessionHostsSize string = 'Standard_D4ads_v5'
 
 @description('Optional. OS disk type for session host. (Defualt: Standard_LRS)')
 param avdSessionHostDiskType string = 'Standard_LRS'
