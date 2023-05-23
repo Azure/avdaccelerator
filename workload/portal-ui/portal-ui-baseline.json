@@ -951,13 +951,13 @@
                                     "visible": "[equals(steps('storage').storageFslogix.fslogixDeployment, true)]",
                                     "label": "File share peformance",
                                     "filter": true,
-                                    "defaultValue": "Premium (Recommended)",
+                                    "defaultValue": "Premium",
                                     "toolTip": "Storage account performance for FSLogix storage. Recommended tier is Premium.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Premium (Recommended)",
+                                                "label": "Premium",
                                                 "description": "",
                                                 "value": "Premium"
                                             },
