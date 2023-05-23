@@ -3,9 +3,6 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
-@description('Location where to deploy AVD management plane.')
-param managementPlaneLocation string
-
 @description('AVD workload subscription ID, multiple subscriptions scenario.')
 param workloadSubsId string
 
