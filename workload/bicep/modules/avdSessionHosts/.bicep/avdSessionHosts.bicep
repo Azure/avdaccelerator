@@ -381,7 +381,7 @@ module sessionHostsMonitoringWait '../../../../../carml/1.3.0/Microsoft.Resource
 } 
 
 // Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
-module configureFsLogixForAvdHosts './configureFslogixOnSessionHosts.bicep' = [for i in range(1, sessionHostsCount): if (createAvdFslogixDeployment && (identityServiceProvider != 'AAD')) {
+module configureFsLogixForAvdHosts './configureFslogixOnSessionHosts.bicep' = [for i in range(1, sessionHostsCount): if (createAvdFslogixDeployment) {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
     name: 'Configure-FsLogix-for-${padLeft((i + sessionHostCountIndex), 3, '0')}-${time}'
     params: {

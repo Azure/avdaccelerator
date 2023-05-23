@@ -64,6 +64,9 @@ param vmLocalUserName string
 @description('AD domain name.')
 param identityDomainName string
 
+@description('AD domain name.')
+param identityDomainGuid string
+
 @description('Keyvault name to get credentials from.')
 param wrklKvName string
 
@@ -168,6 +171,7 @@ var varWrklStoragePrivateEndpointName = 'pe-${varStorageName}-file'
 var varStoragePurposeAcronym = (storagePurpose == 'fslogix') ? 'fsl': ((storagePurpose == 'msix') ? 'msx': '')
 var varStorageName = useCustomNaming ? '${storageAccountPrefixCustomName}${varStoragePurposeAcronym}${deploymentPrefixLowercase}${namingUniqueStringSixChar}' : 'st${varStoragePurposeAcronym}${deploymentPrefixLowercase}${namingUniqueStringSixChar}'
 var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${varStorageName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -DomainAdminUserName ${domainJoinUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -CreateNewOU ${createOuForStorageString} -ShareName ${varFileShareName} -ClientId ${managedIdentityClientId}'
+var vardirectoryServiceOptions = (identityServiceProvider == 'AADDS') ? 'AADDS': (identityServiceProvider == 'AAD') ? 'AADKERB': 'None'
 
 // =========== //
 // Deployments //
@@ -190,10 +194,12 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
         allowBlobPublicAccess: false
         publicNetworkAccess: deployPrivateEndpoint ? 'Disabled' : 'Enabled'
         kind: ((storageSku =~ 'Premium_LRS') || (storageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
-        azureFilesIdentityBasedAuthentication: (identityServiceProvider == 'AADDS') ? {
-            directoryServiceOptions: 'AADDS'
-        }: {
-            directoryServiceOptions: 'None'
+        azureFilesIdentityBasedAuthentication: {
+            directoryServiceOptions: vardirectoryServiceOptions
+            activeDirectoryProperties: (identityServiceProvider == 'AAD') ? {
+                domainGuid: identityDomainGuid
+                domainName: identityDomainName
+            }: {}
         }
         accessTier: 'Hot'
         networkAcls: deployPrivateEndpoint ? {
