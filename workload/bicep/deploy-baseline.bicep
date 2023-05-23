@@ -53,7 +53,7 @@ param avdApplicationGroupIdentityType string = 'Group'
 @description('Required. AD domain name.')
 param avdIdentityDomainName string = ''
 
-@description('Required. AD domain name.')
+@description('Required. AD domain GUID.')
 param identityDomainGuid string = ''
 
 @description('Required. AVD session host domain join username.')
@@ -1001,7 +1001,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
 }
 
 // FSLogix Storage.
-module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (createAvdFslogixDeployment && avdDeploySessionHosts) {
+module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (createAvdFslogixDeployment) {
     name: 'Storage-Fslogix-Azure-Files-${time}'
     params: {
         storagePurpose: 'fslogix'
@@ -1060,7 +1060,7 @@ module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if 
 }
 
 // Msix Storage.
-module msixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (createMsixDeployment && avdDeploySessionHosts) {
+module msixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (createMsixDeployment) {
     name: 'Storage-Msix-AzureFiles-${time}'
     params: {
         storagePurpose: 'msix'

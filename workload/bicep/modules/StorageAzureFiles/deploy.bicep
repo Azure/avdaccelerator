@@ -64,7 +64,7 @@ param vmLocalUserName string
 @description('AD domain name.')
 param identityDomainName string
 
-@description('AD domain name.')
+@description('AD domain GUID.')
 param identityDomainGuid string
 
 @description('Keyvault name to get credentials from.')
