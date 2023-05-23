@@ -99,7 +99,7 @@
             "value": "10.10.1.0/27"
         },
         "customDnsIps": {
-            "value": "none"
+            "value": ""
         },
         "avdVnetPrivateDnsZone": {
             "value": true
