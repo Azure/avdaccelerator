@@ -228,7 +228,7 @@
                                         "required": true
                                     },
                                     "options": {
-                                        "hideConfirmation": false
+                                        "hideConfirmation": true
                                     }
                                 }
                             ]
@@ -649,7 +649,7 @@
                                     "type": "Microsoft.Common.DropDown",
                                     "label": "OS Disk type",
                                     "filter": true,
-                                    "defaultValue": "Standard",
+                                    "defaultValue": "Premium",
                                     "toolTip": "Select session host disk type to host the OS.",
                                     "constraints": {
                                         "required": true,
@@ -951,13 +951,13 @@
                                     "visible": "[equals(steps('storage').storageFslogix.fslogixDeployment, true)]",
                                     "label": "File share peformance",
                                     "filter": true,
-                                    "defaultValue": "Premium (Recommended)",
+                                    "defaultValue": "Premium",
                                     "toolTip": "Storage account performance for FSLogix storage. Recommended tier is Premium.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Premium (Recommended)",
+                                                "label": "Premium",
                                                 "description": "",
                                                 "value": "Premium"
                                             },
@@ -1018,13 +1018,13 @@
                                     "visible": "[equals(steps('storage').storageMsix.msixDeployment, true)]",
                                     "label": "File share performance",
                                     "filter": true,
-                                    "defaultValue": "Premium (Recommended)",
+                                    "defaultValue": "Premium",
                                     "toolTip": "Storage account performance for MSIX App Attach storage. Recommended tier is Premium.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Premium (Recommended)",
+                                                "label": "Premium",
                                                 "description": "",
                                                 "value": "Premium"
                                             },

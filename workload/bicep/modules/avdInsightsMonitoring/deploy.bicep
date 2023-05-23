@@ -78,7 +78,7 @@ module alaWorkspaceWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentS
       scriptContent: '''
       Write-Host "Start"
       Get-Date
-      Start-Sleep -Seconds 60
+      Start-Sleep -Seconds 120
       Write-Host "Stop"
       Get-Date
       '''
@@ -97,13 +97,15 @@ module deployDiagnosticsAzurePolicyForAvd './.bicep/azureMonitoringPolicies.bice
     managementPlaneLocation: managementPlaneLocation
     workloadSubsId: workloadSubsId
   }
+  dependsOn: [
+    alaWorkspaceWait
+  ]
 }
 
 // Performance counters
-module deployMonitoringEventsPerformanceSettings './.bicep/monitoringEventsPerformanceCounters.bicep' = {
+module deployMonitoringEventsPerformanceSettings './.bicep/monitoringEventsPerformanceCounters.bicep' = if (deployAlaWorkspace) {
   name: 'Events-Performance-${time}'
   params: {
-      managementPlaneLocation: managementPlaneLocation
       deployAlaWorkspace: deployAlaWorkspace
       alaWorkspaceId: deployAlaWorkspace ? '' : alaWorkspaceId
       monitoringRgName: monitoringRgName
@@ -112,7 +114,7 @@ module deployMonitoringEventsPerformanceSettings './.bicep/monitoringEventsPerfo
       tags: tags
   }
   dependsOn: [
-      alaWorkspace
+    alaWorkspaceWait
   ]
 }
 
