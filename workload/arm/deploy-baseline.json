@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "6284606188796161201"
+      "templateHash": "4024373683022410780"
     }
   },
   "parameters": {
@@ -12304,7 +12304,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "653433359542439481"
+              "templateHash": "4580871589320714003"
             }
           },
           "parameters": {
@@ -13266,7 +13266,7 @@
                     "value": "[variables('varFinalApplicationGroups')[copyIndex()].applicationGroupType]"
                   },
                   "hostpoolName": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time'))), '2022-09-01').outputs.name.value]"
+                    "value": "[parameters('hostPoolName')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -15517,7 +15517,7 @@
                     "value": "[variables('varFinalApplicationGroups')[copyIndex()].applicationGroupType]"
                   },
                   "hostpoolName": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time'))), '2022-09-01').outputs.name.value]"
+                    "value": "[parameters('hostPoolName')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -16146,7 +16146,6 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time')))]",
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time')))]"
               ]
             },
