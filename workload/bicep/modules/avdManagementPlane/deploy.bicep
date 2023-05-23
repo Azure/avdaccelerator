@@ -255,7 +255,7 @@ module applicationGroups '../../../../carml/1.3.0/Microsoft.DesktopVirtualizatio
     friendlyName: applicationGroup.friendlyName
     location: applicationGroup.location
     applicationGroupType: applicationGroup.applicationGroupType
-    hostpoolName: hostPool.outputs.name
+    hostpoolName: hostPoolName
     tags: tags
     applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsApps : []
     roleAssignments: !empty(applicationGroupIdentitiesIds) ? [
@@ -270,7 +270,7 @@ module applicationGroups '../../../../carml/1.3.0/Microsoft.DesktopVirtualizatio
     diagnosticLogCategoriesToEnable: varApplicationGroupDiagnostic
   }
   dependsOn: [
-    //hostPool
+    hostPool
   ]
 }]
 
@@ -362,7 +362,7 @@ module applicationGroupsGov '../../../../carml/1.3.0.gov/Microsoft.DesktopVirtua
     friendlyName: applicationGroup.friendlyName
     location: applicationGroup.location
     applicationGroupType: applicationGroup.applicationGroupType
-    hostpoolName: hostPool.outputs.name
+    hostpoolName: hostPoolName
     tags: tags
     applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsApps : []
     roleAssignments: !empty(applicationGroupIdentitiesIds) ? [
