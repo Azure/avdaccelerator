@@ -656,12 +656,10 @@ var varMarketPlaceGalleryWindows = {
 }
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var varFslogixScriptUri = '${varBaseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
-var varAadKerberosScriptUri = '${varBaseScriptUri}scripts/Set-AADKerberosRegKeys.ps1'
-var varFsLogixScript = './Set-FSLogixRegKeys.ps1'
-var varAadKerberosScript = './Set-AADKerberosRegKeys.ps1'
+var varFsLogixScript = (avdIdentityServiceProvider == 'AAD') ? './Set-FSLogixRegKeysAad.ps1': './Set-FSLogixRegKeys.ps1'
 var varFslogixFileShareName = createAvdFslogixDeployment ? fslogixStorageAzureFiles.outputs.fileShareName : ''
 var varFslogixSharePath = '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
-var varFsLogixScriptArguments = '-volumeshare ${varFslogixSharePath}'
+var varFsLogixScriptArguments = (avdIdentityServiceProvider == 'AAD') ? '-volumeshare ${varFslogixSharePath} -storageAccountName ${varFslogixStorageName} -identityDomainName ${avdIdentityDomainName}': '-volumeshare ${varFslogixSharePath}'
 var varAvdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
 var varStorageAccountContributorRoleId = '17d1049b-9a84-46fb-8f53-869881c3d3ab'
 var varReaderRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
@@ -1127,7 +1125,6 @@ module msixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (cr
 module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySessionHosts) {
     name: 'Session-Hosts-${time}'
     params: {
-
         avdAgentPackageLocation: varAvdAgentPackageLocation
         computeTimeZone: varTimeZoneSessionHosts
         applicationSecurityGroupResourceId: createAvdVnet ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
@@ -1163,11 +1160,9 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         createAvdFslogixDeployment: createAvdFslogixDeployment
         storageManagedIdentityResourceId:  (varCreateStorageDeployment)  ? managedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
         fsLogixScript: varFsLogixScript
-        aadKerberosScript: varAadKerberosScript
-        fsLogixScriptArguments: varFsLogixScriptArguments
         fslogixScriptUri: varFslogixScriptUri
         fslogixSharePath: varFslogixSharePath
-        fslogixStorageAccountName: varFslogixStorageName
+        fsLogixScriptArguments: varFsLogixScriptArguments
         marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
         tags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
