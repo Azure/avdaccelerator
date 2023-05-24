@@ -114,6 +114,9 @@ param createAvdFslogixDeployment bool
 @description('FSlogix configuration script file name.')
 param fsLogixScript string
 
+@description('AAD Kerberos configuration script file name.')
+param aadKerberosScript string
+
 @description('Configuration arguments for FSlogix.')
 param fsLogixScriptArguments string
 
@@ -122,6 +125,9 @@ param fslogixSharePath string
 
 @description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
+
+@description('Configuration arguments for AAD kerberos.')
+param aadKerberosScriptArguments string
 
 @description('Tags to be applied to resources')
 param tags object
@@ -381,9 +387,9 @@ module sessionHostsMonitoringWait '../../../../../carml/1.3.0/Microsoft.Resource
 } 
 
 // Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
-module configureFsLogixForAvdHosts './configureFslogixOnSessionHosts.bicep' = [for i in range(1, sessionHostsCount): if (createAvdFslogixDeployment) {
+module configureFsLogixAvdHosts './configureFslogixOnSessionHosts.bicep' = [for i in range(1, sessionHostsCount): if (createAvdFslogixDeployment) {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
-    name: 'Configure-FsLogix-for-${padLeft((i + sessionHostCountIndex), 3, '0')}-${time}'
+    name: 'Configure-FsLogix-${padLeft((i + sessionHostCountIndex), 3, '0')}-${time}'
     params: {
         location: sessionHostLocation
         name: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
@@ -397,8 +403,26 @@ module configureFsLogixForAvdHosts './configureFslogixOnSessionHosts.bicep' = [f
     ]
 }]
 
+// Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
+module configureAadKerberosAvdHosts './configureAadKerberosOnSessionHosts.bicep' = [for i in range(1, sessionHostsCount): if (createAvdFslogixDeployment) {
+    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
+    name: 'Configure-Kerberos-${padLeft((i + sessionHostCountIndex), 3, '0')}-${time}'
+    params: {
+        location: sessionHostLocation
+        name: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
+        file: aadKerberosScript
+        aadKerberosScriptArguments: aadKerberosScriptArguments
+        baseScriptUri: fslogixScriptUri
+    }
+    dependsOn: [
+        sessionHosts
+        sessionHostsMonitoringWait
+    ]
+}]
+
+
 // Add session hosts to AVD Host pool.
-module addAvdHostsToHostPool './registerSessionHostsOnHopstPool.bicep' = [for i in range(1, sessionHostsCount): {
+module addAvdHostsToHostPool './registerSessionHostsOnHopstPool.bicep' = [for i in range(1, sessionHostsCount): if (identityServiceProvider == 'AAD' && createAvdFslogixDeployment) {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
     name: 'HP-Join-${padLeft((i + sessionHostCountIndex), 3, '0')}-to-HP-${time}'
     params: {
@@ -411,7 +435,7 @@ module addAvdHostsToHostPool './registerSessionHostsOnHopstPool.bicep' = [for i 
     dependsOn: [
         sessionHosts
         sessionHostsMonitoringWait
-        configureFsLogixForAvdHosts
+        configureFsLogixAvdHosts
     ]
 }]
 
