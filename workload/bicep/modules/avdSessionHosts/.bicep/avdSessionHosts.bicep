@@ -112,10 +112,7 @@ param avdAgentPackageLocation string
 param createAvdFslogixDeployment bool
 
 @description('FSlogix configuration script file name.')
-param fsLogixScript string
-
-@description('AAD Kerberos configuration script file name.')
-param aadKerberosScript string
+param fsLogixScriptFile string
 
 @description('Configuration arguments for FSlogix.')
 param fsLogixScriptArguments string
@@ -125,9 +122,6 @@ param fslogixSharePath string
 
 @description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
-
-@description('Configuration arguments for AAD kerberos.')
-param aadKerberosScriptArguments string
 
 @description('Tags to be applied to resources')
 param tags object
@@ -151,6 +145,7 @@ var varAllAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', 
 var varNicDiagnosticMetricsToEnable = [
     'AllMetrics'
   ]
+
 // =========== //
 // Deployments //
 // =========== //
@@ -393,7 +388,7 @@ module configureFsLogixAvdHosts './configureFslogixOnSessionHosts.bicep' = [for 
     params: {
         location: sessionHostLocation
         name: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
-        file: fsLogixScript
+        file: fsLogixScriptFile
         fsLogixScriptArguments: fsLogixScriptArguments
         baseScriptUri: fslogixScriptUri
     }
@@ -402,24 +397,6 @@ module configureFsLogixAvdHosts './configureFslogixOnSessionHosts.bicep' = [for 
         sessionHostsMonitoringWait
     ]
 }]
-
-// Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
-module configureAadKerberosAvdHosts './configureAadKerberosOnSessionHosts.bicep' = [for i in range(1, sessionHostsCount): if (createAvdFslogixDeployment) {
-    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
-    name: 'Configure-Kerberos-${padLeft((i + sessionHostCountIndex), 3, '0')}-${time}'
-    params: {
-        location: sessionHostLocation
-        name: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
-        file: aadKerberosScript
-        aadKerberosScriptArguments: aadKerberosScriptArguments
-        baseScriptUri: fslogixScriptUri
-    }
-    dependsOn: [
-        sessionHosts
-        sessionHostsMonitoringWait
-    ]
-}]
-
 
 // Add session hosts to AVD Host pool.
 module addAvdHostsToHostPool './registerSessionHostsOnHopstPool.bicep' = [for i in range(1, sessionHostsCount): if (identityServiceProvider == 'AAD' && createAvdFslogixDeployment) {
