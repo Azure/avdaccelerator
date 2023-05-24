@@ -15,14 +15,14 @@ param baseScriptUri string
 param file string
 
 @description('Configuration arguments for FSlogix.')
-param fsLogixScriptArguments string
+param aadKerberosScriptArguments string
 
 // =========== //
 // Deployments //
 // =========== //
 
 // FSLogix configuration.
-resource fslogixConfigure 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = {
+resource aadKerberosConfigure 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = {
   name: '${name}/FSlogixSetup'
   location: location
   properties: {
@@ -33,7 +33,7 @@ resource fslogixConfigure 'Microsoft.Compute/virtualMachines/extensions@2022-08-
     settings: {}
     protectedSettings: {
       fileUris: array(baseScriptUri)
-      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File ${file} ${fsLogixScriptArguments}'
+      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File ${file} ${aadKerberosScriptArguments}'
     }
   }
 }
