@@ -656,7 +656,9 @@ var varMarketPlaceGalleryWindows = {
 }
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var varFslogixScriptUri = '${varBaseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
+var varAadKerberosScriptUri = '${varBaseScriptUri}scripts/Set-AADKerberosRegKeys.ps1'
 var varFsLogixScript = './Set-FSLogixRegKeys.ps1'
+var varAadKerberosScript = './Set-AADKerberosRegKeys.ps1'
 var varFslogixFileShareName = createAvdFslogixDeployment ? fslogixStorageAzureFiles.outputs.fileShareName : ''
 var varFslogixSharePath = '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
 var varFsLogixScriptArguments = '-volumeshare ${varFslogixSharePath}'
@@ -1159,9 +1161,11 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         createAvdFslogixDeployment: createAvdFslogixDeployment
         storageManagedIdentityResourceId:  (varCreateStorageDeployment)  ? managedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
         fsLogixScript: varFsLogixScript
+        aadKerberosScript: varAadKerberosScript
         fsLogixScriptArguments: varFsLogixScriptArguments
         fslogixScriptUri: varFslogixScriptUri
         fslogixSharePath: varFslogixSharePath
+        fslogixStorageAccountName: varFslogixStorageName
         marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
         tags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag

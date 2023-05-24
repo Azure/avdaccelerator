@@ -114,6 +114,9 @@ param createAvdFslogixDeployment bool
 @description('FSlogix configuration script file name.')
 param fsLogixScript string
 
+@description('AAD kerberos configuration script file name.')
+param aadKerberosScript string
+
 @description('Configuration arguments for FSlogix.')
 param fsLogixScriptArguments string
 
@@ -122,6 +125,9 @@ param fslogixSharePath string
 
 @description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
+
+@description('FSLogix storage account name.')
+param fslogixStorageAccountName string
 
 @description('Tags to be applied to resources')
 param tags object
@@ -149,7 +155,7 @@ var maxAvailabilitySetMembersCount = 199 // This is the max number of session ho
 var divisionAvSetValue = deploySessionHostsCount / maxAvailabilitySetMembersCount // This determines if any full availability sets are required.
 var divisionAvSetRemainderValue = deploySessionHostsCount % maxAvailabilitySetMembersCount // This determines if any partial availability sets are required.
 var availabilitySetCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue + 1 : divisionAvSetValue // This determines the total number of availability sets needed, whether full and / or partial.
-
+var varAadKerberosScriptArguments = '-storageAccountName ${fslogixStorageAccountName} -identityDomainName ${identityDomainName}'
 // =========== //
 // Deployments //
 // =========== //
@@ -214,9 +220,11 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varAvd
     createAvdFslogixDeployment: createAvdFslogixDeployment
     storageManagedIdentityResourceId: storageManagedIdentityResourceId
     fsLogixScript: fsLogixScript
+    aadKerberosScript: aadKerberosScript
     fsLogixScriptArguments: fsLogixScriptArguments
     fslogixSharePath: fslogixSharePath
     fslogixScriptUri: fslogixScriptUri
+    aadKerberosScriptArguments: varAadKerberosScriptArguments
     hostPoolToken: getHostPool.properties.registrationInfo.token
     marketPlaceGalleryWindows: marketPlaceGalleryWindows
     useSharedImage: useSharedImage
