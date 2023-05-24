@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "6284606188796161201"
+      "templateHash": "8164829620262981676"
     }
   },
   "parameters": {
@@ -105,6 +105,13 @@
         "description": "Required. AD domain name."
       }
     },
+    "identityDomainGuid": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Required. AD domain GUID."
+      }
+    },
     "avdDomainJoinUserName": {
       "type": "string",
       "defaultValue": "",
@@ -161,9 +168,9 @@
     },
     "avhHostPoolMaxSessions": {
       "type": "int",
-      "defaultValue": 5,
+      "defaultValue": 8,
       "metadata": {
-        "description": "Optional. AVD host pool maximum number of user sessions per session host. (Default: 5)"
+        "description": "Optional. AVD host pool maximum number of user sessions per session host. (Default: 8)"
       }
     },
     "avdStartVmOnConnect": {
@@ -423,9 +430,9 @@
     },
     "avdSessionHostsSize": {
       "type": "string",
-      "defaultValue": "Standard_D2s_v3",
+      "defaultValue": "Standard_D4ads_v5",
       "metadata": {
-        "description": "Optional. Session host VM size. (Defualt: Standard_D2s_v3)"
+        "description": "Optional. Session host VM size. (Defualt: Standard_D4ads_v5)"
       }
     },
     "avdSessionHostDiskType": {
@@ -1339,7 +1346,9 @@
     },
     "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
     "varFslogixScriptUri": "[format('{0}scripts/Set-FSLogixRegKeys.ps1', variables('varBaseScriptUri'))]",
+    "varAadKerberosScriptUri": "[format('{0}scripts/Set-AADKerberosRegKeys.ps1', variables('varBaseScriptUri'))]",
     "varFsLogixScript": "./Set-FSLogixRegKeys.ps1",
+    "varAadKerberosScript": "./Set-AADKerberosRegKeys.ps1",
     "varAvdAgentPackageLocation": "[format('https://wvdportalstorageblob.blob.{0}/galleryartifacts/Configuration_09-08-2022.zip', environment().suffixes.storage)]",
     "varStorageAccountContributorRoleId": "17d1049b-9a84-46fb-8f53-869881c3d3ab",
     "varReaderRoleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
@@ -1357,9 +1366,7 @@
     "varCreateOuForStorageString": "[string(parameters('createOuForStorage'))]",
     "varAllDnsServers": "[format('{0},168.63.129.16', parameters('customDnsIps'))]",
     "varDnsServers": "[if(empty(parameters('customDnsIps')), createArray(), split(variables('varAllDnsServers'), ','))]",
-    "varCreateFslogixDeployment": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), false(), parameters('createAvdFslogixDeployment'))]",
-    "varCreateMsixDeployment": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), false(), parameters('createMsixDeployment'))]",
-    "varCreateStorageDeployment": "[if(or(variables('varCreateFslogixDeployment'), equals(variables('varCreateMsixDeployment'), true())), true(), false())]",
+    "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(parameters('createMsixDeployment'), true())), true(), false())]",
     "varApplicationGroupIdentitiesIds": "[if(not(empty(parameters('avdApplicationGroupIdentitiesIds'))), split(parameters('avdApplicationGroupIdentitiesIds'), ','), createArray())]",
     "varCreateVnetPeering": "[if(not(empty(parameters('existingHubVnetResourceId'))), true(), false())]",
     "varCommonResourceTags": "[if(parameters('createResourceTags'), createObject('WorkloadName', parameters('workloadNameTag'), 'WorkloadType', parameters('workloadTypeTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('workloadCriticalityTag'), 'Custom'), parameters('workloadCriticalityCustomValueTag'), parameters('workloadCriticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'ServiceClass', parameters('workloadSlaTag'), 'OpsTeam', parameters('opsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag'), 'Environment', parameters('environmentTypeTag')), createObject())]",
@@ -2607,7 +2614,7 @@
       ]
     },
     {
-      "condition": "[and(variables('varCreateStorageDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'AAD')))]",
+      "condition": "[variables('varCreateStorageDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('Deploy-{0}-{1}', variables('varStorageObjectsRgName'), parameters('time'))]",
@@ -8004,7 +8011,9 @@
           "vNetworkName": {
             "value": "[variables('varVnetworkName')]"
           },
-          "vNetworkPeeringName": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), createObject('value', ''), createObject('value', variables('varVnetworkPeeringName')))]",
+          "vNetworkPeeringName": {
+            "value": "[variables('varVnetworkPeeringName')]"
+          },
           "vNetworkAvdSubnetName": {
             "value": "[variables('varVnetworkAvdSubnetName')]"
           },
@@ -8021,7 +8030,9 @@
           "vNetworkGatewayOnHub": {
             "value": "[parameters('vNetworkGatewayOnHub')]"
           },
-          "existingHubVnetResourceId": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), createObject('value', ''), createObject('value', parameters('existingHubVnetResourceId')))]",
+          "existingHubVnetResourceId": {
+            "value": "[parameters('existingHubVnetResourceId')]"
+          },
           "sessionHostLocation": {
             "value": "[parameters('avdSessionHostLocation')]"
           },
@@ -17183,7 +17194,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "15115032142940754382"
+              "templateHash": "2414412729803476349"
             }
           },
           "parameters": {
@@ -17299,7 +17310,7 @@
           },
           "resources": [
             {
-              "condition": "[and(parameters('createStorageDeployment'), not(equals(parameters('identityServiceProvider'), 'AAD')))]",
+              "condition": "[parameters('createStorageDeployment')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Managed-Identity-{0}', parameters('time'))]",
@@ -17615,7 +17626,7 @@
               }
             },
             {
-              "condition": "[and(parameters('createStorageDeployment'), not(equals(parameters('identityServiceProvider'), 'AAD')))]",
+              "condition": "[parameters('createStorageDeployment')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Managed-Identity-Wait-{0}', parameters('time'))]",
@@ -19075,7 +19086,7 @@
               }
             },
             {
-              "condition": "[and(parameters('createStorageDeployment'), not(equals(parameters('identityServiceProvider'), 'AAD')))]",
+              "condition": "[parameters('createStorageDeployment')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('UserAIdentity-ContributorRoleAssign-{0}', parameters('time'))]",
@@ -19653,7 +19664,7 @@
               ]
             },
             {
-              "condition": "[and(parameters('createStorageDeployment'), not(equals(parameters('identityServiceProvider'), 'AAD')))]",
+              "condition": "[parameters('createStorageDeployment')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Storage-UserAIdentity-ReaderRoleAssign-{0}', parameters('time'))]",
@@ -22546,11 +22557,11 @@
           "outputs": {
             "managedIdentityResourceId": {
               "type": "string",
-              "value": "[if(and(parameters('createStorageDeployment'), not(equals(parameters('identityServiceProvider'), 'AAD'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('storageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Managed-Identity-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')]"
+              "value": "[if(parameters('createStorageDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('storageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Managed-Identity-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')]"
             },
             "managedIdentityClientId": {
               "type": "string",
-              "value": "[if(and(parameters('createStorageDeployment'), not(equals(parameters('identityServiceProvider'), 'AAD'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('storageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Managed-Identity-{0}', parameters('time'))), '2022-09-01').outputs.clientId.value, '')]"
+              "value": "[if(parameters('createStorageDeployment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('storageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Managed-Identity-{0}', parameters('time'))), '2022-09-01').outputs.clientId.value, '')]"
             }
           }
         }
@@ -22561,7 +22572,6 @@
       ]
     },
     {
-      "condition": "[parameters('avdDeploySessionHosts')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('Workload-KeyVault-{0}', parameters('time'))]",
@@ -24549,7 +24559,7 @@
       ]
     },
     {
-      "condition": "[and(and(variables('varCreateFslogixDeployment'), parameters('avdDeploySessionHosts')), not(equals(parameters('avdIdentityServiceProvider'), 'AAD')))]",
+      "condition": "[parameters('createAvdFslogixDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))]",
@@ -24612,6 +24622,9 @@
           },
           "identityDomainName": {
             "value": "[parameters('avdIdentityDomainName')]"
+          },
+          "identityDomainGuid": {
+            "value": "[parameters('identityDomainGuid')]"
           },
           "imageTemplateDefinitionId": {
             "value": "[parameters('avdImageTemplateDefinitionId')]"
@@ -24690,7 +24703,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "3501021616835115435"
+              "templateHash": "5520854485481537322"
             }
           },
           "parameters": {
@@ -24812,6 +24825,12 @@
               "type": "string",
               "metadata": {
                 "description": "AD domain name."
+              }
+            },
+            "identityDomainGuid": {
+              "type": "string",
+              "metadata": {
+                "description": "AD domain GUID."
               }
             },
             "wrklKvName": {
@@ -24992,7 +25011,8 @@
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', variables('varStorageName'))]",
             "varStoragePurposeAcronym": "[if(equals(parameters('storagePurpose'), 'fslogix'), 'fsl', if(equals(parameters('storagePurpose'), 'msix'), 'msx', ''))]",
             "varStorageName": "[if(parameters('useCustomNaming'), format('{0}{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varStoragePurposeAcronym'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')), format('st{0}{1}{2}', variables('varStoragePurposeAcronym'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')))]",
-            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -CustomOuPath {9} -OUName {10} -CreateNewOU {11} -ShareName {12} -ClientId {13}', parameters('dscAgentPackageLocation'), variables('varStorageName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('createOuForStorageString'), variables('varFileShareName'), parameters('managedIdentityClientId'))]"
+            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -CustomOuPath {9} -OUName {10} -CreateNewOU {11} -ShareName {12} -ClientId {13}', parameters('dscAgentPackageLocation'), variables('varStorageName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('createOuForStorageString'), variables('varFileShareName'), parameters('managedIdentityClientId'))]",
+            "vardirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'AADDS'), 'AADDS', if(equals(parameters('identityServiceProvider'), 'AAD'), 'AADKERB', 'None'))]"
           },
           "resources": [
             {
@@ -25021,7 +25041,12 @@
                   },
                   "publicNetworkAccess": "[if(parameters('deployPrivateEndpoint'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "kind": "[if(or(equals(toLower(parameters('storageSku')), toLower('Premium_LRS')), equals(toLower(parameters('storageSku')), toLower('Premium_ZRS'))), createObject('value', 'FileStorage'), createObject('value', 'StorageV2'))]",
-                  "azureFilesIdentityBasedAuthentication": "[if(equals(parameters('identityServiceProvider'), 'AADDS'), createObject('value', createObject('directoryServiceOptions', 'AADDS')), createObject('value', createObject('directoryServiceOptions', 'None')))]",
+                  "azureFilesIdentityBasedAuthentication": {
+                    "value": {
+                      "directoryServiceOptions": "[variables('vardirectoryServiceOptions')]",
+                      "activeDirectoryProperties": "[if(equals(parameters('identityServiceProvider'), 'AAD'), createObject('domainGuid', parameters('identityDomainGuid'), 'domainName', parameters('identityDomainName')), createObject())]"
+                    }
+                  },
                   "accessTier": {
                     "value": "Hot"
                   },
@@ -28913,7 +28938,7 @@
                   },
                   "extensionDomainJoinConfig": {
                     "value": {
-                      "enabled": true,
+                      "enabled": "[if(equals(parameters('identityServiceProvider'), 'AAD'), false(), true())]",
                       "settings": {
                         "name": "[parameters('identityDomainName')]",
                         "ouPath": "[if(not(empty(parameters('sessionHostOuPath'))), parameters('sessionHostOuPath'), null())]",
@@ -28921,6 +28946,11 @@
                         "restart": "true",
                         "options": "3"
                       }
+                    }
+                  },
+                  "extensionAadJoinConfig": {
+                    "value": {
+                      "enabled": "[if(equals(parameters('identityServiceProvider'), 'AAD'), true(), false())]"
                     }
                   },
                   "tags": {
@@ -33489,7 +33519,6 @@
               ]
             },
             {
-              "condition": "[or(equals(parameters('identityServiceProvider'), 'ADDS'), equals(parameters('identityServiceProvider'), 'AADDS'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Add-{0}-Storage-Setup-{1}', parameters('storagePurpose'), parameters('time'))]",
@@ -33621,7 +33650,7 @@
       ]
     },
     {
-      "condition": "[and(and(variables('varCreateMsixDeployment'), parameters('avdDeploySessionHosts')), not(equals(parameters('avdIdentityServiceProvider'), 'AAD')))]",
+      "condition": "[parameters('createMsixDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('Storage-Msix-AzureFiles-{0}', parameters('time'))]",
@@ -33684,6 +33713,9 @@
           },
           "identityDomainName": {
             "value": "[parameters('avdIdentityDomainName')]"
+          },
+          "identityDomainGuid": {
+            "value": "[parameters('identityDomainGuid')]"
           },
           "imageTemplateDefinitionId": {
             "value": "[parameters('avdImageTemplateDefinitionId')]"
@@ -33762,7 +33794,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "3501021616835115435"
+              "templateHash": "5520854485481537322"
             }
           },
           "parameters": {
@@ -33884,6 +33916,12 @@
               "type": "string",
               "metadata": {
                 "description": "AD domain name."
+              }
+            },
+            "identityDomainGuid": {
+              "type": "string",
+              "metadata": {
+                "description": "AD domain GUID."
               }
             },
             "wrklKvName": {
@@ -34064,7 +34102,8 @@
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', variables('varStorageName'))]",
             "varStoragePurposeAcronym": "[if(equals(parameters('storagePurpose'), 'fslogix'), 'fsl', if(equals(parameters('storagePurpose'), 'msix'), 'msx', ''))]",
             "varStorageName": "[if(parameters('useCustomNaming'), format('{0}{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varStoragePurposeAcronym'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')), format('st{0}{1}{2}', variables('varStoragePurposeAcronym'), parameters('deploymentPrefixLowercase'), parameters('namingUniqueStringSixChar')))]",
-            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -CustomOuPath {9} -OUName {10} -CreateNewOU {11} -ShareName {12} -ClientId {13}', parameters('dscAgentPackageLocation'), variables('varStorageName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('createOuForStorageString'), variables('varFileShareName'), parameters('managedIdentityClientId'))]"
+            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -CustomOuPath {9} -OUName {10} -CreateNewOU {11} -ShareName {12} -ClientId {13}', parameters('dscAgentPackageLocation'), variables('varStorageName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('createOuForStorageString'), variables('varFileShareName'), parameters('managedIdentityClientId'))]",
+            "vardirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'AADDS'), 'AADDS', if(equals(parameters('identityServiceProvider'), 'AAD'), 'AADKERB', 'None'))]"
           },
           "resources": [
             {
@@ -34093,7 +34132,12 @@
                   },
                   "publicNetworkAccess": "[if(parameters('deployPrivateEndpoint'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "kind": "[if(or(equals(toLower(parameters('storageSku')), toLower('Premium_LRS')), equals(toLower(parameters('storageSku')), toLower('Premium_ZRS'))), createObject('value', 'FileStorage'), createObject('value', 'StorageV2'))]",
-                  "azureFilesIdentityBasedAuthentication": "[if(equals(parameters('identityServiceProvider'), 'AADDS'), createObject('value', createObject('directoryServiceOptions', 'AADDS')), createObject('value', createObject('directoryServiceOptions', 'None')))]",
+                  "azureFilesIdentityBasedAuthentication": {
+                    "value": {
+                      "directoryServiceOptions": "[variables('vardirectoryServiceOptions')]",
+                      "activeDirectoryProperties": "[if(equals(parameters('identityServiceProvider'), 'AAD'), createObject('domainGuid', parameters('identityDomainGuid'), 'domainName', parameters('identityDomainName')), createObject())]"
+                    }
+                  },
                   "accessTier": {
                     "value": "Hot"
                   },
@@ -37985,7 +38029,7 @@
                   },
                   "extensionDomainJoinConfig": {
                     "value": {
-                      "enabled": true,
+                      "enabled": "[if(equals(parameters('identityServiceProvider'), 'AAD'), false(), true())]",
                       "settings": {
                         "name": "[parameters('identityDomainName')]",
                         "ouPath": "[if(not(empty(parameters('sessionHostOuPath'))), parameters('sessionHostOuPath'), null())]",
@@ -37993,6 +38037,11 @@
                         "restart": "true",
                         "options": "3"
                       }
+                    }
+                  },
+                  "extensionAadJoinConfig": {
+                    "value": {
+                      "enabled": "[if(equals(parameters('identityServiceProvider'), 'AAD'), true(), false())]"
                     }
                   },
                   "tags": {
@@ -42561,7 +42610,6 @@
               ]
             },
             {
-              "condition": "[or(equals(parameters('identityServiceProvider'), 'ADDS'), equals(parameters('identityServiceProvider'), 'AADDS'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Add-{0}-Storage-Setup-{1}', parameters('storagePurpose'), parameters('time'))]",
@@ -42795,12 +42843,26 @@
           "encryptionAtHost": {
             "value": "[parameters('encryptionAtHost')]"
           },
-          "createAvdFslogixDeployment": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createObject('value', variables('varCreateFslogixDeployment')), createObject('value', false()))]",
-          "storageManagedIdentityResourceId": "[if(and(variables('varCreateStorageDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'AAD'))), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityResourceId.value), createObject('value', ''))]",
-          "fsLogixScript": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createObject('value', variables('varFsLogixScript')), createObject('value', ''))]",
-          "fsLogixScriptArguments": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createObject('value', format('-volumeshare {0}', format('\\\\{0}.file.{1}\\{2}', if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2022-09-01').outputs.storageAccountName.value, ''), environment().suffixes.storage, if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2022-09-01').outputs.fileShareName.value, '')))), createObject('value', ''))]",
-          "fslogixScriptUri": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createObject('value', variables('varFslogixScriptUri')), createObject('value', ''))]",
-          "fslogixSharePath": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createObject('value', format('\\\\{0}.file.{1}\\{2}', if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2022-09-01').outputs.storageAccountName.value, ''), environment().suffixes.storage, if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2022-09-01').outputs.fileShareName.value, ''))), createObject('value', ''))]",
+          "createAvdFslogixDeployment": {
+            "value": "[parameters('createAvdFslogixDeployment')]"
+          },
+          "storageManagedIdentityResourceId": "[if(variables('varCreateStorageDeployment'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Managed-ID-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityResourceId.value), createObject('value', ''))]",
+          "fsLogixScript": {
+            "value": "[variables('varFsLogixScript')]"
+          },
+          "aadKerberosScript": {
+            "value": "[variables('varAadKerberosScript')]"
+          },
+          "fsLogixScriptArguments": {
+            "value": "[format('-volumeshare {0}', format('\\\\{0}.file.{1}\\{2}', if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2022-09-01').outputs.storageAccountName.value, ''), environment().suffixes.storage, if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2022-09-01').outputs.fileShareName.value, '')))]"
+          },
+          "fslogixScriptUri": {
+            "value": "[variables('varFslogixScriptUri')]"
+          },
+          "fslogixSharePath": {
+            "value": "[format('\\\\{0}.file.{1}\\{2}', if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2022-09-01').outputs.storageAccountName.value, ''), environment().suffixes.storage, if(parameters('createAvdFslogixDeployment'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2022-09-01').outputs.fileShareName.value, ''))]"
+          },
+          "fslogixStorageAccountName": "[if(parameters('createAvdFslogixDeployment'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-Fslogix-Azure-Files-{0}', parameters('time'))), '2022-09-01').outputs.storageAccountName.value), createObject('value', ''))]",
           "marketPlaceGalleryWindows": {
             "value": "[variables('varMarketPlaceGalleryWindows')[parameters('avdOsImage')]]"
           },
@@ -42823,7 +42885,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "6823223405122885894"
+              "templateHash": "9007507444854091207"
             }
           },
           "parameters": {
@@ -43049,6 +43111,12 @@
                 "description": "FSlogix configuration script file name."
               }
             },
+            "aadKerberosScript": {
+              "type": "string",
+              "metadata": {
+                "description": "AAD kerberos configuration script file name."
+              }
+            },
             "fsLogixScriptArguments": {
               "type": "string",
               "metadata": {
@@ -43065,6 +43133,12 @@
               "type": "string",
               "metadata": {
                 "description": "URI for FSlogix configuration script."
+              }
+            },
+            "fslogixStorageAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "FSLogix storage account name."
               }
             },
             "tags": {
@@ -43107,7 +43181,8 @@
             "maxAvailabilitySetMembersCount": 199,
             "divisionAvSetValue": "[div(parameters('deploySessionHostsCount'), variables('maxAvailabilitySetMembersCount'))]",
             "divisionAvSetRemainderValue": "[mod(parameters('deploySessionHostsCount'), variables('maxAvailabilitySetMembersCount'))]",
-            "availabilitySetCount": "[if(greater(variables('divisionAvSetRemainderValue'), 0), add(variables('divisionAvSetValue'), 1), variables('divisionAvSetValue'))]"
+            "availabilitySetCount": "[if(greater(variables('divisionAvSetRemainderValue'), 0), add(variables('divisionAvSetValue'), 1), variables('divisionAvSetValue'))]",
+            "varAadKerberosScriptArguments": "[format('-storageAccountName {0} -identityDomainName {1}', parameters('fslogixStorageAccountName'), parameters('identityDomainName'))]"
           },
           "resources": [
             {
@@ -43696,6 +43771,9 @@
                   "fsLogixScript": {
                     "value": "[parameters('fsLogixScript')]"
                   },
+                  "aadKerberosScript": {
+                    "value": "[parameters('aadKerberosScript')]"
+                  },
                   "fsLogixScriptArguments": {
                     "value": "[parameters('fsLogixScriptArguments')]"
                   },
@@ -43704,6 +43782,9 @@
                   },
                   "fslogixScriptUri": {
                     "value": "[parameters('fslogixScriptUri')]"
+                  },
+                  "aadKerberosScriptArguments": {
+                    "value": "[variables('varAadKerberosScriptArguments')]"
                   },
                   "hostPoolToken": {
                     "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.DesktopVirtualization/hostPools', parameters('hostPoolName')), '2019-12-10-preview').registrationInfo.token]"
@@ -43740,7 +43821,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "14577899964742977456"
+                      "templateHash": "18043525000396416761"
                     }
                   },
                   "parameters": {
@@ -43966,6 +44047,12 @@
                         "description": "FSlogix configuration script file name."
                       }
                     },
+                    "aadKerberosScript": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "AAD Kerberos configuration script file name."
+                      }
+                    },
                     "fsLogixScriptArguments": {
                       "type": "string",
                       "metadata": {
@@ -43982,6 +44069,12 @@
                       "type": "string",
                       "metadata": {
                         "description": "URI for FSlogix configuration script."
+                      }
+                    },
+                    "aadKerberosScriptArguments": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Configuration arguments for AAD kerberos."
                       }
                     },
                     "tags": {
@@ -49756,13 +49849,13 @@
                     },
                     {
                       "copy": {
-                        "name": "configureFsLogixForAvdHosts",
+                        "name": "configureFsLogixAvdHosts",
                         "count": "[length(range(1, parameters('sessionHostsCount')))]"
                       },
-                      "condition": "[and(parameters('createAvdFslogixDeployment'), not(equals(parameters('identityServiceProvider'), 'AAD')))]",
+                      "condition": "[parameters('createAvdFslogixDeployment')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('Configure-FsLogix-for-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'), parameters('time'))]",
+                      "name": "[format('Configure-FsLogix-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'), parameters('time'))]",
                       "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
@@ -49857,9 +49950,111 @@
                     },
                     {
                       "copy": {
+                        "name": "configureAadKerberosAvdHosts",
+                        "count": "[length(range(1, parameters('sessionHostsCount')))]"
+                      },
+                      "condition": "[parameters('createAvdFslogixDeployment')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('Configure-Kerberos-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'), parameters('time'))]",
+                      "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+                      "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "location": {
+                            "value": "[parameters('sessionHostLocation')]"
+                          },
+                          "name": {
+                            "value": "[format('{0}-{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'))]"
+                          },
+                          "file": {
+                            "value": "[parameters('aadKerberosScript')]"
+                          },
+                          "aadKerberosScriptArguments": {
+                            "value": "[parameters('aadKerberosScriptArguments')]"
+                          },
+                          "baseScriptUri": {
+                            "value": "[parameters('fslogixScriptUri')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.17.1.54307",
+                              "templateHash": "10812274697479377197"
+                            }
+                          },
+                          "parameters": {
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Extension deployment name."
+                              }
+                            },
+                            "location": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Location where to deploy compute services."
+                              }
+                            },
+                            "baseScriptUri": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "URI for FSlogix configuration script."
+                              }
+                            },
+                            "file": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "FSlogix configuration script file name."
+                              }
+                            },
+                            "aadKerberosScriptArguments": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Configuration arguments for FSlogix."
+                              }
+                            }
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Compute/virtualMachines/extensions",
+                              "apiVersion": "2022-08-01",
+                              "name": "[format('{0}/FSlogixSetup', parameters('name'))]",
+                              "location": "[parameters('location')]",
+                              "properties": {
+                                "publisher": "Microsoft.Compute",
+                                "type": "CustomScriptExtension",
+                                "typeHandlerVersion": "1.10",
+                                "autoUpgradeMinorVersion": true,
+                                "settings": {},
+                                "protectedSettings": {
+                                  "fileUris": "[array(parameters('baseScriptUri'))]",
+                                  "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File {0} {1}', parameters('file'), parameters('aadKerberosScriptArguments'))]"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "dependsOn": [
+                        "sessionHosts",
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('SH-Monitoring-Wait-{0}', parameters('time')))]"
+                      ]
+                    },
+                    {
+                      "copy": {
                         "name": "addAvdHostsToHostPool",
                         "count": "[length(range(1, parameters('sessionHostsCount')))]"
                       },
+                      "condition": "[and(equals(parameters('identityServiceProvider'), 'AAD'), parameters('createAvdFslogixDeployment'))]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('HP-Join-{0}-to-HP-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'), parameters('time'))]",
@@ -49960,7 +50155,7 @@
                         }
                       },
                       "dependsOn": [
-                        "configureFsLogixForAvdHosts",
+                        "configureFsLogixAvdHosts",
                         "sessionHosts",
                         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('SH-Monitoring-Wait-{0}', parameters('time')))]"
                       ]
