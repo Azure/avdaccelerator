@@ -37,3 +37,5 @@ resource fslogixConfigure 'Microsoft.Compute/virtualMachines/extensions@2022-08-
     }
   }
 }
+
+
