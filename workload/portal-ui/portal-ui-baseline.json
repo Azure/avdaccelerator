@@ -1268,9 +1268,39 @@
                             }
                         },
                         {
+                            "name": "virtualNetworkPrivateDnsZone",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "visible": "[equals(steps('network').deployPrivateEndpointKeyvaultStorage, true)]",
+                            "label": "Azure private DNS zones",
+                            "defaultValue": "Use existing",
+                            "toolTip": "It is recommended to use Azure private DNS zones for private endpoint name spaces, private endpoints will be automatically created for PaaS services (Azure Files and Key Vault) but the private DNS zones are prerequisites required.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "Create new",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "Use existing",
+                                        "value": false
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "virtualNetworkPrivateDnsZoneInfo",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[equals(steps('network').virtualNetworkPrivateDnsZone, true)]",
+                            "options": {
+                                "text": "The following private DNS zones will be created: <br/> Azure Files: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net",
+                                "style": "info"
+                            }
+                        },
+                        {
                             "name": "virtualNetworkPrivateDnsZoneSelection",
                             "type": "Microsoft.Common.Section",
-                            "visible": "[equals(steps('network').deployPrivateEndpointKeyvaultStorage, true)]",
+                            "visible": "[equals(steps('network').virtualNetworkPrivateDnsZone, false)]",
                             "elements": [
                                 {
                                     "name": "virtualNetworkPrivateDnsZoneFilesSelector",
@@ -1312,7 +1342,7 @@
                                     "name": "virtualNetworkPrivateDnsZoneSelectionWarning",
                                     "type": "Microsoft.Common.InfoBox",
                                     "options": {
-                                        "text": "Private DNS zones will need to be linked to the vNet where the custom DNS servers are connected.",
+                                        "text": "When using customn DNS servers, Azure private DNS zones will need to be linked to the custom DNS servers vNet.",
                                         "uri": "https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy",
                                         "style": "Warning"
                                     }
@@ -2363,8 +2393,9 @@
 				"enableAcceleratedNetworking": "[steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking]",
                 "avdSessionHostsSize": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize, 'Standard_D4ads_v5')]",
                 "deployPrivateEndpointKeyvaultStorage": "[steps('network').deployPrivateEndpointKeyvaultStorage]",
-                "avdVnetPrivateDnsZoneFilesId": "[if(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneFilesSelector.id, '')]",
-                "avdVnetPrivateDnsZoneKeyvaultId": "[if(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneKeyvaultSelector.id, '')]",
+                "createPrivateDnsZones": "[if(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), steps('network').virtualNetworkPrivateDnsZone, false)]",
+                "avdVnetPrivateDnsZoneFilesId": "[if(and(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneFilesSelector.id, '')]",
+                "avdVnetPrivateDnsZoneKeyvaultId": "[if(and(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneKeyvaultSelector.id, '')]",
                 "createAvdFslogixDeployment": "[steps('storage').storageFslogix.fslogixDeployment]",
                 "fslogixStoragePerformance": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.fslogixStorageAccountSku, 'Premium')]",
                 "avdFslogixFileShareQuotaSize": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.sessionHostsFslogixFileShareQuota, 1 )]",
