@@ -974,6 +974,16 @@
                                     "constraints": {
                                         "required": true
                                     }
+                                },
+                                {
+                                    "name": "StorageDeploymentDisabledAad",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
+                                    "options": {
+                                        "text": "Grating admin consent to the storage account service principal (your-storage-account-name.file.core.windows.net) is a requirememt, the link in this box contains the steps to grant the consent.",
+                                        "uri": "https://learn.microsoft.com/azure/storage/files/storage-files-identity-auth-azure-active-directory-enable?tabs=azure-portal#grant-admin-consent-to-the-new-service-principal",
+                                        "style": "Warning"
+                                    }
                                 }
                             ]
                         },
