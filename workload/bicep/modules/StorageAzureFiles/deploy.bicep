@@ -86,9 +86,6 @@ param storageSku string
 param fileShareQuotaSize int
 
 @description('Use Azure private DNS zones for private endpoints.')
-param vnetPrivateDnsZone bool
-
-@description('Use Azure private DNS zones for private endpoints.')
 param vnetPrivateDnsZoneFilesId string
 
 @description('Script name for adding storage account to Active Directory.')
@@ -226,7 +223,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
             diagnosticLogCategoriesToEnable: varAvdFileShareLogsDiagnostic
             diagnosticMetricsToEnable: varAvdFileShareMetricsDiagnostic
         }
-        privateEndpoints: deployPrivateEndpoint ? (vnetPrivateDnsZone ? [
+        privateEndpoints: deployPrivateEndpoint ? [
             {
                 name: varWrklStoragePrivateEndpointName
                 subnetResourceId: privateEndpointSubnetId
@@ -238,14 +235,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
                     ]                    
                 }
             }
-        ] : [
-            {
-                name: varWrklStoragePrivateEndpointName
-                subnetResourceId: privateEndpointSubnetId
-                customNetworkInterfaceName: 'nic-01-${varWrklStoragePrivateEndpointName}'
-                service: 'file'
-            }
-        ]) : []
+        ] : []
         tags: tags
         diagnosticWorkspaceId: alaWorkspaceResourceId
         diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
