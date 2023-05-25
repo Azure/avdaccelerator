@@ -129,6 +129,9 @@ param customDnsIps string = ''
 @description('Optional. Deploy private endpoints for key vault and storage. (Default: true)')
 param deployPrivateEndpointKeyvaultStorage bool = true
 
+@description('Optional. Use Azure private DNS zones for private endpoints. (Default: false)')
+param createPrivateDnsZones bool = false
+
 @description('Optional. Use Azure private DNS zones for private endpoints. (Default: )')
 param avdVnetPrivateDnsZoneFilesId string = ''
 
@@ -675,7 +678,6 @@ var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
 var varCreateOuForStorageString = string(createOuForStorage)
 var varAllDnsServers = '${customDnsIps},168.63.129.16'
 var varDnsServers = empty(customDnsIps) ? []: (split(varAllDnsServers, ','))
-var varVnetPrivateDnsZone = deployPrivateEndpointKeyvaultStorage
 var varCreateStorageDeployment = (createAvdFslogixDeployment||createMsixDeployment == true) ? true: false
 var varApplicationGroupIdentitiesIds = !empty(avdApplicationGroupIdentitiesIds) ? (split(avdApplicationGroupIdentitiesIds, ',')): []
 var varCreateVnetPeering = !empty(existingHubVnetResourceId) ? true: false
@@ -820,7 +822,6 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet) {
         vNetworkPeeringName: varVnetworkPeeringName
         vNetworkAvdSubnetName: varVnetworkAvdSubnetName
         vNetworkPrivateEndpointSubnetName: varVnetworkPrivateEndpointSubnetName
-        createVnet: createAvdVnet
         createVnetPeering: varCreateVnetPeering
         deployPrivateEndpointSubnet: (deployPrivateEndpointKeyvaultStorage == true) ? true : false //adding logic that will be used when also including AVD control plane PEs
         vNetworkGatewayOnHub: vNetworkGatewayOnHub
@@ -830,6 +831,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet) {
         vNetworkPrivateEndpointSubnetAddressPrefix: vNetworkPrivateEndpointSubnetAddressPrefix
         workloadSubsId: avdWorkloadSubsId
         dnsServers: varDnsServers
+        createPrivateDnsZones: createPrivateDnsZones
         tags: createResourceTags ? union(varCommonResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         diagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
@@ -926,7 +928,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
             virtualNetworkRules: []
             ipRules: []
         } : {}
-        privateEndpoints: deployPrivateEndpointKeyvaultStorage ? (varVnetPrivateDnsZone ? [
+        privateEndpoints: deployPrivateEndpointKeyvaultStorage ? [
             {
                 name: varWrklKvPrivateEndpointName
                 subnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
@@ -934,18 +936,11 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
                 service: 'vault'
                 privateDnsZoneGroup: {
                     privateDNSResourceIds: [
-                        avdVnetPrivateDnsZoneKeyvaultId
+                        createPrivateDnsZones ? networking.outputs.KeyVaultDnsZoneResourceId: avdVnetPrivateDnsZoneKeyvaultId
                     ] 
                 }
             }
-        ] : [
-            {
-                name: varWrklKvPrivateEndpointName
-                subnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
-                customNetworkInterfaceName: 'nic-01-${varWrklKvPrivateEndpointName}'
-                service: 'vault'
-            }
-        ]) : []
+        ]: []
         secrets: {
             secureList: (avdIdentityServiceProvider != 'AAD') ? [
                 {
@@ -1035,8 +1030,7 @@ module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if 
         enableAcceleratedNetworking: enableAcceleratedNetworking
         createAvdVnet: createAvdVnet
         vmLocalUserName: avdVmLocalUserName
-        vnetPrivateDnsZone: varVnetPrivateDnsZone
-        vnetPrivateDnsZoneFilesId: avdVnetPrivateDnsZoneFilesId
+        vnetPrivateDnsZoneFilesId: createPrivateDnsZones ? networking.outputs.azureFilesDnsZoneResourceId: avdVnetPrivateDnsZoneFilesId
         workloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
         storageManagedIdentityResourceId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
@@ -1094,8 +1088,7 @@ module msixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (cr
         enableAcceleratedNetworking: enableAcceleratedNetworking
         createAvdVnet: createAvdVnet
         vmLocalUserName: avdVmLocalUserName
-        vnetPrivateDnsZone: varVnetPrivateDnsZone
-        vnetPrivateDnsZoneFilesId: avdVnetPrivateDnsZoneFilesId
+        vnetPrivateDnsZoneFilesId: createPrivateDnsZones ? networking.outputs.azureFilesDnsZoneResourceId: avdVnetPrivateDnsZoneFilesId
         workloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
         storageManagedIdentityResourceId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
