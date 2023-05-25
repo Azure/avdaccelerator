@@ -547,7 +547,7 @@
                                     "visible": true,
                                     "options": {
                                         "text": "If you select 'Use availability zones' below, some regions may not be available for deployment of session hosts because not all regions support Availability Zones. \n\nThe 'Session hosts region' drop down will automatically update based on this selection. If the value changes to blank, select an alternate region or set 'Use availability zones' to 'No'.",
-                                        "uri": "https://learn.microsoft.com/en-us/azure/reliability/availability-zones-service-support#azure-regions-with-availability-zone-support",
+                                        "uri": "https://learn.microsoft.com/azure/reliability/availability-zones-service-support#azure-regions-with-availability-zone-support",
                                         "style": "Info"
                                     }
                                 },
@@ -805,7 +805,7 @@
                                     "visible": "[not(empty(steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage))]",
                                     "options": {
                                         "text": "Setting the Security Type to anything other than 'Standard' requires that the Azure Compute Gallery Image Definition be configured with the Security Type feature set to the appropriate value. You can determine if the image definition supports the required feature by reviewing the 'Properties' tab on the 'Overview' node of the Gallery Image Definition in the portal. If the image definition does not contain these feature options, then the deployment will fail.",
-                                        "uri": "https://learn.microsoft.com/en-us/azure/templates/microsoft.compute/galleries/images?pivots=deployment-language-bicep",
+                                        "uri": "https://learn.microsoft.com/azure/templates/microsoft.compute/galleries/images?pivots=deployment-language-bicep",
                                         "style": "Warning"
                                     }
                                 },
@@ -887,18 +887,9 @@
                         {
                             "name": "StorageDeploymentLocationAndAvailability",
                             "type": "Microsoft.Common.InfoBox",
-                            "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                            "visible": true,
                             "options": {
                                 "text": "Storage resources will be deployed on the same location and with the same availability settings selected on the Session Hosts section.",
-                                "style": "Info"
-                            }
-                        },
-                        {
-                            "name": "StorageDeploymentDisabledAad",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
-                            "options": {
-                                "text": "FSLogix and MSIX app attach storage for Azure AD joined session hosts are currently not globally available (GA).",
                                 "style": "Info"
                             }
                         },
@@ -923,7 +914,7 @@
                             "name": "storageFslogix",
                             "type": "Microsoft.Common.Section",
                             "label": "FSLogix settings:",
-                            "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                            "visible": true,
                             "elements": [
                                 {
                                     "name": "fslogixDeployment",
@@ -951,13 +942,13 @@
                                     "visible": "[equals(steps('storage').storageFslogix.fslogixDeployment, true)]",
                                     "label": "File share peformance",
                                     "filter": true,
-                                    "defaultValue": "Premium (Recommended)",
+                                    "defaultValue": "Premium",
                                     "toolTip": "Storage account performance for FSLogix storage. Recommended tier is Premium.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Premium (Recommended)",
+                                                "label": "Premium",
                                                 "description": "",
                                                 "value": "Premium"
                                             },
@@ -990,7 +981,7 @@
                             "name": "storageMsix",
                             "type": "Microsoft.Common.Section",
                             "label": "MSIX App Attach settings:",
-                            "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                            "visible": true,
                             "elements": [
                                 {
                                     "name": "msixDeployment",
@@ -1018,13 +1009,13 @@
                                     "visible": "[equals(steps('storage').storageMsix.msixDeployment, true)]",
                                     "label": "File share performance",
                                     "filter": true,
-                                    "defaultValue": "Premium (Recommended)",
+                                    "defaultValue": "Premium",
                                     "toolTip": "Storage account performance for MSIX App Attach storage. Recommended tier is Premium.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Premium (Recommended)",
+                                                "label": "Premium",
                                                 "description": "",
                                                 "value": "Premium"
                                             },
@@ -1052,6 +1043,16 @@
                                     }
                                 }
                             ]
+                        },
+                        {
+                            "name": "StorageDeploymentDisabledAad",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
+                            "options": {
+                                "text": "FSLogix storage for Azure AD joined session hosts is currently only available for hybrid identities.",
+                                "uri": "https://learn.microsoft.com/azure/virtual-desktop/create-profile-container-azure-ad",
+                                "style": "Warning"
+                            }
                         }
                     ]
                 },
@@ -1267,30 +1268,9 @@
                             }
                         },
                         {
-                            "name": "virtualNetworkPrivateDnsZone",
-                            "type": "Microsoft.Common.OptionsGroup",
-                            "visible": "[equals(steps('network').deployPrivateEndpointKeyvaultStorage, true)]",
-                            "label": "Existing Azure private DNS zones",
-                            "defaultValue": "Yes (Recommended)",
-                            "toolTip": "It is recommended to use Azure private DNS zones for private endpoint name spaces, private endpoints will be automatically created for PaaS services (Azure Files and Key Vault) but the private DNS zones are prerequisites required.",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label": "Yes (Recommended)",
-                                        "value": true
-                                    },
-                                    {
-                                        "label": "No",
-                                        "value": false
-                                    }
-                                ]
-                            }
-                        },
-                        {
                             "name": "virtualNetworkPrivateDnsZoneSelection",
                             "type": "Microsoft.Common.Section",
-                            "visible": "[equals(steps('network').virtualNetworkPrivateDnsZone, true)]",
+                            "visible": "[equals(steps('network').deployPrivateEndpointKeyvaultStorage, true)]",
                             "elements": [
                                 {
                                     "name": "virtualNetworkPrivateDnsZoneFilesSelector",
@@ -1327,6 +1307,15 @@
                                         "text": "Key Vault private DNS zone naming: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net",
                                         "style": "info"
                                     }
+                                },
+                                {
+                                    "name": "virtualNetworkPrivateDnsZoneSelectionWarning",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "options": {
+                                        "text": "Private DNS zones will need to be linked to the vNet where the custom DNS servers are connected.",
+                                        "uri": "https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy",
+                                        "style": "Warning"
+                                    }
                                 }
                             ]
                         },
@@ -1352,7 +1341,7 @@
                                     "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
                                     "options": {
                                         "text": "vNet peering to identity services is not required when joining VMs to Azure AD .",
-                                        "uri": "https://learn.microsoft.com/en-us/azure/architecture/example-scenario/wvd/azure-virtual-desktop-azure-active-directory-join",
+                                        "uri": "https://learn.microsoft.com/azure/architecture/example-scenario/wvd/azure-virtual-desktop-azure-active-directory-join",
                                         "style": "info"
                                     }
                                 },
@@ -2374,14 +2363,13 @@
 				"enableAcceleratedNetworking": "[steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking]",
                 "avdSessionHostsSize": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize, 'Standard_D4ads_v5')]",
                 "deployPrivateEndpointKeyvaultStorage": "[steps('network').deployPrivateEndpointKeyvaultStorage]",
-                "avdVnetPrivateDnsZone": "[steps('network').virtualNetworkPrivateDnsZone]",
-                "avdVnetPrivateDnsZoneFilesId": "[if(equals(steps('network').virtualNetworkPrivateDnsZone, true), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneFilesSelector.id, '')]",
-                "avdVnetPrivateDnsZoneKeyvaultId": "[if(equals(steps('network').virtualNetworkPrivateDnsZone, true), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneKeyvaultSelector.id, '')]",
-                "createAvdFslogixDeployment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), false, steps('storage').storageFslogix.fslogixDeployment)]",
-                "fslogixStoragePerformance": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.fslogixStorageAccountSku, 'Standard')]",
+                "avdVnetPrivateDnsZoneFilesId": "[if(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneFilesSelector.id, '')]",
+                "avdVnetPrivateDnsZoneKeyvaultId": "[if(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneKeyvaultSelector.id, '')]",
+                "createAvdFslogixDeployment": "[steps('storage').storageFslogix.fslogixDeployment]",
+                "fslogixStoragePerformance": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.fslogixStorageAccountSku, 'Premium')]",
                 "avdFslogixFileShareQuotaSize": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.sessionHostsFslogixFileShareQuota, 1 )]",
-                "createMsixDeployment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), false, steps('storage').storageMsix.msixDeployment)]",
-                "msixStoragePerformance": "[if(equals(steps('storage').storageMsix.msixDeployment, true), steps('storage').storageMsix.msixStorageAccountSku, 'Standard')]",
+                "createMsixDeployment": "[steps('storage').storageMsix.msixDeployment]",
+                "msixStoragePerformance": "[if(equals(steps('storage').storageMsix.msixDeployment, true), steps('storage').storageMsix.msixStorageAccountSku, 'Premium')]",
                 "msixFileShareQuotaSize": "[if(equals(steps('storage').storageMsix.msixDeployment, true), steps('storage').storageMsix.sessionHostsMsixFileShareQuota, 1 )]",
                 "storageOuPath": "[steps('storage').storageGeneralSettings.identityDomainOuPathStorageExisting]",
                 "avdUseCustomNaming": "[steps('resourceNaming').resourceNamingSelection]",
