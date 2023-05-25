@@ -129,9 +129,6 @@ param customDnsIps string = ''
 @description('Optional. Deploy private endpoints for key vault and storage. (Default: true)')
 param deployPrivateEndpointKeyvaultStorage bool = true
 
-@description('Optional. Use Azure private DNS zones for private endpoints. (Default: true)')
-param avdVnetPrivateDnsZone bool = true
-
 @description('Optional. Use Azure private DNS zones for private endpoints. (Default: )')
 param avdVnetPrivateDnsZoneFilesId string = ''
 
@@ -678,6 +675,7 @@ var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
 var varCreateOuForStorageString = string(createOuForStorage)
 var varAllDnsServers = '${customDnsIps},168.63.129.16'
 var varDnsServers = empty(customDnsIps) ? []: (split(varAllDnsServers, ','))
+var varVnetPrivateDnsZone = deployPrivateEndpointKeyvaultStorage
 var varCreateStorageDeployment = (createAvdFslogixDeployment||createMsixDeployment == true) ? true: false
 var varApplicationGroupIdentitiesIds = !empty(avdApplicationGroupIdentitiesIds) ? (split(avdApplicationGroupIdentitiesIds, ',')): []
 var varCreateVnetPeering = !empty(existingHubVnetResourceId) ? true: false
@@ -928,7 +926,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
             virtualNetworkRules: []
             ipRules: []
         } : {}
-        privateEndpoints: deployPrivateEndpointKeyvaultStorage ? (avdVnetPrivateDnsZone ? [
+        privateEndpoints: deployPrivateEndpointKeyvaultStorage ? (varVnetPrivateDnsZone ? [
             {
                 name: varWrklKvPrivateEndpointName
                 subnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
@@ -1037,7 +1035,7 @@ module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if 
         enableAcceleratedNetworking: enableAcceleratedNetworking
         createAvdVnet: createAvdVnet
         vmLocalUserName: avdVmLocalUserName
-        vnetPrivateDnsZone: avdVnetPrivateDnsZone
+        vnetPrivateDnsZone: varVnetPrivateDnsZone
         vnetPrivateDnsZoneFilesId: avdVnetPrivateDnsZoneFilesId
         workloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
@@ -1096,7 +1094,7 @@ module msixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (cr
         enableAcceleratedNetworking: enableAcceleratedNetworking
         createAvdVnet: createAvdVnet
         vmLocalUserName: avdVmLocalUserName
-        vnetPrivateDnsZone: avdVnetPrivateDnsZone
+        vnetPrivateDnsZone: varVnetPrivateDnsZone
         vnetPrivateDnsZoneFilesId: avdVnetPrivateDnsZoneFilesId
         workloadSubsId: avdWorkloadSubsId
         encryptionAtHost: encryptionAtHost
