@@ -187,9 +187,6 @@
         },
         "deployAlaWorkspace": {
             "value": true
-        },   
-        "deployCustomPolicyMonitoring": {
-            "value": false
         },  
         "alaExistingWorkspaceResourceId": {
             "value": ""
