@@ -1282,7 +1282,7 @@
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": "[equals(steps('network').deployPrivateEndpointKeyvaultStorage, true)]",
                             "label": "Azure private DNS zones",
-                            "defaultValue": "Use existing",
+                            "defaultValue": "Create new",
                             "toolTip": "It is recommended to use Azure private DNS zones for private endpoint name spaces, private endpoints will be automatically created for PaaS services (Azure Files and Key Vault) but the private DNS zones are prerequisites required.",
                             "constraints": {
                                 "required": true,
@@ -1352,7 +1352,7 @@
                                     "name": "virtualNetworkPrivateDnsZoneSelectionWarning",
                                     "type": "Microsoft.Common.InfoBox",
                                     "options": {
-                                        "text": "When using customn DNS servers, Azure private DNS zones will need to be linked to the custom DNS servers vNet.",
+                                        "text": "When using customn DNS servers, use existing Azure private DNS zones that are linked to the custom DNS servers vNet.",
                                         "uri": "https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy",
                                         "style": "Warning"
                                     }

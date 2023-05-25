@@ -129,8 +129,8 @@ param customDnsIps string = ''
 @description('Optional. Deploy private endpoints for key vault and storage. (Default: true)')
 param deployPrivateEndpointKeyvaultStorage bool = true
 
-@description('Optional. Use Azure private DNS zones for private endpoints. (Default: false)')
-param createPrivateDnsZones bool = false
+@description('Optional. Use Azure private DNS zones for private endpoints. (Default: true)')
+param createPrivateDnsZones bool = true
 
 @description('Optional. Use Azure private DNS zones for private endpoints. (Default: )')
 param avdVnetPrivateDnsZoneFilesId string = ''
