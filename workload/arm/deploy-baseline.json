@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "9740873031173505296"
+      "templateHash": "13401281879992713223"
     }
   },
   "parameters": {
@@ -12304,7 +12304,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "17885937045841604807"
+              "templateHash": "1450729456625651802"
             }
           },
           "parameters": {
@@ -12509,7 +12509,6 @@
             }
           },
           "variables": {
-            "varAzureCloudName": "[environment().name]",
             "varDesktopApplicaitonGroups": [
               {
                 "name": "[parameters('applicationGroupNameDesktop')]",
@@ -12604,7 +12603,6 @@
           },
           "resources": [
             {
-              "condition": "[equals(variables('varAzureCloudName'), 'AzureCloud')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('HostPool-{0}', parameters('time'))]",
@@ -13241,7 +13239,6 @@
                 "name": "applicationGroups",
                 "count": "[length(variables('varFinalApplicationGroups'))]"
               },
-              "condition": "[equals(variables('varAzureCloudName'), 'AzureCloud')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Application-Group-{0}-{1}', variables('varFinalApplicationGroups')[copyIndex()].name, parameters('time'))]",
@@ -13899,7 +13896,6 @@
               ]
             },
             {
-              "condition": "[equals(variables('varAzureCloudName'), 'AzureCloud')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Workspace-{0}', parameters('time'))]",
@@ -14349,7 +14345,7 @@
               ]
             },
             {
-              "condition": "[and(and(parameters('deployScalingPlan'), equals(parameters('hostPoolType'), 'Pooled')), equals(variables('varAzureCloudName'), 'AzureCloud'))]",
+              "condition": "[and(parameters('deployScalingPlan'), equals(parameters('hostPoolType'), 'Pooled'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Scaling-Plan-{0}', parameters('time'))]",
