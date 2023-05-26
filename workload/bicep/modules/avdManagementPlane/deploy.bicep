@@ -111,7 +111,6 @@ param time string = utcNow()
 // =========== //
 // Variable declaration //
 // =========== //
-var varAzureCloudName = environment().name
 var varDesktopApplicaitonGroups = [
   {
     name: applicationGroupNameDesktop
@@ -226,7 +225,7 @@ var varScalingPlanDiagnostic = [
 // =========== //
 
 // Hostpool.
-module hostPool '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/hostpools/deploy.bicep' = if(varAzureCloudName == 'AzureCloud') {
+module hostPool '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/hostpools/deploy.bicep' = {
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
   name: 'HostPool-${time}'
   params: {
@@ -247,7 +246,7 @@ module hostPool '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/hostpoo
 }
 
 // Application groups.
-module applicationGroups '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/applicationgroups/deploy.bicep' = [for applicationGroup in varFinalApplicationGroups: if(varAzureCloudName == 'AzureCloud') {
+module applicationGroups '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/applicationgroups/deploy.bicep' = [for applicationGroup in varFinalApplicationGroups: {
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
   name: 'Application-Group-${applicationGroup.name}-${time}'
   params: {
@@ -275,7 +274,7 @@ module applicationGroups '../../../../carml/1.3.0/Microsoft.DesktopVirtualizatio
 }]
 
 // Workspace.
-module workSpace '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/workspaces/deploy.bicep' = if(varAzureCloudName == 'AzureCloud') {
+module workSpace '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/workspaces/deploy.bicep' = {
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
   name: 'Workspace-${time}'
   params: {
@@ -300,7 +299,7 @@ module workSpace '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/worksp
 }
 
 // Scaling plan.
-module scalingPlan '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/scalingplans/deploy.bicep' =  if (deployScalingPlan && (hostPoolType == 'Pooled') && (varAzureCloudName == 'AzureCloud'))  {
+module scalingPlan '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/scalingplans/deploy.bicep' =  if (deployScalingPlan && (hostPoolType == 'Pooled'))  {
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
   name: 'Scaling-Plan-${time}'
   params: {
