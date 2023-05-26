@@ -145,7 +145,6 @@ var varAllAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', 
 var varNicDiagnosticMetricsToEnable = [
     'AllMetrics'
   ]
-
 // =========== //
 // Deployments //
 // =========== //
