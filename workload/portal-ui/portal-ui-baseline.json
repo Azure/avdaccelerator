@@ -117,6 +117,17 @@
                                     }
                                 },
                                 {
+                                    "name": "identityDomainName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "visible": true,
+                                    "label": "Domain name",
+                                    "toolTip": "Provide identity service domain name.",
+                                    "placeholder": "Example: contoso.com",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
+                                {
                                     "name": "identityServiceProviderIntuneEnrollment",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
@@ -135,17 +146,6 @@
                                                 "value": false
                                             }
                                         ]
-                                    }
-                                },
-                                {
-                                    "name": "identityDomainName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
-                                    "label": "Domain name",
-                                    "toolTip": "Provide identity service domain name.",
-                                    "placeholder": "Example: contoso.com",
-                                    "constraints": {
-                                        "required": true
                                     }
                                 },
                                 {
@@ -2372,7 +2372,7 @@
                 "avdDeployRappGroup": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneAppGroupOptions.deployRemoteAppGroup, false)]",
                 "avdIdentityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
                 "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
-                "avdIdentityDomainName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'none', steps('identity').identityDomainInformation.identityDomainName)]",
+                "avdIdentityDomainName": "[steps('identity').identityDomainInformation.identityDomainName]",
                 "avdOuPath": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'none', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
                 "avdDomainJoinUserName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'none', steps('identity').identityDomainCredentials.identityDomainJoinUserName)]",
                 "avdDomainJoinUserPassword": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'none', steps('identity').identityDomainCredentials.identityDomainJoinUserPassword)]",
