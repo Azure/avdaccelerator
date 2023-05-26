@@ -22,13 +22,14 @@ param avdWorkloadSubsId string = ''
 param avdEnterpriseAppObjectId string = ''
 
 @description('Required. AVD session host local username.')
-param avdVmLocalUserName string = ''
+param avdVmLocalUserName string
 
 @description('Required. AVD session host local password.')
 @secure()
-param avdVmLocalUserPassword string = ''
+param avdVmLocalUserPassword string
 
 @allowed([
+    'ADDS' // Active Directory Domain Services
     'ADDS' // Active Directory Domain Services
     'AADDS' // Azure Active Directory Domain Services
     'AAD' // Azure AD Join
