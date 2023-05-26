@@ -52,17 +52,17 @@ param avdApplicationGroupIdentitiesIds string = ''
 param avdApplicationGroupIdentityType string = 'Group'
 
 @description('Required. AD domain name.')
-param avdIdentityDomainName string = ''
+param avdIdentityDomainName string
 
 @description('Required. AD domain GUID.')
 param identityDomainGuid string = ''
 
-@description('Required. AVD session host domain join username.')
-param avdDomainJoinUserName string = ''
+@description('Required. AVD session host domain join username. (Defualt: "none")')
+param avdDomainJoinUserName string = 'none'
 
-@description('Required. AVD session host domain join password.')
+@description('Required. AVD session host domain join password. (Defualt: "none")')
 @secure()
-param avdDomainJoinUserPassword string = ''
+param avdDomainJoinUserPassword string = 'none'
 
 @description('Optional. OU path to join AVd VMs. (Default: "")')
 param avdOuPath string = ''
@@ -660,7 +660,6 @@ var varFslogixScriptUri = (avdIdentityServiceProvider == 'AAD') ? '${varBaseScri
 var varFsLogixScript = (avdIdentityServiceProvider == 'AAD') ? './Set-FSLogixRegKeysAad.ps1': './Set-FSLogixRegKeys.ps1'
 var varFslogixFileShareName = createAvdFslogixDeployment ? fslogixStorageAzureFiles.outputs.fileShareName : ''
 var varFslogixSharePath = '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
-var varFsLogixScriptArguments = (avdIdentityServiceProvider == 'AAD') ? '-volumeshare ${varFslogixSharePath} -storageAccountName ${varFslogixStorageName} -identityDomainName ${avdIdentityDomainName}': '-volumeshare ${varFslogixSharePath}'
 var varAvdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
 var varStorageAccountContributorRoleId = '17d1049b-9a84-46fb-8f53-869881c3d3ab'
 var varReaderRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
@@ -1154,7 +1153,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         fsLogixScript: varFsLogixScript
         fslogixScriptUri: varFslogixScriptUri
         fslogixSharePath: varFslogixSharePath
-        fsLogixScriptArguments: varFsLogixScriptArguments
+        fsLogixScriptArguments: fslogixStorageAzureFiles.outputs.fsLogixScriptArguments
         marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
         tags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
