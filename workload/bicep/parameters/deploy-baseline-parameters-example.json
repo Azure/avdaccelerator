@@ -42,13 +42,13 @@
             "value": "Group"
         },       
         "avdIdentityDomainName": {
-            "value": ""
+            "value": "<<IdentityDomainName>>"
         },
         "avdDomainJoinUserName": {
-            "value": ""
+            "value": "none"
         },
         "avdDomainJoinUserPassword": {
-            "value": ""
+            "value": "none"
         },
         "avdOuPath": {
             "value": ""
