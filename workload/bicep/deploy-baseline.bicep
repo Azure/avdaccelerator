@@ -657,6 +657,7 @@ var varMarketPlaceGalleryWindows = {
 }
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/aadj-fslogix-azurefiles/workload/'
 var varFslogixScriptUri = (avdIdentityServiceProvider == 'AAD') ? '${varBaseScriptUri}scripts/Set-FSLogixRegKeysAAD.ps1': '${varBaseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
+var varFsLogixScriptArguments = (avdIdentityServiceProvider == 'AAD') ? '-volumeshare ${varFslogixSharePath} -storageAccountName ${varFslogixStorageName} -identityDomainName ${avdIdentityDomainName}': '-volumeshare ${varFslogixSharePath}'
 var varFsLogixScript = (avdIdentityServiceProvider == 'AAD') ? './Set-FSLogixRegKeysAad.ps1': './Set-FSLogixRegKeys.ps1'
 var varFslogixFileShareName = createAvdFslogixDeployment ? fslogixStorageAzureFiles.outputs.fileShareName : ''
 var varFslogixSharePath = '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
@@ -1153,7 +1154,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         fsLogixScript: varFsLogixScript
         fslogixScriptUri: varFslogixScriptUri
         fslogixSharePath: varFslogixSharePath
-        fsLogixScriptArguments: fslogixStorageAzureFiles.outputs.fsLogixScriptArguments
+        fsLogixScriptArguments: varFsLogixScriptArguments
         marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
         tags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag

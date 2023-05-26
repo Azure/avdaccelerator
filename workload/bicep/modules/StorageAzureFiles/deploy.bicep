@@ -371,4 +371,3 @@ module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = {
 
 output storageAccountName string = storageAndFile.outputs.name
 output fileShareName string = varFileShareName
-output fsLogixScriptArguments string = varStorageToDomainScriptArgs

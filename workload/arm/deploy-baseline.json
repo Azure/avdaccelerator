@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "2238663898518052505"
+      "templateHash": "15966878971345231419"
     }
   },
   "parameters": {
@@ -48,14 +48,12 @@
     },
     "avdVmLocalUserName": {
       "type": "string",
-      "defaultValue": "",
       "metadata": {
         "description": "Required. AVD session host local username."
       }
     },
     "avdVmLocalUserPassword": {
       "type": "securestring",
-      "defaultValue": "",
       "metadata": {
         "description": "Required. AVD session host local password."
       }
@@ -67,6 +65,7 @@
         "description": "Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)"
       },
       "allowedValues": [
+        "ADDS",
         "ADDS",
         "AADDS",
         "AAD"
@@ -100,7 +99,6 @@
     },
     "avdIdentityDomainName": {
       "type": "string",
-      "defaultValue": "",
       "metadata": {
         "description": "Required. AD domain name."
       }
@@ -114,16 +112,16 @@
     },
     "avdDomainJoinUserName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "none",
       "metadata": {
-        "description": "Required. AVD session host domain join username."
+        "description": "Required. AVD session host domain join username. (Defualt: \"none\")"
       }
     },
     "avdDomainJoinUserPassword": {
       "type": "securestring",
-      "defaultValue": "",
+      "defaultValue": "none",
       "metadata": {
-        "description": "Required. AVD session host domain join password."
+        "description": "Required. AVD session host domain join password. (Defualt: \"none\")"
       }
     },
     "avdOuPath": {
@@ -266,9 +264,9 @@
     },
     "createPrivateDnsZones": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
-        "description": "Optional. Use Azure private DNS zones for private endpoints. (Default: false)"
+        "description": "Optional. Use Azure private DNS zones for private endpoints. (Default: true)"
       }
     },
     "avdVnetPrivateDnsZoneFilesId": {
