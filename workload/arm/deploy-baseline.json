@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "13401281879992713223"
+      "templateHash": "4409675398899646667"
     }
   },
   "parameters": {
@@ -20301,7 +20301,8 @@
       },
       "dependsOn": [
         "baselineResourceGroups",
-        "[subscriptionResourceId(parameters('avdWorkloadSubsId'), 'Microsoft.Resources/deployments', format('Deploy-{0}-{1}', variables('varStorageObjectsRgName'), parameters('time')))]"
+        "[subscriptionResourceId(parameters('avdWorkloadSubsId'), 'Microsoft.Resources/deployments', format('Deploy-{0}-{1}', variables('varStorageObjectsRgName'), parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]"
       ]
     },
     {
@@ -22289,6 +22290,7 @@
       },
       "dependsOn": [
         "baselineResourceGroups",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time')))]"
       ]
     },
