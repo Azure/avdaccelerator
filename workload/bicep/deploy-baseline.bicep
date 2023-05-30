@@ -1056,7 +1056,7 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
 }
 
 // Storage accounts and file shares deployments.
-module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = [for storageDeployment in varStorageDeployments: if (createAvdFslogixDeployment || createMsixDeployment) {
+module azureFilesStorage './modules/storageAzureFiles/deploy.bicep' = [for storageDeployment in varStorageDeployments: if (createAvdFslogixDeployment || createMsixDeployment) {
     name: 'Storage-${storageDeployment.storagePurpose}-${time}'
     params: {
         storagePurpose: storageDeployment.storagePurpose
@@ -1147,7 +1147,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         diagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
     dependsOn: [
-        fslogixStorageAzureFiles
+        azureFilesStorage
         baselineResourceGroups
         networking
         wrklKeyVault
