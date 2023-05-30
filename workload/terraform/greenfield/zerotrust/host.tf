@@ -21,28 +21,26 @@ resource "azurerm_network_interface" "avd_vm_nic" {
 }
 
 resource "azurerm_windows_virtual_machine" "avd_vm" {
-  count                 = var.rdsh_count
-  name                  = "avd-vm-${var.prefix}-${count.index + 1}"
-  resource_group_name   = azurerm_resource_group.shrg.name
-  location              = azurerm_resource_group.shrg.location
-  availability_set_id   = var.rdsh_count == 0 ? "" : azurerm_availability_set.avdset.*.id[count.index]
-  size                  = var.vm_size
-  license_type          = "Windows_Client"
-  network_interface_ids = ["${azurerm_network_interface.avd_vm_nic.*.id[count.index]}"]
-  provision_vm_agent    = true
-  admin_username        = var.local_admin_username
-  admin_password        = azurerm_key_vault_secret.localpassword.value
-  secure_boot_enabled   = true
-  vtpm_enabled          = true
-
-  //encryption_at_host_enabled = true //'Microsoft.Compute/EncryptionAtHost' feature is must be enabled in the subscription for this setting to work https://learn.microsoft.com/en-us/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell
+  count                      = var.rdsh_count
+  name                       = "avd-vm-${var.prefix}-${count.index + 1}"
+  resource_group_name        = azurerm_resource_group.shrg.name
+  location                   = azurerm_resource_group.shrg.location
+  availability_set_id        = var.rdsh_count == 0 ? "" : azurerm_availability_set.avdset.*.id[count.index]
+  size                       = var.vm_size
+  license_type               = "Windows_Client"
+  network_interface_ids      = ["${azurerm_network_interface.avd_vm_nic.*.id[count.index]}"]
+  provision_vm_agent         = true
+  admin_username             = var.local_admin_username
+  admin_password             = azurerm_key_vault_secret.localpassword.value
+  secure_boot_enabled        = true
+  vtpm_enabled               = true
+  encryption_at_host_enabled = true //'Microsoft.Compute/EncryptionAtHost' feature is must be enabled in the subscription for this setting to work https://learn.microsoft.com/en-us/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell
 
   os_disk {
     name                   = "${lower(var.prefix)}-${count.index + 1}"
     caching                = "ReadWrite"
     storage_account_type   = "Standard_LRS"
-    disk_encryption_set_id = var.enable_disk_encryption == true ? azurerm_disk_encryption_set.en-set.id : ""
-
+    disk_encryption_set_id = azurerm_disk_encryption_set.en-set.id
   }
 
   # To use marketplace image, uncomment the following lines and comment the source_image_id line
@@ -164,8 +162,7 @@ resource "azurerm_virtual_machine_extension" "mal" {
   depends_on = [
     azurerm_virtual_machine_extension.aadjoin,
     azurerm_virtual_machine_extension.vmext_dsc,
-    azurerm_virtual_machine_extension.mma,
-    azurerm_virtual_machine_extension.cmkde
+    azurerm_virtual_machine_extension.mma
   ]
 }
 
@@ -194,7 +191,8 @@ resource "azurerm_role_assignment" "ensetusr" {
   ]
 }
 
-# # Virtual Machine Extension for Disk Encryption set
+/*
+# Virtual Machine Extension for Disk Encryption set
 resource "azurerm_virtual_machine_extension" "cmkde" {
   count                      = var.rdsh_count
   name                       = "${var.prefix}-${count.index + 1}-cmkde"
@@ -216,6 +214,7 @@ resource "azurerm_virtual_machine_extension" "cmkde" {
     }
 SETTINGS
 }
+*/
 
 # Availability Set for VMs
 resource "azurerm_availability_set" "avdset" {
