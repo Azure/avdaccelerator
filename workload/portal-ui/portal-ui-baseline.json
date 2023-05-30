@@ -1440,13 +1440,13 @@
                             "type": "Microsoft.Common.OptionsGroup",
                             "visible": true,
                             "label": "Deploy monitoring",
-                            "defaultValue": "Yes (Recommended)",
+                            "defaultValue": "No",
                             "toolTip": "Deploy monitoring settings and if selected deploy Azure log analytics workspace.",
                             "constraints": {
                                 "required": true,
                                 "allowedValues": [
                                     {
-                                        "label": "Yes (Recommended)",
+                                        "label": "Yes",
                                         "value": true
                                     },
                                     {
