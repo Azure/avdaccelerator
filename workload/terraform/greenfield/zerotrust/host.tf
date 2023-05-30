@@ -170,7 +170,7 @@ resource "azurerm_virtual_machine_extension" "mal" {
 resource "azurerm_disk_encryption_set" "en-set" {
   provider            = azurerm.spoke
   name                = "des-${var.prefix}-01"
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = azurerm_resource_group.shrg.name
   location            = azurerm_resource_group.rg.location
   key_vault_key_id    = azurerm_key_vault_key.stcmky.id
   encryption_type     = "EncryptionAtRestWithPlatformAndCustomerKeys"
@@ -190,31 +190,6 @@ resource "azurerm_role_assignment" "ensetusr" {
     time_sleep.wait
   ]
 }
-
-/*
-# Virtual Machine Extension for Disk Encryption set
-resource "azurerm_virtual_machine_extension" "cmkde" {
-  count                      = var.rdsh_count
-  name                       = "${var.prefix}-${count.index + 1}-cmkde"
-  virtual_machine_id         = azurerm_windows_virtual_machine.avd_vm.*.id[count.index]
-  publisher                  = "Microsoft.Azure.Security"
-  type                       = "AzureDiskEncryption"
-  type_handler_version       = "2.2"
-  auto_upgrade_minor_version = true
-
-  settings = <<SETTINGS
-    {
-        "EncryptionOperation": "EnableEncryption",
-        "KeyVaultURL": "${azurerm_key_vault.kv.vault_uri}",
-        "KeyVaultResourceId": "${azurerm_key_vault.kv.id}",                  
-        "KeyEncryptionKeyURL": "${azurerm_key_vault_key.stcmky.id}",         
-        "KekVaultResourceId": "${azurerm_key_vault.kv.id}",  
-        "KeyEncryptionAlgorithm": "RSA-OAEP",
-        "VolumeType": "All"
-    }
-SETTINGS
-}
-*/
 
 # Availability Set for VMs
 resource "azurerm_availability_set" "avdset" {
