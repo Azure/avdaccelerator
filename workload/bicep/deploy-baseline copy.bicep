@@ -511,43 +511,11 @@ var varWrklKvPrivateEndpointName = 'pe-kv-avd-${varDeploymentPrefixLowercase}-${
 var varSessionHostNamePrefix = avdUseCustomNaming ? avdSessionHostCustomNamePrefix : 'vm-avd-${varDeploymentPrefixLowercase}'
 var varAvailabilitySetNamePrefix = avdUseCustomNaming ? '${avdAvailabilitySetCustomNamePrefix}-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}' : 'avail-avd-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
 var varStorageManagedIdentityName = 'id-avd-storage-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
-var varCreateStorageDeployment = (createAvdFslogixDeployment||createMsixDeployment == true) ? true: false
-var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/aadj-fslogix-azurefiles/workload/'
-var varFslogixScriptUri = (avdIdentityServiceProvider == 'AAD') ? '${varBaseScriptUri}scripts/Set-FSLogixRegKeysAAD.ps1': '${varBaseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
-var varFsLogixScript = (avdIdentityServiceProvider == 'AAD') ? './Set-FSLogixRegKeysAad.ps1': './Set-FSLogixRegKeys.ps1'
-var varAvdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
-var varFslogixFileShareName = avdUseCustomNaming ? fslogixFileShareCustomName : 'fslogix-pc-${varDeploymentPrefixLowercase}-001'
-var varMsixFileShareName = avdUseCustomNaming ? msixFileShareCustomName : 'msix-pc-${varDeploymentPrefixLowercase}-001'
-var varFslogixStorageName = avdUseCustomNaming ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varNamingUniqueStringSixChar}' : 'stfsl${varDeploymentPrefixLowercase}${varNamingUniqueStringSixChar}'
-var varMsixStorageName = avdUseCustomNaming ? '${storageAccountPrefixCustomName}msx${varDeploymentPrefixLowercase}${varNamingUniqueStringSixChar}' : 'stmsx${varDeploymentPrefixLowercase}${varNamingUniqueStringSixChar}'
+var varFslogixStorageName = createAvdFslogixDeployment ? fslogixStorageAzureFiles.outputs.storageAccountName : ''
 var varFslogixStorageSku = avdUseAvailabilityZones ? '${fslogixStoragePerformance}_ZRS': '${fslogixStoragePerformance}_LRS'
 var varMsixStorageSku = avdUseAvailabilityZones ? '${msixStoragePerformance}_ZRS': '${msixStoragePerformance}_LRS'
-var varFsLogixScriptArguments = (avdIdentityServiceProvider == 'AAD') ? '-volumeshare ${varFslogixSharePath} -storageAccountName ${varFslogixStorageName} -identityDomainName ${avdIdentityDomainName}': '-volumeshare ${varFslogixSharePath}'
-var varFslogixSharePath = '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
-//var varAvdMsixStorageName = deployAvdMsixStorageAzureFiles.outputs.storageAccountName
-var varStorageDeployments = [
-    {
-        storagePurpose: 'fslogix'
-        storageAccountName: varFslogixStorageName
-        fileShareMultichannel: (fslogixStoragePerformance == 'Premium') ? true : false
-		storageSku: varFslogixStorageSku
-		fileShareName: varFslogixFileShareName
-		fileShareQuotaSize: fslogixFileShareQuotaSize
-		
-    }
-    {
-        storagePurpose: 'msix'
-        storageAccountName: varMsixStorageName
-        fileShareMultichannel: (msixStoragePerformance == 'Premium') ? true : false
-		storageSku: varMsixStorageSku
-		fileShareName: varMsixFileShareName
-		fileShareQuotaSize: msixFileShareQuotaSize
-    }
-]
-
-
-
 var varManagementVmName = 'vm-mgmt-${varDeploymentPrefixLowercase}'
+//var varAvdMsixStorageName = deployAvdMsixStorageAzureFiles.outputs.storageAccountName
 //var varAvdWrklStoragePrivateEndpointName = 'pe-stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}-file'
 var varAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName :  'log-avd-${varManagementPlaneLocationAcronym}' //'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
 var varScalingPlanSchedules = [
@@ -687,6 +655,13 @@ var varMarketPlaceGalleryWindows = {
         version: 'latest'
     }
 }
+var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/aadj-fslogix-azurefiles/workload/'
+var varFslogixScriptUri = (avdIdentityServiceProvider == 'AAD') ? '${varBaseScriptUri}scripts/Set-FSLogixRegKeysAAD.ps1': '${varBaseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
+var varFsLogixScriptArguments = (avdIdentityServiceProvider == 'AAD') ? '-volumeshare ${varFslogixSharePath} -storageAccountName ${varFslogixStorageName} -identityDomainName ${avdIdentityDomainName}': '-volumeshare ${varFslogixSharePath}'
+var varFsLogixScript = (avdIdentityServiceProvider == 'AAD') ? './Set-FSLogixRegKeysAad.ps1': './Set-FSLogixRegKeys.ps1'
+var varFslogixFileShareName = createAvdFslogixDeployment ? fslogixStorageAzureFiles.outputs.fileShareName : ''
+var varFslogixSharePath = '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
+var varAvdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
 var varStorageAccountContributorRoleId = '17d1049b-9a84-46fb-8f53-869881c3d3ab'
 var varReaderRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 var varStorageSmbShareContributorRoleId = '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb'
@@ -704,6 +679,7 @@ var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
 var varCreateOuForStorageString = string(createOuForStorage)
 var varAllDnsServers = '${customDnsIps},168.63.129.16'
 var varDnsServers = empty(customDnsIps) ? []: (split(varAllDnsServers, ','))
+var varCreateStorageDeployment = (createAvdFslogixDeployment||createMsixDeployment == true) ? true: false
 var varApplicationGroupIdentitiesIds = !empty(avdApplicationGroupIdentitiesIds) ? (split(avdApplicationGroupIdentitiesIds, ',')): []
 var varCreateVnetPeering = !empty(existingHubVnetResourceId) ? true: false
 // Resource tagging
@@ -1020,51 +996,18 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
     ]
 }
 
-// Management VM deployment
-module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if (createAvdFslogixDeployment || createMsixDeployment) {
-    name: 'Storage-Management-VM-${time}'
+// FSLogix Storage.
+module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (createAvdFslogixDeployment) {
+    name: 'Storage-Fslogix-Azure-Files-${time}'
     params: {
-        identityServiceProvider: avdIdentityServiceProvider
-        managementVmName: varManagementVmName
-        computeTimeZone: varTimeZoneSessionHosts
-        applicationSecurityGroupResourceId: createAvdVnet ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
-        domainJoinUserName: avdDomainJoinUserName
-        wrklKvName: varWrklKvName
-        serviceObjectsRgName: varServiceObjectsRgName
-        identityDomainName: avdIdentityDomainName
-        imageTemplateDefinitionId: avdImageTemplateDefinitionId
-        sessionHostOuPath: avdOuPath
-        sessionHostDiskType: avdSessionHostDiskType
-        sessionHostLocation: avdSessionHostLocation
-        sessionHostsSize: avdSessionHostsSize
-        avdSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkAvdSubnetName}' : existingVnetAvdSubnetResourceId
-        enableAcceleratedNetworking: enableAcceleratedNetworking
-        createAvdVnet: createAvdVnet
-        vmLocalUserName: avdVmLocalUserName
-        workloadSubsId: avdWorkloadSubsId
-        encryptionAtHost: encryptionAtHost
-        storageManagedIdentityResourceId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
-        marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows[avdOsImage]
-        useSharedImage: useSharedImage
-        tags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
-    }
-    dependsOn: [
-        baselineStorageResourceGroup
-        networking
-        wrklKeyVault
-    ]
-}
+        storagePurpose: 'fslogix'
+        fileShareCustomName: fslogixFileShareCustomName
+        fileShareMultichannel: (fslogixStoragePerformance == 'Premium') ? true : false
+        storageSku: varFslogixStorageSku
+        fileShareQuotaSize: fslogixFileShareQuotaSize
+        storageAccountPrefixCustomName: storageAccountPrefixCustomName
 
-// Storage accounts and file shares deployments.
-module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = [for storageDeployment in varStorageDeployments: if (createAvdFslogixDeployment || createMsixDeployment) {
-    name: 'Storage-${storageDeployment.storagePurpose}-${time}'
-    params: {
-        storagePurpose: storageDeployment.storagePurpose
-        fileShareName: storageDeployment.fileShareName
-        fileShareMultichannel: storageDeployment.fileShareMultichannel
-        storageSku: storageDeployment.storageSku
-        fileShareQuotaSize: storageDeployment.fileShareQuotaSize
-        storageAccountName: storageDeployment.storageAccountName
+
         storageToDomainScript:  varStorageToDomainScript
         storageToDomainScriptUri: varStorageToDomainScriptUri
         identityServiceProvider: avdIdentityServiceProvider
@@ -1075,27 +1018,102 @@ module fslogixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = [fo
         ouStgPath: varOuStgPath
         createOuForStorageString: varCreateOuForStorageString
         managedIdentityClientId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
+        computeTimeZone: varTimeZoneSessionHosts
+        applicationSecurityGroupResourceId: createAvdVnet ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
         identityDomainName: avdIdentityDomainName
         identityDomainGuid: identityDomainGuid
+        imageTemplateDefinitionId: avdImageTemplateDefinitionId
+        sessionHostOuPath: avdOuPath
+        sessionHostDiskType: avdSessionHostDiskType
         sessionHostLocation: avdSessionHostLocation
+        sessionHostsSize: avdSessionHostsSize
         storageObjectsRgName: varStorageObjectsRgName
+        avdSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkAvdSubnetName}' : existingVnetAvdSubnetResourceId
         privateEndpointSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
+        enableAcceleratedNetworking: enableAcceleratedNetworking
+        createAvdVnet: createAvdVnet
+        vmLocalUserName: avdVmLocalUserName
         vnetPrivateDnsZoneFilesId: createPrivateDnsZones ? networking.outputs.azureFilesDnsZoneResourceId: avdVnetPrivateDnsZoneFilesId
         workloadSubsId: avdWorkloadSubsId
+        encryptionAtHost: encryptionAtHost
+        storageManagedIdentityResourceId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
+        marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows[avdOsImage]
+        useSharedImage: useSharedImage
         tags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         diagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
+        useCustomNaming: avdUseCustomNaming
+        namingUniqueStringSixChar: varNamingUniqueStringSixChar
+        deploymentPrefixLowercase: varDeploymentPrefixLowercase
     }
     dependsOn: [
         baselineStorageResourceGroup
         networking
         wrklKeyVault
-        managementVm
     ]
-}]
+}
+
+// Msix Storage.
+module msixStorageAzureFiles './modules/storageAzureFiles/deploy.bicep' = if (createMsixDeployment) {
+    name: 'Storage-Msix-AzureFiles-${time}'
+    params: {
+        storagePurpose: 'msix'
+        fileShareCustomName: msixFileShareCustomName
+        identityServiceProvider: avdIdentityServiceProvider
+        dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
+        storageCustomOuPath: varStorageCustomOuPath
+        managementVmName: varManagementVmName
+        deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
+        ouStgPath: varOuStgPath
+        createOuForStorageString: varCreateOuForStorageString
+        managedIdentityClientId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
+        storageToDomainScript:  varStorageToDomainScript
+        storageToDomainScriptUri: varStorageToDomainScriptUri
+        computeTimeZone: varTimeZoneSessionHosts
+        applicationSecurityGroupResourceId: createAvdVnet ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
+        domainJoinUserName: avdDomainJoinUserName
+        wrklKvName: varWrklKvName
+        serviceObjectsRgName: varServiceObjectsRgName
+        fileShareQuotaSize: msixFileShareQuotaSize
+        identityDomainName: avdIdentityDomainName
+        identityDomainGuid: identityDomainGuid
+        imageTemplateDefinitionId: avdImageTemplateDefinitionId
+        sessionHostOuPath: avdOuPath
+        sessionHostDiskType: avdSessionHostDiskType
+        sessionHostLocation: avdSessionHostLocation
+        sessionHostsSize: avdSessionHostsSize
+        storageObjectsRgName: varStorageObjectsRgName
+        avdSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkAvdSubnetName}' : existingVnetAvdSubnetResourceId
+        privateEndpointSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
+        enableAcceleratedNetworking: enableAcceleratedNetworking
+        createAvdVnet: createAvdVnet
+        vmLocalUserName: avdVmLocalUserName
+        vnetPrivateDnsZoneFilesId: createPrivateDnsZones ? networking.outputs.azureFilesDnsZoneResourceId: avdVnetPrivateDnsZoneFilesId
+        workloadSubsId: avdWorkloadSubsId
+        encryptionAtHost: encryptionAtHost
+        storageManagedIdentityResourceId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
+        fileShareMultichannel: (msixStoragePerformance == 'Premium') ? true : false
+        storageSku: varMsixStorageSku
+        marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows[avdOsImage]
+        useSharedImage: useSharedImage
+        tags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
+        alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
+        diagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
+        useCustomNaming: avdUseCustomNaming
+        storageAccountPrefixCustomName: storageAccountPrefixCustomName
+        namingUniqueStringSixChar: varNamingUniqueStringSixChar
+        deploymentPrefixLowercase: varDeploymentPrefixLowercase
+    }
+    dependsOn: [
+        baselineStorageResourceGroup
+        fslogixStorageAzureFiles
+        networking
+        wrklKeyVault
+    ]
+}
 
 // Session hosts.
 module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySessionHosts) {
@@ -1137,7 +1155,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         storageManagedIdentityResourceId:  (varCreateStorageDeployment)  ? managedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
         fsLogixScript: varFsLogixScript
         fslogixScriptUri: varFslogixScriptUri
-        fslogixSharePath: '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
+        fslogixSharePath: varFslogixSharePath
         fsLogixScriptArguments: varFsLogixScriptArguments
         marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
