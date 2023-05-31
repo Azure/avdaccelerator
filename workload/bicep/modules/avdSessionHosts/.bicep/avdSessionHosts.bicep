@@ -3,6 +3,10 @@ targetScope = 'resourceGroup'
 // ========== //
 // Parameters //
 // ========== //
+
+@description('AVD disk encryption set resource ID to enable server side encyption.')
+param diskEncryptionSetResourceId string
+
 @description('AVD subnet ID.')
 param subnetId string
 
@@ -145,6 +149,14 @@ var varAllAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', 
 var varNicDiagnosticMetricsToEnable = [
     'AllMetrics'
   ]
+var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
+    storageAccountType: sessionHostDiskType
+} : {
+    diskEncryptionSet: {
+        id: diskEncryptionSetResourceId
+    }
+    storageAccountType: sessionHostDiskType
+}
 // =========== //
 // Deployments //
 // =========== //
@@ -180,9 +192,7 @@ module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
             createOption: 'fromImage'
             deleteOption: 'Delete'
             diskSizeGB: 128
-            managedDisk: {
-                storageAccountType: sessionHostDiskType
-            }
+            managedDisk: varManagedDisk
         }
         adminUsername: vmLocalUserName
         adminPassword: wrklKeyVaultget.getSecret('vmLocalUserPassword')

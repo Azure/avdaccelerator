@@ -665,6 +665,11 @@
                                     }
                                 },
                                 {
+                                    "name": "sessionHostDiskZeroTrust",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "label": "Zero Trust Disk Configuration"
+                                },
+                                {
                                     "name": "warningAcceleratedNetworkingSupport",
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, true)]",
@@ -2069,6 +2074,62 @@
                             ]
                         },
                         {
+                            "name": "resourceNamingZeroTrust",
+                            "type": "Microsoft.Common.Section",
+                            "label": "Zero Trust naming:",
+                            "visible": "[steps('resourceNaming').resourceNamingSelection]",
+                            "elements": [
+                                {
+                                    "name": "resourceNamingZeroTrustInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[not(steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust)]",
+                                    "options": {
+                                        "text": "Current deployment configuration is not creating zero trust resources.",
+                                        "style": "Info"
+                                    }
+                                },
+                                {
+                                    "name": "zeroTrustObjectsDiskEncryptionSetCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Disk encryption set",
+                                    "visible": "[and(steps('resourceNaming').resourceNamingSelection, steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust)]",
+                                    "toolTip": "Disk encryption set resource for double encryption of session host disks.",
+                                    "placeholder": "Example: des-avd-use2-security",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
+                                        "validationMessage": "Value must be 1-90 characters."
+                                    }
+                                },
+                                {
+                                    "name": "zeroTrustObjectsKeyVaultCustomPrefix",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Key vault prefix",
+                                    "visible": "[and(steps('resourceNaming').resourceNamingSelection, steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust)]",
+                                    "toolTip": "Key Vault that stores the encryption key for disk encryption.",
+                                    "placeholder": "Example: kv-avd-use2-security",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
+                                        "validationMessage": "Value must be 1-90 characters."
+                                    }
+                                },
+                                {
+                                    "name": "zeroTrustObjectsManagedIdentityCustomName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "User assigned identity",
+                                    "visible": "[and(steps('resourceNaming').resourceNamingSelection, steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust)]",
+                                    "toolTip": "User assigned identity that enables server-side encryption and disables network access.",
+                                    "placeholder": "Example: id-avd-use2-security",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
+                                        "validationMessage": "Value must be 1-90 characters."
+                                    }
+                                }
+                            ]
+                        },
+                        {
                             "name": "resourceNamingInfo2",
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
@@ -2361,6 +2422,7 @@
         "outputs": {
             "parameters": {
                 "deploymentPrefix": "[steps('basics').deploymentPrefix]",
+                "diskZeroTrust": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust]",
                 "avdManagementPlaneLocation": "[steps('basics').resourceScope.location.name]",
                 "avdSessionHostLocation": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]",
                 "avdWorkloadSubsId": "[steps('basics').resourceScope.subscription.subscriptionId]",
@@ -2461,7 +2523,10 @@
                 "alaExistingWorkspaceResourceId": "[if(equals(steps('monitoring').deployMonitoringAlaWorkspace, false), steps('monitoring').alaWorkspaceExistingWorkspacesSelection.id, 'none')]",
                 "deployCustomPolicyMonitoring": "[if(equals(steps('monitoring').deployMonitoring, true), steps('monitoring').deployMonitoringPolicies, false)]",
                 "avdMonitoringRgCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingMonitoring.monitoringObjectsRgCustomName, 'none')]",
-                "avdAlaWorkspaceCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingMonitoring.monitoringLogAnalyticsWorkspaceName, 'none')]"
+                "avdAlaWorkspaceCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingMonitoring.monitoringLogAnalyticsWorkspaceName, 'none')]",
+                "ztDiskEncryptionSetCustomNamePrefix": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsDiskEncryptionSetCustomName]",
+                "ztKvPrefixCustomName ": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsKeyVaultCustomPrefix]",
+                "ztManagedIdentityCustomName": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsManagedIdentityCustomName]"
             },
             "kind": "Subscription",
             "location": "[steps('basics').resourceScope.location.name]",
