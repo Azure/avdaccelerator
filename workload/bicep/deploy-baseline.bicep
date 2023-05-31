@@ -9,6 +9,10 @@ targetScope = 'subscription'
 @description('Required. The name of the resource group to deploy.')
 param deploymentPrefix string = 'AVD1'
 
+@maxValue(730)
+@minValue(30)
+param diskencryptionKeyExpirationInDays int = 60
+
 @description('Optional. Location where to deploy compute services. (Default: eastus2)')
 param avdSessionHostLocation string = 'eastus2'
 
@@ -206,8 +210,11 @@ param fslogixStoragePerformance string = 'Premium'
 @description('Optional. Storage account SKU for MSIX storage. Recommended tier is Premium. (Defualt: Premium)')
 param msixStoragePerformance string = 'Premium'
 
-@description('Optional. This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
-param encryptionAtHost bool = false
+@description('Optional. Enables a zero trust configuration on the session host disks. (Default: false)')
+param diskZeroTrust bool = false
+
+@description('DO NOT MODIFY. This value is used to set the expiration date on the disk encryption key.')
+param keyExpiration int = dateTimeToEpoch(dateTimeAdd(utcNow(), 'P90D'))
 
 @description('Optional. Session host VM size. (Defualt: Standard_D4ads_v5)')
 param avdSessionHostsSize string = 'Standard_D4ads_v5'
@@ -387,6 +394,15 @@ param msixFileShareCustomName string = 'msix-pc-app1-001'
 @description('Optional. AVD keyvault prefix custom name. (Default: kv-avd)')
 param avdWrklKvPrefixCustomName string = 'kv-avd'
 
+@description('Optional. AVD disk encryption set custom name (Default: des-avd-use2-app1)')
+param ztDiskEncryptionSetCustomNamePrefix string = 'des-avd-use2-app1'
+
+@description('Optional. AVD managed identity for zero trust to encrypt managed disks using a customer managed key.')
+param ztManagedIdentityCustomName string = 'id-avd-use2-app1'
+
+@description('Optional. AVD key vault name custom name for zero trust (Default: kv-zt-use2)')
+param ztKvPrefixCustomName string = 'kv-zt-use2'
+
 //
 // Resource tagging
 //
@@ -449,7 +465,7 @@ param costCenterTag string = 'Contoso-CC'
 @allowed([
     'Prod'
     'Dev'
-    'Staging '
+    'Staging'
 ])
 @description('Optional. Deployment environment of the application, workload. (Default: Dev)')
 param environmentTypeTag string = 'Dev'
@@ -469,6 +485,8 @@ param enableTelemetry bool = true
 // =========== //
 // Resource naming
 var varDeploymentPrefixLowercase = toLower(deploymentPrefix)
+var varDiskEncryptionSetName = avdUseCustomNaming ? '${ztDiskEncryptionSetCustomNamePrefix}-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}' : 'des-zt-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
+var varManagedIdentityName = avdUseCustomNaming ? '${ztManagedIdentityCustomName}-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}' : 'id-zt-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
 var varSessionHostLocationLowercase = toLower(replace(avdSessionHostLocation, ' ', ''))
 var varManagementPlaneLocationLowercase = toLower(replace(avdManagementPlaneLocation, ' ', ''))
 var varSessionHostLocationAcronym = varLocations[varSessionHostLocationLowercase].acronym
@@ -528,6 +546,8 @@ var varFslogixSharePath = '\\\\${varFslogixStorageName}.file.${environment().suf
 var varManagementVmName = 'vm-mgmt-${varDeploymentPrefixLowercase}'
 //var varAvdWrklStoragePrivateEndpointName = 'pe-stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}-file'
 var varAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${varManagementPlaneLocationAcronym}' //'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
+var varZtKvName = avdUseCustomNaming ? '${ztKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringSixChar}' : 'kv-zt-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringSixChar}' // max length limit 24 characters
+var varZtKvPrivateEndpointName = 'pe-kv-zt-${varDeploymentPrefixLowercase}-${varNamingUniqueStringSixChar}'
 var varScalingPlanSchedules = [
     {
         daysOfWeek: [
@@ -726,6 +746,16 @@ var verResourceGroups = [
         tags: createResourceTags ? union(varAllComputeStorageTags, varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
     }
 ]
+var varZtRoleAssignments = [
+    {
+        resourceGroup: varServiceObjectsRgName
+        roleDefinitionName: 'Key Vault Crypto Service Encryption User'
+    }
+    {
+        resourceGroup: varComputeObjectsRgName
+        roleDefinitionName: 'Disk Pool Operator'
+    }
+]
 
 // =========== //
 // Deployments //
@@ -887,6 +917,197 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     ]
 }
 
+// Policy Definition for Managed Disk Network Access
+module ztPolicyDefinition '../../carml/1.3.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = if (diskZeroTrust) {
+    name: 'ZT-Policy-Definition-${time}'
+    params: {
+        description: 'This policy definition sets the network access policy property to "DenyAll" and the public network access property to "Disabled" on all the managed disks within the assigned scope.'
+        displayName: 'Zero Trust - Disable Managed Disk Network Access'
+        location: avdSessionHostLocation
+        name: 'AVDACC-Zero-Trust-Disable-Managed-Disk-Network-Access'
+        policyRule: {
+            if: {
+                field: 'type'
+                equals: 'Microsoft.Compute/disks'
+            }
+            then: {
+                effect: 'modify'
+                details: {
+                    roleDefinitionIds: [
+                        '/providers/Microsoft.Authorization/roleDefinitions/60fc6e62-5479-42d4-8bf4-67625fcc2840'
+                    ]
+                    operations: [
+                        {
+                            operation: 'addOrReplace'
+                            field: 'Microsoft.Compute/disks/networkAccessPolicy'
+                            value: 'DenyAll'
+                        }
+                        {
+                            operation: 'addOrReplace'
+                            field: 'Microsoft.Compute/disks/publicNetworkAccess'
+                            value: 'Disabled'
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}
+
+module ztPolicyAssignment '../../carml/1.3.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = if (diskZeroTrust) {
+    name: 'ZT-Policy-Assignment-${time}'
+    params: {
+        name: 'AVDACC-Zero-Trust-Disable-Managed-Disk-Network-Access'
+        displayName: 'Zero Trust - Disable Managed Disk Network Access'
+        description: 'This policy assignment sets the network access policy property to "DenyAll" and the public network access property to "Disabled" on all the managed disks within the assigned scope.'
+        identity: 'UserAssigned'
+        location: avdSessionHostLocation
+        policyDefinitionId: ztPolicyDefinition.outputs.resourceId
+        resourceSelectors: [
+            {
+                name: 'VirtualMachineDisks'
+                selectors: [
+                    {
+                        in: [
+                            'Microsoft.Compute/disks'
+                        ]
+                        kind: 'resourceType'
+                    }
+                ]
+            }
+        ]
+        userAssignedIdentityId: ztManagedIdentity.outputs.resourceId
+    }
+}
+
+// User Assigned Identity for Zero Trust
+module ztManagedIdentity '../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = if (diskZeroTrust) {
+    scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
+    name: 'ZT-Managed-ID-${time}'
+    params: {
+        location: avdSessionHostLocation
+        name: varManagedIdentityName
+        tags: createResourceTags ? union(varCommonResourceTags, varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
+    }
+    dependsOn: [
+        baselineResourceGroups
+        baselineStorageResourceGroup
+    ]
+}
+
+// Key vault for Zero Trust
+module ztKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' = if (diskZeroTrust) {
+    scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
+    name: 'ZT-KeyVault-${time}'
+    params: {
+        name: varZtKvName
+        location: avdSessionHostLocation
+        enableRbacAuthorization: true
+        enablePurgeProtection: true
+        softDeleteRetentionInDays: 7
+        publicNetworkAccess: 'Disabled'
+        networkAcls: {
+            bypass: 'AzureServices'
+            defaultAction: 'Deny'
+            virtualNetworkRules: []
+            ipRules: []
+        }
+        privateEndpoints: deployPrivateEndpointKeyvaultStorage ? [
+            {
+                name: varZtKvPrivateEndpointName
+                subnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
+                customNetworkInterfaceName: 'nic-01-${varZtKvPrivateEndpointName}'
+                service: 'vault'
+                privateDnsZoneGroup: {
+                    privateDNSResourceIds: [
+                        avdVnetPrivateDnsZoneKeyvaultId
+                    ]
+                }
+            }
+        ] : [
+            {
+                name: varZtKvPrivateEndpointName
+                subnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
+                customNetworkInterfaceName: 'nic-01-${varZtKvPrivateEndpointName}'
+                service: 'vault'
+            }
+        ]
+        tags: createResourceTags ? union(varCommonResourceTags, varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
+    }
+    dependsOn: [
+        baselineResourceGroups
+        //updateExistingSubnet
+    ]
+}
+
+// Disk Encryption Key for Zero Trust.
+module ztKeyVaultKey '../../carml/1.3.0/Microsoft.KeyVault/vaults/keys/deploy.bicep' = if (diskZeroTrust) {
+    scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
+    name: 'ZT-KeyVaultKey-${time}'
+    params: {
+        attributesEnabled: true
+        attributesExp: keyExpiration
+        keySize: 4096
+        keyVaultName: ztKeyVault.outputs.name
+        kty: 'RSA'
+        name: 'DiskEncryptionKey'
+        rotationPolicy: {
+            attributes: {
+                expiryTime: 'P${string(diskencryptionKeyExpirationInDays)}D'
+            }
+            lifetimeActions: [
+                {
+                    action: {
+                        type: 'notify'
+                    }
+                    trigger: {
+                        timeBeforeExpiry: 'P10D'
+                    }
+                }
+                {
+                    action: {
+                        type: 'rotate'
+                    }
+                    trigger: {
+                        timeAfterCreate: 'P${string(diskencryptionKeyExpirationInDays - 7)}D'
+                    }
+                }
+            ]
+        }
+        tags: createResourceTags ? union(varCommonResourceTags, varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
+    }
+}
+
+// Role Assignments for Zero Trust.
+module ztRoleAssignments '../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for (Assignment, i) in varZtRoleAssignments: if (diskZeroTrust) {
+    scope: resourceGroup('${avdWorkloadSubsId}', '${Assignment.resourceGroup}')
+    name: 'ZT-RoleAssignment-${i}-${time}'
+    params: {
+        principalId: ztManagedIdentity.outputs.principalId
+        roleDefinitionIdOrName: Assignment.roleDefinitionName
+        principalType: 'ServicePrincipal'
+    }
+}]
+
+// Disk Encryption Set for Zero Trust.
+module ztDiskEncryptionSet '../../carml/1.3.0/Microsoft.Compute/diskEncryptionSets/deploy.bicep' = if (diskZeroTrust) {
+    scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
+    name: 'ZT-DiskEncryptionSet-${time}'
+    params: {
+        accessPolicy: false
+        keyName: ztKeyVaultKey.outputs.name
+        keyVaultResourceId: ztKeyVault.outputs.resourceId
+        location: avdSessionHostLocation
+        name: varDiskEncryptionSetName
+        rotationToLatestKeyVersionEnabled: true
+        systemAssignedIdentity: false
+        tags: createResourceTags ? union(varCommonResourceTags, varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
+        userAssignedIdentities: {
+            '${ztManagedIdentity.outputs.resourceId}': {}
+        }
+    }
+}
+
 // Identity: managed identities and role assignments.
 module managedIdentitiesRoleAssign './modules/identity/deploy.bicep' = {
     name: 'Managed-ID-RoleAssign-${time}'
@@ -1005,6 +1226,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
 module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if (createAvdFslogixDeployment || createMsixDeployment) {
     name: 'Storage-Management-VM-${time}'
     params: {
+        diskEncryptionSetResourceId: diskZeroTrust ? ztDiskEncryptionSet.outputs.resourceId : ''
         identityServiceProvider: avdIdentityServiceProvider
         managementVmName: varManagementVmName
         computeTimeZone: varTimeZoneSessionHosts
@@ -1023,7 +1245,7 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
         createAvdVnet: createAvdVnet
         vmLocalUserName: avdVmLocalUserName
         workloadSubsId: avdWorkloadSubsId
-        encryptionAtHost: encryptionAtHost
+        encryptionAtHost: diskZeroTrust
         storageManagedIdentityResourceId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
         marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
@@ -1127,6 +1349,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (cr
 module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySessionHosts) {
     name: 'Session-Hosts-${time}'
     params: {
+        diskEncryptionSetResourceId: diskZeroTrust ? ztDiskEncryptionSet.outputs.resourceId : ''
         avdAgentPackageLocation: varAvdAgentPackageLocation
         computeTimeZone: varTimeZoneSessionHosts
         applicationSecurityGroupResourceId: createAvdVnet ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
@@ -1158,7 +1381,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         useAvailabilityZones: avdUseAvailabilityZones
         vmLocalUserName: avdVmLocalUserName
         workloadSubsId: avdWorkloadSubsId
-        encryptionAtHost: encryptionAtHost
+        encryptionAtHost: diskZeroTrust
         createAvdFslogixDeployment: createAvdFslogixDeployment
         storageManagedIdentityResourceId: (varCreateStorageDeployment) ? managedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
         fsLogixScript: varFsLogixScript
