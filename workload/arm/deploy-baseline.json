@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "307729806043717486"
+      "templateHash": "16693704369788594169"
     }
   },
   "parameters": {
@@ -16119,7 +16119,7 @@
               "ipRules": []
             }
           },
-          "privateEndpoints": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), createObject('value', createArray(createObject('name', variables('varZtKvPrivateEndpointName'), 'subnetResourceId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetworkPrivateEndpointSubnetName')), parameters('existingVnetPrivateEndpointSubnetResourceId')), 'customNetworkInterfaceName', format('nic-01-{0}', variables('varZtKvPrivateEndpointName')), 'service', 'vault', 'privateDnsZoneGroup', createObject('privateDNSResourceIds', createArray(parameters('avdVnetPrivateDnsZoneKeyvaultId')))))), createObject('value', createArray(createObject('name', variables('varZtKvPrivateEndpointName'), 'subnetResourceId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetworkPrivateEndpointSubnetName')), parameters('existingVnetPrivateEndpointSubnetResourceId')), 'customNetworkInterfaceName', format('nic-01-{0}', variables('varZtKvPrivateEndpointName')), 'service', 'vault'))))]",
+          "privateEndpoints": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), createObject('value', createArray(createObject('name', variables('varZtKvPrivateEndpointName'), 'subnetResourceId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetworkPrivateEndpointSubnetName')), parameters('existingVnetPrivateEndpointSubnetResourceId')), 'customNetworkInterfaceName', format('nic-01-{0}', variables('varZtKvPrivateEndpointName')), 'service', 'vault', 'privateDnsZoneGroup', createObject('privateDNSResourceIds', createArray(if(parameters('createPrivateDnsZones'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.KeyVaultDnsZoneResourceId.value, parameters('avdVnetPrivateDnsZoneKeyvaultId'))))))), createObject('value', createArray()))]",
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCommonResourceTags'), variables('varAvdCostManagementParentResourceTag'))), createObject('value', variables('varAvdCostManagementParentResourceTag')))]"
         },
         "template": {
