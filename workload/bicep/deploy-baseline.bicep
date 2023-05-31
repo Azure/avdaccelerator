@@ -525,28 +525,6 @@ var varMsixStorageSku = avdUseAvailabilityZones ? '${msixStoragePerformance}_ZRS
 var varFsLogixScriptArguments = (avdIdentityServiceProvider == 'AAD') ? '-volumeshare ${varFslogixSharePath} -storageAccountName ${varFslogixStorageName} -identityDomainName ${avdIdentityDomainName}': '-volumeshare ${varFslogixSharePath}'
 var varFslogixSharePath = '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
 //var varAvdMsixStorageName = deployAvdMsixStorageAzureFiles.outputs.storageAccountName
-var varStorageDeployments = [
-    {
-        storagePurpose: 'fslogix'
-        storageAccountName: varFslogixStorageName
-        fileShareMultichannel: (fslogixStoragePerformance == 'Premium') ? true : false
-		storageSku: varFslogixStorageSku
-		fileShareName: varFslogixFileShareName
-		fileShareQuotaSize: fslogixFileShareQuotaSize
-		
-    }
-    {
-        storagePurpose: 'msix'
-        storageAccountName: varMsixStorageName
-        fileShareMultichannel: (msixStoragePerformance == 'Premium') ? true : false
-		storageSku: varMsixStorageSku
-		fileShareName: varMsixFileShareName
-		fileShareQuotaSize: msixFileShareQuotaSize
-    }
-]
-
-
-
 var varManagementVmName = 'vm-mgmt-${varDeploymentPrefixLowercase}'
 //var varAvdWrklStoragePrivateEndpointName = 'pe-stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}-file'
 var varAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName :  'log-avd-${varManagementPlaneLocationAcronym}' //'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
@@ -1055,16 +1033,16 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
     ]
 }
 
-// Storage accounts and file shares deployments.
-module azureFilesStorage './modules/storageAzureFiles/deploy.bicep' = [for storageDeployment in varStorageDeployments: if (createAvdFslogixDeployment || createMsixDeployment) {
-    name: 'Storage-${storageDeployment.storagePurpose}-${time}'
+// FSLogix storage.
+module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (createAvdFslogixDeployment) {
+    name: 'Storage-FSLogix-${time}'
     params: {
-        storagePurpose: storageDeployment.storagePurpose
-        fileShareName: storageDeployment.fileShareName
-        fileShareMultichannel: storageDeployment.fileShareMultichannel
-        storageSku: storageDeployment.storageSku
-        fileShareQuotaSize: storageDeployment.fileShareQuotaSize
-        storageAccountName: storageDeployment.storageAccountName
+        storagePurpose: 'fslogix'
+        fileShareName: varFslogixFileShareName
+        fileShareMultichannel: (fslogixStoragePerformance == 'Premium') ? true : false
+        storageSku: varFslogixStorageSku
+        fileShareQuotaSize: fslogixFileShareQuotaSize
+        storageAccountName: varFslogixStorageName
         storageToDomainScript:  varStorageToDomainScript
         storageToDomainScriptUri: varStorageToDomainScriptUri
         identityServiceProvider: avdIdentityServiceProvider
@@ -1095,7 +1073,50 @@ module azureFilesStorage './modules/storageAzureFiles/deploy.bicep' = [for stora
         wrklKeyVault
         managementVm
     ]
-}]
+}
+
+// MSIX storage.
+module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (createMsixDeployment) {
+    name: 'Storage-MSIX-${time}'
+    params: {
+        storagePurpose: 'msix'
+        fileShareName: varMsixFileShareName
+        fileShareMultichannel: (msixStoragePerformance == 'Premium') ? true : false
+        storageSku: varMsixStorageSku
+        fileShareQuotaSize: msixFileShareQuotaSize
+        storageAccountName: varMsixStorageName
+        storageToDomainScript:  varStorageToDomainScript
+        storageToDomainScriptUri: varStorageToDomainScriptUri
+        identityServiceProvider: avdIdentityServiceProvider
+        dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
+        storageCustomOuPath: varStorageCustomOuPath
+        managementVmName: varManagementVmName
+        deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
+        ouStgPath: varOuStgPath
+        createOuForStorageString: varCreateOuForStorageString
+        managedIdentityClientId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
+        domainJoinUserName: avdDomainJoinUserName
+        wrklKvName: varWrklKvName
+        serviceObjectsRgName: varServiceObjectsRgName
+        identityDomainName: avdIdentityDomainName
+        identityDomainGuid: identityDomainGuid
+        sessionHostLocation: avdSessionHostLocation
+        storageObjectsRgName: varStorageObjectsRgName
+        privateEndpointSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
+        vnetPrivateDnsZoneFilesId: createPrivateDnsZones ? networking.outputs.azureFilesDnsZoneResourceId: avdVnetPrivateDnsZoneFilesId
+        workloadSubsId: avdWorkloadSubsId
+        tags: createResourceTags ? union(varAllResourceTags,varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
+        alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
+        diagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
+    }
+    dependsOn: [
+        fslogixAzureFilesStorage
+        baselineStorageResourceGroup
+        networking
+        wrklKeyVault
+        managementVm
+    ]
+}
 
 // Session hosts.
 module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySessionHosts) {
@@ -1147,7 +1168,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         diagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
     dependsOn: [
-        azureFilesStorage
+        fslogixAzureFilesStorage
         baselineResourceGroups
         networking
         wrklKeyVault
