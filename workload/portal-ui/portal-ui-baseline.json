@@ -29,9 +29,9 @@
                                     "name": "deploymentInfo",
                                     "type": "Microsoft.Common.InfoBox",
                                     "options": {
-					"style": "Info",
+                                        "style": "Info",
                                         "text": "The subscription selected in the 'Project details' section below will be used to deploy all resources. \n\nThe region selected in 'Instance details' section below will be used to deploy the AVD management plane resources (workspace, host pool, and application group, etc.). These resource types are not available in all regions, but they are globally replicated.\n\nThe session hosts do not have to be deployed to the same region, therefore you will have the option to select that region on the 'Session Hosts' blade.",
-                                        "uri": "https://docs.microsoft.com/azure/virtual-desktop/data-locations"										
+                                        "uri": "https://docs.microsoft.com/azure/virtual-desktop/data-locations"
                                     }
                                 }
                             ]
@@ -197,7 +197,6 @@
                                     "toolTip": "Comma separated list of identities (ObjectIDs) to be granted access to AVD published items and to create sessions on VMs and single sign-on (SSO) when using AAD as identity provider.",
                                     "placeholder": "Example: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX,XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
                                 }
-
                             ]
                         },
                         {
@@ -250,7 +249,6 @@
                                         "regex": "^(?!.*[aA]dministrator).*$",
                                         "validationMessage": "This username can't be used, it is a reserved word.",
                                         "required": true
-
                                     }
                                 },
                                 {
@@ -465,7 +463,8 @@
                                     "type": "Microsoft.Solutions.GraphApiControl",
                                     "request": {
                                         "method": "GET",
-                                        "path": "/v1.0/serviceprincipals?$filter=appId eq '9cdead84-a844-4324-93f2-b2e6bb768d07'"                          }
+                                        "path": "/v1.0/serviceprincipals?$filter=appId eq '9cdead84-a844-4324-93f2-b2e6bb768d07'"
+                                    }
                                 },
                                 {
                                     "name": "startVmOnConnectRoleInfo",
@@ -551,7 +550,7 @@
                                         "style": "Info"
                                     }
                                 },
-                                { 
+                                {
                                     "name": "sessionHostsAvailabilitySettings",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "label": "Use availability zones",
@@ -675,7 +674,7 @@
                                         "style": "Warning"
                                     }
                                 },
-								{
+                                {
                                     "name": "acceleratedNetworking",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "visible": true,
@@ -935,7 +934,7 @@
                                             }
                                         ]
                                     }
-                                },	
+                                },
                                 {
                                     "name": "fslogixStorageAccountSku",
                                     "type": "Microsoft.Common.DropDown",
@@ -1012,7 +1011,7 @@
                                             }
                                         ]
                                     }
-                                },	
+                                },
                                 {
                                     "name": "msixStorageAccountSku",
                                     "type": "Microsoft.Common.DropDown",
@@ -1519,7 +1518,7 @@
                         {
                             "name": "deployMonitoringNewAlaWorkspaceRetention",
                             "type": "Microsoft.Common.TextBox",
-                            "visible": "[equals(steps('monitoring').deployMonitoringAlaWorkspace, true)]", 
+                            "visible": "[equals(steps('monitoring').deployMonitoringAlaWorkspace, true)]",
                             "label": "Retention policy (Days)",
                             "toolTip": "Number of days data will be retained in the workspace.",
                             "defaultValue": 90,
@@ -1532,7 +1531,7 @@
                         {
                             "name": "alaWorkspaceExistingWorkspacesSelection",
                             "type": "Microsoft.Solutions.ResourceSelector",
-                            "visible": "[equals(steps('monitoring').deployMonitoringAlaWorkspace, false)]", 
+                            "visible": "[equals(steps('monitoring').deployMonitoringAlaWorkspace, false)]",
                             "label": "Existing workspace",
                             "resourceType": "Microsoft.OperationalInsights/workspaces",
                             "constraints": {
@@ -2108,15 +2107,15 @@
                                 ]
                             }
                         },
-			    {
-    				"name": "resourceTaggingParentCostInfo",
-    				"type": "Microsoft.Common.InfoBox",
-    				"options": {
-        				"text": "By default, all resources will be tagged with parent resource cost management tag (cm-resource-parent). This will group all costs under the host pool resource.",
-        				"uri": "https://learn.microsoft.com/azure/virtual-desktop/tag-virtual-desktop-resources#use-the-cm-resource-parent-tag-to-automatically-group-costs-by-host-pool",
-        				"style": "Info"
-    				}
-			},
+                        {
+                            "name": "resourceTaggingParentCostInfo",
+                            "type": "Microsoft.Common.InfoBox",
+                            "options": {
+                                "text": "By default, all resources will be tagged with parent resource cost management tag (cm-resource-parent). This will group all costs under the host pool resource.",
+                                "uri": "https://learn.microsoft.com/azure/virtual-desktop/tag-virtual-desktop-resources#use-the-cm-resource-parent-tag-to-automatically-group-costs-by-host-pool",
+                                "style": "Info"
+                            }
+                        },
                         {
                             "name": "resourceTags",
                             "type": "Microsoft.Common.Section",
@@ -2390,7 +2389,7 @@
                 "avdDeploySessionHosts": "[steps('sessionHosts').deploySessionHosts]",
                 "avdStartVmOnConnect": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, false)]",
                 "avdDeployScalingPlan": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, false)]",
-                "avdEnterpriseAppObjectId":   "[first(map(steps('managementPlane').managementPlaneHostPoolScaling.avdEnterpriseApplication.value, (item) => item.id))]",
+                "avdEnterpriseAppObjectId": "[first(map(steps('managementPlane').managementPlaneHostPoolScaling.avdEnterpriseApplication.value, (item) => item.id))]",
                 "avdUseAvailabilityZones": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings]",
                 "avdDeploySessionHostsCount": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
                 "useSharedImage": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false)]",
@@ -2400,7 +2399,7 @@
                 "vTpmEnabled": "[steps('sessionHosts').sessionHostsSecuritySection.vTpmEnabled]",
                 "avdImageTemplateDefinitionId": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage.id, 'none')]",
                 "avdSessionHostDiskType": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskType]",
-				"enableAcceleratedNetworking": "[steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking]",
+                "enableAcceleratedNetworking": "[steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking]",
                 "avdSessionHostsSize": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize, 'Standard_D4ads_v5')]",
                 "deployPrivateEndpointKeyvaultStorage": "[steps('network').deployPrivateEndpointKeyvaultStorage]",
                 "createPrivateDnsZones": "[if(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), steps('network').virtualNetworkPrivateDnsZone, false)]",
