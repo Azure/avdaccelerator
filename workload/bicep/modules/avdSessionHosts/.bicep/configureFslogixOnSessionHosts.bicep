@@ -22,7 +22,7 @@ param fsLogixScriptArguments string
 // =========== //
 
 // FSLogix configuration.
-resource fslogixconfigure 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = {
+resource fslogixConfigure 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = {
   name: '${name}/FSlogixSetup'
   location: location
   properties: {
@@ -37,3 +37,5 @@ resource fslogixconfigure 'Microsoft.Compute/virtualMachines/extensions@2022-08-
     }
   }
 }
+
+

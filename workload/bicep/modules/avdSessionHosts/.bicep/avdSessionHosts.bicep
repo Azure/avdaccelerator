@@ -112,7 +112,7 @@ param avdAgentPackageLocation string
 param createAvdFslogixDeployment bool
 
 @description('FSlogix configuration script file name.')
-param fsLogixScript string
+param fsLogixScriptFile string
 
 @description('Configuration arguments for FSlogix.')
 param fsLogixScriptArguments string
@@ -358,7 +358,7 @@ module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virt
 }]
 
 // Introduce wait for antimalware extension to complete to be ready.
-module sessionHostsMonitoringWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
+module sessionHostsMonitoringWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (deployMonitoring) {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
     name: 'SH-Monitoring-Wait-${time}'
     params: {
@@ -381,13 +381,13 @@ module sessionHostsMonitoringWait '../../../../../carml/1.3.0/Microsoft.Resource
 } 
 
 // Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
-module configureFsLogixForAvdHosts './configureFslogixOnSessionHosts.bicep' = [for i in range(1, sessionHostsCount): if (createAvdFslogixDeployment && (identityServiceProvider != 'AAD')) {
+module configureFsLogixAvdHosts './configureFslogixOnSessionHosts.bicep' = [for i in range(1, sessionHostsCount): if (createAvdFslogixDeployment) {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
-    name: 'Configure-FsLogix-for-${padLeft((i + sessionHostCountIndex), 3, '0')}-${time}'
+    name: 'Configure-FsLogix-${padLeft((i + sessionHostCountIndex), 3, '0')}-${time}'
     params: {
         location: sessionHostLocation
         name: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
-        file: fsLogixScript
+        file: fsLogixScriptFile
         fsLogixScriptArguments: fsLogixScriptArguments
         baseScriptUri: fslogixScriptUri
     }
@@ -411,7 +411,7 @@ module addAvdHostsToHostPool './registerSessionHostsOnHopstPool.bicep' = [for i 
     dependsOn: [
         sessionHosts
         sessionHostsMonitoringWait
-        configureFsLogixForAvdHosts
+        configureFsLogixAvdHosts
     ]
 }]
 
