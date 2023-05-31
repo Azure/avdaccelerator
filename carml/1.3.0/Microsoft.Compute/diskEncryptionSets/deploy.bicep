@@ -1,3 +1,6 @@
+@description('Optional. Enables access policy rights to the specified key vault.')
+param accessPolicy bool = true
+
 @description('Required. The name of the disk encryption set that is being created.')
 param name string
 
@@ -78,7 +81,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-10-01' existing = {
 }
 
 // Note: This is only enabled for user-assigned identities as the service's system-assigned identity isn't available during its initial deployment
-module keyVaultPermissions '.bicep/nested_keyVaultPermissions.bicep' = [for (userAssignedIdentityId, index) in items(userAssignedIdentities): {
+module keyVaultPermissions '.bicep/nested_keyVaultPermissions.bicep' = [for (userAssignedIdentityId, index) in items(userAssignedIdentities): if(accessPolicy) {
   name: '${uniqueString(deployment().name, location)}-DiskEncrSet-KVPermissions-${index}'
   params: {
     keyName: keyName
