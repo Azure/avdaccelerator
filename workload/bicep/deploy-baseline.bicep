@@ -841,6 +841,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet) {
     }
     dependsOn: [
         baselineNetworkResourceGroup
+        monitoringDiagnosticSettings
     ]
 }
 
@@ -882,6 +883,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     dependsOn: [
         baselineResourceGroups
         managedIdentitiesRoleAssign
+        monitoringDiagnosticSettings
     ]
 }
 
@@ -911,6 +913,7 @@ module managedIdentitiesRoleAssign './modules/identity/deploy.bicep' = {
     dependsOn: [
         baselineResourceGroups
         baselineStorageResourceGroup
+        monitoringDiagnosticSettings
     ]
 }
 
@@ -994,7 +997,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
     }
     dependsOn: [
         baselineResourceGroups
-        //updateExistingSubnet
+        monitoringDiagnosticSettings
     ]
 }
 
@@ -1072,6 +1075,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
         networking
         wrklKeyVault
         managementVm
+        monitoringDiagnosticSettings
     ]
 }
 
@@ -1115,6 +1119,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (cr
         networking
         wrklKeyVault
         managementVm
+        monitoringDiagnosticSettings
     ]
 }
 
@@ -1172,6 +1177,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         baselineResourceGroups
         networking
         wrklKeyVault
+        monitoringDiagnosticSettings
     ]
 }
 /*
