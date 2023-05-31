@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "16844973709904861537"
+      "templateHash": "6352461887461341044"
     }
   },
   "parameters": {
@@ -7928,7 +7928,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "6741252086715241516"
+              "templateHash": "3590203076250318623"
             }
           },
           "parameters": {
@@ -8533,7 +8533,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "2297373849260241154"
+                      "templateHash": "18370975103020075202"
                     }
                   },
                   "parameters": {
@@ -8557,6 +8557,10 @@
                     },
                     "Location": {
                       "type": "string"
+                    },
+                    "Timestamp": {
+                      "type": "string",
+                      "defaultValue": "[utcNow()]"
                     }
                   },
                   "resources": [
@@ -8568,7 +8572,7 @@
                       "condition": "[not(equals(parameters('HostPoolInfo').VMResourceGroup, null()))]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('carml_{0}', parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].name)]",
+                      "name": "[format('carml_{0}_{1}', parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].name, parameters('Timestamp'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
