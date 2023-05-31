@@ -863,7 +863,7 @@
       "allowedValues": [
         "Prod",
         "Dev",
-        "Staging "
+        "Staging "
       ]
     },
     "time": {
