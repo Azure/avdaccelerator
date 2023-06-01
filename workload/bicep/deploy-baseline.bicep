@@ -746,16 +746,6 @@ var verResourceGroups = [
         tags: createResourceTags ? union(varAllComputeStorageTags, varAvdCostManagementParentResourceTag) : varAvdCostManagementParentResourceTag
     }
 ]
-var varZtRoleAssignments = [
-    {
-        resourceGroup: varServiceObjectsRgName
-        roleDefinitionName: 'Key Vault Crypto Service Encryption User'
-    }
-    {
-        resourceGroup: varComputeObjectsRgName
-        roleDefinitionName: 'Disk Pool Operator'
-    }
-]
 
 // =========== //
 // Deployments //
@@ -1083,16 +1073,27 @@ module ztKeyVaultKey '../../carml/1.3.0/Microsoft.KeyVault/vaults/keys/deploy.bi
     }
 }
 
-// Role Assignments for Zero Trust.
-module ztRoleAssignments '../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for (Assignment, i) in varZtRoleAssignments: if (diskZeroTrust) {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${Assignment.resourceGroup}')
-    name: 'ZT-RoleAssignment-${i}-${time}'
+// Role Assignment for Zero Trust.
+module ztRoleAssignment01 '../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (diskZeroTrust) {
+    scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
+    name: 'ZT-RoleAssignment-${time}'
     params: {
         principalId: ztManagedIdentity.outputs.principalId
-        roleDefinitionIdOrName: Assignment.roleDefinitionName
+        roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
         principalType: 'ServicePrincipal'
     }
-}]
+}
+
+// Role Assignment for Zero Trust.
+module ztRoleAssignment02 '../../carml/1.3.0/Microsoft.Authorization/roleAssignments/subscription/deploy.bicep' = if (diskZeroTrust) {
+    name: 'ZT-RoleAssignment-${time}'
+    params: {
+        location: avdSessionHostLocation
+        principalId: ztManagedIdentity.outputs.principalId
+        roleDefinitionIdOrName: 'Disk Pool Operator'
+        principalType: 'ServicePrincipal'
+    }
+}
 
 // Disk Encryption Set for Zero Trust.
 module ztDiskEncryptionSet '../../carml/1.3.0/Microsoft.Compute/diskEncryptionSets/deploy.bicep' = if (diskZeroTrust) {
