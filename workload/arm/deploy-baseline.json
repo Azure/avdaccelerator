@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "16693704369788594169"
+      "templateHash": "8603057673334614722"
     }
   },
   "parameters": {
@@ -1462,6 +1462,22 @@
           "resources": []
         }
       }
+    },
+    {
+      "type": "Microsoft.PolicyInsights/remediations",
+      "apiVersion": "2021-10-01",
+      "name": "remediate-disks-network-access",
+      "properties": {
+        "failureThreshold": {
+          "percentage": 100
+        },
+        "parallelDeployments": 10,
+        "policyAssignmentId": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('ZT-Policy-Assignment-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]",
+        "resourceCount": 500
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('ZT-Policy-Assignment-{0}', parameters('time')))]"
+      ]
     },
     {
       "condition": "[parameters('createAvdVnet')]",
