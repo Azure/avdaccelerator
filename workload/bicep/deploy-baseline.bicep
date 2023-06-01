@@ -995,6 +995,18 @@ module ztManagedIdentity '../../carml/1.3.0/Microsoft.ManagedIdentity/userAssign
     ]
 }
 
+resource ztRemediationTask 'Microsoft.PolicyInsights/remediations@2021-10-01' = {
+    name: 'remediate-disks-network-access'
+    properties: {
+        failureThreshold: {
+            percentage: 100
+          }
+          parallelDeployments: 10
+          policyAssignmentId: ztPolicyAssignment.outputs.resourceId
+          resourceCount: 500
+    }
+}
+
 // Key vault for Zero Trust
 module ztKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' = if (diskZeroTrust) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
