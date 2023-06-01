@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "10463524734316367587"
+      "templateHash": "305829327424965589"
     }
   },
   "parameters": {
@@ -15507,7 +15507,7 @@
             "value": "This policy assignment sets the network access policy property to \"DenyAll\" and the public network access property to \"Disabled\" on all the managed disks within the assigned scope."
           },
           "identity": {
-            "value": "UserAssigned"
+            "value": "SystemAssigned"
           },
           "location": {
             "value": "[parameters('avdSessionHostLocation')]"
@@ -15529,9 +15529,6 @@
                 ]
               }
             ]
-          },
-          "userAssignedIdentityId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('ZT-Managed-ID-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]"
           }
         },
         "template": {
@@ -15764,7 +15761,6 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('ZT-Managed-ID-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('ZT-Policy-Definition-{0}', parameters('time')))]"
       ]
     },
@@ -19078,7 +19074,7 @@
             "value": "[parameters('avdSessionHostLocation')]"
           },
           "principalId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('ZT-Managed-ID-{0}', parameters('time'))), '2022-09-01').outputs.principalId.value]"
+            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('ZT-Policy-Assignment-{0}', parameters('time'))), '2022-09-01').outputs.principalId.value]"
           },
           "roleDefinitionIdOrName": {
             "value": "Disk Pool Operator"
@@ -19637,7 +19633,7 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('ZT-Managed-ID-{0}', parameters('time')))]"
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('ZT-Policy-Assignment-{0}', parameters('time')))]"
       ]
     },
     {
