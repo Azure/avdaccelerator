@@ -999,7 +999,7 @@ resource ztRemediationTask 'Microsoft.PolicyInsights/remediations@2021-10-01' = 
     name: 'remediate-disks-network-access'
     properties: {
         failureThreshold: {
-            percentage: 100
+            percentage: 1
           }
           parallelDeployments: 10
           policyAssignmentId: ztPolicyAssignment.outputs.resourceId

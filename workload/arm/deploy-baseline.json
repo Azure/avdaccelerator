@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "8603057673334614722"
+      "templateHash": "7450023557121964675"
     }
   },
   "parameters": {
@@ -1469,7 +1469,7 @@
       "name": "remediate-disks-network-access",
       "properties": {
         "failureThreshold": {
-          "percentage": 100
+          "percentage": 1
         },
         "parallelDeployments": 10,
         "policyAssignmentId": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('ZT-Policy-Assignment-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]",
