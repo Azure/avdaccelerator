@@ -907,7 +907,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     ]
 }
 
-// Policy Definition for Managed Disk Network Access
+// Policy Definition for Managed Disk Network Access.
 module ztPolicyDefinition '../../carml/1.3.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = if (diskZeroTrust) {
     name: 'ZT-Policy-Definition-${time}'
     params: {
@@ -944,13 +944,14 @@ module ztPolicyDefinition '../../carml/1.3.0/Microsoft.Authorization/policyDefin
     }
 }
 
+// Policy Assignment for Managed Disk Network Access.
 module ztPolicyAssignment '../../carml/1.3.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = if (diskZeroTrust) {
     name: 'ZT-Policy-Assignment-${time}'
     params: {
         name: 'AVDACC-Zero-Trust-Disable-Managed-Disk-Network-Access'
         displayName: 'Zero Trust - Disable Managed Disk Network Access'
         description: 'This policy assignment sets the network access policy property to "DenyAll" and the public network access property to "Disabled" on all the managed disks within the assigned scope.'
-        identity: 'UserAssigned'
+        identity: 'SystemAssigned'
         location: avdSessionHostLocation
         policyDefinitionId: ztPolicyDefinition.outputs.resourceId
         resourceSelectors: [
@@ -966,11 +967,10 @@ module ztPolicyAssignment '../../carml/1.3.0/Microsoft.Authorization/policyAssig
                 ]
             }
         ]
-        userAssignedIdentityId: ztManagedIdentity.outputs.resourceId
     }
 }
 
-// User Assigned Identity for Zero Trust
+// User Assigned Identity for Zero Trust.
 module ztManagedIdentity '../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = if (diskZeroTrust) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
     name: 'ZT-Managed-ID-${time}'
@@ -985,7 +985,8 @@ module ztManagedIdentity '../../carml/1.3.0/Microsoft.ManagedIdentity/userAssign
     ]
 }
 
-resource ztRemediationTask 'Microsoft.PolicyInsights/remediations@2021-10-01' = {
+// Policy Remediation Task for Zero Trust.
+resource ztPolicyRemediationTask 'Microsoft.PolicyInsights/remediations@2021-10-01' = {
     name: 'remediate-disks-network-access'
     properties: {
         failureThreshold: {
@@ -997,7 +998,7 @@ resource ztRemediationTask 'Microsoft.PolicyInsights/remediations@2021-10-01' = 
     }
 }
 
-// Key vault for Zero Trust
+// Key vault for Zero Trust.
 module ztKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' = if (diskZeroTrust) {
     scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
     name: 'ZT-KeyVault-${time}'
@@ -1089,7 +1090,7 @@ module ztRoleAssignment02 '../../carml/1.3.0/Microsoft.Authorization/roleAssignm
     name: 'ZT-RoleAssignment-${time}'
     params: {
         location: avdSessionHostLocation
-        principalId: ztManagedIdentity.outputs.principalId
+        principalId: ztPolicyAssignment.outputs.principalId
         roleDefinitionIdOrName: 'Disk Pool Operator'
         principalType: 'ServicePrincipal'
     }
