@@ -198,7 +198,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2022-09-09' = {
       registrationTokenOperation: 'Update'
     }
     vmTemplate: ((!empty(vmTemplate)) ? null : string(vmTemplate))
-    agentUpdate: agentUpdate
+    //agentUpdate: agentUpdate
     ring: ring != -1 ? ring : null
     ssoadfsAuthority: ssoadfsAuthority
     ssoClientId: ssoClientId
