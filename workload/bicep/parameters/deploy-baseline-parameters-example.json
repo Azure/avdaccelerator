@@ -196,6 +196,9 @@
         },
         "enableAcceleratedNetworking": {
             "value": true
-        }
+        },
+        "diskEncryptionKeyExpirationInDays": {
+            "value": 60
+        },
     }
 }
