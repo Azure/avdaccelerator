@@ -667,7 +667,7 @@
                                 {
                                     "name": "sessionHostDiskZeroTrust",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "label": "Zero Trust Disk Configuration"
+                                    "label": "Zero trust disk configuration"
                                 },
                                 {
                                     "name": "warningAcceleratedNetworkingSupport",
@@ -698,16 +698,6 @@
                                                 "value": false
                                             }
                                         ]
-                                    }
-                                },
-                                {
-                                    "name": "sessionHostEncryptionAtHostWarning",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[equals(steps('sessionHosts').sessionHostsSettingsSection.sessionHostEncryptionAtHost, true)]",
-                                    "options": {
-                                        "text": "Encryption at host requires feature EncryptionAtHost of resource provider Microsoft.Compute to be registered in the subscription.",
-                                        "uri": "https://docs.microsoft.com/azure/virtual-machines/disks-enable-host-based-encryption-portal?msclkid=31c2d29bbce111ec8bca8257221ab9d1",
-                                        "style": "Warning"
                                     }
                                 }
                             ]
