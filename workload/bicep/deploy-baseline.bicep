@@ -62,7 +62,7 @@ param avdIdentityDomainName string
 @description('Required. AD domain GUID.')
 param identityDomainGuid string = ''
 
-@description('Required. AVD session host domain join username. (Defualt: "none")')
+@description('Required. AVD session host domain join user principal name. (Defualt: "none")')
 param avdDomainJoinUserName string = 'none'
 
 @description('Required. AVD session host domain join password. (Defualt: "none")')
@@ -937,7 +937,7 @@ module managedIdentitiesRoleAssign './modules/identity/deploy.bicep' = {
 }
 
 // Zero trust.
-module zeroTrust './modules/zeroTrust/deploy.bicep' = {
+module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust) {
     name: 'Zero-Trust-${time}'
     params: {
         location: avdSessionHostLocation

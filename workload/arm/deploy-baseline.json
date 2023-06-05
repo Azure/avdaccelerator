@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "4474764082240201982"
+      "templateHash": "941541647635857228"
     }
   },
   "parameters": {
@@ -123,7 +123,7 @@
       "type": "string",
       "defaultValue": "none",
       "metadata": {
-        "description": "Required. AVD session host domain join username. (Defualt: \"none\")"
+        "description": "Required. AVD session host domain join user principal name. (Defualt: \"none\")"
       }
     },
     "avdDomainJoinUserPassword": {
@@ -21311,6 +21311,7 @@
       ]
     },
     {
+      "condition": "[parameters('diskZeroTrust')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('Zero-Trust-{0}', parameters('time'))]",
@@ -21362,7 +21363,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "2812070795907535069"
+              "templateHash": "9019678176163523883"
             }
           },
           "parameters": {
@@ -21462,7 +21463,7 @@
                   "percentage": 1
                 },
                 "parallelDeployments": 10,
-                "policyAssignmentId": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('ZT-Policy-Assignment-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]",
+                "policyAssignmentId": "[if(parameters('diskZeroTrust'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('ZT-Policy-Assignment-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')]",
                 "resourceCount": 500
               },
               "dependsOn": [
@@ -23156,9 +23157,7 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
-                  "principalId": {
-                    "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('ZT-Policy-Assignment-{0}', parameters('time'))), '2022-09-01').outputs.principalId.value]"
-                  },
+                  "principalId": "[if(parameters('diskZeroTrust'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('ZT-Policy-Assignment-{0}', parameters('time'))), '2022-09-01').outputs.principalId.value), createObject('value', ''))]",
                   "roleDefinitionIdOrName": {
                     "value": "Disk Pool Operator"
                   },
