@@ -101,7 +101,7 @@ module ztPolicyAssignment '../../../../carml/1.3.0/Microsoft.Authorization/polic
         description: 'This policy assignment sets the network access policy property to "DenyAll" and the public network access property to "Disabled" on all the managed disks within the assigned scope.'
         identity: 'SystemAssigned'
         location: location
-        policyDefinitionId: ztPolicyDefinition.outputs.resourceId
+        policyDefinitionId: diskZeroTrust ? ztPolicyDefinition.outputs.resourceId : ''
         resourceSelectors: [
             {
                 name: 'VirtualMachineDisks'
@@ -119,7 +119,7 @@ module ztPolicyAssignment '../../../../carml/1.3.0/Microsoft.Authorization/polic
 }
 
 // User Assigned Identity for Zero Trust.
-module ztManagedIdentity '../../../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = if (diskZeroTrust) {
+module ztManagedIdentity '../../../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
     name: 'ZT-Managed-ID-${time}'
     params: {
@@ -131,6 +131,29 @@ module ztManagedIdentity '../../../../carml/1.3.0/Microsoft.ManagedIdentity/user
 
     ]
 }
+
+// Introduce wait for management VM to be ready.
+module ztManagedIdentityWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
+    scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+    name: 'ZT-Mana-Ident-Wait-${time}'
+    params: {
+        name: 'Managed-Idenity-Wait-${time}'
+        location: location
+        azPowerShellVersion: '8.3.0'
+        cleanupPreference: 'Always'
+        timeout: 'PT10M'
+        scriptContent: '''
+        Write-Host "Start"
+        Get-Date
+        Start-Sleep -Seconds 60
+        Write-Host "Stop"
+        Get-Date
+        '''
+    }
+    dependsOn: [
+        ztManagedIdentity
+    ]
+  }
 
 // Policy Remediation Task for Zero Trust.
 resource ztPolicyRemediationTask 'Microsoft.PolicyInsights/remediations@2021-10-01' = {
@@ -150,7 +173,7 @@ module ztRoleAssignment01 '../../../../carml/1.3.0/Microsoft.Authorization/roleA
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
     name: 'ZT-RoleAssignment-${time}'
     params: {
-        principalId: ztManagedIdentity.outputs.principalId
+        principalId: diskZeroTrust ? ztManagedIdentity.outputs.principalId : ''
         roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
         principalType: 'ServicePrincipal'
     }
@@ -182,7 +205,7 @@ module ztKeyVault './.bicep/zeroTrustKeyVault.bicep' = if (diskZeroTrust) {
         keyVaultprivateDNSResourceId: keyVaultprivateDNSResourceId
         diskEncryptionKeyExpirationInDays: diskEncryptionKeyExpirationInDays
         diskEncryptionSetName: diskEncryptionSetName
-        ztManagedIdentityResourceId: ztManagedIdentity.outputs.resourceId
+        ztManagedIdentityResourceId: diskZeroTrust ? ztManagedIdentity.outputs.resourceId : ''
         tags: tags
     }
 }
