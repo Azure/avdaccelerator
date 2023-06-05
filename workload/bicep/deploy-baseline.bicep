@@ -959,6 +959,7 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = {
     dependsOn: [
         baselineResourceGroups
         baselineStorageResourceGroup
+        baseline
     ]
 }
 
@@ -1051,7 +1052,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
 module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if (createAvdFslogixDeployment || createMsixDeployment) {
     name: 'Storage-Management-VM-${time}'
     params: {
-        diskEncryptionSetResourceId: diskZeroTrust ? ztDiskEncryptionSet.outputs.resourceId : ''
+        diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
         identityServiceProvider: avdIdentityServiceProvider
         managementVmName: varManagementVmName
         computeTimeZone: varTimeZoneSessionHosts
@@ -1174,7 +1175,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (cr
 module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySessionHosts) {
     name: 'Session-Hosts-${time}'
     params: {
-        diskEncryptionSetResourceId: diskZeroTrust ? ztDiskEncryptionSet.outputs.resourceId : ''
+        diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
         avdAgentPackageLocation: varAvdAgentPackageLocation
         computeTimeZone: varTimeZoneSessionHosts
         applicationSecurityGroupResourceId: createAvdVnet ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''

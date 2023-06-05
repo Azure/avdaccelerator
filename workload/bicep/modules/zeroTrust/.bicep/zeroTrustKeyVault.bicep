@@ -11,13 +11,13 @@ param location string
 param subscriptionId string
 
 @description('AVD Resource Group Name for the service objects.')
-param serviceObjectsRgName string
+param rgName string
 
 @description('Deploy private endpoints for key vault and storage.')
 param deployPrivateEndpointKeyvaultStorage bool
 
 @description('Key vault name')
-param ztKvName string
+param kvName string
 
 @description('Private endpoint subnet resource ID')
 param privateEndpointsubnetResourceId string
@@ -56,10 +56,10 @@ param time string = utcNow()
 
 // Key vault for Zero Trust.
 module ztKeyVault '../../../../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
-    scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+    scope: resourceGroup('${subscriptionId}', '${rgName}')
     name: 'ZT-KeyVault-${time}'
     params: {
-        name: ztKvName
+        name: kvName
         location: location
         enableRbacAuthorization: true
         enablePurgeProtection: true
@@ -91,7 +91,7 @@ module ztKeyVault '../../../../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.b
 
 // Disk Encryption Key for Zero Trust.
 module ztKeyVaultKey '../../../../../carml/1.3.0/Microsoft.KeyVault/vaults/keys/deploy.bicep' = {
-    scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+    scope: resourceGroup('${subscriptionId}', '${rgName}')
     name: 'ZT-KeyVaultKey-${time}'
     params: {
         attributesEnabled: true
@@ -129,7 +129,7 @@ module ztKeyVaultKey '../../../../../carml/1.3.0/Microsoft.KeyVault/vaults/keys/
 
 // Disk Encryption Set for Zero Trust.
 module ztDiskEncryptionSet '../../../../../carml/1.3.0/Microsoft.Compute/diskEncryptionSets/deploy.bicep' = {
-    scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+    scope: resourceGroup('${subscriptionId}', '${rgName}')
     name: 'ZT-DiskEncryptionSet-${time}'
     params: {
         accessPolicy: false
@@ -145,3 +145,9 @@ module ztDiskEncryptionSet '../../../../../carml/1.3.0/Microsoft.Compute/diskEnc
         }
     }
 }
+
+// =========== //
+// Outputs //
+// =========== //
+
+output ztDiskEncryptionSetResourceId string = ztDiskEncryptionSet.outputs.resourceId
