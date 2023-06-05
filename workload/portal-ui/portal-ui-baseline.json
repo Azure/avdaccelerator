@@ -389,24 +389,11 @@
                             "elements": [
                                 {
                                     "name": "deployRemoteAppGroup",
-                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "type": "Microsoft.Common.CheckBox",
                                     "visible": true,
                                     "label": "Create remote app group",
-                                    "defaultValue": "No",
-                                    "toolTip": "This application group type allows to publish seamless apps instead of full desktops.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes",
-                                                "value": true
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": false
-                                            }
-                                        ]
-                                    }
+                                    "defaultValue": false,
+                                    "toolTip": "This application group type allows to publish seamless apps instead of full desktops."
                                 }
                             ]
                         },
@@ -418,45 +405,19 @@
                             "elements": [
                                 {
                                     "name": "scalingPlan",
-                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "type": "Microsoft.Common.CheckBox",
                                     "visible": "[equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
                                     "label": "AVD scaling plan",
-                                    "defaultValue": "Yes (Recommended)",
-                                    "toolTip": "Will automatically manage session host power state based on usage and schedules (weekdays and weekend schedules will be created). ",
-                                    "constraints": {
-                                        "required": false,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes (Recommended)",
-                                                "value": true
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": false
-                                            }
-                                        ]
-                                    }
+                                    "defaultValue": true,
+                                    "toolTip": "Will automatically manage session host power state based on usage and schedules (weekdays and weekend schedules will be created)."
                                 },
                                 {
                                     "name": "startVmOnConnect",
-                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "type": "Microsoft.Common.CheckBox",
                                     "visible": "[equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal')]",
                                     "label": "Start VM on connect",
-                                    "defaultValue": "Yes (Recommended)",
-                                    "toolTip": "If VM is powered off (deallocated), VM will be started automatically once user connects. ",
-                                    "constraints": {
-                                        "required": false,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes (Recommended)",
-                                                "value": true
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": false
-                                            }
-                                        ]
-                                    }
+                                    "defaultValue": true,
+                                    "toolTip": "If VM is powered off (deallocated), VM will be started automatically once user connects."
                                 },
                                 {
                                     "name": "avdEnterpriseApplication",
@@ -506,24 +467,11 @@
                     "elements": [
                         {
                             "name": "deploySessionHosts",
-                            "type": "Microsoft.Common.OptionsGroup",
+                            "type": "Microsoft.Common.CheckBox",
                             "visible": true,
                             "label": "Deploy session hosts",
-                            "defaultValue": "Yes",
-                            "toolTip": "Create session hosts compute and storage resources.",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label": "Yes",
-                                        "value": true
-                                    },
-                                    {
-                                        "label": "No",
-                                        "value": false
-                                    }
-                                ]
-                            }
+                            "defaultValue": true,
+                            "toolTip": "Create session hosts compute and storage resources."
                         },
                         {
                             "name": "sessionHostsRegionSection",
@@ -552,23 +500,11 @@
                                 },
                                 {
                                     "name": "sessionHostsAvailabilitySettings",
-                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "visible": true,
                                     "label": "Use availability zones",
-                                    "defaultValue": "Yes (Recommended)",
-                                    "toolTip": "Distribute compute resources across availability zones. If 'No' is selected then an availability set will be created to host the VMs.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes (Recommended)",
-                                                "value": true
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": false
-                                            }
-                                        ]
-                                    }
+                                    "defaultValue": true,
+                                    "toolTip": "Distribute compute resources across availability zones. If 'No' is selected then an availability set will be created to host the VMs."
                                 },
                                 {
                                     "name": "sessionHostsRegion",
@@ -667,7 +603,9 @@
                                 {
                                     "name": "sessionHostDiskZeroTrust",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "label": "Zero trust disk configuration"
+                                    "label": "Zero trust disk configuration",
+                                    "defaultValue": false,
+                                    "toolTip": "Enables disk encryption and Zero trust settings on management VM and session hosts disks"
                                 },
                                 {
                                     "name": "warningAcceleratedNetworkingSupport",
@@ -681,24 +619,10 @@
                                 },
                                 {
                                     "name": "acceleratedNetworking",
-                                    "type": "Microsoft.Common.OptionsGroup",
-                                    "visible": true,
+                                    "type": "Microsoft.Common.CheckBox",
                                     "label": "Enable accelerated networking",
-                                    "defaultValue": "Yes (recommended)",
-                                    "toolTip": "Enables low latency and high throughput on the network interface.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes (recommended)",
-                                                "value": true
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": false
-                                            }
-                                        ]
-                                    }
+                                    "defaultValue": true,
+                                    "toolTip": "Enables low latency and high throughput on the network interface."
                                 }
                             ]
                         },
@@ -912,23 +836,10 @@
                             "elements": [
                                 {
                                     "name": "fslogixDeployment",
-                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "type": "Microsoft.Common.CheckBox",
                                     "label": "Use FSLogix profile management",
-                                    "defaultValue": "Yes (Recommended)",
-                                    "toolTip": "Deploys FSLogix containers and session host setup for user's profiles.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes (Recommended)",
-                                                "value": true
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": false
-                                            }
-                                        ]
-                                    }
+                                    "defaultValue": true,
+                                    "toolTip": "Deploys FSLogix containers and session host setup for user's profiles."
                                 },
                                 {
                                     "name": "fslogixStorageAccountSku",
@@ -989,23 +900,10 @@
                             "elements": [
                                 {
                                     "name": "msixDeployment",
-                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "type": "Microsoft.Common.CheckBox",
                                     "label": "Create MSIX App Attach storage",
-                                    "defaultValue": "No",
-                                    "toolTip": "Deploys MSIX App Attach containers and permissions setup.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes",
-                                                "value": true
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": false
-                                            }
-                                        ]
-                                    }
+                                    "defaultValue": false,
+                                    "toolTip": "Deploys MSIX App Attach containers and permissions setup."
                                 },
                                 {
                                     "name": "msixStorageAccountSku",
@@ -1188,24 +1086,11 @@
                         },
                         {
                             "name": "deployPrivateEndpointKeyvaultStorage",
-                            "type": "Microsoft.Common.OptionsGroup",
+                            "type": "Microsoft.Common.CheckBox",
                             "visible": true,
                             "label": "Use private endpoints (Key vault and Storage account)",
-                            "defaultValue": "Yes (Recommended)",
-                            "toolTip": "Enables Private Endpoints for Key Vault and Storage Resources. It is recommended to use Azure Private Endpoints to keep all traffic to PaaS services on the Azure backbone.",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label": "Yes (Recommended)",
-                                        "value": true
-                                    },
-                                    {
-                                        "label": "No",
-                                        "value": false
-                                    }
-                                ]
-                            }
+                            "defaultValue": true,
+                            "toolTip": "Enables Private Endpoints for Key Vault and Storage Resources. It is recommended to use Azure Private Endpoints to keep all traffic to PaaS services on the Azure backbone."
                         },
                         {
                             "name": "virtualNetworkPrivateEndpointSubnetSize",
@@ -1429,24 +1314,11 @@
                                 },
                                 {
                                     "name": "hubVirtualNetworkGateway",
-                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "type": "Microsoft.Common.CheckBox",
                                     "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
                                     "label": "Gateway on hub",
-                                    "defaultValue": "No",
-                                    "toolTip": "This information will be used to set remote gateway settings on vNet peering.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes",
-                                                "value": true
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": false
-                                            }
-                                        ]
-                                    }
+                                    "defaultValue": false,
+                                    "toolTip": "This information will be used to set remote gateway settings on vNet peering."
                                 }
                             ]
                         }
@@ -1460,24 +1332,11 @@
                     "elements": [
                         {
                             "name": "deployMonitoring",
-                            "type": "Microsoft.Common.OptionsGroup",
+                            "type": "Microsoft.Common.CheckBox",
                             "visible": true,
                             "label": "Deploy monitoring",
-                            "defaultValue": "No",
-                            "toolTip": "Deploy monitoring settings and if selected deploy Azure log analytics workspace.",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label": "Yes",
-                                        "value": true
-                                    },
-                                    {
-                                        "label": "No",
-                                        "value": false
-                                    }
-                                ]
-                            }
+                            "defaultValue": false,
+                            "toolTip": "Deploy monitoring settings and if selected deploy Azure log analytics workspace."
                         },
                         {
                             "name": "deployMonitoringInfo1",
@@ -1535,24 +1394,11 @@
                         },
                         {
                             "name": "deployMonitoringPolicies",
-                            "type": "Microsoft.Common.OptionsGroup",
+                            "type": "Microsoft.Common.CheckBox",
                             "visible": "[equals(steps('monitoring').deployMonitoring, true)]",
                             "label": "Deploy monitoring policies (subscription level)",
-                            "defaultValue": "No",
-                            "toolTip": "Deploy monitoring policy and policy set definitions to set diagnostic settings on new deployed resources.",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label": "Yes",
-                                        "value": true
-                                    },
-                                    {
-                                        "label": "No",
-                                        "value": false
-                                    }
-                                ]
-                            }
+                            "defaultValue": false,
+                            "toolTip": "Deploy monitoring policy and policy set definitions to set diagnostic settings on new deployed resources."
                         },
                         {
                             "name": "deployMonitoringInfo2",
@@ -1584,24 +1430,11 @@
                         },
                         {
                             "name": "resourceNamingSelection",
-                            "type": "Microsoft.Common.OptionsGroup",
+                            "type": "Microsoft.Common.CheckBox",
                             "visible": true,
                             "label": "Custom resource naming",
-                            "defaultValue": "No",
-                            "toolTip": "When set 'Yes', the information provided will be used to name resources. When set to 'No' deployment will use the AVD accelerator naming standard.",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label": "Yes",
-                                        "value": true
-                                    },
-                                    {
-                                        "label": "No",
-                                        "value": false
-                                    }
-                                ]
-                            }
+                            "defaultValue": false,
+                            "toolTip": "When set 'Yes', the information provided will be used to name resources. When set to 'No' deployment will use the AVD accelerator naming standard."
                         },
                         {
                             "name": "resourceNamingWarning",
@@ -2024,6 +1857,7 @@
                         {
                             "name": "resourceNamingMonitoring",
                             "type": "Microsoft.Common.Section",
+                            "visible": "[equals(steps('resourceNaming').resourceNamingSelection, true)]",
                             "label": "Monitoring naming:",
                             "elements": [
                                 {
