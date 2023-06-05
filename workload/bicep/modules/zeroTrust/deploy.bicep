@@ -173,8 +173,12 @@ module ztRoleAssignment02 '../../../../carml/1.3.0/Microsoft.Authorization/roleA
 // Zero trust key vault.
 module ztKeyVault './.bicep/zeroTrustKeyVault.bicep' = if (diskZeroTrust) {
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+    name: 'ZT-Key-Vault-${time}'
     params: {
         location: location
+        subscriptionId: subscriptionId
+        rgName: serviceObjectsRgName
+        kvName: ztKvName
         deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
         ztKvPrivateEndpointName: ztKvPrivateEndpointName
         privateEndpointsubnetResourceId: privateEndpointsubnetResourceId
@@ -186,4 +190,10 @@ module ztKeyVault './.bicep/zeroTrustKeyVault.bicep' = if (diskZeroTrust) {
         tags: tags
     }
 }
+
+// =========== //
+// Outputs //
+// =========== //
+
+output ztDiskEncryptionSetResourceId string = diskZeroTrust ? ztKeyVault.outputs.ztDiskEncryptionSetResourceId : ''
 
