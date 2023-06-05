@@ -608,12 +608,12 @@
                                     "toolTip": "Enables disk encryption and Zero trust settings on management VM and session hosts disks"
                                 },
                                 {
-                                    "name": "warningAcceleratedNetworkingSupport",
+                                    "name": "ssessionHostDiskZeroTrustWarning",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, true)]",
+                                    "visible": "[equals(steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust, true)]",
                                     "options": {
-                                        "text": "The Compute Gallery Image definition selected must have the 'isAcceleratedNetworkSupported' feature property set to 'true' if you enable accelerated networking on the session hosts.",
-                                        "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started-baseline.md",
+                                        "text": "Zero trust disk encryption requires feature EncryptionAtHost of resource provider Microsoft.Compute to be registered in the subscription.",
+                                        "uri": "https://learn.microsoft.com/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell",
                                         "style": "Warning"
                                     }
                                 },
@@ -623,6 +623,16 @@
                                     "label": "Enable accelerated networking",
                                     "defaultValue": true,
                                     "toolTip": "Enables low latency and high throughput on the network interface."
+                                },
+                                {
+                                    "name": "warningAcceleratedNetworkingSupport",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, true)]",
+                                    "options": {
+                                        "text": "The Compute Gallery Image definition selected must have the 'isAcceleratedNetworkSupported' feature property set to 'true' if you enable accelerated networking on the session hosts.",
+                                        "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started-baseline.md",
+                                        "style": "Warning"
+                                    }
                                 }
                             ]
                         },
