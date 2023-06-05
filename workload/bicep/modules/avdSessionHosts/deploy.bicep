@@ -3,6 +3,10 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
+
+@description('AVD disk encryption set resource ID to enable server side encyption.')
+param diskEncryptionSetResourceId string
+
 @description('AVD subnet ID.')
 param subnetId string
 
@@ -181,6 +185,7 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varAvd
   scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
   name: 'AVD-SH-Batch-${i-1}-${time}'
   params: {
+    diskEncryptionSetResourceId: diskEncryptionSetResourceId 
     avdAgentPackageLocation: avdAgentPackageLocation
     timeZone: computeTimeZone
     applicationSecurityGroupResourceId: applicationSecurityGroupResourceId

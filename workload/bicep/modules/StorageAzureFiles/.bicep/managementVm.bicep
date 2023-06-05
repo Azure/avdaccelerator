@@ -4,6 +4,9 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
+@description('AVD disk encryption set resource ID to enable server side encyption.')
+param diskEncryptionSetResourceId string
+
 @description('AVD workload subscription ID, multiple subscriptions scenario.')
 param workloadSubsId string
 
@@ -80,6 +83,15 @@ param time string = utcNow()
 // Variable declaration //
 // =========== //
 
+var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
+    storageAccountType: sessionHostDiskType
+} : {
+    diskEncryptionSet: {
+        id: diskEncryptionSetResourceId
+    }
+    storageAccountType: sessionHostDiskType
+}
+
 // =========== //
 // Deployments //
 // =========== //
@@ -113,9 +125,7 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
             createOption: 'fromImage'
             deleteOption: 'Delete'
             diskSizeGB: 128
-            managedDisk: {
-                storageAccountType: sessionHostDiskType
-            }
+            managedDisk: varManagedDisk
         }
         adminUsername: vmLocalUserName
         adminPassword: avdWrklKeyVaultget.getSecret('vmLocalUserPassword')
