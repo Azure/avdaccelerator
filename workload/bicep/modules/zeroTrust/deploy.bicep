@@ -163,7 +163,7 @@ resource ztPolicyRemediationTask 'Microsoft.PolicyInsights/remediations@2021-10-
             percentage: 1
           }
           parallelDeployments: 10
-          policyAssignmentId: ztPolicyAssignment.outputs.resourceId
+          policyAssignmentId: diskZeroTrust ? ztPolicyAssignment.outputs.resourceId : ''
           resourceCount: 500
     }
 }
@@ -184,7 +184,7 @@ module ztRoleAssignment02 '../../../../carml/1.3.0/Microsoft.Authorization/roleA
     name: 'ZT-RoleAssignment-${time}'
     params: {
         location: location
-        principalId: ztPolicyAssignment.outputs.principalId
+        principalId: diskZeroTrust ? ztPolicyAssignment.outputs.principalId : ''
         roleDefinitionIdOrName: 'Disk Pool Operator'
         principalType: 'ServicePrincipal'
     }
