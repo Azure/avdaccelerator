@@ -889,7 +889,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
 
 // Identity: managed identities and role assignments.
 module managedIdentitiesRoleAssign './modules/identity/deploy.bicep' = {
-    name: 'Managed-ID-RoleAssign-${time}'
+    name: 'Identities-And-RoleAssign-${time}'
     params: {
         computeObjectsRgName: varComputeObjectsRgName
         enterpriseAppObjectId: avdEnterpriseAppObjectId

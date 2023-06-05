@@ -1163,7 +1163,7 @@
                             "options": {
                                 "filter": {
                                     "subscription": "onBasics",
-                                    "location": "[steps('SessionHosts').SessionHostsRegionSection.SessionHostsRegion.location.displayName]"
+                                    "location": "[steps('SessionHosts').SessionHostsRegionSection.SessionHostsRegion.location.name]"
                                 }
                             }
                         },
