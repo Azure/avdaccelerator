@@ -6,11 +6,12 @@ targetScope = 'subscription'
 
 @minLength(2)
 @maxLength(4)
-@description('Optional. The name of the resource group to deploy.')
+@description('Optional. The name of the resource group to deploy. (Default: )')
 param deploymentPrefix string = 'AVD1'
 
 @maxValue(730)
 @minValue(30)
+@description('Optional. This value is used to set the expiration date on the disk encryption key. (Default: 60)')
 param diskEncryptionKeyExpirationInDays int = 60
 
 @description('Optional. Location where to deploy compute services. (Default: eastus2)')
@@ -22,7 +23,7 @@ param avdManagementPlaneLocation string = 'eastus2'
 @description('Required. AVD workload subscription ID, multiple subscriptions scenario. (Default: )')
 param avdWorkloadSubsId string = ''
 
-@description('Required. Azure Virtual Desktop Enterprise Application object ID. ')
+@description('Required. Azure Virtual Desktop Enterprise Application object ID. (Default: )')
 param avdEnterpriseAppObjectId string = ''
 
 @description('Required. AVD session host local username.')
@@ -212,9 +213,6 @@ param msixStoragePerformance string = 'Premium'
 
 @description('Optional. Enables a zero trust configuration on the session host disks. (Default: false)')
 param diskZeroTrust bool = false
-
-@description('DO NOT MODIFY. This value is used to set the expiration date on the disk encryption key.')
-param keyExpiration int = dateTimeToEpoch(dateTimeAdd(utcNow(), 'P90D'))
 
 @description('Optional. Session host VM size. (Defualt: Standard_D4ads_v5)')
 param avdSessionHostsSize string = 'Standard_D4ads_v5'
@@ -487,6 +485,7 @@ param enableTelemetry bool = true
 var varDeploymentPrefixLowercase = toLower(deploymentPrefix)
 var varDiskEncryptionSetName = avdUseCustomNaming ? '${ztDiskEncryptionSetCustomNamePrefix}-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}' : 'des-zt-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
 var varZtManagedIdentityName = avdUseCustomNaming ? '${ztManagedIdentityCustomName}-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}' : 'id-zt-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
+var varDiskEncryptionKeyExpirationInDays = dateTimeToEpoch(dateTimeAdd(time, 'P${string(diskEncryptionKeyExpirationInDays)}D'))
 var varSessionHostLocationLowercase = toLower(replace(avdSessionHostLocation, ' ', ''))
 var varManagementPlaneLocationLowercase = toLower(replace(avdManagementPlaneLocation, ' ', ''))
 var varSessionHostLocationAcronym = varLocations[varSessionHostLocationLowercase].acronym
@@ -946,8 +945,7 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = {
         diskZeroTrust: diskZeroTrust
         serviceObjectsRgName: varServiceObjectsRgName
         managedIdentityName: varZtManagedIdentityName
-        keyExpiration: keyExpiration
-        diskEncryptionKeyExpirationInDays: diskEncryptionKeyExpirationInDays
+        diskEncryptionKeyExpirationInDays: varDiskEncryptionKeyExpirationInDays
         diskEncryptionSetName: varDiskEncryptionSetName
         ztKvName: varZtKvName
         ztKvPrivateEndpointName: varZtKvPrivateEndpointName
@@ -959,7 +957,8 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = {
     dependsOn: [
         baselineResourceGroups
         baselineStorageResourceGroup
-        baseline
+        monitoringDiagnosticSettings
+        managedIdentitiesRoleAssign
     ]
 }
 
