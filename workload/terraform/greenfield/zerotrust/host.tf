@@ -4,10 +4,11 @@ resource "time_rotating" "avd_token" {
 }
 
 resource "azurerm_network_interface" "avd_vm_nic" {
-  count               = var.rdsh_count
-  name                = "${var.prefix}-${count.index + 1}-nic"
-  resource_group_name = azurerm_resource_group.shrg.name
-  location            = azurerm_resource_group.shrg.location
+  count                         = var.rdsh_count
+  name                          = "${var.prefix}-${count.index + 1}-nic"
+  resource_group_name           = azurerm_resource_group.shrg.name
+  location                      = azurerm_resource_group.shrg.location
+  enable_accelerated_networking = true
 
   ip_configuration {
     name                          = "nic${count.index + 1}_config"
@@ -43,6 +44,7 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
     disk_encryption_set_id = azurerm_disk_encryption_set.en-set.id
   }
 
+
   # To use marketplace image, uncomment the following lines and comment the source_image_id line
   source_image_reference {
     publisher = var.publisher
@@ -67,6 +69,43 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   }
 }
 
+# Pull in built-in policy definition as a data source
+data "azurerm_policy_definition" "diskpol" {
+  display_name = "Configure managed disks to disable public network access"
+}
+
+resource "azurerm_disk_access" "dskacc" {
+  name                = "disk-access-${var.prefix}"
+  resource_group_name = azurerm_resource_group.shrg.name
+  location            = azurerm_resource_group.shrg.location
+}
+
+resource "azurerm_resource_group_policy_assignment" "disabledsknetaccess" {
+  name                 = "Configure managed disks to disable public network access"
+  policy_definition_id = data.azurerm_policy_definition.diskpol.id
+  resource_group_id    = azurerm_resource_group.shrg.id
+  location             = azurerm_resource_group.shrg.location
+  identity {
+    type = "SystemAssigned"
+  }
+
+  parameters = <<PARAMS
+    {
+      "diskAccessId": {
+        "value": "azurerm_disk_access.dskacc.id"
+      },
+      "location": {
+        "value": "azurerm_resource_group.shrg.location"
+      }    
+    }
+PARAMS
+
+  depends_on = [
+    azurerm_windows_virtual_machine.avd_vm,
+    data.azurerm_policy_definition.diskpol,
+    azurerm_key_vault_key.stcmky
+  ]
+}
 resource "azurerm_virtual_machine_extension" "aadjoin" {
   count                      = var.rdsh_count
   name                       = "${var.prefix}-${count.index + 1}-aadJoin"
