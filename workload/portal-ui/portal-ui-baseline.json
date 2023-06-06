@@ -1634,7 +1634,7 @@
                                     "label": "Session host prefix",
                                     "visible": "[equals(steps('sessionHosts').deploySessionHosts, true)]",
                                     "toolTip": "AVD session host prefix custom name.",
-                                    "placeholder": "Example: vm-avd-app1",
+                                    "placeholder": "Example: vmapp1eusd",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,11}$",
