@@ -22,6 +22,9 @@ param managedIdentityName string
 @description('This value is used to set the expiration date on the disk encryption key.')
 param diskEncryptionKeyExpirationInDays int
 
+@description('This value is used to set the expiration date on the disk encryption key.')
+param diskEncryptionKeyExpirationInEpoch int
+
 @description('Deploy private endpoints for key vault and storage.')
 param deployPrivateEndpointKeyvaultStorage bool
 
@@ -204,6 +207,7 @@ module ztKeyVault './.bicep/zeroTrustKeyVault.bicep' = if (diskZeroTrust) {
         privateEndpointsubnetResourceId: privateEndpointsubnetResourceId
         keyVaultprivateDNSResourceId: keyVaultprivateDNSResourceId
         diskEncryptionKeyExpirationInDays: diskEncryptionKeyExpirationInDays
+        diskEncryptionKeyExpirationInEpoch: diskEncryptionKeyExpirationInEpoch
         diskEncryptionSetName: diskEncryptionSetName
         ztManagedIdentityResourceId: diskZeroTrust ? ztManagedIdentity.outputs.resourceId : ''
         tags: tags

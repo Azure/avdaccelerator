@@ -31,6 +31,9 @@ param keyVaultprivateDNSResourceId string
 @description('This value is used to set the expiration date on the disk encryption key.')
 param diskEncryptionKeyExpirationInDays int
 
+@description('This value is used to set the expiration date on the disk encryption key.')
+param diskEncryptionKeyExpirationInEpoch int
+
 @description('Encryption set name')
 param diskEncryptionSetName string
 
@@ -92,7 +95,7 @@ module ztKeyVaultKey '../../../../../carml/1.3.0/Microsoft.KeyVault/vaults/keys/
     name: 'ZT-KeyVaultKey-${time}'
     params: {
         attributesEnabled: true
-        attributesExp: diskEncryptionKeyExpirationInDays
+        attributesExp: diskEncryptionKeyExpirationInEpoch
         keySize: 4096
         keyVaultName: ztKeyVault.outputs.name
         kty: 'RSA'

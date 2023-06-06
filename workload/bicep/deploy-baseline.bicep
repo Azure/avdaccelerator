@@ -485,7 +485,7 @@ param enableTelemetry bool = true
 var varDeploymentPrefixLowercase = toLower(deploymentPrefix)
 var varDiskEncryptionSetName = avdUseCustomNaming ? '${ztDiskEncryptionSetCustomNamePrefix}-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}' : 'des-zt-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
 var varZtManagedIdentityName = avdUseCustomNaming ? '${ztManagedIdentityCustomName}-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}' : 'id-zt-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
-var varDiskEncryptionKeyExpirationInDays = dateTimeToEpoch(dateTimeAdd(time, 'P${string(diskEncryptionKeyExpirationInDays)}D'))
+var varDiskEncryptionKeyExpirationInEpoch = dateTimeToEpoch(dateTimeAdd(time, 'P${string(diskEncryptionKeyExpirationInDays)}D'))
 var varSessionHostLocationLowercase = toLower(replace(avdSessionHostLocation, ' ', ''))
 var varManagementPlaneLocationLowercase = toLower(replace(avdManagementPlaneLocation, ' ', ''))
 var varSessionHostLocationAcronym = varLocations[varSessionHostLocationLowercase].acronym
@@ -945,7 +945,8 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust) {
         diskZeroTrust: diskZeroTrust
         serviceObjectsRgName: varServiceObjectsRgName
         managedIdentityName: varZtManagedIdentityName
-        diskEncryptionKeyExpirationInDays: varDiskEncryptionKeyExpirationInDays
+        diskEncryptionKeyExpirationInDays: diskEncryptionKeyExpirationInDays
+        diskEncryptionKeyExpirationInEpoch: varDiskEncryptionKeyExpirationInEpoch
         diskEncryptionSetName: varDiskEncryptionSetName
         ztKvName: varZtKvName
         ztKvPrivateEndpointName: varZtKvPrivateEndpointName
