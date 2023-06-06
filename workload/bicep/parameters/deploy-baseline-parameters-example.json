@@ -149,9 +149,6 @@
         "msixStoragePerformance": {
             "value": "Premium"
         },
-        "encryptionAtHost": {
-            "value": false
-        },
         "avdSessionHostsSize": {
             "value": "Standard_D2s_v3"
         },
@@ -196,6 +193,12 @@
         },
         "enableAcceleratedNetworking": {
             "value": true
-        }
+        },
+        "diskEncryptionKeyExpirationInDays": {
+            "value": 60
+        },
+        "diskZeroTrust": {
+            "value": false
+        },
     }
 }
