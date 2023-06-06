@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "941541647635857228"
+      "templateHash": "2888677314053402258"
     }
   },
   "parameters": {
@@ -21363,7 +21363,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "9019678176163523883"
+              "templateHash": "9458042020855088665"
             }
           },
           "parameters": {
@@ -21492,7 +21492,7 @@
                     "value": "[parameters('location')]"
                   },
                   "name": {
-                    "value": "AVDACC-Zero-Trust-Disable-Managed-Disk-Network-Access"
+                    "value": "AVD-ACC-Zero-Trust-Disable-Managed-Disk-Network-Access"
                   },
                   "policyRule": {
                     "value": {
@@ -21676,7 +21676,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "AVDACC-Zero-Trust-Disable-Managed-Disk-Network-Access"
+                    "value": "AVD-ACC-Zero-Trust-Disable-Managed-Disk-Network-Access"
                   },
                   "displayName": {
                     "value": "Zero Trust - Disable Managed Disk Network Access"
