@@ -376,7 +376,7 @@ param avdApplicationGroupCustomFriendlyNameRapp string = 'Remote apps - App1 - E
 
 @maxLength(11)
 @description('Optional. AVD session host prefix custom name. (Default: vm-avd-app1)')
-param avdSessionHostCustomNamePrefix string = 'vm-avd-app1'
+param avdSessionHostCustomNamePrefix string = 'vmapp1eusd'
 
 @maxLength(9)
 @description('Optional. AVD availability set custom name. (Default: avail-avd)')
