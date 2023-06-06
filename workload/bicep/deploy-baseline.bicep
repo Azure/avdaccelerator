@@ -9,6 +9,14 @@ targetScope = 'subscription'
 @description('Optional. The name of the resource group to deploy. (Default: )')
 param deploymentPrefix string = 'AVD1'
 
+@allowed([
+    'd' // Development
+    't' // Test
+    'p' // Production
+])
+@description('Optional. The name of the resource group to deploy. (Default: T)')
+param deploymentEnvironment string = 'd'
+
 @maxValue(730)
 @minValue(30)
 @description('Optional. This value is used to set the expiration date on the disk encryption key. (Default: 60)')
@@ -271,96 +279,96 @@ param createOuForStorage bool = false
 param avdUseCustomNaming bool = false
 
 @maxLength(90)
-@description('Optional. AVD service resources resource group custom name. (Default: rg-avd-use2-app1-service-objects)')
-param avdServiceObjectsRgCustomName string = 'rg-avd-use2-app1-service-objects'
+@description('Optional. AVD service resources resource group custom name. (Default: rg-avd-use2-app1-d-service-objects)')
+param avdServiceObjectsRgCustomName string = 'rg-avd-use2-app1-d-service-objects'
 
 @maxLength(90)
-@description('Optional. AVD network resources resource group custom name. (Default: rg-avd-use2-app1-network)')
-param avdNetworkObjectsRgCustomName string = 'rg-avd-use2-app1-network'
+@description('Optional. AVD network resources resource group custom name. (Default: rg-avd-use2-app1-d-network)')
+param avdNetworkObjectsRgCustomName string = 'rg-avd-use2-app1-d-network'
 
 @maxLength(90)
-@description('Optional. AVD network resources resource group custom name. (Default: rg-avd-use2-app1-pool-compute)')
-param avdComputeObjectsRgCustomName string = 'rg-avd-use2-app1-pool-compute'
+@description('Optional. AVD network resources resource group custom name. (Default: rg-avd-use2-app1-d-pool-compute)')
+param avdComputeObjectsRgCustomName string = 'rg-avd-use2-app1-d-pool-compute'
 
 @maxLength(90)
-@description('Optional. AVD network resources resource group custom name. (Default: rg-avd-use2-app1-storage)')
-param avdStorageObjectsRgCustomName string = 'rg-avd-use2-app1-storage'
+@description('Optional. AVD network resources resource group custom name. (Default: rg-avd-use2-app1-d-storage)')
+param avdStorageObjectsRgCustomName string = 'rg-avd-use2-app1-d-storage'
 
 @maxLength(90)
-@description('Optional. AVD monitoring resource group custom name. (Default: rg-avd-use2-app1-monitoring)')
-param avdMonitoringRgCustomName string = 'rg-avd-use2-app1-monitoring'
+@description('Optional. AVD monitoring resource group custom name. (Default: rg-avd-use2-app1-d-monitoring)')
+param avdMonitoringRgCustomName string = 'rg-avd-use2-app1-d-monitoring'
 
 @maxLength(64)
-@description('Optional. AVD virtual network custom name. (Default: vnet-avd-use2-app1-001)')
-param avdVnetworkCustomName string = 'vnet-avd-use2-app1-001'
+@description('Optional. AVD virtual network custom name. (Default: vnet-avd-use2-app1-d-001)')
+param avdVnetworkCustomName string = 'vnet-avd-use2-app1-d-001'
 
 @maxLength(64)
-@description('Optional. AVD Azure log analytics workspace custom name. (Default: log-avd-use2-app1-001)')
-param avdAlaWorkspaceCustomName string = 'log-avd-use2-app1-001'
+@description('Optional. AVD Azure log analytics workspace custom name. (Default: log-avd-use2-app1-d-001)')
+param avdAlaWorkspaceCustomName string = 'log-avd-use2-app1-d-001'
 
 //@maxLength(24)
 //@description('Optional. Azure Storage Account custom name for NSG flow logs. (Default: stavduse2flowlogs001)')
 //param avdStgAccountForFlowLogsCustomName string = 'stavduse2flowlogs001'
 
 @maxLength(80)
-@description('Optional. AVD virtual network subnet custom name. (Default: snet-avd-use2-app1-001)')
-param avdVnetworkSubnetCustomName string = 'snet-avd-use2-app1-001'
+@description('Optional. AVD virtual network subnet custom name. (Default: snet-avd-use2-app1-d-001)')
+param avdVnetworkSubnetCustomName string = 'snet-avd-use2-app1-d-001'
 
 @maxLength(80)
-@description('Optional. private endpoints virtual network subnet custom name. (Default: snet-pe-use2-app1-001)')
-param privateEndpointVnetworkSubnetCustomName string = 'snet-pe-use2-app1-001'
+@description('Optional. private endpoints virtual network subnet custom name. (Default: snet-pe-use2-app1-d-001)')
+param privateEndpointVnetworkSubnetCustomName string = 'snet-pe-use2-app1-d-001'
 
 @maxLength(80)
-@description('Optional. AVD network security group custom name. (Default: nsg-avd-use2-app1-001)')
-param avdNetworksecurityGroupCustomName string = 'nsg-avd-use2-app1-001'
+@description('Optional. AVD network security group custom name. (Default: nsg-avd-use2-app1-d-001)')
+param avdNetworksecurityGroupCustomName string = 'nsg-avd-use2-app1-d-001'
 
 @maxLength(80)
-@description('Optional. Private endpoint network security group custom name. (Default: nsg-pe-use2-app1-001)')
-param privateEndpointNetworksecurityGroupCustomName string = 'nsg-pe-use2-app1-001'
+@description('Optional. Private endpoint network security group custom name. (Default: nsg-pe-use2-app1-d-001)')
+param privateEndpointNetworksecurityGroupCustomName string = 'nsg-pe-use2-app1-d-001'
 
 @maxLength(80)
-@description('Optional. AVD route table custom name. (Default: route-avd-use2-app1-001)')
-param avdRouteTableCustomName string = 'route-avd-use2-app1-001'
+@description('Optional. AVD route table custom name. (Default: route-avd-use2-app1-d-001)')
+param avdRouteTableCustomName string = 'route-avd-use2-app1-d-001'
 
 @maxLength(80)
-@description('Optional. Private endpoint route table custom name. (Default: route-avd-use2-app1-001)')
-param privateEndpointRouteTableCustomName string = 'route-pe-use2-app1-001'
+@description('Optional. Private endpoint route table custom name. (Default: route-avd-use2-app1-d-001)')
+param privateEndpointRouteTableCustomName string = 'route-pe-use2-app1-d-001'
 
 @maxLength(80)
-@description('Optional. AVD application security custom name. (Default: asg-avd-use2-app1-001)')
-param avdApplicationSecurityGroupCustomName string = 'asg-avd-use2-app1-001'
+@description('Optional. AVD application security custom name. (Default: asg-avd-use2-app1-d-001)')
+param avdApplicationSecurityGroupCustomName string = 'asg-avd-use2-app1-d-001'
 
 @maxLength(64)
-@description('Optional. AVD workspace custom name. (Default: vdws-use2-app1-001)')
-param avdWorkSpaceCustomName string = 'vdws-use2-app1-001'
+@description('Optional. AVD workspace custom name. (Default: vdws-use2-app1-d-001)')
+param avdWorkSpaceCustomName string = 'vdws-use2-app1-d-001'
 
 @maxLength(64)
 @description('Optional. AVD workspace custom friendly (Display) name. (Default: App1 - East US - 001)')
 param avdWorkSpaceCustomFriendlyName string = 'East US - 001'
 
 @maxLength(64)
-@description('Optional. AVD host pool custom name. (Default: vdpool-use2-app1-001)')
-param avdHostPoolCustomName string = 'vdpool-use2-app1-001'
+@description('Optional. AVD host pool custom name. (Default: vdpool-use2-app1-d-001)')
+param avdHostPoolCustomName string = 'vdpool-use2-app1-d-001'
 
 @maxLength(64)
 @description('Optional. AVD host pool custom friendly (Display) name. (Default: App1 - East US - 001)')
 param avdHostPoolCustomFriendlyName string = 'App1 - East US - 001'
 
 @maxLength(64)
-@description('Optional. AVD scaling plan custom name. (Default: vdscaling-use2-app1-001)')
-param avdScalingPlanCustomName string = 'vdscaling-use2-app1-001'
+@description('Optional. AVD scaling plan custom name. (Default: vdscaling-use2-app1-d-001)')
+param avdScalingPlanCustomName string = 'vdscaling-use2-app1-d-001'
 
 @maxLength(64)
-@description('Optional. AVD desktop application group custom name. (Default: vdag-desktop-use2-app1-001)')
-param avdApplicationGroupCustomNameDesktop string = 'vdag-desktop-use2-app1-001'
+@description('Optional. AVD desktop application group custom name. (Default: vdag-desktop-use2-app1-d-001)')
+param avdApplicationGroupCustomNameDesktop string = 'vdag-desktop-use2-app1-d-001'
 
 @maxLength(64)
 @description('Optional. AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - 001)')
 param avdApplicationGroupCustomFriendlyName string = 'Desktops - App1 - East US - 001'
 
 @maxLength(64)
-@description('Optional. AVD remote application group custom name. (Default: vdag-rapp-use2-app1-001)')
-param avdApplicationGroupCustomNameRapp string = 'vdag-rapp-use2-app1-001'
+@description('Optional. AVD remote application group custom name. (Default: vdag-rapp-use2-app1-d-001)')
+param avdApplicationGroupCustomNameRapp string = 'vdag-rapp-use2-app1-d-001'
 
 @maxLength(64)
 @description('Optional. AVD remote application group custom name. (Default: Remote apps - App1 - East US - 001)')
@@ -378,15 +386,15 @@ param avdAvailabilitySetCustomNamePrefix string = 'avail-avd'
 @description('Optional. AVD FSLogix and MSIX app attach storage account prefix custom name. (Default: stavd)')
 param storageAccountPrefixCustomName string = 'stavd'
 
-@description('Optional. FSLogix file share name. (Default: fslogix-pc-app1-001)')
-param fslogixFileShareCustomName string = 'fslogix-pc-app1-001'
+@description('Optional. FSLogix file share name. (Default: fslogix-pc-app1-d-001)')
+param fslogixFileShareCustomName string = 'fslogix-pc-app1-d-001'
 
-@description('Optional. MSIX file share name. (Default: fslogix-pc-app1-001)')
-param msixFileShareCustomName string = 'msix-pc-app1-001'
+@description('Optional. MSIX file share name. (Default: fslogix-pc-app1-d-001)')
+param msixFileShareCustomName string = 'msix-pc-app1-d-001'
 
 //@maxLength(64)
-//@description('Optional. AVD fslogix storage account office container file share prefix custom name. (Default: fslogix-oc-app1-001)')
-//param avdFslogixOfficeContainerFileShareCustomName string = 'fslogix-oc-app1-001'
+//@description('Optional. AVD fslogix storage account office container file share prefix custom name. (Default: fslogix-oc-app1-d-001)')
+//param avdFslogixOfficeContainerFileShareCustomName string = 'fslogix-oc-app1-d-001'
 
 @maxLength(6)
 @description('Optional. AVD keyvault prefix custom name. (Default: kv-avd)')
@@ -483,8 +491,8 @@ param enableTelemetry bool = true
 // =========== //
 // Resource naming
 var varDeploymentPrefixLowercase = toLower(deploymentPrefix)
-var varDiskEncryptionSetName = avdUseCustomNaming ? '${ztDiskEncryptionSetCustomNamePrefix}-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}' : 'des-zt-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
-var varZtManagedIdentityName = avdUseCustomNaming ? '${ztManagedIdentityCustomName}-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}' : 'id-zt-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
+var varDiskEncryptionSetName = avdUseCustomNaming ? '${ztDiskEncryptionSetCustomNamePrefix}-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}-${deploymentEnvironment}' : 'des-zt-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}-${deploymentEnvironment}'
+var varZtManagedIdentityName = avdUseCustomNaming ? '${ztManagedIdentityCustomName}-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}-${deploymentEnvironment}' : 'id-zt-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}-${deploymentEnvironment}'
 var varDiskEncryptionKeyExpirationInEpoch = dateTimeToEpoch(dateTimeAdd(time, 'P${string(diskEncryptionKeyExpirationInDays)}D'))
 var varSessionHostLocationLowercase = toLower(replace(avdSessionHostLocation, ' ', ''))
 var varManagementPlaneLocationLowercase = toLower(replace(avdManagementPlaneLocation, ' ', ''))
@@ -493,9 +501,9 @@ var varManagementPlaneLocationAcronym = varLocations[varManagementPlaneLocationL
 var varLocations = loadJsonContent('../variables/locations.json')
 var varTimeZoneSessionHosts = varLocations[varSessionHostLocationLowercase].timeZone
 var varTimeZoneManagementPlane = varLocations[varManagementPlaneLocationLowercase].timeZone
-var varNamingUniqueStringSixChar = take('${uniqueString(avdWorkloadSubsId, varDeploymentPrefixLowercase, time)}', 6)
-var varManagementPlaneNamingStandard = '${varManagementPlaneLocationAcronym}-${varDeploymentPrefixLowercase}'
-var varComputeStorageResourcesNamingStandard = '${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
+var varNamingUniqueStringSixChar = take('${uniqueString(avdWorkloadSubsId, varDeploymentPrefixLowercase, time)}', 5)
+var varManagementPlaneNamingStandard = '${varManagementPlaneLocationAcronym}-${varDeploymentPrefixLowercase}-${deploymentEnvironment}'
+var varComputeStorageResourcesNamingStandard = '${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}-${deploymentEnvironment}'
 var varServiceObjectsRgName = avdUseCustomNaming ? avdServiceObjectsRgCustomName : 'rg-avd-${varManagementPlaneNamingStandard}-service-objects' // max length limit 90 characters
 var varNetworkObjectsRgName = avdUseCustomNaming ? avdNetworkObjectsRgCustomName : 'rg-avd-${varComputeStorageResourcesNamingStandard}-network' // max length limit 90 characters
 var varComputeObjectsRgName = avdUseCustomNaming ? avdComputeObjectsRgCustomName : 'rg-avd-${varComputeStorageResourcesNamingStandard}-pool-compute' // max length limit 90 characters
@@ -524,29 +532,29 @@ var varScalingPlanExclusionTag = 'Exclude-${varScalingPlanName}'
 var varScalingPlanWeekdaysScheduleName = 'Weekdays-${varManagementPlaneNamingStandard}'
 var varScalingPlanWeekendScheduleName = 'Weekend-${varManagementPlaneNamingStandard}'
 var varWrklKvName = avdUseCustomNaming ? '${avdWrklKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringSixChar}' : 'kv-avd-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringSixChar}' // max length limit 24 characters
-var varWrklKvPrivateEndpointName = 'pe-kv-avd-${varDeploymentPrefixLowercase}-${varNamingUniqueStringSixChar}-vault'
-var varSessionHostNamePrefix = avdUseCustomNaming ? avdSessionHostCustomNamePrefix : 'vm-avd-${varDeploymentPrefixLowercase}'
-var varAvailabilitySetNamePrefix = avdUseCustomNaming ? '${avdAvailabilitySetCustomNamePrefix}-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}' : 'avail-avd-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
-var varStorageManagedIdentityName = 'id-avd-storage-${varSessionHostLocationAcronym}-${varDeploymentPrefixLowercase}'
-var varCreateStorageDeployment = (createAvdFslogixDeployment || createMsixDeployment == true) ? true : false
+var varWrklKvPrivateEndpointName = 'pe-kv-avd-${varDeploymentPrefixLowercase}-${deploymentEnvironment}-${varNamingUniqueStringSixChar}-vault'
+var varSessionHostNamePrefix = avdUseCustomNaming ? avdSessionHostCustomNamePrefix : 'vm${varSessionHostLocationAcronym}${varDeploymentPrefixLowercase}${deploymentEnvironment}'
+var varAvailabilitySetNamePrefix = avdUseCustomNaming ? '${avdAvailabilitySetCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'avail-avd-${varComputeStorageResourcesNamingStandard}'
+var varStorageManagedIdentityName = 'id-avd-storage-${varComputeStorageResourcesNamingStandard}'
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var varFslogixScriptUri = (avdIdentityServiceProvider == 'AAD') ? '${varBaseScriptUri}scripts/Set-FSLogixRegKeysAAD.ps1' : '${varBaseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
 var varFsLogixScript = (avdIdentityServiceProvider == 'AAD') ? './Set-FSLogixRegKeysAad.ps1' : './Set-FSLogixRegKeys.ps1'
 var varAvdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
-var varFslogixFileShareName = avdUseCustomNaming ? fslogixFileShareCustomName : 'fslogix-pc-${varDeploymentPrefixLowercase}-001'
-var varMsixFileShareName = avdUseCustomNaming ? msixFileShareCustomName : 'msix-pc-${varDeploymentPrefixLowercase}-001'
-var varFslogixStorageName = avdUseCustomNaming ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varNamingUniqueStringSixChar}' : 'stfsl${varDeploymentPrefixLowercase}${varNamingUniqueStringSixChar}'
-var varMsixStorageName = avdUseCustomNaming ? '${storageAccountPrefixCustomName}msx${varDeploymentPrefixLowercase}${varNamingUniqueStringSixChar}' : 'stmsx${varDeploymentPrefixLowercase}${varNamingUniqueStringSixChar}'
-var varFslogixStorageSku = avdUseAvailabilityZones ? '${fslogixStoragePerformance}_ZRS' : '${fslogixStoragePerformance}_LRS'
-var varMsixStorageSku = avdUseAvailabilityZones ? '${msixStoragePerformance}_ZRS' : '${msixStoragePerformance}_LRS'
+var varFslogixFileShareName = avdUseCustomNaming ? fslogixFileShareCustomName : 'fslogix-pc-${varDeploymentPrefixLowercase}-${deploymentEnvironment}-001'
+var varMsixFileShareName = avdUseCustomNaming ? msixFileShareCustomName : 'msix-pc-${varDeploymentPrefixLowercase}-${deploymentEnvironment}-001'
+var varFslogixStorageName = avdUseCustomNaming ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${deploymentEnvironment}${varNamingUniqueStringSixChar}' : 'stfsl${varDeploymentPrefixLowercase}${deploymentEnvironment}${varNamingUniqueStringSixChar}'
+var varMsixStorageName = avdUseCustomNaming ? '${storageAccountPrefixCustomName}msx${varDeploymentPrefixLowercase}${deploymentEnvironment}${varNamingUniqueStringSixChar}' : 'stmsx${varDeploymentPrefixLowercase}${deploymentEnvironment}${varNamingUniqueStringSixChar}'
 var varFsLogixScriptArguments = (avdIdentityServiceProvider == 'AAD') ? '-volumeshare ${varFslogixSharePath} -storageAccountName ${varFslogixStorageName} -identityDomainName ${avdIdentityDomainName}' : '-volumeshare ${varFslogixSharePath}'
 var varFslogixSharePath = '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
 //var varAvdMsixStorageName = deployAvdMsixStorageAzureFiles.outputs.storageAccountName
-var varManagementVmName = 'vm-mgmt-${varDeploymentPrefixLowercase}'
+var varManagementVmName = 'vmmgmt${varComputeStorageResourcesNamingStandard}'
 //var varAvdWrklStoragePrivateEndpointName = 'pe-stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}-file'
-var varAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${varManagementPlaneLocationAcronym}' //'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
+var varAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${varManagementPlaneLocationAcronym}-${deploymentEnvironment}' //'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
 var varZtKvName = avdUseCustomNaming ? '${ztKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringSixChar}' : 'kv-zt-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringSixChar}' // max length limit 24 characters
-var varZtKvPrivateEndpointName = 'pe-kv-zt-${varDeploymentPrefixLowercase}-${varNamingUniqueStringSixChar}'
+var varZtKvPrivateEndpointName = 'pe-kv-zt-${varDeploymentPrefixLowercase}-${deploymentEnvironment}-${varNamingUniqueStringSixChar}-vault'
+var varCreateStorageDeployment = (createAvdFslogixDeployment || createMsixDeployment == true) ? true : false
+var varFslogixStorageSku = avdUseAvailabilityZones ? '${fslogixStoragePerformance}_ZRS' : '${fslogixStoragePerformance}_LRS'
+var varMsixStorageSku = avdUseAvailabilityZones ? '${msixStoragePerformance}_ZRS' : '${msixStoragePerformance}_LRS'
 var varScalingPlanSchedules = [
     {
         daysOfWeek: [
@@ -704,7 +712,7 @@ var varDnsServers = empty(customDnsIps) ? [] : (split(varAllDnsServers, ','))
 var varApplicationGroupIdentitiesIds = !empty(avdApplicationGroupIdentitiesIds) ? (split(avdApplicationGroupIdentitiesIds, ',')) : []
 var varCreateVnetPeering = !empty(existingHubVnetResourceId) ? true : false
 // Resource tagging
-// Tag Exclude-${varAvdScalingPlanName} is used by scaling plans to exclude session hosts from scaling. Exmaple: Exclude-vdscal-eus2-app1-001
+// Tag Exclude-${varAvdScalingPlanName} is used by scaling plans to exclude session hosts from scaling. Exmaple: Exclude-vdscal-eus2-app1-d-001
 var varCommonResourceTags = createResourceTags ? {
     WorkloadName: workloadNameTag
     WorkloadType: workloadTypeTag
