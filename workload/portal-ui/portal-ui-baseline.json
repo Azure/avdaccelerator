@@ -58,16 +58,48 @@
                             }
                         },
                         {
-                            "name": "deploymentPrefix",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Deployment prefix",
-                            "toolTip": "Provide a prefix (max 4 characters) for the resource groups and resources created as part of AVD landing zones.",
-                            "placeholder": "Example: app1",
-                            "constraints": {
-                                "required": true,
-                                "regex": "^[a-z0-9A-Z-]{1,4}$",
-                                "validationMessage": "The prefix must be 1-4 characters."
-                            }
+                            "name": "deploymentSpecs",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "Deployment Specs",
+                            "elements": [
+                                {
+                                    "name": "deploymentPrefix",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Prefix",
+                                    "toolTip": "Provide a prefix (max 4 characters) for the resource groups and resources created as part of AVD landing zones.",
+                                    "placeholder": "Example: app1",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,4}$",
+                                        "validationMessage": "The prefix must be 1-4 characters."
+                                    }
+                                },
+                                {
+                                    "name": "deploymentEnvironment",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "visible": true,
+                                    "label": "Environment",
+                                    "defaultValue": "Development",
+                                    "toolTip": "Select the type of environment (Development (d), Test (t), Production (p)) that will be deployed, this information will be use as part of the resources naming.",
+                                    "constraints": {
+                                        "allowedValues": [
+                                            {
+                                                "label": "Development",
+                                                "value": "d"
+                                            },
+                                            {
+                                                "label": "Test",
+                                                "value": "t"
+                                            },
+                                            {
+                                                "label": "Production",
+                                                "value": "p"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
                         }
                     ]
                 },
@@ -2255,7 +2287,8 @@
         },
         "outputs": {
             "parameters": {
-                "deploymentPrefix": "[steps('basics').deploymentPrefix]",
+                "deploymentPrefix": "[steps('basics').deploymentSpecs.deploymentPrefix]",
+                "deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
                 "diskZeroTrust": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust]",
                 "avdManagementPlaneLocation": "[steps('basics').resourceScope.location.name]",
                 "avdSessionHostLocation": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]",
