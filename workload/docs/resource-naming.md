@@ -15,9 +15,16 @@ The naming of resources is hard coded in the templates but can also be modified 
 | `vdag-desktop-{AzureRegionAcronym}-{deploymentPrefix}-{nnn}` | AVD Application group (Desktop) | |
 | `vdag-rapp-{AzureRegionAcronym}-{deploymentPrefix}-{nnn}` | AVD Application group (RemoteApp) | |
 | `vdscaling-{AzureRegionAcronym}-{deploymentPrefix}-{nnn}` | AVD Scaling Plan | |
+| `Managed-Identity-Wait-{Timestamp}` | Deployment script (Zero Trust) | Introduce wait time after managed identity creation. |
+| `des-zt-{AzureRegionAcronym}-{deploymentPrefix}-{uniqueString}` | Disk Encryption Set (Zero Trust) | |
+| `DiskEncryptionKey` | Key (Zero Trust) | |
 | `kv-avd-{AzureRegionAcronym}-{deploymentPrefix}-{uniqueString}` | Key vault | |
+| `kv-zt-{AzureRegionAcronym}-{deploymentPrefix}-{uniqueString}` | Key vault (Zero Trust) | |
+| `id-zt-{AzureRegion}-{deploymentPrefix}` | Managed identity (Zero Trust) | Identity used for enabling server-side encryption with a customer managed key. |
 | `pe-kv-avd-{AzureRegionAcronym}-{deploymentPrefix}-{uniqueString}-vault` | Private endpoint | Private endpoint attached to key vault. |
+| `pe-kv-zt-{AzureRegionAcronym}-{deploymentPrefix}-{uniqueString}-vault` | Private endpoint (Zero Trust) | Private endpoint attached to key vault. |
 | `nic-{nn}-pe-kv-avd-{AzureRegionAcronym}-{deploymentPrefix}-{uniqueString}-vault` | Network Interface | Network interface attached to key vault private endpoint. |
+| `nic-{nn}-pe-kv-zt-{AzureRegionAcronym}-{deploymentPrefix}-{uniqueString}-vault` | Network Interface (Zero Trust) | Network interface attached to key vault private endpoint. |
 | `AVD-managementVmWait-{Timestamp}` | Deployment script | Introduce wait time after management VM creation. |
 | `vm-mgmt-{deploymentPrefix}` | Virtual Machine | VM used to run management tasks (FSLogix, NTFS permissions, etc.). |
 | `osdisk-{nnn}-vm-mgmt-{deploymentPrefix}` | Disk | OS disk attached to management VM. |
