@@ -1,6 +1,6 @@
 # Contributing Guide: ARM Templates
 
-[Overview](../../../CONTRIBUTING.md) | [File Structure](fileStructure.md) | [Banners](contributing/banners.md) | [Naming Standard](namingStandard.md) | [Comments](comments.md) | [Parameters File Samples](parametersFileSamples.md) | [ARM Templates](armTemplates.md) | [Documents & Diagrams](documentsDiagrams.md)
+[Overview](../../../CONTRIBUTING.md) | [File Structure](fileStructure.md) | [Banners](banners.md) | [Naming Standard](namingStandard.md) | [Comments](comments.md) | [Parameters File Samples](parametersFileSamples.md) | [ARM Templates](armTemplates.md) | [Documents & Diagrams](documentsDiagrams.md)
 
 When any changes have been made to a bicep file in the repository, the deploy-*.bicep for the solution must be compiled into JSON and be placed in the appropriate directory.
 
