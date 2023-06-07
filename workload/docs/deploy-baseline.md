@@ -42,7 +42,8 @@
   - **VM size** -  Select the SKU size for the session hosts.
   - **VM count** - Select the number of session hosts to deploy.
   - **OS disk type** - Select the OS Disk SKU type. Premium is recommended.
-  - **End to end encryption** - If you want data stored on the session host  encrypted at rest and flow encrypted to the Storage service.
+  - **Zero trust disk configuration** - Check the box to enable the zero trust configuration on the session host disks to ensure all the disks are encrypted, the OS and data disks are protected with double encryption with a customer managed key, and network access is disabled.
+  - **Enable accelerated networking** - Check the box to ensure the network traffic on the session hosts is offloaded to the network interface to enhance performance. This feature is free as long as a supported generation 2 VM size is selected. Checked is recommended.
   - **OS image source** - Select a marketplace image or an image from Azure Compute Gallery (Custom image build deployment will create images in compute gallery).
   - **OS version or image** - Choose the OS version or desired image from the Azure compute gallery.
 - **Storage** blade
