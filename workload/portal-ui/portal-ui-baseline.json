@@ -86,15 +86,15 @@
                                         "allowedValues": [
                                             {
                                                 "label": "Development",
-                                                "value": "d"
+                                                "value": "Dev"
                                             },
                                             {
                                                 "label": "Test",
-                                                "value": "t"
+                                                "value": "Test"
                                             },
                                             {
                                                 "label": "Production",
-                                                "value": "p"
+                                                "value": "Prod"
                                             }
                                         ]
                                     }
