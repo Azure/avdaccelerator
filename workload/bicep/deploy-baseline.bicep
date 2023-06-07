@@ -491,7 +491,7 @@ param enableTelemetry bool = true
 // =========== //
 // Resource naming
 var varDeploymentPrefixLowercase = toLower(deploymentPrefix)
-var varDeploymentEnvironmentLowercase = toLower(deploymentEnvironment)
+var varDeploymentEnvironmentLowercase = 'd' //toLower(deploymentEnvironment)
 var varDeploymentEnvironmentComputeStorage = (deploymentEnvironment == 'Dev') ? 'd': ((deploymentEnvironment == 'Test') ? 't' : ((deploymentEnvironment == 'Prod') ? 'p' : ''))
 var varNamingUniqueStringFourChar = take('${uniqueString(avdWorkloadSubsId, varDeploymentPrefixLowercase, time)}', 4)
 var varSessionHostLocationAcronym = varLocations[varSessionHostLocationLowercase].acronym
