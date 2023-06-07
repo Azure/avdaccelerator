@@ -4,6 +4,8 @@
 
 When making any changes to the baseline, ensure the following documents and diagrams are updated:
 
+- workload/docs/resource-naming.md: add any new names for resources.
+- workload/docs/diagrams/avd-accelerator-resource-organization-naming.vsdx: add any new names for resources.
 - workload/docs/deploy-baseline.md: add any new inputs / elements that were added to the UI definition
 - workload/docs/getting-started-baseline.md: add any prerequisites (similar to the infobox in the portal UI).
 - workload/docs/diagrams/avd-accelerator-baseline-architecture.vsdx:
