@@ -103,6 +103,15 @@ PARAMS
     azurerm_key_vault_key.stcmky
   ]
 }
+
+resource "azurerm_resource_group_policy_remediation" "remedy" {
+  name                 = "diskaccess-policy-remediation"
+  resource_group_id    = azurerm_resource_group.shrg.id
+  policy_assignment_id = azurerm_resource_group_policy_assignment.disabledsknetaccess.id
+  location_filters     = ["${var.avdLocation}"]
+}
+
+
 resource "azurerm_virtual_machine_extension" "aadjoin" {
   count                      = var.rdsh_count
   name                       = "${var.prefix}-${count.index + 1}-aadJoin"
