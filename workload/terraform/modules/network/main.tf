@@ -45,6 +45,11 @@ resource "azurerm_virtual_network_peering" "peer1" {
   allow_gateway_transit        = false
   use_remote_gateways          = true
   provider                     = azurerm.spoke
+
+  depends_on = [
+    azurerm_virtual_network.vnet, azurerm_resource_group.net, azurerm_subnet.subnet
+  ]
+
 }
 
 resource "azurerm_virtual_network_peering" "peer4" {
@@ -57,6 +62,10 @@ resource "azurerm_virtual_network_peering" "peer4" {
   allow_gateway_transit        = true
   use_remote_gateways          = false
   provider                     = azurerm.spoke
+
+  depends_on = [
+    azurerm_virtual_network_peering.peer1
+  ]
 }
 resource "azurerm_virtual_network_peering" "peer2" {
   name                         = "peer_${var.prefix}_hub_avdspoke"
@@ -68,6 +77,10 @@ resource "azurerm_virtual_network_peering" "peer2" {
   allow_gateway_transit        = true
   use_remote_gateways          = false
   provider                     = azurerm.hub
+
+  depends_on = [
+    azurerm_virtual_network_peering.peer1
+  ]
 }
 
 resource "azurerm_virtual_network_peering" "peer3" {
@@ -80,6 +93,10 @@ resource "azurerm_virtual_network_peering" "peer3" {
   allow_gateway_transit        = true
   use_remote_gateways          = false
   provider                     = azurerm.identity
+
+  depends_on = [
+    azurerm_virtual_network_peering.peer2
+  ]
 }
 
 # optional - Creates the Azure Virtual Desktop Firewall Rules assuming you have a firewall in the hub
@@ -91,4 +108,4 @@ module "firewall" {
   hub_subscription_id = var.hub_subscription_id
   hub_connectivity_rg = var.hub_connectivity_rg
   hub_vnet            = var.hub_vnet
-  }
+}
