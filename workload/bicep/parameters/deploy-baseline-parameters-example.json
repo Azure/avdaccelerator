@@ -6,7 +6,7 @@
             "value": "AVD1"
         },
         "deploymentEnvironment": {
-            "value": "d"
+            "value": "Dev"
         },
         "avdUseCustomNaming": {
             "value": false
