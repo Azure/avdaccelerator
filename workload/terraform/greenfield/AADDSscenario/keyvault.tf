@@ -1,14 +1,12 @@
 resource "azurerm_key_vault" "kv" {
-  name                        = local.keyvault_name
-  tenant_id                   = data.azurerm_client_config.current.tenant_id
-  location                    = azurerm_resource_group.rg.location
-  resource_group_name         = azurerm_resource_group.rg.name
-  sku_name                    = "standard"
-  purge_protection_enabled    = true
-  enabled_for_disk_encryption = true
-  tags                        = local.tags
-  enabled_for_deployment      = true
-  enable_rbac_authorization   = true
+  name                     = local.keyvault_name
+  tenant_id                = data.azurerm_client_config.current.tenant_id
+  location                 = azurerm_resource_group.rg.location
+  resource_group_name      = azurerm_resource_group.rg.name
+  sku_name                 = "standard"
+  purge_protection_enabled = true
+  tags                     = local.tags
+  enabled_for_deployment   = true
 
   depends_on = [
     azurerm_resource_group.rg,
@@ -25,7 +23,18 @@ resource "azurerm_key_vault" "kv" {
     bypass         = "AzureServices"
     ip_rules       = local.allow_list_ip
   }
+}
 
+resource "azurerm_key_vault_access_policy" "deploy" {
+  key_vault_id   = azurerm_key_vault.kv.id
+  tenant_id      = data.azurerm_client_config.current.tenant_id
+  object_id      = data.azurerm_client_config.current.object_id
+  application_id = data.azurerm_client_config.current.client_id
+
+  key_permissions         = ["Get", "List", "Update", "Create", "Import", "Delete", "Recover", "Purge"]
+  secret_permissions      = ["Get", "List", "Set", "Delete", "Purge", "Recover"]
+  certificate_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Purge", "Recover"]
+  storage_permissions     = ["Get", "List", "Update", "Delete"]
 }
 
 # Get Private DNS Zone for the Key Vault Private Endpoints
@@ -34,6 +43,7 @@ data "azurerm_private_dns_zone" "pe-vaultdns-zone" {
   resource_group_name = var.hub_dns_zone_rg
   provider            = azurerm.hub
 }
+
 resource "azurerm_private_endpoint" "kvpe" {
   name                = "pe-${local.keyvault_name}-vault"
   location            = azurerm_resource_group.rg.location
@@ -50,7 +60,7 @@ resource "azurerm_private_endpoint" "kvpe" {
     subresource_names              = ["Vault"]
   }
   depends_on = [
-    azurerm_key_vault.kv, azurerm_key_vault_secret.localpassword, azurerm_private_endpoint.kvpe
+    azurerm_key_vault.kv, azurerm_key_vault_secret.localpassword
   ]
   private_dns_zone_group {
     name                 = "dns-kv-${var.prefix}"
@@ -71,57 +81,14 @@ resource "azurerm_key_vault_secret" "localpassword" {
   content_type = "Password"
 
   lifecycle { ignore_changes = [tags] }
-
-  depends_on = [
-    azurerm_role_assignment.keystor
-  ]
 }
 
-# Linking DNS Zone to the existing DNS Zone in the Hub VNET
+# Linking DNS Zone to the VNET
 resource "azurerm_private_dns_zone_virtual_network_link" "vaultlink" {
   name                  = "keydnsvnet_link-${var.prefix}"
   resource_group_name   = var.hub_dns_zone_rg
   private_dns_zone_name = data.azurerm_private_dns_zone.pe-vaultdns-zone.name
   virtual_network_id    = data.azurerm_virtual_network.vnet.id
-  provider              = azurerm.hub
 
   lifecycle { ignore_changes = [tags] }
-}
-
-resource "time_sleep" "wait" {
-  create_duration = "300s"
-}
-
-resource "azurerm_role_assignment" "keystor" {
-  scope                = azurerm_key_vault.kv.id
-  role_definition_name = "Key Vault Administrator"
-  principal_id         = data.azurerm_client_config.current.object_id
-  depends_on = [
-    time_sleep.wait
-  ]
-}
-
-# Customer Managed Key for Storage Account
-resource "azurerm_storage_account_customer_managed_key" "cmky" {
-  storage_account_id = azurerm_storage_account.storage.id
-  key_vault_id       = azurerm_key_vault.kv.id
-  key_name           = azurerm_key_vault.kv.name
-  provider           = azurerm.spoke
-
-  depends_on = [
-    azurerm_storage_account.storage, azurerm_key_vault.kv, azurerm_resource_group.rg_storage, azurerm_key_vault_key.stcmky
-  ]
-}
-
-# Customer Managed Key for Disk Encryption
-resource "azurerm_key_vault_key" "stcmky" {
-  name         = "stor-key"
-  key_vault_id = azurerm_key_vault.kv.id
-  key_type     = "RSA"
-  key_size     = 2048
-  key_opts     = ["decrypt", "encrypt", "sign", "unwrapKey", "verify", "wrapKey"]
-
-  depends_on = [
-    azurerm_role_assignment.keystor
-  ]
 }

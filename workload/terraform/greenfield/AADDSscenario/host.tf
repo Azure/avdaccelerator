@@ -17,7 +17,6 @@ resource "azurerm_network_interface" "avd_vm_nic" {
   name                = "${var.prefix}-${count.index + 1}-nic"
   resource_group_name = azurerm_resource_group.shrg.name
   location            = azurerm_resource_group.shrg.location
-  enable_accelerated_networking = true
 
   ip_configuration {
     name                          = "nic${count.index + 1}_config"
@@ -63,14 +62,34 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   }
 }
 
-resource "azurerm_virtual_machine_extension" "aadjoin" {
+resource "azurerm_virtual_machine_extension" "aaddsjoin" {
   count                      = var.rdsh_count
-  name                       = "${var.prefix}-${count.index + 1}-aadJoin"
+  name                       = "${var.prefix}-${count.index + 1}-aaddsJoin"
   virtual_machine_id         = azurerm_windows_virtual_machine.avd_vm.*.id[count.index]
-  publisher                  = "Microsoft.Azure.ActiveDirectory"
-  type                       = "AADLoginForWindows"
-  type_handler_version       = "1.0"
+  publisher                  = "Microsoft.Compute"
+  type                       = "JsonADDomainExtensions"
+  type_handler_version       = "1.3"
   auto_upgrade_minor_version = true
+
+  settings = <<-SETTINGS
+    {
+      "Name": "${azurerm_active_directory_domain_service.aadds.domain_name}",
+      "OUPath": "${var.avd_ou_path}",
+      "User": "${azuread_user.dc_admin.user_principal_name}",
+      "Restart": "true",
+      "Options": "3"
+    }
+    SETTINGS
+
+  protected_settings = <<-PROTECTED_SETTINGS
+    {
+      "Password": "${random_password.dc_admin.result}"
+    }
+    PROTECTED_SETTINGS
+
+  lifecycle {
+    ignore_changes = [settings, protected_settings]
+  }
 
   /*
 # Uncomment out settings for Intune

@@ -18,9 +18,9 @@ resource "random_string" "random" {
 
 # Get network vnet data
 data "azurerm_virtual_network" "vnet" {
-  name                = "${var.vnet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"              //var.vnet
+  name                = "${var.vnet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001"          //var.vnet
   resource_group_name = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_network}" //var.rg_network
-
+  provider            = azurerm.spoke
   depends_on = [
     module.network
   ]
@@ -28,14 +28,16 @@ data "azurerm_virtual_network" "vnet" {
 
 # Get network subnet data
 data "azurerm_subnet" "subnet" {
-  name                 = "${var.snet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"              //var.snet
+  name                 = "${var.snet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001"          //var.snet
   resource_group_name  = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_network}" //var.rg_network
-  virtual_network_name = "${var.vnet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"              //var.vnet
-
+  virtual_network_name = "${var.vnet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001"          //var.vnet
+  provider             = azurerm.spoke
   depends_on = [
     module.network
   ]
 }
+
+# Get network PE subnet data
 data "azurerm_subnet" "pesubnet" {
   name                 = "${var.pesnet}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001"        //var.snet
   resource_group_name  = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_network}" //var.rg_network
