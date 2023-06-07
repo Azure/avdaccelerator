@@ -1,6 +1,6 @@
 # Contributing Guide: Parameters File Samples
 
-[Overview](../../../CONTRIBUTING.md) | [File Structure](fileStructure.md) | [Banners](contributing/banners.md) | [Naming Standard](namingStandard.md) | [Comments](comments.md) | [Parameters File Samples](parametersFileSamples.md) | [ARM Templates](armTemplates.md) | [Documents & Diagrams](documentsDiagrams.md)
+[Overview](../../../CONTRIBUTING.md) | [File Structure](fileStructure.md) | [Banners](banners.md) | [Naming Standard](namingStandard.md) | [Comments](comments.md) | [Parameters File Samples](parametersFileSamples.md) | [ARM Templates](armTemplates.md) | [Documents & Diagrams](documentsDiagrams.md)
 
 Each solution in the AVD Accelerator must contain parameters file samples to ensure customers can deploy the solution using PowerShell, Azure CLI, or other tooling.
 

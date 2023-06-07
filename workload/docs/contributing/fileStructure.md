@@ -1,6 +1,6 @@
 # Contributors Guide: File Structure
 
-[Overview](../../../CONTRIBUTING.md) | [File Structure](fileStructure.md) | [Banners](contributing/banners.md) | [Naming Standard](namingStandard.md) | [Comments](comments.md) | [Parameters File Samples](parametersFileSamples.md) | [ARM Templates](armTemplates.md) | [Documents & Diagrams](documentsDiagrams.md)
+[Overview](../../../CONTRIBUTING.md) | [File Structure](fileStructure.md) | [Banners](banners.md) | [Naming Standard](namingStandard.md) | [Comments](comments.md) | [Parameters File Samples](parametersFileSamples.md) | [ARM Templates](armTemplates.md) | [Documents & Diagrams](documentsDiagrams.md)
 
 Depending on the contribution, specific files should either be either updated or added to follow the established heirarchy and structure.
 
