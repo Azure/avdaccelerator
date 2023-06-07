@@ -9,6 +9,7 @@ resource "azurerm_key_vault" "kv" {
   tags                        = local.tags
   enabled_for_deployment      = true
   enable_rbac_authorization   = true
+  soft_delete_retention_days  = 7
 
   depends_on = [
     azurerm_resource_group.rg,
@@ -103,25 +104,63 @@ resource "azurerm_role_assignment" "keystor" {
 
 # Customer Managed Key for Storage Account
 resource "azurerm_storage_account_customer_managed_key" "cmky" {
-  storage_account_id = azurerm_storage_account.storage.id
-  key_vault_id       = azurerm_key_vault.kv.id
-  key_name           = azurerm_key_vault.kv.name
-  provider           = azurerm.spoke
+  storage_account_id        = azurerm_storage_account.storage.id
+  key_vault_id              = azurerm_key_vault.kv.id
+  key_name                  = azurerm_key_vault_key.stkek.name
+  user_assigned_identity_id = azurerm_user_assigned_identity.mi.id
+  provider                  = azurerm.spoke
 
   depends_on = [
-    azurerm_storage_account.storage, azurerm_key_vault.kv, azurerm_resource_group.rg_storage, azurerm_key_vault_key.stcmky
+    azurerm_storage_account.storage, azurerm_key_vault.kv, azurerm_role_assignment.encstor, azurerm_key_vault_key.stcmky, azurerm_user_assigned_identity.mi
   ]
+
 }
+
+# Storage Account Encryption Key
+resource "azurerm_key_vault_key" "stkek" {
+  name         = "af-key"
+  key_vault_id = azurerm_key_vault.kv.id
+  key_type     = "RSA"
+  key_size     = 4096
+  key_opts     = ["decrypt", "encrypt", "sign", "unwrapKey", "verify", "wrapKey"]
+
+  depends_on = [
+    azurerm_role_assignment.encstor
+  ]
+
+
+
+  rotation_policy {
+    automatic {
+      time_before_expiry = "P30D"
+    }
+
+    expire_after         = "P90D"
+    notify_before_expiry = "P29D"
+  }
+}
+
 
 # Customer Managed Key for Disk Encryption
 resource "azurerm_key_vault_key" "stcmky" {
   name         = "stor-key"
   key_vault_id = azurerm_key_vault.kv.id
   key_type     = "RSA"
-  key_size     = 2048
+  key_size     = 4096
   key_opts     = ["decrypt", "encrypt", "sign", "unwrapKey", "verify", "wrapKey"]
 
   depends_on = [
     azurerm_role_assignment.keystor
   ]
+
+  rotation_policy {
+    automatic {
+      time_before_expiry = "P30D"
+    }
+
+    expire_after         = "P90D"
+    notify_before_expiry = "P29D"
+  }
 }
+
+
