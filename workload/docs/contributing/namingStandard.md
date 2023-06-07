@@ -11,7 +11,7 @@
 
 ### Variables
 
-- Start with “var”.
+- Start with "var".
 - Use camel casing for each new word in the name.
 
 ### Modules
