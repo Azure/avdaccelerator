@@ -42,8 +42,8 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
     caching                = "ReadWrite"
     storage_account_type   = "Standard_LRS"
     disk_encryption_set_id = azurerm_disk_encryption_set.en-set.id
-  }
 
+  }
 
   # To use marketplace image, uncomment the following lines and comment the source_image_id line
   source_image_reference {
@@ -54,16 +54,6 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   }
 
 
-  /*
-  //source_image_id = data.azurerm_shared_image.avd.id
-  source_image_id = "/subscriptions/${var.avdshared_subscription_id}/resourceGroups/${var.image_rg}/providers/Microsoft.Compute/galleries/${var.gallery_name}/images/${var.image_name}/versions/latest"
-  depends_on = [
-    azurerm_resource_group.shrg,
-    azurerm_network_interface.avd_vm_nic,
-    azurerm_resource_group.rg,
-    azurerm_virtual_desktop_host_pool.hostpool
-  ]
-*/
   identity {
     type = "SystemAssigned"
   }
@@ -78,6 +68,10 @@ resource "azurerm_disk_access" "dskacc" {
   name                = "disk-access-${var.prefix}"
   resource_group_name = azurerm_resource_group.shrg.name
   location            = azurerm_resource_group.shrg.location
+
+  depends_on = [
+    azurerm_resource_group.shrg
+  ]
 }
 
 resource "azurerm_resource_group_policy_assignment" "disabledsknetaccess" {
@@ -86,16 +80,19 @@ resource "azurerm_resource_group_policy_assignment" "disabledsknetaccess" {
   resource_group_id    = azurerm_resource_group.shrg.id
   location             = azurerm_resource_group.shrg.location
   identity {
-    type = "SystemAssigned"
+    type = "UserAssigned"
+    identity_ids = [
+      azurerm_user_assigned_identity.mi.id
+    ]
   }
 
   parameters = <<PARAMS
     {
       "diskAccessId": {
-        "value": "azurerm_disk_access.dskacc.id"
+        "value": "/subscriptions/${var.spoke_subscription_id}/resourcegroups/rg-avd-${var.avdLocation}-${var.prefix}-pool-compute/providers/microsoft.compute/diskaccesses/disk-access-${var.prefix}"
       },
       "location": {
-        "value": "azurerm_resource_group.shrg.location"
+        "value": "${var.avdLocation}"
       }    
     }
 PARAMS
