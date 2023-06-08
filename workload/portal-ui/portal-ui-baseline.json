@@ -1227,19 +1227,6 @@
                                 "style": "Warning"
                             }
                         },
-
-
-
-
-
-
-
-
-
-
-
-
-
                         {
                             "name": "virtualNetworkPrivateDnsZoneInfo1",
                             "type": "Microsoft.Common.InfoBox",
