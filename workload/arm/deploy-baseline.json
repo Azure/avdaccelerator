@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "6442447744261295359"
+      "templateHash": "7704283279908636611"
     }
   },
   "parameters": {
@@ -8111,7 +8111,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "13467597033010074322"
+              "templateHash": "896243994152223559"
             }
           },
           "parameters": {
@@ -12277,7 +12277,7 @@
               "condition": "[and(parameters('createPrivateDnsZones'), equals(variables('varAzureCloudName'), 'AzureCloud'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('Private-DNS-Com-Files-{0}', parameters('time'))]",
+              "name": "[format('Private-DNS-Comm-Files-{0}', parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
               "resourceGroup": "[format('{0}', parameters('networkObjectsRgName'))]",
               "properties": {
@@ -12365,7 +12365,7 @@
               "condition": "[and(parameters('createPrivateDnsZones'), equals(variables('varAzureCloudName'), 'AzureCloud'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('Private-DNS-Kv-{0}', parameters('time'))]",
+              "name": "[format('Private-DNS-Comm-Kv-{0}', parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
               "resourceGroup": "[format('{0}', parameters('networkObjectsRgName'))]",
               "properties": {
@@ -12637,11 +12637,11 @@
             },
             "azureFilesDnsZoneResourceId": {
               "type": "string",
-              "value": "[if(parameters('createPrivateDnsZones'), if(equals(variables('varAzureCloudName'), 'AzureCloud'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Com-Files-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Gov-Files-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), '')]"
+              "value": "[if(parameters('createPrivateDnsZones'), if(equals(variables('varAzureCloudName'), 'AzureCloud'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Comm-Files-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Gov-Files-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), '')]"
             },
             "KeyVaultDnsZoneResourceId": {
               "type": "string",
-              "value": "[if(parameters('createPrivateDnsZones'), if(equals(variables('varAzureCloudName'), 'AzureCloud'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Kv-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Gov-Kv-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), '')]"
+              "value": "[if(parameters('createPrivateDnsZones'), if(equals(variables('varAzureCloudName'), 'AzureCloud'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Comm-Kv-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Gov-Kv-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), '')]"
             }
           }
         }

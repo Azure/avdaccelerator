@@ -369,7 +369,7 @@ module virtualNetwork '../../../../carml/1.3.0/Microsoft.Network/virtualNetworks
 // Private DNS zones Azure files commercial
 module privateDnsZoneAzureFilesCommercial '.bicep/privateDnsZones.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureCloud')) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
-    name: 'Private-DNS-Com-Files-${time}'
+    name: 'Private-DNS-Comm-Files-${time}'
     params: {
         privateDnsZoneName: 'privatelink.file.core.windows.net'
         virtualNetworkResourceId: createVnet ? virtualNetwork.outputs.resourceId : varExistingAvdVnetResourceId
@@ -380,7 +380,7 @@ module privateDnsZoneAzureFilesCommercial '.bicep/privateDnsZones.bicep' = if (c
 // Private DNS zones key vault commercial
 module privateDnsZoneKeyVaultCommercial '.bicep/privateDnsZones.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureCloud')) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
-    name: 'Private-DNS-Kv-${time}'
+    name: 'Private-DNS-Comm-Kv-${time}'
     params: {
         privateDnsZoneName: 'privatelink.vaultcore.azure.net'
         virtualNetworkResourceId: createVnet ? virtualNetwork.outputs.resourceId : varExistingAvdVnetResourceId
