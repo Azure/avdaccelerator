@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "7704283279908636611"
+      "templateHash": "5951587260173787291"
     }
   },
   "parameters": {
@@ -8111,7 +8111,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "896243994152223559"
+              "templateHash": "8753175874336242948"
             }
           },
           "parameters": {
@@ -8311,10 +8311,10 @@
               "AllMetrics"
             ],
             "varCreateAvdStaicRoute": true,
-            "varExistingAvdVnetSubId": "[split(parameters('existingAvdSubnetResourceId'), '/')[2]]",
-            "varExistingAvdVnetSubRgName": "[split(parameters('existingAvdSubnetResourceId'), '/')[4]]",
-            "varExistingAvdVnetName": "[split(parameters('existingAvdSubnetResourceId'), '/')[8]]",
-            "varExistingAvdVnetResourceId": "[format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Network/virtualNetworks/{2}', variables('varExistingAvdVnetSubId'), variables('varExistingAvdVnetSubRgName'), variables('varExistingAvdVnetName'))]"
+            "varExistingAvdVnetSubId": "[if(not(parameters('createVnet')), split(parameters('existingAvdSubnetResourceId'), '/')[2], '')]",
+            "varExistingAvdVnetSubRgName": "[if(not(parameters('createVnet')), split(parameters('existingAvdSubnetResourceId'), '/')[4], '')]",
+            "varExistingAvdVnetName": "[if(not(parameters('createVnet')), split(parameters('existingAvdSubnetResourceId'), '/')[8], '')]",
+            "varExistingAvdVnetResourceId": "[if(not(parameters('createVnet')), format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Network/virtualNetworks/{2}', variables('varExistingAvdVnetSubId'), variables('varExistingAvdVnetSubRgName'), variables('varExistingAvdVnetName')), '')]"
           },
           "resources": [
             {

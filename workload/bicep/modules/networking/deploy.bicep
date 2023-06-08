@@ -107,10 +107,10 @@ var varVirtualNetworkMetricsDiagnostic = [
     'AllMetrics'
 ]
 var varCreateAvdStaicRoute = true
-var varExistingAvdVnetSubId = split(existingAvdSubnetResourceId, '/')[2]
-var varExistingAvdVnetSubRgName = split(existingAvdSubnetResourceId, '/')[4]
-var varExistingAvdVnetName = split(existingAvdSubnetResourceId, '/')[8]
-var varExistingAvdVnetResourceId = '/subscriptions/${varExistingAvdVnetSubId}/resourceGroups/${varExistingAvdVnetSubRgName}/providers/Microsoft.Network/virtualNetworks/${varExistingAvdVnetName}'
+var varExistingAvdVnetSubId = !createVnet ? split(existingAvdSubnetResourceId, '/')[2] : ''
+var varExistingAvdVnetSubRgName = !createVnet ? split(existingAvdSubnetResourceId, '/')[4] : ''
+var varExistingAvdVnetName = !createVnet ? split(existingAvdSubnetResourceId, '/')[8] : ''
+var varExistingAvdVnetResourceId = !createVnet ? '/subscriptions/${varExistingAvdVnetSubId}/resourceGroups/${varExistingAvdVnetSubRgName}/providers/Microsoft.Network/virtualNetworks/${varExistingAvdVnetName}' : ''
 //var varExistingPeVnetSubId = split(existingPeSubnetResourceId, '/')[2]
 //var varExistingPeVnetSubRgName = split(existingPeSubnetResourceId, '/')[4]
 //var varExistingAPeVnetName = split(existingPeSubnetResourceId, '/')[8]
