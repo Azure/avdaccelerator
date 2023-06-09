@@ -279,96 +279,96 @@ param createOuForStorage bool = false
 param avdUseCustomNaming bool = false
 
 @maxLength(90)
-@description('Optional. AVD service resources resource group custom name. (Default: rg-avd-use2-app1-d-service-objects)')
-param avdServiceObjectsRgCustomName string = 'rg-avd-use2-app1-d-service-objects'
+@description('Optional. AVD service resources resource group custom name. (Default: rg-avd-use2-app1-dev-service-objects)')
+param avdServiceObjectsRgCustomName string = 'rg-avd-use2-app1-dev-service-objects'
 
 @maxLength(90)
-@description('Optional. AVD network resources resource group custom name. (Default: rg-avd-use2-app1-d-network)')
-param avdNetworkObjectsRgCustomName string = 'rg-avd-use2-app1-d-network'
+@description('Optional. AVD network resources resource group custom name. (Default: rg-avd-use2-app1-dev-network)')
+param avdNetworkObjectsRgCustomName string = 'rg-avd-use2-app1-dev-network'
 
 @maxLength(90)
-@description('Optional. AVD network resources resource group custom name. (Default: rg-avd-use2-app1-d-pool-compute)')
-param avdComputeObjectsRgCustomName string = 'rg-avd-use2-app1-d-pool-compute'
+@description('Optional. AVD network resources resource group custom name. (Default: rg-avd-use2-app1-dev-pool-compute)')
+param avdComputeObjectsRgCustomName string = 'rg-avd-use2-app1-dev-pool-compute'
 
 @maxLength(90)
-@description('Optional. AVD network resources resource group custom name. (Default: rg-avd-use2-app1-d-storage)')
-param avdStorageObjectsRgCustomName string = 'rg-avd-use2-app1-d-storage'
+@description('Optional. AVD network resources resource group custom name. (Default: rg-avd-use2-app1-dev-storage)')
+param avdStorageObjectsRgCustomName string = 'rg-avd-use2-app1-dev-storage'
 
 @maxLength(90)
-@description('Optional. AVD monitoring resource group custom name. (Default: rg-avd-use2-app1-d-monitoring)')
-param avdMonitoringRgCustomName string = 'rg-avd-use2-app1-d-monitoring'
+@description('Optional. AVD monitoring resource group custom name. (Default: rg-avd-use2-app1-dev-monitoring)')
+param avdMonitoringRgCustomName string = 'rg-avd-use2-app1-dev-monitoring'
 
 @maxLength(64)
-@description('Optional. AVD virtual network custom name. (Default: vnet-avd-use2-app1-d-001)')
-param avdVnetworkCustomName string = 'vnet-avd-use2-app1-d-001'
+@description('Optional. AVD virtual network custom name. (Default: vnet-avd-use2-app1-dev-001)')
+param avdVnetworkCustomName string = 'vnet-avd-use2-app1-dev-001'
 
 @maxLength(64)
-@description('Optional. AVD Azure log analytics workspace custom name. (Default: log-avd-use2-app1-d-001)')
-param avdAlaWorkspaceCustomName string = 'log-avd-use2-app1-d-001'
+@description('Optional. AVD Azure log analytics workspace custom name. (Default: log-avd-use2-app1-dev-001)')
+param avdAlaWorkspaceCustomName string = 'log-avd-use2-app1-dev-001'
 
 //@maxLength(24)
 //@description('Optional. Azure Storage Account custom name for NSG flow logs. (Default: stavduse2flowlogs001)')
 //param avdStgAccountForFlowLogsCustomName string = 'stavduse2flowlogs001'
 
 @maxLength(80)
-@description('Optional. AVD virtual network subnet custom name. (Default: snet-avd-use2-app1-d-001)')
-param avdVnetworkSubnetCustomName string = 'snet-avd-use2-app1-d-001'
+@description('Optional. AVD virtual network subnet custom name. (Default: snet-avd-use2-app1-dev-001)')
+param avdVnetworkSubnetCustomName string = 'snet-avd-use2-app1-dev-001'
 
 @maxLength(80)
-@description('Optional. private endpoints virtual network subnet custom name. (Default: snet-pe-use2-app1-d-001)')
-param privateEndpointVnetworkSubnetCustomName string = 'snet-pe-use2-app1-d-001'
+@description('Optional. private endpoints virtual network subnet custom name. (Default: snet-pe-use2-app1-dev-001)')
+param privateEndpointVnetworkSubnetCustomName string = 'snet-pe-use2-app1-dev-001'
 
 @maxLength(80)
-@description('Optional. AVD network security group custom name. (Default: nsg-avd-use2-app1-d-001)')
-param avdNetworksecurityGroupCustomName string = 'nsg-avd-use2-app1-d-001'
+@description('Optional. AVD network security group custom name. (Default: nsg-avd-use2-app1-dev-001)')
+param avdNetworksecurityGroupCustomName string = 'nsg-avd-use2-app1-dev-001'
 
 @maxLength(80)
-@description('Optional. Private endpoint network security group custom name. (Default: nsg-pe-use2-app1-d-001)')
-param privateEndpointNetworksecurityGroupCustomName string = 'nsg-pe-use2-app1-d-001'
+@description('Optional. Private endpoint network security group custom name. (Default: nsg-pe-use2-app1-dev-001)')
+param privateEndpointNetworksecurityGroupCustomName string = 'nsg-pe-use2-app1-dev-001'
 
 @maxLength(80)
-@description('Optional. AVD route table custom name. (Default: route-avd-use2-app1-d-001)')
-param avdRouteTableCustomName string = 'route-avd-use2-app1-d-001'
+@description('Optional. AVD route table custom name. (Default: route-avd-use2-app1-dev-001)')
+param avdRouteTableCustomName string = 'route-avd-use2-app1-dev-001'
 
 @maxLength(80)
-@description('Optional. Private endpoint route table custom name. (Default: route-avd-use2-app1-d-001)')
-param privateEndpointRouteTableCustomName string = 'route-pe-use2-app1-d-001'
+@description('Optional. Private endpoint route table custom name. (Default: route-avd-use2-app1-dev-001)')
+param privateEndpointRouteTableCustomName string = 'route-pe-use2-app1-dev-001'
 
 @maxLength(80)
-@description('Optional. AVD application security custom name. (Default: asg-avd-use2-app1-d-001)')
-param avdApplicationSecurityGroupCustomName string = 'asg-avd-use2-app1-d-001'
+@description('Optional. AVD application security custom name. (Default: asg-avd-use2-app1-dev-001)')
+param avdApplicationSecurityGroupCustomName string = 'asg-avd-use2-app1-dev-001'
 
 @maxLength(64)
-@description('Optional. AVD workspace custom name. (Default: vdws-use2-app1-d-001)')
-param avdWorkSpaceCustomName string = 'vdws-use2-app1-d-001'
+@description('Optional. AVD workspace custom name. (Default: vdws-use2-app1-dev-001)')
+param avdWorkSpaceCustomName string = 'vdws-use2-app1-dev-001'
 
 @maxLength(64)
-@description('Optional. AVD workspace custom friendly (Display) name. (Default: App1 - East US - 001)')
-param avdWorkSpaceCustomFriendlyName string = 'East US - 001'
+@description('Optional. AVD workspace custom friendly (Display) name. (Default: App1 - East US - Dev - 001)')
+param avdWorkSpaceCustomFriendlyName string = 'App1 - East US - Dev - 001'
 
 @maxLength(64)
-@description('Optional. AVD host pool custom name. (Default: vdpool-use2-app1-d-001)')
-param avdHostPoolCustomName string = 'vdpool-use2-app1-d-001'
+@description('Optional. AVD host pool custom name. (Default: vdpool-use2-app1-dev-001)')
+param avdHostPoolCustomName string = 'vdpool-use2-app1-dev-001'
 
 @maxLength(64)
-@description('Optional. AVD host pool custom friendly (Display) name. (Default: App1 - East US - 001)')
-param avdHostPoolCustomFriendlyName string = 'App1 - East US - 001'
+@description('Optional. AVD host pool custom friendly (Display) name. (Default: App1 - East US - Dev - 001)')
+param avdHostPoolCustomFriendlyName string = 'App1 - East US - Dev - 001'
 
 @maxLength(64)
-@description('Optional. AVD scaling plan custom name. (Default: vdscaling-use2-app1-d-001)')
-param avdScalingPlanCustomName string = 'vdscaling-use2-app1-d-001'
+@description('Optional. AVD scaling plan custom name. (Default: vdscaling-use2-app1-dev-001)')
+param avdScalingPlanCustomName string = 'vdscaling-use2-app1-dev-001'
 
 @maxLength(64)
-@description('Optional. AVD desktop application group custom name. (Default: vdag-desktop-use2-app1-d-001)')
-param avdApplicationGroupCustomNameDesktop string = 'vdag-desktop-use2-app1-d-001'
+@description('Optional. AVD desktop application group custom name. (Default: vdag-desktop-use2-app1-dev-001)')
+param avdApplicationGroupCustomNameDesktop string = 'vdag-desktop-use2-app1-dev-001'
 
 @maxLength(64)
-@description('Optional. AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - 001)')
-param avdApplicationGroupCustomFriendlyName string = 'Desktops - App1 - East US - 001'
+@description('Optional. AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - Dev - 001)')
+param avdApplicationGroupCustomFriendlyName string = 'Desktops - App1 - East US - Dev - 001'
 
 @maxLength(64)
-@description('Optional. AVD remote application group custom name. (Default: vdag-rapp-use2-app1-d-001)')
-param avdApplicationGroupCustomNameRapp string = 'vdag-rapp-use2-app1-d-001'
+@description('Optional. AVD remote application group custom name. (Default: vdag-rapp-use2-app1-dev-001)')
+param avdApplicationGroupCustomNameRapp string = 'vdag-rapp-use2-app1-dev-001'
 
 @maxLength(64)
 @description('Optional. AVD remote application group custom name. (Default: Remote apps - App1 - East US - 001)')
@@ -386,15 +386,15 @@ param avdAvailabilitySetCustomNamePrefix string = 'avail-avd'
 @description('Optional. AVD FSLogix and MSIX app attach storage account prefix custom name. (Default: stavd)')
 param storageAccountPrefixCustomName string = 'stavd'
 
-@description('Optional. FSLogix file share name. (Default: fslogix-pc-app1-d-001)')
-param fslogixFileShareCustomName string = 'fslogix-pc-app1-d-001'
+@description('Optional. FSLogix file share name. (Default: fslogix-pc-app1-dev-001)')
+param fslogixFileShareCustomName string = 'fslogix-pc-app1-dev-001'
 
-@description('Optional. MSIX file share name. (Default: fslogix-pc-app1-d-001)')
-param msixFileShareCustomName string = 'msix-pc-app1-d-001'
+@description('Optional. MSIX file share name. (Default: fslogix-pc-app1-dev-001)')
+param msixFileShareCustomName string = 'msix-pc-app1-dev-001'
 
 //@maxLength(64)
-//@description('Optional. AVD fslogix storage account office container file share prefix custom name. (Default: fslogix-oc-app1-d-001)')
-//param avdFslogixOfficeContainerFileShareCustomName string = 'fslogix-oc-app1-d-001'
+//@description('Optional. AVD fslogix storage account office container file share prefix custom name. (Default: fslogix-oc-app1-dev-001)')
+//param avdFslogixOfficeContainerFileShareCustomName string = 'fslogix-oc-app1-dev-001'
 
 @maxLength(6)
 @description('Optional. AVD keyvault prefix custom name. (Default: kv-avd)')
@@ -501,7 +501,7 @@ var varServiceObjectsRgName = avdUseCustomNaming ? avdServiceObjectsRgCustomName
 var varNetworkObjectsRgName = avdUseCustomNaming ? avdNetworkObjectsRgCustomName : 'rg-avd-${varComputeStorageResourcesNamingStandard}-network' // max length limit 90 characters
 var varComputeObjectsRgName = avdUseCustomNaming ? avdComputeObjectsRgCustomName : 'rg-avd-${varComputeStorageResourcesNamingStandard}-pool-compute' // max length limit 90 characters
 var varStorageObjectsRgName = avdUseCustomNaming ? avdStorageObjectsRgCustomName : 'rg-avd-${varComputeStorageResourcesNamingStandard}-storage' // max length limit 90 characters
-var varMonitoringRgName = avdUseCustomNaming ? avdMonitoringRgCustomName : 'rg-avd-${deploymentEnvironment}-${varManagementPlaneLocationAcronym}-monitoring' // max length limit 90 characters
+var varMonitoringRgName = avdUseCustomNaming ? avdMonitoringRgCustomName : 'rg-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}-monitoring' // max length limit 90 characters
 //var varAvdSharedResourcesRgName = 'rg-${varAvdSessionHostLocationAcronym}-avd-shared-resources'
 var varVnetworkName = avdUseCustomNaming ? avdVnetworkCustomName : 'vnet-${varComputeStorageResourcesNamingStandard}-001'
 var varVnetworkAvdSubnetName = avdUseCustomNaming ? avdVnetworkSubnetCustomName : 'snet-avd-${varComputeStorageResourcesNamingStandard}-001'
@@ -707,7 +707,7 @@ var varDnsServers = empty(customDnsIps) ? [] : (split(varAllDnsServers, ','))
 var varApplicationGroupIdentitiesIds = !empty(avdApplicationGroupIdentitiesIds) ? (split(avdApplicationGroupIdentitiesIds, ',')) : []
 var varCreateVnetPeering = !empty(existingHubVnetResourceId) ? true : false
 // Resource tagging
-// Tag Exclude-${varAvdScalingPlanName} is used by scaling plans to exclude session hosts from scaling. Exmaple: Exclude-vdscal-eus2-app1-d-001
+// Tag Exclude-${varAvdScalingPlanName} is used by scaling plans to exclude session hosts from scaling. Exmaple: Exclude-vdscal-eus2-app1-dev-001
 var varCustomResourceTags = createResourceTags ? {
     WorkloadName: workloadNameTag
     WorkloadType: workloadTypeTag
