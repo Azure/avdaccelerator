@@ -865,6 +865,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
     dependsOn: [
         baselineNetworkResourceGroup
         monitoringDiagnosticSettings
+        baselineResourceGroups
     ]
 }
 
