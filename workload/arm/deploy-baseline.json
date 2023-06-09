@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "9734836732269406492"
+      "templateHash": "17413001413564207678"
     }
   },
   "parameters": {
@@ -12648,6 +12648,7 @@
       },
       "dependsOn": [
         "[subscriptionResourceId(parameters('avdWorkloadSubsId'), 'Microsoft.Resources/deployments', format('Deploy-{0}-{1}', variables('varNetworkObjectsRgName'), parameters('time')))]",
+        "baselineResourceGroups",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]"
       ]
     },
