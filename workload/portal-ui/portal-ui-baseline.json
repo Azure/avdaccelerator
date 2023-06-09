@@ -2038,7 +2038,7 @@
                             "name": "resourceTaggingParentCostInfo",
                             "type": "Microsoft.Common.InfoBox",
                             "options": {
-                                "text": "By default, all resources will be tagged with parent resource cost management tag (cm-resource-parent). This will group all costs under the host pool resource.",
+                                "text": "By default, the following tags will be created: <br/> - Parent resource cost management tag (cm-resource-parent): reports all resources cost to the host pool (ResourceID). <br/> - Environment (Environment): environment selected during deployment (Dev/Test/prod). <br/> - Service Workload (ServiceWorkload): defaults to AVD. <br/> - Creation time (CreationTimeUTC): deployment time in UTC. <br/> - Domain Name (DomainName): identity service domain name (applied only to compute and storage). <br/> - Identity service provider (IdentityServiceProvider): identity provider selected (ADDS/AADDS/AAD).",
                                 "uri": "https://learn.microsoft.com/azure/virtual-desktop/tag-virtual-desktop-resources#use-the-cm-resource-parent-tag-to-automatically-group-costs-by-host-pool",
                                 "style": "Info"
                             }
@@ -2250,34 +2250,6 @@
                                         "regex": "^[a-z0-9A-Z-]{1,256}$",
                                         "validationMessage": "Value must be 1-256 characters."
                                     }
-                                },
-                                {
-                                    "name": "tagsEnvironmentTypeTag",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "label": "Environment type:",
-                                    "filter": true,
-                                    "defaultValue": "Dev",
-                                    "toolTip": "This input will be the value of a tag named Environment, reference to the environment type of the workload.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Dev",
-                                                "description": "",
-                                                "value": "Dev"
-                                            },
-                                            {
-                                                "label": "Staging",
-                                                "description": "",
-                                                "value": "Staging"
-                                            },
-                                            {
-                                                "label": "Prod",
-                                                "description": "",
-                                                "value": "Prod"
-                                            }
-                                        ]
-                                    }
                                 }
                             ]
                         }
@@ -2381,7 +2353,6 @@
                 "opsTeamTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOpsTeamTag, 'none')]",
                 "ownerTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOwnerTag, 'none')]",
                 "costCenterTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsCostCenterTag, 'none')]",
-                "environmentTypeTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsEnvironmentTypeTag, 'Dev')]",
                 "avdApplicationGroupIdentityType": "[steps('identity').identityAvdUserAccess.identityAccessTypes]",
                 "avdApplicationGroupIdentitiesIds": "[steps('identity').identityAvdUserAccess.identityAccessIds]",
                 "avdDeployMonitoring": "[steps('monitoring').deployMonitoring]",
