@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "1749393718036402806"
+      "templateHash": "9734836732269406492"
     }
   },
   "parameters": {
@@ -21402,7 +21402,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.1.55165",
-              "templateHash": "16889643794149686581"
+              "templateHash": "11949656300373284946"
             }
           },
           "parameters": {
@@ -21531,7 +21531,7 @@
                     "value": "This policy definition sets the network access policy property to \"DenyAll\" and the public network access property to \"Disabled\" on all the managed disks within the assigned scope."
                   },
                   "displayName": {
-                    "value": "Zero Trust - Disable Managed Disk Network Access"
+                    "value": "Custom - Zero Trust - Disable Managed Disk Network Access"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -21724,7 +21724,7 @@
                     "value": "AVD-ACC-Zero-Trust-Disable-Managed-Disk-Network-Access"
                   },
                   "displayName": {
-                    "value": "Zero Trust - Disable Managed Disk Network Access"
+                    "value": "Custom - Zero Trust - Disable Managed Disk Network Access"
                   },
                   "description": {
                     "value": "This policy assignment sets the network access policy property to \"DenyAll\" and the public network access property to \"Disabled\" on all the managed disks within the assigned scope."
