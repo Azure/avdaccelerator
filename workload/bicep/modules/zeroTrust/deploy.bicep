@@ -63,7 +63,7 @@ module ztPolicyDefinition '../../../../carml/1.3.0/Microsoft.Authorization/polic
     name: 'ZT-Policy-Definition-${time}'
     params: {
         description: 'This policy definition sets the network access policy property to "DenyAll" and the public network access property to "Disabled" on all the managed disks within the assigned scope.'
-        displayName: 'Zero Trust - Disable Managed Disk Network Access'
+        displayName: 'Custom - Zero Trust - Disable Managed Disk Network Access'
         location: location
         name: 'AVD-ACC-Zero-Trust-Disable-Managed-Disk-Network-Access'
         policyRule: {
@@ -100,7 +100,7 @@ module ztPolicyAssignment '../../../../carml/1.3.0/Microsoft.Authorization/polic
     name: 'ZT-Policy-Assignment-${time}'
     params: {
         name: 'AVD-ACC-Zero-Trust-Disable-Managed-Disk-Network-Access'
-        displayName: 'Zero Trust - Disable Managed Disk Network Access'
+        displayName: 'Custom - Zero Trust - Disable Managed Disk Network Access'
         description: 'This policy assignment sets the network access policy property to "DenyAll" and the public network access property to "Disabled" on all the managed disks within the assigned scope.'
         identity: 'SystemAssigned'
         location: location
