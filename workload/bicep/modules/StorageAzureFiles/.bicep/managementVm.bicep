@@ -25,9 +25,6 @@ param avdSubnetId string
 @description('Enable accelerated networking on the session host VMs.')
 param enableAcceleratedNetworking bool
 
-@description('Create new virtual network.')
-param createAvdVnet bool
-
 @description('Location where to deploy compute services.')
 param sessionHostLocation string
 
@@ -134,7 +131,7 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
                 nicSuffix: 'nic-01-'
                 deleteOption: 'Delete'
                 enableAcceleratedNetworking: enableAcceleratedNetworking
-                ipConfigurations: createAvdVnet ? [
+                ipConfigurations: !empty(applicationSecurityGroupResourceId)  ? [
                     {
                         name: 'ipconfig01'
                         subnetResourceId: avdSubnetId
