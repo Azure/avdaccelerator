@@ -503,15 +503,17 @@ var varComputeObjectsRgName = avdUseCustomNaming ? avdComputeObjectsRgCustomName
 var varStorageObjectsRgName = avdUseCustomNaming ? avdStorageObjectsRgCustomName : 'rg-avd-${varComputeStorageResourcesNamingStandard}-storage' // max length limit 90 characters
 var varMonitoringRgName = avdUseCustomNaming ? avdMonitoringRgCustomName : 'rg-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}-monitoring' // max length limit 90 characters
 //var varAvdSharedResourcesRgName = 'rg-${varAvdSessionHostLocationAcronym}-avd-shared-resources'
-var varVnetworkName = avdUseCustomNaming ? avdVnetworkCustomName : 'vnet-${varComputeStorageResourcesNamingStandard}-001'
-var varVnetworkAvdSubnetName = avdUseCustomNaming ? avdVnetworkSubnetCustomName : 'snet-avd-${varComputeStorageResourcesNamingStandard}-001'
-var varVnetworkPrivateEndpointSubnetName = avdUseCustomNaming ? privateEndpointVnetworkSubnetCustomName : 'snet-pe-${varComputeStorageResourcesNamingStandard}-001'
+var varVnetName = avdUseCustomNaming ? avdVnetworkCustomName : 'vnet-${varComputeStorageResourcesNamingStandard}-001'
+var varHubVnetSunetName = split(existingHubVnetResourceId, '/')[10]
+var varVnetPeeringName = 'peer-${varHubVnetSunetName}' 
+var varRemoteVnetPeeringName = 'peer-${varVnetName}'
+var varVnetAvdSubnetName = avdUseCustomNaming ? avdVnetworkSubnetCustomName : 'snet-avd-${varComputeStorageResourcesNamingStandard}-001'
+var varVnetPrivateEndpointSubnetName = avdUseCustomNaming ? privateEndpointVnetworkSubnetCustomName : 'snet-pe-${varComputeStorageResourcesNamingStandard}-001'
 var varAvdNetworksecurityGroupName = avdUseCustomNaming ? avdNetworksecurityGroupCustomName : 'nsg-avd-${varComputeStorageResourcesNamingStandard}-001'
 var varPrivateEndpointNetworksecurityGroupName = avdUseCustomNaming ? privateEndpointNetworksecurityGroupCustomName : 'nsg-pe-${varComputeStorageResourcesNamingStandard}-001'
 var varAvdRouteTableName = avdUseCustomNaming ? avdRouteTableCustomName : 'route-avd-${varComputeStorageResourcesNamingStandard}-001'
 var varPrivateEndpointRouteTableName = avdUseCustomNaming ? privateEndpointRouteTableCustomName : 'route-pe-${varComputeStorageResourcesNamingStandard}-001'
 var varApplicationSecurityGroupName = avdUseCustomNaming ? avdApplicationSecurityGroupCustomName : 'asg-${varComputeStorageResourcesNamingStandard}-001'
-var varVnetworkPeeringName = 'peer-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringFourChar}'
 var varWorkSpaceName = avdUseCustomNaming ? avdWorkSpaceCustomName : 'vdws-${varManagementPlaneNamingStandard}-001'
 var varWorkSpaceFriendlyName = avdUseCustomNaming ? avdWorkSpaceCustomFriendlyName : 'Workspace ${deploymentPrefix} ${deploymentEnvironment} ${avdManagementPlaneLocation} 001'
 var varHostPoolName = avdUseCustomNaming ? avdHostPoolCustomName : 'vdpool-${varManagementPlaneNamingStandard}-001'
@@ -842,18 +844,19 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet) {
         privateEndpointNetworksecurityGroupName: varPrivateEndpointNetworksecurityGroupName
         avdRouteTableName: varAvdRouteTableName
         privateEndpointRouteTableName: varPrivateEndpointRouteTableName
-        vNetworkAddressPrefixes: avdVnetworkAddressPrefixes
-        vNetworkName: varVnetworkName
-        vNetworkPeeringName: varVnetworkPeeringName
-        vNetworkAvdSubnetName: varVnetworkAvdSubnetName
-        vNetworkPrivateEndpointSubnetName: varVnetworkPrivateEndpointSubnetName
+        vnetAddressPrefixes: avdVnetworkAddressPrefixes
+        vnetName: varVnetName
+        vnetPeeringName: varVnetPeeringName
+        remoteVnetPeeringName: varRemoteVnetPeeringName
+        vnetAvdSubnetName: varVnetAvdSubnetName
+        vnetPrivateEndpointSubnetName: varVnetPrivateEndpointSubnetName
         createVnetPeering: varCreateVnetPeering
         deployPrivateEndpointSubnet: (deployPrivateEndpointKeyvaultStorage == true) ? true : false //adding logic that will be used when also including AVD control plane PEs
         vNetworkGatewayOnHub: vNetworkGatewayOnHub
         existingHubVnetResourceId: existingHubVnetResourceId
         sessionHostLocation: avdSessionHostLocation
-        vNetworkAvdSubnetAddressPrefix: vNetworkAvdSubnetAddressPrefix
-        vNetworkPrivateEndpointSubnetAddressPrefix: vNetworkPrivateEndpointSubnetAddressPrefix
+        vnetAvdSubnetAddressPrefix: vNetworkAvdSubnetAddressPrefix
+        vnetPrivateEndpointSubnetAddressPrefix: vNetworkPrivateEndpointSubnetAddressPrefix
         workloadSubsId: avdWorkloadSubsId
         dnsServers: varDnsServers
         createPrivateDnsZones: createPrivateDnsZones
@@ -953,7 +956,7 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust) {
         diskEncryptionSetName: varDiskEncryptionSetName
         ztKvName: varZtKvName
         ztKvPrivateEndpointName: varZtKvPrivateEndpointName
-        privateEndpointsubnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
+        privateEndpointsubnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
         deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
         keyVaultprivateDNSResourceId: createPrivateDnsZones ? networking.outputs.KeyVaultDnsZoneResourceId : avdVnetPrivateDnsZoneKeyvaultId
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
@@ -987,7 +990,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
         privateEndpoints: deployPrivateEndpointKeyvaultStorage ? [
             {
                 name: varWrklKvPrivateEndpointName
-                subnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
+                subnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
                 customNetworkInterfaceName: 'nic-01-${varWrklKvPrivateEndpointName}'
                 service: 'vault'
                 privateDnsZoneGroup: {
@@ -1069,7 +1072,7 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
         sessionHostDiskType: avdSessionHostDiskType
         sessionHostLocation: avdSessionHostLocation
         sessionHostsSize: avdSessionHostsSize
-        avdSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkAvdSubnetName}' : existingVnetAvdSubnetResourceId
+        avdSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
         enableAcceleratedNetworking: enableAcceleratedNetworking
         createAvdVnet: createAvdVnet
         vmLocalUserName: avdVmLocalUserName
@@ -1114,7 +1117,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
         identityDomainGuid: identityDomainGuid
         sessionHostLocation: avdSessionHostLocation
         storageObjectsRgName: varStorageObjectsRgName
-        privateEndpointSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
+        privateEndpointSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
         vnetPrivateDnsZoneFilesId: createPrivateDnsZones ? networking.outputs.azureFilesDnsZoneResourceId : avdVnetPrivateDnsZoneFilesId
         workloadSubsId: avdWorkloadSubsId
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
@@ -1157,7 +1160,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (cr
         identityDomainGuid: identityDomainGuid
         sessionHostLocation: avdSessionHostLocation
         storageObjectsRgName: varStorageObjectsRgName
-        privateEndpointSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
+        privateEndpointSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
         vnetPrivateDnsZoneFilesId: createPrivateDnsZones ? networking.outputs.azureFilesDnsZoneResourceId : avdVnetPrivateDnsZoneFilesId
         workloadSubsId: avdWorkloadSubsId
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
@@ -1205,7 +1208,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         securityType: securityType == 'Standard' ? '' : securityType
         secureBootEnabled: secureBootEnabled
         vTpmEnabled: vTpmEnabled
-        subnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetworkAvdSubnetName}' : existingVnetAvdSubnetResourceId
+        subnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
         createAvdVnet: createAvdVnet
         useAvailabilityZones: avdUseAvailabilityZones
         vmLocalUserName: avdVmLocalUserName
