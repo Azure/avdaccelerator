@@ -333,16 +333,16 @@ module virtualNetwork '../../../../carml/1.3.0/Microsoft.Network/virtualNetworks
                 addressPrefix: vnetAvdSubnetAddressPrefix
                 privateEndpointNetworkPolicies: 'Disabled'
                 privateLinkServiceNetworkPolicies: 'Enabled'
-                networkSecurityGroupId: networksecurityGroupAvd.outputs.resourceId
-                routeTableId: routeTableAvd.outputs.resourceId
+                networkSecurityGroupId: createVnet ? networksecurityGroupAvd.outputs.resourceId : ''
+                routeTableId: createVnet ? routeTableAvd.outputs.resourceId : ''
             }
             {
                 name: vnetPrivateEndpointSubnetName
                 addressPrefix: vnetPrivateEndpointSubnetAddressPrefix
                 privateEndpointNetworkPolicies: 'Disabled'
                 privateLinkServiceNetworkPolicies: 'Enabled'
-                networkSecurityGroupId: networksecurityGroupPrivateEndpoint.outputs.resourceId
-                routeTableId: routeTablePrivateEndpoint.outputs.resourceId
+                networkSecurityGroupId: (createVnet && deployPrivateEndpointSubnet) ? networksecurityGroupPrivateEndpoint.outputs.resourceId : ''
+                routeTableId: (createVnet && deployPrivateEndpointSubnet) ? routeTablePrivateEndpoint.outputs.resourceId : ''
             }
         ] : [
             {
@@ -350,8 +350,8 @@ module virtualNetwork '../../../../carml/1.3.0/Microsoft.Network/virtualNetworks
                 addressPrefix: vnetAvdSubnetAddressPrefix
                 privateEndpointNetworkPolicies: 'Disabled'
                 privateLinkServiceNetworkPolicies: 'Enabled'
-                networkSecurityGroupId: networksecurityGroupAvd.outputs.resourceId
-                routeTableId: routeTableAvd.outputs.resourceId
+                networkSecurityGroupId: createVnet ? networksecurityGroupAvd.outputs.resourceId : ''
+                routeTableId: createVnet ? routeTableAvd.outputs.resourceId : ''
             }
         ]
 
