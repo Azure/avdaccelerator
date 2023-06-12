@@ -204,7 +204,6 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varAvd
     sessionHostDiskType: sessionHostDiskType
     sessionHostLocation: sessionHostLocation
     sessionHostNamePrefix: sessionHostNamePrefix
-    createAvdVnet: createAvdVnet
     sessionHostsSize: sessionHostsSize
     enableAcceleratedNetworking: enableAcceleratedNetworking
     securityType: securityType

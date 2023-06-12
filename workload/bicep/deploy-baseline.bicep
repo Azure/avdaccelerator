@@ -841,11 +841,11 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
     name: 'Networking-${time}'
     params: {
         createVnet: createAvdVnet
-        deploySessionHosts: avdDeploySessionHosts
+        deployAsg: (avdDeploySessionHosts || createAvdFslogixDeployment || createMsixDeployment) ? true : false
         existingPeSubnetResourceId: existingVnetPrivateEndpointSubnetResourceId
         existingAvdSubnetResourceId: existingVnetAvdSubnetResourceId
         createPrivateDnsZones: createPrivateDnsZones
-        applicationSecurityGroupName: varApplicationSecurityGroupName
+        applicationSecurityGroupName: varApplicationSecurityGroupName 
         computeObjectsRgName: varComputeObjectsRgName
         networkObjectsRgName: varNetworkObjectsRgName
         avdNetworksecurityGroupName: varAvdNetworksecurityGroupName
@@ -1069,7 +1069,7 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
         identityServiceProvider: avdIdentityServiceProvider
         managementVmName: varManagementVmName
         computeTimeZone: varTimeZoneSessionHosts
-        applicationSecurityGroupResourceId: createAvdVnet ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
+        applicationSecurityGroupResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment || createMsixDeployment) ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
@@ -1081,7 +1081,6 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
         sessionHostsSize: avdSessionHostsSize
         avdSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
         enableAcceleratedNetworking: enableAcceleratedNetworking
-        createAvdVnet: createAvdVnet
         vmLocalUserName: avdVmLocalUserName
         workloadSubsId: avdWorkloadSubsId
         encryptionAtHost: diskZeroTrust
@@ -1191,7 +1190,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
         avdAgentPackageLocation: varAvdAgentPackageLocation
         computeTimeZone: varTimeZoneSessionHosts
-        applicationSecurityGroupResourceId: createAvdVnet ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
+        applicationSecurityGroupResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment || createMsixDeployment) ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
         availabilitySetFaultDomainCount: avdAsFaultDomainCount
         availabilitySetUpdateDomainCount: avdAsUpdateDomainCount
         identityServiceProvider: avdIdentityServiceProvider
