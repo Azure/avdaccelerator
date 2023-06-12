@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "5316236570486843808"
+      "templateHash": "8994602571797659482"
     }
   },
   "parameters": {
@@ -42636,7 +42636,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "7865483859797398438"
+              "templateHash": "7273911194796909059"
             }
           },
           "parameters": {
@@ -49826,7 +49826,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "1754596899844580480"
+                      "templateHash": "3672999213818106684"
                     }
                   },
                   "parameters": {
@@ -49856,11 +49856,13 @@
                     "varCustomPolicyDefinitions": [
                       {
                         "name": "policy-definition-es-deploy-amd-gpu-driver",
+                        "deploymentName": "AMD-Policy",
                         "displayName": "Custom - Deploy AMD GPU Driver Extension",
                         "libDefinition": "[json(variables('$fxv#0'))]"
                       },
                       {
                         "name": "policy-definition-es-deploy-nvidia-gpu-driver",
+                        "deploymentName": "NVIDIA-Policy",
                         "displayName": "Custom - Deploy Nvidia GPU Driver Extension",
                         "libDefinition": "[json(variables('$fxv#1'))]"
                       }
@@ -49874,7 +49876,7 @@
                       },
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[if(greater(length(format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.name, parameters('time'))), 64), take(format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.name, parameters('time')), 64), format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.name, parameters('time')))]",
+                      "name": "[format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.deploymentName, parameters('time'))]",
                       "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
                       "location": "[deployment().location]",
                       "properties": {
@@ -50067,7 +50069,7 @@
                             "value": "[parameters('location')]"
                           },
                           "policyDefinitionId": {
-                            "value": "[reference(subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', if(greater(length(format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.name, parameters('time'))), 64), take(format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.name, parameters('time')), 64), format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.name, parameters('time')))), '2022-09-01').outputs.resourceId.value]"
+                            "value": "[reference(subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.deploymentName, parameters('time'))), '2022-09-01').outputs.resourceId.value]"
                           }
                         },
                         "template": {
@@ -50300,7 +50302,7 @@
                         }
                       },
                       "dependsOn": [
-                        "[subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', if(greater(length(format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.name, parameters('time'))), 64), take(format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.name, parameters('time')), 64), format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.name, parameters('time'))))]"
+                        "[subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.deploymentName, parameters('time')))]"
                       ]
                     }
                   ]
