@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "4440534141581803260"
+      "templateHash": "6837574496552870365"
     }
   },
   "parameters": {
@@ -42623,7 +42623,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "4270251428170449794"
+              "templateHash": "2483781336975751676"
             }
           },
           "parameters": {
@@ -43546,7 +43546,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "11953433876042415519"
+                      "templateHash": "2667804537914756848"
                     }
                   },
                   "parameters": {
@@ -43837,7 +43837,7 @@
                       },
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('Session-Host-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'), parameters('time'))]",
+                      "name": "[format('Session-Host-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'), parameters('time'))]",
                       "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
@@ -43847,7 +43847,7 @@
                         "mode": "Incremental",
                         "parameters": {
                           "name": {
-                            "value": "[format('{0}-{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'))]"
+                            "value": "[format('{0}{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'))]"
                           },
                           "location": {
                             "value": "[parameters('sessionHostLocation')]"
@@ -48510,7 +48510,7 @@
                       },
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('SH-Antimalware-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'), parameters('time'))]",
+                      "name": "[format('SH-Antimalware-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'), parameters('time'))]",
                       "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
@@ -48523,7 +48523,7 @@
                             "value": "[parameters('sessionHostLocation')]"
                           },
                           "virtualMachineName": {
-                            "value": "[format('{0}-{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'))]"
+                            "value": "[format('{0}-{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'))]"
                           },
                           "name": {
                             "value": "MicrosoftAntiMalware"
@@ -49040,7 +49040,7 @@
                       "condition": "[parameters('deployMonitoring')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('SH-Mon-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'), parameters('time'))]",
+                      "name": "[format('SH-Mon-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'), parameters('time'))]",
                       "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
@@ -49053,7 +49053,7 @@
                             "value": "[parameters('sessionHostLocation')]"
                           },
                           "virtualMachineName": {
-                            "value": "[format('{0}-{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'))]"
+                            "value": "[format('{0}-{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'))]"
                           },
                           "name": {
                             "value": "MicrosoftMonitoringAgent"
@@ -49568,7 +49568,7 @@
                       "condition": "[parameters('createAvdFslogixDeployment')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('Fsl-Conf-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'), parameters('time'))]",
+                      "name": "[format('Fsl-Conf-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'), parameters('time'))]",
                       "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
@@ -49581,7 +49581,7 @@
                             "value": "[parameters('sessionHostLocation')]"
                           },
                           "name": {
-                            "value": "[format('{0}-{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'))]"
+                            "value": "[format('{0}-{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'))]"
                           },
                           "file": {
                             "value": "[parameters('fsLogixScriptFile')]"
@@ -49668,7 +49668,7 @@
                       },
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('HP-Join-{0}-to-HP-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'), parameters('time'))]",
+                      "name": "[format('HP-Join-{0}-to-HP-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'), parameters('time'))]",
                       "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
@@ -49684,7 +49684,7 @@
                             "value": "[parameters('hostPoolToken')]"
                           },
                           "name": {
-                            "value": "[format('{0}-{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 3, '0'))]"
+                            "value": "[format('{0}-{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'))]"
                           },
                           "hostPoolName": {
                             "value": "[parameters('hostPoolName')]"
