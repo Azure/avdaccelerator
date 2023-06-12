@@ -927,7 +927,7 @@
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
                                     "options": {
-                                        "text": "Grating admin consent to the storage account service principal (your-storage-account-name.file.core.windows.net) is a requirememt, the link in this box contains the steps to grant the consent.",
+                                        "text": "Granting admin consent to the storage account service principal (your-storage-account-name.file.core.windows.net) is a requirememt, the link in this box contains the steps to grant the consent.",
                                         "uri": "https://learn.microsoft.com/azure/storage/files/storage-files-identity-auth-azure-active-directory-enable?tabs=azure-portal#grant-admin-consent-to-the-new-service-principal",
                                         "style": "Warning"
                                     }
@@ -2332,7 +2332,7 @@
                 "vNetworkAvdSubnetAddressPrefix": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkAvdSubnetSize, '10.10.0.0/24')]",
                 "vNetworkPrivateEndpointSubnetAddressPrefix": "[if(and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true)), steps('network').virtualNetworkPrivateEndpointSubnetSize, '10.10.1.0/27')]",
                 "customDnsIps": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkDns, '')]",
-                "existingHubVnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.existingHubVirtualNetwork, 'no')]",
+                "existingHubVnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.existingHubVirtualNetwork, '')]",
                 "vNetworkGatewayOnHub": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.hubVirtualNetworkGateway, false)]",
                 "existingVnetAvdSubnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, false), steps('network').virtualNetworkAvdSubnetSelectorName, 'no')]",
                 "existingVnetPrivateEndpointSubnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, false), steps('network').virtualNetworkPrivateEndpointSubnetSelectorName, 'no')]",
