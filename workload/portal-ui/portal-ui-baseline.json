@@ -484,7 +484,7 @@
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[equals(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, true)]",
                                     "options": {
-                                        "text": "Session hosts can be excluded from the scaling plan by assigning the tag name Exclude-avdScalingPlanName, if not using custom resource naming and example of default tag name is Exclude-vdscaling-eus2-app1-d-d-001.",
+                                        "text": "Session hosts can be excluded from the scaling plan by assigning the tag name Exclude-avdScalingPlanName, if not using custom resource naming and example of default tag name is Exclude-vdscaling-eus2-app1-dev-001.",
                                         "uri": "https://docs.microsoft.com/azure/virtual-desktop/autoscale-scenarios#scenario-4-how-do-exclusion-tags-work",
                                         "style": "Info"
                                     }
@@ -1539,7 +1539,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Resource group",
                                     "toolTip": "AVD management plane resources (Workspace, Host pool, Application groups, Key vault) resource group custom name.",
-                                    "placeholder": "Example: rg-avd-use2-app1-d-service-objects",
+                                    "placeholder": "Example: rg-avd-app1-dev-use2-service-objects",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,90}$",
@@ -1551,7 +1551,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Workspace",
                                     "toolTip": "AVD workspace custom name.",
-                                    "placeholder": "Example: vdws-use2-app1-d-001",
+                                    "placeholder": "Example: vdws-app1-dev-use2-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1563,7 +1563,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Workspace (Friendly name)",
                                     "toolTip": "AVD workspace custom friendly name.",
-                                    "placeholder": "Example: East US - 001",
+                                    "placeholder": "Example: App1 - Dev - East US 2 - 001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1575,7 +1575,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Host pool",
                                     "toolTip": "AVD host pool custom name.",
-                                    "placeholder": "Example: vdpool-use2-app1-d-001",
+                                    "placeholder": "Example: vdpool-app1-dev-use2-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1587,7 +1587,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Host pool (Friendly name)",
                                     "toolTip": "AVD host pool custom friendly name.",
-                                    "placeholder": "Example: App1 - East US - 001",
+                                    "placeholder": "Example: App1 - Dev - East US 2 - 001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1599,7 +1599,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Scaling Plan",
                                     "toolTip": "AVD host pool scaling plan.",
-                                    "placeholder": "Example: vdscaling-use2-app1-d-001",
+                                    "placeholder": "Example: vdscaling-app1-dev-use2-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1611,7 +1611,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Application group (Desktop)",
                                     "toolTip": "AVD desktop application group custom name.",
-                                    "placeholder": "Example: vdag-desktop-use2-app1-d-001",
+                                    "placeholder": "Example: vdag-desktop-app1-dev-use2-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1623,7 +1623,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Application group (Desktop, Friendly name)",
                                     "toolTip": "AVD desktop application group custom name.",
-                                    "placeholder": "Example: Desktops - App1 - East US - 001",
+                                    "placeholder": "Example: Desktops - App1 - Dev - East US 2 - 001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1636,7 +1636,7 @@
                                     "label": "Application group (Remote App)",
                                     "visible": "[equals(steps('managementPlane').managementPlaneAppGroupOptions.deployRemoteAppGroup, true)]",
                                     "toolTip": "AVD remote application group custom name.",
-                                    "placeholder": "Example: vdag-rapp-use2-app1-d-001",
+                                    "placeholder": "Example: vdag-rapp-app1-dev-use2-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1649,7 +1649,7 @@
                                     "label": "Application group (Remote App, Friendly name)",
                                     "visible": "[equals(steps('managementPlane').managementPlaneAppGroupOptions.deployRemoteAppGroup, true)]",
                                     "toolTip": "AVD remote application group custom name.",
-                                    "placeholder": "Example: Remote apps - App1 - East US - 001",
+                                    "placeholder": "Example: Remote apps - App1 - Dev - East US 2 - 001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1661,10 +1661,10 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Key vault prefix",
                                     "toolTip": "AVD keyvault prefix custom name.",
-                                    "placeholder": "Example: kv-avd",
+                                    "placeholder": "Example: kv",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,6}$",
+                                        "regex": "^[a-z0-9A-Z-]{1,5}$",
                                         "validationMessage": "Value must be 1-6 characters."
                                     }
                                 }
@@ -1681,7 +1681,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Resource group",
                                     "toolTip": "AVD compute resources (VMs, NICs, Disks, Availability sets) resource group custom name.",
-                                    "placeholder": "Example: rg-avd-use2-app1-d-pool-compute",
+                                    "placeholder": "Example: rg-avd-app1-dev-use2-pool-compute",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,90}$",
@@ -1693,7 +1693,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Applications security group",
                                     "toolTip": "AVD application security custom name.",
-                                    "placeholder": "Example: asg-avd-use2-app1-d-001",
+                                    "placeholder": "Example: asg-app1-dev-use2-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,80}$",
@@ -1706,7 +1706,7 @@
                                     "label": "Session host prefix",
                                     "visible": "[equals(steps('sessionHosts').deploySessionHosts, true)]",
                                     "toolTip": "AVD session host prefix custom name.",
-                                    "placeholder": "Example: vmapp1eusd",
+                                    "placeholder": "Example: vmapp1deus2",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,11}$",
@@ -1719,7 +1719,7 @@
                                     "label": "Availability set prefix",
                                     "visible": "[equals(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, false)]",
                                     "toolTip": "AVD availability set custom name.",
-                                    "placeholder": "Example: avail-avd",
+                                    "placeholder": "Example: avail",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,9}$",
@@ -1767,7 +1767,7 @@
                                     "label": "Resource group",
                                     "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageMsix.msixDeployment, true))]",
                                     "toolTip": "AVD storage resources (Storage account, file shares, files private endpoints, temporary domain join VM) resource group custom name.",
-                                    "placeholder": "Example: rg-avd-use2-app1-d-storage",
+                                    "placeholder": "Example: rg-avd-app1-dev-use2-storage",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,90}$",
@@ -1780,10 +1780,10 @@
                                     "label": "Storage account prefix",
                                     "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageMsix.msixDeployment, true))]",
                                     "toolTip": "AVD storage account prefix custom name.",
-                                    "placeholder": "Example: stavd",
+                                    "placeholder": "Example: st",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,5}$",
+                                        "regex": "^[a-z0-9A-Z-]{1,2}$",
                                         "validationMessage": "Value must be 1-5 characters."
                                     }
                                 },
@@ -1793,7 +1793,7 @@
                                     "label": "FSLogix Profile container file share",
                                     "visible": "[equals(steps('storage').storageFslogix.fslogixDeployment, true)]",
                                     "toolTip": "AVD fslogix storage account profile container file share prefix custom name.",
-                                    "placeholder": "Example: fslogix-pc-app1-d-001",
+                                    "placeholder": "Example: fslogix-pc-app1-dev-use2-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1806,7 +1806,7 @@
                                     "label": "MSIX App Attach container file share",
                                     "visible": "[equals(steps('storage').storageMsix.msixDeployment, true)]",
                                     "toolTip": "AVD MSIX App Attach storage account container file share prefix custom name.",
-                                    "placeholder": "Example: msix-pc-app1-d-001",
+                                    "placeholder": "Example: msix-app1-dev-use2-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1836,7 +1836,7 @@
                                     "label": "Resource group",
                                     "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                                     "toolTip": "AVD network resources (vNet, NSG, Route table) resource group custom name.",
-                                    "placeholder": "Example: rg-avd-use2-app1-d-network",
+                                    "placeholder": "Example: rg-avd-app1-dev-use2-network",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,90}$",
@@ -1849,7 +1849,7 @@
                                     "label": "Virtual network",
                                     "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                                     "toolTip": "AVD virtual network custom name.",
-                                    "placeholder": "Example: vnet-avd-use2-app1-d-001",
+                                    "placeholder": "Example: vnet-app1-dev-use2-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1862,7 +1862,7 @@
                                     "label": "AVD Subnet",
                                     "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                                     "toolTip": "AVD virtual network subnet custom name.",
-                                    "placeholder": "Example: snet-avd-use2-app1-d-001",
+                                    "placeholder": "Example: snet-avd-app1-dev-use2-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,80}$",
@@ -1875,7 +1875,7 @@
                                     "label": "AVD Network security group",
                                     "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                                     "toolTip": "AVD network security group custom name.",
-                                    "placeholder": "Example: nsg-avd-use2-app1-d-001",
+                                    "placeholder": "Example: nsg-avd-app1-dev-use2-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,80}$",
@@ -1888,7 +1888,7 @@
                                     "label": "AVD Route table",
                                     "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                                     "toolTip": "AVD route table custom name.",
-                                    "placeholder": "Example: route-avd-use2-app1-d-001",
+                                    "placeholder": "Example: route-avd-app1-dev-use2-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,80}$",
@@ -1901,7 +1901,7 @@
                                     "label": "Private endpoint subnet",
                                     "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                                     "toolTip": "AVD virtual network subnet custom name.",
-                                    "placeholder": "Example: snet-pe-use2-app1-d-001",
+                                    "placeholder": "Example: snet-pe-app1-dev-use2-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,80}$",
@@ -1914,7 +1914,7 @@
                                     "label": "Private endpoint network security group",
                                     "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                                     "toolTip": "Private endpoint network security group custom name.",
-                                    "placeholder": "Example: nsg-pe-use2-app1-d-001",
+                                    "placeholder": "Example: nsg-pe-app1-dev-use2-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,80}$",
@@ -1927,7 +1927,7 @@
                                     "label": "Private endpoint route table",
                                     "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                                     "toolTip": "Private endpoint route table custom name.",
-                                    "placeholder": "Example: route-pe-use2-app1-d-001",
+                                    "placeholder": "Example: route-pe-app1-dev-use2-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,80}$",
@@ -1957,7 +1957,7 @@
                                     "label": "Resource group",
                                     "visible": "[and(equals(steps('resourceNaming').resourceNamingSelection, true), equals(steps('monitoring').deployMonitoring, true))]",
                                     "toolTip": "AVD monitoring resources (log analytics workspace) resource group custom name.",
-                                    "placeholder": "Example: rg-avd-use2-monitoring",
+                                    "placeholder": "Example: rg-avd-dev-use2-monitoring",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,90}$",
@@ -1970,7 +1970,7 @@
                                     "label": "Log analytics workspace name",
                                     "visible": "[and(equals(steps('resourceNaming').resourceNamingSelection, true), equals(steps('monitoring').deployMonitoring, true), equals(steps('monitoring').deployMonitoringAlaWorkspace, true))]",
                                     "toolTip": "AVD monitoring log analytics workspace custom name.",
-                                    "placeholder": "Example: log-avd-use2",
+                                    "placeholder": "Example: log-avd-dev-use2",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,90}$",
@@ -2000,10 +2000,10 @@
                                     "label": "Disk encryption set",
                                     "visible": "[and(steps('resourceNaming').resourceNamingSelection, steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust)]",
                                     "toolTip": "Disk encryption set resource for double encryption of session host disks.",
-                                    "placeholder": "Example: des-avd-use2-security",
+                                    "placeholder": "Example: des-zt",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
+                                        "regex": "^[a-z0-9A-Z-]{1,6}$",
                                         "validationMessage": "Value must be 1-90 characters."
                                     }
                                 },
@@ -2013,10 +2013,10 @@
                                     "label": "Key vault prefix",
                                     "visible": "[and(steps('resourceNaming').resourceNamingSelection, steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust)]",
                                     "toolTip": "Key Vault that stores the encryption key for disk encryption.",
-                                    "placeholder": "Example: kv-avd-use2-security",
+                                    "placeholder": "Example: kv-zt",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
+                                        "regex": "^[a-z0-9A-Z-]{1,6}$",
                                         "validationMessage": "Value must be 1-90 characters."
                                     }
                                 },
@@ -2026,10 +2026,10 @@
                                     "label": "User assigned identity",
                                     "visible": "[and(steps('resourceNaming').resourceNamingSelection, steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust)]",
                                     "toolTip": "User assigned identity that enables server-side encryption and disables network access.",
-                                    "placeholder": "Example: id-avd-use2-security",
+                                    "placeholder": "Example: id-zt",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
+                                        "regex": "^[a-z0-9A-Z-]{1,5}$",
                                         "validationMessage": "Value must be 1-90 characters."
                                     }
                                 }
