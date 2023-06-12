@@ -37,9 +37,6 @@ param workloadSubsId string
 @description('Quantity of session hosts to deploy')
 param sessionHostsCount int
 
-@description('Create new virtual network.')
-param createAvdVnet bool
-
 @description('The session host number to begin with for the deployment.')
 param sessionHostCountIndex int
 
@@ -201,7 +198,7 @@ module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
                 nicSuffix: 'nic-01-'
                 deleteOption: 'Delete'
                 enableAcceleratedNetworking: enableAcceleratedNetworking
-                ipConfigurations: createAvdVnet ? [
+                ipConfigurations: !empty(applicationSecurityGroupResourceId) ? [
                     {
                         name: 'ipconfig01'
                         subnetResourceId: subnetId
