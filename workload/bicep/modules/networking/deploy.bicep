@@ -13,7 +13,7 @@ param computeObjectsRgName string
 param networkObjectsRgName string
 
 @description('Name of the virtual network if required to be created.')
-param vNetworkName string
+param vnetName string
 
 @description('AVD Network Security Group Name')
 param avdNetworksecurityGroupName string
@@ -37,7 +37,10 @@ param vNetworkGatewayOnHub bool
 param existingHubVnetResourceId string
 
 @description('VNet peering name for AVD VNet to vHub.')
-param vNetworkPeeringName string
+param vnetPeeringName string
+
+@description('Remote VNet peering name for AVD VNet to vHub.')
+param remoteVnetPeeringName string
 
 @description('Create virtual network peering to hub.')
 param createVnetPeering bool
@@ -46,19 +49,19 @@ param createVnetPeering bool
 param deployPrivateEndpointSubnet bool
 
 @description('AVD VNet address prefixes.')
-param vNetworkAddressPrefixes string
+param vnetAddressPrefixes string
 
 @description('AVD subnet Name.')
-param vNetworkAvdSubnetName string
+param vnetAvdSubnetName string
 
 @description('Private endpoint subnet Name.')
-param vNetworkPrivateEndpointSubnetName string
+param vnetPrivateEndpointSubnetName string
 
 @description('AVD VNet subnet address prefix.')
-param vNetworkAvdSubnetAddressPrefix string
+param vnetAvdSubnetAddressPrefix string
 
 @description('Private endpoint VNet subnet address prefix.')
-param vNetworkPrivateEndpointSubnetAddressPrefix string
+param vnetPrivateEndpointSubnetAddressPrefix string
 
 @description('custom DNS servers IPs')
 param dnsServers array
@@ -283,21 +286,21 @@ module virtualNetwork '../../../../carml/1.3.0/Microsoft.Network/virtualNetworks
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'vNet-${time}'
     params: {
-        name: vNetworkName
+        name: vnetName
         location: sessionHostLocation
-        addressPrefixes: array(vNetworkAddressPrefixes)
+        addressPrefixes: array(vnetAddressPrefixes)
         dnsServers: dnsServers
         peerings: createVnetPeering ? [
             {
                 remoteVirtualNetworkId: existingHubVnetResourceId
-                name: vNetworkPeeringName
+                name: vnetPeeringName
                 allowForwardedTraffic: true
                 allowGatewayTransit: false
                 allowVirtualNetworkAccess: true
                 doNotVerifyRemoteGateways: true
                 useRemoteGateways: vNetworkGatewayOnHub ? true : false
                 remotePeeringEnabled: true
-                remotePeeringName: vNetworkPeeringName
+                remotePeeringName: remoteVnetPeeringName
                 remotePeeringAllowForwardedTraffic: true
                 remotePeeringAllowGatewayTransit: vNetworkGatewayOnHub ? true : false
                 remotePeeringAllowVirtualNetworkAccess: true
@@ -307,16 +310,16 @@ module virtualNetwork '../../../../carml/1.3.0/Microsoft.Network/virtualNetworks
         ] : []
         subnets: deployPrivateEndpointSubnet ? [
             {
-                name: vNetworkAvdSubnetName
-                addressPrefix: vNetworkAvdSubnetAddressPrefix
+                name: vnetAvdSubnetName
+                addressPrefix: vnetAvdSubnetAddressPrefix
                 privateEndpointNetworkPolicies: 'Disabled'
                 privateLinkServiceNetworkPolicies: 'Enabled'
                 networkSecurityGroupId: networksecurityGroupAvd.outputs.resourceId
                 routeTableId: routeTableAvd.outputs.resourceId
             }
             {
-                name: vNetworkPrivateEndpointSubnetName
-                addressPrefix: vNetworkPrivateEndpointSubnetAddressPrefix
+                name: vnetPrivateEndpointSubnetName
+                addressPrefix: vnetPrivateEndpointSubnetAddressPrefix
                 privateEndpointNetworkPolicies: 'Disabled'
                 privateLinkServiceNetworkPolicies: 'Enabled'
                 networkSecurityGroupId: networksecurityGroupPrivateEndpoint.outputs.resourceId
@@ -324,8 +327,8 @@ module virtualNetwork '../../../../carml/1.3.0/Microsoft.Network/virtualNetworks
             }
         ] : [
             {
-                name: vNetworkAvdSubnetName
-                addressPrefix: vNetworkAvdSubnetAddressPrefix
+                name: vnetAvdSubnetName
+                addressPrefix: vnetAvdSubnetAddressPrefix
                 privateEndpointNetworkPolicies: 'Disabled'
                 privateLinkServiceNetworkPolicies: 'Enabled'
                 networkSecurityGroupId: networksecurityGroupAvd.outputs.resourceId
