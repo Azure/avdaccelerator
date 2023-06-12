@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "2764240901141588255"
+      "templateHash": "4842009066462490393"
     }
   },
   "parameters": {
@@ -1213,7 +1213,7 @@
     "varStorageObjectsRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdStorageObjectsRgCustomName'), format('rg-avd-{0}-storage', variables('varComputeStorageResourcesNamingStandard')))]",
     "varMonitoringRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdMonitoringRgCustomName'), format('rg-avd-{0}-{1}-monitoring', variables('varDeploymentEnvironmentLowercase'), variables('varManagementPlaneLocationAcronym')))]",
     "varVnetName": "[if(parameters('avdUseCustomNaming'), parameters('avdVnetworkCustomName'), format('vnet-{0}-001', variables('varComputeStorageResourcesNamingStandard')))]",
-    "varHubVnetName": "[if(parameters('createAvdVnet'), split(parameters('existingHubVnetResourceId'), '/')[8], '')]",
+    "varHubVnetName": "[if(and(parameters('createAvdVnet'), not(empty(parameters('existingHubVnetResourceId')))), split(parameters('existingHubVnetResourceId'), '/')[8], '')]",
     "varVnetPeeringName": "[format('peer-{0}', variables('varHubVnetName'))]",
     "varRemoteVnetPeeringName": "[format('peer-{0}', variables('varVnetName'))]",
     "varVnetAvdSubnetName": "[if(parameters('avdUseCustomNaming'), parameters('avdVnetworkSubnetCustomName'), format('snet-avd-{0}-001', variables('varComputeStorageResourcesNamingStandard')))]",
