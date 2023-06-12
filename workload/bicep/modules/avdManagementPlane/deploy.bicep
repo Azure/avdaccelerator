@@ -259,7 +259,7 @@ module hostPool '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/hostpoo
 // Application groups.
 module applicationGroups '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/applicationgroups/deploy.bicep' = [for applicationGroup in varFinalApplicationGroups: {
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
-  name: 'Application-Group-${applicationGroup.name}-${time}'
+  name: '${applicationGroup.name}-${time}'
   params: {
     name: applicationGroup.name
     friendlyName: applicationGroup.friendlyName
