@@ -105,7 +105,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 // Provision temporary VM and add it to domain.
 module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = {
     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
-    name: 'Management-VM-${time}'
+    name: 'MGMT-VM-${time}'
     params: {
         name: managementVmName
         location: sessionHostLocation
@@ -178,9 +178,9 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
 // Introduce wait for management VM to be ready.
 module managementVmWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
-    name: 'Management-VM-Wait-${time}'
+    name: 'MGMT-VM-Wait-${time}'
     params: {
-        name: 'Management-VM-Wait-${time}'
+        name: 'MGMT-VM-Wait-${time}'
         location: sessionHostLocation
         azPowerShellVersion: '8.3.0'
         cleanupPreference: 'Always'
