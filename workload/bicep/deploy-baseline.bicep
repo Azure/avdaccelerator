@@ -504,8 +504,8 @@ var varStorageObjectsRgName = avdUseCustomNaming ? avdStorageObjectsRgCustomName
 var varMonitoringRgName = avdUseCustomNaming ? avdMonitoringRgCustomName : 'rg-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}-monitoring' // max length limit 90 characters
 //var varAvdSharedResourcesRgName = 'rg-${varAvdSessionHostLocationAcronym}-avd-shared-resources'
 var varVnetName = avdUseCustomNaming ? avdVnetworkCustomName : 'vnet-${varComputeStorageResourcesNamingStandard}-001'
-var varHubVnetSunetName = split(existingHubVnetResourceId, '/')[10]
-var varVnetPeeringName = 'peer-${varHubVnetSunetName}' 
+var varHubVnetName = split(existingHubVnetResourceId, '/')[8]
+var varVnetPeeringName = 'peer-${varHubVnetName}' 
 var varRemoteVnetPeeringName = 'peer-${varVnetName}'
 var varVnetAvdSubnetName = avdUseCustomNaming ? avdVnetworkSubnetCustomName : 'snet-avd-${varComputeStorageResourcesNamingStandard}-001'
 var varVnetPrivateEndpointSubnetName = avdUseCustomNaming ? privateEndpointVnetworkSubnetCustomName : 'snet-pe-${varComputeStorageResourcesNamingStandard}-001'
@@ -864,7 +864,6 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
         vnetPrivateEndpointSubnetAddressPrefix: vNetworkPrivateEndpointSubnetAddressPrefix
         workloadSubsId: avdWorkloadSubsId
         dnsServers: varDnsServers
-        createPrivateDnsZones: createPrivateDnsZones
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         diagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
