@@ -2263,7 +2263,7 @@
                 "deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
                 "diskZeroTrust": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust]",
                 "avdManagementPlaneLocation": "[steps('basics').resourceScope.location.name]",
-                "avdSessionHostLocation": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]",
+                "avdSessionHostLocation": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion, steps('basics').resourceScope.location.name)]",
                 "avdWorkloadSubsId": "[steps('basics').resourceScope.subscription.subscriptionId]",
                 "avdHostPoolType": "[steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType]",
                 "avdHostPoolLoadBalancerType": "[steps('managementPlane').managementPlaneHostPoolSettings.loadBalancerType]",
