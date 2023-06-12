@@ -15,17 +15,17 @@
 - **Azure Image Builder (AIB)** blade:
   - **Deployment location** - Select the location where Azure Image Builder will run to create the image.
   - **Build schedule** - Select if custom image will be built "OneTime" or "Recurring" to create a schedule and run the build every time a new source image is available.
-  - **Existing virtual network** - Select "Yes" to use existing virtual network or "No" for the AIB process to create a temporary one that is deleted once the build is completed.
+  - **Existing virtual network** - select the checkbox to use existing virtual network or "No" for the AIB process to create a temporary one that is deleted once the build is completed.
   - **Enable RDP shortpath for managed networks** - Select if enabling RDP Short Path on the custom image registry.
   - **Enable screen capture protection** - Select if enabling Screen Capture Protection on the custom image registry.
 - **Monitoring** blade:
   - **Enable monitoring & alerting** - Select if enabling monitoring and alerts.
   - **Distribution group** - Input the distribution group for receiving alerts (emails) on the build status.
-  - **Existing log analytics workspace** - Select if using existing log analytics workspace selecting "Yes" or if creating a new one selecting "No".
+  - **Existing log analytics workspace** - Select if using existing log analytics workspace selecting the checkbox.
 - **Resource naming** blade:
-  - **Custom resource naming** - When set "Yes", the user will input names for the resources. When set to "No" the deployment will use the AVD accelerator naming standard.
+  - **Custom resource naming** - select the checkbox to input names for the resources. when not selecting the checkbox, the deployment will use the AVD accelerator naming standard.
 - **Resource tagging** blade:
-  - **Custom resource tags** - When set 'Yes', the information provided will be used to create tags on resources and resource groups.
+  - **Custom resource tags** - select the checkbox to provide information that will be used to create tags on resources and resource groups.
 
 Take a look at the [Naming Standard and Tagging](./resource-naming.md) page for further information.
 
