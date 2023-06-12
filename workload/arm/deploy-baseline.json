@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "9740696104408427517"
+      "templateHash": "17225166107024108417"
     }
   },
   "parameters": {
@@ -8034,9 +8034,7 @@
           "createVnet": {
             "value": "[parameters('createAvdVnet')]"
           },
-          "deploySessionHosts": {
-            "value": "[parameters('avdDeploySessionHosts')]"
-          },
+          "deployAsg": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), parameters('createMsixDeployment')), createObject('value', true()), createObject('value', false()))]",
           "existingPeSubnetResourceId": {
             "value": "[parameters('existingVnetPrivateEndpointSubnetResourceId')]"
           },
@@ -8123,7 +8121,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "9886082845555210954"
+              "templateHash": "18062368660768335367"
             }
           },
           "parameters": {
@@ -8140,10 +8138,10 @@
                 "description": "Create new virtual network."
               }
             },
-            "deploySessionHosts": {
+            "deployAsg": {
               "type": "bool",
               "metadata": {
-                "description": "Deploy AVD session hosts."
+                "description": "Deploy application security group."
               }
             },
             "existingAvdSubnetResourceId": {
@@ -9915,7 +9913,7 @@
               }
             },
             {
-              "condition": "[parameters('deploySessionHosts')]",
+              "condition": "[parameters('deployAsg')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('ASG-{0}', parameters('time'))]",
@@ -12647,7 +12645,7 @@
           "outputs": {
             "applicationSecurityGroupResourceId": {
               "type": "string",
-              "value": "[if(parameters('deploySessionHosts'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('ASG-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')]"
+              "value": "[if(parameters('deployAsg'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('ASG-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')]"
             },
             "virtualNetworkResourceId": {
               "type": "string",
@@ -29095,7 +29093,7 @@
           "computeTimeZone": {
             "value": "[variables('varTimeZoneSessionHosts')]"
           },
-          "applicationSecurityGroupResourceId": "[if(parameters('createAvdVnet'), createObject('value', format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.applicationSecurityGroupResourceId.value)), createObject('value', ''))]",
+          "applicationSecurityGroupResourceId": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), parameters('createMsixDeployment')), createObject('value', format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.applicationSecurityGroupResourceId.value)), createObject('value', ''))]",
           "domainJoinUserName": {
             "value": "[parameters('avdDomainJoinUserName')]"
           },
@@ -29127,9 +29125,6 @@
           "enableAcceleratedNetworking": {
             "value": "[parameters('enableAcceleratedNetworking')]"
           },
-          "createAvdVnet": {
-            "value": "[parameters('createAvdVnet')]"
-          },
           "vmLocalUserName": {
             "value": "[parameters('avdVmLocalUserName')]"
           },
@@ -29155,7 +29150,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "8170497274898092054"
+              "templateHash": "16762043777229147200"
             }
           },
           "parameters": {
@@ -29199,12 +29194,6 @@
               "type": "bool",
               "metadata": {
                 "description": "Enable accelerated networking on the session host VMs."
-              }
-            },
-            "createAvdVnet": {
-              "type": "bool",
-              "metadata": {
-                "description": "Create new virtual network."
               }
             },
             "sessionHostLocation": {
@@ -29382,7 +29371,7 @@
                         "nicSuffix": "nic-01-",
                         "deleteOption": "Delete",
                         "enableAcceleratedNetworking": "[parameters('enableAcceleratedNetworking')]",
-                        "ipConfigurations": "[if(parameters('createAvdVnet'), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('avdSubnetId'), 'applicationSecurityGroups', createArray(createObject('id', parameters('applicationSecurityGroupResourceId'))))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('avdSubnetId'))))]"
+                        "ipConfigurations": "[if(not(empty(parameters('applicationSecurityGroupResourceId'))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('avdSubnetId'), 'applicationSecurityGroups', createArray(createObject('id', parameters('applicationSecurityGroupResourceId'))))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('avdSubnetId'))))]"
                       }
                     ]
                   },
@@ -42513,7 +42502,7 @@
           "computeTimeZone": {
             "value": "[variables('varTimeZoneSessionHosts')]"
           },
-          "applicationSecurityGroupResourceId": "[if(parameters('createAvdVnet'), createObject('value', format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.applicationSecurityGroupResourceId.value)), createObject('value', ''))]",
+          "applicationSecurityGroupResourceId": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), parameters('createMsixDeployment')), createObject('value', format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.applicationSecurityGroupResourceId.value)), createObject('value', ''))]",
           "availabilitySetFaultDomainCount": {
             "value": "[parameters('avdAsFaultDomainCount')]"
           },
@@ -42635,7 +42624,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "17391127071219257428"
+              "templateHash": "4270251428170449794"
             }
           },
           "parameters": {
@@ -43475,9 +43464,6 @@
                   "sessionHostNamePrefix": {
                     "value": "[parameters('sessionHostNamePrefix')]"
                   },
-                  "createAvdVnet": {
-                    "value": "[parameters('createAvdVnet')]"
-                  },
                   "sessionHostsSize": {
                     "value": "[parameters('sessionHostsSize')]"
                   },
@@ -43561,7 +43547,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "6508467888729647828"
+                      "templateHash": "11953433876042415519"
                     }
                   },
                   "parameters": {
@@ -43629,12 +43615,6 @@
                       "type": "int",
                       "metadata": {
                         "description": "Quantity of session hosts to deploy"
-                      }
-                    },
-                    "createAvdVnet": {
-                      "type": "bool",
-                      "metadata": {
-                        "description": "Create new virtual network."
                       }
                     },
                     "sessionHostCountIndex": {
@@ -43927,7 +43907,7 @@
                                 "nicSuffix": "nic-01-",
                                 "deleteOption": "Delete",
                                 "enableAcceleratedNetworking": "[parameters('enableAcceleratedNetworking')]",
-                                "ipConfigurations": "[if(parameters('createAvdVnet'), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('subnetId'), 'applicationSecurityGroups', createArray(createObject('id', parameters('applicationSecurityGroupResourceId'))))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('subnetId'))))]"
+                                "ipConfigurations": "[if(not(empty(parameters('applicationSecurityGroupResourceId'))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('subnetId'), 'applicationSecurityGroups', createArray(createObject('id', parameters('applicationSecurityGroupResourceId'))))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('subnetId'))))]"
                               }
                             ]
                           },
