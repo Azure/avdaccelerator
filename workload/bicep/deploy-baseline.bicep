@@ -126,7 +126,7 @@ param existingVnetAvdSubnetResourceId string = ''
 param existingVnetPrivateEndpointSubnetResourceId string = ''
 
 @description('Required. Existing hub virtual network for perring.')
-param existingHubVnetResourceId string = ''
+param existingHubVnetResourceId string = '/subscriptions/no/resourceGroups/no/providers/Microsoft.Network/virtualNetworks/no'
 
 @description('Optional. AVD virtual network address prefixes. (Default: 10.10.0.0/23)')
 param avdVnetworkAddressPrefixes string = '10.10.0.0/23'
