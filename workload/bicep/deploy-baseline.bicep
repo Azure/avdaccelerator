@@ -43,7 +43,6 @@ param avdVmLocalUserPassword string
 
 @allowed([
     'ADDS' // Active Directory Domain Services
-    'ADDS' // Active Directory Domain Services
     'AADDS' // Azure Active Directory Domain Services
     'AAD' // Azure AD Join
 ])
