@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "8225465950579082570"
+      "templateHash": "8106305010943588630"
     }
   },
   "parameters": {
@@ -243,7 +243,7 @@
     },
     "existingHubVnetResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "/subscriptions/no/resourceGroups/no/providers/Microsoft.Network/virtualNetworks/no",
       "metadata": {
         "description": "Required. Existing hub virtual network for perring."
       }
