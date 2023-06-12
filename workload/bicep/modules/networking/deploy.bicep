@@ -6,6 +6,18 @@ targetScope = 'subscription'
 @description('AVD workload subscription ID, multiple subscriptions scenario')
 param workloadSubsId string
 
+@description('Create new virtual network.')
+param createVnet bool = true
+
+@description('Deploy AVD session hosts.')
+param deploySessionHosts bool
+
+@description('Existing virtual network subnet for AVD.')
+param existingAvdSubnetResourceId string
+
+@description('Existing virtual network subnet for private endpoints.')
+param existingPeSubnetResourceId string
+
 @description('Resource Group Name for the AVD session hosts')
 param computeObjectsRgName string
 
@@ -98,7 +110,14 @@ var varVirtualNetworkMetricsDiagnostic = [
     'AllMetrics'
 ]
 var varCreateAvdStaicRoute = true
-
+var varExistingAvdVnetSubId = !createVnet ? split(existingAvdSubnetResourceId, '/')[2] : ''
+var varExistingAvdVnetSubRgName = !createVnet ? split(existingAvdSubnetResourceId, '/')[4] : ''
+var varExistingAvdVnetName = !createVnet ? split(existingAvdSubnetResourceId, '/')[8] : ''
+var varExistingAvdVnetResourceId = !createVnet ? '/subscriptions/${varExistingAvdVnetSubId}/resourceGroups/${varExistingAvdVnetSubRgName}/providers/Microsoft.Network/virtualNetworks/${varExistingAvdVnetName}' : ''
+//var varExistingPeVnetSubId = split(existingPeSubnetResourceId, '/')[2]
+//var varExistingPeVnetSubRgName = split(existingPeSubnetResourceId, '/')[4]
+//var varExistingAPeVnetName = split(existingPeSubnetResourceId, '/')[8]
+//var varExistingPeVnetResourceId = '/subscriptions/${varExistingPeVnetSubId}/resourceGroups/${varExistingPeVnetSubRgName}/providers/Microsoft.Network/virtualNetworks/${varExistingAPeVnetName}'
 // =========== //
 // Deployments //
 // =========== //
@@ -235,7 +254,7 @@ module networksecurityGroupPrivateEndpoint '../../../../carml/1.3.0/Microsoft.Ne
 }
 
 // Application security group.
-module applicationSecurityGroup '../../../../carml/1.3.0/Microsoft.Network/applicationSecurityGroups/deploy.bicep' = {
+module applicationSecurityGroup '../../../../carml/1.3.0/Microsoft.Network/applicationSecurityGroups/deploy.bicep' = if (deploySessionHosts) {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
     name: 'ASG-${time}'
     params: {
