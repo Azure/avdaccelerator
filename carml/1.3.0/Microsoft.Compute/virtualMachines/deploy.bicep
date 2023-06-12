@@ -436,7 +436,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
     storageProfile: {
       imageReference: imageReference
       osDisk: {
-        name: '${name}-disk-os-01'
+        name: 'osdisk-01-${name}'
         createOption: contains(osDisk, 'createOption') ? osDisk.createOption : 'FromImage'
         deleteOption: contains(osDisk, 'deleteOption') ? osDisk.deleteOption : 'Delete'
         diskSizeGB: osDisk.diskSizeGB
