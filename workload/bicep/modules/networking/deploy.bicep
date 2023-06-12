@@ -364,7 +364,6 @@ module virtualNetwork '../../../../carml/1.3.0/Microsoft.Network/virtualNetworks
     dependsOn: createVnet ? [
         networksecurityGroupAvd
         networksecurityGroupPrivateEndpoint
-        applicationSecurityGroup
         routeTableAvd
         routeTablePrivateEndpoint
     ] : []
@@ -416,7 +415,7 @@ module privateDnsZoneKeyVaultGov '.bicep/privateDnsZones.bicep' = if (createPriv
 // =========== //
 // Outputs //
 // =========== //
-output applicationSecurityGroupResourceId string = applicationSecurityGroup.outputs.resourceId
+output applicationSecurityGroupResourceId string = deploySessionHosts ? applicationSecurityGroup.outputs.resourceId : ''
 output virtualNetworkResourceId string = createVnet ? virtualNetwork.outputs.resourceId : ''
 output azureFilesDnsZoneResourceId string = createPrivateDnsZones ? ((varAzureCloudName == 'AzureCloud') ? privateDnsZoneAzureFilesCommercial.outputs.resourceId : privateDnsZoneAzureFilesGov.outputs.resourceId) : ''
 output KeyVaultDnsZoneResourceId string = createPrivateDnsZones ? ((varAzureCloudName == 'AzureCloud') ? privateDnsZoneKeyVaultCommercial.outputs.resourceId : privateDnsZoneKeyVaultGov.outputs.resourceId) : ''
