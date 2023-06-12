@@ -40,7 +40,7 @@ var varCustomPolicyDefinitions = [
 
 module policyDefinitions '../../../../../carml/1.3.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: {
   scope: subscription('${subscriptionId}')
-  name: '${customPolicyDefinition.libDefinition.deploymentName}-${time}'
+  name: '${customPolicyDefinition.deploymentName}-${time}'
   //name: customPolicyDefinition.libDefinition.properties.displayName
   params: {
     location: location
