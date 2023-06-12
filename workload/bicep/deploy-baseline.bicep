@@ -849,6 +849,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet) {
         privateEndpointRouteTableName: varPrivateEndpointRouteTableName
         vnetAddressPrefixes: avdVnetworkAddressPrefixes
         vnetName: varVnetName
+        createPrivateDnsZones: createPrivateDnsZones
         vnetPeeringName: varVnetPeeringName
         remoteVnetPeeringName: varRemoteVnetPeeringName
         vnetAvdSubnetName: varVnetAvdSubnetName
