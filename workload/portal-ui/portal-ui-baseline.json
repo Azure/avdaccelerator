@@ -1254,7 +1254,7 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, true))]",
                             "options": {
-                                "text": "When using an existing AVD vNet and creating new private DNS zones, FSLogix/MSIX end to end setup will be successful only when the existing vNet doesn't have custom DNS servers configured, because new private DNS zones will be linked only to the existing AVD vNet so this will be the only network able to resolve private endpoint DNS record. <br/> Note: selected options (existing vNEt and create DNS zones) are only recommended when using Azure AD (AAD) as identity service provider.",
+                                "text": "When using an existing AVD vNet and creating new private DNS zones, FSLogix/MSIX end to end setup will be successful only when the existing vNet doesn't have custom DNS servers configured, because new private DNS zones will be linked only to the existing AVD vNet so this will be the only network able to resolve private endpoint DNS record. <br/> ***Note: selected options (existing vNEt and create DNS zones) are only recommended when using Azure AD (AAD) as identity service provider.",
                                 "uri": "https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy",
                                 "style": "Warning"
                             }
