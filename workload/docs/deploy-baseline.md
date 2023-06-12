@@ -7,7 +7,8 @@
 - **Basics** blade
   - **Subscription** - The subscription where the accelerator is going to deploy the resources.
   - **Region** – The desired Azure Region to be used for the deployment.
-  - **Deployment prefix** – A prefix of maximum 4 characters that will be appended to the names of Resource Groups and Azure resources within the Resource Groups.
+  - **Prefix** – A prefix of maximum 4 characters that will be appended to the names of Resource Groups and Azure resources within the Resource Groups.
+  - **Environment** – Deployment Environment type (Development/Test/Production), will be used for naming and tagging purposes.
 - **Identity provider** blade
   - **Identity Service Provider** - Identity service provider (AD DS, AAD DS, AAD) that already exists and will be used for Azure Virtual Desktop.
     - Azure Active Directory (AAD).
@@ -97,8 +98,8 @@ We have these other options available:
 
 ## Next Steps
 
-- After successful deployment, you can remove the following temporary resources used only during deployment: 
-    - virtual machine (`vm-mgmt-{deployment-prefix}`) and associated OS disk (`vm-mgmt-{deployment-prefix}-disk-os-01`) and network interface (`nic-001-vm-mgmt-{deployment-prefix}`) that was used to provision the storage account for FSLogix purposes.
+- After successful deployment, you can remove the following temporary resources used only during deployment:
+    - Management virtual machine (`vmmgmt{deploymentPrefix}{DeploymentEnvironment-d/t/p}{AzureRegionAcronym}`) and its associated OS disk and network interface.
     - Deployment scripts used to introduce wait times: Management-VM-Wait-{timestamp}, Managed-Identity-Wait-{timestamp}, Antimalware-Extension-Wait-{timestamp}, Session-Hosts-Wait-{timestamp}, SH-Monitoring-Wait-{timestamp}.
 - You should assign specific roles, including AVD-specific roles based on your organization’s policies.
 - Preferably enable NSG Flow logs and AVD insights.
