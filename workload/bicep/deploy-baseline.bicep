@@ -837,9 +837,14 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
 }
 
 // Networking.
-module networking './modules/networking/deploy.bicep' = if (createAvdVnet) {
+module networking './modules/networking/deploy.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts) {
     name: 'Networking-${time}'
     params: {
+        createVnet: createAvdVnet
+        deploySessionHosts: avdDeploySessionHosts
+        existingPeSubnetResourceId: existingVnetPrivateEndpointSubnetResourceId
+        existingAvdSubnetResourceId: existingVnetAvdSubnetResourceId
+        createPrivateDnsZones: createPrivateDnsZones
         applicationSecurityGroupName: varApplicationSecurityGroupName
         computeObjectsRgName: varComputeObjectsRgName
         networkObjectsRgName: varNetworkObjectsRgName
@@ -849,7 +854,6 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet) {
         privateEndpointRouteTableName: varPrivateEndpointRouteTableName
         vnetAddressPrefixes: avdVnetworkAddressPrefixes
         vnetName: varVnetName
-        createPrivateDnsZones: createPrivateDnsZones
         vnetPeeringName: varVnetPeeringName
         remoteVnetPeeringName: varRemoteVnetPeeringName
         vnetAvdSubnetName: varVnetAvdSubnetName
