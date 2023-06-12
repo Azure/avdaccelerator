@@ -5,6 +5,9 @@
         "deploymentPrefix": {
             "value": "AVD1"
         },
+        "deploymentEnvironment": {
+            "value": "Dev"
+        },
         "avdUseCustomNaming": {
             "value": false
         },
