@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "2781716250163995468"
+      "templateHash": "2764240901141588255"
     }
   },
   "parameters": {
@@ -8123,7 +8123,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "5193468135282657130"
+              "templateHash": "9886082845555210954"
             }
           },
           "parameters": {
@@ -12285,7 +12285,6 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('ASG-{0}', parameters('time')))]",
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-AVD-{0}', parameters('time')))]",
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-Private-Endpoint-{0}', parameters('time')))]",
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Route-Table-AVD-{0}', parameters('time')))]",
@@ -12648,7 +12647,7 @@
           "outputs": {
             "applicationSecurityGroupResourceId": {
               "type": "string",
-              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('ASG-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]"
+              "value": "[if(parameters('deploySessionHosts'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('ASG-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')]"
             },
             "virtualNetworkResourceId": {
               "type": "string",
