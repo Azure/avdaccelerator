@@ -777,7 +777,7 @@ resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (
 // Network.
 module baselineNetworkResourceGroup '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdVnet) {
     scope: subscription(avdWorkloadSubsId)
-    name: 'Deploy-${varNetworkObjectsRgName}-${time}'
+    name: 'Deploy-Network-RG-${time}'
     params: {
         name: varNetworkObjectsRgName
         location: avdSessionHostLocation
@@ -792,7 +792,7 @@ module baselineNetworkResourceGroup '../../carml/1.3.0/Microsoft.Resources/resou
 // Compute, service objects
 module baselineResourceGroups '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = [for resourceGroup in verResourceGroups: {
     scope: subscription(avdWorkloadSubsId)
-    name: 'Deploy-AVD-${resourceGroup.purpose}-${time}'
+    name: '${resourceGroup.purpose}-${time}'
     params: {
         name: resourceGroup.name
         location: resourceGroup.location
@@ -807,7 +807,7 @@ module baselineResourceGroups '../../carml/1.3.0/Microsoft.Resources/resourceGro
 // Storage.
 module baselineStorageResourceGroup '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (varCreateStorageDeployment) {
     scope: subscription(avdWorkloadSubsId)
-    name: 'Deploy-${varStorageObjectsRgName}-${time}'
+    name: 'Storage-RG-${time}'
     params: {
         name: varStorageObjectsRgName
         location: avdSessionHostLocation
@@ -879,7 +879,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
 
 // AVD management plane.
 module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
-    name: 'HostPool-AppGroups-${time}'
+    name: 'AVD-MGMT-Plane-${time}'
     params: {
         applicationGroupNameDesktop: varApplicationGroupNameDesktop
         applicationGroupFriendlyNameDesktop: varApplicationGroupFriendlyName
@@ -1063,7 +1063,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
 
 // Management VM deployment
 module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if (createAvdFslogixDeployment || createMsixDeployment) {
-    name: 'Storage-Management-VM-${time}'
+    name: 'Storage-MGMT-VM-${time}'
     params: {
         diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
         identityServiceProvider: avdIdentityServiceProvider
