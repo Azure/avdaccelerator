@@ -775,7 +775,7 @@ resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (
 // Resource groups.
 // Compute, service objects, network.
 // Network.
-module baselineNetworkResourceGroup '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdVnet || createPrivateDnsZones) {
+module baselineNetworkResourceGroup '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdVnet) {
     scope: subscription(avdWorkloadSubsId)
     name: 'Deploy-${varNetworkObjectsRgName}-${time}'
     params: {
@@ -837,18 +837,13 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
 }
 
 // Networking.
-module networking './modules/networking/deploy.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts) {
+module networking './modules/networking/deploy.bicep' = if (createAvdVnet) {
     name: 'Networking-${time}'
     params: {
-        createVnet: createAvdVnet
-        deploySessionHosts: avdDeploySessionHosts
-        createPrivateDnsZones: createPrivateDnsZones
         applicationSecurityGroupName: varApplicationSecurityGroupName
         computeObjectsRgName: varComputeObjectsRgName
         networkObjectsRgName: varNetworkObjectsRgName
         avdNetworksecurityGroupName: varAvdNetworksecurityGroupName
-        existingPeSubnetResourceId: existingVnetPrivateEndpointSubnetResourceId
-        existingAvdSubnetResourceId: existingVnetAvdSubnetResourceId
         privateEndpointNetworksecurityGroupName: varPrivateEndpointNetworksecurityGroupName
         avdRouteTableName: varAvdRouteTableName
         privateEndpointRouteTableName: varPrivateEndpointRouteTableName
@@ -874,7 +869,6 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
     dependsOn: [
         baselineNetworkResourceGroup
         monitoringDiagnosticSettings
-        baselineResourceGroups
     ]
 }
 
