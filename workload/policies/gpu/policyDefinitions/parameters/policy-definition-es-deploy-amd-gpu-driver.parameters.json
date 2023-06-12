@@ -1,0 +1,17 @@
+{
+    "listOfAllowedNvidiaSKUs": {
+      "parameters": {
+        "listOfAllowedNvidiaSKUs": {
+          "value": "[parameters('listOfAllowedNvidiaSKUs')]"
+        }
+      }
+    },
+    "listOfAllowedAmdSKUs": {
+        "parameters": {
+          "listOfAllowedNvidiaSKUs": {
+            "value": "[parameters('listOfAllowedAmdSKUs')]"
+          }
+        }
+      }
+  }
+  
