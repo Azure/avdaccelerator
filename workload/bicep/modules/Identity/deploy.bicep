@@ -185,7 +185,7 @@ module scalingPlanRoleAssignServiceObjects '../../../../carml/1.3.0/Microsoft.Au
 
 // VM AAD access roles compute RG.
 module aadIdentityLoginAccessCompute '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' =  [for avdApplicationGropupIdentityId in applicationGroupIdentitiesIds: if (identityServiceProvider == 'AAD' && !empty(applicationGroupIdentitiesIds)) {
-  name: 'VM-Login-${take('${avdApplicationGropupIdentityId}', 6)}-${time}'
+  name: 'VM-Login-Comp-${take('${avdApplicationGropupIdentityId}', 6)}-${time}'
   scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
   params: {
     roleDefinitionIdOrName: 'Virtual Machine User Login' 
@@ -196,7 +196,7 @@ module aadIdentityLoginAccessCompute '../../../../carml/1.3.0/Microsoft.Authoriz
 
 // VM AAD access roles service objects RG.
 module aadIdentityLoginAccessServiceObjects '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' =  [for avdApplicationGropupIdentityId in applicationGroupIdentitiesIds: if (identityServiceProvider == 'AAD' && !empty(applicationGroupIdentitiesIds)) {
-  name: 'VM-Login-${take('${avdApplicationGropupIdentityId}', 6)}-${time}'
+  name: 'VM-Login-Serv-${take('${avdApplicationGropupIdentityId}', 6)}-${time}'
   scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
   params: {
     roleDefinitionIdOrName: 'Virtual Machine User Login' 
