@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "8994602571797659482"
+      "templateHash": "5452512974883513113"
     }
   },
   "parameters": {
@@ -42636,7 +42636,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "7273911194796909059"
+              "templateHash": "17150193750061708683"
             }
           },
           "parameters": {
@@ -49826,7 +49826,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "3672999213818106684"
+                      "templateHash": "10666415797940112520"
                     }
                   },
                   "parameters": {
@@ -49876,7 +49876,7 @@
                       },
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.deploymentName, parameters('time'))]",
+                      "name": "[format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
                       "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
                       "location": "[deployment().location]",
                       "properties": {
@@ -50069,7 +50069,7 @@
                             "value": "[parameters('location')]"
                           },
                           "policyDefinitionId": {
-                            "value": "[reference(subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.deploymentName, parameters('time'))), '2022-09-01').outputs.resourceId.value]"
+                            "value": "[reference(subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.resourceId.value]"
                           }
                         },
                         "template": {
@@ -50302,7 +50302,7 @@
                         }
                       },
                       "dependsOn": [
-                        "[subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.deploymentName, parameters('time')))]"
+                        "[subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
                       ]
                     }
                   ]
