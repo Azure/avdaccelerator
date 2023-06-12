@@ -126,7 +126,7 @@ param existingVnetAvdSubnetResourceId string = ''
 param existingVnetPrivateEndpointSubnetResourceId string = ''
 
 @description('Required. Existing hub virtual network for perring.')
-param existingHubVnetResourceId string = '/subscriptions/no/resourceGroups/no/providers/Microsoft.Network/virtualNetworks/no'
+param existingHubVnetResourceId string = ''
 
 @description('Optional. AVD virtual network address prefixes. (Default: 10.10.0.0/23)')
 param avdVnetworkAddressPrefixes string = '10.10.0.0/23'
@@ -507,7 +507,7 @@ var varStorageObjectsRgName = avdUseCustomNaming ? avdStorageObjectsRgCustomName
 var varMonitoringRgName = avdUseCustomNaming ? avdMonitoringRgCustomName : 'rg-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}-monitoring' // max length limit 90 characters
 //var varAvdSharedResourcesRgName = 'rg-${varAvdSessionHostLocationAcronym}-avd-shared-resources'
 var varVnetName = avdUseCustomNaming ? avdVnetworkCustomName : 'vnet-${varComputeStorageResourcesNamingStandard}-001'
-var varHubVnetName = createAvdVnet ? 'no' : split(existingHubVnetResourceId, '/')[8]
+var varHubVnetName = createAvdVnet ? split(existingHubVnetResourceId, '/')[8] : ''
 var varVnetPeeringName = 'peer-${varHubVnetName}' 
 var varRemoteVnetPeeringName = 'peer-${varVnetName}'
 var varVnetAvdSubnetName = avdUseCustomNaming ? avdVnetworkSubnetCustomName : 'snet-avd-${varComputeStorageResourcesNamingStandard}-001'
