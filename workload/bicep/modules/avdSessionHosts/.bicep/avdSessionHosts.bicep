@@ -343,7 +343,7 @@ resource alaWorkspaceGet 'Microsoft.OperationalInsights/workspaces@2021-06-01' e
 // Add monitoring extension to session host.
 module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, sessionHostsCount): if (deployMonitoring) {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
-    name: 'SH-Monitoring-${padLeft((i + sessionHostCountIndex), 3, '0')}-${time}'
+    name: 'SH-Mon-${padLeft((i + sessionHostCountIndex), 3, '0')}-${time}'
     params: {
         location: sessionHostLocation
         virtualMachineName: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
@@ -393,7 +393,7 @@ module sessionHostsMonitoringWait '../../../../../carml/1.3.0/Microsoft.Resource
 // Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
 module configureFsLogixAvdHosts './configureFslogixOnSessionHosts.bicep' = [for i in range(1, sessionHostsCount): if (createAvdFslogixDeployment) {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
-    name: 'Configure-FsLogix-${padLeft((i + sessionHostCountIndex), 3, '0')}-${time}'
+    name: 'Fsl-Conf-${padLeft((i + sessionHostCountIndex), 3, '0')}-${time}'
     params: {
         location: sessionHostLocation
         name: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 3, '0')}'
