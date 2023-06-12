@@ -22,11 +22,13 @@ param time string = utcNow()
 var varCustomPolicyDefinitions = [
   {
     name: 'policy-definition-es-deploy-amd-gpu-driver'
+    deploymentName: 'AMD-Policy'
     displayName: 'Custom - Deploy AMD GPU Driver Extension'
     libDefinition: json(loadTextContent('../../../../policies/gpu/policyDefinitions/policy-definition-es-deploy-amd-gpu-driver.json'))
   }
   {
     name: 'policy-definition-es-deploy-nvidia-gpu-driver'
+    deploymentName: 'NVIDIA-Policy'
     displayName: 'Custom - Deploy Nvidia GPU Driver Extension'
     libDefinition: json(loadTextContent('../../../../policies/gpu/policyDefinitions/policy-definition-es-deploy-nvidia-gpu-driver.json'))
   }
@@ -38,7 +40,7 @@ var varCustomPolicyDefinitions = [
 
 module policyDefinitions '../../../../../carml/1.3.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: {
   scope: subscription('${subscriptionId}')
-  name: (length('${customPolicyDefinition.libDefinition.name}-${time}') > 64) ? take('${customPolicyDefinition.libDefinition.name}-${time}', 64) : '${customPolicyDefinition.libDefinition.name}-${time}'
+  name: '${customPolicyDefinition.libDefinition.deploymentName}-${time}'
   //name: customPolicyDefinition.libDefinition.properties.displayName
   params: {
     location: location
