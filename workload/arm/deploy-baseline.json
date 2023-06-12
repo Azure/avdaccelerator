@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "4842009066462490393"
+      "templateHash": "9740696104408427517"
     }
   },
   "parameters": {
@@ -15400,7 +15400,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "14088200418220215824"
+              "templateHash": "17261337801606197505"
             }
           },
           "parameters": {
@@ -20193,7 +20193,7 @@
               "condition": "[and(equals(parameters('identityServiceProvider'), 'AAD'), not(empty(parameters('applicationGroupIdentitiesIds'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('VM-Login-{0}-{1}', take(format('{0}', parameters('applicationGroupIdentitiesIds')[copyIndex()]), 6), parameters('time'))]",
+              "name": "[format('VM-Login-Comp-{0}-{1}', take(format('{0}', parameters('applicationGroupIdentitiesIds')[copyIndex()]), 6), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
@@ -20773,7 +20773,7 @@
               "condition": "[and(equals(parameters('identityServiceProvider'), 'AAD'), not(empty(parameters('applicationGroupIdentitiesIds'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('VM-Login-{0}-{1}', take(format('{0}', parameters('applicationGroupIdentitiesIds')[copyIndex()]), 6), parameters('time'))]",
+              "name": "[format('VM-Login-Serv-{0}-{1}', take(format('{0}', parameters('applicationGroupIdentitiesIds')[copyIndex()]), 6), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
