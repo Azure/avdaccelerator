@@ -32,7 +32,7 @@ resource "azurerm_network_interface" "avd_vm_nic" {
   }
 
   depends_on = [
-    azurerm_resource_group.shrg
+    azurerm_resource_group.shrg, module.network
   ]
 }
 
@@ -53,12 +53,15 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   resource_group_name        = azurerm_resource_group.shrg.name
   location                   = azurerm_resource_group.shrg.location
   size                       = var.vm_size
+  license_type               = "Windows_Client"
   network_interface_ids      = ["${azurerm_network_interface.avd_vm_nic.*.id[count.index]}"]
   provision_vm_agent         = true
   availability_set_id        = azurerm_availability_set.aset.id
   admin_username             = var.local_admin_username
   admin_password             = azurerm_key_vault_secret.localpassword.value
   encryption_at_host_enabled = true //'Microsoft.Compute/EncryptionAtHost' feature is must be enabled in the subscription for this setting to work https://learn.microsoft.com/en-us/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell
+  secure_boot_enabled        = true
+  vtpm_enabled               = true
   tags                       = local.tags
   os_disk {
     name                 = "${lower(var.prefix)}-${count.index + 1}"
@@ -90,6 +93,7 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   }
 }
 
+# Virtual Machine Extension for Domain Join
 resource "azurerm_virtual_machine_extension" "domain_join" {
   count                      = var.rdsh_count
   name                       = "${var.prefix}-${count.index + 1}-domainJoin"
@@ -119,10 +123,9 @@ PROTECTED_SETTINGS
     ignore_changes = [settings, protected_settings]
   }
 
-
 }
 
-
+# Virtual Machine Extension for AVD Agent
 resource "azurerm_virtual_machine_extension" "vmext_dsc" {
   count                      = var.rdsh_count
   name                       = "${var.prefix}${count.index + 1}-avd_dsc"
@@ -156,7 +159,7 @@ PROTECTED_SETTINGS
   ]
 }
 
-# MMA agent
+# Virtual Machine Extension for MMA agent
 resource "azurerm_virtual_machine_extension" "mma" {
   name                       = "MicrosoftMonitoringAgent"
   count                      = var.rdsh_count
@@ -184,7 +187,7 @@ PROTECTED_SETTINGS
 
 }
 
-# Microsoft Antimalware
+# Virtual Machine Extension for Microsoft Antimalware
 resource "azurerm_virtual_machine_extension" "mal" {
   name                       = "IaaSAntimalware"
   count                      = var.rdsh_count
@@ -200,4 +203,3 @@ resource "azurerm_virtual_machine_extension" "mal" {
     azurerm_virtual_machine_extension.mma
   ]
 }
-

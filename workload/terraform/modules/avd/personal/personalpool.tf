@@ -77,7 +77,7 @@ resource "azurerm_virtual_desktop_application_group" "pag" {
 # Associate Workspace and pag
 resource "azurerm_virtual_desktop_workspace_application_group_association" "ws-dag" {
   application_group_id = azurerm_virtual_desktop_application_group.pag.id
-  workspace_id         = azurerm_virtual_desktop_workspace.pworkspace.id
+  workspace_id         = azurerm_virtual_desktop_workspace.workspace.id
 }
 
 # Get Log Analytics Workspace data
