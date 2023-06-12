@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "2781600079781085267"
+      "templateHash": "2781716250163995468"
     }
   },
   "parameters": {
@@ -243,7 +243,7 @@
     },
     "existingHubVnetResourceId": {
       "type": "string",
-      "defaultValue": "/subscriptions/no/resourceGroups/no/providers/Microsoft.Network/virtualNetworks/no",
+      "defaultValue": "",
       "metadata": {
         "description": "Required. Existing hub virtual network for perring."
       }
@@ -1213,7 +1213,7 @@
     "varStorageObjectsRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdStorageObjectsRgCustomName'), format('rg-avd-{0}-storage', variables('varComputeStorageResourcesNamingStandard')))]",
     "varMonitoringRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdMonitoringRgCustomName'), format('rg-avd-{0}-{1}-monitoring', variables('varDeploymentEnvironmentLowercase'), variables('varManagementPlaneLocationAcronym')))]",
     "varVnetName": "[if(parameters('avdUseCustomNaming'), parameters('avdVnetworkCustomName'), format('vnet-{0}-001', variables('varComputeStorageResourcesNamingStandard')))]",
-    "varHubVnetName": "[if(parameters('createAvdVnet'), 'no', split(parameters('existingHubVnetResourceId'), '/')[8])]",
+    "varHubVnetName": "[if(parameters('createAvdVnet'), split(parameters('existingHubVnetResourceId'), '/')[8], '')]",
     "varVnetPeeringName": "[format('peer-{0}', variables('varHubVnetName'))]",
     "varRemoteVnetPeeringName": "[format('peer-{0}', variables('varVnetName'))]",
     "varVnetAvdSubnetName": "[if(parameters('avdUseCustomNaming'), parameters('avdVnetworkSubnetCustomName'), format('snet-avd-{0}-001', variables('varComputeStorageResourcesNamingStandard')))]",
@@ -1460,7 +1460,7 @@
       }
     },
     {
-      "condition": "[parameters('createAvdVnet')]",
+      "condition": "[or(parameters('createAvdVnet'), parameters('createPrivateDnsZones'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('Deploy-Network-RG-{0}', parameters('time'))]",
@@ -8123,7 +8123,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "1300173052702561643"
+              "templateHash": "5193468135282657130"
             }
           },
           "parameters": {
@@ -8336,6 +8336,7 @@
           },
           "resources": [
             {
+              "condition": "[parameters('createVnet')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('NSG-AVD-{0}', parameters('time'))]",
@@ -9174,7 +9175,7 @@
               }
             },
             {
-              "condition": "[parameters('deployPrivateEndpointSubnet')]",
+              "condition": "[and(parameters('createVnet'), parameters('deployPrivateEndpointSubnet'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('NSG-Private-Endpoint-{0}', parameters('time'))]",
@@ -10243,6 +10244,7 @@
               }
             },
             {
+              "condition": "[parameters('createVnet')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Route-Table-AVD-{0}', parameters('time'))]",
@@ -10589,7 +10591,7 @@
               }
             },
             {
-              "condition": "[parameters('deployPrivateEndpointSubnet')]",
+              "condition": "[and(parameters('createVnet'), parameters('deployPrivateEndpointSubnet'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Route-Table-PE-{0}', parameters('time'))]",
@@ -10938,6 +10940,7 @@
               }
             },
             {
+              "condition": "[parameters('createVnet')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('vNet-{0}', parameters('time'))]",
@@ -10962,7 +10965,7 @@
                     "value": "[parameters('dnsServers')]"
                   },
                   "peerings": "[if(parameters('createVnetPeering'), createObject('value', createArray(createObject('remoteVirtualNetworkId', parameters('existingHubVnetResourceId'), 'name', parameters('vnetPeeringName'), 'allowForwardedTraffic', true(), 'allowGatewayTransit', false(), 'allowVirtualNetworkAccess', true(), 'doNotVerifyRemoteGateways', true(), 'useRemoteGateways', if(parameters('vNetworkGatewayOnHub'), true(), false()), 'remotePeeringEnabled', true(), 'remotePeeringName', parameters('remoteVnetPeeringName'), 'remotePeeringAllowForwardedTraffic', true(), 'remotePeeringAllowGatewayTransit', if(parameters('vNetworkGatewayOnHub'), true(), false()), 'remotePeeringAllowVirtualNetworkAccess', true(), 'remotePeeringDoNotVerifyRemoteGateways', true(), 'remotePeeringUseRemoteGateways', false()))), createObject('value', createArray()))]",
-                  "subnets": "[if(parameters('deployPrivateEndpointSubnet'), createObject('value', createArray(createObject('name', parameters('vnetAvdSubnetName'), 'addressPrefix', parameters('vnetAvdSubnetAddressPrefix'), 'privateEndpointNetworkPolicies', 'Disabled', 'privateLinkServiceNetworkPolicies', 'Enabled', 'networkSecurityGroupId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, 'routeTableId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Route-Table-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('name', parameters('vnetPrivateEndpointSubnetName'), 'addressPrefix', parameters('vnetPrivateEndpointSubnetAddressPrefix'), 'privateEndpointNetworkPolicies', 'Disabled', 'privateLinkServiceNetworkPolicies', 'Enabled', 'networkSecurityGroupId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-Private-Endpoint-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, 'routeTableId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Route-Table-PE-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value))), createObject('value', createArray(createObject('name', parameters('vnetAvdSubnetName'), 'addressPrefix', parameters('vnetAvdSubnetAddressPrefix'), 'privateEndpointNetworkPolicies', 'Disabled', 'privateLinkServiceNetworkPolicies', 'Enabled', 'networkSecurityGroupId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, 'routeTableId', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Route-Table-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value))))]",
+                  "subnets": "[if(parameters('deployPrivateEndpointSubnet'), createObject('value', createArray(createObject('name', parameters('vnetAvdSubnetName'), 'addressPrefix', parameters('vnetAvdSubnetAddressPrefix'), 'privateEndpointNetworkPolicies', 'Disabled', 'privateLinkServiceNetworkPolicies', 'Enabled', 'networkSecurityGroupId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, ''), 'routeTableId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Route-Table-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')), createObject('name', parameters('vnetPrivateEndpointSubnetName'), 'addressPrefix', parameters('vnetPrivateEndpointSubnetAddressPrefix'), 'privateEndpointNetworkPolicies', 'Disabled', 'privateLinkServiceNetworkPolicies', 'Enabled', 'networkSecurityGroupId', if(and(parameters('createVnet'), parameters('deployPrivateEndpointSubnet')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-Private-Endpoint-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, ''), 'routeTableId', if(and(parameters('createVnet'), parameters('deployPrivateEndpointSubnet')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Route-Table-PE-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')))), createObject('value', createArray(createObject('name', parameters('vnetAvdSubnetName'), 'addressPrefix', parameters('vnetAvdSubnetAddressPrefix'), 'privateEndpointNetworkPolicies', 'Disabled', 'privateLinkServiceNetworkPolicies', 'Enabled', 'networkSecurityGroupId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, ''), 'routeTableId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Route-Table-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')))))]",
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
@@ -12293,7 +12296,7 @@
               "condition": "[and(parameters('createPrivateDnsZones'), equals(variables('varAzureCloudName'), 'AzureCloud'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('Private-DNS-Com-Files-{0}', parameters('time'))]",
+              "name": "[format('Private-DNS-Comm-Files-{0}', parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
               "resourceGroup": "[format('{0}', parameters('networkObjectsRgName'))]",
               "properties": {
@@ -12305,9 +12308,7 @@
                   "privateDnsZoneName": {
                     "value": "privatelink.file.core.windows.net"
                   },
-                  "virtualNetworkResourceId": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]"
-                  },
+                  "virtualNetworkResourceId": "[if(parameters('createVnet'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', variables('varExistingAvdVnetResourceId')))]",
                   "tags": {
                     "value": "[parameters('tags')]"
                   }
@@ -12383,7 +12384,7 @@
               "condition": "[and(parameters('createPrivateDnsZones'), equals(variables('varAzureCloudName'), 'AzureCloud'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('Private-DNS-Kv-{0}', parameters('time'))]",
+              "name": "[format('Private-DNS-Comm-Kv-{0}', parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
               "resourceGroup": "[format('{0}', parameters('networkObjectsRgName'))]",
               "properties": {
@@ -12395,9 +12396,7 @@
                   "privateDnsZoneName": {
                     "value": "privatelink.vaultcore.azure.net"
                   },
-                  "virtualNetworkResourceId": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]"
-                  },
+                  "virtualNetworkResourceId": "[if(parameters('createVnet'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', variables('varExistingAvdVnetResourceId')))]",
                   "tags": {
                     "value": "[parameters('tags')]"
                   }
@@ -12485,9 +12484,7 @@
                   "privateDnsZoneName": {
                     "value": "privatelink.file.core.usgovcloudapi.net"
                   },
-                  "virtualNetworkResourceId": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]"
-                  },
+                  "virtualNetworkResourceId": "[if(parameters('createVnet'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', variables('varExistingAvdVnetResourceId')))]",
                   "tags": {
                     "value": "[parameters('tags')]"
                   }
@@ -12575,9 +12572,7 @@
                   "privateDnsZoneName": {
                     "value": "privatelink.vaultcore.usgovcloudapi.net"
                   },
-                  "virtualNetworkResourceId": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]"
-                  },
+                  "virtualNetworkResourceId": "[if(parameters('createVnet'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', variables('varExistingAvdVnetResourceId')))]",
                   "tags": {
                     "value": "[parameters('tags')]"
                   }
@@ -12657,15 +12652,15 @@
             },
             "virtualNetworkResourceId": {
               "type": "string",
-              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]"
+              "value": "[if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')]"
             },
             "azureFilesDnsZoneResourceId": {
               "type": "string",
-              "value": "[if(parameters('createPrivateDnsZones'), if(equals(variables('varAzureCloudName'), 'AzureCloud'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Com-Files-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Gov-Files-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), '')]"
+              "value": "[if(parameters('createPrivateDnsZones'), if(equals(variables('varAzureCloudName'), 'AzureCloud'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Comm-Files-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Gov-Files-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), '')]"
             },
             "KeyVaultDnsZoneResourceId": {
               "type": "string",
-              "value": "[if(parameters('createPrivateDnsZones'), if(equals(variables('varAzureCloudName'), 'AzureCloud'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Kv-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Gov-Kv-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), '')]"
+              "value": "[if(parameters('createPrivateDnsZones'), if(equals(variables('varAzureCloudName'), 'AzureCloud'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Comm-Kv-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Gov-Kv-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), '')]"
             }
           }
         }
