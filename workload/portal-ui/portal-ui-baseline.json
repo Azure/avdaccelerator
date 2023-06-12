@@ -58,16 +58,48 @@
                             }
                         },
                         {
-                            "name": "deploymentPrefix",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Deployment prefix",
-                            "toolTip": "Provide a prefix (max 4 characters) for the resource groups and resources created as part of AVD landing zones.",
-                            "placeholder": "Example: app1",
-                            "constraints": {
-                                "required": true,
-                                "regex": "^[a-z0-9A-Z-]{1,4}$",
-                                "validationMessage": "The prefix must be 1-4 characters."
-                            }
+                            "name": "deploymentSpecs",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "Deployment Specs",
+                            "elements": [
+                                {
+                                    "name": "deploymentPrefix",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Prefix",
+                                    "toolTip": "Provide a prefix (max 4 characters) for the resource groups and resources created as part of AVD landing zones.",
+                                    "placeholder": "Example: app1",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,4}$",
+                                        "validationMessage": "The prefix must be 1-4 characters."
+                                    }
+                                },
+                                {
+                                    "name": "deploymentEnvironment",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "visible": true,
+                                    "label": "Environment",
+                                    "defaultValue": "Development",
+                                    "toolTip": "Select the type of environment (Development (d), Test (t), Production (p)) that will be deployed, this information will be use as part of the resources naming.",
+                                    "constraints": {
+                                        "allowedValues": [
+                                            {
+                                                "label": "Development",
+                                                "value": "Dev"
+                                            },
+                                            {
+                                                "label": "Test",
+                                                "value": "Test"
+                                            },
+                                            {
+                                                "label": "Production",
+                                                "value": "Prod"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
                         }
                     ]
                 },
@@ -452,7 +484,7 @@
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[equals(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, true)]",
                                     "options": {
-                                        "text": "Session hosts can be excluded from the scaling plan by assigning the tag name Exclude-avdScalingPlanName, if not using custom resource naming and example of default tag name is Exclude-vdscaling-eus2-app1-001.",
+                                        "text": "Session hosts can be excluded from the scaling plan by assigning the tag name Exclude-avdScalingPlanName, if not using custom resource naming and example of default tag name is Exclude-vdscaling-eus2-app1-d-d-001.",
                                         "uri": "https://docs.microsoft.com/azure/virtual-desktop/autoscale-scenarios#scenario-4-how-do-exclusion-tags-work",
                                         "style": "Info"
                                     }
@@ -1507,7 +1539,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Resource group",
                                     "toolTip": "AVD management plane resources (Workspace, Host pool, Application groups, Key vault) resource group custom name.",
-                                    "placeholder": "Example: rg-avd-use2-app1-service-objects",
+                                    "placeholder": "Example: rg-avd-use2-app1-d-service-objects",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,90}$",
@@ -1519,7 +1551,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Workspace",
                                     "toolTip": "AVD workspace custom name.",
-                                    "placeholder": "Example: vdws-use2-app1-001",
+                                    "placeholder": "Example: vdws-use2-app1-d-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1543,7 +1575,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Host pool",
                                     "toolTip": "AVD host pool custom name.",
-                                    "placeholder": "Example: vdpool-use2-app1-001",
+                                    "placeholder": "Example: vdpool-use2-app1-d-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1567,7 +1599,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Scaling Plan",
                                     "toolTip": "AVD host pool scaling plan.",
-                                    "placeholder": "Example: vdscaling-use2-app1-001",
+                                    "placeholder": "Example: vdscaling-use2-app1-d-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1579,7 +1611,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Application group (Desktop)",
                                     "toolTip": "AVD desktop application group custom name.",
-                                    "placeholder": "Example: vdag-desktop-use2-app1-001",
+                                    "placeholder": "Example: vdag-desktop-use2-app1-d-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1604,7 +1636,7 @@
                                     "label": "Application group (Remote App)",
                                     "visible": "[equals(steps('managementPlane').managementPlaneAppGroupOptions.deployRemoteAppGroup, true)]",
                                     "toolTip": "AVD remote application group custom name.",
-                                    "placeholder": "Example: vdag-rapp-use2-app1-001",
+                                    "placeholder": "Example: vdag-rapp-use2-app1-d-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1649,7 +1681,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Resource group",
                                     "toolTip": "AVD compute resources (VMs, NICs, Disks, Availability sets) resource group custom name.",
-                                    "placeholder": "Example: rg-avd-use2-app1-pool-compute",
+                                    "placeholder": "Example: rg-avd-use2-app1-d-pool-compute",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,90}$",
@@ -1661,7 +1693,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Applications security group",
                                     "toolTip": "AVD application security custom name.",
-                                    "placeholder": "Example: asg-avd-use2-app1-001",
+                                    "placeholder": "Example: asg-avd-use2-app1-d-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,80}$",
@@ -1674,7 +1706,7 @@
                                     "label": "Session host prefix",
                                     "visible": "[equals(steps('sessionHosts').deploySessionHosts, true)]",
                                     "toolTip": "AVD session host prefix custom name.",
-                                    "placeholder": "Example: vm-avd-app1",
+                                    "placeholder": "Example: vmapp1eusd",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,11}$",
@@ -1735,7 +1767,7 @@
                                     "label": "Resource group",
                                     "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageMsix.msixDeployment, true))]",
                                     "toolTip": "AVD storage resources (Storage account, file shares, files private endpoints, temporary domain join VM) resource group custom name.",
-                                    "placeholder": "Example: rg-avd-use2-app1-storage",
+                                    "placeholder": "Example: rg-avd-use2-app1-d-storage",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,90}$",
@@ -1761,7 +1793,7 @@
                                     "label": "FSLogix Profile container file share",
                                     "visible": "[equals(steps('storage').storageFslogix.fslogixDeployment, true)]",
                                     "toolTip": "AVD fslogix storage account profile container file share prefix custom name.",
-                                    "placeholder": "Example: fslogix-pc-app1-001",
+                                    "placeholder": "Example: fslogix-pc-app1-d-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1774,7 +1806,7 @@
                                     "label": "MSIX App Attach container file share",
                                     "visible": "[equals(steps('storage').storageMsix.msixDeployment, true)]",
                                     "toolTip": "AVD MSIX App Attach storage account container file share prefix custom name.",
-                                    "placeholder": "Example: msix-pc-app1-001",
+                                    "placeholder": "Example: msix-pc-app1-d-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1804,7 +1836,7 @@
                                     "label": "Resource group",
                                     "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                                     "toolTip": "AVD network resources (vNet, NSG, Route table) resource group custom name.",
-                                    "placeholder": "Example: rg-avd-use2-app1-network",
+                                    "placeholder": "Example: rg-avd-use2-app1-d-network",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,90}$",
@@ -1817,7 +1849,7 @@
                                     "label": "Virtual network",
                                     "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                                     "toolTip": "AVD virtual network custom name.",
-                                    "placeholder": "Example: vnet-avd-use2-app1-001",
+                                    "placeholder": "Example: vnet-avd-use2-app1-d-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -1830,7 +1862,7 @@
                                     "label": "AVD Subnet",
                                     "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                                     "toolTip": "AVD virtual network subnet custom name.",
-                                    "placeholder": "Example: snet-avd-use2-app1-001",
+                                    "placeholder": "Example: snet-avd-use2-app1-d-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,80}$",
@@ -1843,7 +1875,7 @@
                                     "label": "AVD Network security group",
                                     "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                                     "toolTip": "AVD network security group custom name.",
-                                    "placeholder": "Example: nsg-avd-use2-app1-001",
+                                    "placeholder": "Example: nsg-avd-use2-app1-d-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,80}$",
@@ -1856,7 +1888,7 @@
                                     "label": "AVD Route table",
                                     "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                                     "toolTip": "AVD route table custom name.",
-                                    "placeholder": "Example: route-avd-use2-app1-001",
+                                    "placeholder": "Example: route-avd-use2-app1-d-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,80}$",
@@ -1869,7 +1901,7 @@
                                     "label": "Private endpoint subnet",
                                     "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                                     "toolTip": "AVD virtual network subnet custom name.",
-                                    "placeholder": "Example: snet-pe-use2-app1-001",
+                                    "placeholder": "Example: snet-pe-use2-app1-d-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,80}$",
@@ -1882,7 +1914,7 @@
                                     "label": "Private endpoint network security group",
                                     "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                                     "toolTip": "Private endpoint network security group custom name.",
-                                    "placeholder": "Example: nsg-pe-use2-app1-001",
+                                    "placeholder": "Example: nsg-pe-use2-app1-d-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,80}$",
@@ -1895,7 +1927,7 @@
                                     "label": "Private endpoint route table",
                                     "visible": "[equals(steps('network').createAvdVirtualNetwork, true)]",
                                     "toolTip": "Private endpoint route table custom name.",
-                                    "placeholder": "Example: route-pe-use2-app1-001",
+                                    "placeholder": "Example: route-pe-use2-app1-d-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,80}$",
@@ -2046,7 +2078,7 @@
                             "name": "resourceTaggingParentCostInfo",
                             "type": "Microsoft.Common.InfoBox",
                             "options": {
-                                "text": "By default, all resources will be tagged with parent resource cost management tag (cm-resource-parent). This will group all costs under the host pool resource.",
+                                "text": "By default, the following tags will be created: <br/> - Parent resource cost management tag (cm-resource-parent): reports all resources cost to the host pool (ResourceID). <br/> - Environment (Environment): environment selected during deployment (Dev/Test/prod). <br/> - Service Workload (ServiceWorkload): defaults to AVD. <br/> - Creation time (CreationTimeUTC): deployment time in UTC. <br/> - Domain Name (DomainName): identity service domain name (applied only to compute and storage). <br/> - Identity service provider (IdentityServiceProvider): identity provider selected (ADDS/AADDS/AAD).",
                                 "uri": "https://learn.microsoft.com/azure/virtual-desktop/tag-virtual-desktop-resources#use-the-cm-resource-parent-tag-to-automatically-group-costs-by-host-pool",
                                 "style": "Info"
                             }
@@ -2258,34 +2290,6 @@
                                         "regex": "^[a-z0-9A-Z-]{1,256}$",
                                         "validationMessage": "Value must be 1-256 characters."
                                     }
-                                },
-                                {
-                                    "name": "tagsEnvironmentTypeTag",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "label": "Environment type:",
-                                    "filter": true,
-                                    "defaultValue": "Dev",
-                                    "toolTip": "This input will be the value of a tag named Environment, reference to the environment type of the workload.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Dev",
-                                                "description": "",
-                                                "value": "Dev"
-                                            },
-                                            {
-                                                "label": "Staging",
-                                                "description": "",
-                                                "value": "Staging"
-                                            },
-                                            {
-                                                "label": "Prod",
-                                                "description": "",
-                                                "value": "Prod"
-                                            }
-                                        ]
-                                    }
                                 }
                             ]
                         }
@@ -2295,7 +2299,8 @@
         },
         "outputs": {
             "parameters": {
-                "deploymentPrefix": "[steps('basics').deploymentPrefix]",
+                "deploymentPrefix": "[steps('basics').deploymentSpecs.deploymentPrefix]",
+                "deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
                 "diskZeroTrust": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust]",
                 "avdManagementPlaneLocation": "[steps('basics').resourceScope.location.name]",
                 "avdDeploySessionHosts": "[steps('sessionHosts').deploySessionHosts]",
@@ -2388,7 +2393,6 @@
                 "opsTeamTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOpsTeamTag, 'none')]",
                 "ownerTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOwnerTag, 'none')]",
                 "costCenterTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsCostCenterTag, 'none')]",
-                "environmentTypeTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsEnvironmentTypeTag, 'Dev')]",
                 "avdApplicationGroupIdentityType": "[steps('identity').identityAvdUserAccess.identityAccessTypes]",
                 "avdApplicationGroupIdentitiesIds": "[steps('identity').identityAvdUserAccess.identityAccessIds]",
                 "avdDeployMonitoring": "[steps('monitoring').deployMonitoring]",
