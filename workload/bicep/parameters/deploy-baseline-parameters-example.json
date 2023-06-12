@@ -87,7 +87,7 @@
             "value": ""
         },
         "existingHubVnetResourceId": {
-            "value": "/subscriptions/no/resourceGroups/no/providers/Microsoft.Network/virtualNetworks/no"
+            "value": ""
         },
         "avdVnetworkAddressPrefixes": {
             "value": "10.10.0.0/23"
