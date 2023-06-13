@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "13456537166548879755"
+      "templateHash": "2860526078266151836"
     }
   },
   "parameters": {
@@ -42624,7 +42624,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "7400473794702620665"
+              "templateHash": "14848834396695347566"
             }
           },
           "parameters": {
@@ -43547,7 +43547,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "3244097482901047699"
+                      "templateHash": "15231555127735450601"
                     }
                   },
                   "parameters": {
@@ -49669,7 +49669,7 @@
                       },
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('HP-Join-{0}-to-HP-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'), parameters('time'))]",
+                      "name": "[format('HP-Join-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'), parameters('time'))]",
                       "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
