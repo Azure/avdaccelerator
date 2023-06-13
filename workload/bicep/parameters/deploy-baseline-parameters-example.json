@@ -199,6 +199,6 @@
         },
         "diskZeroTrust": {
             "value": false
-        }
+        }      
     }
 }
