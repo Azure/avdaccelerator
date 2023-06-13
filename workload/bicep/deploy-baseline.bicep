@@ -836,7 +836,7 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
 }
 
 // Networking.
-module networking './modules/networking/deploy.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts) {
+module networking './modules/networking/deploy.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts || createAvdFslogixDeployment || createMsixDeployment) {
     name: 'Networking-${time}'
     params: {
         createVnet: createAvdVnet
