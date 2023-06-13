@@ -135,7 +135,7 @@ module ztManagedIdentity '../../../../carml/1.3.0/Microsoft.ManagedIdentity/user
     ]
 }
 
-// Introduce wait for management VM to be ready.
+// Introduce wait for managed identity to be ready.
 module ztManagedIdentityWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
     name: 'ZT-Mana-Ident-Wait-${time}'

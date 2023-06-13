@@ -6,7 +6,7 @@
     "properties": {
         "mode": "Indexed",
         "displayName": "Custom - Deploy AMD GPU Driver Extension",
-        "description": "This policy set deploys the Amd GPU Driver for AVD Accelerator.",
+        "description": "This policy definition deploys the AMD GPU Driver extension on AMD's SKU VMs.",
         "metadata": {
           "version": "1.1.0",
           "category": "Drivers"
