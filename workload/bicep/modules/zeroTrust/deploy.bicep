@@ -151,10 +151,10 @@ resource ztPolicyRemediationTask 'Microsoft.PolicyInsights/remediations@2021-10-
             percentage: 1
           }
           parallelDeployments: 10
-          policyAssignmentId: diskZeroTrust ? ztPolicyAssignment.outputs.resourceId : ''
+          policyAssignmentId: diskZeroTrust ? ztPolicyAssignment[i].outputs.resourceId : ''
           resourceCount: 500
     }
-}
+}]
 
 // Role Assignment for Zero Trust.
 module ztRoleAssignment01 '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (diskZeroTrust) {
@@ -168,15 +168,15 @@ module ztRoleAssignment01 '../../../../carml/1.3.0/Microsoft.Authorization/roleA
 }
 
 // Role Assignment for Zero Trust.
-module ztRoleAssignment02 '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/subscription/deploy.bicep' = if (diskZeroTrust) {
-    name: 'ZT-RoleAssignment-${time}'
+module ztRoleAssignment02 '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/subscription/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions : if (diskZeroTrust) {
+    name: 'ZT-RoleAssign-${customPolicyDefinition.deploymentName}-${time}'
     params: {
         location: location
-        principalId: diskZeroTrust ? ztPolicyAssignment.outputs.principalId : ''
+        principalId: diskZeroTrust ? ztPolicyAssignment[i].outputs.principalId : ''
         roleDefinitionIdOrName: 'Disk Pool Operator'
         principalType: 'ServicePrincipal'
     }
-}
+}]
 
 // Zero trust key vault.
 module ztKeyVault './.bicep/zeroTrustKeyVault.bicep' = if (diskZeroTrust) {
