@@ -977,10 +977,11 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust) {
 }
 
 // VM GPU extension policies.
-module gpuPolicies './modules/gpuExtensions/deploy.bicep' = {
+module gpuPolicies './modules/azurePolicyGpu/deploy.bicep' = if (avdDeploySessionHosts) {
     name: 'GPU-VM-Extensions${time}'
     params: {
       location: avdSessionHostLocation
+      sessionHostsSize: avdSessionHostsSize
     }
 }
 
