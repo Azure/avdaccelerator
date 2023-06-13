@@ -407,7 +407,7 @@ module configureFsLogixAvdHosts './configureFslogixOnSessionHosts.bicep' = [for 
 // Add session hosts to AVD Host pool.
 module addAvdHostsToHostPool './registerSessionHostsOnHopstPool.bicep' = [for i in range(1, sessionHostsCount): {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
-    name: 'HP-Join-${padLeft((i + sessionHostCountIndex), 4, '0')}-to-HP-${time}'
+    name: 'HP-Join-${padLeft((i + sessionHostCountIndex), 4, '0')}-${time}'
     params: {
         location: sessionHostLocation
         hostPoolToken: hostPoolToken
