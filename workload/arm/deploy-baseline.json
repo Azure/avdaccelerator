@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "13733984563483428432"
+      "templateHash": "13456537166548879755"
     }
   },
   "parameters": {
@@ -42624,7 +42624,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "2483781336975751676"
+              "templateHash": "7400473794702620665"
             }
           },
           "parameters": {
@@ -43547,7 +43547,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "2667804537914756848"
+                      "templateHash": "3244097482901047699"
                     }
                   },
                   "parameters": {
@@ -48524,7 +48524,7 @@
                             "value": "[parameters('sessionHostLocation')]"
                           },
                           "virtualMachineName": {
-                            "value": "[format('{0}-{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'))]"
+                            "value": "[format('{0}{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'))]"
                           },
                           "name": {
                             "value": "MicrosoftAntiMalware"
@@ -49054,7 +49054,7 @@
                             "value": "[parameters('sessionHostLocation')]"
                           },
                           "virtualMachineName": {
-                            "value": "[format('{0}-{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'))]"
+                            "value": "[format('{0}{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'))]"
                           },
                           "name": {
                             "value": "MicrosoftMonitoringAgent"
@@ -49582,7 +49582,7 @@
                             "value": "[parameters('sessionHostLocation')]"
                           },
                           "name": {
-                            "value": "[format('{0}-{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'))]"
+                            "value": "[format('{0}{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'))]"
                           },
                           "file": {
                             "value": "[parameters('fsLogixScriptFile')]"
@@ -49685,7 +49685,7 @@
                             "value": "[parameters('hostPoolToken')]"
                           },
                           "name": {
-                            "value": "[format('{0}-{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'))]"
+                            "value": "[format('{0}{1}', parameters('sessionHostNamePrefix'), padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'))]"
                           },
                           "hostPoolName": {
                             "value": "[parameters('hostPoolName')]"
