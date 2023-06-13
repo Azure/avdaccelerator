@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "16219477405015187374"
+      "templateHash": "7582011073455992387"
     }
   },
   "parameters": {
@@ -21418,7 +21418,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "9511732804928336719"
+              "templateHash": "5903505304961479094"
             }
           },
           "parameters": {
@@ -21514,28 +21514,48 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "{\r\n    \"name\": \"AVD-ACC-Zero-Trust-Disable-Managed-Disk-Network-Access\",\r\n    \"type\": \"Microsoft.Authorization/policyDefinitions\",\r\n    \"apiVersion\": \"2021-06-01\",\r\n    \"scope\": null,\r\n    \"properties\": {\r\n        \"mode\": \"Indexed\",\r\n        \"displayName\": \"Custom - Zero Trust - Disable Managed Disk Network Access\",\r\n        \"description\": \"This policy definition sets the network access policy property to \\\"DenyAll\\\" and the public network access property to \\\"Disabled\\\" on all the managed disks within the assigned scope.\",\r\n        \"metadata\": {\r\n          \"version\": \"1.1.0\",\r\n          \"category\": \"Security\"\r\n        },\r\n        \"parameters\": {\r\n        },\r\n        \"policyRule\": {\r\n            \"if\": {\r\n              \"field\": \"type\",\r\n              \"equals\": \"Microsoft.Compute/disks\"\r\n            },\r\n            \"then\": {\r\n              \"effect\": \"modify\",\r\n              \"details\": {\r\n                \"roleDefinitionIds\": [\r\n                  \"/providers/Microsoft.Authorization/roleDefinitions/60fc6e62-5479-42d4-8bf4-67625fcc2840\"\r\n                ],\r\n                \"operations\": [\r\n                  {\r\n                    \"operation\": \"addOrReplace\",\r\n                    \"field\": \"Microsoft.Compute/disks/networkAccessPolicy\",\r\n                    \"value\": \"DenyAll\"\r\n                  },\r\n                  {\r\n                    \"operation\": \"addOrReplace\",\r\n                    \"field\": \"Microsoft.Compute/disks/publicNetworkAccess\",\r\n                    \"value\": \"Disabled\"\r\n                  }\r\n                ]\r\n              }\r\n            }\r\n          }\r\n    }\r\n}",
+            "varCustomPolicyDefinitions": [
+              {
+                "name": "AVD-ACC-Zero-Trust-Disable-Managed-Disk-Network-Access",
+                "deploymentName": "ZT-Disk-Policy",
+                "displayName": "Custom - Zero Trust - Disable Managed Disk Network Access",
+                "libDefinition": "[json(variables('$fxv#0'))]"
+              }
+            ]
+          },
           "resources": [
             {
+              "copy": {
+                "name": "ztPolicyRemediationTask",
+                "count": "[length(variables('varCustomPolicyDefinitions'))]"
+              },
+              "condition": "[parameters('diskZeroTrust')]",
               "type": "Microsoft.PolicyInsights/remediations",
               "apiVersion": "2021-10-01",
-              "name": "remediate-disks-network-access",
+              "name": "[format('Policy-Remed-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
               "properties": {
                 "failureThreshold": {
                   "percentage": 1
                 },
                 "parallelDeployments": 10,
-                "policyAssignmentId": "[if(parameters('diskZeroTrust'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('ZT-Policy-Assignment-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')]",
+                "policyAssignmentId": "[if(parameters('diskZeroTrust'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.resourceId.value, '')]",
                 "resourceCount": 500
               },
               "dependsOn": [
-                "[subscriptionResourceId('Microsoft.Resources/deployments', format('ZT-Policy-Assignment-{0}', parameters('time')))]"
+                "[subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
               ]
             },
             {
+              "copy": {
+                "name": "ztPolicyDefinitions",
+                "count": "[length(variables('varCustomPolicyDefinitions'))]"
+              },
               "condition": "[parameters('diskZeroTrust')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('ZT-Policy-Definition-{0}', parameters('time'))]",
+              "name": "[format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -21544,44 +21564,28 @@
                 "mode": "Incremental",
                 "parameters": {
                   "description": {
-                    "value": "This policy definition sets the network access policy property to \"DenyAll\" and the public network access property to \"Disabled\" on all the managed disks within the assigned scope."
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.properties.description]"
                   },
                   "displayName": {
-                    "value": "Custom - Zero Trust - Disable Managed Disk Network Access"
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.properties.displayName]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
                   },
                   "name": {
-                    "value": "AVD-ACC-Zero-Trust-Disable-Managed-Disk-Network-Access"
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].name]"
+                  },
+                  "metadata": {
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.properties.metadata]"
+                  },
+                  "mode": {
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.properties.mode]"
+                  },
+                  "parameters": {
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.properties.parameters]"
                   },
                   "policyRule": {
-                    "value": {
-                      "if": {
-                        "field": "type",
-                        "equals": "Microsoft.Compute/disks"
-                      },
-                      "then": {
-                        "effect": "modify",
-                        "details": {
-                          "roleDefinitionIds": [
-                            "/providers/Microsoft.Authorization/roleDefinitions/60fc6e62-5479-42d4-8bf4-67625fcc2840"
-                          ],
-                          "operations": [
-                            {
-                              "operation": "addOrReplace",
-                              "field": "Microsoft.Compute/disks/networkAccessPolicy",
-                              "value": "DenyAll"
-                            },
-                            {
-                              "operation": "addOrReplace",
-                              "field": "Microsoft.Compute/disks/publicNetworkAccess",
-                              "value": "Disabled"
-                            }
-                          ]
-                        }
-                      }
-                    }
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.properties.policyRule]"
                   }
                 },
                 "template": {
@@ -21725,10 +21729,14 @@
               }
             },
             {
+              "copy": {
+                "name": "ztPolicyAssignment",
+                "count": "[length(variables('varCustomPolicyDefinitions'))]"
+              },
               "condition": "[parameters('diskZeroTrust')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('ZT-Policy-Assignment-{0}', parameters('time'))]",
+              "name": "[format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -21737,13 +21745,13 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "AVD-ACC-Zero-Trust-Disable-Managed-Disk-Network-Access"
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.name]"
                   },
                   "displayName": {
-                    "value": "Custom - Zero Trust - Disable Managed Disk Network Access"
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.properties.displayName]"
                   },
                   "description": {
-                    "value": "This policy assignment sets the network access policy property to \"DenyAll\" and the public network access property to \"Disabled\" on all the managed disks within the assigned scope."
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.properties.description]"
                   },
                   "identity": {
                     "value": "SystemAssigned"
@@ -21751,7 +21759,7 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
-                  "policyDefinitionId": "[if(parameters('diskZeroTrust'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('ZT-Policy-Definition-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', ''))]",
+                  "policyDefinitionId": "[if(parameters('diskZeroTrust'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', ''))]",
                   "resourceSelectors": {
                     "value": [
                       {
@@ -21998,7 +22006,7 @@
                 }
               },
               "dependsOn": [
-                "[subscriptionResourceId('Microsoft.Resources/deployments', format('ZT-Policy-Definition-{0}', parameters('time')))]"
+                "[subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
               ]
             },
             {
@@ -23204,10 +23212,14 @@
               ]
             },
             {
+              "copy": {
+                "name": "ztRoleAssignment02",
+                "count": "[length(variables('varCustomPolicyDefinitions'))]"
+              },
               "condition": "[parameters('diskZeroTrust')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('ZT-RoleAssignment-{0}', parameters('time'))]",
+              "name": "[format('ZT-RoleAssign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -23218,7 +23230,7 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
-                  "principalId": "[if(parameters('diskZeroTrust'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('ZT-Policy-Assignment-{0}', parameters('time'))), '2022-09-01').outputs.principalId.value), createObject('value', ''))]",
+                  "principalId": "[if(parameters('diskZeroTrust'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.principalId.value), createObject('value', ''))]",
                   "roleDefinitionIdOrName": {
                     "value": "Disk Pool Operator"
                   },
@@ -23776,7 +23788,7 @@
                 }
               },
               "dependsOn": [
-                "[subscriptionResourceId('Microsoft.Resources/deployments', format('ZT-Policy-Assignment-{0}', parameters('time')))]"
+                "[subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
               ]
             },
             {
@@ -27082,6 +27094,551 @@
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time')))]"
       ]
+    },
+    {
+      "condition": "[parameters('avdDeploySessionHosts')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('GPU-VM-Extensions{0}', parameters('time'))]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('avdSessionHostLocation')]"
+          },
+          "sessionHostsSize": {
+            "value": "[parameters('avdSessionHostsSize')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.17.1.54307",
+              "templateHash": "12616730015662140739"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Location where to deploy compute services."
+              }
+            },
+            "sessionHostsSize": {
+              "type": "string",
+              "metadata": {
+                "description": "Session host VM size."
+              }
+            },
+            "time": {
+              "type": "string",
+              "defaultValue": "[utcNow()]",
+              "metadata": {
+                "description": "Do not modify, used to set unique value for resource deployment."
+              }
+            }
+          },
+          "variables": {
+            "$fxv#0": "{\r\n    \"name\": \"policy-deploy-amd-gpu-driver\",\r\n    \"type\": \"Microsoft.Authorization/policyDefinitions\",\r\n    \"apiVersion\": \"2021-06-01\",\r\n    \"scope\": null,\r\n    \"properties\": {\r\n        \"mode\": \"Indexed\",\r\n        \"displayName\": \"Custom - Deploy AMD GPU Driver Extension\",\r\n        \"description\": \"This policy definition deploys the AMD GPU Driver extension on AMD's SKU VMs.\",\r\n        \"metadata\": {\r\n          \"version\": \"1.1.0\",\r\n          \"category\": \"Drivers\"\r\n        },\r\n        \"parameters\": {\r\n        },\r\n        \"policyRule\": {\r\n            \"if\": {\r\n                \"allOf\": [\r\n                    {\r\n                        \"field\": \"type\",\r\n                        \"equals\": \"Microsoft.Compute/virtualMachines\"\r\n                    },\r\n                    {\r\n                        \"field\": \"Microsoft.Compute/virtualMachines/sku.name\",\r\n                        \"in\": [\r\n                            \"Standard_NV4as_v4\",\r\n                            \"Standard_NV8as_v4\",\r\n                            \"Standard_NV16as_v4\",\r\n                            \"Standard_NV32as_v4\"\r\n                        ]\r\n                    }\r\n                ]\r\n            },\r\n            \"then\": {\r\n                \"effect\": \"deployIfNotExists\",\r\n                \"details\": {\r\n                    \"type\": \"Microsoft.Compute/virtualMachines/extensions\",\r\n                    \"roleDefinitionIds\": [\r\n                        \"/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c\"\r\n                    ],\r\n                    \"existenceCondition\": {\r\n                        \"allOf\": [\r\n                            {\r\n                                \"field\": \"Microsoft.Compute/virtualMachines/extensions/publisher\",\r\n                                \"equals\": \"Microsoft.HpcCompute\"\r\n                            },\r\n                            {\r\n                                \"field\": \"Microsoft.Compute/virtualMachines/extensions/type\",\r\n                                \"equals\": \"AmdGpuDriverWindows\"\r\n                            },\r\n                            {\r\n                                \"field\": \"Microsoft.Compute/virtualMachines/extensions/provisioningState\",\r\n                                \"in\": [\r\n                                    \"Succeeded\"\r\n                                ]\r\n                            }\r\n                        ]\r\n                    },\r\n                    \"deployment\": {\r\n                        \"properties\": {\r\n                            \"mode\": \"Incremental\",\r\n                            \"template\": {\r\n                                \"$schema\": \"http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#\",\r\n                                \"contentVersion\": \"1.0.0.0\",\r\n                                \"parameters\": {\r\n                                    \"vmName\": {\r\n                                        \"type\": \"string\"\r\n                                    },\r\n                                    \"location\": {\r\n                                        \"type\": \"string\"\r\n                                    }\r\n                                },\r\n                                \"variables\": {\r\n                                    \"vmExtensionName\": \"AmdGpuDriverWindows\",\r\n                                    \"vmExtensionPublisher\": \"Microsoft.HpcCompute\",\r\n                                    \"vmExtensionType\": \"AmdGpuDriverWindows\",\r\n                                    \"vmExtensionTypeHandlerVersion\": \"1.0\"\r\n                                },\r\n                                \"resources\": [\r\n                                    {\r\n                                        \"name\": \"[concat(parameters('vmName'), '/', variables('vmExtensionName'))]\",\r\n                                        \"type\": \"Microsoft.Compute/virtualMachines/extensions\",\r\n                                        \"location\": \"[parameters('location')]\",\r\n                                        \"apiVersion\": \"2018-06-01\",\r\n                                        \"properties\": {\r\n                                            \"publisher\": \"[variables('vmExtensionPublisher')]\",\r\n                                            \"type\": \"[variables('vmExtensionType')]\",\r\n                                            \"typeHandlerVersion\": \"[variables('vmExtensionTypeHandlerVersion')]\",\r\n                                            \"autoUpgradeMinorVersion\": true\r\n                                        }\r\n                                    }\r\n                                ],\r\n                                \"outputs\": {\r\n                                    \"policy\": {\r\n                                        \"type\": \"string\",\r\n                                        \"value\": \"[concat('Enabled extension for VM', ': ', parameters('vmName'))]\"\r\n                                    }\r\n                                }\r\n                            },\r\n                            \"parameters\": {\r\n                                \"vmName\": {\r\n                                    \"value\": \"[field('name')]\"\r\n                                },\r\n                                \"location\": {\r\n                                    \"value\": \"[field('location')]\"\r\n                                }\r\n                            }\r\n                        }\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    }\r\n}",
+            "$fxv#1": "{\r\n    \"name\": \"policy-deploy-nvidia-gpu-driver\",\r\n    \"type\": \"Microsoft.Authorization/policyDefinitions\",\r\n    \"apiVersion\": \"2021-06-01\",\r\n    \"scope\": null,\r\n    \"properties\": {\r\n        \"policyType\": \"Custom\",\r\n        \"mode\": \"Indexed\",\r\n        \"displayName\": \"Custom - Deploy Nvidia GPU Driver Extension\",\r\n        \"description\": \"This policy definition deploys the Nvidia GPU Driver extension on Nvidia's SKU VMs.\",\r\n        \"metadata\": {\r\n          \"version\": \"1.1.0\",\r\n          \"category\": \"Drivers\"\r\n        },\r\n        \"parameters\": {\r\n        },\r\n        \"policyRule\": {\r\n            \"if\": {\r\n                \"allOf\": [\r\n                    {\r\n                        \"field\": \"type\",\r\n                        \"equals\": \"Microsoft.Compute/virtualMachines\"\r\n                    },\r\n                    {\r\n                        \"field\": \"Microsoft.Compute/virtualMachines/sku.name\",\r\n                        \"in\": [\r\n                            \"Standard_NV6\",\r\n                            \"Standard_NV12\",\r\n                            \"Standard_NV24\",\r\n                            \"Standard_NV12s_v3\",\r\n                            \"Standard_NV24s_v3\",\r\n                            \"Standard_NV48s_v3\",\r\n                            \"Standard_NC4as_T4_v3\",\r\n                            \"Standard_NC8as_T4_v3\",\r\n                            \"Standard_NC16as_T4_v3\",\r\n                            \"Standard_NC64as_T4_v3\",\r\n                            \"Standard_NV6ads_A10_v5\",\r\n                            \"Standard_NV12ads_A10_v5\",\r\n                            \"Standard_NV18ads_A10_v5\",\r\n                            \"Standard_NV36ads_A10_v5\",\r\n                            \"Standard_NV36adms_A10_v5\",\r\n                            \"Standard_NV72ads_A10_v5\"\r\n                        ]\r\n                    }\r\n                ]\r\n            },\r\n            \"then\": {\r\n                \"effect\": \"deployIfNotExists\",\r\n                \"details\": {\r\n                    \"type\": \"Microsoft.Compute/virtualMachines/extensions\",\r\n                    \"roleDefinitionIds\": [\r\n                        \"/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c\"\r\n                    ],\r\n                    \"existenceCondition\": {\r\n                        \"allOf\": [\r\n                            {\r\n                                \"field\": \"Microsoft.Compute/virtualMachines/extensions/publisher\",\r\n                                \"equals\": \"Microsoft.HpcCompute\"\r\n                            },\r\n                            {\r\n                                \"field\": \"Microsoft.Compute/virtualMachines/extensions/type\",\r\n                                \"equals\": \"NvidiaGpuDriverWindows\"\r\n                            },\r\n                            {\r\n                                \"field\": \"Microsoft.Compute/virtualMachines/extensions/provisioningState\",\r\n                                \"in\": [\r\n                                    \"Succeeded\"\r\n                                ]\r\n                            }\r\n                        ]\r\n                    },\r\n                    \"deployment\": {\r\n                        \"properties\": {\r\n                            \"mode\": \"Incremental\",\r\n                            \"template\": {\r\n                                \"$schema\": \"http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#\",\r\n                                \"contentVersion\": \"1.0.0.0\",\r\n                                \"parameters\": {\r\n                                    \"vmName\": {\r\n                                        \"type\": \"string\"\r\n                                    },\r\n                                    \"location\": {\r\n                                        \"type\": \"string\"\r\n                                    }\r\n                                },\r\n                                \"variables\": {\r\n                                    \"vmExtensionName\": \"NvidiaGpuDriverWindows\",\r\n                                    \"vmExtensionPublisher\": \"Microsoft.HpcCompute\",\r\n                                    \"vmExtensionType\": \"NvidiaGpuDriverWindows\",\r\n                                    \"vmExtensionTypeHandlerVersion\": \"1.2\"\r\n                                },\r\n                                \"resources\": [\r\n                                    {\r\n                                        \"name\": \"[concat(parameters('vmName'), '/', variables('vmExtensionName'))]\",\r\n                                        \"type\": \"Microsoft.Compute/virtualMachines/extensions\",\r\n                                        \"location\": \"[parameters('location')]\",\r\n                                        \"apiVersion\": \"2018-06-01\",\r\n                                        \"properties\": {\r\n                                            \"publisher\": \"[variables('vmExtensionPublisher')]\",\r\n                                            \"type\": \"[variables('vmExtensionType')]\",\r\n                                            \"typeHandlerVersion\": \"[variables('vmExtensionTypeHandlerVersion')]\",\r\n                                            \"autoUpgradeMinorVersion\": true\r\n                                        }\r\n                                    }\r\n                                ],\r\n                                \"outputs\": {\r\n                                    \"policy\": {\r\n                                        \"type\": \"string\",\r\n                                        \"value\": \"[concat('Enabled extension for VM', ': ', parameters('vmName'))]\"\r\n                                    }\r\n                                }\r\n                            },\r\n                            \"parameters\": {\r\n                                \"vmName\": {\r\n                                    \"value\": \"[field('name')]\"\r\n                                },\r\n                                \"location\": {\r\n                                    \"value\": \"[field('location')]\"\r\n                                }\r\n                            }\r\n                        }\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    }\r\n}",
+            "varsessionHostsSizeLowercase": "[toLower(parameters('sessionHostsSize'))]",
+            "varDeployGpuPolicies": true,
+            "varCustomPolicyDefinitions": [
+              {
+                "name": "policy-definition-es-deploy-amd-gpu-driver",
+                "deploymentName": "AMD-Policy",
+                "displayName": "Custom - Deploy AMD GPU Driver Extension",
+                "libDefinition": "[json(variables('$fxv#0'))]"
+              },
+              {
+                "name": "policy-definition-es-deploy-nvidia-gpu-driver",
+                "deploymentName": "NVIDIA-Policy",
+                "displayName": "Custom - Deploy Nvidia GPU Driver Extension",
+                "libDefinition": "[json(variables('$fxv#1'))]"
+              }
+            ]
+          },
+          "resources": [
+            {
+              "copy": {
+                "name": "gpuPolicyRemediationTask",
+                "count": "[length(variables('varCustomPolicyDefinitions'))]"
+              },
+              "condition": "[variables('varDeployGpuPolicies')]",
+              "type": "Microsoft.PolicyInsights/remediations",
+              "apiVersion": "2021-10-01",
+              "name": "[format('Policy-Remed-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
+              "properties": {
+                "failureThreshold": {
+                  "percentage": 1
+                },
+                "parallelDeployments": 10,
+                "policyAssignmentId": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.resourceId.value]",
+                "resourceCount": 500
+              },
+              "dependsOn": [
+                "[subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
+              ]
+            },
+            {
+              "copy": {
+                "name": "gpuPolicyDefinitions",
+                "count": "[length(variables('varCustomPolicyDefinitions'))]"
+              },
+              "condition": "[variables('varDeployGpuPolicies')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
+              "location": "[deployment().location]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "description": {
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.properties.description]"
+                  },
+                  "displayName": {
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.properties.displayName]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "name": {
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].name]"
+                  },
+                  "metadata": {
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.properties.metadata]"
+                  },
+                  "mode": {
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.properties.mode]"
+                  },
+                  "parameters": {
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.properties.parameters]"
+                  },
+                  "policyRule": {
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.properties.policyRule]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.17.1.54307",
+                      "templateHash": "5657647834665443119"
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "maxLength": 64,
+                      "metadata": {
+                        "description": "Required. Specifies the name of the policy definition. Maximum length is 64 characters."
+                      }
+                    },
+                    "displayName": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "maxLength": 128,
+                      "metadata": {
+                        "description": "Optional. The display name of the policy definition. Maximum length is 128 characters."
+                      }
+                    },
+                    "description": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The policy definition description."
+                      }
+                    },
+                    "mode": {
+                      "type": "string",
+                      "defaultValue": "All",
+                      "allowedValues": [
+                        "All",
+                        "Indexed",
+                        "Microsoft.KeyVault.Data",
+                        "Microsoft.ContainerService.Data",
+                        "Microsoft.Kubernetes.Data",
+                        "Microsoft.Network.Data"
+                      ],
+                      "metadata": {
+                        "description": "Optional. The policy definition mode. Default is All, Some examples are All, Indexed, Microsoft.KeyVault.Data."
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "defaultValue": {},
+                      "metadata": {
+                        "description": "Optional. The policy Definition metadata. Metadata is an open ended object and is typically a collection of key-value pairs."
+                      }
+                    },
+                    "parameters": {
+                      "type": "object",
+                      "defaultValue": {},
+                      "metadata": {
+                        "description": "Optional. The policy definition parameters that can be used in policy definition references."
+                      }
+                    },
+                    "policyRule": {
+                      "type": "object",
+                      "metadata": {
+                        "description": "Required. The Policy Rule details for the Policy Definition."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[deployment().location]",
+                      "metadata": {
+                        "description": "Optional. Location deployment metadata."
+                      }
+                    },
+                    "enableDefaultTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "condition": "[parameters('enableDefaultTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2021-04-01",
+                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+                      "location": "[parameters('location')]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": []
+                        }
+                      }
+                    },
+                    {
+                      "type": "Microsoft.Authorization/policyDefinitions",
+                      "apiVersion": "2021-06-01",
+                      "name": "[parameters('name')]",
+                      "properties": {
+                        "policyType": "Custom",
+                        "mode": "[parameters('mode')]",
+                        "displayName": "[if(not(empty(parameters('displayName'))), parameters('displayName'), null())]",
+                        "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
+                        "metadata": "[if(not(empty(parameters('metadata'))), parameters('metadata'), null())]",
+                        "parameters": "[if(not(empty(parameters('parameters'))), parameters('parameters'), null())]",
+                        "policyRule": "[parameters('policyRule')]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Policy Definition Name."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Policy Definition resource ID."
+                      },
+                      "value": "[subscriptionResourceId('Microsoft.Authorization/policyDefinitions', parameters('name'))]"
+                    },
+                    "roleDefinitionIds": {
+                      "type": "array",
+                      "metadata": {
+                        "description": "Policy Definition Role Definition IDs."
+                      },
+                      "value": "[if(contains(reference(subscriptionResourceId('Microsoft.Authorization/policyDefinitions', parameters('name')), '2021-06-01').policyRule.then, 'details'), if(contains(reference(subscriptionResourceId('Microsoft.Authorization/policyDefinitions', parameters('name')), '2021-06-01').policyRule.then.details, 'roleDefinitionIds'), reference(subscriptionResourceId('Microsoft.Authorization/policyDefinitions', parameters('name')), '2021-06-01').policyRule.then.details.roleDefinitionIds, createArray()), createArray())]"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "copy": {
+                "name": "gpuPolicyAssignments",
+                "count": "[length(variables('varCustomPolicyDefinitions'))]"
+              },
+              "condition": "[variables('varDeployGpuPolicies')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
+              "location": "[deployment().location]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.name]"
+                  },
+                  "displayName": {
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.properties.displayName]"
+                  },
+                  "description": {
+                    "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.properties.description]"
+                  },
+                  "identity": {
+                    "value": "SystemAssigned"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "policyDefinitionId": {
+                    "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.resourceId.value]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.17.1.54307",
+                      "templateHash": "8382082599438484665"
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "maxLength": 64,
+                      "metadata": {
+                        "description": "Required. Specifies the name of the policy assignment. Maximum length is 64 characters for subscription scope."
+                      }
+                    },
+                    "description": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. This message will be part of response in case of policy violation."
+                      }
+                    },
+                    "displayName": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "maxLength": 128,
+                      "metadata": {
+                        "description": "Optional. The display name of the policy assignment. Maximum length is 128 characters."
+                      }
+                    },
+                    "policyDefinitionId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Specifies the ID of the policy definition or policy set definition being assigned."
+                      }
+                    },
+                    "parameters": {
+                      "type": "object",
+                      "defaultValue": {},
+                      "metadata": {
+                        "description": "Optional. Parameters for the policy assignment if needed."
+                      }
+                    },
+                    "identity": {
+                      "type": "string",
+                      "defaultValue": "SystemAssigned",
+                      "allowedValues": [
+                        "SystemAssigned",
+                        "UserAssigned",
+                        "None"
+                      ],
+                      "metadata": {
+                        "description": "Optional. The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning 'Modify' policy definitions."
+                      }
+                    },
+                    "userAssignedIdentityId": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The Resource ID for the user assigned identity to assign to the policy assignment."
+                      }
+                    },
+                    "roleDefinitionIds": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "Optional. The IDs Of the Azure Role Definition list that is used to assign permissions to the identity. You need to provide either the fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.. See https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles for the list IDs for built-in Roles. They must match on what is on the policy definition."
+                      }
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "defaultValue": {},
+                      "metadata": {
+                        "description": "Optional. The policy assignment metadata. Metadata is an open ended object and is typically a collection of key-value pairs."
+                      }
+                    },
+                    "nonComplianceMessages": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "Optional. The messages that describe why a resource is non-compliant with the policy."
+                      }
+                    },
+                    "enforcementMode": {
+                      "type": "string",
+                      "defaultValue": "Default",
+                      "allowedValues": [
+                        "Default",
+                        "DoNotEnforce"
+                      ],
+                      "metadata": {
+                        "description": "Optional. The policy assignment enforcement mode. Possible values are Default and DoNotEnforce. - Default or DoNotEnforce."
+                      }
+                    },
+                    "notScopes": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "Optional. The policy excluded scopes."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[deployment().location]",
+                      "metadata": {
+                        "description": "Optional. Location for all resources."
+                      }
+                    },
+                    "overrides": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "Optional. The policy property value override. Allows changing the effect of a policy definition without modifying the underlying policy definition or using a parameterized effect in the policy definition."
+                      }
+                    },
+                    "resourceSelectors": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location."
+                      }
+                    },
+                    "subscriptionId": {
+                      "type": "string",
+                      "defaultValue": "[subscription().subscriptionId]",
+                      "metadata": {
+                        "description": "Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment. If not provided, will use the current scope for deployment."
+                      }
+                    },
+                    "enableDefaultTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "identityVar": "[if(equals(parameters('identity'), 'SystemAssigned'), createObject('type', parameters('identity')), if(equals(parameters('identity'), 'UserAssigned'), createObject('type', parameters('identity'), 'userAssignedIdentities', createObject(format('{0}', parameters('userAssignedIdentityId')), createObject())), null()))]"
+                  },
+                  "resources": [
+                    {
+                      "condition": "[parameters('enableDefaultTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2021-04-01",
+                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+                      "location": "[parameters('location')]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": []
+                        }
+                      }
+                    },
+                    {
+                      "type": "Microsoft.Authorization/policyAssignments",
+                      "apiVersion": "2022-06-01",
+                      "name": "[parameters('name')]",
+                      "location": "[parameters('location')]",
+                      "properties": {
+                        "displayName": "[if(not(empty(parameters('displayName'))), parameters('displayName'), null())]",
+                        "metadata": "[if(not(empty(parameters('metadata'))), parameters('metadata'), null())]",
+                        "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
+                        "policyDefinitionId": "[parameters('policyDefinitionId')]",
+                        "parameters": "[parameters('parameters')]",
+                        "nonComplianceMessages": "[if(not(empty(parameters('nonComplianceMessages'))), parameters('nonComplianceMessages'), createArray())]",
+                        "enforcementMode": "[parameters('enforcementMode')]",
+                        "notScopes": "[if(not(empty(parameters('notScopes'))), parameters('notScopes'), createArray())]",
+                        "overrides": "[if(not(empty(parameters('overrides'))), parameters('overrides'), createArray())]",
+                        "resourceSelectors": "[if(not(empty(parameters('resourceSelectors'))), parameters('resourceSelectors'), createArray())]"
+                      },
+                      "identity": "[variables('identityVar')]"
+                    },
+                    {
+                      "copy": {
+                        "name": "roleAssignment",
+                        "count": "[length(parameters('roleDefinitionIds'))]"
+                      },
+                      "condition": "[and(not(empty(parameters('roleDefinitionIds'))), equals(parameters('identity'), 'SystemAssigned'))]",
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "name": "[guid(parameters('subscriptionId'), parameters('roleDefinitionIds')[copyIndex()], parameters('location'), parameters('name'))]",
+                      "properties": {
+                        "roleDefinitionId": "[parameters('roleDefinitionIds')[copyIndex()]]",
+                        "principalId": "[reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId]",
+                        "principalType": "ServicePrincipal"
+                      },
+                      "dependsOn": [
+                        "[subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name'))]"
+                      ]
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Policy Assignment Name."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "principalId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Policy Assignment principal ID."
+                      },
+                      "value": "[if(equals(parameters('identity'), 'SystemAssigned'), reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId, '')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Policy Assignment resource ID."
+                      },
+                      "value": "[subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name'))]"
+                    },
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The location the resource was deployed into."
+                      },
+                      "value": "[reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').location]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "[subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
+              ]
+            }
+          ]
+        }
+      }
     },
     {
       "type": "Microsoft.Resources/deployments",
