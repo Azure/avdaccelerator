@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "16219477405015187374"
+      "templateHash": "12452474155842372738"
     }
   },
   "parameters": {
@@ -8019,7 +8019,7 @@
       }
     },
     {
-      "condition": "[or(or(parameters('createAvdVnet'), parameters('createPrivateDnsZones')), parameters('avdDeploySessionHosts'))]",
+      "condition": "[or(or(or(or(parameters('createAvdVnet'), parameters('createPrivateDnsZones')), parameters('avdDeploySessionHosts')), parameters('createAvdFslogixDeployment')), parameters('createMsixDeployment'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('Networking-{0}', parameters('time'))]",
