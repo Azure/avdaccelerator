@@ -34,7 +34,7 @@ var varCustomPolicyDefinitions = [
       displayName: 'Custom - Deploy Nvidia GPU Driver Extension'
       libDefinition: json(loadTextContent('../../../policies/gpu/policyDefinitions/policy-definition-es-deploy-nvidia-gpu-driver.json'))
     }
-  ]
+]
 // =========== //
 // Deployments //
 // =========== //
@@ -42,7 +42,7 @@ var varCustomPolicyDefinitions = [
 
 // Policy Definition for GPU extensions.
 module gpuPolicyDefinitions '../../../../carml/1.3.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: if (varDeployGpuPolicies) {
-    name: '${customPolicyDefinition.deploymentName}-${time}'
+    name: 'Policy-Defin-${customPolicyDefinition.deploymentName}-${time}'
     params: {
         description: customPolicyDefinition.libDefinition.properties.description
         displayName: customPolicyDefinition.libDefinition.properties.displayName
