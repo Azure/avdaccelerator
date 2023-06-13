@@ -279,7 +279,7 @@ module sessionHostsAntimalwareExtension '../../../../../carml/1.3.0/Microsoft.Co
     name: 'SH-Antimalware-${padLeft((i + sessionHostCountIndex), 4, '0')}-${time}'
     params: {
         location: sessionHostLocation
-        virtualMachineName: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 4, '0')}'
+        virtualMachineName: '${sessionHostNamePrefix}${padLeft((i + sessionHostCountIndex), 4, '0')}'
         name: 'MicrosoftAntiMalware'
         publisher: 'Microsoft.Azure.Security'
         type: 'IaaSAntimalware'
@@ -343,7 +343,7 @@ module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virt
     name: 'SH-Mon-${padLeft((i + sessionHostCountIndex), 4, '0')}-${time}'
     params: {
         location: sessionHostLocation
-        virtualMachineName: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 4, '0')}'
+        virtualMachineName: '${sessionHostNamePrefix}${padLeft((i + sessionHostCountIndex), 4, '0')}'
         name: 'MicrosoftMonitoringAgent'
         publisher: 'Microsoft.EnterpriseCloud.Monitoring'
         type: 'MicrosoftMonitoringAgent'
@@ -393,7 +393,7 @@ module configureFsLogixAvdHosts './configureFslogixOnSessionHosts.bicep' = [for 
     name: 'Fsl-Conf-${padLeft((i + sessionHostCountIndex), 4, '0')}-${time}'
     params: {
         location: sessionHostLocation
-        name: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 4, '0')}'
+        name: '${sessionHostNamePrefix}${padLeft((i + sessionHostCountIndex), 4, '0')}'
         file: fsLogixScriptFile
         fsLogixScriptArguments: fsLogixScriptArguments
         baseScriptUri: fslogixScriptUri
@@ -411,7 +411,7 @@ module addAvdHostsToHostPool './registerSessionHostsOnHopstPool.bicep' = [for i 
     params: {
         location: sessionHostLocation
         hostPoolToken: hostPoolToken
-        name: '${sessionHostNamePrefix}-${padLeft((i + sessionHostCountIndex), 4, '0')}'
+        name: '${sessionHostNamePrefix}${padLeft((i + sessionHostCountIndex), 4, '0')}'
         hostPoolName: hostPoolName
         avdAgentPackageLocation: avdAgentPackageLocation
     }
