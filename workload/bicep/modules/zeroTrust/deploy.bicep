@@ -66,6 +66,9 @@ module ztPolicyDefinition '../../../../carml/1.3.0/Microsoft.Authorization/polic
         displayName: 'Custom - Zero Trust - Disable Managed Disk Network Access'
         location: location
         name: 'AVD-ACC-Zero-Trust-Disable-Managed-Disk-Network-Access'
+        metadata: {
+            category: 'Security'
+        }
         policyRule: {
             if: {
                 field: 'type'
