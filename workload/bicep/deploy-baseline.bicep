@@ -976,6 +976,13 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust) {
     ]
 }
 
+// VM GPU extension policies.
+module gpuPolicies './modules/gpuExtensions/deploy.bicep' = {
+    name: 'GPU-VM-Extensions${time}'
+    params: {
+      location: avdSessionHostLocation
+    }
+}
 
 // Key vault.
 module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
