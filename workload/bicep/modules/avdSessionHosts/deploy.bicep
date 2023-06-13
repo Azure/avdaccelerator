@@ -234,14 +234,3 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varAvd
     availabilitySet
   ]
 }]
-/*
-// GPU policy definitions.
-module gpuPolicies './.bicep/gpuAzurePolicies.bicep' = {
-  scope: subscription('${workloadSubsId}')
-  name: 'Custom-Policy-GPU-${time}'
-  params: {
-    subscriptionId: workloadSubsId
-    location: sessionHostLocation
-  }
-}
-*/
