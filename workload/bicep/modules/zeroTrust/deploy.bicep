@@ -52,62 +52,44 @@ param time string = utcNow()
 // =========== //
 // Variable declaration //
 // =========== //
-
+var varCustomPolicyDefinitions = [
+    {
+      name: 'AVD-ACC-Zero-Trust-Disable-Managed-Disk-Network-Access'
+      deploymentName: 'ZT-Disk-Policy'
+      displayName: 'Custom - Zero Trust - Disable Managed Disk Network Access'
+      libDefinition: json(loadTextContent('../../../policies/zeroTrust/policyDefinitions/policy-definition-es-vm-disk-zero-trust.json'))
+    }
+]
 // =========== //
 // Deployments //
 // =========== //
 // call on the keyvault.
 
 // Policy Definition for Managed Disk Network Access.
-module ztPolicyDefinition '../../../../carml/1.3.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = if (diskZeroTrust) {
-    name: 'ZT-Policy-Definition-${time}'
+module ztPolicyDefinitions '../../../../carml/1.3.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: if (diskZeroTrust) {
+    name: 'Policy-Defin-${customPolicyDefinition.deploymentName}-${time}'
     params: {
-        description: 'This policy definition sets the network access policy property to "DenyAll" and the public network access property to "Disabled" on all the managed disks within the assigned scope.'
-        displayName: 'Custom - Zero Trust - Disable Managed Disk Network Access'
+        description: customPolicyDefinition.libDefinition.properties.description
+        displayName: customPolicyDefinition.libDefinition.properties.displayName
         location: location
-        name: 'AVD-ACC-Zero-Trust-Disable-Managed-Disk-Network-Access'
-        metadata: {
-            category: 'Security'
-        }
-        policyRule: {
-            if: {
-                field: 'type'
-                equals: 'Microsoft.Compute/disks'
-            }
-            then: {
-                effect: 'modify'
-                details: {
-                    roleDefinitionIds: [
-                        '/providers/Microsoft.Authorization/roleDefinitions/60fc6e62-5479-42d4-8bf4-67625fcc2840'
-                    ]
-                    operations: [
-                        {
-                            operation: 'addOrReplace'
-                            field: 'Microsoft.Compute/disks/networkAccessPolicy'
-                            value: 'DenyAll'
-                        }
-                        {
-                            operation: 'addOrReplace'
-                            field: 'Microsoft.Compute/disks/publicNetworkAccess'
-                            value: 'Disabled'
-                        }
-                    ]
-                }
-            }
-        }
+        name: customPolicyDefinition.name
+        metadata: customPolicyDefinition.libDefinition.properties.metadata
+        mode: customPolicyDefinition.libDefinition.properties.mode
+        parameters: customPolicyDefinition.libDefinition.properties.parameters
+        policyRule: customPolicyDefinition.libDefinition.properties.policyRule
     }
-}
+}]
 
 // Policy Assignment for Managed Disk Network Access.
-module ztPolicyAssignment '../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = if (diskZeroTrust) {
-    name: 'ZT-Policy-Assignment-${time}'
+module ztPolicyAssignment '../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (diskZeroTrust) {
+    name: 'Policy-Assign-${customPolicyDefinition.deploymentName}-${time}' 
     params: {
-        name: 'AVD-ACC-Zero-Trust-Disable-Managed-Disk-Network-Access'
-        displayName: 'Custom - Zero Trust - Disable Managed Disk Network Access'
-        description: 'This policy assignment sets the network access policy property to "DenyAll" and the public network access property to "Disabled" on all the managed disks within the assigned scope.'
+        name: customPolicyDefinition.libDefinition.name
+        displayName: customPolicyDefinition.libDefinition.properties.displayName
+        description: customPolicyDefinition.libDefinition.properties.description
         identity: 'SystemAssigned'
         location: location
-        policyDefinitionId: diskZeroTrust ? ztPolicyDefinition.outputs.resourceId : ''
+        policyDefinitionId: diskZeroTrust ? ztPolicyDefinitions[i].outputs.resourceId : ''
         resourceSelectors: [
             {
                 name: 'VirtualMachineDisks'
@@ -122,7 +104,7 @@ module ztPolicyAssignment '../../../../carml/1.3.0/Microsoft.Authorization/polic
             }
         ]
     }
-}
+}]
 
 // User Assigned Identity for Zero Trust.
 module ztManagedIdentity '../../../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
@@ -162,8 +144,8 @@ module ztManagedIdentityWait '../../../../carml/1.3.0/Microsoft.Resources/deploy
   }
 
 // Policy Remediation Task for Zero Trust.
-resource ztPolicyRemediationTask 'Microsoft.PolicyInsights/remediations@2021-10-01' = {
-    name: 'remediate-disks-network-access'
+resource ztPolicyRemediationTask 'Microsoft.PolicyInsights/remediations@2021-10-01' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions : if (diskZeroTrust) {
+    name: 'Policy-Remed-${customPolicyDefinition.deploymentName}-${time}'
     properties: {
         failureThreshold: {
             percentage: 1
