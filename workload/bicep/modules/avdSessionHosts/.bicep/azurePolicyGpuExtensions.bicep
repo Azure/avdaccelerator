@@ -26,13 +26,13 @@ var varCustomPolicyDefinitions = [
       name: 'policy-definition-es-deploy-amd-gpu-driver'
       deploymentName: 'AMD-Policy'
       displayName: 'Custom - Deploy AMD GPU Driver Extension'
-      libDefinition: json(loadTextContent('../../../policies/gpu/policyDefinitions/policy-definition-es-deploy-amd-gpu-driver.json'))
+      libDefinition: json(loadTextContent('../../../../policies/gpu/policyDefinitions/policy-definition-es-deploy-amd-gpu-driver.json'))
     }
     {
       name: 'policy-definition-es-deploy-nvidia-gpu-driver'
       deploymentName: 'NVIDIA-Policy'
       displayName: 'Custom - Deploy Nvidia GPU Driver Extension'
-      libDefinition: json(loadTextContent('../../../policies/gpu/policyDefinitions/policy-definition-es-deploy-nvidia-gpu-driver.json'))
+      libDefinition: json(loadTextContent('../../../../policies/gpu/policyDefinitions/policy-definition-es-deploy-nvidia-gpu-driver.json'))
     }
 ]
 // =========== //
@@ -41,7 +41,7 @@ var varCustomPolicyDefinitions = [
 // call on the keyvault.
 
 // Policy Definition for GPU extensions.
-module gpuPolicyDefinitions '../../../../carml/1.3.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: if (varDeployGpuPolicies) {
+module gpuPolicyDefinitions '../../../../../carml/1.3.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: if (varDeployGpuPolicies) {
     name: 'Policy-Defin-${customPolicyDefinition.deploymentName}-${time}'
     params: {
         description: customPolicyDefinition.libDefinition.properties.description
@@ -56,7 +56,7 @@ module gpuPolicyDefinitions '../../../../carml/1.3.0/Microsoft.Authorization/pol
 }]
 
 // Policy Assignment for GPU extensions.
-module gpuPolicyAssignments '../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (varDeployGpuPolicies) {
+module gpuPolicyAssignments '../../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (varDeployGpuPolicies) {
     name: 'Policy-Assign-${customPolicyDefinition.deploymentName}-${time}' 
     params: {
         name: customPolicyDefinition.libDefinition.name

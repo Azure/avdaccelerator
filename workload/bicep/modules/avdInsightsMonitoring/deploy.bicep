@@ -89,7 +89,7 @@ module alaWorkspaceWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentS
 }
 
 // Policy definitions.
-module deployDiagnosticsAzurePolicyForAvd './.bicep/azureMonitoringPolicies.bicep' = if (deployCustomPolicyMonitoring) {
+module deployDiagnosticsAzurePolicyForAvd './.bicep/azurePolicyMonitoring.bicep' = if (deployCustomPolicyMonitoring) {
   scope: subscription('${workloadSubsId}')
   name: 'Custom-Policy-Monitoring-${time}'
   params: {
