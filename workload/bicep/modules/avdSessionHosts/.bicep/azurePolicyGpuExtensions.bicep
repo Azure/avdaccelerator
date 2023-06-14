@@ -16,8 +16,6 @@ param time string = utcNow()
 // =========== //
 // Variable declaration //
 // =========== //
-var varsessionHostsSizeLowercase = toLower(sessionHostsSize)
-var varDeployGpuPolicies = (contains(varsessionHostsSizeLowercase, 'nc') || contains(varsessionHostsSizeLowercase, 'nv')) ? true : false
 // Policy Set/Initiative Definition Parameter Variables
 
 // This variable contains a number of objects that load in the custom Azure Policy Defintions that are provided as part of the ESLZ/ALZ reference implementation. 
@@ -41,7 +39,7 @@ var varCustomPolicyDefinitions = [
 // call on the keyvault.
 
 // Policy Definition for GPU extensions.
-module gpuPolicyDefinitions '../../../../../carml/1.3.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: if (varDeployGpuPolicies) {
+module gpuPolicyDefinitions '../../../../../carml/1.3.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: {
     name: 'Policy-Defin-${customPolicyDefinition.deploymentName}-${time}'
     params: {
         description: customPolicyDefinition.libDefinition.properties.description
@@ -56,7 +54,7 @@ module gpuPolicyDefinitions '../../../../../carml/1.3.0/Microsoft.Authorization/
 }]
 
 // Policy Assignment for GPU extensions.
-module gpuPolicyAssignments '../../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (varDeployGpuPolicies) {
+module gpuPolicyAssignments '../../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: {
     name: 'Policy-Assign-${customPolicyDefinition.deploymentName}-${time}' 
     params: {
         name: customPolicyDefinition.libDefinition.name
@@ -69,7 +67,7 @@ module gpuPolicyAssignments '../../../../../carml/1.3.0/Microsoft.Authorization/
 }]
 
 // Policy Remediation Task for GPU extensions.
-resource gpuPolicyRemediationTask 'Microsoft.PolicyInsights/remediations@2021-10-01' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (varDeployGpuPolicies) {
+resource gpuPolicyRemediationTask 'Microsoft.PolicyInsights/remediations@2021-10-01' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: {
     name: 'Policy-Remed-${customPolicyDefinition.deploymentName}-${time}'
     properties: {
         failureThreshold: {
