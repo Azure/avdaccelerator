@@ -21,15 +21,11 @@ param time string = utcNow()
 // This variable contains a number of objects that load in the custom Azure Policy Defintions that are provided as part of the ESLZ/ALZ reference implementation. 
 var varCustomPolicyDefinitions = [
     {
-      name: 'policy-definition-es-deploy-amd-gpu-driver'
       deploymentName: 'AMD-Policy'
-      displayName: 'Custom - Deploy AMD GPU Driver Extension'
       libDefinition: json(loadTextContent('../../../../policies/gpu/policyDefinitions/policy-definition-es-deploy-amd-gpu-driver.json'))
     }
     {
-      name: 'policy-definition-es-deploy-nvidia-gpu-driver'
-      deploymentName: 'NVIDIA-Policy'
-      displayName: 'Custom - Deploy Nvidia GPU Driver Extension'
+      deploymentName: 'Nvidia-Policy'
       libDefinition: json(loadTextContent('../../../../policies/gpu/policyDefinitions/policy-definition-es-deploy-nvidia-gpu-driver.json'))
     }
 ]
@@ -45,7 +41,7 @@ module gpuPolicyDefinitions '../../../../../carml/1.3.0/Microsoft.Authorization/
         description: customPolicyDefinition.libDefinition.properties.description
         displayName: customPolicyDefinition.libDefinition.properties.displayName
         location: location
-        name: customPolicyDefinition.name
+        name: customPolicyDefinition.libDefinition.name
         metadata: customPolicyDefinition.libDefinition.properties.metadata
         mode: customPolicyDefinition.libDefinition.properties.mode
         parameters: customPolicyDefinition.libDefinition.properties.parameters
