@@ -7,9 +7,6 @@ targetScope = 'subscription'
 @description('Location where to deploy compute services.')
 param location string
 
-@description('Session host VM size.')
-param sessionHostsSize string
-
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 

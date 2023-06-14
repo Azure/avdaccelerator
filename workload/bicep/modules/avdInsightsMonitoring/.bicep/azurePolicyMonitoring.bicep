@@ -4,7 +4,7 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 @description('Location where to deploy AVD management plane.')
-param managementPlaneLocation string
+param location string
 
 @description('AVD workload subscription ID, multiple subscriptions scenario.')
 param workloadSubsId string
@@ -25,46 +25,46 @@ var varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters = loadJsonCo
 // This variable contains a number of objects that load in the custom Azure Policy Defintions that are provided as part of the ESLZ/ALZ reference implementation. 
 var varCustomPolicyDefinitions = [
   {
-    name: 'policy-deploy-diagnostics-avd-application-group'
+    deploymentName: 'App-Group-Diag'
     libDefinition: json(loadTextContent('../../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-avd-application-group.json'))
   }
   {
-    name: 'policy-deploy-diagnostics-avd-host-pool'
+    deploymentName: 'Host-Pool-Diag'
     libDefinition: json(loadTextContent('../../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-avd-host-pool.json'))
   }
   {
-    name: 'policy-deploy-diagnostics-avd-scaling-plan'
+    deploymentName: 'Scaling-Plan-Diag'
     libDefinition: json(loadTextContent('../../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-avd-scaling-plan.json'))
   }
   {
-    name: 'policy-deploy-diagnostics-avd-workspace'
+    deploymentName: 'Workspace-Diag'
     libDefinition: json(loadTextContent('../../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-avd-workspace.json'))
   }
   {
-    name: 'policy-deploy-diagnostics-network-security-group'
+    deploymentName: 'NSG-Diag'
     libDefinition: json(loadTextContent('../../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-network-security-group.json'))
   }
   {
-    name: 'policy-deploy-diagnostics-nic'
+    deploymentName: 'NIC-Diag'
     libDefinition: json(loadTextContent('../../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-nic.json'))
   }
   {
-    name: 'policy-deploy-diagnostics-virtual-machine'
+    deploymentName: 'VM-Diag'
     libDefinition: json(loadTextContent('../../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-virtual-machine.json'))
   }
   {
-    name: 'policy-deploy-diagnostics-virtual-network'
+    deploymentName: 'vNet-Diag'
     libDefinition: json(loadTextContent('../../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-virtual-network.json'))
   }
   {
-   name: 'policy-deploy-diagnostics-azure-files'
-   libDefinition: json(loadTextContent('../../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-azure-files.json'))
+    deploymentName: 'Azure-Files-Diag'
+    libDefinition: json(loadTextContent('../../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-azure-files.json'))
   }
 ]
 
 // This variable contains a number of objects that load in the custom Azure Policy Set/Initiative Defintions that are provided as part of the ESLZ/ALZ reference implementation - this is automatically created in the file 'infra-as-code\bicep\modules\policy\lib\policy_set_definitions\_policySetDefinitionsBicepInput.txt' via a GitHub action, that runs on a daily schedule, and is then manually copied into this variable.
 var varCustomPolicySetDefinitions = {
-  name: 'policy-set-deploy-avd-diagnostics-to-log-analytics'
+  deploymentName: 'policy-set-avd-diagnostics'
   libSetDefinition: json(loadTextContent('../../../../policies/monitoring/policySets/policy-set-definition-es-deploy-diagnostics-to-log-analytics.json'))
   libSetChildDefinitions: [
     {
@@ -121,12 +121,10 @@ var varCustomPolicySetDefinitions = {
 
 // Policy definitions.
 module policyDefinitions '../../../../../carml/1.3.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: {
-  scope: subscription('${workloadSubsId}')
-  name: (length('${customPolicyDefinition.libDefinition.name}-${time}') > 64) ? take('${customPolicyDefinition.libDefinition.name}-${time}', 64) : '${customPolicyDefinition.libDefinition.name}-${time}'
-  //name: customPolicyDefinition.libDefinition.properties.displayName
+  name: 'Policy-Defin-${customPolicyDefinition.deploymentName}-${time}'
   params: {
-    location: managementPlaneLocation
-    name: customPolicyDefinition.name
+    location: location
+    name: customPolicyDefinition.libDefinition.name
     displayName: customPolicyDefinition.libDefinition.properties.displayName
     metadata: customPolicyDefinition.libDefinition.properties.metadata
     mode: customPolicyDefinition.libDefinition.properties.mode
@@ -137,11 +135,10 @@ module policyDefinitions '../../../../../carml/1.3.0/Microsoft.Authorization/pol
 
 // Policy set definition.
 module policySetDefinitions '../../../../../carml/1.3.0/Microsoft.Authorization/policySetDefinitions/subscription/deploy.bicep' = {
-  scope: subscription('${workloadSubsId}')
   name: 'Policy-Set-Definition-${time}'
   params: {
-    location: managementPlaneLocation
-    name: varCustomPolicySetDefinitions.name
+    location: location
+    name: varCustomPolicySetDefinitions.libSetDefinition.name
     description: varCustomPolicySetDefinitions.libSetDefinition.properties.description
     displayName: varCustomPolicySetDefinitions.libSetDefinition.properties.displayName
     metadata: varCustomPolicySetDefinitions.libSetDefinition.properties.metadata
@@ -159,12 +156,11 @@ module policySetDefinitions '../../../../../carml/1.3.0/Microsoft.Authorization/
 }
 
 // Policy set assignment.
-module policySetassignment '../../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = {
-  scope: subscription('${workloadSubsId}')
+module policySetAssignment '../../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = {
   name: 'Policy-Set-Assignment-${time}'
   params: {
-    location: managementPlaneLocation
-    name: take('${varCustomPolicySetDefinitions.name}-${workloadSubsId}', 64)
+    location: location
+    name: varCustomPolicySetDefinitions.libSetDefinition.name
     description: varCustomPolicySetDefinitions.libSetDefinition.properties.description
     displayName: varCustomPolicySetDefinitions.libSetDefinition.properties.displayName
     metadata: varCustomPolicySetDefinitions.libSetDefinition.properties.metadata
@@ -183,6 +179,19 @@ module policySetassignment '../../../../../carml/1.3.0/Microsoft.Authorization/p
   dependsOn: [
     policySetDefinitions
   ]
+}
+
+// Policy set remediation.
+resource policySetRemediation 'Microsoft.PolicyInsights/remediations@2021-10-01' = {
+  name: 'Policy-Set-Remed-${time}'
+  properties: {
+      failureThreshold: {
+          percentage: 1
+        }
+        parallelDeployments: 10
+        policyAssignmentId: policySetAssignment.outputs.resourceId
+        resourceCount: 500
+  }
 }
 
 // =========== //
