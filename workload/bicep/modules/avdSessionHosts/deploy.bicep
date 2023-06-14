@@ -47,7 +47,7 @@ param availabilitySetFaultDomainCount int
 param availabilitySetUpdateDomainCount int
 
 @description('Create VM GPU extension policies.')
-param varDeployGpuPolicies bool
+param deployGpuPolicies bool
 
 @description('Required, The service providing domain services for Azure Virtual Desktop.')
 param identityServiceProvider string
@@ -182,15 +182,6 @@ module availabilitySet './.bicep/availabilitySets.bicep' = if (!useAvailabilityZ
   }
 }
 
-// VM GPU extension policies.
-module gpuPolicies './.bicep/azurePolicyGpuExtensions.bicep' = if (varDeployGpuPolicies) {
-  name: 'GPU-VM-Extensions${time}'
-  params: {
-    location: sessionHostLocation
-  }
-  dependsOn: []
-}
-
 // Session hosts.
 @batchSize(1)
 module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varAvdSessionHostBatchCount): {
@@ -247,3 +238,13 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varAvd
   ]
 }]
 
+// VM GPU extension policies.
+module gpuPolicies './.bicep/azurePolicyGpuExtensions.bicep' = if (deployGpuPolicies) {
+  name: 'GPU-VM-Extensions${time}'
+  params: {
+    location: sessionHostLocation
+  }
+  dependsOn: [
+    sessionHosts
+  ]
+}

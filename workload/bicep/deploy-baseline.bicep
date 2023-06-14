@@ -953,7 +953,7 @@ module managedIdentitiesRoleAssign './modules/identity/deploy.bicep' = {
 }
 
 // Zero trust.
-module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust) {
+module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDeploySessionHosts) {
     name: 'Zero-Trust-${time}'
     params: {
         location: avdSessionHostLocation
@@ -1217,7 +1217,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         secureBootEnabled: secureBootEnabled
         vTpmEnabled: vTpmEnabled
         subnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
-        varDeployGpuPolicies: deployGpuPolicies
+        deployGpuPolicies: deployGpuPolicies
         useAvailabilityZones: avdUseAvailabilityZones
         vmLocalUserName: avdVmLocalUserName
         workloadSubsId: avdWorkloadSubsId
