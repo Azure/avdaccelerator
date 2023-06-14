@@ -187,7 +187,6 @@ module gpuPolicies './.bicep/azurePolicyGpuExtensions.bicep' = if (varDeployGpuP
   name: 'GPU-VM-Extensions${time}'
   params: {
     location: sessionHostLocation
-    sessionHostsSize: sessionHostsSize
   }
   dependsOn: []
 }

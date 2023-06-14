@@ -94,7 +94,7 @@ module deployDiagnosticsAzurePolicyForAvd './.bicep/azurePolicyMonitoring.bicep'
   name: 'Custom-Policy-Monitoring-${time}'
   params: {
     alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
-    managementPlaneLocation: managementPlaneLocation
+    location: managementPlaneLocation
     workloadSubsId: workloadSubsId
   }
   dependsOn: [
