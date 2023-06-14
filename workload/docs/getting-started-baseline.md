@@ -22,6 +22,7 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
   - [list of URLs](https://learn.microsoft.com/azure/virtual-desktop/safe-url-list?tabs=azure#session-host-virtual-machines) session host VMs need to access for Azure Virtual Desktop (During and after deployment).
   - List of URLs required during deployment:
     - <https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/Set-FSLogixRegKeys.ps1>
+    - <https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/Set-FSLogixRegKeysAAD.ps1>
     - <https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/Manual-DSC-Storage-Scripts.ps1>
     - <https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip>
     - <https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration_09-08-2022.zip>
@@ -29,7 +30,11 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
 ### Subscription requirements
 
 - Access to the AVD Azure subscription with owner permissions.
-- The [Microsoft.DesktopVirtualization](https://docs.microsoft.com/azure/virtual-desktop/create-host-pools-azure-marketplace?tabs=azure-portal#final-requirements) resource provider must be registered in the subscription to be used for deployment.
+- The following resource provider must be registered in the subscription to be used for deployment:
+  - Microsoft.DesktopVirtualization
+  - Microsoft.Compute (When deploying Zero Trust the feature [EncryptionAtHost](https://learn.microsoft.com/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell) will need to be registered)
+  - Microsoft.Network
+  - Microsoft.Storage
 
 ## Planning
 
