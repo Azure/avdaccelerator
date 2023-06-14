@@ -179,6 +179,16 @@ module availabilitySet './.bicep/availabilitySets.bicep' = if (!useAvailabilityZ
   }
 }
 
+// VM GPU extension policies.
+module gpuPolicies './.bicep/azurePolicyGpuExtensions.bicep' = {
+  name: 'GPU-VM-Extensions${time}'
+  params: {
+    location: sessionHostLocation
+    sessionHostsSize: sessionHostsSize
+  }
+  dependsOn: []
+}
+
 // Session hosts.
 @batchSize(1)
 module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varAvdSessionHostBatchCount): {
@@ -237,14 +247,4 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varAvd
 }]
 
 
-// VM GPU extension policies.
-module gpuPolicies './.bicep/azurePolicyGpuExtensions.bicep' = {
-  name: 'GPU-VM-Extensions${time}'
-  params: {
-    location: sessionHostLocation
-    sessionHostsSize: sessionHostsSize
-  }
-  dependsOn: [
-    availabilitySet
-  ]
-}
+
