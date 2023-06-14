@@ -240,7 +240,7 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varAvd
 
 // VM GPU extension policies.
 module gpuPolicies './.bicep/azurePolicyGpuExtensions.bicep' = if (deployGpuPolicies) {
-  name: 'GPU-VM-Extensions${time}'
+  name: 'GPU-VM-Extensions-${time}'
   params: {
     location: sessionHostLocation
   }

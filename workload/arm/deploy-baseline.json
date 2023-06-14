@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "1752414957728635934"
+      "templateHash": "3807078084564406591"
     }
   },
   "parameters": {
@@ -42654,7 +42654,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "595042549701339609"
+              "templateHash": "13335929477582402927"
             }
           },
           "parameters": {
@@ -49813,7 +49813,7 @@
               "condition": "[parameters('deployGpuPolicies')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('GPU-VM-Extensions{0}', parameters('time'))]",
+              "name": "[format('GPU-VM-Extensions-{0}', parameters('time'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
