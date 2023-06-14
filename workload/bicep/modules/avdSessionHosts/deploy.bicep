@@ -46,8 +46,8 @@ param availabilitySetFaultDomainCount int
 @description('Sets the number of update domains for the availability set.')
 param availabilitySetUpdateDomainCount int
 
-@description('Create new virtual network.')
-param createAvdVnet bool
+@description('Create VM GPU extension policies.')
+param varDeployGpuPolicies bool
 
 @description('Required, The service providing domain services for Azure Virtual Desktop.')
 param identityServiceProvider string
@@ -153,8 +153,8 @@ var maxAvailabilitySetMembersCount = 199 // This is the max number of session ho
 var divisionAvSetValue = deploySessionHostsCount / maxAvailabilitySetMembersCount // This determines if any full availability sets are required.
 var divisionAvSetRemainderValue = deploySessionHostsCount % maxAvailabilitySetMembersCount // This determines if any partial availability sets are required.
 var availabilitySetCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue + 1 : divisionAvSetValue // This determines the total number of availability sets needed, whether full and / or partial.
-var varsessionHostsSizeLowercase = toLower(sessionHostsSize)
-var varDeployGpuPolicies = (contains(varsessionHostsSizeLowercase, 'nc') || contains(varsessionHostsSizeLowercase, 'nv')) ? true : false
+//var varsessionHostsSizeLowercase = toLower(sessionHostsSize)
+//var varDeployGpuPolicies = (contains(varsessionHostsSizeLowercase, 'nc') || contains(varsessionHostsSizeLowercase, 'nv')) ? true : false
 
 // =========== //
 // Deployments //
@@ -245,7 +245,6 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varAvd
   }
   dependsOn: [
     availabilitySet
-    gpuPolicies
   ]
 }]
 

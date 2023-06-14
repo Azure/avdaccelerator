@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "12406901231302558955"
+      "templateHash": "12334817387618385823"
     }
   },
   "parameters": {
@@ -343,6 +343,13 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Deploy new session hosts. (Default: true)"
+      }
+    },
+    "deployGpuPolicies": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Deploy VM GPU extension policies. (Default: true)"
       }
     },
     "avdDeployMonitoring": {
@@ -42583,8 +42590,8 @@
             "value": "[parameters('vTpmEnabled')]"
           },
           "subnetId": "[if(parameters('createAvdVnet'), createObject('value', format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName'))), createObject('value', parameters('existingVnetAvdSubnetResourceId')))]",
-          "createAvdVnet": {
-            "value": "[parameters('createAvdVnet')]"
+          "varDeployGpuPolicies": {
+            "value": "[parameters('deployGpuPolicies')]"
           },
           "useAvailabilityZones": {
             "value": "[parameters('avdUseAvailabilityZones')]"
@@ -42636,7 +42643,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "12761078957069174821"
+              "templateHash": "9812823806280245540"
             }
           },
           "parameters": {
@@ -42724,10 +42731,10 @@
                 "description": "Sets the number of update domains for the availability set."
               }
             },
-            "createAvdVnet": {
+            "varDeployGpuPolicies": {
               "type": "bool",
               "metadata": {
-                "description": "Create new virtual network."
+                "description": "Create VM GPU extension policies."
               }
             },
             "identityServiceProvider": {
@@ -42926,9 +42933,7 @@
             "maxAvailabilitySetMembersCount": 199,
             "divisionAvSetValue": "[div(parameters('deploySessionHostsCount'), variables('maxAvailabilitySetMembersCount'))]",
             "divisionAvSetRemainderValue": "[mod(parameters('deploySessionHostsCount'), variables('maxAvailabilitySetMembersCount'))]",
-            "availabilitySetCount": "[if(greater(variables('divisionAvSetRemainderValue'), 0), add(variables('divisionAvSetValue'), 1), variables('divisionAvSetValue'))]",
-            "varsessionHostsSizeLowercase": "[toLower(parameters('sessionHostsSize'))]",
-            "varDeployGpuPolicies": "[if(or(contains(variables('varsessionHostsSizeLowercase'), 'nc'), contains(variables('varsessionHostsSizeLowercase'), 'nv')), true(), false())]"
+            "availabilitySetCount": "[if(greater(variables('divisionAvSetRemainderValue'), 0), add(variables('divisionAvSetValue'), 1), variables('divisionAvSetValue'))]"
           },
           "resources": [
             {
@@ -43408,7 +43413,7 @@
               }
             },
             {
-              "condition": "[variables('varDeployGpuPolicies')]",
+              "condition": "[parameters('varDeployGpuPolicies')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('GPU-VM-Extensions{0}', parameters('time'))]",
@@ -50330,8 +50335,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-Availability-Set-{0}', parameters('time')))]",
-                "[subscriptionResourceId('Microsoft.Resources/deployments', format('GPU-VM-Extensions{0}', parameters('time')))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-Availability-Set-{0}', parameters('time')))]"
               ]
             }
           ]
