@@ -976,15 +976,6 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust) {
     ]
 }
 
-// VM GPU extension policies.
-module gpuPolicies './modules/azurePolicyGpu/deploy.bicep' = if (avdDeploySessionHosts) {
-    name: 'GPU-VM-Extensions${time}'
-    params: {
-      location: avdSessionHostLocation
-      sessionHostsSize: avdSessionHostsSize
-    }
-}
-
 // Key vault.
 module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
     scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
