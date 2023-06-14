@@ -142,13 +142,13 @@ param customDnsIps string = ''
 @description('Optional. Deploy private endpoints for key vault and storage. (Default: true)')
 param deployPrivateEndpointKeyvaultStorage bool = true
 
-@description('Optional. Use Azure private DNS zones for private endpoints. (Default: true)')
+@description('Optional. Create new  Azure private DNS zones for private endpoints. (Default: true)')
 param createPrivateDnsZones bool = true
 
-@description('Optional. Use Azure private DNS zones for private endpoints. (Default: )')
+@description('Optional. Use existing Azure private DNS zone for Azure files privatelink.file.core.windows.net or privatelink.file.core.usgovcloudapi.net. (Default: '')')
 param avdVnetPrivateDnsZoneFilesId string = ''
 
-@description('Optional. Use Azure private DNS zones for private endpoints. (Default: )')
+@description('Optional. Use existing Azure private DNS zone for key vault privatelink.vaultcore.azure.net or privatelink.vaultcore.usgovcloudapi.net. (Default: '')')
 param avdVnetPrivateDnsZoneKeyvaultId string = ''
 
 @description('Optional. Does the hub contains a virtual network gateway. (Default: false)')
