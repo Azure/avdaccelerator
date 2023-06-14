@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "15686611064004401008"
+      "templateHash": "1031018990787070452"
     }
   },
   "parameters": {
@@ -3305,7 +3305,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "7014614455662781671"
+              "templateHash": "405473217139121705"
             }
           },
           "parameters": {
@@ -6172,7 +6172,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "alaWorkspaceId": "[if(parameters('deployAlaWorkspace'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', parameters('alaWorkspaceId')))]",
-                  "managementPlaneLocation": {
+                  "location": {
                     "value": "[parameters('managementPlaneLocation')]"
                   },
                   "workloadSubsId": {
@@ -6186,11 +6186,11 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "5244036991888317064"
+                      "templateHash": "11266752346643887089"
                     }
                   },
                   "parameters": {
-                    "managementPlaneLocation": {
+                    "location": {
                       "type": "string",
                       "metadata": {
                         "description": "Location where to deploy AVD management plane."
@@ -6349,44 +6349,44 @@
                     "varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters": "[variables('$fxv#0')]",
                     "varCustomPolicyDefinitions": [
                       {
-                        "name": "policy-deploy-diagnostics-avd-application-group",
+                        "deploymentName": "App-Group-Diag",
                         "libDefinition": "[json(variables('$fxv#1'))]"
                       },
                       {
-                        "name": "policy-deploy-diagnostics-avd-host-pool",
+                        "deploymentName": "Host-Pool-Diag",
                         "libDefinition": "[json(variables('$fxv#2'))]"
                       },
                       {
-                        "name": "policy-deploy-diagnostics-avd-scaling-plan",
+                        "deploymentName": "Scaling-Plan-Diag",
                         "libDefinition": "[json(variables('$fxv#3'))]"
                       },
                       {
-                        "name": "policy-deploy-diagnostics-avd-workspace",
+                        "deploymentName": "Workspace-Diag",
                         "libDefinition": "[json(variables('$fxv#4'))]"
                       },
                       {
-                        "name": "policy-deploy-diagnostics-network-security-group",
+                        "deploymentName": "NSG-Diag",
                         "libDefinition": "[json(variables('$fxv#5'))]"
                       },
                       {
-                        "name": "policy-deploy-diagnostics-nic",
+                        "deploymentName": "NIC-Diag",
                         "libDefinition": "[json(variables('$fxv#6'))]"
                       },
                       {
-                        "name": "policy-deploy-diagnostics-virtual-machine",
+                        "deploymentName": "VM-Diag",
                         "libDefinition": "[json(variables('$fxv#7'))]"
                       },
                       {
-                        "name": "policy-deploy-diagnostics-virtual-network",
+                        "deploymentName": "vNet-Diag",
                         "libDefinition": "[json(variables('$fxv#8'))]"
                       },
                       {
-                        "name": "policy-deploy-diagnostics-azure-files",
+                        "deploymentName": "Azure-Files-Diag",
                         "libDefinition": "[json(variables('$fxv#9'))]"
                       }
                     ],
                     "varCustomPolicySetDefinitions": {
-                      "name": "policy-set-deploy-avd-diagnostics-to-log-analytics",
+                      "deploymentName": "policy-set-avd-diagnostics",
                       "libSetDefinition": "[json(variables('$fxv#10'))]",
                       "libSetChildDefinitions": [
                         {
@@ -6445,8 +6445,7 @@
                       },
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[if(greater(length(format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.name, parameters('time'))), 64), take(format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.name, parameters('time')), 64), format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.name, parameters('time')))]",
-                      "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+                      "name": "[format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
                       "location": "[deployment().location]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -6455,10 +6454,10 @@
                         "mode": "Incremental",
                         "parameters": {
                           "location": {
-                            "value": "[parameters('managementPlaneLocation')]"
+                            "value": "[parameters('location')]"
                           },
                           "name": {
-                            "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].name]"
+                            "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.name]"
                           },
                           "displayName": {
                             "value": "[variables('varCustomPolicyDefinitions')[copyIndex()].libDefinition.properties.displayName]"
@@ -6620,7 +6619,6 @@
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('Policy-Set-Definition-{0}', parameters('time'))]",
-                      "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
                       "location": "[deployment().location]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -6629,10 +6627,10 @@
                         "mode": "Incremental",
                         "parameters": {
                           "location": {
-                            "value": "[parameters('managementPlaneLocation')]"
+                            "value": "[parameters('location')]"
                           },
                           "name": {
-                            "value": "[variables('varCustomPolicySetDefinitions').name]"
+                            "value": "[variables('varCustomPolicySetDefinitions').libSetDefinition.name]"
                           },
                           "description": {
                             "value": "[variables('varCustomPolicySetDefinitions').libSetDefinition.properties.description]"
@@ -6791,7 +6789,6 @@
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('Policy-Set-Assignment-{0}', parameters('time'))]",
-                      "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
                       "location": "[deployment().location]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -6800,10 +6797,10 @@
                         "mode": "Incremental",
                         "parameters": {
                           "location": {
-                            "value": "[parameters('managementPlaneLocation')]"
+                            "value": "[parameters('location')]"
                           },
                           "name": {
-                            "value": "[take(format('{0}-{1}', variables('varCustomPolicySetDefinitions').name, parameters('workloadSubsId')), 64)]"
+                            "value": "[variables('varCustomPolicySetDefinitions').libSetDefinition.name]"
                           },
                           "description": {
                             "value": "[variables('varCustomPolicySetDefinitions').libSetDefinition.properties.description]"
@@ -7064,7 +7061,7 @@
                         }
                       },
                       "dependsOn": [
-                        "[subscriptionResourceId(format('{0}', parameters('workloadSubsId')), 'Microsoft.Resources/deployments', format('Policy-Set-Definition-{0}', parameters('time')))]"
+                        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Set-Definition-{0}', parameters('time')))]"
                       ]
                     }
                   ]
@@ -42641,7 +42638,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "13224919800313505914"
+              "templateHash": "14082140028216456618"
             }
           },
           "parameters": {
@@ -43424,9 +43421,6 @@
                 "parameters": {
                   "location": {
                     "value": "[parameters('sessionHostLocation')]"
-                  },
-                  "sessionHostsSize": {
-                    "value": "[parameters('sessionHostsSize')]"
                   }
                 },
                 "template": {
@@ -43436,7 +43430,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "6334555527888698123"
+                      "templateHash": "1824738152306203707"
                     }
                   },
                   "parameters": {
@@ -43444,12 +43438,6 @@
                       "type": "string",
                       "metadata": {
                         "description": "Location where to deploy compute services."
-                      }
-                    },
-                    "sessionHostsSize": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Session host VM size."
                       }
                     },
                     "time": {
