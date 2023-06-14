@@ -153,6 +153,9 @@ var maxAvailabilitySetMembersCount = 199 // This is the max number of session ho
 var divisionAvSetValue = deploySessionHostsCount / maxAvailabilitySetMembersCount // This determines if any full availability sets are required.
 var divisionAvSetRemainderValue = deploySessionHostsCount % maxAvailabilitySetMembersCount // This determines if any partial availability sets are required.
 var availabilitySetCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue + 1 : divisionAvSetValue // This determines the total number of availability sets needed, whether full and / or partial.
+var varsessionHostsSizeLowercase = toLower(sessionHostsSize)
+var varDeployGpuPolicies = (contains(varsessionHostsSizeLowercase, 'nc') || contains(varsessionHostsSizeLowercase, 'nv')) ? true : false
+
 // =========== //
 // Deployments //
 // =========== //
@@ -180,7 +183,7 @@ module availabilitySet './.bicep/availabilitySets.bicep' = if (!useAvailabilityZ
 }
 
 // VM GPU extension policies.
-module gpuPolicies './.bicep/azurePolicyGpuExtensions.bicep' = {
+module gpuPolicies './.bicep/azurePolicyGpuExtensions.bicep' = if (varDeployGpuPolicies) {
   name: 'GPU-VM-Extensions${time}'
   params: {
     location: sessionHostLocation
@@ -245,6 +248,4 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varAvd
     gpuPolicies
   ]
 }]
-
-
 
