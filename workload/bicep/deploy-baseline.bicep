@@ -6,7 +6,7 @@ targetScope = 'subscription'
 
 @minLength(2)
 @maxLength(4)
-@description('Optional. The name of the resource group to deploy. (Default: )')
+@description('Optional. The name of the resource group to deploy. (Default: AVD1)')
 param deploymentPrefix string = 'AVD1'
 
 @allowed([
@@ -28,10 +28,10 @@ param avdSessionHostLocation string = 'eastus2'
 @description('Optional. Location where to deploy AVD management plane. (Default: eastus2)')
 param avdManagementPlaneLocation string = 'eastus2'
 
-@description('Required. AVD workload subscription ID, multiple subscriptions scenario. (Default: )')
+@description('Required. AVD workload subscription ID, multiple subscriptions scenario. (Default: "")')
 param avdWorkloadSubsId string = ''
 
-@description('Required. Azure Virtual Desktop Enterprise Application object ID. (Default: )')
+@description('Required. Azure Virtual Desktop Enterprise Application object ID. (Default: "")')
 param avdEnterpriseAppObjectId string = ''
 
 @description('Required. AVD session host local username.')
@@ -60,19 +60,19 @@ param avdApplicationGroupIdentitiesIds string = ''
     'ServicePrincipal'
     'User'
 ])
-@description('Optional, Identity type to grant RBAC role to access AVD application group. (Defualt: "")')
+@description('Optional, Identity type to grant RBAC role to access AVD application group. (Defualt: Group)')
 param avdApplicationGroupIdentityType string = 'Group'
 
 @description('Required. AD domain name.')
 param avdIdentityDomainName string
 
-@description('Required. AD domain GUID.')
+@description('Required. AD domain GUID. (Defualt: "")')
 param identityDomainGuid string = ''
 
-@description('Required. AVD session host domain join user principal name. (Defualt: "none")')
+@description('Required. AVD session host domain join user principal name. (Defualt: none)')
 param avdDomainJoinUserName string = 'none'
 
-@description('Required. AVD session host domain join password. (Defualt: "none")')
+@description('Required. AVD session host domain join password. (Defualt: none)')
 @secure()
 param avdDomainJoinUserPassword string = 'none'
 
@@ -124,7 +124,7 @@ param existingVnetAvdSubnetResourceId string = ''
 @description('Optional. Existing virtual network subnet for private endpoints. (Default: "")')
 param existingVnetPrivateEndpointSubnetResourceId string = ''
 
-@description('Required. Existing hub virtual network for perring.')
+@description('Required. Existing hub virtual network for perring. (Default: "")')
 param existingHubVnetResourceId string = ''
 
 @description('Optional. AVD virtual network address prefixes. (Default: 10.10.0.0/23)')
@@ -136,7 +136,7 @@ param vNetworkAvdSubnetAddressPrefix string = '10.10.0.0/24'
 @description('Optional. private endpoints virtual network subnet address prefix. (Default: 10.10.1.0/27)')
 param vNetworkPrivateEndpointSubnetAddressPrefix string = '10.10.1.0/27'
 
-@description('Optional. custom DNS servers IPs.')
+@description('Optional. custom DNS servers IPs. (Default: "")')
 param customDnsIps string = ''
 
 @description('Optional. Deploy private endpoints for key vault and storage. (Default: true)')
@@ -158,12 +158,12 @@ param vNetworkGatewayOnHub bool = false
 param createAvdFslogixDeployment bool = true
 
 @description('Optional. Deploy MSIX App Attach setup. (Default: false)')
-param createMsixDeployment bool = true
+param createMsixDeployment bool = false
 
-@description('Optional. Fslogix file share size. (Default: ~1TB)')
+@description('Optional. Fslogix file share size. (Default: 10)')
 param fslogixFileShareQuotaSize int = 10
 
-@description('Optional. MSIX file share size. (Default: ~1TB)')
+@description('Optional. MSIX file share size. (Default: 10)')
 param msixFileShareQuotaSize int = 10
 
 @description('Optional. Deploy new session hosts. (Default: true)')
@@ -173,15 +173,15 @@ param avdDeploySessionHosts bool = true
 param avdDeployMonitoring bool = false
 
 @description('Optional. Deploy AVD Azure log analytics workspace. (Default: true)')
-param deployAlaWorkspace bool = false
+param deployAlaWorkspace bool = true
 
-@description('Required. Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace.')
+@description('Required. Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace. (Default: false)')
 param deployCustomPolicyMonitoring bool = false
 
 @description('Optional. AVD Azure log analytics workspace data retention. (Default: 90)')
 param avdAlaWorkspaceDataRetention int = 90
 
-@description('Optional. Existing Azure log analytics workspace resource ID to connect to. (Default: )')
+@description('Optional. Existing Azure log analytics workspace resource ID to connect to. (Default: "")')
 param alaExistingWorkspaceResourceId string = ''
 
 @minValue(1)
@@ -195,10 +195,7 @@ param avdSessionHostCountIndex int = 0
 @description('Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Defualt: true)')
 param avdUseAvailabilityZones bool = true
 
-//@description('Optional. Creates an availability zone for MSIXand adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Defualt: true) test')
-//param avdMsixUseAvailabilityZones bool = true
-
-@description('Optional. Sets the number of fault domains for the availability set. (Defualt: 3)')
+@description('Optional. Sets the number of fault domains for the availability set. (Defualt: 2)')
 param avdAsFaultDomainCount int = 2
 
 @description('Optional. Sets the number of update domains for the availability set. (Defualt: 5)')
@@ -269,7 +266,7 @@ param avdImageTemplateDefinitionId string = ''
 @description('Optional. OU name for Azure Storage Account. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.  (Default: "")')
 param storageOuPath string = ''
 
-@description('Optional. If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: "")')
+@description('Optional. If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: false)')
 param createOuForStorage bool = false
 
 // Custom Naming
@@ -304,10 +301,6 @@ param avdVnetworkCustomName string = 'vnet-app1-dev-use2-001'
 @maxLength(64)
 @description('Optional. AVD Azure log analytics workspace custom name. (Default: log-avd-app1-dev-use2)')
 param avdAlaWorkspaceCustomName string = 'log-avd-app1-dev-use2'
-
-//@maxLength(24)
-//@description('Optional. Azure Storage Account custom name for NSG flow logs. (Default: stavduse2flowlogs001)')
-//param avdStgAccountForFlowLogsCustomName string = 'stavduse2flowlogs001'
 
 @maxLength(80)
 @description('Optional. AVD virtual network subnet custom name. (Default: snet-avd-app1-dev-use2-001)')
