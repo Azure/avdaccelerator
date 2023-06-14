@@ -169,6 +169,9 @@ param msixFileShareQuotaSize int = 10
 @description('Optional. Deploy new session hosts. (Default: true)')
 param avdDeploySessionHosts bool = true
 
+@description('Optional. Deploy VM GPU extension policies. (Default: true)')
+param deployGpuPolicies bool = true
+
 @description('Optional. Deploy AVD monitoring resources and setings. (Default: false)')
 param avdDeployMonitoring bool = false
 
@@ -1214,7 +1217,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         secureBootEnabled: secureBootEnabled
         vTpmEnabled: vTpmEnabled
         subnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
-        createAvdVnet: createAvdVnet
+        varDeployGpuPolicies: deployGpuPolicies
         useAvailabilityZones: avdUseAvailabilityZones
         vmLocalUserName: avdVmLocalUserName
         workloadSubsId: avdWorkloadSubsId
