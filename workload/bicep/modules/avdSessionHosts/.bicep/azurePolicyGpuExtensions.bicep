@@ -17,7 +17,7 @@ param time string = utcNow()
 // Variable declaration //
 // =========== //
 var varsessionHostsSizeLowercase = toLower(sessionHostsSize)
-var varDeployGpuPolicies = true //  (contains(varsessionHostsSizeLowercase, 'nc') || contains(varsessionHostsSizeLowercase, 'nv')) ? true : false
+var varDeployGpuPolicies = (contains(varsessionHostsSizeLowercase, 'nc') || contains(varsessionHostsSizeLowercase, 'nv')) ? true : false
 // Policy Set/Initiative Definition Parameter Variables
 
 // This variable contains a number of objects that load in the custom Azure Policy Defintions that are provided as part of the ESLZ/ALZ reference implementation. 
