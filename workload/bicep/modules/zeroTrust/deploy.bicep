@@ -54,9 +54,7 @@ param time string = utcNow()
 // =========== //
 var varCustomPolicyDefinitions = [
     {
-      name: 'AVD-ACC-Zero-Trust-Disable-Managed-Disk-Network-Access'
       deploymentName: 'ZT-Disk-Policy'
-      displayName: 'Custom - Zero Trust - Disable Managed Disk Network Access'
       libDefinition: json(loadTextContent('../../../policies/zeroTrust/policyDefinitions/policy-definition-es-vm-disk-zero-trust.json'))
     }
 ]
@@ -72,7 +70,7 @@ module ztPolicyDefinitions '../../../../carml/1.3.0/Microsoft.Authorization/poli
         description: customPolicyDefinition.libDefinition.properties.description
         displayName: customPolicyDefinition.libDefinition.properties.displayName
         location: location
-        name: customPolicyDefinition.name
+        name: customPolicyDefinition.libDefinition.name
         metadata: customPolicyDefinition.libDefinition.properties.metadata
         mode: customPolicyDefinition.libDefinition.properties.mode
         parameters: customPolicyDefinition.libDefinition.properties.parameters
@@ -159,7 +157,7 @@ resource ztPolicyRemediationTask 'Microsoft.PolicyInsights/remediations@2021-10-
 // Role Assignment for Zero Trust.
 module ztRoleAssignment01 '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (diskZeroTrust) {
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
-    name: 'ZT-RoleAssignment-${time}'
+    name: 'ZT-RoleAssign-${time}'
     params: {
         principalId: diskZeroTrust ? ztManagedIdentity.outputs.principalId : ''
         roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
