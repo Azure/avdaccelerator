@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "14018574707616012355"
+      "templateHash": "12406901231302558955"
     }
   },
   "parameters": {
@@ -1194,7 +1194,7 @@
     "varDeploymentPrefixLowercase": "[toLower(parameters('deploymentPrefix'))]",
     "varDeploymentEnvironmentLowercase": "[toLower(parameters('deploymentEnvironment'))]",
     "varDeploymentEnvironmentComputeStorage": "[if(equals(parameters('deploymentEnvironment'), 'Dev'), 'd', if(equals(parameters('deploymentEnvironment'), 'Test'), 't', if(equals(parameters('deploymentEnvironment'), 'Prod'), 'p', '')))]",
-    "varNamingUniqueStringFourChar": "[take(format('{0}', uniqueString(parameters('avdWorkloadSubsId'), variables('varDeploymentPrefixLowercase'), parameters('time'))), 4)]",
+    "varNamingUniqueStringThreeChar": "[take(format('{0}', uniqueString(parameters('avdWorkloadSubsId'), variables('varDeploymentPrefixLowercase'), parameters('time'))), 3)]",
     "varSessionHostLocationAcronym": "[variables('varLocations')[variables('varSessionHostLocationLowercase')].acronym]",
     "varManagementPlaneLocationAcronym": "[variables('varLocations')[variables('varManagementPlaneLocationLowercase')].acronym]",
     "varLocations": "[variables('$fxv#0')]",
@@ -1234,18 +1234,18 @@
     "varScalingPlanExclusionTag": "[format('exclude-{0}', variables('varScalingPlanName'))]",
     "varScalingPlanWeekdaysScheduleName": "[format('Weekdays-{0}', variables('varManagementPlaneNamingStandard'))]",
     "varScalingPlanWeekendScheduleName": "[format('Weekend-{0}', variables('varManagementPlaneNamingStandard'))]",
-    "varWrklKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('avdWrklKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringFourChar')), format('kv-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringFourChar')))]",
+    "varWrklKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('avdWrklKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringThreeChar')), format('kv-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringThreeChar')))]",
     "varWrklKvPrivateEndpointName": "[format('pe-{0}-vault', variables('varWrklKvName'))]",
     "varSessionHostNamePrefix": "[if(parameters('avdUseCustomNaming'), parameters('avdSessionHostCustomNamePrefix'), format('vm{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varSessionHostLocationAcronym')))]",
     "varAvailabilitySetNamePrefix": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}', parameters('avdAvailabilitySetCustomNamePrefix'), variables('varComputeStorageResourcesNamingStandard')), format('avail-{0}', variables('varComputeStorageResourcesNamingStandard')))]",
     "varStorageManagedIdentityName": "[format('id-storage-{0}-001', variables('varComputeStorageResourcesNamingStandard'))]",
     "varFslogixFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('fslogixFileShareCustomName'), format('fslogix-pc-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
     "varMsixFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('msixFileShareCustomName'), format('msix-pc-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
-    "varFslogixStorageName": "[if(parameters('avdUseCustomNaming'), format('{0}fsl{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringFourChar')), format('stfsl{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringFourChar')))]",
-    "varMsixStorageName": "[if(parameters('avdUseCustomNaming'), format('{0}msx{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringFourChar')), format('stmsx{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringFourChar')))]",
+    "varFslogixStorageName": "[if(parameters('avdUseCustomNaming'), format('{0}fsl{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')), format('stfsl{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')))]",
+    "varMsixStorageName": "[if(parameters('avdUseCustomNaming'), format('{0}msx{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')), format('stmsx{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')))]",
     "varManagementVmName": "[format('vmmgmt{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varSessionHostLocationAcronym'))]",
     "varAlaWorkspaceName": "[if(parameters('avdUseCustomNaming'), parameters('avdAlaWorkspaceCustomName'), format('log-avd-{0}-{1}', variables('varDeploymentEnvironmentLowercase'), variables('varManagementPlaneLocationAcronym')))]",
-    "varZtKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('ztKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringFourChar')), format('kv-zt-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringFourChar')))]",
+    "varZtKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('ztKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringThreeChar')), format('kv-zt-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringThreeChar')))]",
     "varZtKvPrivateEndpointName": "[format('pe-{0}-vault', variables('varZtKvName'))]",
     "varFsLogixScriptArguments": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), format('-volumeshare {0} -storageAccountName {1} -identityDomainName {2}', variables('varFslogixSharePath'), variables('varFslogixStorageName'), parameters('avdIdentityDomainName')), format('-volumeshare {0}', variables('varFslogixSharePath')))]",
     "varFslogixSharePath": "[format('\\\\{0}.file.{1}\\{2}', variables('varFslogixStorageName'), environment().suffixes.storage, variables('varFslogixFileShareName'))]",
