@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "7604142135717494177"
+      "templateHash": "9174993714236485423"
     }
   },
   "parameters": {
@@ -13,7 +13,7 @@
       "type": "string",
       "defaultValue": "AVD1",
       "metadata": {
-        "description": "Optional. The name of the resource group to deploy. (Default: )"
+        "description": "Optional. The name of the resource group to deploy. (Default: AVD1)"
       },
       "maxLength": 4,
       "minLength": 2
@@ -57,14 +57,14 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Required. AVD workload subscription ID, multiple subscriptions scenario. (Default: )"
+        "description": "Required. AVD workload subscription ID, multiple subscriptions scenario. (Default: \"\")"
       }
     },
     "avdEnterpriseAppObjectId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Required. Azure Virtual Desktop Enterprise Application object ID. (Default: )"
+        "description": "Required. Azure Virtual Desktop Enterprise Application object ID. (Default: \"\")"
       }
     },
     "avdVmLocalUserName": {
@@ -109,7 +109,7 @@
       "type": "string",
       "defaultValue": "Group",
       "metadata": {
-        "description": "Optional, Identity type to grant RBAC role to access AVD application group. (Defualt: \"\")"
+        "description": "Optional, Identity type to grant RBAC role to access AVD application group. (Defualt: Group)"
       },
       "allowedValues": [
         "Group",
@@ -127,21 +127,21 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Required. AD domain GUID."
+        "description": "Required. AD domain GUID. (Defualt: \"\")"
       }
     },
     "avdDomainJoinUserName": {
       "type": "string",
       "defaultValue": "none",
       "metadata": {
-        "description": "Required. AVD session host domain join user principal name. (Defualt: \"none\")"
+        "description": "Required. AVD session host domain join user principal name. (Defualt: none)"
       }
     },
     "avdDomainJoinUserPassword": {
       "type": "securestring",
       "defaultValue": "none",
       "metadata": {
-        "description": "Required. AVD session host domain join password. (Defualt: \"none\")"
+        "description": "Required. AVD session host domain join password. (Defualt: none)"
       }
     },
     "avdOuPath": {
@@ -244,7 +244,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Required. Existing hub virtual network for perring."
+        "description": "Required. Existing hub virtual network for perring. (Default: \"\")"
       }
     },
     "avdVnetworkAddressPrefixes": {
@@ -272,7 +272,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. custom DNS servers IPs."
+        "description": "Optional. custom DNS servers IPs. (Default: \"\")"
       }
     },
     "deployPrivateEndpointKeyvaultStorage": {
@@ -319,7 +319,7 @@
     },
     "createMsixDeployment": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Deploy MSIX App Attach setup. (Default: false)"
       }
@@ -328,14 +328,14 @@
       "type": "int",
       "defaultValue": 10,
       "metadata": {
-        "description": "Optional. Fslogix file share size. (Default: ~1TB)"
+        "description": "Optional. Fslogix file share size. (Default: 10)"
       }
     },
     "msixFileShareQuotaSize": {
       "type": "int",
       "defaultValue": 10,
       "metadata": {
-        "description": "Optional. MSIX file share size. (Default: ~1TB)"
+        "description": "Optional. MSIX file share size. (Default: 10)"
       }
     },
     "avdDeploySessionHosts": {
@@ -354,7 +354,7 @@
     },
     "deployAlaWorkspace": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Deploy AVD Azure log analytics workspace. (Default: true)"
       }
@@ -363,7 +363,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Required. Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace."
+        "description": "Required. Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace. (Default: false)"
       }
     },
     "avdAlaWorkspaceDataRetention": {
@@ -377,7 +377,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Existing Azure log analytics workspace resource ID to connect to. (Default: )"
+        "description": "Optional. Existing Azure log analytics workspace resource ID to connect to. (Default: \"\")"
       }
     },
     "avdDeploySessionHostsCount": {
@@ -407,7 +407,7 @@
       "type": "int",
       "defaultValue": 2,
       "metadata": {
-        "description": "Optional. Sets the number of fault domains for the availability set. (Defualt: 3)"
+        "description": "Optional. Sets the number of fault domains for the availability set. (Defualt: 2)"
       }
     },
     "avdAsUpdateDomainCount": {
@@ -535,7 +535,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: \"\")"
+        "description": "Optional. If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: false)"
       }
     },
     "avdUseCustomNaming": {
