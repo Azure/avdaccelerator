@@ -1278,15 +1278,6 @@
                             }
                         },
                         {
-                            "name": "virtualNetworkPrivateDnsZoneInfo",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": "[equals(steps('network').virtualNetworkPrivateDnsZone, true)]",
-                            "options": {
-                                "text": "The following private DNS zones will be created: <br/> Azure Files: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net",
-                                "style": "info"
-                            }
-                        },
-                        {
                             "name": "virtualNetworkPrivateDnsZoneSelection",
                             "type": "Microsoft.Common.Section",
                             "visible": "[equals(steps('network').virtualNetworkPrivateDnsZone, false)]",
