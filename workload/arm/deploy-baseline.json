@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "12452474155842372738"
+      "templateHash": "7604142135717494177"
     }
   },
   "parameters": {
@@ -286,21 +286,21 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Use Azure private DNS zones for private endpoints. (Default: true)"
+        "description": "Optional. Create new  Azure private DNS zones for private endpoints. (Default: true)"
       }
     },
     "avdVnetPrivateDnsZoneFilesId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Use Azure private DNS zones for private endpoints. (Default: )"
+        "description": "Optional. Use existing Azure private DNS zone for Azure files privatelink.file.core.windows.net or privatelink.file.core.usgovcloudapi.net. (Default: \"\")"
       }
     },
     "avdVnetPrivateDnsZoneKeyvaultId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Use Azure private DNS zones for private endpoints. (Default: )"
+        "description": "Optional. Use existing Azure private DNS zone for key vault privatelink.vaultcore.azure.net or privatelink.vaultcore.usgovcloudapi.net. (Default: \"\")"
       }
     },
     "vNetworkGatewayOnHub": {
