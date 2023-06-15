@@ -12,12 +12,40 @@ param subscriptionId string
 @description('Exisintg Azure log analytics workspace.')
 param alaWorkspaceId string
 
+@description('AVD Resource Group Name for the compute resources.')
+param computeObjectsRgName string
+
+@description('AVD Resource Group Name for the service objects.')
+param serviceObjectsRgName string
+
+@description('AVD Resource Group Name for the network resources.')
+param networkObjectsRgName string
+
+@description('AVD Resource Group Name for the storage resources.')
+param storageObjectsRgName string
+
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
 // =========== //
 // Variable declaration //
 // =========== //
+// Target RGs for policy assignment
+var varPolicyAssignmentTargetRgs = [
+  {
+    rgName: computeObjectsRgName
+  }
+  {
+    rgName: serviceObjectsRgName
+  }
+  {
+    rgName: networkObjectsRgName
+  }
+  {
+    rgName: storageObjectsRgName
+  }
+]
+
 // Policy Set/Initiative Definition Parameter Variables
 var varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters = loadJsonContent('../../../../policies/monitoring/policySets/parameters/policy-set-definition-es-deploy-diagnostics-to-log-analytics.parameters.json')
 
@@ -157,8 +185,8 @@ module policySetDefinitions '../../../../../carml/1.3.0/Microsoft.Authorization/
 }
 
 // Policy set assignment.
-module policySetAssignment '../../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = {
-  scope: subscription('${subscriptionId}')
+module policySetAssignment '../../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/resourceGroup/deploy.bicep' = [for policyAssignmentTargetRg in varPolicyAssignmentTargetRgs: {
+  scope: resourceGroup('${subscriptionId}', '${policyAssignmentTargetRg.rgName}')
   name: 'Policy-Set-Assignment-${time}'
   params: {
     location: location
@@ -181,8 +209,8 @@ module policySetAssignment '../../../../../carml/1.3.0/Microsoft.Authorization/p
   dependsOn: [
     policySetDefinitions
   ]
-}
-
+}]
+/*
 // Policy set remediation.
 resource policySetRemediation 'Microsoft.PolicyInsights/remediations@2021-10-01' = {
   name: 'remediate-diagnostic-settings'
@@ -195,7 +223,7 @@ resource policySetRemediation 'Microsoft.PolicyInsights/remediations@2021-10-01'
         resourceCount: 500
   }
 }
-
+*/
 // =========== //
 // Outputs     //
 // =========== //

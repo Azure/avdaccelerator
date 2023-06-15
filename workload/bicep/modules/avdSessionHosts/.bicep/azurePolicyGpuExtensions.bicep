@@ -66,7 +66,7 @@ module gpuPolicyAssignmentsCompute '../../../../../carml/1.3.0/Microsoft.Authori
         policyDefinitionId: gpuPolicyDefinitions[i].outputs.resourceId
     }
 }]
-
+/*
 // Policy Remediation Task for GPU extensions.
 resource gpuPolicyRemediationTaskCompute 'Microsoft.PolicyInsights/remediations@2021-10-01' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: {
     name: 'remediate-${customPolicyDefinition.deploymentName}-${i}'
@@ -79,7 +79,7 @@ resource gpuPolicyRemediationTaskCompute 'Microsoft.PolicyInsights/remediations@
           resourceCount: 500
     }
 }]
-
+*/
 // =========== //
 // Outputs //
 // =========== //

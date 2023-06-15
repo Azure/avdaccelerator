@@ -21,6 +21,18 @@ param alaWorkspaceId string
 @description('AVD Resource Group Name for monitoring resources.')
 param monitoringRgName string
 
+@description('AVD Resource Group Name for compute resources.')
+param computeObjectsRgName string
+
+@description('AVD Resource Group Name for the service objects.')
+param serviceObjectsRgName string
+
+@description('AVD Resource Group Name for the storage resources.')
+param storageObjectsRgName string
+
+@description('AVD Resource Group Name for the network resources.')
+param networkObjectsRgName string
+
 @description(' Azure log analytics workspace name.')
 param alaWorkspaceName string
 
@@ -96,9 +108,14 @@ module deployDiagnosticsAzurePolicyForAvd './.bicep/azurePolicyMonitoring.bicep'
     alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
     location: managementPlaneLocation
     subscriptionId: subscriptionId
+    computeObjectsRgName: computeObjectsRgName
+    serviceObjectsRgName: serviceObjectsRgName
+    storageObjectsRgName: storageObjectsRgName
+    networkObjectsRgName: networkObjectsRgName
   }
   dependsOn: [
     alaWorkspaceWait
+    baselineMonitoringResourceGroup
   ]
 }
 

@@ -108,7 +108,7 @@ module ztPolicyAssignmentServiceObjects '../../../../carml/1.3.0/Microsoft.Autho
         ]
     }
 }]
-
+/*
 // Policy Remediation Task for Zero Trust.
 module ztPolicyServObjRemediationTask './.bicep/azurePolicyZtAssignmentRemediation.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions : if (diskZeroTrust) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}') 
@@ -118,7 +118,7 @@ module ztPolicyServObjRemediationTask './.bicep/azurePolicyZtAssignmentRemediati
         policyAssignmentId: ztPolicyAssignmentServiceObjects[i].outputs.resourceId
     }
 }]
-
+*/
 // Policy Assignment for Managed Disk Network Access.
 module ztPolicyAssignmentCompute '../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/resourceGroup/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (diskZeroTrust) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
@@ -145,7 +145,7 @@ module ztPolicyAssignmentCompute '../../../../carml/1.3.0/Microsoft.Authorizatio
         ]
     }
 }]
-
+/*
 // Policy Remediation Task for Zero Trust.
 module ztPolicyComputeRemediationTask './.bicep/azurePolicyZtAssignmentRemediation.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions : if (diskZeroTrust) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}') 
@@ -155,8 +155,7 @@ module ztPolicyComputeRemediationTask './.bicep/azurePolicyZtAssignmentRemediati
         policyAssignmentId: ztPolicyAssignmentCompute[i].outputs.resourceId
     }
 }]
-
-
+*/
 // Role Assignment for Zero Trust.
 module ztRoleAssignmentCompute '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions : if (diskZeroTrust) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')    
