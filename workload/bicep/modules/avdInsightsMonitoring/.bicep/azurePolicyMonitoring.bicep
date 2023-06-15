@@ -31,20 +31,25 @@ param time string = utcNow()
 // Variable declaration //
 // =========== //
 // Target RGs for policy assignment
-var varPolicyAssignmentTargetRgs = [
+var varComputeServObjRgs = [
   {
     rgName: computeObjectsRgName
   }
   {
     rgName: serviceObjectsRgName
   }
+]
+var varNetworkObjRgs = !empty(networkObjectsRgName) ? [
   {
     rgName: networkObjectsRgName
   }
+] : []
+var varStorageObjRgs = !empty(storageObjectsRgName) ? [
   {
     rgName: storageObjectsRgName
   }
-]
+] : []
+var varPolicyAssignmentRgs = union(varComputeServObjRgs, varNetworkObjRgs, varStorageObjRgs)
 
 // Policy Set/Initiative Definition Parameter Variables
 var varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters = loadJsonContent('../../../../policies/monitoring/policySets/parameters/policy-set-definition-es-deploy-diagnostics-to-log-analytics.parameters.json')
@@ -185,8 +190,8 @@ module policySetDefinitions '../../../../../carml/1.3.0/Microsoft.Authorization/
 }
 
 // Policy set assignment.
-module policySetAssignment '../../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/resourceGroup/deploy.bicep' = [for policyAssignmentTargetRg in varPolicyAssignmentTargetRgs: {
-  scope: resourceGroup('${subscriptionId}', '${policyAssignmentTargetRg.rgName}')
+module policySetAssignment '../../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/resourceGroup/deploy.bicep' = [for policyAssignmentRg in varPolicyAssignmentRgs: {
+  scope: resourceGroup('${subscriptionId}', '${policyAssignmentRg.rgName}')
   name: 'Policy-Set-Assignment-${time}'
   params: {
     location: location
@@ -210,6 +215,9 @@ module policySetAssignment '../../../../../carml/1.3.0/Microsoft.Authorization/p
     policySetDefinitions
   ]
 }]
+
+
+
 /*
 // Policy set remediation.
 resource policySetRemediation 'Microsoft.PolicyInsights/remediations@2021-10-01' = {
