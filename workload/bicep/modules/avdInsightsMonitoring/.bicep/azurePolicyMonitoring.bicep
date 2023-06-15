@@ -185,7 +185,7 @@ module policySetAssignment '../../../../../carml/1.3.0/Microsoft.Authorization/p
 
 // Policy set remediation.
 resource policySetRemediation 'Microsoft.PolicyInsights/remediations@2021-10-01' = {
-  name: 'Policy-Set-Remed-${time}'
+  name: 'remediate-diagnostic-settings'
   properties: {
       failureThreshold: {
           percentage: 1
