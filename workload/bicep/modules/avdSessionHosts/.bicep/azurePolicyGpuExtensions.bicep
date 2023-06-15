@@ -7,6 +7,9 @@ targetScope = 'subscription'
 @description('Location where to deploy compute services.')
 param location string
 
+@description('AVD workload subscription ID, multiple subscriptions scenario.')
+param subscriptionId string
+
 @description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
@@ -33,6 +36,7 @@ var varCustomPolicyDefinitions = [
 
 // Policy Definition for GPU extensions.
 module gpuPolicyDefinitions '../../../../../carml/1.3.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: {
+    scope: subscription('${subscriptionId}')
     name: 'Policy-Defin-${customPolicyDefinition.deploymentName}-${time}'
     params: {
         description: customPolicyDefinition.libDefinition.properties.description
@@ -48,6 +52,7 @@ module gpuPolicyDefinitions '../../../../../carml/1.3.0/Microsoft.Authorization/
 
 // Policy Assignment for GPU extensions.
 module gpuPolicyAssignments '../../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: {
+    scope: subscription('${subscriptionId}')
     name: 'Policy-Assign-${customPolicyDefinition.deploymentName}-${time}' 
     params: {
         name: customPolicyDefinition.libDefinition.name

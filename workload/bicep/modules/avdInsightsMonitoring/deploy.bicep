@@ -7,7 +7,7 @@ targetScope = 'subscription'
 param managementPlaneLocation string
 
 @description('AVD workload subscription ID, multiple subscriptions scenario.')
-param workloadSubsId string
+param subscriptionId string
 
 @description('create new Azure log analytics workspace.')
 param deployAlaWorkspace bool
@@ -39,7 +39,7 @@ param time string = utcNow()
 
 // Resource group if new Log Analytics space is required
 module baselineMonitoringResourceGroup '../../../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (deployAlaWorkspace) {
-  scope: subscription(workloadSubsId)
+  scope: subscription(subscriptionId)
   name: 'Monitoing-RG-${time}'
   params: {
       name: monitoringRgName
@@ -51,7 +51,7 @@ module baselineMonitoringResourceGroup '../../../../carml/1.3.0/Microsoft.Resour
 
 // Azure log analytics workspace.
 module alaWorkspace '../../../../carml/1.3.0/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (deployAlaWorkspace) {
-  scope: resourceGroup('${workloadSubsId}', '${monitoringRgName}')
+  scope: resourceGroup('${subscriptionId}', '${monitoringRgName}')
   name: 'LA-Workspace-${time}'
   params: {
     location: managementPlaneLocation
@@ -67,7 +67,7 @@ module alaWorkspace '../../../../carml/1.3.0/Microsoft.OperationalInsights/works
 
 // Introduce Wait after log analitics workspace creation.
 module alaWorkspaceWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (deployAlaWorkspace) {
-  scope: resourceGroup('${workloadSubsId}', '${monitoringRgName}')
+  scope: resourceGroup('${subscriptionId}', '${monitoringRgName}')
   name: 'LA-Workspace-Wait-${time}'
   params: {
       name: 'LA-Workspace-Wait-${time}'
@@ -90,12 +90,12 @@ module alaWorkspaceWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentS
 
 // Policy definitions.
 module deployDiagnosticsAzurePolicyForAvd './.bicep/azurePolicyMonitoring.bicep' = if (deployCustomPolicyMonitoring) {
-  scope: subscription('${workloadSubsId}')
+  scope: subscription('${subscriptionId}')
   name: 'Custom-Policy-Monitoring-${time}'
   params: {
     alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
     location: managementPlaneLocation
-    workloadSubsId: workloadSubsId
+    subscriptionId: subscriptionId
   }
   dependsOn: [
     alaWorkspaceWait
@@ -110,7 +110,7 @@ module deployMonitoringEventsPerformanceSettings './.bicep/monitoringEventsPerfo
       alaWorkspaceId: deployAlaWorkspace ? '' : alaWorkspaceId
       monitoringRgName: monitoringRgName
       alaWorkspaceName: deployAlaWorkspace ? alaWorkspaceName: ''
-      workloadSubsId: workloadSubsId
+      subscriptionId: subscriptionId
       tags: tags
   }
   dependsOn: [
