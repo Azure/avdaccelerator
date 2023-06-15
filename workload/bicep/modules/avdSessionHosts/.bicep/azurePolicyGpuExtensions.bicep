@@ -66,7 +66,7 @@ module gpuPolicyAssignments '../../../../../carml/1.3.0/Microsoft.Authorization/
 
 // Policy Remediation Task for GPU extensions.
 resource gpuPolicyRemediationTask 'Microsoft.PolicyInsights/remediations@2021-10-01' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: {
-    name: 'Policy-Remed-${customPolicyDefinition.deploymentName}-${time}'
+    name: 'remediate-gpu-extension-${i}'
     properties: {
         failureThreshold: {
             percentage: 1
