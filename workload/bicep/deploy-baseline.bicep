@@ -820,8 +820,8 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
         deployAlaWorkspace: deployAlaWorkspace
         computeObjectsRgName: varComputeObjectsRgName
         serviceObjectsRgName: varServiceObjectsRgName
-        storageObjectsRgName: varStorageObjectsRgName
-        networkObjectsRgName: varNetworkObjectsRgName
+        storageObjectsRgName: (createAvdFslogixDeployment || createMsixDeployment) ? varStorageObjectsRgName : ''
+        networkObjectsRgName: (createAvdVnet) ? varNetworkObjectsRgName : ''
         monitoringRgName: varMonitoringRgName
         deployCustomPolicyMonitoring: deployCustomPolicyMonitoring
         alaWorkspaceId: deployAlaWorkspace ? '' : alaExistingWorkspaceResourceId
@@ -977,7 +977,7 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
         baselineResourceGroups
         baselineStorageResourceGroup
         monitoringDiagnosticSettings
-        managedIdentitiesRoleAssign
+        managedIdentitiesRoleAssign     
     ]
 }
 
