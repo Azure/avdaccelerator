@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "8703929963552890327"
+      "templateHash": "13220599992516456669"
     }
   },
   "parameters": {
@@ -3305,7 +3305,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "6764162192145906244"
+              "templateHash": "13914526268045094890"
             }
           },
           "parameters": {
@@ -6186,7 +6186,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "3548991950054745123"
+                      "templateHash": "18148206270013800316"
                     }
                   },
                   "parameters": {
@@ -6441,7 +6441,7 @@
                     {
                       "type": "Microsoft.PolicyInsights/remediations",
                       "apiVersion": "2021-10-01",
-                      "name": "[format('Policy-Set-Remed-{0}', parameters('time'))]",
+                      "name": "remediate-diagnostic-settings",
                       "properties": {
                         "failureThreshold": {
                           "percentage": 1
@@ -21441,7 +21441,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "16271855620922884285"
+              "templateHash": "14466974757334910990"
             }
           },
           "parameters": {
@@ -21541,7 +21541,7 @@
             "$fxv#0": "{\r\n    \"name\": \"AVD-ACC-Zero-Trust-Disable-Managed-Disk-Network-Access\",\r\n    \"type\": \"Microsoft.Authorization/policyDefinitions\",\r\n    \"apiVersion\": \"2021-06-01\",\r\n    \"scope\": null,\r\n    \"properties\": {\r\n        \"mode\": \"Indexed\",\r\n        \"displayName\": \"Custom - Zero Trust - Disable Managed Disk Network Access\",\r\n        \"description\": \"This policy definition sets the network access policy property to \\\"DenyAll\\\" and the public network access property to \\\"Disabled\\\" on all the managed disks within the assigned scope.\",\r\n        \"metadata\": {\r\n          \"version\": \"1.1.0\",\r\n          \"category\": \"Security\"\r\n        },\r\n        \"parameters\": {\r\n        },\r\n        \"policyRule\": {\r\n            \"if\": {\r\n              \"field\": \"type\",\r\n              \"equals\": \"Microsoft.Compute/disks\"\r\n            },\r\n            \"then\": {\r\n              \"effect\": \"modify\",\r\n              \"details\": {\r\n                \"roleDefinitionIds\": [\r\n                  \"/providers/Microsoft.Authorization/roleDefinitions/60fc6e62-5479-42d4-8bf4-67625fcc2840\"\r\n                ],\r\n                \"operations\": [\r\n                  {\r\n                    \"operation\": \"addOrReplace\",\r\n                    \"field\": \"Microsoft.Compute/disks/networkAccessPolicy\",\r\n                    \"value\": \"DenyAll\"\r\n                  },\r\n                  {\r\n                    \"operation\": \"addOrReplace\",\r\n                    \"field\": \"Microsoft.Compute/disks/publicNetworkAccess\",\r\n                    \"value\": \"Disabled\"\r\n                  }\r\n                ]\r\n              }\r\n            }\r\n          }\r\n    }\r\n}",
             "varCustomPolicyDefinitions": [
               {
-                "deploymentName": "ZT-Disk-Policy",
+                "deploymentName": "ZT-Disk",
                 "libDefinition": "[json(variables('$fxv#0'))]"
               }
             ]
@@ -21555,7 +21555,7 @@
               "condition": "[parameters('diskZeroTrust')]",
               "type": "Microsoft.PolicyInsights/remediations",
               "apiVersion": "2021-10-01",
-              "name": "[format('Policy-Remed-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
+              "name": "[format('remediate-disks-network-access-{0}', copyIndex())]",
               "properties": {
                 "failureThreshold": {
                   "percentage": 1
@@ -23243,7 +23243,6 @@
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('ZT-RoleAssign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
-              "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -42660,7 +42659,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "12353622289898484719"
+              "templateHash": "10646613130125271266"
             }
           },
           "parameters": {
@@ -49841,7 +49840,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "17897983514169369198"
+                      "templateHash": "3659183209611908149"
                     }
                   },
                   "parameters": {
@@ -49887,7 +49886,7 @@
                       },
                       "type": "Microsoft.PolicyInsights/remediations",
                       "apiVersion": "2021-10-01",
-                      "name": "[format('Policy-Remed-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
+                      "name": "[format('remediate-gpu-extension-{0}', copyIndex())]",
                       "properties": {
                         "failureThreshold": {
                           "percentage": 1
