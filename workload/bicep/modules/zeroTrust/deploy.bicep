@@ -145,7 +145,7 @@ module ztManagedIdentityWait '../../../../carml/1.3.0/Microsoft.Resources/deploy
 
 // Policy Remediation Task for Zero Trust.
 resource ztPolicyRemediationTask 'Microsoft.PolicyInsights/remediations@2021-10-01' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions : if (diskZeroTrust) {
-    name: 'Policy-Remed-${customPolicyDefinition.deploymentName}-${time}'
+    name: 'remediate-disks-network-access-${i}'
     properties: {
         failureThreshold: {
             percentage: 1
