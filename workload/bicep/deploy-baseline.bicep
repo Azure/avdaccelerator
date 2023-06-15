@@ -954,12 +954,14 @@ module managedIdentitiesRoleAssign './modules/identity/deploy.bicep' = {
 
 // Zero trust.
 module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDeploySessionHosts) {
+    scope: subscription(avdWorkloadSubsId)
     name: 'Zero-Trust-${time}'
     params: {
         location: avdSessionHostLocation
         subscriptionId: avdWorkloadSubsId
         diskZeroTrust: diskZeroTrust
         serviceObjectsRgName: varServiceObjectsRgName
+        computeObjectsRgName: varComputeObjectsRgName
         managedIdentityName: varZtManagedIdentityName
         diskEncryptionKeyExpirationInDays: diskEncryptionKeyExpirationInDays
         diskEncryptionKeyExpirationInEpoch: varDiskEncryptionKeyExpirationInEpoch
