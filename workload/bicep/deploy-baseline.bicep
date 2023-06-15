@@ -786,9 +786,6 @@ module baselineNetworkResourceGroup '../../carml/1.3.0/Microsoft.Resources/resou
         enableDefaultTelemetry: false
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
-    dependsOn: avdDeployMonitoring ? [
-        monitoringDiagnosticSettings
-    ] : []
 }
 
 // Compute, service objects
@@ -801,9 +798,6 @@ module baselineResourceGroups '../../carml/1.3.0/Microsoft.Resources/resourceGro
         enableDefaultTelemetry: resourceGroup.enableDefaultTelemetry
         tags: resourceGroup.tags
     }
-    dependsOn: avdDeployMonitoring ? [
-        monitoringDiagnosticSettings
-    ] : []
 }]
 
 // Storage.
@@ -816,9 +810,6 @@ module baselineStorageResourceGroup '../../carml/1.3.0/Microsoft.Resources/resou
         enableDefaultTelemetry: false
         tags: createResourceTags ? union(varAllComputeStorageTags, varAvdDefaultTags) : union(varAvdDefaultTags, varAllComputeStorageTags)
     }
-    dependsOn: avdDeployMonitoring ? [
-        monitoringDiagnosticSettings
-    ] : []
 }
 
 // Azure Policies for monitoring Diagnostic settings. Performance couunters on new or existing Log Analytics workspace. New workspace if needed.
@@ -827,15 +818,24 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
     params: {
         managementPlaneLocation: avdManagementPlaneLocation
         deployAlaWorkspace: deployAlaWorkspace
+        computeObjectsRgName: varComputeObjectsRgName
+        serviceObjectsRgName: varServiceObjectsRgName
+        storageObjectsRgName: varStorageObjectsRgName
+        networkObjectsRgName: varNetworkObjectsRgName
+        monitoringRgName: varMonitoringRgName
         deployCustomPolicyMonitoring: deployCustomPolicyMonitoring
         alaWorkspaceId: deployAlaWorkspace ? '' : alaExistingWorkspaceResourceId
-        monitoringRgName: varMonitoringRgName
         alaWorkspaceName: deployAlaWorkspace ? varAlaWorkspaceName : ''
         alaWorkspaceDataRetention: avdAlaWorkspaceDataRetention
         subscriptionId: avdWorkloadSubsId
+
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
-    dependsOn: []
+    dependsOn: [
+        baselineNetworkResourceGroup
+        baselineResourceGroups
+        baselineStorageResourceGroup
+    ]
 }
 
 // Networking.

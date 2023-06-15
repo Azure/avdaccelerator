@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "8522732543458376367"
+      "templateHash": "18342285194741150121"
     }
   },
   "parameters": {
@@ -3282,6 +3282,9 @@
           "deployAlaWorkspace": {
             "value": "[parameters('deployAlaWorkspace')]"
           },
+          "computeObjectsRgName": {
+            "value": "[variables('varComputeObjectsRgName')]"
+          },
           "deployCustomPolicyMonitoring": {
             "value": "[parameters('deployCustomPolicyMonitoring')]"
           },
@@ -3305,7 +3308,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "13914526268045094890"
+              "templateHash": "4889719707501541515"
             }
           },
           "parameters": {
@@ -3343,6 +3346,12 @@
               "type": "string",
               "metadata": {
                 "description": "AVD Resource Group Name for monitoring resources."
+              }
+            },
+            "computeObjectsRgName": {
+              "type": "string",
+              "metadata": {
+                "description": "AVD Resource Group Name for the service objects."
               }
             },
             "alaWorkspaceName": {
@@ -6177,6 +6186,9 @@
                   },
                   "subscriptionId": {
                     "value": "[parameters('subscriptionId')]"
+                  },
+                  "computeObjectsRgName": {
+                    "value": "[parameters('computeObjectsRgName')]"
                   }
                 },
                 "template": {
@@ -6186,7 +6198,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "18148206270013800316"
+                      "templateHash": "14296918546602943250"
                     }
                   },
                   "parameters": {
@@ -6206,6 +6218,12 @@
                       "type": "string",
                       "metadata": {
                         "description": "Exisintg Azure log analytics workspace."
+                      }
+                    },
+                    "computeObjectsRgName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "AVD Resource Group Name for the service objects."
                       }
                     },
                     "time": {
@@ -6438,22 +6456,6 @@
                     }
                   },
                   "resources": [
-                    {
-                      "type": "Microsoft.PolicyInsights/remediations",
-                      "apiVersion": "2021-10-01",
-                      "name": "remediate-diagnostic-settings",
-                      "properties": {
-                        "failureThreshold": {
-                          "percentage": 1
-                        },
-                        "parallelDeployments": 10,
-                        "policyAssignmentId": "[reference(subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('Policy-Set-Assignment-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]",
-                        "resourceCount": 500
-                      },
-                      "dependsOn": [
-                        "[subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('Policy-Set-Assignment-{0}', parameters('time')))]"
-                      ]
-                    },
                     {
                       "copy": {
                         "name": "policyDefinitions",
@@ -6808,7 +6810,7 @@
                       "apiVersion": "2022-09-01",
                       "name": "[format('Policy-Set-Assignment-{0}', parameters('time'))]",
                       "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
-                      "location": "[deployment().location]",
+                      "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -6851,13 +6853,13 @@
                           }
                         },
                         "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
                               "version": "0.17.1.54307",
-                              "templateHash": "8382082599438484665"
+                              "templateHash": "17165573628970783202"
                             }
                           },
                           "parameters": {
@@ -6865,7 +6867,7 @@
                               "type": "string",
                               "maxLength": 64,
                               "metadata": {
-                                "description": "Required. Specifies the name of the policy assignment. Maximum length is 64 characters for subscription scope."
+                                "description": "Required. Specifies the name of the policy assignment. Maximum length is 64 characters for resource group scope."
                               }
                             },
                             "description": {
@@ -6956,7 +6958,7 @@
                             },
                             "location": {
                               "type": "string",
-                              "defaultValue": "[deployment().location]",
+                              "defaultValue": "[resourceGroup().location]",
                               "metadata": {
                                 "description": "Optional. Location for all resources."
                               }
@@ -6982,6 +6984,13 @@
                                 "description": "Optional. The Target Scope for the Policy. The subscription ID of the subscription for the policy assignment. If not provided, will use the current scope for deployment."
                               }
                             },
+                            "resourceGroupName": {
+                              "type": "string",
+                              "defaultValue": "[resourceGroup().name]",
+                              "metadata": {
+                                "description": "Optional. The Target Scope for the Policy. The name of the resource group for the policy assignment. If not provided, will use the current scope for deployment."
+                              }
+                            },
                             "enableDefaultTelemetry": {
                               "type": "bool",
                               "defaultValue": true,
@@ -6999,7 +7008,6 @@
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2021-04-01",
                               "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
-                              "location": "[parameters('location')]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -7036,14 +7044,14 @@
                               "condition": "[and(not(empty(parameters('roleDefinitionIds'))), equals(parameters('identity'), 'SystemAssigned'))]",
                               "type": "Microsoft.Authorization/roleAssignments",
                               "apiVersion": "2022-04-01",
-                              "name": "[guid(parameters('subscriptionId'), parameters('roleDefinitionIds')[copyIndex()], parameters('location'), parameters('name'))]",
+                              "name": "[guid(parameters('subscriptionId'), parameters('resourceGroupName'), parameters('roleDefinitionIds')[copyIndex()], parameters('location'), parameters('name'))]",
                               "properties": {
                                 "roleDefinitionId": "[parameters('roleDefinitionIds')[copyIndex()]]",
-                                "principalId": "[reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId]",
+                                "principalId": "[reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId]",
                                 "principalType": "ServicePrincipal"
                               },
                               "dependsOn": [
-                                "[subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name'))]"
+                                "[resourceId('Microsoft.Authorization/policyAssignments', parameters('name'))]"
                               ]
                             }
                           ],
@@ -7060,21 +7068,28 @@
                               "metadata": {
                                 "description": "Policy Assignment principal ID."
                               },
-                              "value": "[if(equals(parameters('identity'), 'SystemAssigned'), reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId, '')]"
+                              "value": "[if(equals(parameters('identity'), 'SystemAssigned'), reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').identity.principalId, '')]"
                             },
                             "resourceId": {
                               "type": "string",
                               "metadata": {
                                 "description": "Policy Assignment resource ID."
                               },
-                              "value": "[subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name'))]"
+                              "value": "[resourceId('Microsoft.Authorization/policyAssignments', parameters('name'))]"
+                            },
+                            "resourceGroupName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the resource group the policy was assigned to."
+                              },
+                              "value": "[resourceGroup().name]"
                             },
                             "location": {
                               "type": "string",
                               "metadata": {
                                 "description": "The location the resource was deployed into."
                               },
-                              "value": "[reference(subscriptionResourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').location]"
+                              "value": "[reference(resourceId('Microsoft.Authorization/policyAssignments', parameters('name')), '2022-06-01', 'full').location]"
                             }
                           }
                         }
@@ -21445,7 +21460,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "9110551121202692251"
+              "templateHash": "17346238140957965938"
             }
           },
           "parameters": {
@@ -21557,48 +21572,6 @@
             ]
           },
           "resources": [
-            {
-              "copy": {
-                "name": "ztPolicyComputeRemediationTask",
-                "count": "[length(variables('varCustomPolicyDefinitions'))]"
-              },
-              "condition": "[parameters('diskZeroTrust')]",
-              "type": "Microsoft.PolicyInsights/remediations",
-              "apiVersion": "2021-10-01",
-              "name": "[format('remediate-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, copyIndex())]",
-              "properties": {
-                "failureThreshold": {
-                  "percentage": 1
-                },
-                "parallelDeployments": 10,
-                "policyAssignmentId": "[if(parameters('diskZeroTrust'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('Pol-Assign-Comp-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.resourceId.value, '')]",
-                "resourceCount": 500
-              },
-              "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('Pol-Assign-Comp-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
-              ]
-            },
-            {
-              "copy": {
-                "name": "ztPolicyServObjRemediationTask",
-                "count": "[length(variables('varCustomPolicyDefinitions'))]"
-              },
-              "condition": "[parameters('diskZeroTrust')]",
-              "type": "Microsoft.PolicyInsights/remediations",
-              "apiVersion": "2021-10-01",
-              "name": "[format('remediate-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, copyIndex())]",
-              "properties": {
-                "failureThreshold": {
-                  "percentage": 1
-                },
-                "parallelDeployments": 10,
-                "policyAssignmentId": "[if(parameters('diskZeroTrust'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Pol-Assign-ServObj{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.resourceId.value, '')]",
-                "resourceCount": 500
-              },
-              "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Pol-Assign-ServObj{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
-              ]
-            },
             {
               "copy": {
                 "name": "ztPolicyDefinitions",
@@ -22379,7 +22352,7 @@
               "condition": "[parameters('diskZeroTrust')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('ZT-RoleAssign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
+              "name": "[format('ZT-RA-Comp-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
@@ -22963,7 +22936,7 @@
               "condition": "[parameters('diskZeroTrust')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('ZT-RoleAssign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
+              "name": "[format('ZT-RA-ServObj-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('serviceObjectsRgName'))]",
               "properties": {
@@ -43586,7 +43559,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "16956008187580713120"
+              "templateHash": "6961498479889243177"
             }
           },
           "parameters": {
@@ -50771,7 +50744,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "1935532946436672997"
+                      "templateHash": "5999291197434978517"
                     }
                   },
                   "parameters": {
@@ -50816,26 +50789,6 @@
                     ]
                   },
                   "resources": [
-                    {
-                      "copy": {
-                        "name": "gpuPolicyRemediationTaskCompute",
-                        "count": "[length(variables('varCustomPolicyDefinitions'))]"
-                      },
-                      "type": "Microsoft.PolicyInsights/remediations",
-                      "apiVersion": "2021-10-01",
-                      "name": "[format('remediate-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, copyIndex())]",
-                      "properties": {
-                        "failureThreshold": {
-                          "percentage": 1
-                        },
-                        "parallelDeployments": 10,
-                        "policyAssignmentId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.resourceId.value]",
-                        "resourceCount": 500
-                      },
-                      "dependsOn": [
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
-                      ]
-                    },
                     {
                       "copy": {
                         "name": "gpuPolicyDefinitions",
