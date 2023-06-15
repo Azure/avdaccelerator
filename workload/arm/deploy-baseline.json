@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "3807078084564406591"
+      "templateHash": "8703929963552890327"
     }
   },
   "parameters": {
@@ -3293,7 +3293,7 @@
           "alaWorkspaceDataRetention": {
             "value": "[parameters('avdAlaWorkspaceDataRetention')]"
           },
-          "workloadSubsId": {
+          "subscriptionId": {
             "value": "[parameters('avdWorkloadSubsId')]"
           },
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]"
@@ -3305,7 +3305,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "17888764083529005165"
+              "templateHash": "6764162192145906244"
             }
           },
           "parameters": {
@@ -3315,7 +3315,7 @@
                 "description": "Location where to deploy AVD management plane."
               }
             },
-            "workloadSubsId": {
+            "subscriptionId": {
               "type": "string",
               "metadata": {
                 "description": "AVD workload subscription ID, multiple subscriptions scenario."
@@ -3377,7 +3377,7 @@
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Monitoing-RG-{0}', parameters('time'))]",
-              "subscriptionId": "[parameters('workloadSubsId')]",
+              "subscriptionId": "[parameters('subscriptionId')]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -3974,7 +3974,7 @@
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('LA-Workspace-{0}', parameters('time'))]",
-              "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+              "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('monitoringRgName'))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -5847,7 +5847,7 @@
                 }
               },
               "dependsOn": [
-                "[subscriptionResourceId(parameters('workloadSubsId'), 'Microsoft.Resources/deployments', format('Monitoing-RG-{0}', parameters('time')))]"
+                "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('Monitoing-RG-{0}', parameters('time')))]"
               ]
             },
             {
@@ -5855,7 +5855,7 @@
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('LA-Workspace-Wait-{0}', parameters('time'))]",
-              "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+              "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('monitoringRgName'))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -6155,7 +6155,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time')))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time')))]"
               ]
             },
             {
@@ -6163,7 +6163,7 @@
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Custom-Policy-Monitoring-{0}', parameters('time'))]",
-              "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+              "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -6171,12 +6171,12 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "alaWorkspaceId": "[if(parameters('deployAlaWorkspace'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', parameters('alaWorkspaceId')))]",
+                  "alaWorkspaceId": "[if(parameters('deployAlaWorkspace'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', parameters('alaWorkspaceId')))]",
                   "location": {
                     "value": "[parameters('managementPlaneLocation')]"
                   },
-                  "workloadSubsId": {
-                    "value": "[parameters('workloadSubsId')]"
+                  "subscriptionId": {
+                    "value": "[parameters('subscriptionId')]"
                   }
                 },
                 "template": {
@@ -6186,7 +6186,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "7164376191240567005"
+                      "templateHash": "3548991950054745123"
                     }
                   },
                   "parameters": {
@@ -6196,7 +6196,7 @@
                         "description": "Location where to deploy AVD management plane."
                       }
                     },
-                    "workloadSubsId": {
+                    "subscriptionId": {
                       "type": "string",
                       "metadata": {
                         "description": "AVD workload subscription ID, multiple subscriptions scenario."
@@ -6391,47 +6391,47 @@
                       "libSetChildDefinitions": [
                         {
                           "definitionReferenceId": "AVDAppGroupDeployDiagnosticLogDeployLogAnalytics",
-                          "definitionId": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-avd-application-group', parameters('workloadSubsId'))]",
+                          "definitionId": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-avd-application-group', parameters('subscriptionId'))]",
                           "definitionParameters": "[variables('varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters').AVDAppGroupDeployDiagnosticLogDeployLogAnalytics.parameters]"
                         },
                         {
                           "definitionReferenceId": "AVDHostPoolsDeployDiagnosticLogDeployLogAnalytics",
-                          "definitionId": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-avd-host-pool', parameters('workloadSubsId'))]",
+                          "definitionId": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-avd-host-pool', parameters('subscriptionId'))]",
                           "definitionParameters": "[variables('varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters').AVDHostPoolsDeployDiagnosticLogDeployLogAnalytics.parameters]"
                         },
                         {
                           "definitionReferenceId": "AVDScalingPlansDeployDiagnosticLogDeployLogAnalytics",
-                          "definitionId": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-avd-scaling-plan', parameters('workloadSubsId'))]",
+                          "definitionId": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-avd-scaling-plan', parameters('subscriptionId'))]",
                           "definitionParameters": "[variables('varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters').AVDScalingPlansDeployDiagnosticLogDeployLogAnalytics.parameters]"
                         },
                         {
                           "definitionReferenceId": "AVDWorkspaceDeployDiagnosticLogDeployLogAnalytics",
-                          "definitionId": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-avd-workspace', parameters('workloadSubsId'))]",
+                          "definitionId": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-avd-workspace', parameters('subscriptionId'))]",
                           "definitionParameters": "[variables('varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters').AVDWorkspaceDeployDiagnosticLogDeployLogAnalytics.parameters]"
                         },
                         {
                           "definitionReferenceId": "NetworkSecurityGroupsDeployDiagnosticLogDeployLogAnalytics",
-                          "definitionId": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-network-security-group', parameters('workloadSubsId'))]",
+                          "definitionId": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-network-security-group', parameters('subscriptionId'))]",
                           "definitionParameters": "[variables('varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters').NetworkSecurityGroupsDeployDiagnosticLogDeployLogAnalytics.parameters]"
                         },
                         {
                           "definitionReferenceId": "NetworkNICDeployDiagnosticLogDeployLogAnalytics",
-                          "definitionId": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-nic', parameters('workloadSubsId'))]",
+                          "definitionId": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-nic', parameters('subscriptionId'))]",
                           "definitionParameters": "[variables('varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters').NetworkNICDeployDiagnosticLogDeployLogAnalytics.parameters]"
                         },
                         {
                           "definitionReferenceId": "VirtualMachinesDeployDiagnosticLogDeployLogAnalytics",
-                          "definitionId": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-virtual-machine', parameters('workloadSubsId'))]",
+                          "definitionId": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-virtual-machine', parameters('subscriptionId'))]",
                           "definitionParameters": "[variables('varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters').VirtualMachinesDeployDiagnosticLogDeployLogAnalytics.parameters]"
                         },
                         {
                           "definitionReferenceId": "VirtualNetworkDeployDiagnosticLogDeployLogAnalytics",
-                          "definitionId": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-virtual-network', parameters('workloadSubsId'))]",
+                          "definitionId": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-virtual-network', parameters('subscriptionId'))]",
                           "definitionParameters": "[variables('varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters').VirtualNetworkDeployDiagnosticLogDeployLogAnalytics.parameters]"
                         },
                         {
                           "definitionReferenceId": "AzureFilesDeployDiagnosticLogDeployLogAnalytics",
-                          "definitionId": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-azure-files', parameters('workloadSubsId'))]",
+                          "definitionId": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-azure-files', parameters('subscriptionId'))]",
                           "definitionParameters": "[variables('varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters').AzureFilesDeployDiagnosticLogDeployLogAnalytics.parameters]"
                         }
                       ]
@@ -6447,11 +6447,11 @@
                           "percentage": 1
                         },
                         "parallelDeployments": 10,
-                        "policyAssignmentId": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Set-Assignment-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]",
+                        "policyAssignmentId": "[reference(subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('Policy-Set-Assignment-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]",
                         "resourceCount": 500
                       },
                       "dependsOn": [
-                        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Set-Assignment-{0}', parameters('time')))]"
+                        "[subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('Policy-Set-Assignment-{0}', parameters('time')))]"
                       ]
                     },
                     {
@@ -6462,6 +6462,7 @@
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
+                      "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
                       "location": "[deployment().location]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -6635,6 +6636,7 @@
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('Policy-Set-Definition-{0}', parameters('time'))]",
+                      "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
                       "location": "[deployment().location]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -6805,6 +6807,7 @@
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('Policy-Set-Assignment-{0}', parameters('time'))]",
+                      "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
                       "location": "[deployment().location]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -6844,7 +6847,7 @@
                             }
                           },
                           "policyDefinitionId": {
-                            "value": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policySetDefinitions/policy-set-deploy-avd-diagnostics-to-log-analytics', parameters('workloadSubsId'))]"
+                            "value": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/policySetDefinitions/policy-set-deploy-avd-diagnostics-to-log-analytics', parameters('subscriptionId'))]"
                           }
                         },
                         "template": {
@@ -7077,15 +7080,15 @@
                         }
                       },
                       "dependsOn": [
-                        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Set-Definition-{0}', parameters('time')))]"
+                        "[subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('Policy-Set-Definition-{0}', parameters('time')))]"
                       ]
                     }
                   ]
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time')))]",
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-Wait-{0}', parameters('time')))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time')))]",
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-Wait-{0}', parameters('time')))]"
               ]
             },
             {
@@ -7108,8 +7111,8 @@
                     "value": "[parameters('monitoringRgName')]"
                   },
                   "alaWorkspaceName": "[if(parameters('deployAlaWorkspace'), createObject('value', parameters('alaWorkspaceName')), createObject('value', ''))]",
-                  "workloadSubsId": {
-                    "value": "[parameters('workloadSubsId')]"
+                  "subscriptionId": {
+                    "value": "[parameters('subscriptionId')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -7122,11 +7125,11 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "7153475338636360881"
+                      "templateHash": "7759814680098607558"
                     }
                   },
                   "parameters": {
-                    "workloadSubsId": {
+                    "subscriptionId": {
                       "type": "string",
                       "metadata": {
                         "description": "AVD workload subscription ID, multiple subscriptions scenario."
@@ -7175,7 +7178,7 @@
                     "varExistingAlaWorkspaceRgName": "[if(parameters('deployAlaWorkspace'), '', split(parameters('alaWorkspaceId'), '/')[4])]",
                     "varExistingAlaWorkspaceSubID": "[if(parameters('deployAlaWorkspace'), '', split(parameters('alaWorkspaceId'), '/')[2])]",
                     "varOsSettingsAlaWorkspaceRgName": "[if(parameters('deployAlaWorkspace'), parameters('monitoringRgName'), variables('varExistingAlaWorkspaceRgName'))]",
-                    "varOsSettingsAlaWorkspaceSubId": "[if(parameters('deployAlaWorkspace'), parameters('workloadSubsId'), variables('varExistingAlaWorkspaceSubID'))]",
+                    "varOsSettingsAlaWorkspaceSubId": "[if(parameters('deployAlaWorkspace'), parameters('subscriptionId'), variables('varExistingAlaWorkspaceSubID'))]",
                     "varWindowsEvents": [
                       {
                         "name": "Microsoft-FSLogix-Apps/Operational",
@@ -8021,18 +8024,18 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-Wait-{0}', parameters('time')))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-Wait-{0}', parameters('time')))]"
               ]
             }
           ],
           "outputs": {
             "avdAlaWorkspaceResourceId": {
               "type": "string",
-              "value": "[if(parameters('deployAlaWorkspace'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, parameters('alaWorkspaceId'))]"
+              "value": "[if(parameters('deployAlaWorkspace'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, parameters('alaWorkspaceId'))]"
             },
             "avdAlaWorkspaceId": {
               "type": "string",
-              "value": "[if(parameters('deployAlaWorkspace'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.logAnalyticsWorkspaceId.value, parameters('alaWorkspaceId'))]"
+              "value": "[if(parameters('deployAlaWorkspace'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.logAnalyticsWorkspaceId.value, parameters('alaWorkspaceId'))]"
             }
           }
         }
@@ -21438,7 +21441,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "11838596756255072231"
+              "templateHash": "16271855620922884285"
             }
           },
           "parameters": {
@@ -21558,11 +21561,11 @@
                   "percentage": 1
                 },
                 "parallelDeployments": 10,
-                "policyAssignmentId": "[if(parameters('diskZeroTrust'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.resourceId.value, '')]",
+                "policyAssignmentId": "[if(parameters('diskZeroTrust'), reference(subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.resourceId.value, '')]",
                 "resourceCount": 500
               },
               "dependsOn": [
-                "[subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
+                "[subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
               ]
             },
             {
@@ -21574,6 +21577,7 @@
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
+              "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -21755,6 +21759,7 @@
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
+              "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -21777,7 +21782,7 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
-                  "policyDefinitionId": "[if(parameters('diskZeroTrust'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', ''))]",
+                  "policyDefinitionId": "[if(parameters('diskZeroTrust'), createObject('value', reference(subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', ''))]",
                   "resourceSelectors": {
                     "value": [
                       {
@@ -22024,7 +22029,7 @@
                 }
               },
               "dependsOn": [
-                "[subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
+                "[subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
               ]
             },
             {
@@ -23238,6 +23243,7 @@
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('ZT-RoleAssign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
+              "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -23248,7 +23254,7 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
-                  "principalId": "[if(parameters('diskZeroTrust'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.principalId.value), createObject('value', ''))]",
+                  "principalId": "[if(parameters('diskZeroTrust'), createObject('value', reference(subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.principalId.value), createObject('value', ''))]",
                   "roleDefinitionIdOrName": {
                     "value": "Disk Pool Operator"
                   },
@@ -23806,7 +23812,7 @@
                 }
               },
               "dependsOn": [
-                "[subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
+                "[subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
               ]
             },
             {
@@ -42610,7 +42616,7 @@
           "vmLocalUserName": {
             "value": "[parameters('avdVmLocalUserName')]"
           },
-          "workloadSubsId": {
+          "subscriptionId": {
             "value": "[parameters('avdWorkloadSubsId')]"
           },
           "encryptionAtHost": {
@@ -42654,7 +42660,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "13335929477582402927"
+              "templateHash": "12353622289898484719"
             }
           },
           "parameters": {
@@ -42700,7 +42706,7 @@
                 "description": "Name of AVD service objects RG."
               }
             },
-            "workloadSubsId": {
+            "subscriptionId": {
               "type": "string",
               "metadata": {
                 "description": "AVD workload subscription ID, multiple subscriptions scenario."
@@ -42952,7 +42958,7 @@
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('AVD-Availability-Set-{0}', parameters('time'))]",
-              "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+              "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -42961,7 +42967,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "workloadSubsId": {
-                    "value": "[parameters('workloadSubsId')]"
+                    "value": "[parameters('subscriptionId')]"
                   },
                   "computeObjectsRgName": {
                     "value": "[parameters('computeObjectsRgName')]"
@@ -43433,7 +43439,7 @@
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('AVD-SH-Batch-{0}-{1}', sub(range(1, variables('varAvdSessionHostBatchCount'))[copyIndex()], 1), parameters('time'))]",
-              "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+              "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -43518,8 +43524,8 @@
                   "vmLocalUserName": {
                     "value": "[parameters('vmLocalUserName')]"
                   },
-                  "workloadSubsId": {
-                    "value": "[parameters('workloadSubsId')]"
+                  "subscriptionId": {
+                    "value": "[parameters('subscriptionId')]"
                   },
                   "encryptionAtHost": {
                     "value": "[parameters('encryptionAtHost')]"
@@ -43543,7 +43549,7 @@
                     "value": "[parameters('fslogixScriptUri')]"
                   },
                   "hostPoolToken": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.DesktopVirtualization/hostPools', parameters('hostPoolName')), '2019-12-10-preview').registrationInfo.token]"
+                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.DesktopVirtualization/hostPools', parameters('hostPoolName')), '2019-12-10-preview').registrationInfo.token]"
                   },
                   "marketPlaceGalleryWindows": {
                     "value": "[parameters('marketPlaceGalleryWindows')]"
@@ -43577,7 +43583,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "15231555127735450601"
+                      "templateHash": "596146293561023920"
                     }
                   },
                   "parameters": {
@@ -43635,7 +43641,7 @@
                         "description": "Resource Group name for the session hosts"
                       }
                     },
-                    "workloadSubsId": {
+                    "subscriptionId": {
                       "type": "string",
                       "metadata": {
                         "description": "AVD workload subscription ID, multiple subscriptions scenario."
@@ -43869,7 +43875,7 @@
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('Session-Host-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'), parameters('time'))]",
-                      "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+                      "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -43892,7 +43898,7 @@
                           "encryptionAtHost": {
                             "value": "[parameters('encryptionAtHost')]"
                           },
-                          "availabilitySetResourceId": "[if(parameters('useAvailabilityZones'), createObject('value', ''), createObject('value', format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Compute/availabilitySets/{2}-{3}', parameters('workloadSubsId'), parameters('computeObjectsRgName'), parameters('availabilitySetNamePrefix'), padLeft(add(1, div(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), parameters('maxAvailabilitySetMembersCount'))), 3, '0'))))]",
+                          "availabilitySetResourceId": "[if(parameters('useAvailabilityZones'), createObject('value', ''), createObject('value', format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Compute/availabilitySets/{2}-{3}', parameters('subscriptionId'), parameters('computeObjectsRgName'), parameters('availabilitySetNamePrefix'), padLeft(add(1, div(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), parameters('maxAvailabilitySetMembersCount'))), 3, '0'))))]",
                           "osType": {
                             "value": "Windows"
                           },
@@ -43926,7 +43932,7 @@
                           "adminPassword": {
                             "reference": {
                               "keyVault": {
-                                "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))]"
+                                "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))]"
                               },
                               "secretName": "vmLocalUserPassword"
                             }
@@ -43944,7 +43950,7 @@
                           "extensionDomainJoinPassword": {
                             "reference": {
                               "keyVault": {
-                                "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))]"
+                                "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))]"
                               },
                               "secretName": "domainJoinUserPassword"
                             }
@@ -48231,7 +48237,7 @@
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('Session-Hosts-Wait-{0}', parameters('time'))]",
-                      "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+                      "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -48542,7 +48548,7 @@
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('SH-Antimalware-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'), parameters('time'))]",
-                      "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+                      "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -48753,14 +48759,14 @@
                         }
                       },
                       "dependsOn": [
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('Session-Hosts-Wait-{0}', parameters('time')))]"
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('Session-Hosts-Wait-{0}', parameters('time')))]"
                       ]
                     },
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('Antimalware-Extension-Wait-{0}', parameters('time'))]",
-                      "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+                      "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -49072,7 +49078,7 @@
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('SH-Mon-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'), parameters('time'))]",
-                      "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+                      "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -49280,7 +49286,7 @@
                         }
                       },
                       "dependsOn": [
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('Antimalware-Extension-Wait-{0}', parameters('time')))]"
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('Antimalware-Extension-Wait-{0}', parameters('time')))]"
                       ]
                     },
                     {
@@ -49288,7 +49294,7 @@
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('SH-Monitoring-Wait-{0}', parameters('time'))]",
-                      "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+                      "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -49600,7 +49606,7 @@
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('Fsl-Conf-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'), parameters('time'))]",
-                      "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+                      "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -49689,7 +49695,7 @@
                       },
                       "dependsOn": [
                         "sessionHosts",
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('SH-Monitoring-Wait-{0}', parameters('time')))]"
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('SH-Monitoring-Wait-{0}', parameters('time')))]"
                       ]
                     },
                     {
@@ -49700,7 +49706,7 @@
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('HP-Join-{0}-{1}', padLeft(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), 4, '0'), parameters('time'))]",
-                      "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+                      "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -49799,14 +49805,14 @@
                       "dependsOn": [
                         "configureFsLogixAvdHosts",
                         "sessionHosts",
-                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('SH-Monitoring-Wait-{0}', parameters('time')))]"
+                        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('SH-Monitoring-Wait-{0}', parameters('time')))]"
                       ]
                     }
                   ]
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-Availability-Set-{0}', parameters('time')))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-Availability-Set-{0}', parameters('time')))]"
               ]
             },
             {
@@ -49823,6 +49829,9 @@
                 "parameters": {
                   "location": {
                     "value": "[parameters('sessionHostLocation')]"
+                  },
+                  "subscriptionId": {
+                    "value": "[parameters('subscriptionId')]"
                   }
                 },
                 "template": {
@@ -49832,7 +49841,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "1824738152306203707"
+                      "templateHash": "17897983514169369198"
                     }
                   },
                   "parameters": {
@@ -49840,6 +49849,12 @@
                       "type": "string",
                       "metadata": {
                         "description": "Location where to deploy compute services."
+                      }
+                    },
+                    "subscriptionId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "AVD workload subscription ID, multiple subscriptions scenario."
                       }
                     },
                     "time": {
@@ -49878,11 +49893,11 @@
                           "percentage": 1
                         },
                         "parallelDeployments": 10,
-                        "policyAssignmentId": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.resourceId.value]",
+                        "policyAssignmentId": "[reference(subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.resourceId.value]",
                         "resourceCount": 500
                       },
                       "dependsOn": [
-                        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
+                        "[subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
                       ]
                     },
                     {
@@ -49893,6 +49908,7 @@
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
+                      "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
                       "location": "[deployment().location]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -50073,6 +50089,7 @@
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))]",
+                      "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
                       "location": "[deployment().location]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -50096,7 +50113,7 @@
                             "value": "[parameters('location')]"
                           },
                           "policyDefinitionId": {
-                            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.resourceId.value]"
+                            "value": "[reference(subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.resourceId.value]"
                           }
                         },
                         "template": {
@@ -50329,15 +50346,12 @@
                         }
                       },
                       "dependsOn": [
-                        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
+                        "[subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
                       ]
                     }
                   ]
                 }
-              },
-              "dependsOn": [
-                "sessionHosts"
-              ]
+              }
             }
           ]
         }

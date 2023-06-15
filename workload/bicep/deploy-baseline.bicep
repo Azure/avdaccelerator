@@ -832,7 +832,7 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
         monitoringRgName: varMonitoringRgName
         alaWorkspaceName: deployAlaWorkspace ? varAlaWorkspaceName : ''
         alaWorkspaceDataRetention: avdAlaWorkspaceDataRetention
-        workloadSubsId: avdWorkloadSubsId
+        subscriptionId: avdWorkloadSubsId
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
     dependsOn: []
@@ -1220,7 +1220,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         deployGpuPolicies: deployGpuPolicies
         useAvailabilityZones: avdUseAvailabilityZones
         vmLocalUserName: avdVmLocalUserName
-        workloadSubsId: avdWorkloadSubsId
+        subscriptionId: avdWorkloadSubsId
         encryptionAtHost: diskZeroTrust
         createAvdFslogixDeployment: createAvdFslogixDeployment
         storageManagedIdentityResourceId: (varCreateStorageDeployment) ? managedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
