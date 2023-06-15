@@ -4,7 +4,7 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 @description('AVD workload subscription ID, multiple subscriptions scenario.')
-param workloadSubsId string
+param subscriptionId string
 
 @description('create new Azure log analytics workspace.')
 param deployAlaWorkspace bool
@@ -31,7 +31,7 @@ var varExistingAlaWorkspaceName =  deployAlaWorkspace ? '' : split(alaWorkspaceI
 var varExistingAlaWorkspaceRgName = deployAlaWorkspace ? '' :  split(alaWorkspaceId, '/')[4]
 var varExistingAlaWorkspaceSubID = deployAlaWorkspace ? '' :  split(alaWorkspaceId, '/')[2]
 var varOsSettingsAlaWorkspaceRgName = deployAlaWorkspace ? monitoringRgName: varExistingAlaWorkspaceRgName
-var varOsSettingsAlaWorkspaceSubId = deployAlaWorkspace ? workloadSubsId: varExistingAlaWorkspaceSubID
+var varOsSettingsAlaWorkspaceSubId = deployAlaWorkspace ? subscriptionId: varExistingAlaWorkspaceSubID
 
 var varWindowsEvents = [
   {

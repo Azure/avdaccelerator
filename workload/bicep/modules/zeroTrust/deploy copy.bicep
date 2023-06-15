@@ -52,44 +52,40 @@ param time string = utcNow()
 // =========== //
 // Variable declaration //
 // =========== //
-var varCustomPolicyDefinitions = [
-    {
-      deploymentName: 'ZT-Disk'
-      libDefinition: json(loadTextContent('../../../policies/zeroTrust/policyDefinitions/policy-definition-es-vm-disk-zero-trust.json'))
-    }
-]
+var varZtPolicyDefinition = json(loadTextContent('../../../policies/zeroTrust/policyDefinitions/policy-definition-es-vm-disk-zero-trust.json'))
+
 // =========== //
 // Deployments //
 // =========== //
 // call on the keyvault.
 
 // Policy Definition for Managed Disk Network Access.
-module ztPolicyDefinitions '../../../../carml/1.3.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: if (diskZeroTrust) {
+module ztPolicyDefinitions '../../../../carml/1.3.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = if (diskZeroTrust) {
     scope: subscription('${subscriptionId}')
-    name: 'Policy-Defin-${customPolicyDefinition.deploymentName}-${time}'
+    name: 'Policy-Defin-ZT-Disk-${time}'
     params: {
-        description: customPolicyDefinition.libDefinition.properties.description
-        displayName: customPolicyDefinition.libDefinition.properties.displayName
+        description: varZtPolicyDefinition.properties.description
+        displayName: varZtPolicyDefinition.properties.displayName
         location: location
-        name: customPolicyDefinition.libDefinition.name
-        metadata: customPolicyDefinition.libDefinition.properties.metadata
-        mode: customPolicyDefinition.libDefinition.properties.mode
-        parameters: customPolicyDefinition.libDefinition.properties.parameters
-        policyRule: customPolicyDefinition.libDefinition.properties.policyRule
+        name: varZtPolicyDefinition.name
+        metadata: varZtPolicyDefinition.properties.metadata
+        mode: varZtPolicyDefinition.properties.mode
+        parameters: varZtPolicyDefinition.properties.parameters
+        policyRule: varZtPolicyDefinition.properties.policyRule
     }
-}]
+}
 
 // Policy Assignment for Managed Disk Network Access.
-module ztPolicyAssignment '../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (diskZeroTrust) {
-        scope: subscription('${subscriptionId}')
-    name: 'Policy-Assign-${customPolicyDefinition.deploymentName}-${time}' 
+module ztPolicyAssignment '../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = if (diskZeroTrust) {
+    scope: subscription('${subscriptionId}')
+    name: 'Policy-Assign-ZT-Disk-${time}' 
     params: {
-        name: customPolicyDefinition.libDefinition.name
-        displayName: customPolicyDefinition.libDefinition.properties.displayName
-        description: customPolicyDefinition.libDefinition.properties.description
+        name: varZtPolicyDefinition.name
+        displayName: varZtPolicyDefinition.properties.displayName
+        description: varZtPolicyDefinition.properties.description
         identity: 'SystemAssigned'
         location: location
-        policyDefinitionId: diskZeroTrust ? ztPolicyDefinitions[i].outputs.resourceId : ''
+        policyDefinitionId: diskZeroTrust ? ztPolicyDefinitions.outputs.resourceId : ''
         resourceSelectors: [
             {
                 name: 'VirtualMachineDisks'
@@ -104,7 +100,7 @@ module ztPolicyAssignment '../../../../carml/1.3.0/Microsoft.Authorization/polic
             }
         ]
     }
-}]
+}
 
 // User Assigned Identity for Zero Trust.
 module ztManagedIdentity '../../../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
@@ -144,22 +140,22 @@ module ztManagedIdentityWait '../../../../carml/1.3.0/Microsoft.Resources/deploy
   }
 
 // Policy Remediation Task for Zero Trust.
-resource ztPolicyRemediationTask 'Microsoft.PolicyInsights/remediations@2021-10-01' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions : if (diskZeroTrust) {
-    name: 'Policy-Remed-${customPolicyDefinition.deploymentName}-${time}'
+resource ztPolicyRemediationTask 'Microsoft.PolicyInsights/remediations@2021-10-01' = if (diskZeroTrust) {
+    name: 'Policy-Remed-ZT-Disk-${time}'
     properties: {
         failureThreshold: {
             percentage: 1
           }
           parallelDeployments: 10
-          policyAssignmentId: diskZeroTrust ? ztPolicyAssignment[i].outputs.resourceId : ''
+          policyAssignmentId: diskZeroTrust ? ztPolicyAssignment.outputs.resourceId : ''
           resourceCount: 500
     }
-}]
+}
 
 // Role Assignment for Zero Trust.
 module ztRoleAssignment01 '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (diskZeroTrust) {
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
-    name: 'ZT-RoleAssign-${time}'
+    name: 'RoleAssign-ZT-${time}'
     params: {
         principalId: diskZeroTrust ? ztManagedIdentity.outputs.principalId : ''
         roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
@@ -168,15 +164,16 @@ module ztRoleAssignment01 '../../../../carml/1.3.0/Microsoft.Authorization/roleA
 }
 
 // Role Assignment for Zero Trust.
-module ztRoleAssignment02 '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/subscription/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions : if (diskZeroTrust) {
-    name: 'ZT-RoleAssign-${customPolicyDefinition.deploymentName}-${time}'
+module ztRoleAssignment02 '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/subscription/deploy.bicep' = if (diskZeroTrust) {
+    scope: subscription('${subscriptionId}')
+    name: 'RoleAssign-ZT-Disk-${time}'
     params: {
         location: location
-        principalId: diskZeroTrust ? ztPolicyAssignment[i].outputs.principalId : ''
+        principalId: diskZeroTrust ? ztPolicyAssignment.outputs.principalId : ''
         roleDefinitionIdOrName: 'Disk Pool Operator'
         principalType: 'ServicePrincipal'
     }
-}]
+}
 
 // Zero trust key vault.
 module ztKeyVault './.bicep/zeroTrustKeyVault.bicep' = if (diskZeroTrust) {
