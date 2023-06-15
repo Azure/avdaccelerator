@@ -32,7 +32,7 @@ param computeObjectsRgName string
 param serviceObjectsRgName string
 
 @description('AVD workload subscription ID, multiple subscriptions scenario.')
-param workloadSubsId string
+param subscriptionId string
 
 @description('Quantity of session hosts to deploy')
 param sessionHostsCount int
@@ -160,12 +160,12 @@ var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
 // call on the keyvault.
 resource wrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = if (identityServiceProvider != 'AAD') {
     name: wrklKvName
-    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+    scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
 }
 
 // Session hosts.
 module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(1, sessionHostsCount): {
-    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'Session-Host-${padLeft((i + sessionHostCountIndex), 4, '0')}-${time}'
     params: {
         name: '${sessionHostNamePrefix}${padLeft((i + sessionHostCountIndex), 4, '0')}'
@@ -177,7 +177,7 @@ module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
         systemAssignedIdentity: (identityServiceProvider == 'AAD') ? true: false
         availabilityZone: useAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
         encryptionAtHost: encryptionAtHost
-        availabilitySetResourceId: useAvailabilityZones ? '' : '/subscriptions/${workloadSubsId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/availabilitySets/${availabilitySetNamePrefix}-${padLeft(((1 + (i + sessionHostCountIndex) / maxAvailabilitySetMembersCount)), 3, '0')}'
+        availabilitySetResourceId: useAvailabilityZones ? '' : '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/availabilitySets/${availabilitySetNamePrefix}-${padLeft(((1 + (i + sessionHostCountIndex) / maxAvailabilitySetMembersCount)), 3, '0')}'
         osType: 'Windows'
         licenseType: 'Windows_Client'
         vmSize: sessionHostsSize
@@ -252,7 +252,7 @@ module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
 
 // Introduce wait for session hosts to be ready.
 module sessionHostsWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
-    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'Session-Hosts-Wait-${time}'
     params: {
         name: 'Session-Hosts-Wait-${time}'
@@ -275,7 +275,7 @@ module sessionHostsWait '../../../../../carml/1.3.0/Microsoft.Resources/deployme
 
 // Add antimalware extension to session host.
 module sessionHostsAntimalwareExtension '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, sessionHostsCount): {
-    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-Antimalware-${padLeft((i + sessionHostCountIndex), 4, '0')}-${time}'
     params: {
         location: sessionHostLocation
@@ -310,7 +310,7 @@ module sessionHostsAntimalwareExtension '../../../../../carml/1.3.0/Microsoft.Co
 
 // Introduce wait for antimalware extension to complete to be ready.
 module antimalwareExtensionWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
-    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'Antimalware-Extension-Wait-${time}'
     params: {
         name: 'Antimalware-Extension-Wait-${time}'
@@ -339,7 +339,7 @@ resource alaWorkspaceGet 'Microsoft.OperationalInsights/workspaces@2021-06-01' e
 
 // Add monitoring extension to session host.
 module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, sessionHostsCount): if (deployMonitoring) {
-    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-Mon-${padLeft((i + sessionHostCountIndex), 4, '0')}-${time}'
     params: {
         location: sessionHostLocation
@@ -366,7 +366,7 @@ module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virt
 
 // Introduce wait for antimalware extension to complete to be ready.
 module sessionHostsMonitoringWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (deployMonitoring) {
-    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-Monitoring-Wait-${time}'
     params: {
         name: 'SH-Monitoring-Wait-${time}'
@@ -389,7 +389,7 @@ module sessionHostsMonitoringWait '../../../../../carml/1.3.0/Microsoft.Resource
 
 // Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
 module configureFsLogixAvdHosts './configureFslogixOnSessionHosts.bicep' = [for i in range(1, sessionHostsCount): if (createAvdFslogixDeployment) {
-    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'Fsl-Conf-${padLeft((i + sessionHostCountIndex), 4, '0')}-${time}'
     params: {
         location: sessionHostLocation
@@ -406,7 +406,7 @@ module configureFsLogixAvdHosts './configureFslogixOnSessionHosts.bicep' = [for 
 
 // Add session hosts to AVD Host pool.
 module addAvdHostsToHostPool './registerSessionHostsOnHopstPool.bicep' = [for i in range(1, sessionHostsCount): {
-    scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'HP-Join-${padLeft((i + sessionHostCountIndex), 4, '0')}-${time}'
     params: {
         location: sessionHostLocation
