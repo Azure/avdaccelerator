@@ -26,7 +26,7 @@ param computeObjectsRgName string
 param serviceObjectsRgName string
 
 @description('AVD workload subscription ID, multiple subscriptions scenario.')
-param workloadSubsId string
+param subscriptionId string
 
 @description('Quantity of session hosts to deploy.')
 param deploySessionHostsCount int
@@ -46,8 +46,8 @@ param availabilitySetFaultDomainCount int
 @description('Sets the number of update domains for the availability set.')
 param availabilitySetUpdateDomainCount int
 
-@description('Create new virtual network.')
-param createAvdVnet bool
+@description('Create VM GPU extension policies.')
+param deployGpuPolicies bool
 
 @description('Required, The service providing domain services for Azure Virtual Desktop.')
 param identityServiceProvider string
@@ -153,6 +153,7 @@ var maxAvailabilitySetMembersCount = 199 // This is the max number of session ho
 var divisionAvSetValue = deploySessionHostsCount / maxAvailabilitySetMembersCount // This determines if any full availability sets are required.
 var divisionAvSetRemainderValue = deploySessionHostsCount % maxAvailabilitySetMembersCount // This determines if any partial availability sets are required.
 var availabilitySetCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue + 1 : divisionAvSetValue // This determines the total number of availability sets needed, whether full and / or partial.
+
 // =========== //
 // Deployments //
 // =========== //
@@ -160,15 +161,15 @@ var availabilitySetCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue 
 // Call on the hotspool.
 resource getHostPool 'Microsoft.DesktopVirtualization/hostPools@2019-12-10-preview' existing = {
   name: hostPoolName
-  scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+  scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
 }
 
 // Availability set.
 module availabilitySet './.bicep/availabilitySets.bicep' = if (!useAvailabilityZones) {
   name: 'AVD-Availability-Set-${time}'
-  scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
+  scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
   params: {
-      workloadSubsId: workloadSubsId
+      workloadSubsId: subscriptionId
       computeObjectsRgName: computeObjectsRgName
       availabilitySetNamePrefix: availabilitySetNamePrefix
       sessionHostLocation: sessionHostLocation
@@ -182,7 +183,7 @@ module availabilitySet './.bicep/availabilitySets.bicep' = if (!useAvailabilityZ
 // Session hosts.
 @batchSize(1)
 module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varAvdSessionHostBatchCount): {
-  scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
+  scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
   name: 'AVD-SH-Batch-${i-1}-${time}'
   params: {
     diskEncryptionSetResourceId: diskEncryptionSetResourceId 
@@ -212,7 +213,7 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varAvd
     subnetId: subnetId
     useAvailabilityZones: useAvailabilityZones
     vmLocalUserName: vmLocalUserName
-    workloadSubsId: workloadSubsId
+    subscriptionId: subscriptionId
     encryptionAtHost: encryptionAtHost
     createAvdFslogixDeployment: createAvdFslogixDeployment
     storageManagedIdentityResourceId: storageManagedIdentityResourceId
@@ -234,14 +235,15 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varAvd
     availabilitySet
   ]
 }]
-/*
-// GPU policy definitions.
-module gpuPolicies './.bicep/gpuAzurePolicies.bicep' = {
-  scope: subscription('${workloadSubsId}')
-  name: 'Custom-Policy-GPU-${time}'
+
+// VM GPU extension policies.
+module gpuPolicies './.bicep/azurePolicyGpuExtensions.bicep' = if (deployGpuPolicies) {
+  scope: subscription('${subscriptionId}')
+  name: 'GPU-VM-Extensions-${time}'
   params: {
-    subscriptionId: workloadSubsId
+    computeObjectsRgName: computeObjectsRgName
     location: sessionHostLocation
+    subscriptionId: subscriptionId
   }
+  dependsOn: []
 }
-*/
