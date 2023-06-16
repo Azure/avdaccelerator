@@ -7,7 +7,7 @@
         "policyType": "Custom",
         "mode": "Indexed",
         "displayName": "Custom - Deploy Nvidia GPU Driver Extension",
-        "description": "This policy set deploys the Nvidia GPU Driver for AVD Accelerator.",
+        "description": "This policy definition deploys the Nvidia GPU Driver extension on Nvidia's SKU VMs.",
         "metadata": {
           "version": "1.1.0",
           "category": "Drivers"
