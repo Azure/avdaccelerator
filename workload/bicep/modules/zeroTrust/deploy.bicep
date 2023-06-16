@@ -145,17 +145,17 @@ module ztPolicyAssignmentCompute '../../../../carml/1.3.0/Microsoft.Authorizatio
         ]
     }
 }]
-/*
+
 // Policy Remediation Task for Zero Trust.
-module ztPolicyComputeRemediationTask './.bicep/azurePolicyZtAssignmentRemediation.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions : if (diskZeroTrust) {
+module ztPolicyComputeRemediationTask '../azurePolicyAssignmentRemediation/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions : if (diskZeroTrust) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}') 
-    name: 'Rem-Comp-${customPolicyDefinition.deploymentName}-${i}'
+    name: 'Remm-Comp-${customPolicyDefinition.deploymentName}-${i}'
     params: {
         deploymentName: '${customPolicyDefinition.deploymentName}-${i}'
         policyAssignmentId: ztPolicyAssignmentCompute[i].outputs.resourceId
     }
 }]
-*/
+
 // Role Assignment for Zero Trust.
 module ztRoleAssignmentCompute '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions : if (diskZeroTrust) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')    
