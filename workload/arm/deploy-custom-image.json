@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "14507777441931480015"
+      "templateHash": "9757436986948477374"
     }
   },
   "parameters": {
@@ -875,7 +875,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('Resource-Group-{0}', parameters('time'))]",
+      "name": "[format('RG-{0}', parameters('time'))]",
       "subscriptionId": "[parameters('sharedServicesSubId')]",
       "location": "[deployment().location]",
       "properties": {
@@ -1956,7 +1956,7 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group-{0}', parameters('time')))]"
+        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('RG-{0}', parameters('time')))]"
       ]
     },
     {
@@ -4375,7 +4375,7 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group-{0}', parameters('time')))]"
+        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('RG-{0}', parameters('time')))]"
       ]
     },
     {
@@ -4922,7 +4922,7 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group-{0}', parameters('time')))]",
+        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('RG-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Compute-Gallery-{0}', parameters('time')))]"
       ]
     },
@@ -5475,7 +5475,7 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group-{0}', parameters('time')))]",
+        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('RG-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Compute-Gallery-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Definition-{0}', parameters('time')))]",
         "roleAssignments",
@@ -7358,14 +7358,14 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group-{0}', parameters('time')))]"
+        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('RG-{0}', parameters('time')))]"
       ]
     },
     {
       "condition": "[and(parameters('enableMonitoringAlerts'), empty(parameters('existingLogAnalyticsWorkspaceResourceId')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('Log-Analytics-Workspace-Wait-{0}', parameters('time'))]",
+      "name": "[format('LA-Workspace-Wait-{0}', parameters('time'))]",
       "subscriptionId": "[parameters('sharedServicesSubId')]",
       "resourceGroup": "[variables('varResourceGroupName')]",
       "properties": {
@@ -7375,7 +7375,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('Log-Analytics-Workspace-Wait-{0}', parameters('time'))]"
+            "value": "[format('LA-Workspace-Wait-{0}', parameters('time'))]"
           },
           "location": {
             "value": "[parameters('deploymentLocation')]"
@@ -10489,7 +10489,7 @@
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Template-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-{0}', parameters('time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-Wait-{0}', parameters('time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('LA-Workspace-Wait-{0}', parameters('time')))]"
       ]
     },
     {
@@ -10501,7 +10501,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('Automation-Account-Module-{0}-{1}', range(0, length(variables('varModules')))[copyIndex()], parameters('time'))]",
+      "name": "[format('AA-Module-{0}-{1}', range(0, length(variables('varModules')))[copyIndex()], parameters('time'))]",
       "subscriptionId": "[parameters('sharedServicesSubId')]",
       "resourceGroup": "[variables('varResourceGroupName')]",
       "properties": {
@@ -11162,7 +11162,7 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('Resource-Group-{0}', parameters('time')))]"
+        "[subscriptionResourceId(parameters('sharedServicesSubId'), 'Microsoft.Resources/deployments', format('RG-{0}', parameters('time')))]"
       ]
     },
     {
@@ -11734,7 +11734,7 @@
       "dependsOn": [
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Action-Group-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-{0}', parameters('time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-Wait-{0}', parameters('time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('LA-Workspace-Wait-{0}', parameters('time')))]"
       ]
     }
   ]
