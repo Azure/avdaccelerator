@@ -66,20 +66,16 @@ module gpuPolicyAssignmentsCompute '../../../../../carml/1.3.0/Microsoft.Authori
         policyDefinitionId: gpuPolicyDefinitions[i].outputs.resourceId
     }
 }]
-/*
+
 // Policy Remediation Task for GPU extensions.
-resource gpuPolicyRemediationTaskCompute 'Microsoft.PolicyInsights/remediations@2021-10-01' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: {
+module policySetRemediationCompute '../../azurePolicyAssignmentRemediation/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions : {
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'remediate-${customPolicyDefinition.deploymentName}-${i}'
-    properties: {
-        failureThreshold: {
-            percentage: 1
-          }
-          parallelDeployments: 10
-          policyAssignmentId: gpuPolicyAssignmentsCompute[i].outputs.resourceId
-          resourceCount: 500
-    }
+    params: {
+      deploymentName: '${customPolicyDefinition.deploymentName}-${i}'
+      policyAssignmentId: gpuPolicyAssignmentsCompute[i].outputs.resourceId
+  }
 }]
-*/
 // =========== //
 // Outputs //
 // =========== //
