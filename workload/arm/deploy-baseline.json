@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "17080876895726784157"
+      "templateHash": "5867237102684484714"
     }
   },
   "parameters": {
@@ -21590,7 +21590,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "7633283015096994566"
+              "templateHash": "8102645863630426573"
             }
           },
           "parameters": {
@@ -22177,6 +22177,75 @@
               },
               "dependsOn": [
                 "[subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
+              ]
+            },
+            {
+              "copy": {
+                "name": "ztPolicyServBojRemediationTask",
+                "count": "[length(variables('varCustomPolicyDefinitions'))]"
+              },
+              "condition": "[parameters('diskZeroTrust')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('Remm-ServObj-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, copyIndex())]",
+              "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
+              "resourceGroup": "[format('{0}', parameters('serviceObjectsRgName'))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "deploymentName": {
+                    "value": "[format('{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, copyIndex())]"
+                  },
+                  "policyAssignmentId": {
+                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Pol-Assign-ServObj{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time'))), '2022-09-01').outputs.resourceId.value]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.17.1.54307",
+                      "templateHash": "13416191842446717007"
+                    }
+                  },
+                  "parameters": {
+                    "deploymentName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Location where to deploy compute services."
+                      }
+                    },
+                    "policyAssignmentId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "AVD workload subscription ID, multiple subscriptions scenario."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.PolicyInsights/remediations",
+                      "apiVersion": "2021-10-01",
+                      "name": "[parameters('deploymentName')]",
+                      "properties": {
+                        "failureThreshold": {
+                          "percentage": 1
+                        },
+                        "parallelDeployments": 10,
+                        "policyAssignmentId": "[parameters('policyAssignmentId')]",
+                        "resourceCount": 500
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Pol-Assign-ServObj{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
               ]
             },
             {
