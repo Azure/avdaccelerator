@@ -16,6 +16,9 @@ param diskZeroTrust bool
 @description('AVD Resource Group Name for the service objects.')
 param serviceObjectsRgName string
 
+@description('AVD Resource Group Name for the service objects.')
+param computeObjectsRgName string
+
 @description('Managed identity for zero trust setup.')
 param managedIdentityName string
 
@@ -52,59 +55,44 @@ param time string = utcNow()
 // =========== //
 // Variable declaration //
 // =========== //
-
+var varCustomPolicyDefinitions = [
+    {
+      deploymentName: 'ZT-Disk'
+      libDefinition: json(loadTextContent('../../../policies/zeroTrust/policyDefinitions/policy-definition-es-vm-disk-zero-trust.json'))
+    }
+]
 // =========== //
 // Deployments //
 // =========== //
 // call on the keyvault.
 
 // Policy Definition for Managed Disk Network Access.
-module ztPolicyDefinition '../../../../carml/1.3.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = if (diskZeroTrust) {
-    name: 'ZT-Policy-Definition-${time}'
+module ztPolicyDefinitions '../../../../carml/1.3.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: if (diskZeroTrust) {
+    scope: subscription('${subscriptionId}')
+    name: 'Policy-Defin-${customPolicyDefinition.deploymentName}-${time}'
     params: {
-        description: 'This policy definition sets the network access policy property to "DenyAll" and the public network access property to "Disabled" on all the managed disks within the assigned scope.'
-        displayName: 'Custom - Zero Trust - Disable Managed Disk Network Access'
+        description: customPolicyDefinition.libDefinition.properties.description
+        displayName: customPolicyDefinition.libDefinition.properties.displayName
         location: location
-        name: 'AVD-ACC-Zero-Trust-Disable-Managed-Disk-Network-Access'
-        policyRule: {
-            if: {
-                field: 'type'
-                equals: 'Microsoft.Compute/disks'
-            }
-            then: {
-                effect: 'modify'
-                details: {
-                    roleDefinitionIds: [
-                        '/providers/Microsoft.Authorization/roleDefinitions/60fc6e62-5479-42d4-8bf4-67625fcc2840'
-                    ]
-                    operations: [
-                        {
-                            operation: 'addOrReplace'
-                            field: 'Microsoft.Compute/disks/networkAccessPolicy'
-                            value: 'DenyAll'
-                        }
-                        {
-                            operation: 'addOrReplace'
-                            field: 'Microsoft.Compute/disks/publicNetworkAccess'
-                            value: 'Disabled'
-                        }
-                    ]
-                }
-            }
-        }
+        name: customPolicyDefinition.libDefinition.name
+        metadata: customPolicyDefinition.libDefinition.properties.metadata
+        mode: customPolicyDefinition.libDefinition.properties.mode
+        parameters: customPolicyDefinition.libDefinition.properties.parameters
+        policyRule: customPolicyDefinition.libDefinition.properties.policyRule
     }
-}
+}]
 
 // Policy Assignment for Managed Disk Network Access.
-module ztPolicyAssignment '../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = if (diskZeroTrust) {
-    name: 'ZT-Policy-Assignment-${time}'
+module ztPolicyAssignmentServiceObjects '../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/resourceGroup/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (diskZeroTrust) {
+    scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+    name: 'Pol-Assign-ServObj${customPolicyDefinition.deploymentName}-${time}' 
     params: {
-        name: 'AVD-ACC-Zero-Trust-Disable-Managed-Disk-Network-Access'
-        displayName: 'Custom - Zero Trust - Disable Managed Disk Network Access'
-        description: 'This policy assignment sets the network access policy property to "DenyAll" and the public network access property to "Disabled" on all the managed disks within the assigned scope.'
+        name: customPolicyDefinition.libDefinition.name
+        displayName: customPolicyDefinition.libDefinition.properties.displayName
+        description: customPolicyDefinition.libDefinition.properties.description
         identity: 'SystemAssigned'
         location: location
-        policyDefinitionId: diskZeroTrust ? ztPolicyDefinition.outputs.resourceId : ''
+        policyDefinitionId: diskZeroTrust ? ztPolicyDefinitions[i].outputs.resourceId : ''
         resourceSelectors: [
             {
                 name: 'VirtualMachineDisks'
@@ -119,7 +107,76 @@ module ztPolicyAssignment '../../../../carml/1.3.0/Microsoft.Authorization/polic
             }
         ]
     }
-}
+}]
+
+// Policy Remediation Task for Zero Trust.
+module ztPolicyServBojRemediationTask '../azurePolicyAssignmentRemediation/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions : if (diskZeroTrust) {
+    scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}') 
+    name: 'Remm-ServObj-${customPolicyDefinition.deploymentName}-${i}'
+    params: {
+        deploymentName: '${customPolicyDefinition.deploymentName}-${i}'
+        policyAssignmentId: ztPolicyAssignmentServiceObjects[i].outputs.resourceId
+    }
+}]
+
+// Policy Assignment for Managed Disk Network Access.
+module ztPolicyAssignmentCompute '../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/resourceGroup/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (diskZeroTrust) {
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+    name: 'Pol-Assign-Comp-${customPolicyDefinition.deploymentName}-${time}' 
+    params: {
+        name: customPolicyDefinition.libDefinition.name
+        displayName: customPolicyDefinition.libDefinition.properties.displayName
+        description: customPolicyDefinition.libDefinition.properties.description
+        identity: 'SystemAssigned'
+        location: location
+        policyDefinitionId: diskZeroTrust ? ztPolicyDefinitions[i].outputs.resourceId : ''
+        resourceSelectors: [
+            {
+                name: 'VirtualMachineDisks'
+                selectors: [
+                    {
+                        in: [
+                            'Microsoft.Compute/disks'
+                        ]
+                        kind: 'resourceType'
+                    }
+                ]
+            }
+        ]
+    }
+}]
+
+// Policy Remediation Task for Zero Trust.
+module ztPolicyComputeRemediationTask '../azurePolicyAssignmentRemediation/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions : if (diskZeroTrust) {
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}') 
+    name: 'Remm-Comp-${customPolicyDefinition.deploymentName}-${i}'
+    params: {
+        deploymentName: '${customPolicyDefinition.deploymentName}-${i}'
+        policyAssignmentId: ztPolicyAssignmentCompute[i].outputs.resourceId
+    }
+}]
+
+// Role Assignment for Zero Trust.
+module ztRoleAssignmentCompute '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions : if (diskZeroTrust) {
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')    
+    name: 'ZT-RA-Comp-${customPolicyDefinition.deploymentName}-${time}'
+    params: {
+        principalId: diskZeroTrust ? ztPolicyAssignmentCompute[i].outputs.principalId : ''
+        roleDefinitionIdOrName: 'Disk Pool Operator'
+        principalType: 'ServicePrincipal'
+    }
+}]
+
+// Role Assignment for Zero Trust.
+module ztRoleAssignmentServObj '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions : if (diskZeroTrust) {
+    scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')    
+    name: 'ZT-RA-ServObj-${customPolicyDefinition.deploymentName}-${time}'
+    params: {
+        principalId: diskZeroTrust ? ztPolicyAssignmentServiceObjects[i].outputs.principalId : ''
+        roleDefinitionIdOrName: 'Disk Pool Operator'
+        principalType: 'ServicePrincipal'
+    }
+}]
 
 // User Assigned Identity for Zero Trust.
 module ztManagedIdentity '../../../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
@@ -135,7 +192,7 @@ module ztManagedIdentity '../../../../carml/1.3.0/Microsoft.ManagedIdentity/user
     ]
 }
 
-// Introduce wait for management VM to be ready.
+// Introduce wait for managed identity to be ready.
 module ztManagedIdentityWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
     name: 'ZT-Mana-Ident-Wait-${time}'
@@ -158,37 +215,13 @@ module ztManagedIdentityWait '../../../../carml/1.3.0/Microsoft.Resources/deploy
     ]
   }
 
-// Policy Remediation Task for Zero Trust.
-resource ztPolicyRemediationTask 'Microsoft.PolicyInsights/remediations@2021-10-01' = {
-    name: 'remediate-disks-network-access'
-    properties: {
-        failureThreshold: {
-            percentage: 1
-          }
-          parallelDeployments: 10
-          policyAssignmentId: diskZeroTrust ? ztPolicyAssignment.outputs.resourceId : ''
-          resourceCount: 500
-    }
-}
-
 // Role Assignment for Zero Trust.
-module ztRoleAssignment01 '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (diskZeroTrust) {
+module ztRoleAssignment '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (diskZeroTrust) {
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
-    name: 'ZT-RoleAssignment-${time}'
+    name: 'ZT-RoleAssign-${time}'
     params: {
         principalId: diskZeroTrust ? ztManagedIdentity.outputs.principalId : ''
         roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
-        principalType: 'ServicePrincipal'
-    }
-}
-
-// Role Assignment for Zero Trust.
-module ztRoleAssignment02 '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/subscription/deploy.bicep' = if (diskZeroTrust) {
-    name: 'ZT-RoleAssignment-${time}'
-    params: {
-        location: location
-        principalId: diskZeroTrust ? ztPolicyAssignment.outputs.principalId : ''
-        roleDefinitionIdOrName: 'Disk Pool Operator'
         principalType: 'ServicePrincipal'
     }
 }

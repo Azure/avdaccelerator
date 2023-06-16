@@ -199,6 +199,9 @@
         },
         "diskZeroTrust": {
             "value": false
+        },
+        "deployGpuPolicies": {
+            "value": true
         }
     }
 }
