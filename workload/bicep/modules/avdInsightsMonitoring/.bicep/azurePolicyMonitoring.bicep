@@ -216,22 +216,16 @@ module policySetAssignment '../../../../../carml/1.3.0/Microsoft.Authorization/p
   ]
 }]
 
-
-
-/*
 // Policy set remediation.
-resource policySetRemediation 'Microsoft.PolicyInsights/remediations@2021-10-01' = {
-  name: 'remediate-diagnostic-settings'
-  properties: {
-      failureThreshold: {
-          percentage: 1
-        }
-        parallelDeployments: 10
-        policyAssignmentId: policySetAssignment.outputs.resourceId
-        resourceCount: 500
-  }
+module policySetRemediation '../../azurePolicyAssignmentRemediation/deploy.bicep' = [for (policyAssignmentRg, i) in varPolicyAssignmentRgs: {
+  scope: resourceGroup('${subscriptionId}', '${policyAssignmentRg.rgName}')
+  name: 'Remm-Diag-${varCustomPolicySetDefinitions.deploymentName}-${i}'
+  params: {
+    deploymentName: '${varCustomPolicySetDefinitions.deploymentName}-${i}'
+    policyAssignmentId: policySetAssignment[i].outputs.resourceId
 }
-*/
+}]
+
 // =========== //
 // Outputs     //
 // =========== //
