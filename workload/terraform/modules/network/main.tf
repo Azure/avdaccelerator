@@ -100,6 +100,7 @@ resource "azurerm_virtual_network_peering" "peer3" {
 }
 
 # optional - Creates the Azure Virtual Desktop Firewall Rules assuming you have a firewall in the hub
+/*
 module "firewall" {
   source              = "./firewallrules"
   avdLocation         = var.avdLocation
@@ -109,3 +110,4 @@ module "firewall" {
   hub_connectivity_rg = var.hub_connectivity_rg
   hub_vnet            = var.hub_vnet
 }
+*/
