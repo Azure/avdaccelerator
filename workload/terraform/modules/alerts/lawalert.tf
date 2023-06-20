@@ -16,32 +16,51 @@ data "azurerm_log_analytics_workspace" "lawksp" {
 
 }
 
+//  target_resource_type     = "microsoft.desktopvirtualization/hostpools"
 
-# Azure Alert for AVD VMs Unhealthy
-resource "azurerm_monitor_metric_alert" "avd_health_alert" {
-  provider                 = azurerm.spoke
-  name                     = "Unhealthy VM"
-  resource_group_name      = azurerm_resource_group.rg_shared_name.name
-  target_resource_location = var.avdLocation
-  scopes                   = ["/subscriptions/${var.hub_subscription_id}"]
-  description              = "Unhealthy AVD Session Host"
-  target_resource_type     = "microsoft.desktopvirtualization/hostpools"
-  frequency                = "PT1M"
-  window_size              = "PT5M"
+resource "azurerm_monitor_scheduled_query_rules_alert_v2" "alert_v2" {
+  provider            = azurerm.spoke
+  name                = "Unhealthy VM"
+  resource_group_name = azurerm_resource_group.rg_shared_name.name
+  location            = var.avdLocation
 
-  query = <<-QUERY
-  WVDAgentHealthStatus 
-    | where EndpointState <> "Healthy" 
-  QUERY
+  evaluation_frequency = "PT5M"
+  window_duration      = "PT5M"
+  scopes               = [data.azurerm_log_analytics_workspace.lawksp.id]
+  severity             = 4
+
   criteria {
-    metric_namespace = "Microsoft.DesktopVirtualization/hostpools"
-    metric_name      = "Unhealthy VMs"
-    aggregation      = "Total"
-    operator         = "GreaterThan"
-    threshold        = 0
+    query = <<-QUERY
+       WVDAgentHealthStatus 
+        | where EndpointState <> "Healthy" 
+    QUERY
+
+    time_aggregation_method = "Maximum"
+    threshold               = 99.0
+    operator                = "LessThan"
+
+    resource_id_column    = "_ResourceId"
+    metric_measure_column = "AggregatedValue"
+
+    dimension {
+      name     = "Computer"
+      operator = "Include"
+      values   = ["*"]
+    }
+
+    failing_periods {
+      minimum_failing_periods_to_trigger_alert = 1
+      number_of_evaluation_periods             = 1
+    }
   }
 
-  action {
-    action_group_id = azurerm_monitor_action_group.ag.id
-  }
+  auto_mitigation_enabled          = false
+  workspace_alerts_storage_enabled = false
+  description                      = "This is V2 custom log alert"
+  display_name                     = "Unhealthy VM"
+  enabled                          = true
+  query_time_range_override        = "P2D"
+  skip_query_validation            = false
+
+
 }
