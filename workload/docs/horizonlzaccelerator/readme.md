@@ -38,12 +38,14 @@ The following list provides more information about platform-based resources:
 - [Design areas – Network topology and connectivity](https://learn.microsoft.com/azure/cloud-adoption-framework/scenarios/wvd/eslz-network-topology-and-connectivity) – Describes several Cloud Adoption Framework enterprise-scale landing zone’s architectural principles and recommendation to manage network topology and connectivity at scale. 
 
 ### Customer Profile
-This scenario is ideal if: 
-- Business is required to deliver a simple environment to serve virtual desktops and workspaces to end users 
-- Critical applications or services are identified that will remain on-premises or in other cloud or hosted infrastructure platforms 
-- Business leverages multiple cloud platforms for hosting critical applications 
-- Diverse user population requires access to services from anywhere 
-- Non-Microsoft solutions for collaboration, authentication, or identity are required 
+Consider the Horizon solution if: 
+- You have already deployed VMWare Horizon on-premises and would like to continue to use the same platform in the future 
+- You have decided on VMWare Horizon as your new desktop platform and wish to deploy into Azure or in a hybrid cloud model
+- You wish to have a single control plane to manage Horizon on Azure or a hybrid deployment of Horizon 
+- Critical applications or services are identified that will remain on-premises, in Azure, or in other cloud or hosted infrastructure platforms
+- Your business leverages multiple cloud platforms for hosting critical applications
+- Diverse user population requires access to services from anywhere
+
 
 
 # Architectural Components
@@ -55,7 +57,7 @@ This scenario is ideal if:
 
 
 **Horizon Cloud on AVD - Network Reference Architecture**
-[![Diagram of the Horizon Cloud on Azure hybrid connectivity scenario](../diagrams/horizon-cloud-azure-virtual-desktop-architecture-1.png)](./diagrams/horizon-cloud-azure-virtual-desktop-architecture-1.png#lightbox)
+[![Diagram of the Horizon Cloud on Azure hybrid connectivity scenario](../diagrams/horizon-cloud-azure-virtual-desktop-architecture-1a.png)](./diagrams/horizon-cloud-azure-virtual-desktop-architecture-1a.png#lightbox)
 
 
 Details on network topology and connectivity for each platform are discussed below. 
@@ -98,8 +100,8 @@ Horizon offers flexible deployment options across private and public clouds, fro
 
 
 
-**Horizon Cloud on AVD - Multi Cloud Deployment Reference Architecture**
-[![Diagram of the Horizon Cloud on Azure multi-cloud deployment scenario](../diagrams/horizon-cloud-azure-virtual-desktop-architecture-3.png)](./diagrams/horizon-cloud-azure-virtual-desktop-architecture-3.png#lightbox)
+**Horizon Cloud on Azure Reference Architecture**
+[![Diagram of the Horizon Cloud on Azure deployment scenario](../diagrams/horizon-cloud-azure-virtual-desktop-architecture-3a.png)](./diagrams/horizon-cloud-azure-virtual-desktop-architecture-3a.png#lightbox)
 
 
 
@@ -108,8 +110,17 @@ Horizon offers flexible deployment options across private and public clouds, fro
 
 Designing a multi-cloud solution is challenging and complex. VMware has developed guidance for deploying Horizon on each of the supported cloud-based infrastructure platforms. Review the different reference architectures for other platforms on the [Horizon Reference Architecture](https://techzone.vmware.com/reference-architecture#horizon) on VMware TechZone. 
 
+# Design area – Identity
+Typically, Horizon Cloud on Microsoft Azure integrates with Azure Active Directory or Workspace ONE Access for identity services. If you need to integrate a 3rd party prover like OKTA or OpenLDAP you can consider using Workspace ONE Access which has the ability to integrate with other LDAP providers.
 
-# Design areas – Resource Organization 
+Resources
+Review the following resources on Identity integration.
+- [Workspace ONE Access](https://docs.vmware.com/en/VMware-Workspace-ONE-Access/index.html)
+- [Workspace ONE Access - Directory Integration](https://docs.vmware.com/en/VMware-Workspace-ONE-Access/services/ws1_access_directory/GUID-DF53F9EF-6715-469A-A885-9ACFE4B2A35B.html)
+- [Horizon Cloud on Azure Architecture](https://techzone.vmware.com/resource/horizon-cloud-on-microsoft-azure-first-gen-architecture#authentication)
+
+
+# Design area – Resource Organization 
 Horizon Cloud on Microsoft Azure automatically configures and manages all the critical platform components that it creates on your behalf within Microsoft Azure. 
 
 ## Platform-Based Resources 
@@ -167,7 +178,7 @@ The resources below describe how resources are managed within Horizon Cloud on M
 - [Managing Profiles and Policies for Windows Desktops: Dynamic Environment Manager Operational Tutorial](https://techzone.vmware.com/managing-profiles-and-policies-windows-desktops-dynamic-environment-manager-operational-tutorial) – Learn how to leverage Dynamic Environment Manager to manage Windows profiles and policies.
 
 
-# Design areas – Business Continuity and Disaster Recovery
+# Design area – Business Continuity and Disaster Recovery
 Organizations depend on Horizon to deliver key services to users. Proper design of the Horizon implementation can provide disaster recovery (DR) capabilities to ensure availability, recoverability, and business continuity. 
 
 Disaster recovery for Horizon workloads should be viewed from the perspective of the users. Where a user is being delivered Horizon-based desktops or published applications from a particular location, contingencies should be made to provide equivalent services from a separate location. 
@@ -189,7 +200,7 @@ The resources below may be useful for designing a resilient virtual workspace an
 [Disaster Recovery in VMware Horizon](https://techzone.vmware.com/resource/providing-disaster-recovery-vmware-horizon) – This guide covers the considerations and discusses how to approach providing disaster recovery for Horizon-based workloads. 
 
 
-# Design areas – Management baseline
+# Design area – Management baseline
 You can use a variety of procedures for monitoring, diagnosing, and fixing problems that you might encounter when using VMware Horizon. Horizon Cloud on Microsoft Azure comes with built-in monitoring and reporting features.  
 
 To maintain the health and efficient operation of any VDI platform, it is important to monitor for availability of critical platform and infrastructure components. 
@@ -256,7 +267,7 @@ The resources below describe how resources are managed within Horizon Cloud on M
 
 [Cloud Monitoring Service](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service/services/hzncloudmsazure.admin15/GUID-9815E322-A13F-4E0A-B4F7-98B34A054D8F.html) – The Cloud Monitoring Service (CMS) is a built-in monitoring platform for Horizon Cloud Service. It provides critical monitoring and reporting capabilities for each Horizon Cloud on Microsoft Azure customer. 
 
-# Design areas – Governance 
+# Design area – Governance 
 This section provides design considerations and recommendations for security, governance, and compliance using Horizon Cloud on Microsoft Azure. 
 
 ## Resources  
@@ -269,4 +280,4 @@ Review the following resources to find security controls and governance details 
 
 - [Horizon Client and Agent Security](https://docs.vmware.com/en/VMware-Horizon/2209/horizon-security/GUID-C4781600-9941-4576-8D81-C2E63A850EE7.html) – Horizon Client is the client software that end users run on their client devices to connect to remote desktops and published applications. Horizon Agent is the agent software that runs in virtual desktops, and on Microsoft RDS hosts that provide published desktops and published applications. Guidance on securing endpoints and virtual machines can be found in the document linked. 
 
-- [Resource Providers That Horizon Cloud Requires to Be in Registered Status in the Microsoft Azure Subscription](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service/services/hzncloudmsazure.getstarted15/GUID-3C0D5928-61ED-42EC-98A9-9D7547BA68BE.html) – To provide for creating and managing a Horizon Cloud pod in your Microsoft Azure subscription, Horizon Cloud requires the ability to create and manage various resources in that subscription. This article details these requirements. 
+- [Resource Providers That Horizon Cloud Requires to Be in Registered Status in the Microsoft Azure Subscription](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service/services/hzncloudmsazure.getstarted15/GUID-3C0D5928-61ED-42EC-98A9-9D7547BA68BE.html) – To provide for creating and managing a Horizon Cloud pod in your Microsoft Azure subscription, Horizon Cloud requires the ability to create and manage various resources in that subscription. This article details these requirements.
