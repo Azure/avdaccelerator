@@ -1,5 +1,7 @@
-# Work in PROGRESS - Will be runbook for Automation Account
+# Runbook for Automation Account
 # to collect Host Pool information and output to Log Analytics
+# (Derived from AVD Alerts Solution)
+# June 2023 - added additonal Personal Host Pool logging
 
 [CmdletBinding(SupportsShouldProcess)]
 param(
@@ -13,37 +15,38 @@ Connect-AzAccount -Identity -Environment $CloudEnvironment | Out-Null
 
 $AVDHostPools = Get-AzWvdHostPool -SubscriptionId $SubscriptionId
 
-# $HostPoolInfoObj= @()
-$Output = @()
-
 Foreach($AVDHostPool in $AVDHostPools){
 	$HPName = $AVDHostPool.Name
     $HPResGroup = ($AVDHostPool.Id -split '/')[4]
     $HPType = $AVDHostPool.HostPoolType
     $HPMaxSessionLimit = $AVDHostPool.MaxSessionLimit
-    $HPNumSessionHosts = (Get-AzWvdSessionHost -HostPoolName $HPName -ResourceGroupName $HPResGroup).count
-    $HPUsrSession = (Get-AzWvdUserSession -HostPoolName $HPName -ResourceGroupName $HPResGroup).count
-    $HPUsrDisonnected = (Get-AzWvdUserSession -HostPoolName $HPName -ResourceGroupName $HPResGroup | Where-Object {$_.sessionState -eq "Disconnected" -AND $_.userPrincipalName -ne $null}).count
-    $HPUsrActive = (Get-AzWvdUserSession -HostPoolName $HPName -ResourceGroupName $HPResGroup | Where-Object {$_.sessionState -eq "Active" -AND $_.userPrincipalName -ne $null}).count
+    $SessionHosts = Get-AzWvdSessionHost -HostPoolName $HPName -ResourceGroupName $HPResGroup
+    $UserSessions = Get-AzWvdUserSession -HostPoolName $HPName -ResourceGroupName $HPResGroup
+    $HPNumSessionHosts = $SessionHosts.count
+    $HPUsrSession = $UserSessions.count
+    $HPUsrDisonnected = ($SessionHosts | Where-Object {$_.sessionState -eq "Disconnected" -AND $_.userPrincipalName -ne $null}).count
+    $HPUsrActive = ($UserSessions | Where-Object {$_.sessionState -eq "Active" -AND $_.userPrincipalName -ne $null}).count
+    $PersonalHostError = $false
+    $Machine = $null
+    $User = $null
+    $VMRG = $null
+
+    If($HPType -eq "Personal"){
+        Foreach($Sessionhost in $SessionHosts){
+            # If Status not Available and Assigned log
+            If(($Sessionhost.Status -ne "Available") -AND ($null -ne $Sessionhost.AssignedUser)){            
+                $PersonalHostError = $true
+                $User = $SessionHost.AssignedUser
+                $VMRG = ($SessionHost.ResourceId -split '/')[4]
+                $Machine = ($SessionHost.ResourceId -split '/')[8]
+            }
+        }
+    }
     # Max allowed Sessions - Based on Total given unavailable may be on scaling plan
     $HPSessionsAvail = ($HPMaxSessionLimit * $HPNumSessionHosts)-$HPUsrSession
     if($HPUsrSession -ne 0)	{
 		$HPLoadPercent = ($HPUsrSession/($HPMaxSessionLimit * $HPNumSessionHosts))*100
 	}
 	Else {$HPLoadPercent = 0}
-	$Output += $HPName + "|" + $HPResGroup + "|" + $HPType + "|" + $HPMaxSessionLimit  + "|" + $HPNumSessionHosts + "|" + $HPUsrSession  + "|" + $HPUsrDisonnected  + "|" + $HPUsrActive + "|" + $HPSessionsAvail + "|" + $HPLoadPercent
-    <#$HostPoolInfoObj += [PSCustomObject]@{
-        HPName              = $HPName
-        HPResGroup          = $HPResGroup
-        HPType              = $HPType.ToString()
-        HPMaxSessionLimit   = $HPMaxSessionLimit
-        HPNumSessionHosts   = $HPNumSessionHosts
-        HPUsrSessions       = $HPUsrSession
-        HPSessionsAvail     = $HPSessionsAvail
-        HPUsrActive         = $HPUsrActive
-        HPUsrDisconn        = $HPUsrDisonnected
-    }
-	#>
+	Write-Output "$HPName|$HPResGroup|$HPType|$HPMaxSessionLimit|$HPNumSessionHosts|$HPUsrSession|$HPUsrDisonnected|$HPUsrActive|$HPSessionsAvail|$HPLoadPercent|$PersonalHostError|$VMRG|$Machine|$User"
 }
-# $Output = ConvertTo-Json -InputObject $HostPoolInfoObj
-Write-Output $Output
