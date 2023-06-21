@@ -35,7 +35,7 @@ The solution implements a new:
   - 1 Workspaces – 1 pooled
   - AVD Monitoring, log analytics workspace and diagnostic logs enabled
   - AVD Scaling plan
-- Azure Files Storage with FSLogix share, RBAC role assignment and private endpoint
+- Azure Files Storage with FSLogix share, RBAC role assignment and private endpoint joined to Azure Active Directory
 - Key Vault and private endpoint
 - Azure Virtual Desktop spoke resources:
   - Virtual Network
@@ -43,7 +43,7 @@ The solution implements a new:
   - NSG
   - DNS Zone
   - Route table
-- 2 Session host VMs Azure AD join using custom image
+- 1 Session host VMs Azure AD join using custom image
   - Application Security Group  
 
 AVD Landing Zone concepts can be explored in more detail via the [official documentation page](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/wvd/).
@@ -70,7 +70,7 @@ Azure Virtual Desktop resources and dependent services for establishing the Azur
 - Current version of the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 - Current version of the Terraform CLI
 - An Azure Subscription(s) where you or an identity you manage has `Owner` [RBAC permissions](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#owner)
-- Ensure Encrption at Host feature is already enabled on the subscription. To enable: az feature register --name EncryptionAtHost  --namespace Microsoft.Compute. To validate: az feature show --name EncryptionAtHost --namespace Microsoft.Compute
+- Ensure Encryption at Host feature is already enabled on the subscription. To enable: az feature register --name EncryptionAtHost  --namespace Microsoft.Compute. To validate: az feature show --name EncryptionAtHost --namespace Microsoft.Compute
 
 ### Naming
 
@@ -109,7 +109,7 @@ Azure platform landing zone has already been deployed in accordance with the [CA
 - prefix               = "your prefix"
 - local_admin_username = "your local admin name"  # Your AVD VM login id to manage username
 - local_admin_password = "your local admin password"  # Your AVD VM login id to manage password
-- vm_size              = "Standard_D8s_v5"
+- vm_size              = "Standard_D2s_v5"
 - vnet_range           = ["your.ip.address.range/16"]
 - subnet_range         = ["your.ip.address.range/24"]
 - allow_list_ip        = ["your.ip.address.range/23"]
