@@ -10,6 +10,4 @@ The brownfield deployments section contains templates to deploy specific feature
 - [Start VM On Connect](./bicep/brownfield/startVmOnConnect/readme.md)
 
 ## Azure Virtual Desktop: Azure monitor workbooks
-
-- [Cost Optimization Workbook](./workbooks/costOptimizationWorkbook/readme.md)
 - [Deep Insights Workbook](./workbooks/deepInsightsWorkbook/readme.md)
