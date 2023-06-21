@@ -20,7 +20,16 @@ resource "azurerm_storage_account" "storage" {
   identity {
     type = "SystemAssigned"
   }
+  azure_files_authentication {
+    directory_type = "AADKERB"
+  }
+  lifecycle {
+    ignore_changes = [
+      customer_managed_key
+    ]
+  }
 }
+
 
 resource "azurerm_storage_share" "FSShare" {
   name             = "fslogix"
