@@ -6,7 +6,7 @@
 
 - **Basics** blade
   - **Subscription** - The subscription where the accelerator is going to deploy the resources.
-  - **Region** – The desired Azure Region to be used for the deployment.
+  - **Region** – The desired Azure Region to be used for the deployment. Management Plane and Session Host Locations will be selected separately. 
   - **Prefix** – A prefix of maximum 4 characters that will be appended to the names of Resource Groups and Azure resources within the Resource Groups.
   - **Environment** – Deployment Environment type (Development/Test/Production), will be used for naming and tagging purposes.
 - **Identity provider** blade
@@ -39,12 +39,12 @@
   - **Deploy sessions hosts** - You can choose to not deploy session hosts just the AVD service objects.
   - **Session host region** - Provide the region to where you want to deploy the session hosts. This defaults to the Management Plane region but can be changed.
   - **Session hosts OU path (Optional)** - Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU. If left empty the computer account will be created in the default Computers OU. Example: OU=avd,DC=contoso,DC=com.
-  - **Use availability zones** - If you deselect the checkbox an Availability set will be created instead and session hosts will be created in the availability set. If you select the checkbox the accelerator  will distribute compute and storage resources across availability zones.
+  - **Use availability zones** - If you deselect the checkbox, an Availability set will be created instead and session hosts will be created in the availability set. If you select the checkbox the accelerator  will distribute compute and storage resources across availability zones.
   - **VM size** -  Select the SKU size for the session hosts.
   - **VM count** - Select the number of session hosts to deploy.
-  - **OS disk type** - Select the OS Disk SKU type. Premium is recommended.
+  - **OS disk type** - Select the OS Disk SKU type. Premium is recommended for performance and higher SLA.
   - **Zero trust disk configuration** - Check the box to enable the zero trust configuration on the session host disks to ensure all the disks are encrypted, the OS and data disks are protected with double encryption with a customer managed key, and network access is disabled.
-  - **Enable accelerated networking** - Check the box to ensure the network traffic on the session hosts is offloaded to the network interface to enhance performance. This feature is free as long as a supported generation 2 VM size is selected. Checked is recommended.
+  - **Enable accelerated networking** - Check the box to ensure the network traffic on the session hosts is offloaded to the network interface to enhance performance. This feature is free and available as long a supported VM SKU and [OS](https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-overview?tabs=redhat#supported-operating-systems) is chosen. To check whether a VM size supports Accelerated Networking, see [Sizes for virtual machines in Azure](https://learn.microsoft.com/en-us/azure/virtual-machines/sizes). This feature is recommended as it will decrease CPU utilization for networking (offloading to NIC) and increase network performance/throughput to Azure VMs and Services, like Azure Files.
   - **OS image source** - Select a marketplace image or an image from Azure Compute Gallery (Custom image build deployment will create images in compute gallery).
   - **OS version or image** - Choose the OS version or desired image from the Azure compute gallery.
 - **Storage** blade
@@ -85,7 +85,7 @@ Take a look at the [Naming Standard and Tagging](./resource-naming.md) page for 
 
 ## Redeployment Considerations
 
-We redeploying the baseline automation with the same deployment prefix value, clean up of previously created resource groups or at least their contained resources will need to be removed before the new deployment is executed, this will prevent the duplication of resources (key vaults and storage accounts) and conflicts of IP range overlap when creating the AVD virtual network.
+When redeploying the baseline automation with the same deployment prefix value, clean up of previously created resource groups or at least their contained resources will need to be removed before the new deployment is executed, this will prevent the duplication of resources (key vaults and storage accounts) and conflicts of IP range overlap when creating the AVD virtual network.
 
 ## Other Deployment Options
 
@@ -101,8 +101,8 @@ We have these other options available:
 - After successful deployment, you can remove the following temporary resources used only during deployment:
     - Management virtual machine (`vmmgmt{deploymentPrefix}{DeploymentEnvironment-d/t/p}{AzureRegionAcronym}`) and its associated OS disk and network interface.
     - Deployment scripts used to introduce wait times: Management-VM-Wait-{timestamp}, Managed-Identity-Wait-{timestamp}, Antimalware-Extension-Wait-{timestamp}, Session-Hosts-Wait-{timestamp}, SH-Monitoring-Wait-{timestamp}.
-- You should assign specific roles, including AVD-specific roles based on your organization’s policies.
-- Preferably enable NSG Flow logs and AVD insights.
+- You should assign specific roles, including [AVD-specific roles](https://learn.microsoft.com/en-us/azure/virtual-desktop/rbac) based on your organization’s policies.
+- Preferably enable NSG Flow logs and Traffic Analytics.
 
 ## Known Issues
 
