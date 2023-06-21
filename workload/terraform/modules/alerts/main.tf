@@ -25,11 +25,11 @@ resource "azurerm_monitor_metric_alert" "avd_alert_cpu" {
   scopes                   = ["/subscriptions/${var.hub_subscription_id}/resourceGroups/${var.rg_shared_name}"]
   description              = "AVD alert CPU"
   target_resource_type     = "Microsoft.Compute/virtualMachines"
-  severity = 3 # informational
+  severity                 = 3 # informational
 
   criteria {
     metric_namespace = "Microsoft.Compute/virtualMachines"
-    metric_name      = "Percentage CPU" 
+    metric_name      = "Percentage CPU"
     aggregation      = "Total"
     operator         = "GreaterThan"
     threshold        = 80
