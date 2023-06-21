@@ -11,3 +11,22 @@ variable "rg_shared_name" {
 variable "avdLocation" {
   description = "Location of the resource group."
 }
+
+variable "spoke_subscription_id" {
+  type        = string
+  description = "Spoke Subscription id"
+}
+
+variable "prefix" {
+  type        = string
+  description = "Prefix of the name under 5 characters"
+  validation {
+    condition     = length(var.prefix) < 5 && lower(var.prefix) == var.prefix
+    error_message = "The prefix value must be lowercase and < 4 chars."
+  }
+}
+
+variable "rg_avdi" {
+  type        = string
+  description = "Name of the Resource group in which to deploy avd service objects"
+}
