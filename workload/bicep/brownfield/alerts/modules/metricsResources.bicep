@@ -13,7 +13,6 @@ param StorageAccountResourceIds array
 param Tags object
 
 var SubscriptionId = subscription().subscriptionId
-var CloudEnvironment = environment().name
 
 module actionGroup '../../../../../carml/1.3.0/Microsoft.Insights/actionGroups/deploy.bicep' = {
   name: ActionGroupName
@@ -121,7 +120,7 @@ module logAlertHostPoolQueries 'hostPoolAlerts.bicep' = [for hostpool in HostPoo
 }]
 
 // Currently only deploys IF Cloud Environment is Azure Commercial Cloud
-module logAlertSvcHealth '../../../../../carml/1.3.0/Microsoft.Insights/activityLogAlerts/deploy.bicep' = [for i in range(0, length(LogAlertsSvcHealth)): if (CloudEnvironment == 'AzureCloud') {
+module logAlertSvcHealth '../../../../../carml/1.3.0/Microsoft.Insights/activityLogAlerts/deploy.bicep' = [for i in range(0, length(LogAlertsSvcHealth)): {
   name: 'carml_${LogAlertsSvcHealth[i].name}'
   params: {
     enableDefaultTelemetry: false
