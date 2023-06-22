@@ -2,10 +2,6 @@
 
 [Home](./readme.md) | [PostDeployment](./postDeploy.md) | [How to Change Thresholds](./changeAlertThreshold.md) | [Alert Reference](./alertReference.md) | [Excel List of Alert Rules](./references/alerts.xlsx)
 
-## 6/19/23 - Initial AVD Accelerator Release (v2.0.1)
-
-- Removed conditional for Service Health alerts whereas they would not deploy for Azure US Government.  (Given they are now available)
-
 ## 4/27/23 - Initial AVD Accelerator Release (v2.0.1)
 
 - Initial release in AVD Accelerator to include use of carml 1.3.0

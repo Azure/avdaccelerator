@@ -1,6 +1,3 @@
-# Deployment Script used to create mapping between AVD Host Pools and Associated VMs
-# June 2023 - Added Host Pool Type for future use (i.e. Alerts specific to type)
-
 param(
     
     [parameter(Mandatory=$true)]
@@ -18,7 +15,6 @@ $DeploymentScriptOutputs = @{}
 Class HPInfo{
     [string]$HostPoolName
     [string]$HostPoolResId
-    [string]$HostPoolType
 	[string]$VMResourceGroup
     [array] $VMNames
     [array] $VMResourceIDs
@@ -34,7 +30,7 @@ Foreach ($HostPoolID in $AVDResourceIDs) {
 	$HostPoolName = ($HostPoolID -split '/')[8]
 	$HostPoolRG = ($HostPoolID -split '/')[4]
 	$HostPoolSubID = ($HostPoolID -split '/')[2]   	
-	$NoSessionHosts = $true
+	$NoSessinHosts = $true
 	$HostPool = Get-AzWvdHostPool -ResourceGroupName $HostPoolRG -SubscriptionId $HostPoolSubID -Name $HostPoolName
 
 	$SessionHostNames = Get-AzWvdSessionHost -SubscriptionId $HostPoolSubID -ResourceGroupName $HostPoolRG -HostPoolName $HostPoolName
@@ -54,18 +50,16 @@ Foreach ($HostPoolID in $AVDResourceIDs) {
 				$NoSessionHosts = $false			
 			}
 		}
-  		start-sleep -Seconds 1
 	}
 	$HostPoolobj.HostPoolName += $HostPoolName
 	$HostPoolobj.HostPoolResId += $HostPoolID
-    $HostPoolobj.HostPoolType += $HostPool.HostPoolType
 	If($NoSessionHosts)  {
 		$HostPoolobj.VMNames = @()
 		$HostPoolobj.VMResourceGroup = ""
 	}
 	$AllHPinfo += $HostPoolobj
- 	Start-Sleep -Seconds 10
 }
+
 
 $AllHPInfo = $AllHPInfo | ConvertTo-Json -Depth 20
 
