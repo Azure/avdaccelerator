@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "10456511148917242545"
+      "templateHash": "7842631487317311235"
     }
   },
   "parameters": {
@@ -7928,7 +7928,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "17591703494800141197"
+              "templateHash": "2279381735835463314"
             }
           },
           "parameters": {
@@ -7973,8 +7973,7 @@
             }
           },
           "variables": {
-            "SubscriptionId": "[subscription().subscriptionId]",
-            "CloudEnvironment": "[environment().name]"
+            "SubscriptionId": "[subscription().subscriptionId]"
           },
           "resources": [
             {
@@ -12378,7 +12377,6 @@
                 "name": "logAlertSvcHealth",
                 "count": "[length(range(0, length(parameters('LogAlertsSvcHealth'))))]"
               },
-              "condition": "[equals(variables('CloudEnvironment'), 'AzureCloud')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('carml_{0}', parameters('LogAlertsSvcHealth')[range(0, length(parameters('LogAlertsSvcHealth')))[copyIndex()]].name)]",
