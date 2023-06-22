@@ -50,6 +50,7 @@ Foreach ($HostPoolID in $AVDResourceIDs) {
 				$NoSessionHosts = $false			
 			}
 		}
+		Start-Sleep -Seconds 1
 	}
 	$HostPoolobj.HostPoolName += $HostPoolName
 	$HostPoolobj.HostPoolResId += $HostPoolID
@@ -58,6 +59,7 @@ Foreach ($HostPoolID in $AVDResourceIDs) {
 		$HostPoolobj.VMResourceGroup = ""
 	}
 	$AllHPinfo += $HostPoolobj
+	Start-Sleep -Seconds 3
 }
 
 
