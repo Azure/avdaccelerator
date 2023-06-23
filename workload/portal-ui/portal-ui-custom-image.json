@@ -863,7 +863,7 @@
                 "imageBuildNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.imageBuild, 'none')]",
                 "imageDefinitionCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.imageDefinition, 'none')]",
                 "imageDefinitionAcceleratedNetworkSupported": "[if(equals(steps('imageManagement').imageDefinitionFeatures.supportsAcceleratedNetworking, true), 'true', 'false')]",
-                "imageDefinitionHibernateSupported": "[steps('imageManagement').imageDefinitionFeatures.supportsHibernation]",
+                "imageDefinitionHibernateSupported": "[if(equals(steps('imageManagement').imageDefinitionFeatures.supportsHibernation, true), 'true', 'false')]",
                 "imageDefinitionSecurityType": "[steps('imageManagement').imageDefinitionFeatures.securityType]",
                 "imageGalleryCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.computeGallery, 'none')]",
                 "imageTemplateCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.imageTemplate, 'none')]",
