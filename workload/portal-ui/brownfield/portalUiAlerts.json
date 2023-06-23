@@ -141,11 +141,11 @@
                             "label": "Alert Name Prefix",
                             "subLabel": "",
                             "defaultValue": "AVD",
-                            "toolTip": "Alert Name Prefix (Dash will be added after prefix for you.)",
+                            "toolTip": "Alert Name Prefix of 1 to 5 characters. (Dash will be added after prefix for you.)",
                             "constraints": {
                                 "required": true,
-                                "regex": "",
-                                "validationMessage": "",
+                                "regex": "^([a-zA-Z0-9_-]){1,5}$",
+                                "validationMessage": "Must be 1-5 characters.",
                                 "validations": []
                             },
                             "infoMessages": [],
@@ -225,7 +225,7 @@
                         {
                             "name": "SessionHostsResourceGroupIds",
                             "type": "Microsoft.Common.DropDown",
-                            "label": "Session Host VM Resouce Groups",
+                            "label": "Session Host VM Resource Groups",
                             "multiselect": true,
                             "selectAll": true,
                             "defaultValue": [],
