@@ -126,6 +126,7 @@
                             "multiselect": false,
                             "defaultValue": "",
                             "toolTip": "AVD Alerts Resource Group where alerts based resources will be deployed.",
+                            "filter": true,
                             "filterPlaceholder": "Filter Resource Groups...",
                             "defaultDescription": "A value for selection",
                             "constraints": {
@@ -141,11 +142,11 @@
                             "label": "Alert Name Prefix",
                             "subLabel": "",
                             "defaultValue": "AVD",
-                            "toolTip": "Alert Name Prefix (Dash will be added after prefix for you.)",
+                            "toolTip": "Alert Name Prefix of 1 to 5 characters. (Dash will be added after prefix for you.)",
                             "constraints": {
                                 "required": true,
-                                "regex": "",
-                                "validationMessage": "",
+                                "regex": "^([a-zA-Z0-9_-]){1,5}$",
+                                "validationMessage": "Must be 1-5 characters.",
                                 "validations": []
                             },
                             "infoMessages": [],
@@ -202,6 +203,7 @@
                             "selectAll": true,
                             "defaultValue": [],
                             "toolTip": "Select Host Pools to configure Alerts for.",
+                            "filter": true,
                             "filterPlaceholder": "Filter Host Pools...",
                             "defaultDescription": "A value for selection",
                             "constraints": {
@@ -225,11 +227,12 @@
                         {
                             "name": "SessionHostsResourceGroupIds",
                             "type": "Microsoft.Common.DropDown",
-                            "label": "Session Host VM Resouce Groups",
+                            "label": "Session Host VM Resource Groups",
                             "multiselect": true,
                             "selectAll": true,
                             "defaultValue": [],
                             "toolTip": "The Resource Group(s) where the AVD VMs are located.",
+                            "filter": true,
                             "filterPlaceholder": "Filter Resource Groups...",
                             "defaultDescription": "A value for selection",
                             "constraints": {

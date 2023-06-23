@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "10148734584338296519"
+      "templateHash": "10621656778459315233"
     }
   },
   "parameters": {
@@ -52,13 +52,6 @@
       "type": "array",
       "metadata": {
         "description": "Comma seperated string of Host Pool IDs"
-      }
-    },
-    "HostPoolPrivate": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Flag if Host Pool is using Private Link. This will impact the deployment script thus deploying a Server on the VNet instead."
       }
     },
     "Location": {
@@ -187,7 +180,7 @@
         "criteria": {
           "allOf": [
             {
-              "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdHostPoolLogData\"\r\n          | sort by TimeGenerated\r\n          | where TimeGenerated > now() - 5m\r\n          | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\r\n          | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\r\n          | extend Type=tostring(split(ResultDescription, '|')[2])\r\n          | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])\r\n          | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\r\n          | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])\r\n          | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])\r\n          | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\r\n          | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])\r\n          | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])\r\n          | where HostPoolPercentLoad >= 85 and HostPoolPercentLoad < 95\r\n          | where HostPoolName == 'xHostPoolNamex'\r\n           ",
+              "query": "          AzureDiagnostics \n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdHostPoolLogData\"\n          | sort by TimeGenerated\n          | where TimeGenerated > now() - 5m\n          | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\n          | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\n          | extend Type=tostring(split(ResultDescription, '|')[2])\n          | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])\n          | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\n          | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])\n          | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])\n          | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\n          | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])\n          | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])\n          | where HostPoolPercentLoad >= 85 and HostPoolPercentLoad < 95\n          | where HostPoolName == 'xHostPoolNamex'\n           ",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -255,7 +248,7 @@
         "criteria": {
           "allOf": [
             {
-              "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdHostPoolLogData\"\r\n          | sort by TimeGenerated\r\n          | where TimeGenerated > now() - 5m\r\n          | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\r\n          | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\r\n          | extend Type=tostring(split(ResultDescription, '|')[2])\r\n          | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])\r\n          | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\r\n          | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])\r\n          | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])\r\n          | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\r\n          | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])\r\n          | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])\r\n          | where HostPoolPercentLoad >= 50 and HostPoolPercentLoad < 85\r\n          | where HostPoolName == 'xHostPoolNamex'         \r\n           ",
+              "query": "          AzureDiagnostics \n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdHostPoolLogData\"\n          | sort by TimeGenerated\n          | where TimeGenerated > now() - 5m\n          | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\n          | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\n          | extend Type=tostring(split(ResultDescription, '|')[2])\n          | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])\n          | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\n          | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])\n          | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])\n          | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\n          | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])\n          | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])\n          | where HostPoolPercentLoad >= 50 and HostPoolPercentLoad < 85\n          | where HostPoolName == 'xHostPoolNamex'         \n           ",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -323,7 +316,7 @@
         "criteria": {
           "allOf": [
             {
-              "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdHostPoolLogData\"\r\n          | sort by TimeGenerated\r\n          | where TimeGenerated > now() - 5m\r\n          | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\r\n          | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\r\n          | extend Type=tostring(split(ResultDescription, '|')[2])\r\n          | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])\r\n          | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\r\n          | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])\r\n          | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])\r\n          | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\r\n          | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])\r\n          | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])\r\n          | where HostPoolPercentLoad >= 95 \r\n          | where HostPoolName == 'xHostPoolNamex'        \r\n           ",
+              "query": "          AzureDiagnostics \n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdHostPoolLogData\"\n          | sort by TimeGenerated\n          | where TimeGenerated > now() - 5m\n          | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\n          | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\n          | extend Type=tostring(split(ResultDescription, '|')[2])\n          | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])\n          | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\n          | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])\n          | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])\n          | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\n          | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])\n          | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])\n          | where HostPoolPercentLoad >= 95 \n          | where HostPoolName == 'xHostPoolNamex'        \n           ",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -363,60 +356,6 @@
                 },
                 {
                   "name": "HostPoolPercentLoad",
-                  "operator": "Include",
-                  "values": [
-                    "*"
-                  ]
-                }
-              ],
-              "resourceIdColumng": "_ResourceId",
-              "operator": "GreaterThanOrEqual",
-              "threshold": 1,
-              "failingPeriods": {
-                "numberOfEvaluationPeriods": 1,
-                "minFailingPeriodsToAlert": 1
-              }
-            }
-          ]
-        }
-      },
-      {
-        "name": "[format('{0}-HP-VM-UnhealthyButAssigned-xHostPoolNamex', parameters('AlertNamePrefix'))]",
-        "displayName": "[format('{0}-HostPool-VM-Unhealthy But Assigned (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-        "description": "[format('{0}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution.\nHPName|HPResGroup|HPType|HPMaxSessionLimit|HPNumSessionHosts|HPUsrSession|HPUsrDisonnected|HPUsrActive|HPSessionsAvail|HPLoadPercent|PersonalHostError|VMRG|Machine|User', variables('AlertDescriptionHeader'))]",
-        "severity": 2,
-        "evaluationFrequency": "PT15M",
-        "windowSize": "PT15M",
-        "overrideQueryTimeRange": "P2D",
-        "criteria": {
-          "allOf": [
-            {
-              "query": "            AzureDiagnostics \r\n            | where Category has \"JobStreams\"\r\n                and StreamType_s == \"Output\"\r\n                and RunbookName_s == \"AvdHostPoolLogData\"\r\n            | sort by TimeGenerated\r\n            | where TimeGenerated > now() - 15m\r\n            | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\r\n            | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\r\n            | extend Type=tostring(split(ResultDescription, '|')[2])\r\n            | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])\r\n            | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\r\n            | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])\r\n            | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])\r\n            | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\r\n            | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])\r\n            | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])\r\n            | extend AssignedWithFailure=tobool(split(ResultDescription, '|')[10])\r\n            | extend VMResourceGroup=tostring(split(ResultDescription, '|')[11])\r\n            | extend SessionHostName=tostring(split(ResultDescription, '|')[12])\r\n            | extend AssignedUser=tostring(split(ResultDescription, '|')[13])\r\n            | where Type == \"Personal\"\r\n            | where AssignedWithFailure == true\r\n            | where isnotempty(AssignedUser)\r\n            | where HostPoolName == 'xHostPoolNamex'         \r\n          ",
-              "timeAggregation": "Count",
-              "dimensions": [
-                {
-                  "name": "HostPoolName",
-                  "operator": "Include",
-                  "values": [
-                    "*"
-                  ]
-                },
-                {
-                  "name": "VM_ResourceGroup",
-                  "operator": "Include",
-                  "values": [
-                    "*"
-                  ]
-                },
-                {
-                  "name": "SessionHost",
-                  "operator": "Include",
-                  "values": [
-                    "*"
-                  ]
-                },
-                {
-                  "name": "AssignedUser",
                   "operator": "Include",
                   "values": [
                     "*"
@@ -562,7 +501,7 @@
         "criteria": {
           "allOf": [
             {
-              "query": "          Perf\r\n          | where TimeGenerated > ago(15m)\r\n          | where ObjectName == \"LogicalDisk\" and CounterName == \"% Free Space\"\r\n          | where InstanceName !contains \"D:\"\r\n          | where InstanceName  !contains \"_Total\"| where CounterValue <= 10.00\r\n          | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n          | project ComputerName, CounterValue, subscription, ResourceGroup, TimeGenerated\r\n          | join kind = leftouter\r\n          (\r\n              WVDAgentHealthStatus\r\n              | where TimeGenerated > ago(15m)\r\n              | where _ResourceId contains \"xHostPoolNamex\"\r\n              | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n              | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n              | project VMresourceGroup, ComputerName, HostPool\r\n              ) on ComputerName\r\n          ",
+              "query": "          Perf\n          | where TimeGenerated > ago(15m)\n          | where ObjectName == \"LogicalDisk\" and CounterName == \"% Free Space\"\n          | where InstanceName !contains \"D:\"\n          | where InstanceName  !contains \"_Total\"| where CounterValue <= 10.00\n          | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\n          | project ComputerName, CounterValue, subscription, ResourceGroup, TimeGenerated\n          | join kind = leftouter\n          (\n              WVDAgentHealthStatus\n              | where TimeGenerated > ago(15m)\n              | where _ResourceId contains \"xHostPoolNamex\"\n              | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\n              | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\n              | project VMresourceGroup, ComputerName, HostPool\n              ) on ComputerName\n          ",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -608,7 +547,7 @@
         "criteria": {
           "allOf": [
             {
-              "query": "          Perf\r\n          | where TimeGenerated > ago(15m)\r\n          | where ObjectName == \"LogicalDisk\" and CounterName == \"% Free Space\"\r\n          | where InstanceName !contains \"D:\"\r\n          | where InstanceName  !contains \"_Total\"| where CounterValue <= 5.00\r\n          | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n          | project ComputerName, CounterValue, subscription, ResourceGroup, TimeGenerated\r\n          | join kind = leftouter\r\n          (\r\n              WVDAgentHealthStatus\r\n              | where TimeGenerated > ago(15m)\r\n              | where _ResourceId contains \"xHostPoolNamex\"\r\n              | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n              | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n              | project VMresourceGroup, ComputerName, HostPool\r\n              ) on ComputerName\r\n          ",
+              "query": "          Perf\n          | where TimeGenerated > ago(15m)\n          | where ObjectName == \"LogicalDisk\" and CounterName == \"% Free Space\"\n          | where InstanceName !contains \"D:\"\n          | where InstanceName  !contains \"_Total\"| where CounterValue <= 5.00\n          | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\n          | project ComputerName, CounterValue, subscription, ResourceGroup, TimeGenerated\n          | join kind = leftouter\n          (\n              WVDAgentHealthStatus\n              | where TimeGenerated > ago(15m)\n              | where _ResourceId contains \"xHostPoolNamex\"\n              | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\n              | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\n              | project VMresourceGroup, ComputerName, HostPool\n              ) on ComputerName\n          ",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -1080,7 +1019,7 @@
         "criteria": {
           "allOf": [
             {
-              "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdStorageLogData\"\r\n          | sort by TimeGenerated\r\n          //  StorageType / Subscription / RG / StorAcct / Share / Quota / GB Used / %Available\r\n          | extend StorageType=split(ResultDescription, ',')[0]\r\n          | extend Subscription=split(ResultDescription, ',')[1]\r\n          | extend ResourceGroup=split(ResultDescription, ',')[2]\r\n          | extend StorageAccount=split(ResultDescription, ',')[3]\r\n          | extend Share=split(ResultDescription, ',')[4]\r\n          | extend GBShareQuota=split(ResultDescription, ',')[5]\r\n          | extend GBUsed=split(ResultDescription, ',')[6]\r\n          | extend PercentAvailable=split(ResultDescription, ',')[7]\r\n          | where PercentAvailable <= 15.00 and PercentAvailable < 5.00          \r\n           ",
+              "query": "          AzureDiagnostics \n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdStorageLogData\"\n          | sort by TimeGenerated\n          //  StorageType / Subscription / RG / StorAcct / Share / Quota / GB Used / %Available\n          | extend StorageType=split(ResultDescription, ',')[0]\n          | extend Subscription=split(ResultDescription, ',')[1]\n          | extend ResourceGroup=split(ResultDescription, ',')[2]\n          | extend StorageAccount=split(ResultDescription, ',')[3]\n          | extend Share=split(ResultDescription, ',')[4]\n          | extend GBShareQuota=split(ResultDescription, ',')[5]\n          | extend GBUsed=split(ResultDescription, ',')[6]\n          | extend PercentAvailable=split(ResultDescription, ',')[7]\n          | where PercentAvailable <= 15.00 and PercentAvailable < 5.00          \n           ",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -1113,7 +1052,7 @@
         "criteria": {
           "allOf": [
             {
-              "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdStorageLogData\"\r\n          | sort by TimeGenerated\r\n          //  StorageType / Subscription / RG / StorAcct / Share / Quota / GB Used / %Available\r\n          | extend StorageType=split(ResultDescription, ',')[0]\r\n          | extend Subscription=split(ResultDescription, ',')[1]\r\n          | extend ResourceGroup=split(ResultDescription, ',')[2]\r\n          | extend StorageAccount=split(ResultDescription, ',')[3]\r\n          | extend Share=split(ResultDescription, ',')[4]\r\n          | extend GBShareQuota=split(ResultDescription, ',')[5]\r\n          | extend GBUsed=split(ResultDescription, ',')[6]\r\n          | extend PercentAvailable=split(ResultDescription, ',')[7]\r\n          | where PercentAvailable <= 5.00          \r\n           ",
+              "query": "          AzureDiagnostics \n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdStorageLogData\"\n          | sort by TimeGenerated\n          //  StorageType / Subscription / RG / StorAcct / Share / Quota / GB Used / %Available\n          | extend StorageType=split(ResultDescription, ',')[0]\n          | extend Subscription=split(ResultDescription, ',')[1]\n          | extend ResourceGroup=split(ResultDescription, ',')[2]\n          | extend StorageAccount=split(ResultDescription, ',')[3]\n          | extend Share=split(ResultDescription, ',')[4]\n          | extend GBShareQuota=split(ResultDescription, ',')[5]\n          | extend GBUsed=split(ResultDescription, ',')[6]\n          | extend PercentAvailable=split(ResultDescription, ',')[7]\n          | where PercentAvailable <= 5.00          \n           ",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -7989,7 +7928,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "16453301964628459426"
+              "templateHash": "2279381735835463314"
             }
           },
           "parameters": {
@@ -8034,8 +7973,7 @@
             }
           },
           "variables": {
-            "SubscriptionId": "[subscription().subscriptionId]",
-            "CloudEnvironment": "[environment().name]"
+            "SubscriptionId": "[subscription().subscriptionId]"
           },
           "resources": [
             {
@@ -8594,7 +8532,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.18.4.5664",
-                      "templateHash": "6353506342639013750"
+                      "templateHash": "4256933363988310932"
                     }
                   },
                   "parameters": {
@@ -8618,10 +8556,6 @@
                     },
                     "Location": {
                       "type": "string"
-                    },
-                    "Timestamp": {
-                      "type": "string",
-                      "defaultValue": "[utcNow()]"
                     }
                   },
                   "resources": [
@@ -8633,7 +8567,7 @@
                       "condition": "[not(equals(parameters('HostPoolInfo').VMResourceGroup, null()))]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('carml_{0}_{1}', parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].name, parameters('Timestamp'))]",
+                      "name": "[format('carml_{0}', parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].name)]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"

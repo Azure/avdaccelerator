@@ -11,6 +11,7 @@ param SetEnabled bool = false
 @description('Location of needed scripts to deploy solution.')
 param _ArtifactsLocation string = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/alerts/'
 
+
 @description('SaS token if needed for script location.')
 @secure()
 param _ArtifactsLocationSasToken string = ''
@@ -31,9 +32,6 @@ param Environment string = 't'
 
 @description('Comma seperated string of Host Pool IDs')
 param HostPools array
-
-@description('Flag if Host Pool is using Private Link. This will impact the deployment script thus deploying a Server on the VNet instead.')
-param HostPoolPrivate bool = false
 
 @description('Azure Region for Resources.')
 param Location string = deployment().location
@@ -343,85 +341,6 @@ var LogAlertsHostPool = [
             }
             {
               name: 'HostPoolPercentLoad'
-              operator: 'Include'
-              values: [
-                '*'
-              ]
-            }
-          ]
-          resourceIdColumng: '_ResourceId'
-          operator: 'GreaterThanOrEqual'
-          threshold: 1
-          failingPeriods: {
-            numberOfEvaluationPeriods: 1
-            minFailingPeriodsToAlert: 1
-          }
-        }
-      ]
-    }
-  }
-  {// Based on Runbook script Output to LAW
-    name: '${AlertNamePrefix}-HP-VM-UnhealthyButAssigned-xHostPoolNamex'
-    displayName: '${AlertNamePrefix}-HostPool-VM-Unhealthy But Assigned (xHostPoolNamex)'
-    description: '${AlertDescriptionHeader}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution.\nHPName|HPResGroup|HPType|HPMaxSessionLimit|HPNumSessionHosts|HPUsrSession|HPUsrDisonnected|HPUsrActive|HPSessionsAvail|HPLoadPercent|PersonalHostError|VMRG|Machine|User'
-    severity: 2
-    evaluationFrequency: 'PT15M'
-    windowSize: 'PT15M'
-    overrideQueryTimeRange: 'P2D'
-    criteria: {
-      allOf: [
-        {
-          query: '''
-            AzureDiagnostics 
-            | where Category has "JobStreams"
-                and StreamType_s == "Output"
-                and RunbookName_s == "AvdHostPoolLogData"
-            | sort by TimeGenerated
-            | where TimeGenerated > now() - 15m
-            | extend HostPoolName=tostring(split(ResultDescription, '|')[0])
-            | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])
-            | extend Type=tostring(split(ResultDescription, '|')[2])
-            | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])
-            | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])
-            | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])
-            | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])
-            | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])
-            | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])
-            | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])
-            | extend AssignedWithFailure=tobool(split(ResultDescription, '|')[10])
-            | extend VMResourceGroup=tostring(split(ResultDescription, '|')[11])
-            | extend SessionHostName=tostring(split(ResultDescription, '|')[12])
-            | extend AssignedUser=tostring(split(ResultDescription, '|')[13])
-            | where Type == "Personal"
-            | where AssignedWithFailure == true
-            | where isnotempty(AssignedUser)
-            | where HostPoolName == 'xHostPoolNamex'         
-          '''
-          timeAggregation: 'Count'
-          dimensions: [
-            {
-              name: 'HostPoolName'
-              operator: 'Include'
-              values: [
-                '*'
-              ]
-            }
-            {
-              name: 'VM_ResourceGroup'
-              operator: 'Include'
-              values: [
-                '*'
-              ]
-            }
-            {
-              name: 'SessionHost'
-              operator: 'Include'
-              values: [
-                '*'
-              ]
-            }
-            {
-              name: 'AssignedUser'
               operator: 'Include'
               values: [
                 '*'
@@ -1584,14 +1503,14 @@ var LogAlertsSvcHealth = [
   }
 ]
 var varJobScheduleParamsHostPool = {
-  CloudEnvironment: CloudEnvironment
-  SubscriptionId: SubscriptionId
-}
+    CloudEnvironment: CloudEnvironment
+    SubscriptionId: SubscriptionId
+  }
 // fixes issue with array not being in JSON format
 var varStorAcctResIDsString = StorageAccountResourceIds
 var varJobScheduleParamsAzFiles = {
-  CloudEnvironment: CloudEnvironment
-  StorageAccountResourceIDs: string(varStorAcctResIDsString)
+    CloudEnvironment: CloudEnvironment
+    StorageAccountResourceIDs: string(varStorAcctResIDsString)
 }
 
 var SubscriptionId = subscription().subscriptionId
@@ -1743,7 +1662,7 @@ module automationAccount '../../../../carml/1.3.0/Microsoft.Automation/automatio
         scheduleName: '${varScheduleName}HostPool-3'
       }
       {
-        parameters: varJobScheduleParamsAzFiles
+        parameters:  varJobScheduleParamsAzFiles
         runbookName: RunbookNameGetStorage
         scheduleName: '${varScheduleName}AzFilesStor-0'
       }
@@ -1762,7 +1681,7 @@ module automationAccount '../../../../carml/1.3.0/Microsoft.Automation/automatio
         runbookName: RunbookNameGetStorage
         scheduleName: '${varScheduleName}AzFilesStor-3'
       }
-    ] : [
+    ] :[
       {
         parameters: varJobScheduleParamsHostPool
         runbookName: RunbookNameGetHostPool
@@ -1874,7 +1793,7 @@ module automationAccount '../../../../carml/1.3.0/Microsoft.Automation/automatio
         TimeZone: varTimeZone
         advancedSchedule: {}
       }
-    ] : [
+    ] :[
       {
         name: '${varScheduleName}HostPool-0'
         frequency: 'Hour'
@@ -1912,7 +1831,7 @@ module automationAccount '../../../../carml/1.3.0/Microsoft.Automation/automatio
     tags: contains(Tags, 'Microsoft.Automation/automationAccounts') ? Tags['Microsoft.Automation/automationAccounts'] : {}
     systemAssignedIdentity: true
   }
-  dependsOn: ResourceGroupCreate ? [ resourceGroupAVDMetricsCreate ] : [ resourceGroupAVDMetricsExisting ]
+  dependsOn: ResourceGroupCreate ? [resourceGroupAVDMetricsCreate] : [resourceGroupAVDMetricsExisting]
 }
 
 module roleAssignment_UsrIdDesktopRead '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/subscription/deploy.bicep' = [for HostPoolId in HostPoolSubIds: {
