@@ -13,7 +13,6 @@ param StorageAccountResourceIds array
 param Tags object
 
 var SubscriptionId = subscription().subscriptionId
-var CloudEnvironment = environment().name
 
 module actionGroup '../../../../../carml/1.3.0/Microsoft.Insights/actionGroups/deploy.bicep' = {
   name: ActionGroupName
