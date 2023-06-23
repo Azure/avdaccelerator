@@ -862,7 +862,7 @@
                 "existingVirtualNetworkResourceId": "[if(equals(steps('aib').virtualNetwork, true), steps('aib').virtualNetworkSelection.id, '')]",
                 "imageBuildNameTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.imageBuild, 'none')]",
                 "imageDefinitionCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.imageDefinition, 'none')]",
-                "imageDefinitionAcceleratedNetworkSupported": "[steps('imageManagement').imageDefinitionFeatures.supportsAcceleratedNetworking]",
+                "imageDefinitionAcceleratedNetworkSupported": "[if(equals(steps('imageManagement').imageDefinitionFeatures.supportsAcceleratedNetworking, true), 'true', 'false')]",
                 "imageDefinitionHibernateSupported": "[steps('imageManagement').imageDefinitionFeatures.supportsHibernation]",
                 "imageDefinitionSecurityType": "[steps('imageManagement').imageDefinitionFeatures.securityType]",
                 "imageGalleryCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.computeGallery, 'none')]",
