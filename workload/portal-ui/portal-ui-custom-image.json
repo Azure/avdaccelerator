@@ -148,24 +148,11 @@
                                 },
                                 {
                                     "name": "disasterRecovery",
-                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "type": "Microsoft.Common.CheckBox",
                                     "visible": true,
                                     "label": "Enable replication to disaster recovery location",
-                                    "defaultValue": "No",
-                                    "toolTip": "Determine whether to replicate the Image Version to your disaster recovery location.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes",
-                                                "value": true
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": false
-                                            }
-                                        ]
-                                    }
+                                    "defaultValue": false,
+                                    "toolTip": "Determine whether to replicate the Image Version to your disaster recovery location."
                                 },
                                 {
                                     "name": "disasterRecoveryLocation",
@@ -243,45 +230,19 @@
                             "elements": [
                                 {
                                     "name": "supportsAcceleratedNetworking",
-                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "type": "Microsoft.Common.CheckBox",
                                     "visible": true,
                                     "label": "Supports network acceleration.",
-                                    "defaultValue": "Yes",
-                                    "toolTip": "Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance. This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes",
-                                                "value": "true"
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": "false"
-                                            }
-                                        ]
-                                    }
+                                    "defaultValue": true,
+                                    "toolTip": "Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance. This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types."
                                 },
                                 {
                                     "name": "supportsHibernation",
-                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "type": "Microsoft.Common.CheckBox",
                                     "visible": true,
                                     "label": "Supports hibernation.",
-                                    "defaultValue": "No",
-                                    "toolTip": "This is currently a preview feature and is only supported on Dsv5 series VMs.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes",
-                                                "value": "true"
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": "false"
-                                            }
-                                        ]
-                                    }
+                                    "defaultValue": false,
+                                    "toolTip": "This is currently a preview feature and is only supported on Dsv5 series VMs."
                                 },
                                 {
                                     "name": "securityType",
@@ -355,29 +316,16 @@
                         },
                         {
                             "name": "virtualNetwork",
-                            "type": "Microsoft.Common.OptionsGroup",
+                            "type": "Microsoft.Common.CheckBox",
                             "visible": true,
                             "label": "Existing virtual network",
-                            "defaultValue": "No",
-                            "toolTip": "Select an existing virtual network and subnet for the AIB build virtual machines. This enables the use of Private Link and prevents the deployment of public IP addresses.",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label": "Yes",
-                                        "value": true
-                                    },
-                                    {
-                                        "label": "No",
-                                        "value": false
-                                    }
-                                ]
-                            }
+                            "defaultValue": false,
+                            "toolTip": "Select an existing virtual network and subnet for the AIB build virtual machines. This enables the use of Private Link and prevents the deployment of public IP addresses."
                         },
                         {
                             "name": "virtualNetworkSelection",
                             "type": "Microsoft.Solutions.ResourceSelector",
-                            "visible": "[equals(steps('aib').virtualNetwork, true)]",
+                            "visible": "[steps('aib').virtualNetwork]",
                             "label": "Virtual network",
                             "resourceType": "Microsoft.Network/virtualNetworks",
                             "options": {
@@ -398,7 +346,7 @@
                         {
                             "name": "subnet",
                             "type": "Microsoft.Common.DropDown",
-                            "visible": "[equals(steps('aib').virtualNetwork, true)]",
+                            "visible": "[steps('aib').virtualNetwork]",
                             "label": "Subnet",
                             "defaultValue": "",
                             "toolTip": "Select an existing subnet for AIB build virtual machines. This enables the use of Private Link and prevents the deployment of public IP addresses.",
@@ -454,24 +402,11 @@
                                 },
                                 {
                                     "name": "screenCaptureProtectionSelection",
-                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "type": "Microsoft.Common.CheckBox",
                                     "visible": true,
                                     "label": "Enable screen capture protection",
-                                    "defaultValue": "No",
-                                    "toolTip": "Determine whether to enable Screen Capture Protection for the AVD session hosts.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes",
-                                                "value": true
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": false
-                                            }
-                                        ]
-                                    }
+                                    "defaultValue": false,
+                                    "toolTip": "Determine whether to enable Screen Capture Protection for the AVD session hosts."
                                 }
                             ]
                         }
@@ -485,29 +420,16 @@
                     "elements": [
                         {
                             "name": "monitoringAndAlerting",
-                            "type": "Microsoft.Common.OptionsGroup",
+                            "type": "Microsoft.Common.CheckBox",
                             "visible": true,
                             "label": "Enable monitoring & alerting",
-                            "defaultValue": "No",
-                            "toolTip": "Determine whether to enable monitoring and alerting for the Azure Image Builder builds.",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label": "Yes",
-                                        "value": true
-                                    },
-                                    {
-                                        "label": "No",
-                                        "value": false
-                                    }
-                                ]
-                            }
+                            "defaultValue": false,
+                            "toolTip": "Determine whether to enable monitoring and alerting for the Azure Image Builder builds."
                         },
                         {
                             "name": "distributionGroup",
                             "type": "Microsoft.Common.TextBox",
-                            "visible": "[equals(steps('monitoring').monitoringAndAlerting, true)]",
+                            "visible": "[steps('monitoring').monitoringAndAlerting]",
                             "label": "Distribution group",
                             "toolTip": "Input the distribution group for receiving alerts on the build status.",
                             "placeholder": "Example: operations@contoso.com",
@@ -519,29 +441,16 @@
                         },
                         {
                             "name": "existingLogAnalyticsWorkspace",
-                            "type": "Microsoft.Common.OptionsGroup",
-                            "visible": "[equals(steps('monitoring').monitoringAndAlerting, true)]",
+                            "type": "Microsoft.Common.CheckBox",
+                            "visible": "[steps('monitoring').monitoringAndAlerting]",
                             "label": "Existing log analytics workspace",
-                            "defaultValue": "No",
-                            "toolTip": "Determine whether to select an existing Log Analytics Workspace to capture the monitoring data.",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label": "Yes",
-                                        "value": true
-                                    },
-                                    {
-                                        "label": "No",
-                                        "value": false
-                                    }
-                                ]
-                            }
+                            "defaultValue": false,
+                            "toolTip": "Determine whether to select an existing Log Analytics Workspace to capture the monitoring data."
                         },
                         {
                             "name": "logAnalyticsWorkspaceSelection",
                             "type": "Microsoft.Solutions.ResourceSelector",
-                            "visible": "[equals(steps('monitoring').existingLogAnalyticsWorkspace, true)]",
+                            "visible": "[steps('monitoring').existingLogAnalyticsWorkspace]",
                             "label": "Log analytics workspace",
                             "resourceType": "Microsoft.OperationalInsights/workspaces",
                             "options": {}
@@ -566,29 +475,16 @@
                         },
                         {
                             "name": "customNamingSelection",
-                            "type": "Microsoft.Common.OptionsGroup",
+                            "type": "Microsoft.Common.CheckBox",
                             "visible": true,
                             "label": "Custom resource naming",
-                            "defaultValue": "No",
-                            "toolTip": "When set to 'Yes', the information will be used to name resources. When set to 'No', the deployment will use the AVD accelerator naming standard.",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label": "Yes",
-                                        "value": true
-                                    },
-                                    {
-                                        "label": "No",
-                                        "value": false
-                                    }
-                                ]
-                            }
+                            "defaultValue": false,
+                            "toolTip": "When selected, the information will be used to name resources, otherwise the deployment will use the AVD accelerator naming standard."
                         },
                         {
                             "name": "namingWarning",
                             "type": "Microsoft.Common.InfoBox",
-                            "visible": "[equals(steps('naming').customNamingSelection, true)]",
+                            "visible": "[steps('naming').customNamingSelection]",
                             "options": {
                                 "text": "When using custom names, please follow the guidance on the Naming Rules and Restrictions for Azure Resources webpage.",
                                 "uri": "https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules",
@@ -599,7 +495,7 @@
                             "name": "customNaming",
                             "type": "Microsoft.Common.Section",
                             "label": "Custom names:",
-                            "visible": "[equals(steps('naming').customNamingSelection, true)]",
+                            "visible": "[steps('naming').customNamingSelection]",
                             "elements": [
                                 {
                                     "name": "resourceGroup",
@@ -729,30 +625,17 @@
                     "elements": [
                         {
                             "name": "selection",
-                            "type": "Microsoft.Common.OptionsGroup",
+                            "type": "Microsoft.Common.CheckBox",
                             "visible": true,
                             "label": "Custom resource tags",
-                            "defaultValue": "No",
-                            "toolTip": "When set 'Yes', the information provided will be used to create tags on resources and resource groups.",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label": "Yes",
-                                        "value": true
-                                    },
-                                    {
-                                        "label": "No",
-                                        "value": false
-                                    }
-                                ]
-                            }
+                            "defaultValue": false,
+                            "toolTip": "When selected, the information provided will be used to create tags on resources and resource groups."
                         },
                         {
                             "name": "customTags",
                             "type": "Microsoft.Common.Section",
                             "label": "Custom Tags:",
-                            "visible": "[equals(steps('tags').selection, true)]",
+                            "visible": "[steps('tags').selection]",
                             "elements": [
                                 {
                                     "name": "imageBuild",
