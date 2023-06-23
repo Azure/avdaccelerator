@@ -261,7 +261,7 @@ param vTpmEnabled bool = false
 param avdOsImage string = 'win11_22h2'
 
 @description('Management VM image SKU (Default: winServer_2022_Datacenter)')
-param managementVmOsImage string = 'winServer_2022_datacenter_azure_edition_core'
+param managementVmOsImage string = 'winServer_2022_Datacenter_core_smalldisk_g2'
 
 @description('Optional. Set to deploy image from Azure Compute Gallery. (Default: false)')
 param useSharedImage bool = false
@@ -703,6 +703,12 @@ var varMarketPlaceGalleryWindows = {
         publisher: 'MicrosoftWindowsServer'
         offer: 'WindowsServer'
         sku: '2022-datacenter-azure-edition-core'
+        version: 'latest'
+    }
+    winServer_2022_Datacenter_core_smalldisk_g2: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2022-datacenter-core-smalldisk-g2'
         version: 'latest'
     }
 }
