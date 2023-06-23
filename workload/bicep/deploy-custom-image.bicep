@@ -146,7 +146,7 @@ most demanding network workloads on supported VM types.
     'true'
     'false'
 ])
-param imageDefinitionAcceleratedNetworkSupported string = 'false'
+param imageDefinitionAcceleratedNetworkSupported string = 'true'
 
 @description('Optional. The image will support hibernation.')
 @allowed([

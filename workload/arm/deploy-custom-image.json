@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "9757436986948477374"
+      "templateHash": "1374321856140164951"
     }
   },
   "parameters": {
@@ -218,7 +218,7 @@
     },
     "imageDefinitionAcceleratedNetworkSupported": {
       "type": "string",
-      "defaultValue": "false",
+      "defaultValue": "true",
       "allowedValues": [
         "true",
         "false"
