@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "1010243217338926734"
+      "templateHash": "7587167043661211436"
     }
   },
   "parameters": {
@@ -512,7 +512,7 @@
     },
     "managementVmOsImage": {
       "type": "string",
-      "defaultValue": "winServer_2022_datacenter_azure_edition_core",
+      "defaultValue": "winServer_2022_Datacenter_core_smalldisk_g2",
       "metadata": {
         "description": "Management VM image SKU (Default: winServer_2022_Datacenter)"
       }
@@ -1410,6 +1410,12 @@
         "publisher": "MicrosoftWindowsServer",
         "offer": "WindowsServer",
         "sku": "2022-datacenter-azure-edition-core",
+        "version": "latest"
+      },
+      "winServer_2022_Datacenter_core_smalldisk_g2": {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2022-datacenter-core-smalldisk-g2",
         "version": "latest"
       }
     },
