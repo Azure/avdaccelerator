@@ -260,8 +260,8 @@ param vTpmEnabled bool = false
 @description('Optional. AVD OS image SKU. (Default: win11-21h2)')
 param avdOsImage string = 'win11_22h2'
 
-@description('Optional. Management VM image SKU (Default: winServer_2022_Datacenter)')
-param managementVmOsImage string = 'winServer_2022_Datacenter'
+@description('Management VM image SKU (Default: winServer_2022_Datacenter)')
+param managementVmOsImage string = 'winServer_2022_datacenter_azure_edition_core'
 
 @description('Optional. Set to deploy image from Azure Compute Gallery. (Default: false)')
 param useSharedImage bool = false
@@ -693,10 +693,16 @@ var varMarketPlaceGalleryWindows = {
         sku: '2019-datacenter'
         version: 'latest'
     }
-    winServer_2022_Datacenter_core: {
+    winServer_2022_datacenter_core: {
         publisher: 'MicrosoftWindowsServer'
         offer: 'WindowsServer'
         sku: '2022-datacenter-core'
+        version: 'latest'
+    }
+    winServer_2022_datacenter_azure_edition_core: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2022-datacenter-azure-edition-core'
         version: 'latest'
     }
 }
