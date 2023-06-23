@@ -261,7 +261,7 @@ param vTpmEnabled bool = false
 param avdOsImage string = 'win11_22h2'
 
 @description('Optional. Management VM image SKU (Default: winServer_2022_Datacenter)')
-param managementVmOsImage string = 'winServer_2022_Datacenter_core'
+param managementVmOsImage string = 'winServer_2022_Datacenter'
 
 @description('Optional. Set to deploy image from Azure Compute Gallery. (Default: false)')
 param useSharedImage bool = false
