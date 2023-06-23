@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "12128189101842898159"
+      "templateHash": "1010243217338926734"
     }
   },
   "parameters": {
@@ -512,9 +512,9 @@
     },
     "managementVmOsImage": {
       "type": "string",
-      "defaultValue": "winServer_2022_Datacenter_core",
+      "defaultValue": "winServer_2022_datacenter_azure_edition_core",
       "metadata": {
-        "description": "Optional. Management VM image SKU (Default: winServer_2022_Datacenter)"
+        "description": "Management VM image SKU (Default: winServer_2022_Datacenter)"
       }
     },
     "useSharedImage": {
@@ -1400,10 +1400,16 @@
         "sku": "2019-datacenter",
         "version": "latest"
       },
-      "winServer_2022_Datacenter_core": {
+      "winServer_2022_datacenter_core": {
         "publisher": "MicrosoftWindowsServer",
         "offer": "WindowsServer",
         "sku": "2022-datacenter-core",
+        "version": "latest"
+      },
+      "winServer_2022_datacenter_azure_edition_core": {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2022-datacenter-azure-edition-core",
         "version": "latest"
       }
     },
