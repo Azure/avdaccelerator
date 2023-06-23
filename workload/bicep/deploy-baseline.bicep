@@ -257,8 +257,11 @@ param vTpmEnabled bool = false
     'win11_22h2'
     'win11_22h2_office'
 ])
-@description('Optional. AVD OS image source. (Default: win11-21h2)')
+@description('Optional. AVD OS image SKU. (Default: win11-21h2)')
 param avdOsImage string = 'win11_22h2'
+
+@description('Optional. Management VM image SKU (Default: winServer_2022_Datacenter)')
+param managementVmOsImage string = 'winServer_2022_Datacenter_core'
 
 @description('Optional. Set to deploy image from Azure Compute Gallery. (Default: false)')
 param useSharedImage bool = false
@@ -690,6 +693,12 @@ var varMarketPlaceGalleryWindows = {
         sku: '2019-datacenter'
         version: 'latest'
     }
+    winServer_2022_Datacenter_core: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2022-datacenter-core'
+        version: 'latest'
+    }
 }
 var varStorageAccountContributorRoleId = '17d1049b-9a84-46fb-8f53-869881c3d3ab'
 var varReaderRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
@@ -1073,19 +1082,21 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
         identityDomainName: avdIdentityDomainName
-        imageTemplateDefinitionId: avdImageTemplateDefinitionId
+        //imageTemplateDefinitionId: avdImageTemplateDefinitionId
         sessionHostOuPath: avdOuPath
         sessionHostDiskType: avdSessionHostDiskType
         sessionHostLocation: avdSessionHostLocation
         sessionHostsSize: avdSessionHostsSize
         avdSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
         enableAcceleratedNetworking: enableAcceleratedNetworking
+        securityType: securityType == 'Standard' ? '' : securityType
+        secureBootEnabled: secureBootEnabled
+        vTpmEnabled: vTpmEnabled
         vmLocalUserName: avdVmLocalUserName
         workloadSubsId: avdWorkloadSubsId
         encryptionAtHost: diskZeroTrust
         storageManagedIdentityResourceId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
-        marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows[avdOsImage]
-        useSharedImage: useSharedImage
+        marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows[managementVmOsImage]
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
     dependsOn: [

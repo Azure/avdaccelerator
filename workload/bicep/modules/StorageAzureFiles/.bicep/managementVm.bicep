@@ -25,6 +25,15 @@ param avdSubnetId string
 @description('Enable accelerated networking on the session host VMs.')
 param enableAcceleratedNetworking bool
 
+@description('Specifies the securityType of the virtual machine. Must be TrustedLaunch or ConfidentialVM enable UefiSettings.')
+param securityType string
+
+@description('Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch to enable UefiSettings.')
+param secureBootEnabled bool
+
+@description('Specifies whether virtual TPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch to enable UefiSettings.')
+param vTpmEnabled bool
+
 @description('Location where to deploy compute services.')
 param sessionHostLocation string
 
@@ -40,11 +49,11 @@ param sessionHostDiskType string
 @description('Market Place OS image')
 param marketPlaceGalleryWindowsManagementVm object
 
-@description('Set to deploy image from Azure. Compute Gallery')
-param useSharedImage bool
+//@description('Set to deploy image from Azure. Compute Gallery')
+//param useSharedImage bool
 
-@description('Source custom image ID.')
-param imageTemplateDefinitionId string
+//@description('Source custom image ID.')
+//param imageTemplateDefinitionId string
 
 @description('Storage Managed Identity Resource ID.')
 param storageManagedIdentityResourceId string
@@ -116,8 +125,10 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
         osType: 'Windows'
         //licenseType: 'Windows_Client'
         vmSize: sessionHostsSize
-        imageReference: useSharedImage ? json('{\'id\': \'${imageTemplateDefinitionId}\'}') : marketPlaceGalleryWindowsManagementVm
-        //imageReference: marketPlaceGalleryWindowsManagementVm
+        securityType: securityType
+        secureBootEnabled: secureBootEnabled
+        vTpmEnabled: vTpmEnabled
+        imageReference: marketPlaceGalleryWindowsManagementVm
         osDisk: {
             createOption: 'fromImage'
             deleteOption: 'Delete'
