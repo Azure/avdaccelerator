@@ -126,6 +126,7 @@
                             "multiselect": false,
                             "defaultValue": "",
                             "toolTip": "AVD Alerts Resource Group where alerts based resources will be deployed.",
+                            "filter": true,
                             "filterPlaceholder": "Filter Resource Groups...",
                             "defaultDescription": "A value for selection",
                             "constraints": {
@@ -202,6 +203,7 @@
                             "selectAll": true,
                             "defaultValue": [],
                             "toolTip": "Select Host Pools to configure Alerts for.",
+                            "filter": true,
                             "filterPlaceholder": "Filter Host Pools...",
                             "defaultDescription": "A value for selection",
                             "constraints": {
@@ -230,6 +232,7 @@
                             "selectAll": true,
                             "defaultValue": [],
                             "toolTip": "The Resource Group(s) where the AVD VMs are located.",
+                            "filter": true,
                             "filterPlaceholder": "Filter Resource Groups...",
                             "defaultDescription": "A value for selection",
                             "constraints": {
