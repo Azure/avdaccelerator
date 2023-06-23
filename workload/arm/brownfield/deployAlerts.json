@@ -5,13 +5,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "7842631487317311235"
+      "templateHash": "10621656778459315233"
     }
   },
   "parameters": {
     "_ArtifactsLocation": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/JCoreMS/avdaccelerator/main/workload/scripts/alerts/",
+      "defaultValue": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/alerts/",
       "metadata": {
         "description": "Location of needed scripts to deploy solution."
       }
