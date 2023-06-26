@@ -810,12 +810,11 @@
                                 "style": "Info"
                             }
                         },
-                        
                         {
                             "name": "storageGeneralSettings",
                             "type": "Microsoft.Common.Section",
                             "label": "General settings:",
-                            "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                            "visible": true,
                             "elements": [
                                 {
                                     "name": "identityDomainOuPathStorageExisting",
