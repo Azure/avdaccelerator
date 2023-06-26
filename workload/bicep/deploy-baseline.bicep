@@ -53,7 +53,7 @@ param avdIdentityServiceProvider string = 'ADDS'
 param createIntuneEnrollment bool = false
 
 @description('Optional, Identity ID to grant RBAC role to access AVD application group. (Defualt: "")')
-param avdApplicationGroupIdentitiesIds array = ''
+param avdApplicationGroupIdentitiesIds array = []
 
 @allowed([
     'Group'

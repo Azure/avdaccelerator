@@ -188,7 +188,7 @@
                             "name": "identityAvdAccess",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
-                            "label": "Azure Virtual Desktop role assignment",
+                            "label": "Azure Virtual Desktop access assignment",
                             "elements": [
                                 {
                                     "name": "groupsApi",
