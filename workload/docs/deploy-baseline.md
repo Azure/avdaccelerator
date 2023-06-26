@@ -14,7 +14,7 @@
     - Azure Active Directory (AAD).
     - Active Directory (AD DS).
     - Azure AD Domain Services (AAD DS).
-  - **Azure Virtual Desktop assignment** - These identities will be granted access to AVD application groups (role "Desktop Virtualization User").
+  - **Azure Virtual Desktop access assignment** - These identities will be granted access to AVD application groups (role "Desktop Virtualization User").
     - Groups - select from the drop down the groups to be granted access to AVD published items and to create sessions on VMs and single sign-on (SSO) when using AAD as identity provider.
     - Note: when using AAD as identity service provider, an additional role (virtual machine user login) will be granted to compute resource group during deployment.
     - Domain Name- Your Active Directory domain like contoso.com
