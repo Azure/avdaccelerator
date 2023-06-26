@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "471211629850587768"
+      "templateHash": "2962145499857081540"
     }
   },
   "parameters": {
@@ -403,11 +403,18 @@
         "description": "Optional. The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 0)"
       }
     },
-    "avdUseAvailabilityZones": {
+    "useAvailabilityZonesCompute": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Defualt: true)"
+        "description": "Optional. When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Defualt: true)"
+      }
+    },
+    "useZoneRedundantStorage": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. When true, ZOne Redudant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Defualt: true)"
       }
     },
     "avdAsFaultDomainCount": {
@@ -1262,8 +1269,8 @@
     "varAvdAgentPackageLocation": "[format('https://wvdportalstorageblob.blob.{0}/galleryartifacts/Configuration_09-08-2022.zip', environment().suffixes.storage)]",
     "varDiskEncryptionKeyExpirationInEpoch": "[dateTimeToEpoch(dateTimeAdd(parameters('time'), format('P{0}D', string(parameters('diskEncryptionKeyExpirationInDays')))))]",
     "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(parameters('createMsixDeployment'), true())), true(), false())]",
-    "varFslogixStorageSku": "[if(parameters('avdUseAvailabilityZones'), format('{0}_ZRS', parameters('fslogixStoragePerformance')), format('{0}_LRS', parameters('fslogixStoragePerformance')))]",
-    "varMsixStorageSku": "[if(parameters('avdUseAvailabilityZones'), format('{0}_ZRS', parameters('msixStoragePerformance')), format('{0}_LRS', parameters('msixStoragePerformance')))]",
+    "varFslogixStorageSku": "[if(parameters('useZoneRedundantStorage'), format('{0}_ZRS', parameters('fslogixStoragePerformance')), format('{0}_LRS', parameters('fslogixStoragePerformance')))]",
+    "varMsixStorageSku": "[if(parameters('useZoneRedundantStorage'), format('{0}_ZRS', parameters('msixStoragePerformance')), format('{0}_LRS', parameters('msixStoragePerformance')))]",
     "varScalingPlanSchedules": [
       {
         "daysOfWeek": [
@@ -43773,7 +43780,7 @@
             "value": "[parameters('deployGpuPolicies')]"
           },
           "useAvailabilityZones": {
-            "value": "[parameters('avdUseAvailabilityZones')]"
+            "value": "[parameters('useAvailabilityZonesCompute')]"
           },
           "vmLocalUserName": {
             "value": "[parameters('avdVmLocalUserName')]"
