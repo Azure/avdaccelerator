@@ -806,7 +806,7 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
-                                "text": "Storage resources will be deployed on the same location and with the same availability settings selected on the Session Hosts section.",
+                                "text": "Storage resources will be deployed on the same location on the Session Hosts section.",
                                 "style": "Info"
                             }
                         },
