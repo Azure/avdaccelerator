@@ -196,10 +196,10 @@ param avdDeploySessionHostsCount int = 1
 param avdSessionHostCountIndex int = 0
 
 @description('Optional. When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Defualt: true)')
-param useAvailabilityZonesCompute bool = true
+param availabilityZonesCompute bool = true
 
-@description('Optional. When true, ZOne Redudant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Defualt: true)')
-param useZoneRedundantStorage bool = true
+@description('Optional. When true, ZOne Redudant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Defualt: false)')
+param zoneRedundantStorage bool = false
 
 @description('Optional. Sets the number of fault domains for the availability set. (Defualt: 2)')
 param avdAsFaultDomainCount int = 2
@@ -551,8 +551,8 @@ var varFsLogixScript = (avdIdentityServiceProvider == 'AAD') ? './Set-FSLogixReg
 var varAvdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
 var varDiskEncryptionKeyExpirationInEpoch = dateTimeToEpoch(dateTimeAdd(time, 'P${string(diskEncryptionKeyExpirationInDays)}D'))
 var varCreateStorageDeployment = (createAvdFslogixDeployment || createMsixDeployment == true) ? true : false
-var varFslogixStorageSku = useZoneRedundantStorage ? '${fslogixStoragePerformance}_ZRS' : '${fslogixStoragePerformance}_LRS'
-var varMsixStorageSku = useZoneRedundantStorage ? '${msixStoragePerformance}_ZRS' : '${msixStoragePerformance}_LRS'
+var varFslogixStorageSku = zoneRedundantStorage ? '${fslogixStoragePerformance}_ZRS' : '${fslogixStoragePerformance}_LRS'
+var varMsixStorageSku = zoneRedundantStorage ? '${msixStoragePerformance}_ZRS' : '${msixStoragePerformance}_LRS'
 var varScalingPlanSchedules = [
     {
         daysOfWeek: [
@@ -1215,7 +1215,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         vTpmEnabled: vTpmEnabled
         subnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
         deployGpuPolicies: deployGpuPolicies
-        useAvailabilityZones: useAvailabilityZonesCompute
+        useAvailabilityZones: availabilityZonesCompute
         vmLocalUserName: avdVmLocalUserName
         subscriptionId: avdWorkloadSubsId
         encryptionAtHost: diskZeroTrust
