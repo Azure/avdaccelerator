@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "3712274336045994951"
+      "templateHash": "471211629850587768"
     }
   },
   "parameters": {
@@ -99,8 +99,8 @@
       }
     },
     "avdApplicationGroupIdentitiesIds": {
-      "type": "string",
-      "defaultValue": "",
+      "type": "array",
+      "defaultValue": [],
       "metadata": {
         "description": "Optional, Identity ID to grant RBAC role to access AVD application group. (Defualt: \"\")"
       }
@@ -1418,7 +1418,6 @@
     "varCreateOuForStorageString": "[string(parameters('createOuForStorage'))]",
     "varAllDnsServers": "[format('{0},168.63.129.16', parameters('customDnsIps'))]",
     "varDnsServers": "[if(empty(parameters('customDnsIps')), createArray(), split(variables('varAllDnsServers'), ','))]",
-    "varApplicationGroupIdentitiesIds": "[if(not(empty(parameters('avdApplicationGroupIdentitiesIds'))), split(parameters('avdApplicationGroupIdentitiesIds'), ','), createArray())]",
     "varCreateVnetPeering": "[if(not(empty(parameters('existingHubVnetResourceId'))), true(), false())]",
     "varCustomResourceTags": "[if(parameters('createResourceTags'), createObject('WorkloadName', parameters('workloadNameTag'), 'WorkloadType', parameters('workloadTypeTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('workloadCriticalityTag'), 'Custom'), parameters('workloadCriticalityCustomValueTag'), parameters('workloadCriticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'ServiceClass', parameters('workloadSlaTag'), 'OpsTeam', parameters('opsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag')), createObject())]",
     "varAllComputeStorageTags": {
@@ -12919,9 +12918,7 @@
           "identityServiceProvider": {
             "value": "[parameters('avdIdentityServiceProvider')]"
           },
-          "applicationGroupIdentitiesIds": {
-            "value": "[variables('varApplicationGroupIdentitiesIds')]"
-          },
+          "applicationGroupIdentitiesIds": "[if(not(empty(parameters('avdApplicationGroupIdentitiesIds'))), createObject('value', parameters('avdApplicationGroupIdentitiesIds')), createObject('value', createArray()))]",
           "applicationGroupIdentityType": {
             "value": "[parameters('avdApplicationGroupIdentityType')]"
           },
@@ -15554,9 +15551,7 @@
           "desktopVirtualizationPowerOnOffContributorRoleId": {
             "value": "[variables('varDesktopVirtualizationPowerOnOffContributorRoleId')]"
           },
-          "applicationGroupIdentitiesIds": {
-            "value": "[variables('varApplicationGroupIdentitiesIds')]"
-          },
+          "applicationGroupIdentitiesIds": "[if(not(empty(parameters('avdApplicationGroupIdentitiesIds'))), createObject('value', parameters('avdApplicationGroupIdentitiesIds')), createObject('value', createArray()))]",
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]"
         },
         "template": {
