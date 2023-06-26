@@ -53,7 +53,7 @@ param avdIdentityServiceProvider string = 'ADDS'
 param createIntuneEnrollment bool = false
 
 @description('Optional, Identity ID to grant RBAC role to access AVD application group. (Defualt: "")')
-param avdApplicationGroupIdentitiesIds string = ''
+param avdApplicationGroupIdentitiesIds array = ''
 
 @allowed([
     'Group'
@@ -704,7 +704,6 @@ var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
 var varCreateOuForStorageString = string(createOuForStorage)
 var varAllDnsServers = '${customDnsIps},168.63.129.16'
 var varDnsServers = empty(customDnsIps) ? [] : (split(varAllDnsServers, ','))
-var varApplicationGroupIdentitiesIds = !empty(avdApplicationGroupIdentitiesIds) ? (split(avdApplicationGroupIdentitiesIds, ',')) : []
 var varCreateVnetPeering = !empty(existingHubVnetResourceId) ? true : false
 // Resource tagging
 // Tag Exclude-${varAvdScalingPlanName} is used by scaling plans to exclude session hosts from scaling. Exmaple: Exclude-vdscal-eus2-app1-dev-001
@@ -902,7 +901,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
         startVmOnConnect: (avdHostPoolType == 'Pooled') ? avdDeployScalingPlan : avdStartVmOnConnect
         workloadSubsId: avdWorkloadSubsId
         identityServiceProvider: avdIdentityServiceProvider
-        applicationGroupIdentitiesIds: varApplicationGroupIdentitiesIds
+        applicationGroupIdentitiesIds: !empty(avdApplicationGroupIdentitiesIds) ? avdApplicationGroupIdentitiesIds : []
         applicationGroupIdentityType: avdApplicationGroupIdentityType
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
@@ -935,7 +934,7 @@ module managedIdentitiesRoleAssign './modules/identity/deploy.bicep' = {
         createStorageDeployment: varCreateStorageDeployment
         desktopVirtualizationPowerOnContributorRoleId: varDesktopVirtualizationPowerOnContributorRoleId
         desktopVirtualizationPowerOnOffContributorRoleId: varDesktopVirtualizationPowerOnOffContributorRoleId
-        applicationGroupIdentitiesIds: varApplicationGroupIdentitiesIds
+        applicationGroupIdentitiesIds: !empty(avdApplicationGroupIdentitiesIds) ? avdApplicationGroupIdentitiesIds : []
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
     dependsOn: [
