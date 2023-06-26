@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "3712274336045994951"
+      "templateHash": "16169751760322224591"
     }
   },
   "parameters": {
@@ -99,8 +99,8 @@
       }
     },
     "avdApplicationGroupIdentitiesIds": {
-      "type": "string",
-      "defaultValue": "",
+      "type": "array",
+      "defaultValue": [],
       "metadata": {
         "description": "Optional, Identity ID to grant RBAC role to access AVD application group. (Defualt: \"\")"
       }
@@ -403,11 +403,18 @@
         "description": "Optional. The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 0)"
       }
     },
-    "avdUseAvailabilityZones": {
+    "availabilityZonesCompute": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Defualt: true)"
+        "description": "Optional. When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Defualt: true)"
+      }
+    },
+    "zoneRedundantStorage": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. When true, ZOne Redudant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Defualt: false)"
       }
     },
     "avdAsFaultDomainCount": {
@@ -1262,8 +1269,8 @@
     "varAvdAgentPackageLocation": "[format('https://wvdportalstorageblob.blob.{0}/galleryartifacts/Configuration_09-08-2022.zip', environment().suffixes.storage)]",
     "varDiskEncryptionKeyExpirationInEpoch": "[dateTimeToEpoch(dateTimeAdd(parameters('time'), format('P{0}D', string(parameters('diskEncryptionKeyExpirationInDays')))))]",
     "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(parameters('createMsixDeployment'), true())), true(), false())]",
-    "varFslogixStorageSku": "[if(parameters('avdUseAvailabilityZones'), format('{0}_ZRS', parameters('fslogixStoragePerformance')), format('{0}_LRS', parameters('fslogixStoragePerformance')))]",
-    "varMsixStorageSku": "[if(parameters('avdUseAvailabilityZones'), format('{0}_ZRS', parameters('msixStoragePerformance')), format('{0}_LRS', parameters('msixStoragePerformance')))]",
+    "varFslogixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('fslogixStoragePerformance')), format('{0}_LRS', parameters('fslogixStoragePerformance')))]",
+    "varMsixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('msixStoragePerformance')), format('{0}_LRS', parameters('msixStoragePerformance')))]",
     "varScalingPlanSchedules": [
       {
         "daysOfWeek": [
@@ -1418,7 +1425,6 @@
     "varCreateOuForStorageString": "[string(parameters('createOuForStorage'))]",
     "varAllDnsServers": "[format('{0},168.63.129.16', parameters('customDnsIps'))]",
     "varDnsServers": "[if(empty(parameters('customDnsIps')), createArray(), split(variables('varAllDnsServers'), ','))]",
-    "varApplicationGroupIdentitiesIds": "[if(not(empty(parameters('avdApplicationGroupIdentitiesIds'))), split(parameters('avdApplicationGroupIdentitiesIds'), ','), createArray())]",
     "varCreateVnetPeering": "[if(not(empty(parameters('existingHubVnetResourceId'))), true(), false())]",
     "varCustomResourceTags": "[if(parameters('createResourceTags'), createObject('WorkloadName', parameters('workloadNameTag'), 'WorkloadType', parameters('workloadTypeTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('workloadCriticalityTag'), 'Custom'), parameters('workloadCriticalityCustomValueTag'), parameters('workloadCriticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'ServiceClass', parameters('workloadSlaTag'), 'OpsTeam', parameters('opsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag')), createObject())]",
     "varAllComputeStorageTags": {
@@ -12919,9 +12925,7 @@
           "identityServiceProvider": {
             "value": "[parameters('avdIdentityServiceProvider')]"
           },
-          "applicationGroupIdentitiesIds": {
-            "value": "[variables('varApplicationGroupIdentitiesIds')]"
-          },
+          "applicationGroupIdentitiesIds": "[if(not(empty(parameters('avdApplicationGroupIdentitiesIds'))), createObject('value', parameters('avdApplicationGroupIdentitiesIds')), createObject('value', createArray()))]",
           "applicationGroupIdentityType": {
             "value": "[parameters('avdApplicationGroupIdentityType')]"
           },
@@ -15554,9 +15558,7 @@
           "desktopVirtualizationPowerOnOffContributorRoleId": {
             "value": "[variables('varDesktopVirtualizationPowerOnOffContributorRoleId')]"
           },
-          "applicationGroupIdentitiesIds": {
-            "value": "[variables('varApplicationGroupIdentitiesIds')]"
-          },
+          "applicationGroupIdentitiesIds": "[if(not(empty(parameters('avdApplicationGroupIdentitiesIds'))), createObject('value', parameters('avdApplicationGroupIdentitiesIds')), createObject('value', createArray()))]",
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]"
         },
         "template": {
@@ -43778,7 +43780,7 @@
             "value": "[parameters('deployGpuPolicies')]"
           },
           "useAvailabilityZones": {
-            "value": "[parameters('avdUseAvailabilityZones')]"
+            "value": "[parameters('availabilityZonesCompute')]"
           },
           "vmLocalUserName": {
             "value": "[parameters('avdVmLocalUserName')]"

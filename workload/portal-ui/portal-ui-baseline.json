@@ -185,41 +185,32 @@
                             ]
                         },
                         {
-                            "name": "identityAvdUserAccess",
+                            "name": "identityAvdAccess",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
-                            "label": "Azure Virtual Desktop users' role assignment",
+                            "label": "Azure Virtual Desktop access assignment",
                             "elements": [
                                 {
-                                    "name": "identityAccessTypes",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "visible": true,
-                                    "label": "Identity type",
-                                    "defaultValue": "Groups",
-                                    "toolTip": "Select the type of identities that will be entered in the 'Identities ObjectIDs' field.",
-                                    "constraints": {
-                                        "allowedValues": [
-                                            {
-                                                "label": "Groups",
-                                                "value": "Group"
-                                            },
-                                            {
-                                                "label": "Users",
-                                                "value": "User"
-                                            },
-                                            {
-                                                "label": "Service Principals",
-                                                "value": "ServicePrincipal"
-                                            }
-                                        ]
+                                    "name": "groupsApi",
+                                    "type": "Microsoft.Solutions.GraphApiControl",
+                                    "request": {
+                                        "method": "GET",
+                                        "path": "/v1.0/groups"
                                     }
                                 },
                                 {
-                                    "name": "identityAccessIds",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Identities ObjectIDs",
-                                    "toolTip": "Comma separated list of identities (ObjectIDs) to be granted access to Azure Virtual Desktop published items and to create sessions on VMs and single sign-on (SSO) when using AAD as identity provider.",
-                                    "placeholder": "Example: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX,XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+                                    "name": "identityAvdUserAccessGroups",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "Groups",
+                                    "defaultValue": "",
+                                    "filter": true,
+                                    "toolTip": "Select the desired group(s) to give access to Azure Virtual Desktop resources and if applicable to FSLogix file share.",
+                                    "multiselect": true,
+                                    "constraints": {
+                                        "allowedValues": "[map(steps('identity').identityAvdAccess.groupsApi.value, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\": {\"name\":\"', item.displayName, '\",\"id\":\"', item.id, '\"}}')))]",
+                                        "required": true
+                                    },
+                                    "visible": true
                                 }
                             ]
                         },
@@ -526,7 +517,7 @@
                                     "name": "sessionHostsAvailabilitySettings",
                                     "type": "Microsoft.Common.CheckBox",
                                     "visible": true,
-                                    "label": "Use availability zones",
+                                    "label": "Availability zones",
                                     "defaultValue": true,
                                     "toolTip": "Distribute compute resources across availability zones. If 'No' is selected then an availability set will be created to host the VMs."
                                 },
@@ -815,7 +806,7 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
-                                "text": "Storage resources will be deployed on the same location and with the same availability settings selected on the Session Hosts section.",
+                                "text": "Storage resources will be deployed on the same location on the Session Hosts section.",
                                 "style": "Info"
                             }
                         },
@@ -823,7 +814,7 @@
                             "name": "storageGeneralSettings",
                             "type": "Microsoft.Common.Section",
                             "label": "General settings:",
-                            "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                            "visible": true,
                             "elements": [
                                 {
                                     "name": "identityDomainOuPathStorageExisting",
@@ -833,6 +824,14 @@
                                     "toolTip": "Provide OU where to locate storage account file share. If not provided, file share will be placed on the default (computers) OU.",
                                     "placeholder": "Example: OU=storage,OU=avd,DC=contoso,DC=com",
                                     "constraints": {}
+                                },
+                                {
+                                    "name": "storageGeneralSettingsZoneRedundancy",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "visible": true,
+                                    "label": "Zone redundant storage",
+                                    "defaultValue": false,
+                                    "toolTip": "Select to replicate storage across availability zones or only use local redundancy."
                                 }
                             ]
                         },
@@ -845,7 +844,7 @@
                                 {
                                     "name": "fslogixDeployment",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "label": "Use FSLogix profile management",
+                                    "label": "FSLogix profile management",
                                     "defaultValue": true,
                                     "toolTip": "Deploys FSLogix containers and session host setup for user's profiles."
                                 },
@@ -1096,7 +1095,7 @@
                             "name": "deployPrivateEndpointKeyvaultStorage",
                             "type": "Microsoft.Common.CheckBox",
                             "visible": true,
-                            "label": "Use private endpoints (Key vault and Storage account)",
+                            "label": "Private endpoints (Key vault and Storage account)",
                             "defaultValue": true,
                             "toolTip": "Enables Private Endpoints for Key Vault and Storage Resources. It is recommended to use Azure Private Endpoints to keep all traffic to PaaS services on the Azure backbone."
                         },
@@ -2303,7 +2302,8 @@
                 "avdStartVmOnConnect": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, false)]",
                 "avdDeployScalingPlan": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, false)]",
                 "avdEnterpriseAppObjectId": "[first(map(steps('managementPlane').managementPlaneHostPoolScaling.avdEnterpriseApplication.value, (item) => item.id))]",
-                "avdUseAvailabilityZones": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings]",
+                "availabilityZonesCompute": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings]",
+                "zoneRedundantStorage": "[steps('storage').storageGeneralSettings.storageGeneralSettingsZoneRedundancy]",
                 "avdDeploySessionHostsCount": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
                 "useSharedImage": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false)]",
                 "avdOsImage": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false), steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11_21h2')]",
@@ -2365,8 +2365,7 @@
                 "opsTeamTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOpsTeamTag, 'no')]",
                 "ownerTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOwnerTag, 'no')]",
                 "costCenterTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsCostCenterTag, 'no')]",
-                "avdApplicationGroupIdentityType": "[steps('identity').identityAvdUserAccess.identityAccessTypes]",
-                "avdApplicationGroupIdentitiesIds": "[steps('identity').identityAvdUserAccess.identityAccessIds]",
+                "avdApplicationGroupIdentitiesIds": "[map(steps('identity').identityAvdAccess.identityAvdUserAccessGroups, (item) => item.id)]",
                 "avdDeployMonitoring": "[steps('monitoring').deployMonitoring]",
                 "deployAlaWorkspace": "[if(equals(steps('monitoring').deployMonitoring, true), steps('monitoring').deployMonitoringAlaWorkspace, false)]",
                 "avdAlaWorkspaceDataRetention": "[if(equals(steps('monitoring').deployMonitoringAlaWorkspace, true), steps('monitoring').deployMonitoringNewAlaWorkspaceRetention, 0)]",

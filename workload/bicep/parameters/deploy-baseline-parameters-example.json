@@ -134,8 +134,11 @@
         "avdSessionHostCountIndex": {
             "value": 0
         },
-        "avdUseAvailabilityZones": {
+        "availabilityZonesCompute": {
             "value": true
+        },
+        "zoneRedundantStorage": {
+            "value": false
         },
         "avdAsFaultDomainCount": {
             "value": 2
