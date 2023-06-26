@@ -14,9 +14,8 @@
     - Azure Active Directory (AAD).
     - Active Directory (AD DS).
     - Azure AD Domain Services (AAD DS).
-  - **AVD users' role assignment** - These identities will be granted access to AVD application groups (role "Desktop Virtualization User").
-    - Identity type - Select the type of identities that will be entered in the 'Identities ObjectIDs' field.
-    - Identities ObjectIDs - Comma separated list of identities (ObjectIDs) to be granted access to AVD published items and to create sessions on VMs and single sign-on (SSO) when using AAD as identity provider.
+  - **Azure Virtual Desktop access assignment** - These identities will be granted access to AVD application groups (role "Desktop Virtualization User").
+    - Groups - select from the drop down the groups to be granted access to AVD published items and to create sessions on VMs and single sign-on (SSO) when using AAD as identity provider.
     - Note: when using AAD as identity service provider, an additional role (virtual machine user login) will be granted to compute resource group during deployment.
     - Domain Name- Your Active Directory domain like contoso.com
   - **When selecting AD DS or AAD DS:**
@@ -39,7 +38,7 @@
   - **Deploy sessions hosts** - You can choose to not deploy session hosts just the AVD service objects.
   - **Session host region** - Provide the region to where you want to deploy the session hosts. This defaults to the Management Plane region but can be changed.
   - **Session hosts OU path (Optional)** - Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU. If left empty the computer account will be created in the default Computers OU. Example: OU=avd,DC=contoso,DC=com.
-  - **Use availability zones** - If you deselect the checkbox, an Availability set will be created instead and session hosts will be created in the availability set. If you select the checkbox the accelerator  will distribute compute and storage resources across availability zones.
+  - **Availability zones** - If you deselect the checkbox, an Availability set will be created instead and session hosts will be created in the availability set. If you select the checkbox the accelerator  will distribute compute and storage resources across availability zones.
   - **VM size** -  Select the SKU size for the session hosts.
   - **VM count** - Select the number of session hosts to deploy.
   - **OS disk type** - Select the OS Disk SKU type. Premium is recommended for performance and higher SLA.
@@ -48,10 +47,13 @@
   - **OS image source** - Select a marketplace image or an image from Azure Compute Gallery (Custom image build deployment will create images in compute gallery).
   - **OS version or image** - Choose the OS version or desired image from the Azure compute gallery.
 - **Storage** blade
-  - **Use FSLogix profile management**: Deploys FSLogix containers and session host setup for user's profiles.
+  - **General Settings**: 
+    - **Custom OU Path (Optional)**: specify an OU path to create domain storage objects.
+    - **Zone redundant storage**: Select to replicate storage across availability zones or only use local redundancy.
+  - **FSLogix profile management**: Deploys FSLogix containers and session host setup for user's profiles.
   - **FSLogix Azure Files share Performance** - Select the desired performance.
   - **FSLogix file share size** Choose the desired size in 100GB increments. Minimum size is 100GB.
-  - **Use MSIX App Attach**: Deploys MSIX App Attach container for MSIX app packages.
+  - **MSIX App Attach**: Deploys MSIX App Attach container for MSIX app packages.
   - **MSIX App Attach Azure Files share Performance** - Select the desired performance.
   - **MSIX App Attach file share size** Choose the desired size in 100GB increments. Minimum size is 100GB.
 - **Network connectivity** blade
@@ -66,7 +68,7 @@
       - **AVD subnet** - Select virtual network subnet to be used for session hosts deployment.
       - **Private endpoint virtual network** - Select virtual network to be used for private endpoint deployment.
       - **Private endpoint subnet** - Select virtual network subnet to be used for private endpoint deployment.
-  - **Use private endpoints (Key vault and Azure files)** - Select the checkbox to create private endpoints for key vault and Azure file services, when selecting no public endpoints of the services will be used.
+  - **Private endpoints (Key vault and Azure files)** - Select the checkbox to create private endpoints for key vault and Azure file services, when selecting no public endpoints of the services will be used.
   - **Existing Azure private DNS zone** - Select the checkbox to use an existing private DNS zone for Azure Files and Key vault (Private DNS for Azure files is required for FSLogix deployment to configure properly).
   - **Existing hub VNet peering**
     - **Virtual Network** - Select the hub VNet where this new VNet will be peered with.
