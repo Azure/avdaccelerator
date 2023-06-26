@@ -832,7 +832,7 @@
                                     "visible": true,
                                     "label": "Zone redundant storage",
                                     "defaultValue": false,
-                                    "toolTip": "Distribute storage replicas across region's availability zones."
+                                    "toolTip": "Select to replicate storage across availability zones or only use local redundancy."
                                 }
                             ]
                         },

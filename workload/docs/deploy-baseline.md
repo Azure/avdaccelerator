@@ -47,6 +47,9 @@
   - **OS image source** - Select a marketplace image or an image from Azure Compute Gallery (Custom image build deployment will create images in compute gallery).
   - **OS version or image** - Choose the OS version or desired image from the Azure compute gallery.
 - **Storage** blade
+  - **General Settings**: 
+    - **Custom OU Path (Optional)**: specify an OU path to create domain storage objects.
+    - **Zone redundant storage**: Select to replicate storage across availability zones or only use local redundancy.
   - **FSLogix profile management**: Deploys FSLogix containers and session host setup for user's profiles.
   - **FSLogix Azure Files share Performance** - Select the desired performance.
   - **FSLogix file share size** Choose the desired size in 100GB increments. Minimum size is 100GB.
