@@ -148,7 +148,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
             shares: [
                 {
                     name: fileShareName
-                    sharedQuota: fileShareQuotaSize * 100 //Portal UI steps scale
+                    shareQuota: fileShareQuotaSize * 100 //Portal UI steps scale
                 }
             ]
             protocolSettings: fileShareMultichannel ? {
