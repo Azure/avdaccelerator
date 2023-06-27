@@ -195,7 +195,7 @@
                                     "type": "Microsoft.Solutions.GraphApiControl",
                                     "request": {
                                         "method": "GET",
-                                        "path": "/v1.0/groups"
+                                        "path": "/v1.0/groups?$top=999"
                                     }
                                 },
                                 {
