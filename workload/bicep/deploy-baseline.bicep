@@ -52,7 +52,7 @@ param avdIdentityServiceProvider string = 'ADDS'
 @description('Required, Eronll session hosts on Intune. (Defualt: false)')
 param createIntuneEnrollment bool = false
 
-@description('Optional, Identity ID to grant RBAC role to access AVD application group. (Defualt: "")')
+@description('Optional, Identity ID array to grant RBAC role to access AVD application group. (Defualt: "")')
 param avdApplicationGroupIdentitiesIds array = []
 
 @allowed([
@@ -904,7 +904,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
         startVmOnConnect: (avdHostPoolType == 'Pooled') ? avdDeployScalingPlan : avdStartVmOnConnect
         workloadSubsId: avdWorkloadSubsId
         identityServiceProvider: avdIdentityServiceProvider
-        applicationGroupIdentitiesIds: !empty(avdApplicationGroupIdentitiesIds) ? avdApplicationGroupIdentitiesIds : []
+        applicationGroupIdentitiesIds: avdApplicationGroupIdentitiesIds
         applicationGroupIdentityType: avdApplicationGroupIdentityType
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
@@ -937,7 +937,7 @@ module managedIdentitiesRoleAssign './modules/identity/deploy.bicep' = {
         createStorageDeployment: varCreateStorageDeployment
         desktopVirtualizationPowerOnContributorRoleId: varDesktopVirtualizationPowerOnContributorRoleId
         desktopVirtualizationPowerOnOffContributorRoleId: varDesktopVirtualizationPowerOnOffContributorRoleId
-        applicationGroupIdentitiesIds: !empty(avdApplicationGroupIdentitiesIds) ? avdApplicationGroupIdentitiesIds : []
+        applicationGroupIdentitiesIds: avdApplicationGroupIdentitiesIds
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
     dependsOn: [
