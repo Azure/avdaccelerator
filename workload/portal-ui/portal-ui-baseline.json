@@ -2380,7 +2380,7 @@
                 "opsTeamTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOpsTeamTag, 'no')]",
                 "ownerTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOwnerTag, 'no')]",
                 "costCenterTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsCostCenterTag, 'no')]",
-                "avdApplicationGroupIdentitiesIds": "[if(equals(steps('identity').identityAvdAccess.identityAvdUserAccessGroupsCheckBox, true), steps('identity').identityAvdAccess.identityAvdUserAccessGroupsTextBox, map(steps('identity').identityAvdAccess.identityAvdUserAccessGroupsDropDown, (item) => item.id))]",
+                "avdApplicationGroupIdentitiesIds": "[if(equals(steps('identity').identityAvdAccess.identityAvdUserAccessGroupsCheckBox, true), split(steps('identity').identityAvdAccess.identityAvdUserAccessGroupsTextBox, ','), map(steps('identity').identityAvdAccess.identityAvdUserAccessGroupsDropDown, (item) => item.id))]",
                 "avdDeployMonitoring": "[steps('monitoring').deployMonitoring]",
                 "deployAlaWorkspace": "[if(equals(steps('monitoring').deployMonitoring, true), steps('monitoring').deployMonitoringAlaWorkspace, false)]",
                 "avdAlaWorkspaceDataRetention": "[if(equals(steps('monitoring').deployMonitoringAlaWorkspace, true), steps('monitoring').deployMonitoringNewAlaWorkspaceRetention, 0)]",
