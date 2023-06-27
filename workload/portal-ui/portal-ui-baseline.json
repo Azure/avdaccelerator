@@ -199,18 +199,33 @@
                                     }
                                 },
                                 {
-                                    "name": "identityAvdUserAccessGroups",
+                                    "name": "identityAvdUserAccessGroupsDropDown",
                                     "type": "Microsoft.Common.DropDown",
+                                    "visible": "[not(steps('identity').identityAvdAccess.identityAvdUserAccessGroupsCheckBox)]",
                                     "label": "Groups",
                                     "defaultValue": "",
                                     "filter": true,
                                     "toolTip": "Select the desired group(s) to give access to Azure Virtual Desktop resources and if applicable to FSLogix file share.",
                                     "multiselect": true,
                                     "constraints": {
-                                        "allowedValues": "[map(steps('identity').identityAvdAccess.groupsApi.value, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\": {\"name\":\"', item.displayName, '\",\"id\":\"', item.id, '\"}}')))]",
-                                        "required": true
-                                    },
-                                    "visible": true
+                                        "allowedValues": "[map(steps('identity').identityAvdAccess.groupsApi.value, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\": {\"name\":\"', item.displayName, '\",\"id\":\"', item.id, '\"}}')))]"
+                                    }
+                                },
+                                {
+                                    "name": "identityAvdUserAccessGroupsCheckBox",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "visible": true,
+                                    "label": "Provide groups IDs instead",
+                                    "defaultValue": false,
+                                    "toolTip": "When the desired groups are not listed in the drop down, selecting this box will allow for entering the group's ObjectIDs."
+                                },
+                                {
+                                    "name": "identityAvdUserAccessGroupsTextBox",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "visible": "[steps('identity').identityAvdAccess.identityAvdUserAccessGroupsCheckBox]",
+                                    "label": "ObjectIDs",
+                                    "toolTip": "Comma separated list of security groups (ObjectIDs) to be granted access to Azure Virtual Desktop published items and to create sessions on VMs and single sign-on (SSO) when using AAD as identity provider.",
+                                    "placeholder": "Example: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX,XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
                                 }
                             ]
                         },
@@ -2365,7 +2380,11 @@
                 "opsTeamTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOpsTeamTag, 'no')]",
                 "ownerTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOwnerTag, 'no')]",
                 "costCenterTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsCostCenterTag, 'no')]",
-                "avdApplicationGroupIdentitiesIds": "[map(steps('identity').identityAvdAccess.identityAvdUserAccessGroups, (item) => item.id)]",
+                
+                
+                "avdApplicationGroupIdentitiesIds": "[if(equals(steps('identity').identityAvdAccess.identityAvdUserAccessGroupsCheckBox, true), steps('identity').identityAvdAccess.identityAvdUserAccessGroupsTextBox, map(steps('identity').identityAvdAccess.identityAvdUserAccessGroupsDropDown, (item) => item.id))]",
+
+
                 "avdDeployMonitoring": "[steps('monitoring').deployMonitoring]",
                 "deployAlaWorkspace": "[if(equals(steps('monitoring').deployMonitoring, true), steps('monitoring').deployMonitoringAlaWorkspace, false)]",
                 "avdAlaWorkspaceDataRetention": "[if(equals(steps('monitoring').deployMonitoringAlaWorkspace, true), steps('monitoring').deployMonitoringNewAlaWorkspaceRetention, 0)]",
