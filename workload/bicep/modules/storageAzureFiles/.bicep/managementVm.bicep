@@ -20,7 +20,7 @@ param identityServiceProvider string
 param serviceObjectsRgName string
 
 @description('AVD subnet ID.')
-param avdSubnetId string
+param subnetId string
 
 @description('Enable accelerated networking on the session host VMs.')
 param enableAcceleratedNetworking bool
@@ -35,16 +35,16 @@ param secureBootEnabled bool
 param vTpmEnabled bool
 
 @description('Location where to deploy compute services.')
-param sessionHostLocation string
+param location string
 
 @description('This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool
 
 @description('Session host VM size.')
-param sessionHostsSize string
+param mgmtVmSize string
 
 @description('OS disk type for session host.')
-param sessionHostDiskType string
+param osDiskType string
 
 @description('Market Place OS image')
 param marketPlaceGalleryWindowsManagementVm object
@@ -71,7 +71,7 @@ param wrklKvName string
 param domainJoinUserName string
 
 @description('OU path to join AVd VMs.')
-param sessionHostOuPath string
+param ouPath string
 
 @description('Application Security Group (ASG) for the session hosts.')
 param applicationSecurityGroupResourceId string
@@ -90,12 +90,12 @@ param time string = utcNow()
 // =========== //
 
 var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
-    storageAccountType: sessionHostDiskType
+    storageAccountType: osDiskType
 } : {
     diskEncryptionSet: {
         id: diskEncryptionSetResourceId
     }
-    storageAccountType: sessionHostDiskType
+    storageAccountType: osDiskType
 }
 
 // =========== //
@@ -114,7 +114,7 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
     name: 'MGMT-VM-${time}'
     params: {
         name: managementVmName
-        location: sessionHostLocation
+        location: location
         timeZone: computeTimeZone
         systemAssignedIdentity: false
         userAssignedIdentities: {
@@ -124,7 +124,7 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
         availabilityZone: []
         osType: 'Windows'
         //licenseType: 'Windows_Client'
-        vmSize: sessionHostsSize
+        vmSize: mgmtVmSize
         securityType: securityType
         secureBootEnabled: secureBootEnabled
         vTpmEnabled: vTpmEnabled
@@ -145,7 +145,7 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
                 ipConfigurations: !empty(applicationSecurityGroupResourceId)  ? [
                     {
                         name: 'ipconfig01'
-                        subnetResourceId: avdSubnetId
+                        subnetResourceId: subnetId
                         applicationSecurityGroups: [
                             {
                                 id: applicationSecurityGroupResourceId
@@ -155,7 +155,7 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
                 ] : [
                     {
                         name: 'ipconfig01'
-                        subnetResourceId: avdSubnetId
+                        subnetResourceId: subnetId
                     }
                 ]
             }
@@ -167,7 +167,7 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
             enabled: (identityServiceProvider == 'AAD') ? false: true
             settings: {
                 name: identityDomainName
-                ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
+                ouPath: !empty(ouPath) ? ouPath : null
                 user: domainJoinUserName
                 restart: 'true'
                 options: '3'
@@ -189,7 +189,7 @@ module managementVmWait '../../../../../carml/1.3.0/Microsoft.Resources/deployme
     name: 'MGMT-VM-Wait-${time}'
     params: {
         name: 'MGMT-VM-Wait-${time}'
-        location: sessionHostLocation
+        location: location
         azPowerShellVersion: '8.3.0'
         cleanupPreference: 'Always'
         timeout: 'PT10M'
