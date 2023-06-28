@@ -1094,13 +1094,12 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
         identityDomainName: avdIdentityDomainName
-        //imageTemplateDefinitionId: avdImageTemplateDefinitionId
-        sessionHostOuPath: avdOuPath
-        sessionHostDiskType: avdSessionHostDiskType
-        sessionHostLocation: avdSessionHostLocation
-        sessionHostsSize: avdSessionHostsSize
-        avdSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
-        enableAcceleratedNetworking: enableAcceleratedNetworking
+        ouPath: avdOuPath
+        osDiskType: 'Standard_LRS'
+        location: avdSessionHostLocation
+        mgmtVmSize: 'Standard_B2ms'
+        subnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
+        enableAcceleratedNetworking: false
         securityType: securityType == 'Standard' ? '' : securityType
         secureBootEnabled: secureBootEnabled
         vTpmEnabled: vTpmEnabled
