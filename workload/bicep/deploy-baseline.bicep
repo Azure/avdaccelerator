@@ -556,6 +556,13 @@ var varDiskEncryptionKeyExpirationInEpoch = dateTimeToEpoch(dateTimeAdd(time, 'P
 var varCreateStorageDeployment = (createAvdFslogixDeployment || createMsixDeployment == true) ? true : false
 var varFslogixStorageSku = zoneRedundantStorage ? '${fslogixStoragePerformance}_ZRS' : '${fslogixStoragePerformance}_LRS'
 var varMsixStorageSku = zoneRedundantStorage ? '${msixStoragePerformance}_ZRS' : '${msixStoragePerformance}_LRS'
+var varMgmtVmSpecs = {
+    osDiskType: 'Standard_LRS'
+    mgmtVmSize: 'Standard_B2ms'
+    enableAcceleratedNetworking: false
+    ouPath: avdOuPath
+    subnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
+}
 var varScalingPlanSchedules = [
     {
         daysOfWeek: [
@@ -1094,12 +1101,12 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
         identityDomainName: avdIdentityDomainName
-        ouPath: avdOuPath
-        osDiskType: 'Standard_LRS'
+        ouPath: varMgmtVmSpecs.ouPath
+        osDiskType: varMgmtVmSpecs.osDiskType
         location: avdSessionHostLocation
-        mgmtVmSize: 'Standard_B2ms'
-        subnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
-        enableAcceleratedNetworking: false
+        mgmtVmSize: varMgmtVmSpecs.mgmtVmSize
+        subnetId: varMgmtVmSpecs.subnetId
+        enableAcceleratedNetworking: varMgmtVmSpecs.enableAcceleratedNetworking
         securityType: securityType == 'Standard' ? '' : securityType
         secureBootEnabled: secureBootEnabled
         vTpmEnabled: vTpmEnabled
