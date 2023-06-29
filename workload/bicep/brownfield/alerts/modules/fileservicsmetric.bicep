@@ -9,7 +9,7 @@ param Tags object
 var FileServicesResourceID = '${StorageAccountResourceID}/fileServices/default'
 
 module metricAlerts_FileServices '../../../../../carml/1.3.0/Microsoft.Insights/metricAlerts/deploy.bicep' = [for i in range(0, length(MetricAlertsFileShares)): {
-  name: 'carml_${MetricAlertsFileShares[i].name}-${split(FileServicesResourceID, '/')[8]}'
+  name: 'c_${MetricAlertsFileShares[i].name}-${split(FileServicesResourceID, '/')[8]}'
   params: {
     enableDefaultTelemetry: false
     name: '${MetricAlertsFileShares[i].name}-${split(FileServicesResourceID, '/')[8]}'
