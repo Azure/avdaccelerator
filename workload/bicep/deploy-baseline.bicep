@@ -260,8 +260,11 @@ param vTpmEnabled bool = false
     'win11_22h2'
     'win11_22h2_office'
 ])
-@description('Optional. AVD OS image source. (Default: win11-21h2)')
+@description('Optional. AVD OS image SKU. (Default: win11-21h2)')
 param avdOsImage string = 'win11_22h2'
+
+@description('Management VM image SKU (Default: winServer_2022_Datacenter)')
+param managementVmOsImage string = 'winServer_2022_Datacenter_core_smalldisk_g2'
 
 @description('Optional. Set to deploy image from Azure Compute Gallery. (Default: false)')
 param useSharedImage bool = false
@@ -553,6 +556,14 @@ var varDiskEncryptionKeyExpirationInEpoch = dateTimeToEpoch(dateTimeAdd(time, 'P
 var varCreateStorageDeployment = (createAvdFslogixDeployment || createMsixDeployment == true) ? true : false
 var varFslogixStorageSku = zoneRedundantStorage ? '${fslogixStoragePerformance}_ZRS' : '${fslogixStoragePerformance}_LRS'
 var varMsixStorageSku = zoneRedundantStorage ? '${msixStoragePerformance}_ZRS' : '${msixStoragePerformance}_LRS'
+var varMgmtVmSpecs = {
+    osImage: varMarketPlaceGalleryWindows[managementVmOsImage]
+    osDiskType: 'Standard_LRS'
+    mgmtVmSize: 'Standard_B2ms'
+    enableAcceleratedNetworking: false
+    ouPath: avdOuPath
+    subnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
+}
 var varScalingPlanSchedules = [
     {
         daysOfWeek: [
@@ -687,6 +698,24 @@ var varMarketPlaceGalleryWindows = {
         publisher: 'MicrosoftWindowsServer'
         offer: 'WindowsServer'
         sku: '2019-datacenter'
+        version: 'latest'
+    }
+    winServer_2022_datacenter_core: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2022-datacenter-core'
+        version: 'latest'
+    }
+    winServer_2022_datacenter_azure_edition_core: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2022-datacenter-azure-edition-core'
+        version: 'latest'
+    }
+    winServer_2022_Datacenter_core_smalldisk_g2: {
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2022-datacenter-core-smalldisk-g2'
         version: 'latest'
     }
 }
@@ -1073,19 +1102,20 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
         identityDomainName: avdIdentityDomainName
-        imageTemplateDefinitionId: avdImageTemplateDefinitionId
-        sessionHostOuPath: avdOuPath
-        sessionHostDiskType: avdSessionHostDiskType
-        sessionHostLocation: avdSessionHostLocation
-        sessionHostsSize: avdSessionHostsSize
-        avdSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
-        enableAcceleratedNetworking: enableAcceleratedNetworking
+        ouPath: varMgmtVmSpecs.ouPath
+        osDiskType: varMgmtVmSpecs.osDiskType
+        location: avdSessionHostLocation
+        mgmtVmSize: varMgmtVmSpecs.mgmtVmSize
+        subnetId: varMgmtVmSpecs.subnetId
+        enableAcceleratedNetworking: varMgmtVmSpecs.enableAcceleratedNetworking
+        securityType: securityType == 'Standard' ? '' : securityType
+        secureBootEnabled: secureBootEnabled
+        vTpmEnabled: vTpmEnabled
         vmLocalUserName: avdVmLocalUserName
         workloadSubsId: avdWorkloadSubsId
         encryptionAtHost: diskZeroTrust
         storageManagedIdentityResourceId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
-        marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows[avdOsImage]
-        useSharedImage: useSharedImage
+        osImage: varMgmtVmSpecs.osImage
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
     dependsOn: [

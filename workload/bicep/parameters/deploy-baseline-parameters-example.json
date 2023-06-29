@@ -161,6 +161,9 @@
         "avdOsImage": {
             "value": "win11_21h2"
         },
+        "managementVmOsImage": {
+            "value": "winServer_2022_Datacenter_core_smalldisk_g2"
+        },
         "securityType": {
             "value": "Standard"
         },
