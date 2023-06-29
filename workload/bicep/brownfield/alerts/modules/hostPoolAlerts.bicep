@@ -8,7 +8,7 @@ param Tags object
 param Timestamp string = utcNow()
 
 module logAlertHostPoolQueries '../../../../../carml/1.3.0/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(LogAlertsHostPool)): {
-  name: 'carml_${guid(replace(LogAlertsHostPool[i].name, 'xHostPoolNamex', HostPoolName),Timestamp)}'
+  name: 'c_${guid(replace(LogAlertsHostPool[i].name, 'xHostPoolNamex', HostPoolName),Timestamp)}'
   params: {
     enableDefaultTelemetry: false
     name: replace(LogAlertsHostPool[i].name, 'xHostPoolNamex', HostPoolName)
