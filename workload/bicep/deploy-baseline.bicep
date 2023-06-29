@@ -557,6 +557,7 @@ var varCreateStorageDeployment = (createAvdFslogixDeployment || createMsixDeploy
 var varFslogixStorageSku = zoneRedundantStorage ? '${fslogixStoragePerformance}_ZRS' : '${fslogixStoragePerformance}_LRS'
 var varMsixStorageSku = zoneRedundantStorage ? '${msixStoragePerformance}_ZRS' : '${msixStoragePerformance}_LRS'
 var varMgmtVmSpecs = {
+    osImage: varMarketPlaceGalleryWindows[managementVmOsImage]
     osDiskType: 'Standard_LRS'
     mgmtVmSize: 'Standard_B2ms'
     enableAcceleratedNetworking: false
@@ -1114,7 +1115,7 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
         workloadSubsId: avdWorkloadSubsId
         encryptionAtHost: diskZeroTrust
         storageManagedIdentityResourceId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
-        marketPlaceGalleryWindowsManagementVm: varMarketPlaceGalleryWindows[managementVmOsImage]
+        osImage: varMgmtVmSpecs.osImage
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
     dependsOn: [

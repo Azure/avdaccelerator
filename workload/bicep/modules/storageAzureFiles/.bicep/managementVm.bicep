@@ -47,7 +47,7 @@ param mgmtVmSize string
 param osDiskType string
 
 @description('Market Place OS image')
-param marketPlaceGalleryWindowsManagementVm object
+param osImage object
 
 //@description('Set to deploy image from Azure. Compute Gallery')
 //param useSharedImage bool
@@ -128,7 +128,7 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
         securityType: securityType
         secureBootEnabled: secureBootEnabled
         vTpmEnabled: vTpmEnabled
-        imageReference: marketPlaceGalleryWindowsManagementVm
+        imageReference: osImage
         osDisk: {
             createOption: 'fromImage'
             deleteOption: 'Delete'
