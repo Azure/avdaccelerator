@@ -7,7 +7,7 @@ param ActionGroupID string
 param Tags object
 
 module metricAlerts_StorageAcct '../../../../../carml/1.3.0/Microsoft.Insights/metricAlerts/deploy.bicep' = [for i in range(0, length(MetricAlertsStorageAcct)):  {
-  name: 'carml_${MetricAlertsStorageAcct[i].name}-${split(StorageAccountResourceID, '/')[8]}'
+  name: 'c_${MetricAlertsStorageAcct[i].name}-${split(StorageAccountResourceID, '/')[8]}'
   params: {
     enableDefaultTelemetry: false
     name: '${MetricAlertsStorageAcct[i].name}-${split(StorageAccountResourceID, '/')[8]}'
