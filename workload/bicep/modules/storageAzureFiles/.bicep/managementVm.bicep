@@ -20,31 +20,40 @@ param identityServiceProvider string
 param serviceObjectsRgName string
 
 @description('AVD subnet ID.')
-param avdSubnetId string
+param subnetId string
 
 @description('Enable accelerated networking on the session host VMs.')
 param enableAcceleratedNetworking bool
 
+@description('Specifies the securityType of the virtual machine. Must be TrustedLaunch or ConfidentialVM enable UefiSettings.')
+param securityType string
+
+@description('Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch to enable UefiSettings.')
+param secureBootEnabled bool
+
+@description('Specifies whether virtual TPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch to enable UefiSettings.')
+param vTpmEnabled bool
+
 @description('Location where to deploy compute services.')
-param sessionHostLocation string
+param location string
 
 @description('This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool
 
 @description('Session host VM size.')
-param sessionHostsSize string
+param mgmtVmSize string
 
 @description('OS disk type for session host.')
-param sessionHostDiskType string
+param osDiskType string
 
 @description('Market Place OS image')
-param marketPlaceGalleryWindowsManagementVm object
+param osImage object
 
-@description('Set to deploy image from Azure. Compute Gallery')
-param useSharedImage bool
+//@description('Set to deploy image from Azure. Compute Gallery')
+//param useSharedImage bool
 
-@description('Source custom image ID.')
-param imageTemplateDefinitionId string
+//@description('Source custom image ID.')
+//param imageTemplateDefinitionId string
 
 @description('Storage Managed Identity Resource ID.')
 param storageManagedIdentityResourceId string
@@ -62,7 +71,7 @@ param wrklKvName string
 param domainJoinUserName string
 
 @description('OU path to join AVd VMs.')
-param sessionHostOuPath string
+param ouPath string
 
 @description('Application Security Group (ASG) for the session hosts.')
 param applicationSecurityGroupResourceId string
@@ -81,12 +90,12 @@ param time string = utcNow()
 // =========== //
 
 var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
-    storageAccountType: sessionHostDiskType
+    storageAccountType: osDiskType
 } : {
     diskEncryptionSet: {
         id: diskEncryptionSetResourceId
     }
-    storageAccountType: sessionHostDiskType
+    storageAccountType: osDiskType
 }
 
 // =========== //
@@ -105,7 +114,7 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
     name: 'MGMT-VM-${time}'
     params: {
         name: managementVmName
-        location: sessionHostLocation
+        location: location
         timeZone: computeTimeZone
         systemAssignedIdentity: false
         userAssignedIdentities: {
@@ -115,9 +124,11 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
         availabilityZone: []
         osType: 'Windows'
         //licenseType: 'Windows_Client'
-        vmSize: sessionHostsSize
-        imageReference: useSharedImage ? json('{\'id\': \'${imageTemplateDefinitionId}\'}') : marketPlaceGalleryWindowsManagementVm
-        //imageReference: marketPlaceGalleryWindowsManagementVm
+        vmSize: mgmtVmSize
+        securityType: securityType
+        secureBootEnabled: secureBootEnabled
+        vTpmEnabled: vTpmEnabled
+        imageReference: osImage
         osDisk: {
             createOption: 'fromImage'
             deleteOption: 'Delete'
@@ -134,7 +145,7 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
                 ipConfigurations: !empty(applicationSecurityGroupResourceId)  ? [
                     {
                         name: 'ipconfig01'
-                        subnetResourceId: avdSubnetId
+                        subnetResourceId: subnetId
                         applicationSecurityGroups: [
                             {
                                 id: applicationSecurityGroupResourceId
@@ -144,7 +155,7 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
                 ] : [
                     {
                         name: 'ipconfig01'
-                        subnetResourceId: avdSubnetId
+                        subnetResourceId: subnetId
                     }
                 ]
             }
@@ -156,7 +167,7 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
             enabled: (identityServiceProvider == 'AAD') ? false: true
             settings: {
                 name: identityDomainName
-                ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
+                ouPath: !empty(ouPath) ? ouPath : null
                 user: domainJoinUserName
                 restart: 'true'
                 options: '3'
@@ -178,7 +189,7 @@ module managementVmWait '../../../../../carml/1.3.0/Microsoft.Resources/deployme
     name: 'MGMT-VM-Wait-${time}'
     params: {
         name: 'MGMT-VM-Wait-${time}'
-        location: sessionHostLocation
+        location: location
         azPowerShellVersion: '8.3.0'
         cleanupPreference: 'Always'
         timeout: 'PT10M'
