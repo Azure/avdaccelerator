@@ -9,8 +9,8 @@ param SetEnabled bool = false
  */
 
 @description('Location of needed scripts to deploy solution.')
-param _ArtifactsLocation string = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/alerts/'
-
+//param _ArtifactsLocation string = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/alerts/'
+param _ArtifactsLocation string = 'https://raw.githubusercontent.com/JCoreMS/AVDAlerts/main/testing/scripts/'
 
 @description('SaS token if needed for script location.')
 @secure()
@@ -1127,11 +1127,13 @@ var LogAlertsHostPool = [
           ) on CorrelationId  
           | project-away CorrelationId1, CorrelationId2
           | order by TimeGenerated desc
-          | where TimeGenerated > ago(15n)
+          | where TimeGenerated > ago(15m)
           | extend ResourceGroup=tostring(split(_ResourceId, '/')[4])
           | extend HostPool=tostring(split(_ResourceId, '/')[8])
           | where HostPool == "xHostPoolNamex"
-          | project TimeGenerated, HostPool, ResourceGroup, UserName, ClientOS, ClientVersion, ClientSideIPAddress, ConnectionType, Errors[0].CodeSymbolic, Errors[0].Message      
+          | extend ErrorShort=tostring(Errors[0].CodeSymbolic)
+          | extend ErrorMessage=tostring(Errors[0].Message)
+          | project TimeGenerated, HostPool, ResourceGroup, UserName, ClientOS, ClientVersion, ClientSideIPAddress, ConnectionType, ErrorShort, ErrorMessage      
           '''
           timeAggregation: 'Count'
           dimensions: [
@@ -1157,7 +1159,7 @@ var LogAlertsHostPool = [
               ]
             }
             {
-              name: 'ClientOs'
+              name: 'ClientOS'
               operator: 'Include'
               values: [
                 '*'
@@ -1401,7 +1403,7 @@ var MetricAlerts = {
       targetResourceType: 'Microsoft.Storage/storageAccounts'
     }
     {
-      name: '${AlertNamePrefix}--StorAcct-Over-100msLatency'
+      name: '${AlertNamePrefix}-StorAcct-Over-100msLatency'
       displayName: '${AlertNamePrefix}-Storage-Over 100ms Latency for Storage Acct'
       description: '${AlertDescriptionHeader}\nThis could indicate a lag or poor performance for user Profiles or Apps using MSIX App Attach.\nThis alert is specific to the Storage Account itself and does not include network latency.\nFor additional details on troubleshooting see:\n"https://learn.microsoft.com/en-us/azure/storage/files/storage-troubleshooting-files-performance#very-high-latency-for-requests"'
       severity: 1
