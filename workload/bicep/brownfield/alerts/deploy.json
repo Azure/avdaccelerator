@@ -5,13 +5,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "13760235452128552587"
+      "templateHash": "12001362977023448708"
     }
   },
   "parameters": {
     "_ArtifactsLocation": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/alerts/",
+      "defaultValue": "https://raw.githubusercontent.com/JCoreMS/AVDAlerts/main/testing/scripts/",
       "metadata": {
         "description": "Location of needed scripts to deploy solution."
       }
@@ -1063,7 +1063,7 @@
         "criteria": {
           "allOf": [
             {
-              "query": "          // Connection Errors \r\n          // List connection checkpoints and errors for each connection attempt, along with detailed information across all users. \r\n          //You can also uncomment the where clause to filter to a specific user if you are troubleshooting an issue. \r\n          WVDConnections \r\n          //| where UserName == \"upn.here@contoso.com\" \r\n          | project-away TenantId,SourceSystem  \r\n          | summarize arg_max(TimeGenerated, *), StartTime = min(iff(State=='Started', TimeGenerated , datetime(null) )), ConnectTime = min(iff(State=='Connected', TimeGenerated , datetime(null) )) by CorrelationId  \r\n          | join kind=leftouter \r\n          (\r\n              WVDErrors\r\n              |summarize Errors=make_list(pack('Code', Code, 'CodeSymbolic', CodeSymbolic, 'Time', TimeGenerated, 'Message', Message ,'ServiceError', ServiceError, 'Source', Source)) by CorrelationId  \r\n          ) on CorrelationId\r\n          | join kind=leftouter \r\n          (\r\n              WVDCheckpoints\r\n              | summarize Checkpoints=make_list(pack('Time', TimeGenerated, 'Name', Name, 'Parameters', Parameters, 'Source', Source)) by CorrelationId  \r\n              | mv-apply Checkpoints on\r\n              (  \r\n                  order by todatetime(Checkpoints['Time']) asc\r\n                  | summarize Checkpoints=make_list(Checkpoints)\r\n              )\r\n          ) on CorrelationId  \r\n          | project-away CorrelationId1, CorrelationId2\r\n          | order by TimeGenerated desc\r\n          | where TimeGenerated > ago(15n)\r\n          | extend ResourceGroup=tostring(split(_ResourceId, '/')[4])\r\n          | extend HostPool=tostring(split(_ResourceId, '/')[8])\r\n          | where HostPool == \"xHostPoolNamex\"\r\n          | project TimeGenerated, HostPool, ResourceGroup, UserName, ClientOS, ClientVersion, ClientSideIPAddress, ConnectionType, Errors[0].CodeSymbolic, Errors[0].Message      \r\n          ",
+              "query": "          // Connection Errors \r\n          // List connection checkpoints and errors for each connection attempt, along with detailed information across all users. \r\n          //You can also uncomment the where clause to filter to a specific user if you are troubleshooting an issue. \r\n          WVDConnections \r\n          //| where UserName == \"upn.here@contoso.com\" \r\n          | project-away TenantId,SourceSystem  \r\n          | summarize arg_max(TimeGenerated, *), StartTime = min(iff(State=='Started', TimeGenerated , datetime(null) )), ConnectTime = min(iff(State=='Connected', TimeGenerated , datetime(null) )) by CorrelationId  \r\n          | join kind=leftouter \r\n          (\r\n              WVDErrors\r\n              |summarize Errors=make_list(pack('Code', Code, 'CodeSymbolic', CodeSymbolic, 'Time', TimeGenerated, 'Message', Message ,'ServiceError', ServiceError, 'Source', Source)) by CorrelationId  \r\n          ) on CorrelationId\r\n          | join kind=leftouter \r\n          (\r\n              WVDCheckpoints\r\n              | summarize Checkpoints=make_list(pack('Time', TimeGenerated, 'Name', Name, 'Parameters', Parameters, 'Source', Source)) by CorrelationId  \r\n              | mv-apply Checkpoints on\r\n              (  \r\n                  order by todatetime(Checkpoints['Time']) asc\r\n                  | summarize Checkpoints=make_list(Checkpoints)\r\n              )\r\n          ) on CorrelationId  \r\n          | project-away CorrelationId1, CorrelationId2\r\n          | order by TimeGenerated desc\r\n          | where TimeGenerated > ago(15m)\r\n          | extend ResourceGroup=tostring(split(_ResourceId, '/')[4])\r\n          | extend HostPool=tostring(split(_ResourceId, '/')[8])\r\n          | where HostPool == \"xHostPoolNamex\"\r\n          | extend ErrorShort=tostring(Errors[0].CodeSymbolic)\r\n          | extend ErrorMessage=tostring(Errors[0].Message)\r\n          | project TimeGenerated, HostPool, ResourceGroup, UserName, ClientOS, ClientVersion, ClientSideIPAddress, ConnectionType, ErrorShort, ErrorMessage      \r\n          ",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -1088,7 +1088,7 @@
                   ]
                 },
                 {
-                  "name": "ClientOs",
+                  "name": "ClientOS",
                   "operator": "Include",
                   "values": [
                     "*"
@@ -1287,7 +1287,7 @@
           "targetResourceType": "Microsoft.Storage/storageAccounts"
         },
         {
-          "name": "[format('{0}--StorAcct-Over-100msLatency', parameters('AlertNamePrefix'))]",
+          "name": "[format('{0}-StorAcct-Over-100msLatency', parameters('AlertNamePrefix'))]",
           "displayName": "[format('{0}-Storage-Over 100ms Latency for Storage Acct', parameters('AlertNamePrefix'))]",
           "description": "[format('{0}\nThis could indicate a lag or poor performance for user Profiles or Apps using MSIX App Attach.\nThis alert is specific to the Storage Account itself and does not include network latency.\nFor additional details on troubleshooting see:\n\"https://learn.microsoft.com/en-us/azure/storage/files/storage-troubleshooting-files-performance#very-high-latency-for-requests\"', variables('AlertDescriptionHeader'))]",
           "severity": 1,
