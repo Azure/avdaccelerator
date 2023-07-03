@@ -42,6 +42,14 @@
                                 "method": "GET",
                                 "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Storage/storageAccounts?api-version=2022-09-01')]"
                             }
+                        },
+                        {
+                            "name": "LogAnalyticsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/microsoft.operationalinsights/workspaces?api-version=2021-06-01')]"
+                            }
                         }
                     ]
                 },
@@ -58,10 +66,8 @@
                             "constraints": {
                                 "required": false,
                                 "regex": "",
-                                "validationMessage": "",
-                                "validations": []
+                                "validationMessage": ""
                             },
-                            "infoMessages": [],
                             "visible": false
                         },
                         {
@@ -75,8 +81,7 @@
                             "constraints": {
                                 "required": false,
                                 "regex": "",
-                                "validationMessage": "",
-                                "validations": []
+                                "validationMessage": ""
                             },
                             "options": {
                                 "hideConfirmation": true
@@ -113,10 +118,8 @@
                             "constraints": {
                                 "required": "[equals(steps('AlertsConfig').ResourceGroupStatus, 'New')]",
                                 "regex": "",
-                                "validationMessage": "",
-                                "validations": []
+                                "validationMessage": ""
                             },
-                            "infoMessages": [],
                             "visible": "[equals(steps('AlertsConfig').ResourceGroupStatus, 'New')]"
                         },
                         {
@@ -133,7 +136,6 @@
                                 "allowedValues": "[map(steps('basics').ResGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
                                 "required": true
                             },
-                            "infoMessages": [],
                             "visible": "[equals(steps('AlertsConfig').ResourceGroupStatus, 'Existing')]"
                         },
                         {
@@ -146,10 +148,8 @@
                             "constraints": {
                                 "required": true,
                                 "regex": "^([a-zA-Z0-9_-]){1,5}$",
-                                "validationMessage": "Must be 1-5 characters.",
-                                "validations": []
+                                "validationMessage": "Must be 1-5 characters."
                             },
-                            "infoMessages": [],
                             "visible": true
                         },
                         {
@@ -164,14 +164,12 @@
                                 "regex": "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$",
                                 "validationMessage": "Email is not valid. Please re-enter."
                             },
-                            "infoMessages": [],
                             "visible": true
                         },
                         {
                             "name": "Environment",
                             "type": "Microsoft.Common.DropDown",
                             "label": "Environment Type",
-                            "subLabel": "",
                             "defaultValue": "t",
                             "toolTip": "The environment is which these resources will be deployed, i.e. Test, Production, Development. This will yield a first letter desigation in some of the resource naming.",
                             "constraints": {
@@ -189,10 +187,8 @@
                                         "label": "Test",
                                         "value": "t"
                                     }
-                                ],
-                                "validations": []
+                                ]
                             },
-                            "infoMessages": [],
                             "visible": true
                         },
                         {
@@ -201,7 +197,7 @@
                             "label": "Host Pools",
                             "multiselect": true,
                             "selectAll": true,
-                            "defaultValue": [],
+                            "defaultValue": "",
                             "toolTip": "Select Host Pools to configure Alerts for.",
                             "filter": true,
                             "filterPlaceholder": "Filter Host Pools...",
@@ -214,14 +210,18 @@
                         },
                         {
                             "name": "LogAnalyticsWorkspaceResource",
-                            "type": "Microsoft.Solutions.ResourceSelector",
+                            "type": "Microsoft.Common.DropDown",
                             "label": "Insights Log Analytics Workspace",
+                            "multiselect": false,
+                            "selectAll": false,
                             "toolTip": "Log Analytics Workspace in which AVD Insigts and diagnostics data resides in.",
-                            "resourceType": "Microsoft.OperationalInsights/workspaces",
+                            "filter": true,
+                            "filterPlaceholder": "Filter Log Analytics Workspaces...",
+                            "defaultDescription": "A value for selection",
                             "constraints": {
+                                "allowedValues": "[map(steps('basics').LogAnalyticsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
                                 "required": true
                             },
-                            "infoMessages": [],
                             "visible": true
                         },
                         {
@@ -230,7 +230,6 @@
                             "label": "Session Host VM Resource Groups",
                             "multiselect": true,
                             "selectAll": true,
-                            "defaultValue": [],
                             "toolTip": "The Resource Group(s) where the AVD VMs are located.",
                             "filter": true,
                             "filterPlaceholder": "Filter Resource Groups...",
@@ -239,7 +238,6 @@
                                 "allowedValues": "[map(steps('basics').ResGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
                                 "required": true
                             },
-                            "infoMessages": [],
                             "visible": true
                         },
                         {
@@ -271,7 +269,7 @@
                                     "label": "AVD Related Storage Accounts",
                                     "multiselect": true,
                                     "selectAll": true,
-                                    "defaultValue": [],
+                                    "defaultValue": "",
                                     "toolTip": "The Storage Accounts that are used for FSLogix or MSIX App attach.",
                                     "filterPlaceholder": "Filter Storage Accounts...",
                                     "defaultDescription": "A value for selection",
@@ -279,7 +277,6 @@
                                         "allowedValues": "[map(steps('basics').StorAcctsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
                                         "required": true
                                     },
-                                    "infoMessages": [],
                                     "visible": true
                                 }
                             ],
@@ -299,7 +296,6 @@
                                     "constraints": {
                                         "required": true
                                     },
-                                    "infoMessages": [],
                                     "visible": true
                                 },
                                 {
@@ -316,7 +312,6 @@
                                     "label": "ANF Volumes used for AVD",
                                     "multiselect": true,
                                     "selectAll": true,
-                                    "defaultValue": [],
                                     "toolTip": "The NetApp Volumes that are used for FSLogix or MSIX App attach.",
                                     "filterPlaceholder": "Filter ANF Volumes...",
                                     "defaultDescription": "A value for selection",
@@ -324,7 +319,6 @@
                                         "allowedValues": "[map(steps('AlertsConfig').ANFStorageSection.ANFVolumesApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
                                         "required": true
                                     },
-                                    "infoMessages": [],
                                     "visible": true
                                 }
                             ],
@@ -360,7 +354,7 @@
                 "DistributionGroup": "[steps('AlertsConfig').DistributionGroup]",
                 "Environment": "[steps('AlertsConfig').Environment]",
                 "HostPools": "[steps('AlertsConfig').HostPools]",
-                "LogAnalyticsWorkspaceResourceId": "[steps('AlertsConfig').LogAnalyticsWorkspaceResource.id]",
+                "LogAnalyticsWorkspaceResourceId": "[steps('AlertsConfig').LogAnalyticsWorkspaceResource]",
                 "ResourceGroupName": "[if(equals(steps('AlertsConfig').ResourceGroupStatus, 'New'), steps('AlertsConfig').resourceGroupNameNew, last(split(steps('AlertsConfig').resourceGroupNameExisting, '/')))]",
                 "ResourceGroupStatus": "[steps('AlertsConfig').ResourceGroupStatus]",
                 "SessionHostsResourceGroupIds": "[steps('AlertsConfig').SessionHostsResourceGroupIds]",
