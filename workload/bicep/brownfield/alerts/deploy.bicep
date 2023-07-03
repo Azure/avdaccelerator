@@ -1026,6 +1026,258 @@ var LogAlertsHostPool = [
       ]
     }
   }
+  {
+    name: '${AlertNamePrefix}-HP-VM-PersonalAssignedUnhlthy-xHostPoolNamex'
+    displayName: '${AlertNamePrefix}-HostPool-VM-Personal Assigned Health Check Failure (xHostPoolNamex)'
+    description: '${AlertDescriptionHeader}VM is assigned to a user but one of the dependent resources is in a failed state for hostpool xHostPoolNamex'
+    severity: 1
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT5M'
+    overrideQueryTimeRange: 'P2D'
+    criteria: {
+      allOf: [
+        {
+          query: '''
+          // Personal Session Host where Health status is NOT healthy and the VM is assigned
+          AzureDiagnostics 
+          | where Category has "JobStreams"
+              and StreamType_s == "Output"
+              and RunbookName_s == "AvdHostPoolLogData"
+          | sort by TimeGenerated
+          | where TimeGenerated > ago(15m)
+          | extend HostPoolName=tostring(split(ResultDescription, '|')[0])
+          | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])
+          | extend Type=tostring(split(ResultDescription, '|')[2])
+          | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])
+          | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])
+          | extend NumPersonalUnhealthy=toint(split(ResultDescription, '|')[10])
+          | extend PersonalSessionHost=extract_json("$.SessionHost", tostring(split(ResultDescription, '|')[11]), typeof(string))
+          | extend PersonalAssignedUser=extract_json("$.AssignedUser", tostring(split(ResultDescription, '|')[11]), typeof(string))
+          | where HostPoolName == 'xHostPoolNamex'
+          | where Type == 'Personal'
+          | where NumPersonalUnhealthy > 0        
+          '''
+          timeAggregation: 'Count'
+          dimensions: [
+            {
+              name: 'HostPoolName'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+            {
+              name: 'PersonalSessionHost'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+            {
+              name: 'PersonalAssignedUser'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+          ]
+          operator: 'GreaterThanOrEqual'
+          threshold: 1
+          failingPeriods: {
+            numberOfEvaluationPeriods: 1
+            minFailingPeriodsToAlert: 1
+          }
+        }
+      ]
+    }
+  }
+  {
+    name: '${AlertNamePrefix}-HP-Usr-ConnectionFailed-xHostPoolNamex'
+    displayName: '${AlertNamePrefix}-HostPool-User-Connection Failed for User (xHostPoolNamex)'
+    description: '${AlertDescriptionHeader}While trying to connect to xHostPoolNamex a user had an error and failed to connect to a VM.'
+    severity: 3
+    evaluationFrequency: 'PT15M'
+    windowSize: 'PT15M'
+    overrideQueryTimeRange: 'P2D'
+    criteria: {
+      allOf: [
+        {
+          query: '''
+          // Connection Errors 
+          // List connection checkpoints and errors for each connection attempt, along with detailed information across all users. 
+          //You can also uncomment the where clause to filter to a specific user if you are troubleshooting an issue. 
+          WVDConnections 
+          //| where UserName == "upn.here@contoso.com" 
+          | project-away TenantId,SourceSystem  
+          | summarize arg_max(TimeGenerated, *), StartTime = min(iff(State=='Started', TimeGenerated , datetime(null) )), ConnectTime = min(iff(State=='Connected', TimeGenerated , datetime(null) )) by CorrelationId  
+          | join kind=leftouter 
+          (
+              WVDErrors
+              |summarize Errors=make_list(pack('Code', Code, 'CodeSymbolic', CodeSymbolic, 'Time', TimeGenerated, 'Message', Message ,'ServiceError', ServiceError, 'Source', Source)) by CorrelationId  
+          ) on CorrelationId
+          | join kind=leftouter 
+          (
+              WVDCheckpoints
+              | summarize Checkpoints=make_list(pack('Time', TimeGenerated, 'Name', Name, 'Parameters', Parameters, 'Source', Source)) by CorrelationId  
+              | mv-apply Checkpoints on
+              (  
+                  order by todatetime(Checkpoints['Time']) asc
+                  | summarize Checkpoints=make_list(Checkpoints)
+              )
+          ) on CorrelationId  
+          | project-away CorrelationId1, CorrelationId2
+          | order by TimeGenerated desc
+          | where TimeGenerated > ago(15n)
+          | extend ResourceGroup=tostring(split(_ResourceId, '/')[4])
+          | extend HostPool=tostring(split(_ResourceId, '/')[8])
+          | where HostPool == "xHostPoolNamex"
+          | project TimeGenerated, HostPool, ResourceGroup, UserName, ClientOS, ClientVersion, ClientSideIPAddress, ConnectionType, Errors[0].CodeSymbolic, Errors[0].Message      
+          '''
+          timeAggregation: 'Count'
+          dimensions: [
+            {
+              name: 'HostPool'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+            {
+              name: 'ResourceGroup'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+            {
+              name: 'UserName'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+            {
+              name: 'ClientOs'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+            {
+              name: 'ClientVersion'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+            {
+              name: 'ClientSideIPAddress'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+            {
+              name: 'ConnectionType'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+            {
+              name: 'ErrorShort'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+            {
+              name: 'ErrorMessage'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+          ]
+          operator: 'GreaterThanOrEqual'
+          threshold: 1
+          failingPeriods: {
+            numberOfEvaluationPeriods: 1
+            minFailingPeriodsToAlert: 1
+          }
+        }
+      ]
+    }
+  }
+  {
+    name: '${AlertNamePrefix}-HP-VM-MissingCriticalUpdates-xHostPoolNamex'
+    displayName: '${AlertNamePrefix}-HostPool-VM-Missing Critical Security Updates (xHostPoolNamex)'
+    description: '${AlertDescriptionHeader}The VM is missing critical security updates that are not marked "optional" and are "approved" (xHostPoolNamex)'
+    severity: 1
+    evaluationFrequency: 'P1D'
+    windowSize: 'P1D'
+    overrideQueryTimeRange: 'P2D'
+    criteria: {
+      allOf: [
+        {
+          query: '''
+          // Missing security or critical updates 
+          // Count how many security or other critical updates are missing. 
+          Update
+          | where Classification == 'Security Updates'
+          | where UpdateState == 'Needed' and Optional == false and Approved == true
+          | where MSRCSeverity == 'Critical'
+          | lookup kind=inner  (
+          WVDAgentHealthStatus
+              | where TimeGenerated >= ago(4h) // should have matching host with info in this time frame
+              | summarize by SessionHostName, _ResourceId
+              ) on $left.Computer == $right.SessionHostName
+          | summarize count() by Computer, Classification, _ResourceId, _ResourceId1
+          | extend HostPoolName=tostring(split(_ResourceId1, '/')[8])
+          | extend VMResourceGroup=tostring(split(_ResourceId, '/')[4])
+          | where HostPoolName == 'xHostPoolNamex'      
+          '''
+          timeAggregation: 'Count'
+          dimensions: [
+            {
+              name: 'Computer'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+            {
+              name: 'count_'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+            {
+              name: 'HostPoolName'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+            {
+              name: 'VMResourceGroup'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+          ]
+          operator: 'GreaterThanOrEqual'
+          threshold: 1
+          failingPeriods: {
+            numberOfEvaluationPeriods: 1
+            minFailingPeriodsToAlert: 1
+          }
+        }
+      ]
+    }
+  }
 ]
 
 var LogAlertsStorage = [
@@ -1417,6 +1669,70 @@ var MetricAlerts = {
             metricNamespace: 'microsoft.compute/virtualmachines'
             metricName: 'Available Memory Bytes'
             operator: 'LessThanOrEqual'
+            timeAggregation: 'Average'
+            criterionType: 'StaticThresholdCriterion'
+          }
+        ]
+        'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
+      }
+      targetResourceType: 'microsoft.compute/virtualmachines'
+    }
+    {
+      name: '${AlertNamePrefix}-HP-VM-OSDiskBandwidthAvg85-xHostPoolNamex'
+      displayName: '${AlertNamePrefix}-HostPool-VM-OS Disk Bandwidth Average Consumed at or over 85% (xHostPoolNamex)'
+      description: AlertDescriptionHeader
+      severity: 2
+      evaluationFrequency: 'PT5M'
+      windowSize: 'PT1H'
+      criteria: {
+        allOf: [
+          {
+            threshold: 85
+            name: 'Metric1'
+            metricNamespace: 'microsoft.compute/virtualmachines'
+            dimensions: [
+              {
+                name: 'LUN'
+                operator: 'Include'
+                values: [
+                  '*'
+                ]
+              }
+            ]
+            metricName: 'OS Disk Bandwidth Consumed Percentage'
+            operator: 'GreaterThan'
+            timeAggregation: 'Average'
+            criterionType: 'StaticThresholdCriterion'
+          }
+        ]
+        'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
+      }
+      targetResourceType: 'microsoft.compute/virtualmachines'
+    }
+    {
+      name: '${AlertNamePrefix}-HP-VM-OSDiskBandwidthAvg95-xHostPoolNamex'
+      displayName: '${AlertNamePrefix}-HostPool-VM-OS Disk Bandwidth Average Consumed at or over 95% (xHostPoolNamex)'
+      description: AlertDescriptionHeader
+      severity: 1
+      evaluationFrequency: 'PT5M'
+      windowSize: 'PT1H'
+      criteria: {
+        allOf: [
+          {
+            threshold: 95
+            name: 'Metric1'
+            metricNamespace: 'microsoft.compute/virtualmachines'
+            dimensions: [
+              {
+                name: 'LUN'
+                operator: 'Include'
+                values: [
+                  '*'
+                ]
+              }
+            ]
+            metricName: 'OS Disk Bandwidth Consumed Percentage'
+            operator: 'GreaterThan'
             timeAggregation: 'Average'
             criterionType: 'StaticThresholdCriterion'
           }
