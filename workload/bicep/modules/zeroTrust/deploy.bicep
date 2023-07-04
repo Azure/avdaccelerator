@@ -4,52 +4,52 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
-@description('Location where to deploy compute services.')
+@sys.description('Location where to deploy compute services.')
 param location string
 
-@description('AVD workload subscription ID, multiple subscriptions scenario.')
+@sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param subscriptionId string
 
-@description('Enables a zero trust configuration on the session host disks.')
+@sys.description('Enables a zero trust configuration on the session host disks.')
 param diskZeroTrust bool
 
-@description('AVD Resource Group Name for the service objects.')
+@sys.description('AVD Resource Group Name for the service objects.')
 param serviceObjectsRgName string
 
-@description('AVD Resource Group Name for the service objects.')
+@sys.description('AVD Resource Group Name for the service objects.')
 param computeObjectsRgName string
 
-@description('Managed identity for zero trust setup.')
+@sys.description('Managed identity for zero trust setup.')
 param managedIdentityName string
 
-@description('This value is used to set the expiration date on the disk encryption key.')
+@sys.description('This value is used to set the expiration date on the disk encryption key.')
 param diskEncryptionKeyExpirationInDays int
 
-@description('This value is used to set the expiration date on the disk encryption key.')
+@sys.description('This value is used to set the expiration date on the disk encryption key.')
 param diskEncryptionKeyExpirationInEpoch int
 
-@description('Deploy private endpoints for key vault and storage.')
+@sys.description('Deploy private endpoints for key vault and storage.')
 param deployPrivateEndpointKeyvaultStorage bool
 
-@description('Key vault private endpoint name.')
+@sys.description('Key vault private endpoint name.')
 param ztKvPrivateEndpointName string
 
-@description('Private endpoint subnet resource ID')
+@sys.description('Private endpoint subnet resource ID')
 param privateEndpointsubnetResourceId string
 
-@description('Tags to be applied to resources')
+@sys.description('Tags to be applied to resources')
 param tags object
 
-@description('Encryption set name')
+@sys.description('Encryption set name')
 param diskEncryptionSetName string
 
-@description('Key vault name')
+@sys.description('Key vault name')
 param ztKvName string
 
-@description('Private DNS zone for key vault private endpoint')
+@sys.description('Private DNS zone for key vault private endpoint')
 param keyVaultprivateDNSResourceId string
 
-@description('Do not modify, used to set unique value for resource deployment.')
+@sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
 // =========== //

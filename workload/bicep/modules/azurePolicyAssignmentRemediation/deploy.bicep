@@ -4,10 +4,10 @@ targetScope = 'resourceGroup'
 // Parameters //
 // ========== //
 
-@description('Location where to deploy compute services.')
+@sys.description('Location where to deploy compute services.')
 param deploymentName string
 
-@description('AVD workload subscription ID, multiple subscriptions scenario.')
+@sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param policyAssignmentId string
 
 // =========== //

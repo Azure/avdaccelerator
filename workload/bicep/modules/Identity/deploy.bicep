@@ -3,61 +3,61 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
-@description('Location where to deploy AVD session hosts.')
+@sys.description('Location where to deploy AVD session hosts.')
 param sessionHostLocation string
 
-@description('AVD workload subscription ID, multiple subscriptions scenario.')
+@sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param workloadSubsId string
 
-@description('AVD Resource Group Name for the service objects.')
+@sys.description('AVD Resource Group Name for the service objects.')
 param serviceObjectsRgName string
 
-@description('Resource Group name for the session hosts.')
+@sys.description('Resource Group name for the session hosts.')
 param computeObjectsRgName string
 
-@description('Resource Group Name for Azure Files.')
+@sys.description('Resource Group Name for Azure Files.')
 param storageObjectsRgName string
 
-@description('Azure Virtual Desktop enterprise application object ID.')
+@sys.description('Azure Virtual Desktop enterprise application object ID.')
 param enterpriseAppObjectId string
 
-@description('Configure start VM on connect.')
+@sys.description('Configure start VM on connect.')
 param enableStartVmOnConnect bool
 
-@description('Required, The service providing domain services for Azure Virtual Desktop.')
+@sys.description('Required, The service providing domain services for Azure Virtual Desktop.')
 param identityServiceProvider string
 
-@description('Required, Identity ID to grant RBAC role to access AVD application group.')
+@sys.description('Required, Identity ID to grant RBAC role to access AVD application group.')
 param applicationGroupIdentitiesIds array
 
-@description('Deploy scaling plan.')
+@sys.description('Deploy scaling plan.')
 param deployScalingPlan bool
 
-@description('Storage managed identity name.')
+@sys.description('Storage managed identity name.')
 param storageManagedIdentityName string
 
-@description('GUID for built role Reader.')
+@sys.description('GUID for built role Reader.')
 param readerRoleId string
 
-@description('GUID for built role Storage File Data SMB Share Contributor.')
+@sys.description('GUID for built role Storage File Data SMB Share Contributor.')
 param storageSmbShareContributorRoleId string
 
-@description('GUID for built in role ID of Storage Account Contributor.')
+@sys.description('GUID for built in role ID of Storage Account Contributor.')
 param storageAccountContributorRoleId string
 
-@description('GUID for built in role ID of Desktop Virtualization Power On Contributor.')
+@sys.description('GUID for built in role ID of Desktop Virtualization Power On Contributor.')
 param desktopVirtualizationPowerOnContributorRoleId string
 
-@description('GUID for built in role ID of Desktop Virtualization Power On Off Contributor.')
+@sys.description('GUID for built in role ID of Desktop Virtualization Power On Off Contributor.')
 param desktopVirtualizationPowerOnOffContributorRoleId string
 
-@description('Deploy Storage setup.')
+@sys.description('Deploy Storage setup.')
 param createStorageDeployment bool
 
-@description('Tags to be applied to resources')
+@sys.description('Tags to be applied to resources')
 param tags object
 
-@description('Do not modify, used to set unique value for resource deployment.')
+@sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
 // =========== //
