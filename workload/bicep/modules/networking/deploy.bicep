@@ -3,97 +3,97 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
-@description('AVD workload subscription ID, multiple subscriptions scenario')
+@sys.description('AVD workload subscription ID, multiple subscriptions scenario')
 param workloadSubsId string
 
-@description('Create new virtual network.')
+@sys.description('Create new virtual network.')
 param createVnet bool = true
 
-@description('Deploy application security group.')
+@sys.description('Deploy application security group.')
 param deployAsg bool
 
-@description('Existing virtual network subnet for AVD.')
+@sys.description('Existing virtual network subnet for AVD.')
 param existingAvdSubnetResourceId string
 
-@description('Existing virtual network subnet for private endpoints.')
+@sys.description('Existing virtual network subnet for private endpoints.')
 param existingPeSubnetResourceId string
 
-@description('Resource Group Name for the AVD session hosts')
+@sys.description('Resource Group Name for the AVD session hosts')
 param computeObjectsRgName string
 
-@description('If new virtual network required for the AVD machines. Resource Group name for the virtual network.')
+@sys.description('If new virtual network required for the AVD machines. Resource Group name for the virtual network.')
 param networkObjectsRgName string
 
-@description('Name of the virtual network if required to be created.')
+@sys.description('Name of the virtual network if required to be created.')
 param vnetName string
 
-@description('AVD Network Security Group Name')
+@sys.description('AVD Network Security Group Name')
 param avdNetworksecurityGroupName string
 
-@description('Private endpoint Network Security Group Name')
+@sys.description('Private endpoint Network Security Group Name')
 param privateEndpointNetworksecurityGroupName string
 
-@description('Created if a new VNet for AVD is created. Application Security Group (ASG) for the session hosts.')
+@sys.description('Created if a new VNet for AVD is created. Application Security Group (ASG) for the session hosts.')
 param applicationSecurityGroupName string
 
-@description('Created if the new VNet for AVD is created. Route Table name for AVD.')
+@sys.description('Created if the new VNet for AVD is created. Route Table name for AVD.')
 param avdRouteTableName string
 
-@description('Created if the new VNet for AVD is created. Route Table name for private endpoints.')
+@sys.description('Created if the new VNet for AVD is created. Route Table name for private endpoints.')
 param privateEndpointRouteTableName string
 
-@description('Does the hub contain a virtual network gateway.')
+@sys.description('Does the hub contain a virtual network gateway.')
 param vNetworkGatewayOnHub bool
 
-@description('Existing hub virtual network for peering.')
+@sys.description('Existing hub virtual network for peering.')
 param existingHubVnetResourceId string
 
-@description('VNet peering name for AVD VNet to vHub.')
+@sys.description('VNet peering name for AVD VNet to vHub.')
 param vnetPeeringName string
 
-@description('Remote VNet peering name for AVD VNet to vHub.')
+@sys.description('Remote VNet peering name for AVD VNet to vHub.')
 param remoteVnetPeeringName string
 
-@description('Create virtual network peering to hub.')
+@sys.description('Create virtual network peering to hub.')
 param createVnetPeering bool
 
-@description('Optional. AVD Accelerator will deploy with private endpoints by default.')
+@sys.description('Optional. AVD Accelerator will deploy with private endpoints by default.')
 param deployPrivateEndpointSubnet bool
 
-@description('AVD VNet address prefixes.')
+@sys.description('AVD VNet address prefixes.')
 param vnetAddressPrefixes string
 
-@description('AVD subnet Name.')
+@sys.description('AVD subnet Name.')
 param vnetAvdSubnetName string
 
-@description('Private endpoint subnet Name.')
+@sys.description('Private endpoint subnet Name.')
 param vnetPrivateEndpointSubnetName string
 
-@description('AVD VNet subnet address prefix.')
+@sys.description('AVD VNet subnet address prefix.')
 param vnetAvdSubnetAddressPrefix string
 
-@description('Private endpoint VNet subnet address prefix.')
+@sys.description('Private endpoint VNet subnet address prefix.')
 param vnetPrivateEndpointSubnetAddressPrefix string
 
-@description('custom DNS servers IPs')
+@sys.description('custom DNS servers IPs')
 param dnsServers array
 
-@description('Optional. Use Azure private DNS zones for private endpoints.')
+@sys.description('Optional. Use Azure private DNS zones for private endpoints.')
 param createPrivateDnsZones bool
 
-@description('Location where to deploy compute services.')
+@sys.description('Location where to deploy compute services.')
 param sessionHostLocation string = deployment().location
 
-@description('Tags to be applied to resources')
+@sys.description('Tags to be applied to resources')
 param tags object
 
-@description('Log analytics workspace for diagnostic logs.')
+@sys.description('Log analytics workspace for diagnostic logs.')
 param alaWorkspaceResourceId string
 
-@description('Diagnostic logs retention.')
+@sys.description('Diagnostic logs retention.')
 param diagnosticLogsRetentionInDays int
 
-@description('Do not modify, used to set unique value for resource deployment')
+@sys.description('Do not modify, used to set unique value for resource deployment')
 param time string = utcNow()
 
 // =========== //

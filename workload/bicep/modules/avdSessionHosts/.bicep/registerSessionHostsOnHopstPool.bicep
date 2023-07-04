@@ -2,21 +2,21 @@
 // Parameters //
 // ========== //
 
-@description('Extension deployment name.')
+@sys.description('Extension deployment name.')
 param name string
 
-@description('Location where to deploy compute services.')
+@sys.description('Location where to deploy compute services.')
 param location string
 
-@description('Location for the AVD agent installation package.')
+@sys.description('Location for the AVD agent installation package.')
 param avdAgentPackageLocation string
 
-@description('AVD Host Pool Name')
+@sys.description('AVD Host Pool Name')
 param hostPoolName string
 
 param systemData object = {}
 
-@description('AVD Host Pool registration token')
+@sys.description('AVD Host Pool registration token')
 //@secure()
 param hostPoolToken string
 
