@@ -4,85 +4,85 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
-@description('AVD disk encryption set resource ID to enable server side encyption.')
+@sys.description('AVD disk encryption set resource ID to enable server side encyption.')
 param diskEncryptionSetResourceId string
 
-@description('AVD workload subscription ID, multiple subscriptions scenario.')
+@sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param workloadSubsId string
 
-@description('Virtual machine time zone.')
+@sys.description('Virtual machine time zone.')
 param computeTimeZone string
 
-@description('Required, The service providing domain services for Azure Virtual Desktop.')
+@sys.description('Required, The service providing domain services for Azure Virtual Desktop.')
 param identityServiceProvider string
 
-@description('Resource Group Name for Azure Files.')
+@sys.description('Resource Group Name for Azure Files.')
 param serviceObjectsRgName string
 
-@description('AVD subnet ID.')
+@sys.description('AVD subnet ID.')
 param subnetId string
 
-@description('Enable accelerated networking on the session host VMs.')
+@sys.description('Enable accelerated networking on the session host VMs.')
 param enableAcceleratedNetworking bool
 
-@description('Specifies the securityType of the virtual machine. Must be TrustedLaunch or ConfidentialVM enable UefiSettings.')
+@sys.description('Specifies the securityType of the virtual machine. Must be TrustedLaunch or ConfidentialVM enable UefiSettings.')
 param securityType string
 
-@description('Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch to enable UefiSettings.')
+@sys.description('Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch to enable UefiSettings.')
 param secureBootEnabled bool
 
-@description('Specifies whether virtual TPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch to enable UefiSettings.')
+@sys.description('Specifies whether virtual TPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch to enable UefiSettings.')
 param vTpmEnabled bool
 
-@description('Location where to deploy compute services.')
+@sys.description('Location where to deploy compute services.')
 param location string
 
-@description('This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
+@sys.description('This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool
 
-@description('Session host VM size.')
+@sys.description('Session host VM size.')
 param mgmtVmSize string
 
-@description('OS disk type for session host.')
+@sys.description('OS disk type for session host.')
 param osDiskType string
 
-@description('Market Place OS image')
+@sys.description('Market Place OS image')
 param osImage object
 
-//@description('Set to deploy image from Azure. Compute Gallery')
+//@sys.description('Set to deploy image from Azure. Compute Gallery')
 //param useSharedImage bool
 
-//@description('Source custom image ID.')
+//@sys.description('Source custom image ID.')
 //param imageTemplateDefinitionId string
 
-@description('Storage Managed Identity Resource ID.')
+@sys.description('Storage Managed Identity Resource ID.')
 param storageManagedIdentityResourceId string
 
-@description('Local administrator username.')
+@sys.description('Local administrator username.')
 param vmLocalUserName string
 
-@description('AD domain name.')
+@sys.description('AD domain name.')
 param identityDomainName string
 
-@description('Keyvault name to get credentials from.')
+@sys.description('Keyvault name to get credentials from.')
 param wrklKvName string
 
-@description('AVD session host domain join credentials.')
+@sys.description('AVD session host domain join credentials.')
 param domainJoinUserName string
 
-@description('OU path to join AVd VMs.')
+@sys.description('OU path to join AVd VMs.')
 param ouPath string
 
-@description('Application Security Group (ASG) for the session hosts.')
+@sys.description('Application Security Group (ASG) for the session hosts.')
 param applicationSecurityGroupResourceId string
 
-@description('Tags to be applied to resources')
+@sys.description('Tags to be applied to resources')
 param tags object
 
-@description('Name for management virtual machine. for tools and to join Azure Files to domain.')
+@sys.description('Name for management virtual machine. for tools and to join Azure Files to domain.')
 param managementVmName string
 
-@description('Do not modify, used to set unique value for resource deployment.')
+@sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
 // =========== //
