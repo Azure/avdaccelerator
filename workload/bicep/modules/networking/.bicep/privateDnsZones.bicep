@@ -3,13 +3,13 @@ targetScope = 'resourceGroup'
 // ========== //
 // Parameters //
 // ========== //
-@description('Name space of the private DNS zone')
+@sys.description('Name space of the private DNS zone')
 param privateDnsZoneName string
 
-@description('Tags to be applied to resources')
+@sys.description('Tags to be applied to resources')
 param tags object
 
-@description('Virtual network resource ID to link private DNS zone to')
+@sys.description('Virtual network resource ID to link private DNS zone to')
 param virtualNetworkResourceId string
 
 // =========== //
