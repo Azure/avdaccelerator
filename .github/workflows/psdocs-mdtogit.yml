@@ -9,7 +9,8 @@ on:
       - reopened
       - synchronize
     paths:
-      - '**.bicep'
+      - 'workload/bicep/deploy-baseline.bicep'
+      - 'workload/bicep/deploy-custom-image.bicep'
 
 env:
   github_user_name: 'github-actions'
@@ -48,7 +49,7 @@ jobs:
       - name: Bicep Build
         shell: pwsh
         run: |
-          Get-ChildItem -Recurse -Path workload/bicep/modules/ -Filter '*.bicep' | ForEach-Object {
+          Get-ChildItem -Path workload/bicep/ -Filter '*.bicep' | ForEach-Object {
               Write-Information "==> Attempting Bicep Build For File: $_" -InformationAction Continue
               $output = bicep build $_.FullName 2>&1
               if ($LastExitCode -ne 0)
@@ -64,8 +65,8 @@ jobs:
       - name: Generate ARM markdowns
         run: |
           Install-Module -Name 'PSDocs.Azure' -Repository PSGallery -force;
-          # Scan for Azure template file recursively in the workload/bicep/modules/ directory
-          Get-AzDocTemplateFile -Path workload/bicep/modules/ | ForEach-Object {
+          # Scan for Azure template baseline files for AVD Accelerator
+          Get-AzDocTemplateFile -InputPath workload/bicep/ | ForEach-Object {
             # Generate a standard name of the markdown file. i.e. <name>_<version>.md
             $template = Get-Item -Path $_.TemplateFile;
             $templateraw = Get-Content -Raw -Path $_.Templatefile;
@@ -92,12 +93,11 @@ jobs:
         shell: pwsh
 
       - name: Remove Generated JSONs
-        shell: pwsh
         run: |
-          Get-ChildItem -Recurse -Path workload/bicep/modules/ -Filter '*.json' -Exclude 'bicepconfig.json','*parameters-example.json','*.parameters.*.json','policy_*' | ForEach-Object {
-              Write-Information "==> Removing generated JSON file $_ from Bicep Build" -InformationAction Continue
-              Remove-Item -Path $_.FullName
-          }
+          Remove-Item -Path workload/bicep/deploy-baseline.json
+          Remove-Item -Path workload/bicep/deploy-custom-image.json
+        shell: pwsh
+
 
       - name: Check git status
         run: |
