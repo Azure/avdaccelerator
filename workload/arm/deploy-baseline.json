@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "9336274686736527655"
+      "templateHash": "12357621843711210357"
     }
   },
   "parameters": {
@@ -511,7 +511,7 @@
       "type": "string",
       "defaultValue": "win11_22h2",
       "metadata": {
-        "description": "Optional. AVD OS image source. (Default: win11-21h2)"
+        "description": "Optional. AVD OS image SKU. (Default: win11-21h2)"
       },
       "allowedValues": [
         "win10_21h2",
@@ -523,6 +523,13 @@
         "win11_22h2",
         "win11_22h2_office"
       ]
+    },
+    "managementVmOsImage": {
+      "type": "string",
+      "defaultValue": "winServer_2022_Datacenter_core_smalldisk_g2",
+      "metadata": {
+        "description": "Management VM image SKU (Default: winServer_2022_Datacenter)"
+      }
     },
     "useSharedImage": {
       "type": "bool",
@@ -1405,6 +1412,24 @@
         "publisher": "MicrosoftWindowsServer",
         "offer": "WindowsServer",
         "sku": "2019-datacenter",
+        "version": "latest"
+      },
+      "winServer_2022_datacenter_core": {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2022-datacenter-core",
+        "version": "latest"
+      },
+      "winServer_2022_datacenter_azure_edition_core": {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2022-datacenter-azure-edition-core",
+        "version": "latest"
+      },
+      "winServer_2022_Datacenter_core_smalldisk_g2": {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2022-datacenter-core-smalldisk-g2",
         "version": "latest"
       }
     },
@@ -30315,24 +30340,30 @@
           "identityDomainName": {
             "value": "[parameters('avdIdentityDomainName')]"
           },
-          "imageTemplateDefinitionId": {
-            "value": "[parameters('avdImageTemplateDefinitionId')]"
+          "ouPath": {
+            "value": "[createObject('osImage', variables('varMarketPlaceGalleryWindows')[parameters('managementVmOsImage')], 'osDiskType', 'Standard_LRS', 'mgmtVmSize', 'Standard_B2ms', 'enableAcceleratedNetworking', false(), 'ouPath', parameters('avdOuPath'), 'subnetId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName')), parameters('existingVnetAvdSubnetResourceId'))).ouPath]"
           },
-          "sessionHostOuPath": {
-            "value": "[parameters('avdOuPath')]"
+          "osDiskType": {
+            "value": "[createObject('osImage', variables('varMarketPlaceGalleryWindows')[parameters('managementVmOsImage')], 'osDiskType', 'Standard_LRS', 'mgmtVmSize', 'Standard_B2ms', 'enableAcceleratedNetworking', false(), 'ouPath', parameters('avdOuPath'), 'subnetId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName')), parameters('existingVnetAvdSubnetResourceId'))).osDiskType]"
           },
-          "sessionHostDiskType": {
-            "value": "[parameters('avdSessionHostDiskType')]"
-          },
-          "sessionHostLocation": {
+          "location": {
             "value": "[parameters('avdSessionHostLocation')]"
           },
-          "sessionHostsSize": {
-            "value": "[parameters('avdSessionHostsSize')]"
+          "mgmtVmSize": {
+            "value": "[createObject('osImage', variables('varMarketPlaceGalleryWindows')[parameters('managementVmOsImage')], 'osDiskType', 'Standard_LRS', 'mgmtVmSize', 'Standard_B2ms', 'enableAcceleratedNetworking', false(), 'ouPath', parameters('avdOuPath'), 'subnetId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName')), parameters('existingVnetAvdSubnetResourceId'))).mgmtVmSize]"
           },
-          "avdSubnetId": "[if(parameters('createAvdVnet'), createObject('value', format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName'))), createObject('value', parameters('existingVnetAvdSubnetResourceId')))]",
+          "subnetId": {
+            "value": "[createObject('osImage', variables('varMarketPlaceGalleryWindows')[parameters('managementVmOsImage')], 'osDiskType', 'Standard_LRS', 'mgmtVmSize', 'Standard_B2ms', 'enableAcceleratedNetworking', false(), 'ouPath', parameters('avdOuPath'), 'subnetId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName')), parameters('existingVnetAvdSubnetResourceId'))).subnetId]"
+          },
           "enableAcceleratedNetworking": {
-            "value": "[parameters('enableAcceleratedNetworking')]"
+            "value": "[createObject('osImage', variables('varMarketPlaceGalleryWindows')[parameters('managementVmOsImage')], 'osDiskType', 'Standard_LRS', 'mgmtVmSize', 'Standard_B2ms', 'enableAcceleratedNetworking', false(), 'ouPath', parameters('avdOuPath'), 'subnetId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName')), parameters('existingVnetAvdSubnetResourceId'))).enableAcceleratedNetworking]"
+          },
+          "securityType": "[if(equals(parameters('securityType'), 'Standard'), createObject('value', ''), createObject('value', parameters('securityType')))]",
+          "secureBootEnabled": {
+            "value": "[parameters('secureBootEnabled')]"
+          },
+          "vTpmEnabled": {
+            "value": "[parameters('vTpmEnabled')]"
           },
           "vmLocalUserName": {
             "value": "[parameters('avdVmLocalUserName')]"
@@ -30344,11 +30375,8 @@
             "value": "[parameters('diskZeroTrust')]"
           },
           "storageManagedIdentityResourceId": "[if(variables('varCreateStorageDeployment'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityResourceId.value), createObject('value', ''))]",
-          "marketPlaceGalleryWindowsManagementVm": {
-            "value": "[variables('varMarketPlaceGalleryWindows')[parameters('avdOsImage')]]"
-          },
-          "useSharedImage": {
-            "value": "[parameters('useSharedImage')]"
+          "osImage": {
+            "value": "[createObject('osImage', variables('varMarketPlaceGalleryWindows')[parameters('managementVmOsImage')], 'osDiskType', 'Standard_LRS', 'mgmtVmSize', 'Standard_B2ms', 'enableAcceleratedNetworking', false(), 'ouPath', parameters('avdOuPath'), 'subnetId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName')), parameters('existingVnetAvdSubnetResourceId'))).osImage]"
           },
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]"
         },
@@ -30359,7 +30387,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "16762043777229147200"
+              "templateHash": "18175167555958153209"
             }
           },
           "parameters": {
@@ -30393,7 +30421,7 @@
                 "description": "Resource Group Name for Azure Files."
               }
             },
-            "avdSubnetId": {
+            "subnetId": {
               "type": "string",
               "metadata": {
                 "description": "AVD subnet ID."
@@ -30405,7 +30433,25 @@
                 "description": "Enable accelerated networking on the session host VMs."
               }
             },
-            "sessionHostLocation": {
+            "securityType": {
+              "type": "string",
+              "metadata": {
+                "description": "Specifies the securityType of the virtual machine. Must be TrustedLaunch or ConfidentialVM enable UefiSettings."
+              }
+            },
+            "secureBootEnabled": {
+              "type": "bool",
+              "metadata": {
+                "description": "Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch to enable UefiSettings."
+              }
+            },
+            "vTpmEnabled": {
+              "type": "bool",
+              "metadata": {
+                "description": "Specifies whether virtual TPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch to enable UefiSettings."
+              }
+            },
+            "location": {
               "type": "string",
               "metadata": {
                 "description": "Location where to deploy compute services."
@@ -30417,34 +30463,22 @@
                 "description": "This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs."
               }
             },
-            "sessionHostsSize": {
+            "mgmtVmSize": {
               "type": "string",
               "metadata": {
                 "description": "Session host VM size."
               }
             },
-            "sessionHostDiskType": {
+            "osDiskType": {
               "type": "string",
               "metadata": {
                 "description": "OS disk type for session host."
               }
             },
-            "marketPlaceGalleryWindowsManagementVm": {
+            "osImage": {
               "type": "object",
               "metadata": {
                 "description": "Market Place OS image"
-              }
-            },
-            "useSharedImage": {
-              "type": "bool",
-              "metadata": {
-                "description": "Set to deploy image from Azure. Compute Gallery"
-              }
-            },
-            "imageTemplateDefinitionId": {
-              "type": "string",
-              "metadata": {
-                "description": "Source custom image ID."
               }
             },
             "storageManagedIdentityResourceId": {
@@ -30477,7 +30511,7 @@
                 "description": "AVD session host domain join credentials."
               }
             },
-            "sessionHostOuPath": {
+            "ouPath": {
               "type": "string",
               "metadata": {
                 "description": "OU path to join AVd VMs."
@@ -30510,7 +30544,7 @@
             }
           },
           "variables": {
-            "varManagedDisk": "[if(empty(parameters('diskEncryptionSetResourceId')), createObject('storageAccountType', parameters('sessionHostDiskType')), createObject('diskEncryptionSet', createObject('id', parameters('diskEncryptionSetResourceId')), 'storageAccountType', parameters('sessionHostDiskType')))]"
+            "varManagedDisk": "[if(empty(parameters('diskEncryptionSetResourceId')), createObject('storageAccountType', parameters('osDiskType')), createObject('diskEncryptionSet', createObject('id', parameters('diskEncryptionSetResourceId')), 'storageAccountType', parameters('osDiskType')))]"
           },
           "resources": [
             {
@@ -30529,7 +30563,7 @@
                     "value": "[parameters('managementVmName')]"
                   },
                   "location": {
-                    "value": "[parameters('sessionHostLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "timeZone": {
                     "value": "[parameters('computeTimeZone')]"
@@ -30552,9 +30586,20 @@
                     "value": "Windows"
                   },
                   "vmSize": {
-                    "value": "[parameters('sessionHostsSize')]"
+                    "value": "[parameters('mgmtVmSize')]"
                   },
-                  "imageReference": "[if(parameters('useSharedImage'), createObject('value', json(format('{{''id'': ''{0}''}}', parameters('imageTemplateDefinitionId')))), createObject('value', parameters('marketPlaceGalleryWindowsManagementVm')))]",
+                  "securityType": {
+                    "value": "[parameters('securityType')]"
+                  },
+                  "secureBootEnabled": {
+                    "value": "[parameters('secureBootEnabled')]"
+                  },
+                  "vTpmEnabled": {
+                    "value": "[parameters('vTpmEnabled')]"
+                  },
+                  "imageReference": {
+                    "value": "[parameters('osImage')]"
+                  },
                   "osDisk": {
                     "value": {
                       "createOption": "fromImage",
@@ -30580,7 +30625,7 @@
                         "nicSuffix": "nic-01-",
                         "deleteOption": "Delete",
                         "enableAcceleratedNetworking": "[parameters('enableAcceleratedNetworking')]",
-                        "ipConfigurations": "[if(not(empty(parameters('applicationSecurityGroupResourceId'))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('avdSubnetId'), 'applicationSecurityGroups', createArray(createObject('id', parameters('applicationSecurityGroupResourceId'))))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('avdSubnetId'))))]"
+                        "ipConfigurations": "[if(not(empty(parameters('applicationSecurityGroupResourceId'))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('subnetId'), 'applicationSecurityGroups', createArray(createObject('id', parameters('applicationSecurityGroupResourceId'))))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('subnetId'))))]"
                       }
                     ]
                   },
@@ -30600,7 +30645,7 @@
                       "enabled": "[if(equals(parameters('identityServiceProvider'), 'AAD'), false(), true())]",
                       "settings": {
                         "name": "[parameters('identityDomainName')]",
-                        "ouPath": "[if(not(empty(parameters('sessionHostOuPath'))), parameters('sessionHostOuPath'), null())]",
+                        "ouPath": "[if(not(empty(parameters('ouPath'))), parameters('ouPath'), null())]",
                         "user": "[parameters('domainJoinUserName')]",
                         "restart": "true",
                         "options": "3"
@@ -34883,7 +34928,7 @@
                     "value": "[format('MGMT-VM-Wait-{0}', parameters('time'))]"
                   },
                   "location": {
-                    "value": "[parameters('sessionHostLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "azPowerShellVersion": {
                     "value": "8.3.0"
