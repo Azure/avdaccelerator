@@ -14,7 +14,11 @@ These have been added and as usual deployed 'disabled' and duplicated for each H
 Deployment names truncated to prevent deployment failures for names over 64 characters
 - mainly noted the Storage Latency alerts were impacted when the storage account name was long
 
+Fixed Single Selection Issue
+- Form UI would put single selections for Host Pool and VM RGs as string versus array value(s) 
+- Added Default value for those sections with "[]"
 
+Deployment Script (dsHostPoolVMMap.ps1) added error handling (try catch)
 
 
 ## 4/27/23 - Initial AVD Accelerator Release (v2.0.1)
