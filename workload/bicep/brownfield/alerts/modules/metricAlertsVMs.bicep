@@ -7,11 +7,11 @@ param Tags object
 param Location string
 
 module metricAlerts_VirtualMachines '../../../../../carml/1.3.0/Microsoft.Insights/metricAlerts/deploy.bicep' = [for i in range(0, length(MetricAlerts.virtualMachines)): if(HostPoolInfo.VMResourceGroup != null) {
-  name: 'carml_${MetricAlerts.virtualMachines[i].name}'
+  name: 'carml_${replace(MetricAlerts.virtualMachines[i].name, 'xHostPoolNamex', HostPoolInfo.HostPoolName)}'
   params: {
     enableDefaultTelemetry: false
     name: replace(MetricAlerts.virtualMachines[i].name, 'xHostPoolNamex', HostPoolInfo.HostPoolName)
-    criterias: [MetricAlerts.virtualMachines[i].criteria.allOf]
+    criterias: MetricAlerts.virtualMachines[i].criteria.allOf
     location: 'global'
     alertDescription: MetricAlerts.virtualMachines[i].description
     severity: MetricAlerts.virtualMachines[i].severity
