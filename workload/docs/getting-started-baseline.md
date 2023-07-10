@@ -1,4 +1,4 @@
-# Getting Started - Baseline deployment
+# Getting Started - Baseline - deployment
 
 ## Prerequisites
 
