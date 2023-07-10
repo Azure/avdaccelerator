@@ -9,8 +9,7 @@ param SetEnabled bool = false
  */
 
 @description('Location of needed scripts to deploy solution.')
-//param _ArtifactsLocation string = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/alerts/'
-param _ArtifactsLocation string = 'https://raw.githubusercontent.com/JCoreMS/AVDAlerts/main/testing/scripts/'
+param _ArtifactsLocation string = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/alerts/'
 
 @description('SaS token if needed for script location.')
 @secure()
@@ -1914,7 +1913,7 @@ resource resourceGroupAVDMetricsExisting 'Microsoft.Resources/resourceGroups@202
 }
 
 module identityUserManaged '../../../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
-  name: 'carml_UserMgId_${UsrManagedIdentityName}'
+  name: 'c_UserMgId_${UsrManagedIdentityName}'
   scope: resourceGroup(ResourceGroupCreate ? resourceGroupAVDMetricsCreate.name : resourceGroupAVDMetricsExisting.name)
   params: {
     location: Location
@@ -1927,7 +1926,7 @@ module identityUserManaged '../../../../carml/1.3.0/Microsoft.ManagedIdentity/us
 
 // Deploy new automation account
 module automationAccount '../../../../carml/1.3.0/Microsoft.Automation/automationAccounts/deploy.bicep' = {
-  name: 'carml_AutomtnAcct-${AutomationAccountName}'
+  name: 'c_AutomtnAcct-${AutomationAccountName}'
   scope: resourceGroup(ResourceGroupName)
   params: {
     diagnosticLogCategoriesToEnable: [
@@ -2133,7 +2132,7 @@ module automationAccount '../../../../carml/1.3.0/Microsoft.Automation/automatio
 }
 
 module roleAssignment_UsrIdDesktopRead '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/subscription/deploy.bicep' = [for HostPoolId in HostPoolSubIds: {
-  name: 'carml_UsrID-DS_${guid(HostPoolId)}'
+  name: 'c_UsrID-DS_${guid(HostPoolId)}'
   scope: subscription(HostPoolId)
   params: {
     location: Location
@@ -2150,7 +2149,7 @@ module roleAssignment_UsrIdDesktopRead '../../../../carml/1.3.0/Microsoft.Author
 
 module roleAssignment_AutoAcctDesktopRead '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for RG in DesktopReadRoleRGs: {
   scope: resourceGroup(RG)
-  name: 'carml_DsktpRead_${RG}'
+  name: 'c_DsktpRead_${RG}'
   params: {
     enableDefaultTelemetry: false
     principalId: automationAccount.outputs.systemAssignedPrincipalId
@@ -2166,7 +2165,7 @@ module roleAssignment_AutoAcctDesktopRead '../../../../carml/1.3.0/Microsoft.Aut
 //Get-AzVM in DS Mapping Script requires Microsoft.Compute/VirtualMachines reader right, possible custom role for later dev
 module roleAssignment_DSMapVMContrib '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for vmRG in SessionHostRGs: {
   scope: resourceGroup(vmRG)
-  name: 'carml_DSMapVMContrib_${vmRG}'
+  name: 'c_DSMapVMContrib_${vmRG}'
   params: {
     enableDefaultTelemetry: false
     principalId: identityUserManaged.outputs.principalId
@@ -2181,7 +2180,7 @@ module roleAssignment_DSMapVMContrib '../../../../carml/1.3.0/Microsoft.Authoriz
 
 module roleAssignment_LogAnalytics '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = {
   scope: resourceGroup(split(LogAnalyticsWorkspaceResourceId, '/')[2], split(LogAnalyticsWorkspaceResourceId, '/')[4])
-  name: 'carml_LogContrib_${split(LogAnalyticsWorkspaceResourceId, '/')[4]}'
+  name: 'c_LogContrib_${split(LogAnalyticsWorkspaceResourceId, '/')[4]}'
   params: {
     enableDefaultTelemetry: false
     principalId: automationAccount.outputs.systemAssignedPrincipalId
@@ -2196,7 +2195,7 @@ module roleAssignment_LogAnalytics '../../../../carml/1.3.0/Microsoft.Authorizat
 
 module roleAssignment_Storage '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for StorAcctRG in StorAcctRGs: {
   scope: resourceGroup(StorAcctRG)
-  name: 'carml_StorAcctContrib_${StorAcctRG}'
+  name: 'c_StorAcctContrib_${StorAcctRG}'
   params: {
     enableDefaultTelemetry: false
     principalId: automationAccount.outputs.systemAssignedPrincipalId
@@ -2210,7 +2209,7 @@ module roleAssignment_Storage '../../../../carml/1.3.0/Microsoft.Authorization/r
 }]
 
 module deploymentScript_HP2VM '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
-  name: 'carml_ds-PS-GetHostPoolVMAssociation'
+  name: 'c_ds-PS-GetHostPoolVMAssociation'
   scope: resourceGroup(ResourceGroupName)
   params: {
     enableDefaultTelemetry: false
@@ -2234,7 +2233,7 @@ module deploymentScript_HP2VM '../../../../carml/1.3.0/Microsoft.Resources/deplo
 }
 
 module metricsResources './modules/metricsResources.bicep' = {
-  name: 'linked_MonitoringResourcesDeployment'
+  name: 'lnk_MonitoringResourcesDeployment'
   scope: resourceGroup(ResourceGroupCreate ? resourceGroupAVDMetricsCreate.name : resourceGroupAVDMetricsExisting.name)
   params: {
     DistributionGroup: DistributionGroup
