@@ -2,19 +2,19 @@
 // Parameters //
 // ========== //
 
-@description('Extension deployment name.')
+@sys.description('Extension deployment name.')
 param name string
 
-@description('Location where to deploy compute services.')
+@sys.description('Location where to deploy compute services.')
 param location string
 
-@description('URI for FSlogix configuration script.')
+@sys.description('URI for FSlogix configuration script.')
 param baseScriptUri string
 
-@description('FSlogix configuration script file name.')
+@sys.description('FSlogix configuration script file name.')
 param file string
 
-@description('Configuration arguments for FSlogix.')
+@sys.description('Configuration arguments for FSlogix.')
 param fsLogixScriptArguments string
 
 // =========== //

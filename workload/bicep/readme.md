@@ -2,6 +2,12 @@
 
 ## AVD Accelerator Baseline
 
+### Full Parameter Details
+
+A full list of parameter details can be found for the relevant deployment type here:
+- [Deploy AVD Baseline](generateddocs/deploy-baseline.bicep.md)
+- [Deploy AVD Custom Image Baseline](generateddocs/deploy-custom-image.bicep.md)
+
 ### Azure CLI
 
 ```bash
