@@ -35,7 +35,7 @@ As of today, we have a first reference implementation scenario that is one of th
 
 [Brownfield deployments](/workload/brownfieldReadme.md) deploy new features to existing Azure Virtual Desktop deployments.
 
-## Optional: Custom Image Build
+## Azure Virtual Desktop - Custom Image Build (Optional)
 
 [Getting Started](/workload/docs/getting-started-custom-image-build.md) deploying a custom image based on the latest version of the Azure marketplace image to an Azure Compute Gallery. The following images are offered: 
  - Windows 10 21H2
