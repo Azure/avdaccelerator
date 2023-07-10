@@ -4,95 +4,95 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
-@description('AVD workload subscription ID, multiple subscriptions scenario.')
+@sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param workloadSubsId string
 
-@description('Resource Group Name for Azure Files.')
+@sys.description('Resource Group Name for Azure Files.')
 param storageObjectsRgName string
 
-@description('Required, The service providing domain services for Azure Virtual Desktop.')
+@sys.description('Required, The service providing domain services for Azure Virtual Desktop.')
 param identityServiceProvider string
 
-@description('Resource Group Name for management VM.')
+@sys.description('Resource Group Name for management VM.')
 param serviceObjectsRgName string
 
-@description('Storage account name.')
+@sys.description('Storage account name.')
 param storageAccountName string
 
-@description('Storage account file share name.')
+@sys.description('Storage account file share name.')
 param fileShareName string
 
-@description('Private endpoint subnet ID.')
+@sys.description('Private endpoint subnet ID.')
 param privateEndpointSubnetId string
 
-@description('Location where to deploy compute services.')
+@sys.description('Location where to deploy compute services.')
 param sessionHostLocation string
 
-@description('File share SMB multichannel.')
+@sys.description('File share SMB multichannel.')
 param fileShareMultichannel bool
 
-@description('AD domain name.')
+@sys.description('AD domain name.')
 param identityDomainName string
 
-@description('AD domain GUID.')
+@sys.description('AD domain GUID.')
 param identityDomainGuid string
 
-@description('Keyvault name to get credentials from.')
+@sys.description('Keyvault name to get credentials from.')
 param wrklKvName string
 
-@description('AVD session host domain join credentials.')
+@sys.description('AVD session host domain join credentials.')
 param domainJoinUserName string
 
-@description('Azure Files storage account SKU.')
+@sys.description('Azure Files storage account SKU.')
 param storageSku string
 
-@description('*Azure File share quota')
+@sys.description('*Azure File share quota')
 param fileShareQuotaSize int
 
-@description('Use Azure private DNS zones for private endpoints.')
+@sys.description('Use Azure private DNS zones for private endpoints.')
 param vnetPrivateDnsZoneFilesId string
 
-@description('Script name for adding storage account to Active Directory.')
+@sys.description('Script name for adding storage account to Active Directory.')
 param storageToDomainScript string
 
-@description('URI for the script for adding the storage account to Active Directory.')
+@sys.description('URI for the script for adding the storage account to Active Directory.')
 param storageToDomainScriptUri string
 
-@description('Tags to be applied to resources')
+@sys.description('Tags to be applied to resources')
 param tags object
 
-@description('Name for management virtual machine. for tools and to join Azure Files to domain.')
+@sys.description('Name for management virtual machine. for tools and to join Azure Files to domain.')
 param managementVmName string
 
-@description('Optional. AVD Accelerator will deploy with private endpoints by default.')
+@sys.description('Optional. AVD Accelerator will deploy with private endpoints by default.')
 param deployPrivateEndpoint bool
 
-@description('Log analytics workspace for diagnostic logs.')
+@sys.description('Log analytics workspace for diagnostic logs.')
 param alaWorkspaceResourceId string
 
-@description('Diagnostic logs retention.')
+@sys.description('Diagnostic logs retention.')
 param diagnosticLogsRetentionInDays int
 
-@description('Do not modify, used to set unique value for resource deployment.')
+@sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
-@description('Sets purpose of the storage account.')
+@sys.description('Sets purpose of the storage account.')
 param storagePurpose string
 
 //parameters for domain join
-@description('Sets location of DSC Agent.')
+@sys.description('Sets location of DSC Agent.')
 param dscAgentPackageLocation string
 
-@description('Custom OU path for storage.')
+@sys.description('Custom OU path for storage.')
 param storageCustomOuPath string
 
-@description('OU Storage Path')
+@sys.description('OU Storage Path')
 param ouStgPath string
 
-@description('If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain.')
+@sys.description('If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain.')
 param createOuForStorageString string
 
-@description('Managed Identity Client ID')
+@sys.description('Managed Identity Client ID')
 param managedIdentityClientId string
 
 // =========== //
