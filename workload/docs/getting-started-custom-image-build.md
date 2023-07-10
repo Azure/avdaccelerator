@@ -12,7 +12,7 @@ Prior to deploying the Custom Image Build solution, you need to ensure you have 
 
 ### Subscription requirements
 
-- Access to the AVD shared services Azure subscription with owner permissions.
+- Access to the Azure Virtual Desktop shared services Azure subscription with owner permissions.
 - The [Microsoft.VirtualMachineImages](https://learn.microsoft.com/azure/azure-resource-manager/management/resource-providers-and-types#register-resource-provider) resource provider must be registered in the subscription to be used for deployment.
 
 
@@ -20,7 +20,7 @@ Prior to deploying the Custom Image Build solution, you need to ensure you have 
 
 This section covers the high-level steps for planning a Custom Image Build deployment and the decisions that need to be made. The deployment will use the Microsoft provided Bicep/PowerShell/Azure CLI templates from this repository and the customer provided configuration files that contain the system specific information.
 
-This solution supports deployment into greenfield scenarios (no AVD Azure infrastructure components exist) or brownfield scenarios (some AVD Azure infrastructure components exist).
+This solution supports deployment into greenfield scenarios (no Azure Virtual Desktop Azure infrastructure components exist) or brownfield scenarios (some Azure Virtual Desktop Azure infrastructure components exist).
 
 ### Greenfield deployment
 
@@ -50,7 +50,7 @@ This [diagram](/workload/docs/diagrams/avd-accelerator-resource-organization-nam
 
 - **Custom image deployment**:
   - `deploymentLocation`: East US 2
-  - `sharedServicesSubId`:  ID for Subscription name: Subscription AVD Shared Services
+  - `sharedServicesSubId`:  ID for Subscription name: Subscription Azure Virtual Desktop Shared Services
   - `customNaming`: false
 
 ## Naming standard
@@ -61,4 +61,4 @@ To learn more about the resource naming used in this accelerator take a look at 
 
 ## Next Steps
 
-- [Custom image deployment](./deploy-custom-image.md) to build an updated image for your AVD session hosts.
+- [Azure Virtual Desktop LZA - Custom image build - Deployment](./deploy-custom-image.md) to build an updated image for your Azure Virtual Desktop session hosts.
