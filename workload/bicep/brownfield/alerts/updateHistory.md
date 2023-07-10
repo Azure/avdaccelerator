@@ -2,7 +2,7 @@
 
 [Home](./readme.md) | [PostDeployment](./postDeploy.md) | [How to Change Thresholds](./changeAlertThreshold.md) | [Alert Reference](./alertReference.md) | [Excel List of Alert Rules](./references/alerts.xlsx)
 
-## 7/1/23 - Additional Alerts Added and Minor fixes (v2.0.2)
+## 7/10/23 - Additional Alerts Added and Minor fixes (v2.0.2)
 
 These have been added and as usual deployed 'disabled' and duplicated for each Host Pool.
 - New Alert: Sev1 Personal Host Pool VM assigned but AVD Agent reporting unhealthy (Log Query)
