@@ -3,25 +3,25 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
-@description('AVD workload subscription ID, multiple subscriptions scenario.')
+@sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param subscriptionId string
 
-@description('create new Azure log analytics workspace.')
+@sys.description('create new Azure log analytics workspace.')
 param deployAlaWorkspace bool
 
-@description('Exisintg Azure log analytics workspace.')
+@sys.description('Exisintg Azure log analytics workspace.')
 param alaWorkspaceId string
 
-@description('AVD Resource Group Name for monitoring resources.')
+@sys.description('AVD Resource Group Name for monitoring resources.')
 param monitoringRgName string
 
-@description(' Azure log analytics workspace name.')
+@sys.description(' Azure log analytics workspace name.')
 param alaWorkspaceName string
 
-@description('Tags to be applied to resources')
+@sys.description('Tags to be applied to resources')
 param tags object
 
-@description('Do not modify, used to set unique value for resource deployment.')
+@sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
 // =========== //

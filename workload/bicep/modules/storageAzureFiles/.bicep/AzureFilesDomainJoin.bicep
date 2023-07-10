@@ -2,22 +2,22 @@
 // Parameters //
 // ========== //
 
-@description('Extension deployment name.')
+@sys.description('Extension deployment name.')
 param name string
 
-@description('Location where to deploy compute services.')
+@sys.description('Location where to deploy compute services.')
 param location string
 
-@description('Location for the AVD agent installation package.')
+@sys.description('Location for the AVD agent installation package.')
 param baseScriptUri string
 
 param file string
 
-@description('Arguments for domain join script.')
+@sys.description('Arguments for domain join script.')
 param scriptArguments string
 
 @secure()
-@description('Domain join user password.')
+@sys.description('Domain join user password.')
 param  domainJoinUserPassword string
 
 // =========== //
