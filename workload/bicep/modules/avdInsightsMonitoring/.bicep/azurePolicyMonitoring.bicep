@@ -3,28 +3,28 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
-@description('Location where to deploy AVD management plane.')
+@sys.description('Location where to deploy AVD management plane.')
 param location string
 
-@description('AVD workload subscription ID, multiple subscriptions scenario.')
+@sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param subscriptionId string
 
-@description('Exisintg Azure log analytics workspace.')
+@sys.description('Exisintg Azure log analytics workspace.')
 param alaWorkspaceId string
 
-@description('AVD Resource Group Name for the compute resources.')
+@sys.description('AVD Resource Group Name for the compute resources.')
 param computeObjectsRgName string
 
-@description('AVD Resource Group Name for the service objects.')
+@sys.description('AVD Resource Group Name for the service objects.')
 param serviceObjectsRgName string
 
-@description('AVD Resource Group Name for the network resources.')
+@sys.description('AVD Resource Group Name for the network resources.')
 param networkObjectsRgName string
 
-@description('AVD Resource Group Name for the storage resources.')
+@sys.description('AVD Resource Group Name for the storage resources.')
 param storageObjectsRgName string
 
-@description('Do not modify, used to set unique value for resource deployment.')
+@sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
 // =========== //
