@@ -2,40 +2,40 @@
 // Parameters //
 // ========== //
 
-@description('Location where to deploy compute services.')
+@sys.description('Location where to deploy compute services.')
 param location string
 
-@description('Location for the AVD agent installation package.')
+@sys.description('Location for the AVD agent installation package.')
 param baseScriptUri string
 
-@description('Azure cloud.')
+@sys.description('Azure cloud.')
 param azureCloudName string
 
-@description('Virtual machine name to deploy the DSC extension to.')
+@sys.description('Virtual machine name to deploy the DSC extension to.')
 param managementVmName string
 
-@description('Script file name.')
+@sys.description('Script file name.')
 param scriptFile string
 
-@description('DSC package location.')
+@sys.description('DSC package location.')
 param dscAgentPackageLocation string
 
-@description('Subscription ID.')
+@sys.description('Subscription ID.')
 param subscriptionId string
 
-@description('Service objects resource group name.')
+@sys.description('Service objects resource group name.')
 param serviceObjectsRgName string
 
-@description('Compute objects resource group name.')
+@sys.description('Compute objects resource group name.')
 param computeObjectsRgName string
 
-@description('Storage objects resource group name.')
+@sys.description('Storage objects resource group name.')
 param storageObjectsRgName string
 
-@description('Network objects resource group name.')
+@sys.description('Network objects resource group name.')
 param networkObjectsRgName string
 
-@description('Monitoring objects resource group name.')
+@sys.description('Monitoring objects resource group name.')
 param monitoringObjectsRgName string
 
 // =========== //

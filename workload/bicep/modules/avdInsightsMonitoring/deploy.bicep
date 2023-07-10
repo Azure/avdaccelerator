@@ -3,46 +3,46 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
-@description('Location where to deploy AVD management plane.')
+@sys.description('Location where to deploy AVD management plane.')
 param managementPlaneLocation string
 
-@description('AVD workload subscription ID, multiple subscriptions scenario.')
+@sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param subscriptionId string
 
-@description('create new Azure log analytics workspace.')
+@sys.description('create new Azure log analytics workspace.')
 param deployAlaWorkspace bool
 
-@description('Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace.')
+@sys.description('Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace.')
 param deployCustomPolicyMonitoring bool
 
-@description('Exisintg Azure log analytics workspace resource.')
+@sys.description('Exisintg Azure log analytics workspace resource.')
 param alaWorkspaceId string
 
-@description('AVD Resource Group Name for monitoring resources.')
+@sys.description('AVD Resource Group Name for monitoring resources.')
 param monitoringRgName string
 
-@description('AVD Resource Group Name for compute resources.')
+@sys.description('AVD Resource Group Name for compute resources.')
 param computeObjectsRgName string
 
-@description('AVD Resource Group Name for the service objects.')
+@sys.description('AVD Resource Group Name for the service objects.')
 param serviceObjectsRgName string
 
-@description('AVD Resource Group Name for the storage resources.')
+@sys.description('AVD Resource Group Name for the storage resources.')
 param storageObjectsRgName string
 
-@description('AVD Resource Group Name for the network resources.')
+@sys.description('AVD Resource Group Name for the network resources.')
 param networkObjectsRgName string
 
-@description(' Azure log analytics workspace name.')
+@sys.description(' Azure log analytics workspace name.')
 param alaWorkspaceName string
 
-@description(' Azure log analytics workspace name data retention.')
+@sys.description(' Azure log analytics workspace name data retention.')
 param alaWorkspaceDataRetention int
 
-@description('Tags to be applied to resources')
+@sys.description('Tags to be applied to resources')
 param tags object
 
-@description('Do not modify, used to set unique value for resource deployment.')
+@sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
 // =========== //

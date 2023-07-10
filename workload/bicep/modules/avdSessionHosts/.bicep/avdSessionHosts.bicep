@@ -4,139 +4,139 @@ targetScope = 'resourceGroup'
 // Parameters //
 // ========== //
 
-@description('AVD disk encryption set resource ID to enable server side encyption.')
+@sys.description('AVD disk encryption set resource ID to enable server side encyption.')
 param diskEncryptionSetResourceId string
 
-@description('AVD subnet ID.')
+@sys.description('AVD subnet ID.')
 param subnetId string
 
-@description('Location where to deploy compute services.')
+@sys.description('Location where to deploy compute services.')
 param sessionHostLocation string
 
-@description('Virtual machine time zone.')
+@sys.description('Virtual machine time zone.')
 param timeZone string
 
-@description('AVD Session Host prefix.')
+@sys.description('AVD Session Host prefix.')
 param sessionHostNamePrefix string
 
-@description('Availablity Set name.')
+@sys.description('Availablity Set name.')
 param availabilitySetNamePrefix string
 
-@description('Availablity Set max members.')
+@sys.description('Availablity Set max members.')
 param maxAvailabilitySetMembersCount int
 
-@description('Resource Group name for the session hosts')
+@sys.description('Resource Group name for the session hosts')
 param computeObjectsRgName string
 
-@description('Resource Group name for the session hosts')
+@sys.description('Resource Group name for the session hosts')
 param serviceObjectsRgName string
 
-@description('AVD workload subscription ID, multiple subscriptions scenario.')
+@sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param subscriptionId string
 
-@description('Quantity of session hosts to deploy')
+@sys.description('Quantity of session hosts to deploy')
 param sessionHostsCount int
 
-@description('The session host number to begin with for the deployment.')
+@sys.description('The session host number to begin with for the deployment.')
 param sessionHostCountIndex int
 
-@description('Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set.')
+@sys.description('Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set.')
 param useAvailabilityZones bool
 
-@description('This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
+@sys.description('This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool
 
-@description('Session host VM size.')
+@sys.description('Session host VM size.')
 param sessionHostsSize string
 
-@description('Specifies the securityType of the virtual machine. It is set as TrustedLaunch to enable UefiSettings.')
+@sys.description('Specifies the securityType of the virtual machine. It is set as TrustedLaunch to enable UefiSettings.')
 param securityType string
 
-@description('Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch to enable UefiSettings.')
+@sys.description('Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch to enable UefiSettings.')
 param secureBootEnabled bool
 
-@description('Specifies whether the virtual TPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch to enable UefiSettings.')
+@sys.description('Specifies whether the virtual TPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  securityType should be set to TrustedLaunch to enable UefiSettings.')
 param vTpmEnabled bool
 
-@description('Enable accelerated networking on the session host VMs.')
+@sys.description('Enable accelerated networking on the session host VMs.')
 param enableAcceleratedNetworking bool
 
-@description('OS disk type for session host.')
+@sys.description('OS disk type for session host.')
 param sessionHostDiskType string
 
-@description('Market Place OS image.')
+@sys.description('Market Place OS image.')
 param marketPlaceGalleryWindows object
 
-@description('Set to deploy image from Azure Compute Gallery.')
+@sys.description('Set to deploy image from Azure Compute Gallery.')
 param useSharedImage bool
 
-@description('Source custom image ID.')
+@sys.description('Source custom image ID.')
 param imageTemplateDefinitionId string
 
-@description('Fslogix Managed Identity Resource ID.')
+@sys.description('Fslogix Managed Identity Resource ID.')
 param storageManagedIdentityResourceId string
 
-@description('Local administrator username.')
+@sys.description('Local administrator username.')
 param vmLocalUserName string
 
-@description('AD domain name.')
+@sys.description('AD domain name.')
 param identityDomainName string
 
-@description('AVD session host domain join credentials.')
+@sys.description('AVD session host domain join credentials.')
 param domainJoinUserName string
 
-@description('Required, The service providing domain services for Azure Virtual Desktop.')
+@sys.description('Required, The service providing domain services for Azure Virtual Desktop.')
 param identityServiceProvider string
 
-@description('Required, Eronll session hosts on Intune.')
+@sys.description('Required, Eronll session hosts on Intune.')
 param createIntuneEnrollment bool
 
-@description('Name of keyvault that contains credentials.')
+@sys.description('Name of keyvault that contains credentials.')
 param wrklKvName string
 
-@description('OU path to join AVd VMs')
+@sys.description('OU path to join AVd VMs')
 param sessionHostOuPath string
 
-@description('Application Security Group for the session hosts.')
+@sys.description('Application Security Group for the session hosts.')
 param applicationSecurityGroupResourceId string
 
-@description('AVD host pool token.')
+@sys.description('AVD host pool token.')
 param hostPoolToken string
 
-@description('AVD Host Pool name.')
+@sys.description('AVD Host Pool name.')
 param hostPoolName string
 
-@description('Location for the AVD agent installation package.')
+@sys.description('Location for the AVD agent installation package.')
 param avdAgentPackageLocation string
 
-@description('Deploy Fslogix setup.')
+@sys.description('Deploy Fslogix setup.')
 param createAvdFslogixDeployment bool
 
-@description('FSlogix configuration script file name.')
+@sys.description('FSlogix configuration script file name.')
 param fsLogixScriptFile string
 
-@description('Configuration arguments for FSlogix.')
+@sys.description('Configuration arguments for FSlogix.')
 param fsLogixScriptArguments string
 
-@description('Path for the FSlogix share.')
+@sys.description('Path for the FSlogix share.')
 param fslogixSharePath string
 
-@description('URI for FSlogix configuration script.')
+@sys.description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
 
-@description('Tags to be applied to resources')
+@sys.description('Tags to be applied to resources')
 param tags object
 
-@description('Log analytics workspace for diagnostic logs.')
+@sys.description('Log analytics workspace for diagnostic logs.')
 param alaWorkspaceResourceId string
 
-@description('Diagnostic logs retention.')
+@sys.description('Diagnostic logs retention.')
 param diagnosticLogsRetentionInDays int
 
-@description('Deploy AVD monitoring resources and setings. (Default: true)')
+@sys.description('Deploy AVD monitoring resources and setings. (Default: true)')
 param deployMonitoring bool
 
-@description('Do not modify, used to set unique value for resource deployment.')
+@sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
 // =========== //
