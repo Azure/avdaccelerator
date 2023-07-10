@@ -4,16 +4,16 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
-@description('Location where to deploy compute services.')
+@sys.description('Location where to deploy compute services.')
 param location string
 
-@description('AVD workload subscription ID, multiple subscriptions scenario.')
+@sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param subscriptionId string
 
-@description('AVD Resource Group Name for the service objects.')
+@sys.description('AVD Resource Group Name for the service objects.')
 param computeObjectsRgName string
 
-@description('Do not modify, used to set unique value for resource deployment.')
+@sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
 // =========== //
