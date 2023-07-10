@@ -6,22 +6,22 @@
 
 Enterprise-scale is an architectural approach and a reference implementation that enables effective construction and operation of landing zones on Azure, at scale. This approach aligns with the Azure roadmap and the Cloud Adoption Framework for Azure.
 
-AVD Landing Zone Accelerator represents the strategic design path and target technical state for AVD deployment. This solution provides an architectural approach and reference implementation to prepare landing zone subscriptions for a scalable AVD deployment. For the architectural guidance, check out [Enterprise-scale for AVD in Microsoft Docs](https://docs.microsoft.com/azure/cloud-adoption-framework/scenarios/wvd/enterprise-scale-landing-zone).
+Azure Virtual Desktop Landing Zone Accelerator represents the strategic design path and target technical state for Azure Virtual Desktop deployment. This solution provides an architectural approach and reference implementation to prepare landing zone subscriptions for a scalable Azure Virtual Desktop deployment. For the architectural guidance, check out [Enterprise-scale for Azure Virtual Desktop in Microsoft Docs](https://docs.microsoft.com/azure/cloud-adoption-framework/scenarios/wvd/enterprise-scale-landing-zone).
 
-The AVD Landing Zone Accelerator only addresses what gets deployed in the specific AVD landing zone subscriptions, highlighted by the red boxes in the [architectural diagram below](#architectural-diagram). It is assumed that an appropriate platform foundation is already setup which may or may not be the official [ALZ platform foundation](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/enterprise-scale/implementation#reference-implementation). This means that policies and governance should already be in place or should be set up after this implementation and are not a part of the scope this program. The policies applied to management groups in the hierarchy above the subscription will trickle down to the Enterprise-scale for AVD landing zone subscriptions.
+The Azure Virtual Desktop Landing Zone Accelerator only addresses what gets deployed in the specific Azure Virtual Desktop landing zone subscriptions, highlighted by the red boxes in the [architectural diagram below](#architectural-diagram). It is assumed that an appropriate platform foundation is already setup which may or may not be the official [ALZ platform foundation](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/enterprise-scale/implementation#reference-implementation). This means that policies and governance should already be in place or should be set up after this implementation and are not a part of the scope this program. The policies applied to management groups in the hierarchy above the subscription will trickle down to the Enterprise-scale for Azure Virtual Desktop landing zone subscriptions.
 
 ## This Repository
 
-This repository will contain various customer scenarios that can help accelerate the development and deployment of AVD that conforms with [Enterprise-Scale for AVD best practices and guidelines](https://docs.microsoft.com/azure/cloud-adoption-framework/scenarios/wvd/ready). Each scenario aims to represent common customer experiences with the goal of accelerating the process of developing and deploying conforming AVD using IaaC. Each scenario will eventually have an ARM, Bicep, PowerShell and CLI version to choose from.
-As of today, we have a first reference implementation scenario that is one of the most common ones used by Enterprise customers and partners and it can be used to deploy an AVD workload. We will continue to add new scenarios in future updates.
+This repository will contain various customer scenarios that can help accelerate the development and deployment of Azure Virtual Desktop that conforms with [Enterprise-Scale for Azure Virtual Desktop best practices and guidelines](https://docs.microsoft.com/azure/cloud-adoption-framework/scenarios/wvd/ready). Each scenario aims to represent common customer experiences with the goal of accelerating the process of developing and deploying conforming Azure Virtual Desktop using IaaC. Each scenario will eventually have an ARM, Bicep, PowerShell and CLI version to choose from.
+As of today, we have a first reference implementation scenario that is one of the most common ones used by Enterprise customers and partners and it can be used to deploy an Azure Virtual Desktop workload. We will continue to add new scenarios in future updates.
 
 ## Getting Started
 
-## AVD Accelerator Baseline
+## Azure Virtual Desktop - Accelerator Baseline
 
 [Getting Started](/workload/docs/getting-started-baseline.md) deploying Azure Virtual Desktop (AVD) resources and dependent services for establishing the baseline
 
-- AVD resources: workspace, two (2) application groups, scaling plan and a host pool
+- Azure Virtual Desktop resources: workspace, two (2) application groups, scaling plan and a host pool
 - [Optional]: new virtual network (VNet) with NSGs, ASG and route tables
 - Azure Files with Integration to the identity service
 - Key vault
@@ -33,7 +33,7 @@ As of today, we have a first reference implementation scenario that is one of th
 | Command line (Bicep/ARM) | [![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](./workload/bicep/readme.md#avd-accelerator-baseline) |
 | Terraform | [![Terraform](./workload/docs/icons/terraform.png)](./workload/terraform/greenfield/readme.md) |
 
-[Brownfield deployments](/workload/brownfieldReadme.md) deploy new features to existing AVD deployments.
+[Brownfield deployments](/workload/brownfieldReadme.md) deploy new features to existing Azure Virtual Desktop deployments.
 
 ## Optional: Custom Image Build
 
@@ -59,7 +59,7 @@ Custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https
 
 ## Architectural Diagram
 
-![AVD accelerator diagram](./workload/docs/diagrams/avd-accelerator-baseline-architecture.png)
+![Azure Virtual Desktop accelerator diagram](./workload/docs/diagrams/avd-accelerator-baseline-architecture.png)
 
 _Download a [Visio file](./workload/docs/diagrams/avd-accelerator-baseline-architecture.vsdx) of this architecture._
 
