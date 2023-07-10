@@ -50,6 +50,10 @@ Table below shows the Alert Names however the number of alert rules created may 
 | AVD-HostPool-VM-Health Check Failure (hostpoolname)                       | (1)                        | Log Analytics  |  5 min        |  1/hostpool |
 | AVD-HostPool-VM-High CPU nn Percent (hostpoolname)                        | 95 (1) / 85 (2)            | Metric Alerts  |  5 min        |  2/hostpool |
 | AVD-HostPool-VM-Local Disk Free Space n% (hostpoolname)                   | 5 (1) / 10 (2)             | Log Analytics  |  15 min       |  2/hostpool |
+| AVD-HostPool-VM-Personal Assigned Not Healthy (hostpoolname)              | Any are Sev 1              | Log Analytics  |  5 min        |  1/hostpool |
+| AVD-HostPool-VM-OS Disk Bandwidth Avg n% (hostpoolname)                   | 95 (1) / 85 (2)            | Metric Alerts  |  5 min        |  2/hostpool |
+| AVD-HostPool-VM-User Connection Failed (hostpoolname)                     | Any are Sev 3              | Log Analytics  |  15 min       |  1/hostpool |
+| AVD-HostPool-VM-Missing Critical Updates (hostpoolname)                   | Any are Sev 1              | Log Analytics  |  1 day        |  1/hostpool |
 | AVD-Storage-Low Space on ANF Share-XX Percent Remaining-{volumename}      | 5 / 15                     | Metric Alerts  |  1 hour       |  2/vol  |
 | AVD-Storage-Low Space on Azure File Share-X% Remaining-{volumename} :one: | 5 / 15                     | Log Analytics  |  1 hour       |  2/share  |
 | AVD-Storage-Over XXms Latency for Storage Act-{storacctname}              | 100ms / 50ms               | Metric Alerts  |  15 min       |  2/stor acct |
@@ -62,7 +66,7 @@ Table below shows the Alert Names however the number of alert rules created may 
 | AVD-ServiceHealth-Service Issue                                           | na                         | Service Health |  na           |   4  |
 
 **NOTES:**  
-:one: Alert based on associated Logic App and Runbook  
+:one: Alert based on associated Automation Account / Runbook  
 :two: See the following for custom condition. Note that both Standard and Premium values are incorporated into the alert rule. ['How to create an alert if a file share is throttled'](https://docs.microsoft.com/azure/storage/files/storage-troubleshooting-files-performance#how-to-create-an-alert-if-a-file-share-is-throttled)  
 Service Health - The alert severity cannot be set or changed from 'Verbose'  
 
