@@ -2,6 +2,25 @@
 
 [Home](./readme.md) | [PostDeployment](./postDeploy.md) | [How to Change Thresholds](./changeAlertThreshold.md) | [Alert Reference](./alertReference.md) | [Excel List of Alert Rules](./references/alerts.xlsx)
 
+## 7/10/23 - Additional Alerts Added and Minor fixes (v2.0.2)
+
+These have been added and as usual deployed 'disabled' and duplicated for each Host Pool.
+- New Alert: Sev1 Personal Host Pool VM assigned but AVD Agent reporting unhealthy (Log Query)
+- New Alert: Sev1 Critical Updates Mising on VM (Log Query)
+- New Alert: Sev3 User Connection Failed (Log Query)
+- New Alert: Sev1 OS Disk Average Consumed Bandwidth at or over 95% (Metric)
+- New Alert: Sev2 OS Disk Average Consumed Bandwidth at or over 85% (Metric)
+
+Deployment names truncated to prevent deployment failures for names over 64 characters
+- mainly noted the Storage Latency alerts were impacted when the storage account name was long
+
+Fixed Single Selection Issue
+- Form UI would put single selections for Host Pool and VM RGs as string versus array value(s) 
+- Added Default value for those sections with "[]"
+
+Deployment Script (dsHostPoolVMMap.ps1) added error handling (try catch)
+
+
 ## 4/27/23 - Initial AVD Accelerator Release (v2.0.1)
 
 - Initial release in AVD Accelerator to include use of carml 1.3.0
