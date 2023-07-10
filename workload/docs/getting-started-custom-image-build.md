@@ -1,4 +1,4 @@
-# Getting Started - Custom Image Build deployment
+# Getting Started - Custom image build - Deployment
 
 ## Prerequisites
 
