@@ -34,7 +34,7 @@ module actionGroup '../../../../../carml/1.3.0/Microsoft.Insights/actionGroups/d
 }
 
 module metricAlertsVMs 'metricAlertsVMs.bicep' = [for i in range(0, length(HostPools)): {
-  name: 'linked_VMMtrcAlrts_${split(HostPools[i], '/')[8]}'
+  name: 'lnk_VMMtrcAlrts_${split(HostPools[i], '/')[8]}'
   params: {
     HostPoolInfo: array(json(HostPoolInfo))[i]
     MetricAlerts: MetricAlerts
@@ -47,7 +47,7 @@ module metricAlertsVMs 'metricAlertsVMs.bicep' = [for i in range(0, length(HostP
 }]
 
 module storAccountMetric 'storAccountMetric.bicep' = [for i in range(0, length(StorageAccountResourceIds)): if (length(StorageAccountResourceIds) > 0) {
-  name: 'linked_StrAcctMtrcAlrts_${split(StorageAccountResourceIds[i], '/')[8]}'
+  name: 'lnk_StrAcctMtrcAlrts_${split(StorageAccountResourceIds[i], '/')[8]}'
   params: {
     AutoMitigate: false
     Enabled: false
@@ -60,7 +60,7 @@ module storAccountMetric 'storAccountMetric.bicep' = [for i in range(0, length(S
 }]
 
 module azureNetAppFilesMetric 'anfMetric.bicep' = [for i in range(0, length(ANFVolumeResourceIds)): if (length(ANFVolumeResourceIds) > 0) {
-  name: 'linked_ANFMtrcAlrts_${split(ANFVolumeResourceIds[i], '/')[12]}'
+  name: 'lnk_ANFMtrcAlrts_${split(ANFVolumeResourceIds[i], '/')[12]}'
   params: {
     AutoMitigate: false
     Enabled: false
@@ -75,7 +75,7 @@ module azureNetAppFilesMetric 'anfMetric.bicep' = [for i in range(0, length(ANFV
 // If Metric Namespace contains file services ; change scopes to append default
 // module to loop through each scope time as it MUST be a single Resource ID
 module fileServicesMetric 'fileservicsmetric.bicep' = [for i in range(0, length(StorageAccountResourceIds)): if (length(StorageAccountResourceIds) > 0) {
-  name: 'linked_FlSvcsMtrcAlrts_${i}'
+  name: 'lnk_FlSvcsMtrcAlrts_${i}'
   params: {
     AutoMitigate: false
     Enabled: false
@@ -88,7 +88,7 @@ module fileServicesMetric 'fileservicsmetric.bicep' = [for i in range(0, length(
 }]
 
 module logAlertStorage '../../../../../carml/1.3.0/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(LogAlertsStorage)): {
-  name: 'carml_${LogAlertsStorage[i].name}'
+  name: 'c_${LogAlertsStorage[i].name}'
   params: {
     enableDefaultTelemetry: false
     name: LogAlertsStorage[i].name
@@ -107,7 +107,7 @@ module logAlertStorage '../../../../../carml/1.3.0/Microsoft.Insights/scheduledQ
 }]
 
 module logAlertHostPoolQueries 'hostPoolAlerts.bicep' = [for hostpool in HostPools: {
-  name: 'linked_HPAlrts-${guid(split(hostpool, '/')[4],split(hostpool, '/')[8])}'
+  name: 'lnk_HPAlrts-${guid(split(hostpool, '/')[4],split(hostpool, '/')[8])}'
   params: {
     AutoMitigate: false
     ActionGroupId: actionGroup.outputs.resourceId
@@ -121,7 +121,7 @@ module logAlertHostPoolQueries 'hostPoolAlerts.bicep' = [for hostpool in HostPoo
 
 // Currently only deploys IF Cloud Environment is Azure Commercial Cloud
 module logAlertSvcHealth '../../../../../carml/1.3.0/Microsoft.Insights/activityLogAlerts/deploy.bicep' = [for i in range(0, length(LogAlertsSvcHealth)): {
-  name: 'carml_${LogAlertsSvcHealth[i].name}'
+  name: 'c_${LogAlertsSvcHealth[i].name}'
   params: {
     enableDefaultTelemetry: false
     name: LogAlertsSvcHealth[i].name
