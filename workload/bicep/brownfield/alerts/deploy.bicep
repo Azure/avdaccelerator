@@ -1924,26 +1924,6 @@ module identityUserManaged '../../../../carml/1.3.0/Microsoft.ManagedIdentity/us
   dependsOn: ResourceGroupCreate ? [ resourceGroupAVDMetricsCreate ] : [ resourceGroupAVDMetricsExisting ]
 }
 
-module deploymentScript_HP2VM '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
-  name: 'c_ds-PS-GetHostPoolVMAssociation'
-  scope: resourceGroup(ResourceGroupName)
-  params: {
-    enableDefaultTelemetry: false
-    arguments: '-AVDResourceIDs ${HostPoolsAsString}'
-    azPowerShellVersion: '7.1'
-    name: 'ds_GetHostPoolVMAssociation'
-    primaryScriptUri: '${_ArtifactsLocation}dsHostPoolVMMap.ps1${_ArtifactsLocationSasToken}'
-    userAssignedIdentities: {
-      '${identityUserManaged.outputs.resourceId}': {}
-    }
-    kind: 'AzurePowerShell'
-    location: Location
-    timeout: 'PT2H'
-    cleanupPreference: 'OnExpiration'
-    retentionInterval: 'P1D'
-  }
-}
-
 // Deploy new automation account
 module automationAccount '../../../../carml/1.3.0/Microsoft.Automation/automationAccounts/deploy.bicep' = {
   name: 'c_AutomtnAcct-${AutomationAccountName}'
