@@ -3,109 +3,109 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
-@description('Location where to deploy AVD management plane.')
+@sys.description('Location where to deploy AVD management plane.')
 param managementPlaneLocation string
 
-@description('AVD workload subscription ID, multiple subscriptions scenario.')
+@sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param workloadSubsId string
 
-@description('Virtual machine time zone.')
+@sys.description('Virtual machine time zone.')
 param computeTimeZone string
 
-@description('The service providing domain services for Azure Virtual Desktop.')
+@sys.description('The service providing domain services for Azure Virtual Desktop.')
 param identityServiceProvider string
 
-@description('Identity ID to grant RBAC role to access AVD application group.')
+@sys.description('Identity ID to grant RBAC role to access AVD application group.')
 param applicationGroupIdentitiesIds array
 
-@description('Identity type to grant RBAC role to access AVD application group.')
+@sys.description('Identity type to grant RBAC role to access AVD application group.')
 param applicationGroupIdentityType string
 
-@description('AVD OS image source.')
+@sys.description('AVD OS image source.')
 param osImage string
 
-@description('AVD Resource Group Name for the service objects.')
+@sys.description('AVD Resource Group Name for the service objects.')
 param serviceObjectsRgName string
 
-@description('AVD Application Group Name for the applications.')
+@sys.description('AVD Application Group Name for the applications.')
 param applicationGroupNameRapp string
 
-@description('AVD Application Group friendly Name for the applications.')
+@sys.description('AVD Application Group friendly Name for the applications.')
 param applicationGroupFriendlyNameRapp string
 
-@description('AVD Application group for the session hosts. Desktop type.')
+@sys.description('AVD Application group for the session hosts. Desktop type.')
 param applicationGroupNameDesktop string
 
-@description('AVD Application group for the session hosts. Desktop type (friendly name).')
+@sys.description('AVD Application group for the session hosts. Desktop type (friendly name).')
 param applicationGroupFriendlyNameDesktop string
 
-@description('AVD deploy remote app application group.')
+@sys.description('AVD deploy remote app application group.')
 param deployRappGroup bool
 
-@description('AVD deploy scaling plan.')
+@sys.description('AVD deploy scaling plan.')
 param deployScalingPlan bool
 
-@description('AVD Host Pool Name')
+@sys.description('AVD Host Pool Name')
 param hostPoolName string
 
-@description('AVD Host Pool friendly Name')
+@sys.description('AVD Host Pool friendly Name')
 param hostPoolFriendlyName string
 
-@description('AVD scaling plan name')
+@sys.description('AVD scaling plan name')
 param scalingPlanName string
 
-@description('AVD scaling plan schedules')
+@sys.description('AVD scaling plan schedules')
 param scalingPlanSchedules array
 
-@description('AVD workspace name.')
+@sys.description('AVD workspace name.')
 param workSpaceName string
 
-@description('AVD workspace friendly name.')
+@sys.description('AVD workspace friendly name.')
 param workSpaceFriendlyName string
 
-@description('AVD host pool Custom RDP properties.')
+@sys.description('AVD host pool Custom RDP properties.')
 param hostPoolRdpProperties string
 
 @allowed([
   'Personal'
   'Pooled'
 ])
-@description('Optional. AVD host pool type.')
+@sys.description('Optional. AVD host pool type.')
 param hostPoolType string
 
 @allowed([
   'Automatic'
   'Direct'
 ])
-@description('Optional. AVD host pool type.')
+@sys.description('Optional. AVD host pool type.')
 param personalAssignType string
 
 @allowed([
   'BreadthFirst'
   'DepthFirst'
 ])
-@description('AVD host pool load balacing type.')
+@sys.description('AVD host pool load balacing type.')
 param hostPoolLoadBalancerType string
 
-@description('Optional. AVD host pool maximum number of user sessions per session host.')
+@sys.description('Optional. AVD host pool maximum number of user sessions per session host.')
 param hostPoolMaxSessions int
 
-@description('Optional. AVD host pool start VM on Connect.')
+@sys.description('Optional. AVD host pool start VM on Connect.')
 param startVmOnConnect bool
 
-@description('Tags to be applied to resources')
+@sys.description('Tags to be applied to resources')
 param tags object
 
-@description('Tag to exclude resources from scaling plan.')
+@sys.description('Tag to exclude resources from scaling plan.')
 param scalingPlanExclusionTag string
 
-@description('Log analytics workspace for diagnostic logs.')
+@sys.description('Log analytics workspace for diagnostic logs.')
 param alaWorkspaceResourceId string
 
-@description('Diagnostic logs retention.')
+@sys.description('Diagnostic logs retention.')
 param diagnosticLogsRetentionInDays int
 
-@description('Do not modify, used to set unique value for resource deployment.')
+@sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
 // =========== //
