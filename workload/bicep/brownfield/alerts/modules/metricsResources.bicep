@@ -33,7 +33,7 @@ module actionGroup '../../../../../carml/1.3.0/Microsoft.Insights/actionGroups/d
   }
 }
 
-module metricAlertsVMs 'metricAlertsVMs.bicep' = [for i in range(0, length(HostPools)): {
+module metricAlertsVms 'metricAlertsVms.bicep' = [for i in range(0, length(HostPools)): {
   name: 'lnk_VMMtrcAlrts_${split(HostPools[i], '/')[8]}'
   params: {
     HostPoolInfo: array(json(HostPoolInfo))[i]
