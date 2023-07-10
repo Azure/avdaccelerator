@@ -1,4 +1,4 @@
-# AVD accelerator custom image build deployment walk through
+# Azure Virtual Desktop LZA - Custom Image Build - Deployment walk through
 
 | Portal UI Experience (ARM) |
 | ------------------------------------------------------------ |
@@ -23,7 +23,7 @@
   - **Distribution group** - Input the distribution group for receiving alerts (emails) on the build status.
   - **Existing log analytics workspace** - Select if using existing log analytics workspace selecting the checkbox.
 - **Resource naming** blade:
-  - **Custom resource naming** - select the checkbox to input names for the resources. when not selecting the checkbox, the deployment will use the AVD accelerator naming standard.
+  - **Custom resource naming** - select the checkbox to input names for the resources. when not selecting the checkbox, the deployment will use the Azure Virtual Desktop accelerator naming standard.
 - **Resource tagging** blade:
   - **Custom resource tags** - select the checkbox to provide information that will be used to create tags on resources and resource groups.
 

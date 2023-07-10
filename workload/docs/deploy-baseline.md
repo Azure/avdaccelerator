@@ -1,4 +1,4 @@
-# AVD LZA Baseline Deployment Walk Through
+# Azure Virtual Desktop LZA - Baseline - Deployment walk through
 
 | Portal UI Experience (ARM) |
 | ------------------------------------------------------------ |
@@ -14,8 +14,8 @@
     - Azure Active Directory (AAD).
     - Active Directory (AD DS).
     - Azure AD Domain Services (AAD DS).
-  - **Azure Virtual Desktop access assignment** - These identities will be granted access to AVD application groups (role "Desktop Virtualization User").
-    - Groups - select from the drop down the groups to be granted access to AVD published items and to create sessions on VMs and single sign-on (SSO) when using AAD as identity provider.
+  - **Azure Virtual Desktop access assignment** - These identities will be granted access to Azure Virtual Desktop application groups (role "Desktop Virtualization User").
+    - Groups - select from the drop down the groups to be granted access to Azure Virtual Desktop published items and to create sessions on VMs and single sign-on (SSO) when using AAD as identity provider.
     - Note: when using AAD as identity service provider, an additional role (virtual machine user login) will be granted to compute resource group during deployment.
     - Domain Name- Your Active Directory domain like contoso.com
   - **When selecting AD DS or AAD DS:**
@@ -30,12 +30,12 @@
     - **Load balancing algorithm** - Choose either breadth-first or depth-first, based on your usage pattern. Learn more about what each of these options means at [Host pool load-balancing methods](https://docs.microsoft.com/azure/virtual-desktop/host-pool-load-balancing).
     - **Max session limit** - Enter the maximum number of users you want load-balanced to a single session host.
     - **Create remote app group** - Choose if you want to create a RemoteApp application group or not. A Desktop application group will be created by default.
-    - **Scaling plan** - Choose if you want to create a scaling plan or not. An AVD scaling plan will be created and host pools assigned to it.
+    - **Scaling plan** - Choose if you want to create a scaling plan or not. An Azure Virtual Desktop scaling plan will be created and host pools assigned to it.
   - When Personal is selected:
     - **Machine assignment** - Select either Automatic or Direct.
     - **Start VM on connect** - Choose if you want the host pool to be configured to allow users starting session hosts on demand.
 - **Session hosts** blade
-  - **Deploy sessions hosts** - You can choose to not deploy session hosts just the AVD service objects.
+  - **Deploy sessions hosts** - You can choose to not deploy session hosts just the Azure Virtual Desktop service objects.
   - **Session host region** - Provide the region to where you want to deploy the session hosts. This defaults to the Management Plane region but can be changed.
   - **Session hosts OU path (Optional)** - Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU. If left empty the computer account will be created in the default Computers OU. Example: OU=avd,DC=contoso,DC=com.
   - **Availability zones** - If you deselect the checkbox, an Availability set will be created instead and session hosts will be created in the availability set. If you select the checkbox the accelerator  will distribute compute and storage resources across availability zones.
@@ -58,14 +58,14 @@
   - **MSIX App Attach file share size** Choose the desired size in 100GB increments. Minimum size is 100GB.
 - **Network connectivity** blade
   - **Virtual Network** - Select if creating "New"" or use "Existing" virtual network.
-    - **New** - Select if you want to create a new VNet to be used for AVD.
+    - **New** - Select if you want to create a new VNet to be used for Azure Virtual Desktop.
       - **vNet address range** - Enter the IP block in CIDR notation to allocate to the VNet.
-      - **AVD subnet address prefix** - Enter IP block in CIDR notation for the new AVD subnet.
+      - **Azure Virtual Desktop subnet address prefix** - Enter IP block in CIDR notation for the new Azure Virtual Desktop subnet.
       - **Private endpoint subnet address prefix** - Enter IP block in CIDR notation for the new private endpoint subnet.
       - **Custom DNS servers** - Enter the custom DNS servers IPs to be set on the VNet. These DNS server should have proper DNS resolution to your AD DS domain, internet and Azure private DNS zones for private endpoint resolution.
-    - **Existing** - Select if using existing virtual networks for the AVD deployment.
-      - **AVD virtual network** - Select virtual network to be used for AVD deployment.
-      - **AVD subnet** - Select virtual network subnet to be used for session hosts deployment.
+    - **Existing** - Select if using existing virtual networks for the Azure Virtual Desktop deployment.
+      - **Azure Virtual Desktop virtual network** - Select virtual network to be used for Azure Virtual Desktop deployment.
+      - **Azure Virtual Desktop subnet** - Select virtual network subnet to be used for session hosts deployment.
       - **Private endpoint virtual network** - Select virtual network to be used for private endpoint deployment.
       - **Private endpoint subnet** - Select virtual network subnet to be used for private endpoint deployment.
   - **Private endpoints (Key vault and Azure files)** - Select the checkbox to create private endpoints for key vault and Azure file services, when selecting no public endpoints of the services will be used.
@@ -74,11 +74,11 @@
     - **Virtual Network** - Select the hub VNet where this new VNet will be peered with.
     - **VNet Gateway on hub** - Select the checkbox to set the use remote gateway option for the VNet peering.
 - **Monitoring** blade
-  - **Deploy monitoring** - select checkbox to deploy all required diagnostic configurations all AVD resources, also events and performance stats will be pushed from session hosts to a log analytics workspace.
+  - **Deploy monitoring** - select checkbox to deploy all required diagnostic configurations all Azure Virtual Desktop resources, also events and performance stats will be pushed from session hosts to a log analytics workspace.
     - **Log analytics workspace** - select if creating a new workspace or if using and existing one.
-    - **Deploy monitoring policies (subscription level)** - select the checkbox to deploy custom policies and policy sets will be created and assigned to the subscription to enforce deployIfNotExist rules to future AVD resources.
+    - **Deploy monitoring policies (subscription level)** - select the checkbox to deploy custom policies and policy sets will be created and assigned to the subscription to enforce deployIfNotExist rules to future Azure Virtual Desktop resources.
 - **Resource naming** blade
-  - **Custom Resource Naming** - select the checkbox to provide the names that will be used to name resources. When the checkbox is not selected deployment will use the AVD accelerator naming standard.
+  - **Custom Resource Naming** - select the checkbox to provide the names that will be used to name resources. When the checkbox is not selected deployment will use the Azure Virtual Desktop accelerator naming standard.
 - **Resource tagging** blade
   - **Custom Resource tagging** - select the checkbox to provide information to be use to create tags on resources and resource groups.
 - **Review + create** blade
@@ -87,7 +87,7 @@ Take a look at the [Naming Standard and Tagging](./resource-naming.md) page for 
 
 ## Redeployment Considerations
 
-When redeploying the baseline automation with the same deployment prefix value, clean up of previously created resource groups or at least their contained resources will need to be removed before the new deployment is executed, this will prevent the duplication of resources (key vaults and storage accounts) and conflicts of IP range overlap when creating the AVD virtual network.
+When redeploying the baseline automation with the same deployment prefix value, clean up of previously created resource groups or at least their contained resources will need to be removed before the new deployment is executed, this will prevent the duplication of resources (key vaults and storage accounts) and conflicts of IP range overlap when creating the Azure Virtual Desktop virtual network.
 
 ## Other Deployment Options
 
@@ -103,7 +103,7 @@ We have these other options available:
 - After successful deployment, you can remove the following temporary resources used only during deployment:
     - Management virtual machine (`vmmgmt{deploymentPrefix}{DeploymentEnvironment-d/t/p}{AzureRegionAcronym}`) and its associated OS disk and network interface.
     - Deployment scripts used to introduce wait times: Management-VM-Wait-{timestamp}, Managed-Identity-Wait-{timestamp}, Antimalware-Extension-Wait-{timestamp}, Session-Hosts-Wait-{timestamp}, SH-Monitoring-Wait-{timestamp}.
-- You should assign specific roles, including [AVD-specific roles](https://learn.microsoft.com/en-us/azure/virtual-desktop/rbac) based on your organization’s policies.
+- You should assign specific roles, including [Azure Virtual Desktop - Specific roles](https://learn.microsoft.com/en-us/azure/virtual-desktop/rbac) based on your organization’s policies.
 - Preferably enable NSG Flow logs and Traffic Analytics.
 
 ## Known Issues

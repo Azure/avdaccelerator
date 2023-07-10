@@ -5,16 +5,16 @@ The naming of resources is hard coded in the templates but can also be modified 
 
 ## Resource naming for the baseline deployment
 
-### Service Objects (AVD management plane)
+### Service Objects (Azure Virtual Desktop management plane)
 
 | Resource Name | Resource Type | Description |
 |:--|:--|:--|
-| `rg-avd-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-service-objects` | Resource Group | Contains related AVD service objects. |
-| `vdws-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{nnn}` | AVD Workspace | |
-| `vdpool-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{nnn}` | AVD Host pool | |
-| `vdag-desktop-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{nnn}` | AVD Application group (Desktop) | |
-| `vdag-rapp-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{nnn}` | AVD Application group (RemoteApp) | |
-| `vdscaling-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{nnn}` | AVD Scaling Plan | |
+| `rg-avd-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-service-objects` | Resource Group | Contains related Azure Virtual Desktop service objects. |
+| `vdws-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{nnn}` | Azure Virtual Desktop Workspace | |
+| `vdpool-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{nnn}` | Azure Virtual Desktop Host pool | |
+| `vdag-desktop-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{nnn}` | Azure Virtual Desktop Application group (Desktop) | |
+| `vdag-rapp-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{nnn}` | Azure Virtual Desktop Application group (RemoteApp) | |
+| `vdscaling-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{nnn}` | Azure Virtual Desktop Scaling Plan | |
 | `Managed-Identity-Wait-{Timestamp}` | Deployment script (Zero Trust) | Introduce wait time after managed identity creation. |
 | `des-zt-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{uniqueString}` | Disk Encryption Set (Zero Trust) | |
 | `DiskEncryptionKey` | Key (Zero Trust) | |
@@ -79,9 +79,9 @@ The naming of resources is hard coded in the templates but can also be modified 
 | `Log-Analytics-Workspace-Wait-{Timestamp}` | Deployment Script | Introduce wait time after log analytics workspace creation. |
 | `log-avd-{DeploymentEnvironment}-{AzureRegionAcronym}` | Log Analytics Workspace | |
 
-### Resource naming for the custom image deployment
+### Resource naming for the custom image build deployment
 
-#### AVD Custom Image naming
+#### Azure Virtual Desktop - Custom image build - Naming
 
 | Resource Name | Resource Type | |
 |:--|:--|:--|
@@ -114,7 +114,7 @@ The naming of resources is hard coded in the templates but can also be modified 
 | Environment type  | Dev,Staging,Prod  |  |
 | Creation date |  |  |
 
-AVD baseline tagging example:
+Azure Virtual Desktop baseline tagging example:
 
 ![Baseline](./diagrams/avd-accelerator-resource-tagging-baseline.png)
 
@@ -143,5 +143,5 @@ Custom image tagging example:
 
 Continue with:
 
-1. [Custom image deployment (optional)](./deploy-custom-image.md) to build an updated and optimized image; or
-2. [AVD accelerator baseline deployment](./deploy-baseline.md) if you are ready to deploy an AVD workload from the market place, an updated and optimized image previously created by the custom image deployment, or the the Azure market place or from an Azure Compute Gallery
+1. [Azure Virtual Desktop LZA - Custom image build - Deployment (optional)](./deploy-custom-image.md) to build an updated and optimized image; or
+2. [Azure Virtual Desktop LZA - Baseline - Deployment](./deploy-baseline.md) if you are ready to deploy an AVD workload from the market place, an updated and optimized image previously created by the custom image deployment, or the the Azure market place or from an Azure Compute Gallery
