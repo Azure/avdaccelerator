@@ -2,6 +2,11 @@
 
 name: Generate Markdown
 on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'workload/bicep/deploy-baseline.bicep'
+      - 'workload/bicep/deploy-custom-image.bicep'
   pull_request_target:
     types:
       - edited
