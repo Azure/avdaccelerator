@@ -49,13 +49,13 @@ param avdVmLocalUserPassword string
     'AADDS' // Azure Active Directory Domain Services
     'AAD' // Azure AD Join
 ])
-@sys.description('Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)')
+@sys.description('Required, The service providing domain services for Azure Virtual Desktop. (Default: ADDS)')
 param avdIdentityServiceProvider string = 'ADDS'
 
-@sys.description('Required, Eronll session hosts on Intune. (Defualt: false)')
+@sys.description('Required, Eronll session hosts on Intune. (Default: false)')
 param createIntuneEnrollment bool = false
 
-@sys.description('Optional, Identity ID array to grant RBAC role to access AVD application group. (Defualt: "")')
+@sys.description('Optional, Identity ID array to grant RBAC role to access AVD application group. (Default: "")')
 param avdApplicationGroupIdentitiesIds array = []
 
 @allowed([
@@ -63,19 +63,19 @@ param avdApplicationGroupIdentitiesIds array = []
     'ServicePrincipal'
     'User'
 ])
-@sys.description('Optional, Identity type to grant RBAC role to access AVD application group. (Defualt: Group)')
+@sys.description('Optional, Identity type to grant RBAC role to access AVD application group. (Default: Group)')
 param avdApplicationGroupIdentityType string = 'Group'
 
 @sys.description('AD domain name.')
 param avdIdentityDomainName string
 
-@sys.description('AD domain GUID. (Defualt: "")')
+@sys.description('AD domain GUID. (Default: "")')
 param identityDomainGuid string = ''
 
-@sys.description('AVD session host domain join user principal name. (Defualt: none)')
+@sys.description('AVD session host domain join user principal name. (Default: none)')
 param avdDomainJoinUserName string = 'none'
 
-@sys.description('AVD session host domain join password. (Defualt: none)')
+@sys.description('AVD session host domain join password. (Default: none)')
 @secure()
 param avdDomainJoinUserPassword string = 'none'
 
@@ -198,39 +198,39 @@ param avdDeploySessionHostsCount int = 1
 @sys.description('The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 0)')
 param avdSessionHostCountIndex int = 0
 
-@sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Defualt: true)')
+@sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Default: true)')
 param availabilityZonesCompute bool = true
 
-@sys.description('When true, ZOne Redudant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Defualt: false)')
+@sys.description('When true, ZOne Redudant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)')
 param zoneRedundantStorage bool = false
 
-@sys.description('Sets the number of fault domains for the availability set. (Defualt: 2)')
+@sys.description('Sets the number of fault domains for the availability set. (Default: 2)')
 param avdAsFaultDomainCount int = 2
 
-@sys.description('Sets the number of update domains for the availability set. (Defualt: 5)')
+@sys.description('Sets the number of update domains for the availability set. (Default: 5)')
 param avdAsUpdateDomainCount int = 5
 
 @allowed([
     'Standard'
     'Premium'
 ])
-@sys.description('Storage account SKU for FSLogix storage. Recommended tier is Premium (Defualt: Premium)')
+@sys.description('Storage account SKU for FSLogix storage. Recommended tier is Premium (Default: Premium)')
 param fslogixStoragePerformance string = 'Premium'
 
 @allowed([
     'Standard'
     'Premium'
 ])
-@sys.description('Storage account SKU for MSIX storage. Recommended tier is Premium. (Defualt: Premium)')
+@sys.description('Storage account SKU for MSIX storage. Recommended tier is Premium. (Default: Premium)')
 param msixStoragePerformance string = 'Premium'
 
 @sys.description('Enables a zero trust configuration on the session host disks. (Default: false)')
 param diskZeroTrust bool = false
 
-@sys.description('Session host VM size. (Defualt: Standard_D4ads_v5)')
+@sys.description('Session host VM size. (Default: Standard_D4ads_v5)')
 param avdSessionHostsSize string = 'Standard_D4ads_v5'
 
-@sys.description('OS disk type for session host. (Defualt: Standard_LRS)')
+@sys.description('OS disk type for session host. (Default: Standard_LRS)')
 param avdSessionHostDiskType string = 'Standard_LRS'
 
 @sys.description('''Enables accelerated Networking on the session hosts.
@@ -472,7 +472,7 @@ param opsTeamTag string = 'workload-admins@Contoso.com'
 @sys.description('Organizational owner of the AVD deployment. (Default: workload-owner@Contoso.com)')
 param ownerTag string = 'workload-owner@Contoso.com'
 
-@sys.description('Cost center of owner team. (Defualt: Contoso-CC)')
+@sys.description('Cost center of owner team. (Default: Contoso-CC)')
 param costCenterTag string = 'Contoso-CC'
 //
 
