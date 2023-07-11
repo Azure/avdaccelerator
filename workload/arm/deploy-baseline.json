@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "11120716036106005962"
+      "templateHash": "3157171505268746314"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -85,7 +85,7 @@
       "type": "string",
       "defaultValue": "ADDS",
       "metadata": {
-        "description": "Required, The service providing domain services for Azure Virtual Desktop. (Defualt: ADDS)"
+        "description": "Required, The service providing domain services for Azure Virtual Desktop. (Default: ADDS)"
       },
       "allowedValues": [
         "ADDS",
@@ -97,21 +97,21 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Required, Eronll session hosts on Intune. (Defualt: false)"
+        "description": "Required, Eronll session hosts on Intune. (Default: false)"
       }
     },
     "avdApplicationGroupIdentitiesIds": {
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional, Identity ID array to grant RBAC role to access AVD application group. (Defualt: \"\")"
+        "description": "Optional, Identity ID array to grant RBAC role to access AVD application group. (Default: \"\")"
       }
     },
     "avdApplicationGroupIdentityType": {
       "type": "string",
       "defaultValue": "Group",
       "metadata": {
-        "description": "Optional, Identity type to grant RBAC role to access AVD application group. (Defualt: Group)"
+        "description": "Optional, Identity type to grant RBAC role to access AVD application group. (Default: Group)"
       },
       "allowedValues": [
         "Group",
@@ -129,21 +129,21 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "AD domain GUID. (Defualt: \"\")"
+        "description": "AD domain GUID. (Default: \"\")"
       }
     },
     "avdDomainJoinUserName": {
       "type": "string",
       "defaultValue": "none",
       "metadata": {
-        "description": "AVD session host domain join user principal name. (Defualt: none)"
+        "description": "AVD session host domain join user principal name. (Default: none)"
       }
     },
     "avdDomainJoinUserPassword": {
       "type": "securestring",
       "defaultValue": "none",
       "metadata": {
-        "description": "AVD session host domain join password. (Defualt: none)"
+        "description": "AVD session host domain join password. (Default: none)"
       }
     },
     "avdOuPath": {
@@ -409,35 +409,35 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Defualt: true)"
+        "description": "When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Default: true)"
       }
     },
     "zoneRedundantStorage": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "When true, ZOne Redudant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Defualt: false)"
+        "description": "When true, ZOne Redudant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)"
       }
     },
     "avdAsFaultDomainCount": {
       "type": "int",
       "defaultValue": 2,
       "metadata": {
-        "description": "Sets the number of fault domains for the availability set. (Defualt: 2)"
+        "description": "Sets the number of fault domains for the availability set. (Default: 2)"
       }
     },
     "avdAsUpdateDomainCount": {
       "type": "int",
       "defaultValue": 5,
       "metadata": {
-        "description": "Sets the number of update domains for the availability set. (Defualt: 5)"
+        "description": "Sets the number of update domains for the availability set. (Default: 5)"
       }
     },
     "fslogixStoragePerformance": {
       "type": "string",
       "defaultValue": "Premium",
       "metadata": {
-        "description": "Storage account SKU for FSLogix storage. Recommended tier is Premium (Defualt: Premium)"
+        "description": "Storage account SKU for FSLogix storage. Recommended tier is Premium (Default: Premium)"
       },
       "allowedValues": [
         "Standard",
@@ -448,7 +448,7 @@
       "type": "string",
       "defaultValue": "Premium",
       "metadata": {
-        "description": "Storage account SKU for MSIX storage. Recommended tier is Premium. (Defualt: Premium)"
+        "description": "Storage account SKU for MSIX storage. Recommended tier is Premium. (Default: Premium)"
       },
       "allowedValues": [
         "Standard",
@@ -466,14 +466,14 @@
       "type": "string",
       "defaultValue": "Standard_D4ads_v5",
       "metadata": {
-        "description": "Session host VM size. (Defualt: Standard_D4ads_v5)"
+        "description": "Session host VM size. (Default: Standard_D4ads_v5)"
       }
     },
     "avdSessionHostDiskType": {
       "type": "string",
       "defaultValue": "Standard_LRS",
       "metadata": {
-        "description": "OS disk type for session host. (Defualt: Standard_LRS)"
+        "description": "OS disk type for session host. (Default: Standard_LRS)"
       }
     },
     "enableAcceleratedNetworking": {
@@ -528,9 +528,9 @@
     },
     "managementVmOsImage": {
       "type": "string",
-      "defaultValue": "winServer_2022_Datacenter_core_smalldisk_g2",
+      "defaultValue": "winServer_2022_Datacenter_smalldisk_g2",
       "metadata": {
-        "description": "Management VM image SKU (Default: winServer_2022_Datacenter)"
+        "description": "Management VM image SKU (Default: winServer_2022_Datacenter_smalldisk_g2)"
       }
     },
     "useSharedImage": {
@@ -923,7 +923,7 @@
       "type": "string",
       "defaultValue": "Contoso-CC",
       "metadata": {
-        "description": "Cost center of owner team. (Defualt: Contoso-CC)"
+        "description": "Cost center of owner team. (Default: Contoso-CC)"
       }
     },
     "time": {
@@ -1407,25 +1407,19 @@
       "winServer_2022_Datacenter": {
         "publisher": "MicrosoftWindowsServer",
         "offer": "WindowsServer",
-        "sku": "2022-datacenter",
+        "sku": "2022-datacenter-g2",
         "version": "latest"
       },
-      "winServer_2019_Datacenter": {
+      "winServer_2022_Datacenter_smalldisk_g2": {
         "publisher": "MicrosoftWindowsServer",
         "offer": "WindowsServer",
-        "sku": "2019-datacenter",
+        "sku": "2022-datacenter-smalldisk-g2",
         "version": "latest"
       },
       "winServer_2022_datacenter_core": {
         "publisher": "MicrosoftWindowsServer",
         "offer": "WindowsServer",
-        "sku": "2022-datacenter-core",
-        "version": "latest"
-      },
-      "winServer_2022_datacenter_azure_edition_core": {
-        "publisher": "MicrosoftWindowsServer",
-        "offer": "WindowsServer",
-        "sku": "2022-datacenter-azure-edition-core",
+        "sku": "2022-datacenter-core-g2",
         "version": "latest"
       },
       "winServer_2022_Datacenter_core_smalldisk_g2": {
