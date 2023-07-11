@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "10271373507996292917"
+      "templateHash": "11995122836266904003"
     },
     "name": "AVD Accelerator - Baseline Custom Image Deployment",
     "description": "AVD Accelerator - Custom Image Baseline"
@@ -54,7 +54,7 @@
       "type": "string",
       "defaultValue": "Contoso-CC",
       "metadata": {
-        "description": "Cost center of owner team. (Defualt: Contoso-CC)"
+        "description": "Cost center of owner team. (Default: Contoso-CC)"
       }
     },
     "criticalityCustomTag": {
@@ -226,7 +226,7 @@
         "false"
       ],
       "metadata": {
-        "description": "The image supports accelerated networking.\r\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\r\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the\r\nmost demanding network workloads on supported VM types.\r\n"
+        "description": "The image supports accelerated networking.\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the\nmost demanding network workloads on supported VM types.\n"
       }
     },
     "imageDefinitionHibernateSupported": {
@@ -3159,7 +3159,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "11092596112037938839"
+              "templateHash": "17678329240116749148"
             }
           },
           "parameters": {
@@ -3853,7 +3853,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.18.4.5664",
-                      "templateHash": "10358685782947039492"
+                      "templateHash": "16548485408572567701"
                     }
                   },
                   "parameters": {
@@ -3972,7 +3972,7 @@
                         "V2"
                       ],
                       "metadata": {
-                        "description": "Optional. The hypervisor generation of the Virtual Machine.\r\n* If this value is not specified, then it is determined by the securityType parameter.\r\n* If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\r\n"
+                        "description": "Optional. The hypervisor generation of the Virtual Machine.\n* If this value is not specified, then it is determined by the securityType parameter.\n* If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\n"
                       }
                     },
                     "securityType": {
@@ -4007,7 +4007,7 @@
                         "false"
                       ],
                       "metadata": {
-                        "description": "Optional. The image supports accelerated networking.\r\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\r\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the\r\nmost demanding network workloads on supported VM types.\r\n"
+                        "description": "Optional. The image supports accelerated networking.\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the\nmost demanding network workloads on supported VM types.\n"
                       }
                     },
                     "imageDefinitionDescription": {
@@ -4437,7 +4437,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "10358685782947039492"
+              "templateHash": "16548485408572567701"
             }
           },
           "parameters": {
@@ -4556,7 +4556,7 @@
                 "V2"
               ],
               "metadata": {
-                "description": "Optional. The hypervisor generation of the Virtual Machine.\r\n* If this value is not specified, then it is determined by the securityType parameter.\r\n* If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\r\n"
+                "description": "Optional. The hypervisor generation of the Virtual Machine.\n* If this value is not specified, then it is determined by the securityType parameter.\n* If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\n"
               }
             },
             "securityType": {
@@ -4591,7 +4591,7 @@
                 "false"
               ],
               "metadata": {
-                "description": "Optional. The image supports accelerated networking.\r\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\r\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the\r\nmost demanding network workloads on supported VM types.\r\n"
+                "description": "Optional. The image supports accelerated networking.\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the\nmost demanding network workloads on supported VM types.\n"
               }
             },
             "imageDefinitionDescription": {
@@ -4986,7 +4986,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "6694754263575522312"
+              "templateHash": "8907308600883510323"
             }
           },
           "parameters": {
@@ -5043,14 +5043,14 @@
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "Optional. Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>.\r\nIf no value is provided, a new temporary VNET and subnet will be created in the staging resource group and will be deleted along with the remaining temporary resources.\r\n"
+                "description": "Optional. Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>.\nIf no value is provided, a new temporary VNET and subnet will be created in the staging resource group and will be deleted along with the remaining temporary resources.\n"
               }
             },
             "userAssignedIdentities": {
               "type": "array",
               "defaultValue": [],
               "metadata": {
-                "description": "Optional. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.\r\nBe aware, the user assigned identity specified in the \\'userMsiName\\' parameter must have the \\'Managed Identity Operator\\' role assignment on all the user assigned identities\r\nspecified in this parameter for Azure Image Builder to be able to associate them to the build VM.\r\n"
+                "description": "Optional. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts.\nBe aware, the user assigned identity specified in the \\'userMsiName\\' parameter must have the \\'Managed Identity Operator\\' role assignment on all the user assigned identities\nspecified in this parameter for Azure Image Builder to be able to associate them to the build VM.\n"
               }
             },
             "imageSource": {
@@ -5122,7 +5122,7 @@
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "Optional. Resource ID of the staging resource group in the same subscription and location as the image template that will be used to build the image.\r\nIf this field is empty, a resource group with a random name will be created.\r\nIf the resource group specified in this field doesn\\'t exist, it will be created with the same name.\r\nIf the resource group specified exists, it must be empty and in the same region as the image template.\r\nThe resource group created will be deleted during template deletion if this field is empty or the resource group specified doesn\\'t exist,\r\nbut if the resource group specified exists the resources created in the resource group will be deleted during template deletion and the resource group itself will remain.\r\n"
+                "description": "Optional. Resource ID of the staging resource group in the same subscription and location as the image template that will be used to build the image.\nIf this field is empty, a resource group with a random name will be created.\nIf the resource group specified in this field doesn\\'t exist, it will be created with the same name.\nIf the resource group specified exists, it must be empty and in the same region as the image template.\nThe resource group created will be deleted during template deletion if this field is empty or the resource group specified doesn\\'t exist,\nbut if the resource group specified exists the resources created in the resource group will be deleted during template deletion and the resource group itself will remain.\n"
               }
             },
             "lock": {
@@ -7392,7 +7392,7 @@
             "value": "PT10M"
           },
           "scriptContent": {
-            "value": "        Write-Host \"Start\"\r\n        Get-Date\r\n        Start-Sleep -Seconds 60\r\n        Write-Host \"Stop\"\r\n        Get-Date\r\n        "
+            "value": "        Write-Host \"Start\"\n        Get-Date\n        Start-Sleep -Seconds 60\n        Write-Host \"Stop\"\n        Get-Date\n        "
           }
         },
         "template": {
