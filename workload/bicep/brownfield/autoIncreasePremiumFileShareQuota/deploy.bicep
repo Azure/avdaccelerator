@@ -14,7 +14,7 @@ param applicationNameTag string = 'Contoso-App'
 @description('Optional. Custom name for the Automation Account.')
 param automationAccountCustomName string = 'aa-avd'
 
-@description('Optional. Cost center of owner team. (Defualt: Contoso-CC)')
+@description('Optional. Cost center of owner team. (Default: Contoso-CC)')
 param costCenterTag string = 'Contoso-CC'
 
 @description('Optional. Tag value for custom criticality value. (Default: Contoso-Critical)')
