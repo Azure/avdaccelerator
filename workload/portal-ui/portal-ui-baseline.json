@@ -421,7 +421,7 @@
                                     "name": "deployRemoteAppGroup",
                                     "type": "Microsoft.Common.CheckBox",
                                     "visible": true,
-                                    "label": "Create remote app group",
+                                    "label": "Create remote app (RAIL) group",
                                     "defaultValue": false,
                                     "toolTip": "This application group type allows to publish seamless apps instead of full desktops."
                                 },
@@ -430,7 +430,7 @@
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[steps('managementPlane').managementPlaneAppGroupOptions.deployRemoteAppGroup]",
                                     "options": {
-                                        "text": "Desktop application group will will be created by default, but following best practices, users will be granted access only on the remote application group.",
+                                        "text": "Desktop application group will will be created by default, but following best practices, users will be granted access only on the remote app (RAIL) group.",
                                         "uri": "",
                                         "style": "Info"
                                     }
@@ -782,7 +782,7 @@
                                     "type": "Microsoft.Common.DropDown",
                                     "label": "Security type",
                                     "filter": true,
-                                    "defaultValue": "Standard",
+                                    "defaultValue": "Trusted Launch Virtual Machines",
                                     "toolTip": "Choose a type of security that matches your needs: Standard includes basic protections at no additional cost. Trusted launch virtual machines provide additional security features on Gen2 virtual machines to protect against persistent and advanced attacks.",
                                     "constraints": {
                                         "required": true,
@@ -807,7 +807,7 @@
                                     "type": "Microsoft.Common.CheckBox",
                                     "visible": "[or(equals(steps('sessionHosts').sessionHostsSecuritySection.securityType, 'TrustedLaunch'), equals(steps('sessionHosts').sessionHostsSecuritySection.securityType, 'ConfidentialVM'))]",
                                     "label": "Enable secure boot",
-                                    "defaultValue": false,
+                                    "defaultValue": true,
                                     "toolTip": "Secure boot helps protect your VMs against boot kits, rootkits, and kernel-level malware."
                                 },
                                 {
@@ -815,7 +815,7 @@
                                     "type": "Microsoft.Common.CheckBox",
                                     "visible": "[or(equals(steps('sessionHosts').sessionHostsSecuritySection.securityType, 'TrustedLaunch'), equals(steps('sessionHosts').sessionHostsSecuritySection.securityType, 'ConfidentialVM'))]",
                                     "label": "Enable vTPM",
-                                    "defaultValue": false,
+                                    "defaultValue": true,
                                     "toolTip": "Virtual Trusted Platform Module (vTPM) is TPM2.0 compliant and validates your VM boot integrity apart from securely storing keys and secrets."
                                 }
                             ]

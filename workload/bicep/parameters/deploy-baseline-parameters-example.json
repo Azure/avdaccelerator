@@ -162,16 +162,16 @@
             "value": "win11_21h2"
         },
         "managementVmOsImage": {
-            "value": "winServer_2022_Datacenter_core_smalldisk_g2"
+            "value": "winServer_2022_Datacenter_smalldisk_g2"
         },
         "securityType": {
-            "value": "Standard"
+            "value": "TrustedLaunch"
         },
         "secureBootEnabled": {
-            "value": false
+            "value": true
         },
         "vTpmEnabled": {
-            "value": false
+            "value": true
         },
         "useSharedImage": {
             "value": false
