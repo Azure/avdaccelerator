@@ -8,13 +8,15 @@ on:
   push:
     branches: [ main ]
     paths:
-      - "./carml/1.0.0/**"
-      - "./workload/*.bicep"
+      - "./carml/*"
+      - "./workload/bicep/*.bicep"
+      - "./workload/bicep/modules/*"
   pull_request:
     branches: [ main ]
     paths:
-      - "./carml/1.0.0/**"
-      - "./workload/*.bicep"
+      - "./carml/*"
+      - "./workload/bicep/*.bicep"
+      - "./workload/bicep/modules/*"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
