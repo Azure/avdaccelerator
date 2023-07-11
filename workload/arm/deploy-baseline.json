@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "3157171505268746314"
+      "templateHash": "13700157803448589467"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -12965,7 +12965,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "14043629246891546371"
+              "templateHash": "621966344464901768"
             }
           },
           "parameters": {
@@ -13175,7 +13175,8 @@
                 "name": "[parameters('applicationGroupNameDesktop')]",
                 "friendlyName": "[parameters('applicationGroupFriendlyNameDesktop')]",
                 "location": "[parameters('managementPlaneLocation')]",
-                "applicationGroupType": "Desktop"
+                "applicationGroupType": "Desktop",
+                "createRoleAssignment": "[if(parameters('deployRappGroup'), false(), true())]"
               }
             ],
             "varRAppApplicationGroups": [
@@ -13183,7 +13184,8 @@
                 "name": "[parameters('applicationGroupNameRapp')]",
                 "friendlyName": "[parameters('applicationGroupFriendlyNameRapp')]",
                 "location": "[parameters('managementPlaneLocation')]",
-                "applicationGroupType": "RemoteApp"
+                "applicationGroupType": "RemoteApp",
+                "createRoleAssignment": "[if(parameters('deployRappGroup'), true(), false())]"
               }
             ],
             "varHostPoolRdpPropertiesDomainServiceCheck": "[if(equals(parameters('identityServiceProvider'), 'AAD'), format('{0};targetisaadjoined:i:1;enablerdsaadauth:i:1', parameters('hostPoolRdpProperties')), parameters('hostPoolRdpProperties'))]",
@@ -13932,7 +13934,7 @@
                     "value": "[parameters('tags')]"
                   },
                   "applications": "[if(equals(variables('varFinalApplicationGroups')[copyIndex()].applicationGroupType, 'RemoteApp'), createObject('value', variables('varRAppApplicationGroupsApps')), createObject('value', createArray()))]",
-                  "roleAssignments": "[if(not(empty(parameters('applicationGroupIdentitiesIds'))), createObject('value', createArray(createObject('roleDefinitionIdOrName', 'Desktop Virtualization User', 'principalIds', parameters('applicationGroupIdentitiesIds'), 'principalType', parameters('applicationGroupIdentityType')))), createObject('value', createArray()))]",
+                  "roleAssignments": "[if(and(not(empty(parameters('applicationGroupIdentitiesIds'))), variables('varFinalApplicationGroups')[copyIndex()].createRoleAssignment), createObject('value', createArray(createObject('roleDefinitionIdOrName', 'Desktop Virtualization User', 'principalIds', parameters('applicationGroupIdentitiesIds'), 'principalType', parameters('applicationGroupIdentityType')))), createObject('value', createArray()))]",
                   "diagnosticWorkspaceId": {
                     "value": "[parameters('alaWorkspaceResourceId')]"
                   },

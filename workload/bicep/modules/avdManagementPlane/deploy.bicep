@@ -117,6 +117,7 @@ var varDesktopApplicaitonGroups = [
     friendlyName: applicationGroupFriendlyNameDesktop
     location: managementPlaneLocation
     applicationGroupType: 'Desktop'
+    createRoleAssignment: deployRappGroup ? false : true
   }
 ]
 var varRAppApplicationGroups = [
@@ -125,6 +126,7 @@ var varRAppApplicationGroups = [
     friendlyName: applicationGroupFriendlyNameRapp
     location: managementPlaneLocation
     applicationGroupType: 'RemoteApp'
+    createRoleAssignment: deployRappGroup ? true : false
   }
 ]
 var varHostPoolRdpPropertiesDomainServiceCheck = (identityServiceProvider == 'AAD') ? '${hostPoolRdpProperties};targetisaadjoined:i:1;enablerdsaadauth:i:1' : hostPoolRdpProperties
@@ -268,13 +270,13 @@ module applicationGroups '../../../../carml/1.3.0/Microsoft.DesktopVirtualizatio
     hostpoolName: hostPoolName
     tags: tags
     applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsApps : []
-    roleAssignments: !empty(applicationGroupIdentitiesIds) ? [
+    roleAssignments: (!empty(applicationGroupIdentitiesIds) && applicationGroup.createRoleAssignment) ? [
       {
       roleDefinitionIdOrName: 'Desktop Virtualization User'
       principalIds: applicationGroupIdentitiesIds
       principalType: applicationGroupIdentityType
       }
-    ]: []     
+    ]: []   
     diagnosticWorkspaceId: alaWorkspaceResourceId
     diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
     diagnosticLogCategoriesToEnable: varApplicationGroupDiagnostic

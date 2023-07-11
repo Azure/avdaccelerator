@@ -415,7 +415,7 @@
                             "name": "managementPlaneAppGroupOptions",
                             "type": "Microsoft.Common.Section",
                             "visible": "[equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
-                            "label": "Application group options (Desktop application group will be deployed by default)",
+                            "label": "Application group options",
                             "elements": [
                                 {
                                     "name": "deployRemoteAppGroup",
@@ -424,6 +424,16 @@
                                     "label": "Create remote app group",
                                     "defaultValue": false,
                                     "toolTip": "This application group type allows to publish seamless apps instead of full desktops."
+                                },
+                                {
+                                    "name": "deployRemoteAppGroupInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[steps('managementPlane').managementPlaneAppGroupOptions.deployRemoteAppGroup]",
+                                    "options": {
+                                        "text": "Desktop application group will will be created by default, but following best practices, users will be granted access only on the remote application group.",
+                                        "uri": "",
+                                        "style": "Info"
+                                    }
                                 }
                             ]
                         },
