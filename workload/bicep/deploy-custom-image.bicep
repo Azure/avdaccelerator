@@ -36,7 +36,7 @@ param automationAccountCustomName string = 'aa-avd'
 @sys.description('Determine whether to build the image template one time or check daily for a new marketplace image and auto build when found. (Default: Recurring)')
 param buildSchedule string = 'Recurring'
 
-@sys.description('Cost center of owner team. (Defualt: Contoso-CC)')
+@sys.description('Cost center of owner team. (Default: Contoso-CC)')
 param costCenterTag string = 'Contoso-CC'
 
 @sys.description('Tag value for custom criticality value. (Default: Contoso-Critical)')
