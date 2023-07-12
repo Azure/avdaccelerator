@@ -1621,7 +1621,7 @@
                                 {
                                     "name": "applicationGroupCustomName",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Application group (Desktop)",
+                                    "label": "Application group",
                                     "toolTip": "Application group custom name.",
                                     "placeholder": "Example: vdag-desktop-app1-dev-use2-001",
                                     "constraints": {
