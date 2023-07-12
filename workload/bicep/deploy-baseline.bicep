@@ -89,6 +89,13 @@ param avdOuPath string = ''
 @sys.description('AVD host pool type. (Default: Pooled)')
 param avdHostPoolType string = 'Pooled'
 
+@sys.description('Optional. The type of preferred application group type, default to Desktop Application Group.')
+@allowed([
+  'Desktop'
+  'RemoteApp'
+])
+param hostPoolPreferredAppGroupType string = 'Desktop'
+
 @allowed([
     'Automatic'
     'Direct'
@@ -108,9 +115,6 @@ param avhHostPoolMaxSessions int = 8
 
 @sys.description('AVD host pool start VM on Connect. (Default: true)')
 param avdStartVmOnConnect bool = true
-
-@sys.description('AVD deploy remote app application group. (Default: false)')
-param avdDeployRappGroup bool = false
 
 @sys.description('AVD host pool Custom RDP properties. (Default: audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2)')
 param avdHostPoolRdpProperties string = 'audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2'
@@ -364,15 +368,11 @@ param avdScalingPlanCustomName string = 'vdscaling-app1-dev-use2-001'
 
 @maxLength(64)
 @sys.description('AVD desktop application group custom name. (Default: vdag-desktop-app1-dev-use2-001)')
-param avdApplicationGroupCustomNameDesktop string = 'vdag-desktop-app1-dev-use2-001'
+param avdApplicationGroupCustomName string = 'vdag-desktop-app1-dev-use2-001'
 
 @maxLength(64)
 @sys.description('AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - Dev - 001)')
 param avdApplicationGroupCustomFriendlyName string = 'Desktops - App1 - Dev - East US 2 - 001'
-
-@maxLength(64)
-@sys.description('AVD remote application group custom name. (Default: vdag-rapp-app1-dev-use2-001)')
-param avdApplicationGroupCustomNameRapp string = 'vdag-rapp-app1-dev-use2-001'
 
 @maxLength(64)
 @sys.description('AVD remote application group custom name. (Default: Remote apps - App1 - East US - 001)')
@@ -525,10 +525,8 @@ var varWorkSpaceName = avdUseCustomNaming ? avdWorkSpaceCustomName : 'vdws-${var
 var varWorkSpaceFriendlyName = avdUseCustomNaming ? avdWorkSpaceCustomFriendlyName : 'Workspace ${deploymentPrefix} ${deploymentEnvironment} ${avdManagementPlaneLocation} 001'
 var varHostPoolName = avdUseCustomNaming ? avdHostPoolCustomName : 'vdpool-${varManagementPlaneNamingStandard}-001'
 var varHostFriendlyName = avdUseCustomNaming ? avdHostPoolCustomFriendlyName : 'Hostpool ${deploymentPrefix} ${deploymentEnvironment} ${avdManagementPlaneLocation} 001'
-var varApplicationGroupNameDesktop = avdUseCustomNaming ? avdApplicationGroupCustomNameDesktop : 'vdag-desktop-${varManagementPlaneNamingStandard}-001'
-var varApplicationGroupFriendlyName = avdUseCustomNaming ? avdApplicationGroupCustomFriendlyName : 'Desktops ${deploymentPrefix} ${deploymentEnvironment} ${avdManagementPlaneLocation} 001'
-var varApplicationGroupNameRapp = avdUseCustomNaming ? avdApplicationGroupCustomNameRapp : 'vdag-rapp-${varManagementPlaneNamingStandard}-001'
-var varApplicationGroupFriendlyNameRapp = avdUseCustomNaming ? avdApplicationGroupCustomFriendlyNameRapp : 'Apps ${deploymentPrefix} ${deploymentEnvironment} ${avdManagementPlaneLocation} 001'
+var varApplicationGroupName = avdUseCustomNaming ? avdApplicationGroupCustomName : 'vdag-${hostPoolPreferredAppGroupType}-${varManagementPlaneNamingStandard}-001'
+var varApplicationGroupFriendlyName = avdUseCustomNaming ? avdApplicationGroupCustomFriendlyName : '${hostPoolPreferredAppGroupType} ${deploymentPrefix} ${deploymentEnvironment} ${avdManagementPlaneLocation} 001'
 var varScalingPlanName = avdUseCustomNaming ? avdScalingPlanCustomName : 'vdscaling-${varManagementPlaneNamingStandard}-001'
 var varScalingPlanExclusionTag = 'exclude-${varScalingPlanName}'
 var varScalingPlanWeekdaysScheduleName = 'Weekdays-${varManagementPlaneNamingStandard}'
@@ -905,20 +903,18 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
 module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     name: 'AVD-MGMT-Plane-${time}'
     params: {
-        applicationGroupNameDesktop: varApplicationGroupNameDesktop
+        applicationGroupName: varApplicationGroupName
         applicationGroupFriendlyNameDesktop: varApplicationGroupFriendlyName
         workSpaceName: varWorkSpaceName
         osImage: avdOsImage
         workSpaceFriendlyName: varWorkSpaceFriendlyName
-        applicationGroupNameRapp: varApplicationGroupNameRapp
-        applicationGroupFriendlyNameRapp: varApplicationGroupFriendlyNameRapp
-        deployRappGroup: avdDeployRappGroup
         computeTimeZone: varTimeZoneSessionHosts
         hostPoolName: varHostPoolName
         hostPoolFriendlyName: varHostFriendlyName
         hostPoolRdpProperties: avdHostPoolRdpProperties
         hostPoolLoadBalancerType: avdHostPoolLoadBalancerType
         hostPoolType: avdHostPoolType
+        preferredAppGroupType: (hostPoolPreferredAppGroupType == 'RemoteApp') ? 'RailApplications' : 'Desktop'
         deployScalingPlan: avdDeployScalingPlan
         scalingPlanExclusionTag: varScalingPlanExclusionTag
         scalingPlanSchedules: varScalingPlanSchedules

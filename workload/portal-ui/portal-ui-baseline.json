@@ -415,24 +415,27 @@
                             "name": "managementPlaneAppGroupOptions",
                             "type": "Microsoft.Common.Section",
                             "visible": "[equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
-                            "label": "Application group options",
+                            "label": "",
                             "elements": [
                                 {
-                                    "name": "deployRemoteAppGroup",
-                                    "type": "Microsoft.Common.CheckBox",
+                                    "name": "preferredAppGroupType",
+                                    "type": "Microsoft.Common.OptionsGroup",
                                     "visible": true,
-                                    "label": "Create remote app (RAIL) group",
-                                    "defaultValue": false,
-                                    "toolTip": "This application group type allows to publish seamless apps instead of full desktops."
-                                },
-                                {
-                                    "name": "deployRemoteAppGroupInfo",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[steps('managementPlane').managementPlaneAppGroupOptions.deployRemoteAppGroup]",
-                                    "options": {
-                                        "text": "Desktop application group will will be created by default, but following best practices, users will be granted access only on the remote app (RAIL) group.",
-                                        "uri": "",
-                                        "style": "Info"
+                                    "label": "Preferred app group type",
+                                    "defaultValue": "Desktop",
+                                    "toolTip": "Select the preferred type of application group for the host pool, the option selected will be used to deploy the default application group of the host pool.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Desktop",
+                                                "value": "Desktop"
+                                            },
+                                            {
+                                                "label": "Remote App (RAIL)",
+                                                "value": "RemoteApp"
+                                            }
+                                        ]
                                     }
                                 }
                             ]
@@ -1616,10 +1619,10 @@
                                     }
                                 },
                                 {
-                                    "name": "applicationGroupCustomNameDesktop",
+                                    "name": "applicationGroupCustomName",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Application group (Desktop)",
-                                    "toolTip": "Desktop application group custom name.",
+                                    "label": "Application group",
+                                    "toolTip": "Application group custom name.",
                                     "placeholder": "Example: vdag-desktop-app1-dev-use2-001",
                                     "constraints": {
                                         "required": true,
@@ -1628,37 +1631,11 @@
                                     }
                                 },
                                 {
-                                    "name": "applicationGroupCustomFriendlyNameDesktop",
+                                    "name": "applicationGroupCustomFriendlyName",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Application group (Desktop, Friendly name)",
+                                    "label": "Application group (Friendly name)",
                                     "toolTip": "Desktop application group custom name.",
                                     "placeholder": "Example: Desktops - App1 - Dev - East US 2 - 001",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
-                                        "validationMessage": "Value must be 1-64 characters."
-                                    }
-                                },
-                                {
-                                    "name": "applicationGroupCustomNameRemoteApp",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Application group (Remote App)",
-                                    "visible": "[steps('managementPlane').managementPlaneAppGroupOptions.deployRemoteAppGroup]",
-                                    "toolTip": "Remote application group custom name.",
-                                    "placeholder": "Example: vdag-rapp-app1-dev-use2-001",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
-                                        "validationMessage": "Value must be 1-64 characters."
-                                    }
-                                },
-                                {
-                                    "name": "applicationGroupCustomFriendlyNameRemoteApp",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Application group (Remote App, Friendly name)",
-                                    "visible": "[steps('managementPlane').managementPlaneAppGroupOptions.deployRemoteAppGroup]",
-                                    "toolTip": "Remote application group custom name.",
-                                    "placeholder": "Example: Remote apps - App1 - Dev - East US 2 - 001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -2302,10 +2279,10 @@
                 "avdSessionHostLocation": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion, steps('basics').resourceScope.location.name)]",
                 "avdWorkloadSubsId": "[steps('basics').resourceScope.subscription.subscriptionId]",
                 "avdHostPoolType": "[steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType]",
+                "hostPoolPreferredAppGroupType": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneAppGroupOptions.preferredAppGroupType, 'Desktop')]",
                 "avdHostPoolLoadBalancerType": "[steps('managementPlane').managementPlaneHostPoolSettings.loadBalancerType]",
                 "avhHostPoolMaxSessions": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneHostPoolSettings.maxSessions, 1)]",
                 "avdPersonalAssignType": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolSettings.assignmentType, 'Automatic')]",
-                "avdDeployRappGroup": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneAppGroupOptions.deployRemoteAppGroup, false)]",
                 "avdIdentityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
                 "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
                 "avdIdentityDomainName": "[steps('identity').identityDomainInformation.identityDomainName]",
@@ -2368,10 +2345,8 @@
                 "avdHostPoolCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.hostPoolCustomName, 'no')]",
                 "avdHostPoolCustomFriendlyName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.hostPoolCustomFriendlyName, 'no')]",
                 "avdScalingPlanCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.scalingPlanCustomName, 'no')]",
-                "avdApplicationGroupCustomNameDesktop": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.applicationGroupCustomNameDesktop, 'no')]",
-                "avdApplicationGroupCustomFriendlyName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.applicationGroupCustomFriendlyNameDesktop, 'no')]",
-                "avdApplicationGroupCustomNameRapp": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.applicationGroupCustomNameRemoteApp, 'no')]",
-                "avdApplicationGroupCustomFriendlyNameRapp": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.applicationGroupCustomFriendlyNameRemoteApp, 'no')]",
+                "avdApplicationGroupCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.applicationGroupCustomName, 'no')]",
+                "avdApplicationGroupCustomFriendlyName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.applicationGroupCustomFriendlyName, 'no')]",
                 "avdSessionHostCustomNamePrefix": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.sessionHostCustomNamePrefix, 'no')]",
                 "avdAvailabilitySetCustomNamePrefix": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.availabilitySetCustomNamePrefix, 'no')]",
                 "storageAccountPrefixCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.storageAccountPrefixCustomName, 'no')]",
