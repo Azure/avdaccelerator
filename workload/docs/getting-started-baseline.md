@@ -10,13 +10,13 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
 
 ### Azure Environment Setup
 
-- [ ]  Deploy an ALZ architecture (recommended but not mandatory) from a template reference implementation available at [Deploying Enterprise-Scale Architecture in your own environment](https://github.com/Azure/Enterprise-Scale#deploying-enterprise-scale-architecture-in-your-own-environment).
-- [ ]  Configure Azure AD Connect and ensure users are synchronized from AD DS to Azure AD, unless session hosts are joining Azure AD and FSLogix is not in use.
+- [x]  Deploy an ALZ architecture (recommended but not mandatory) from a template reference implementation available at [Deploying Enterprise-Scale Architecture in your own environment](https://github.com/Azure/Enterprise-Scale#deploying-enterprise-scale-architecture-in-your-own-environment).
+- [x]  Configure Azure AD Connect and ensure users are synchronized from AD DS to Azure AD, unless session hosts are joining Azure AD and FSLogix is not in use.
 
 ### Subscription requirements
 
-- [ ] Access to the Azure Virtual Desktop Azure subscription with owner permissions.
-- [ ]  The following resource provider must be registered in the subscription to be used for deployment:
+- [x] Access to the Azure Virtual Desktop Azure subscription with owner permissions.
+- [x]  The following resource provider must be registered in the subscription to be used for deployment:
   - Microsoft.DesktopVirtualization
   - Microsoft.Compute (When deploying Zero Trust mathe feature [EncryptionAtHost](https://learn.microsoft.com/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell) will need to be registered)
   - Microsoft.Network
@@ -24,13 +24,13 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
 
 ### Account and Access requirements
 
-- [ ]  The account used for the deployment and the Active Directory Domain Join account cannot have multi-factor authentication (MFA) enabled.
-- [ ]  The Domain Controllers used for AD join purposes should be standard writable Domain Controllers, not Read Only Domain Controllers (when using AD DS or AAD DS).
-- [ ]  Ensure you have the appropriate [licenses](https://docs.microsoft.com/azure/virtual-desktop/prerequisites#operating-systems-and-licenses) for proper Azure Virtual Desktop entitlement.
+- [x]  The account used for the deployment and the Active Directory Domain Join account cannot have multi-factor authentication (MFA) enabled.
+- [x]  The Domain Controllers used for AD join purposes should be standard writable Domain Controllers, not Read Only Domain Controllers (when using AD DS or AAD DS).
+- [x]  Ensure you have the appropriate [licenses](https://docs.microsoft.com/azure/virtual-desktop/prerequisites#operating-systems-and-licenses) for proper Azure Virtual Desktop entitlement.
 
 ### Networking requirements
-- [ ]  If the new Azure Virtual Desktop workload will be connected (peered) with a Hub VNet, contributor permissions are required on the referenced Hub VNet.
-- [ ]  Virtual network subnet used for Azure Virtual Desktop session host deployment, needs to access the following:
+- [x]  If the new Azure Virtual Desktop workload will be connected (peered) with a Hub VNet, contributor permissions are required on the referenced Hub VNet.
+- [x]  Virtual network subnet used for Azure Virtual Desktop session host deployment, needs to access the following:
   - [list of URLs](https://learn.microsoft.com/azure/virtual-desktop/safe-url-list?tabs=azure#session-host-virtual-machines) session host VMs need to access for Azure Virtual Desktop (During and after deployment).
   - List of URLs required during deployment:
     - <https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/Set-FSLogixRegKeys.ps1>
@@ -38,17 +38,15 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
     - <https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/Manual-DSC-Storage-Scripts.ps1>
     - <https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip>
     - <https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration_09-08-2022.zip>
-- [ ]  If using existing Virtual Networks, disable deny private endpoint network policies. The deployment will fail if deny private endpoint network policies are enabled. See the following article on disabling them: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy).
-- [ ]  Set up private DNS zones for Azure Files and Key Vault private endpoints name resolution. Link the private DNS zones to the Azure Virtual Desktop vNet when NOT using custom DNS servers or to the vNet where the custom DNS servers are located if configured on the Azure Virtual Desktop vNet.
+- [x]  If using existing Virtual Networks, disable deny private endpoint network policies. The deployment will fail if deny private endpoint network policies are enabled. See the following article on disabling them: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy).
+- [x]  Set up private DNS zones for Azure Files and Key Vault private endpoints name resolution. Link the private DNS zones to the Azure Virtual Desktop vNet when NOT using custom DNS servers or to the vNet where the custom DNS servers are located if configured on the Azure Virtual Desktop vNet.
   - Azure Commercial: privatelink.file.core.windows.net (Azure Files) and privatelink.vaultcore.azure.net (Key Vault).
   - Azure Government: privatelink.file.core.usgovcloudapi.net (Azure Files) and privatelink.vaultcore.usgovcloudapi.net (Key Vault).
 
-
 ### Other requirements
-- [ ]  If implementing Zero Trust, ensure the prerequisites for encryption at host have been implemented: [Prerequisites](https://learn.microsoft.com/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell#prerequisites).
-- [ ]  If enabling Start VM on Connect or Scaling Plans features, it is required to provide the ObjectID for the enterprise application Azure Virtual Desktop (Name can also be displayed as 'Windows Virtual Desktops'). To get the ObjectID got to Azure AD > Enterprise applications, remove all filters and search for 'Virtual Desktops' and copy the OjectID that is paired with the Application ID: 9cdead84-a844-4324-93f2-b2e6bb768d07.
-- [ ]  Account used for portal UI deployment, needs to be able to query Azure AD tenant and get the ObjectID of the Azure Virtual Desktop enterprise app, query will be executed by the automation using the user context.
-
+- [x]  If implementing Zero Trust, ensure the prerequisites for encryption at host have been implemented: [Prerequisites](https://learn.microsoft.com/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell#prerequisites).
+- [x]  If enabling Start VM on Connect or Scaling Plans features, it is required to provide the ObjectID for the enterprise application Azure Virtual Desktop (Name can also be displayed as 'Windows Virtual Desktops'). To get the ObjectID got to Azure AD > Enterprise applications, remove all filters and search for 'Virtual Desktops' and copy the OjectID that is paired with the Application ID: 9cdead84-a844-4324-93f2-b2e6bb768d07.
+- [x]  Account used for portal UI deployment, needs to be able to query Azure AD tenant and get the ObjectID of the Azure Virtual Desktop enterprise app, query will be executed by the automation using the user context.
 
 ## Planning
 
