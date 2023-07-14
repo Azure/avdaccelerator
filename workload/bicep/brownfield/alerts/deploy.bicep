@@ -1473,7 +1473,7 @@ var MetricAlerts = {
       description: '${AlertDescriptionHeader}\nThis could indicate storage is unavailable for user Profiles or Apps using MSIX App Attach.'
       severity: 1
       evaluationFrequency: 'PT5M'
-      windowSize: 'PT55M'
+      windowSize: 'PT5M'
       criteria: {
         allOf: [
           {
