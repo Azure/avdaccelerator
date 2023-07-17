@@ -1,7 +1,5 @@
 # Getting Started - Baseline Deployment Guide
 
-## Introduction
-
 Welcome to the Baseline Deployment Guide for Azure Virtual Desktop! This guide will help you deploy the Baseline solution by providing deployment instructions and prerequisites.
 
 ## Prerequisites
