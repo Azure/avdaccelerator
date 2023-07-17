@@ -1,19 +1,19 @@
-# Getting Started - Custom image build - Deployment
+# Getting Started - Custom Image Build Deployment
+
+Welcome to the Custom Image Build Deployment guide! This guide will walk you through the process of deploying a custom image build solution for your Azure Virtual Desktop environment. By following these steps, you'll be able to create and deploy optimized and customized images for use with Azure Virtual Desktop. 
 
 ## Prerequisites
 
-Prior to deploying the Custom Image Build solution, you need to ensure you have met the following prerequisites:
+Before you begin the deployment process, please ensure that you have met the following prerequisites:
 
-- It is recommended to have already deployed an ALZ architecture (not mandatory) from a template reference implementation available. See [Deploying Enterprise-Scale Architecture in your own environment](https://github.com/Azure/
-- If using an existing virtual network, the deployment will fail if the private endpoint or private link services network policies are enabled. See the following article on disabling them: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy) and [Disable network policies for Private Link](https://learn.microsoft.com/azure/private-link/disable-private-link-service-network-policy).
-- Virtual network subnet used for deployment, needs access to the following URLs:
+- <b>Subscription Requirements </b>: 
+  - Access to the Azure Virtual Desktop shared services Azure subscription with owner permissions.
+  - The Microsoft.VirtualMachineImages resource provider must be registered in the subscription to be used for deployment.
+- <b>ALZ Architecture Deployment</b>: It is recommended (though not mandatory) to have already deployed an ALZ architecture using the template reference implementation available. You can find more information on deploying the ALZ architecture in your own environment at [Deploying Enterprise-Scale Architecture in your own environment](https://github.com/Azure/Enterprise-Scale)
+- <b>Disable Private Endpoint Network Policies</b>: If you are using an existing virtual network,ensure that the private endpoint or private link services network policies are disabled. The deployment process will fail if these policies are enabled. You can find instructions on how to disable these policies in the following articles: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy) and [Disable network policies for Private Link](https://learn.microsoft.com/azure/private-link/disable-private-link-service-network-policy).
+- <b>URL Access for Virtual Network Subnet</b>: The virtual network subnet used for deployment needs access to the following URLs:
   - https://raw.githubusercontent.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/main/Windows_VDOT.ps1
   - https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/archive/refs/heads/main.zip
-
-### Subscription requirements
-
-- Access to the Azure Virtual Desktop shared services Azure subscription with owner permissions.
-- The [Microsoft.VirtualMachineImages](https://learn.microsoft.com/azure/azure-resource-manager/management/resource-providers-and-types#register-resource-provider) resource provider must be registered in the subscription to be used for deployment.
 
 
 ## Planning
@@ -24,7 +24,7 @@ This solution supports deployment into greenfield scenarios (no Azure Virtual De
 
 ### Greenfield deployment
 
-In the Greenfield scenario, no Azure infrastructure components exist prior to deployment. The automation framework will create the Custom Image Build solution in the desired Azure region. When a build is executed on the image template, all the required resources will be deployed to support the deployment and communication of the build VM. If you have security requirements that do not allow the deployment of public IP addresses, use the Brownfield deployment option instead.
+In the Greenfield scenario, there are no existing Azure infrastructure components. The automation framework will create the Custom Image Build solution in the desired Azure region. When a build is executed on the image template, all the required resources for the deployment and communication of the build VM will be provisioned. If you have security requirements that do not allow the deployment of public IP addresses, use the Brownfield deployment option instead.
 
 ### Brownfield deployment
 
@@ -46,7 +46,7 @@ The **Custom Image Build** creates a new image from the Azure marketplace in an 
 
 It is preferable to have a new subscription, adhering to the Azure Landing Zone guidance. However, the solution can also be deployed to an existing subscription. See [Resource Organization](https://docs.microsoft.com/azure/cloud-adoption-framework/scenarios/wvd/design-area-resource-organization) for further information.
 
-This [diagram](/workload/docs/diagrams/avd-accelerator-resource-organization-naming.png) is an example of the Azure resources and organization created with this reference implementation. The following input values were used in this example:
+To get an overview of the Azure resources and organization created with this reference implementation, take a look at this [diagram](/workload/docs/diagrams/avd-accelerator-resource-organization-naming.png). The diagram illustrates an example using the following input values:
 
 - **Custom image deployment**:
   - `deploymentLocation`: East US 2
@@ -55,9 +55,9 @@ This [diagram](/workload/docs/diagrams/avd-accelerator-resource-organization-nam
 
 ## Naming standard
 
-The accelerator has built-in resource naming automation based on [Microsoft Cloud Adoption Framework (CAF) best practices for naming convention](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming?WT.mc_id=Portal-Microsoft_Azure_CreateUIDef),  the [recommended abbreviations for Azure resource types](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations?WT.mc_id=Portal-Microsoft_Azure_CreateUIDef) and [suggested tags](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-tagging#minimum-suggested-tags).
+The accelerator incorporates built-in resource naming automation based on then [Microsoft Cloud Adoption Framework (CAF) best practices for naming convention](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming?WT.mc_id=Portal-Microsoft_Azure_CreateUIDef),  the [recommended abbreviations for Azure resource types](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations?WT.mc_id=Portal-Microsoft_Azure_CreateUIDef) and [suggested tags](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-tagging#minimum-suggested-tags).
 
-To learn more about the resource naming used in this accelerator take a look at the [Naming Standard and Tagging](./resource-naming.md) page.
+To learn more about the resource naming conventions used in this accelerator, refer to the [Naming Standard and Tagging](./resource-naming.md) page.
 
 ## Next Steps
 
