@@ -40,8 +40,8 @@ Details on basic [network design](https://techzone.vmware.com/resource/horizon-c
 Sizing and scaling detail can also be found in the [Vmware Horizon Cloud Service on Microsoft Azure Service Limits](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service/services/hzncloudmsazure.getstarted15/GUID-EE21156D-974D-4C37-820D-1A40CED6346E.html) article in the product documentation.
 
 
-/
-/
+/  
+/  
 
 **Horizon Cloud on Azure Next-Gen - Deployment Reference Architecture Single Azure Site**
 
