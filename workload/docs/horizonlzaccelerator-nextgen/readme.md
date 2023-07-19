@@ -85,6 +85,7 @@ Sometimes business requirements dictate that a desktop platform needs to have a 
 
 Designing a multi-cloud solution is challenging and complex. VMware has developed guidance for deploying Horizon on each of the supported cloud-based infrastructure platforms. Review the different reference architectures for other platforms on the [Horizon Reference Architecture](https://techzone.vmware.com/resource/horizon-cloud-service-next-gen-architecture) on VMware TechZone.
 
+&nbsp;
 
 
 # Design Areas
