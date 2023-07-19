@@ -75,6 +75,8 @@ Below is a simple example of site scaling and Multi-site deployments. More infor
 
 
 
+&nbsp;
+
 ### Scenario 2: Horizon Next-Gen Cloud Hybrid deployment on Microsoft Azure and On Premises ###
 Sometimes business requirements dictate that a desktop platform needs to have a hybrid architecture for users/clients that access sensitive data which must be stored and accessed from on premises resources. VMware Horizon Cloud Next-Gen resources can be deployed in multiple locations including on premises datacenters using the above reference multi-site design. Both cloud and on premises deployment can be managed by the same Horizon Cloud Next-Gen control plane hosted by VMware. Some other areas that can be addressed in a hybrid deployment are:
 - **Business continuity and disaster recovery** - Leverage the elasticity of the cloud and get a cost-effective, robust DR solution
