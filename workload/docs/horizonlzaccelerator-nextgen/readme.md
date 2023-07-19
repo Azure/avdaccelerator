@@ -85,7 +85,9 @@ Designing a multi-cloud solution is challenging and complex. VMware has develope
 Microsoft Horizon Cloud on Microsoft Azure Architecture requires at least one [Microsoft Azure Virtual Network (Vnet)](https://docs.microsoft.com/azure/virtual-network/virtual-networks-overview) to deploy platform and user components onto. This Vnet should contain at least three different subnets for management components of the service, a DMZ, and desktop capacity.
 These subnets are used for the Horizon management appliances and customer-managed workload. Network security group (NSG) policies are applied on the Vnet, to allow and disallow traffic in and out of that Vnet.
 You can select which VNets and subnets are allowed to be used for desktop capacity. If you are using multiple VNets for user capacity, you need to set up virtual networking peering between the VNets in use. See [Virtual network peering](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-peering-overview).
+
 **Horizon Cloud on Azure - Network Reference Architecture**
+
 [![Diagram of Horizon Cloud on Azure - Network Reference Architecture](../diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-4.png)](./diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-4.png#lightbox)
 
 A detailed list of infrastructure requirements can be found in the Horizon Cloud on Microsoft Azure product documentation in the [Horizon Cloud Next-Gen on Microsoft Azure – First Pod Deployment – High-Level Workflow document](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service---next-gen/services/hzncloud.nextgen/GUID-67DE260B-6B78-48C0-A483-428642129B92.html).
