@@ -39,8 +39,10 @@ The deployment is straightforward: You prepare and provide information to the VM
 Details on basic [network design](https://techzone.vmware.com/resource/horizon-cloud-on-microsoft-azure-architecture#network-design), [single-site design](https://techzone.vmware.com/resource/horizon-cloud-on-microsoft-azure-architecture#single-site-design), and [multi-site design](https://techzone.vmware.com/resource/horizon-cloud-on-microsoft-azure-architecture#multi-site-design) can be found in the respective sections of the Horizon Cloud on Microsoft Azure Architecture document on VMware TechZone.
 Sizing and scaling detail can also be found in the [Vmware Horizon Cloud Service on Microsoft Azure Service Limits](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service/services/hzncloudmsazure.getstarted15/GUID-EE21156D-974D-4C37-820D-1A40CED6346E.html) article in the product documentation.
 
-##
-##
+&nbsp;
+
+&nbsp;
+
 
 **Horizon Cloud on Azure Next-Gen - Deployment Reference Architecture Single Azure Site**
 
