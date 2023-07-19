@@ -2322,7 +2322,7 @@
                 "avdVnetPrivateDnsZoneKeyvaultId": "[if(and(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneKeyvaultSelector.id, '')]",
                 "createAvdFslogixDeployment": "[steps('storage').storageFslogix.fslogixDeployment]",
                 "fslogixStoragePerformance": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.fslogixStorageAccountSku, 'Premium')]",
-                "avdFslogixFileShareQuotaSize": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.sessionHostsFslogixFileShareQuota, 1 )]",
+                "fslogixFileShareQuotaSize": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.sessionHostsFslogixFileShareQuota, 1 )]",
                 "createMsixDeployment": "[steps('storage').storageMsix.msixDeployment]",
                 "msixStoragePerformance": "[if(equals(steps('storage').storageMsix.msixDeployment, true), steps('storage').storageMsix.msixStorageAccountSku, 'Premium')]",
                 "msixFileShareQuotaSize": "[if(equals(steps('storage').storageMsix.msixDeployment, true), steps('storage').storageMsix.sessionHostsMsixFileShareQuota, 1 )]",

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "520490619725761457"
+      "templateHash": "6739132677234659611"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -332,16 +332,16 @@
     },
     "fslogixFileShareQuotaSize": {
       "type": "int",
-      "defaultValue": 10,
+      "defaultValue": 1,
       "metadata": {
-        "description": "Fslogix file share size. (Default: 10)"
+        "description": "Fslogix file share size. (Default: 1)"
       }
     },
     "msixFileShareQuotaSize": {
       "type": "int",
-      "defaultValue": 10,
+      "defaultValue": 1,
       "metadata": {
-        "description": "MSIX file share size. (Default: 10)"
+        "description": "MSIX file share size. (Default: 1)"
       }
     },
     "avdDeploySessionHosts": {
