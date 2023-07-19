@@ -101,8 +101,8 @@ You can select which VNets and subnets are allowed to be used for desktop capaci
 [![Diagram of Horizon Cloud on Azure - Network Reference Architecture](../diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-4.png)](./diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-4.png#lightbox)
 
 A detailed list of infrastructure requirements can be found in the Horizon Cloud on Microsoft Azure product documentation in the [Horizon Cloud Next-Gen on Microsoft Azure – First Pod Deployment – High-Level Workflow document](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service---next-gen/services/hzncloud.nextgen/GUID-67DE260B-6B78-48C0-A483-428642129B92.html).
-&nbsp;
 
+&nbsp;
 
 ## Identity and access management
 One method of accessing Horizon desktops and applications is through Workspace ONE Access. This requires integration between the Horizon Cloud Service and Workspace ONE Access using the SAML 2.0 standard to establish mutual trust, which is essential for single sign-on (SSO) functionality.
@@ -122,7 +122,9 @@ Resources Review the following resources on Identity integration.
 - [Workspace ONE Access](https://docs.vmware.com/en/VMware-Workspace-ONE-Access/index.html)
 - [Workspace ONE Access - Directory Integration](https://docs.vmware.com/en/VMware-Workspace-ONE-Access/services/ws1_access_directory/GUID-DF53F9EF-6715-469A-A885-9ACFE4B2A35B.html)
 - [Horizon Cloud on Azure Architecture](https://techzone.vmware.com/resource/horizon-cloud-on-microsoft-azure-first-gen-architecture#authentication)
+
 &nbsp;
+
 
 ## Security
 All environments should follow, at a minimum, Microsoft's [Cloud Adoption Framework guidance for security](https://learn.microsoft.com/azure/cloud-adoption-framework/secure/security-best-practices-introduction). There are also other considerations in the Network, Identity, and management sections that will help lock down your environmnet from outside influence. Security reviews, and updates should be part of regular maintennace of your environment.  
@@ -143,6 +145,7 @@ The following list provides more information about platform-based resources crea
 
 **User Resources**
 User resources are organized and displayed in the Horizon Universal Console for administrators to manage. After a Horizon Edge or Horizon Pod has been deployed, you can import images, use them to create pool templates, pools, and entitle users to desktops and applications.
+
 &nbsp;
 
 ## Images
