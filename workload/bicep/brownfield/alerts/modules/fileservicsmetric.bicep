@@ -1,5 +1,6 @@
 param AutoMitigate bool
 param Enabled bool
+param Environment string
 param Location string
 param StorageAccountResourceID string
 param MetricAlertsFileShares array
@@ -9,10 +10,10 @@ param Tags object
 var FileServicesResourceID = '${StorageAccountResourceID}/fileServices/default'
 
 module metricAlerts_FileServices '../../../../../carml/1.3.0/Microsoft.Insights/metricAlerts/deploy.bicep' = [for i in range(0, length(MetricAlertsFileShares)): {
-  name: 'c_${MetricAlertsFileShares[i].name}-${split(FileServicesResourceID, '/')[8]}'
+  name: 'c_${MetricAlertsFileShares[i].name}-${split(FileServicesResourceID, '/')[8]}-${Environment}'
   params: {
     enableDefaultTelemetry: false
-    name: '${MetricAlertsFileShares[i].name}-${split(FileServicesResourceID, '/')[8]}'
+    name: '${MetricAlertsFileShares[i].name}-${split(FileServicesResourceID, '/')[8]}-${Environment}'
     criterias: MetricAlertsFileShares[i].criteria.allOf
     location: 'global'
     alertDescription: MetricAlertsFileShares[i].description

@@ -192,55 +192,125 @@
                             "visible": true
                         },
                         {
+                            "name": "AutoResolveAlert",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Allow Alerts to Auto-Resolve",
+                            "defaultValue": "Yes",
+                            "toolTip": "This option determines if the alert will automatically set the flag to resolved if a subsequent check is within the defined threshold.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "Yes",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "No",
+                                        "value": false
+                                    }
+                                ]
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "LogAnalyticsWorkspaceResource",
+                            "type": "Microsoft.Solutions.ResourceSelector",
+                            "label": "Insights Log Analytics Workspace",
+                            "toolTip": "Log Analytics Workspace in which AVD Insigts and diagnostics data resides in.",
+                            "resourceType": "Microsoft.OperationalInsights/workspaces",
+                            "constraints": {
+                                "required": true
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "optionVMMetrics",
+                            "type": "Microsoft.Common.CheckBox",
+                            "label": "VMs in separate Resource Group(s)",
+                            "constraints": {
+                                "required": false,
+                                "validationMessage": "Selecting this will determine if multiple VM Metric based Alerts can be deployed given the scope for VM resources is per Resource Group."
+                            }
+                        },
+                        {
+                            "name": "AVDResourceGroupId",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "AVD Resource Group",
+							"multiselect": false,
+							"defaultValue": "[]",
+                            "selectAll": false,
+                            "toolTip": "The Resource Group where all AVD resources are deployed to include VMs.",
+                            "filter": true,
+                            "filterPlaceholder": "Filter Resource Groups...",
+                            "defaultDescription": "A value for selection",
+                            "constraints": {
+                                "allowedValues": "[map(steps('basics').ResGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                "required":  "[if(steps('AlertsConfig').optionVMMetrics, false, true)]"
+                            },
+                            "visible": "[if(steps('AlertsConfig').optionVMMetrics, false, true)]"
+                        },
+                        {
                             "name": "HostPools",
                             "type": "Microsoft.Common.DropDown",
                             "label": "Host Pools",
                             "multiselect": true,
                             "selectAll": true,
                             "defaultValue": "[]",
-                            "toolTip": "Select Host Pools to configure Alerts for.",
+                            "toolTip": "Select Host Pool(s) to configure Alerts for.",
                             "filter": true,
                             "filterPlaceholder": "Filter Host Pools...",
                             "defaultDescription": "A value for selection",
                             "constraints": {
                                 "allowedValues": "[map(steps('basics').HostPoolsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
-                                "required": true
+                                "required":  "[if(steps('AlertsConfig').optionVMMetrics, false, true)]"
                             },
-                            "visible": true
+                            "visible": "[if(steps('AlertsConfig').optionVMMetrics, false, true)]"
                         },
                         {
-                            "name": "LogAnalyticsWorkspaceResource",
-                            "type": "Microsoft.Common.DropDown",
-                            "label": "Insights Log Analytics Workspace",
-                            "multiselect": false,
-                            "selectAll": false,
-                            "toolTip": "Log Analytics Workspace in which AVD Insigts and diagnostics data resides in.",
-                            "filter": true,
-                            "filterPlaceholder": "Filter Log Analytics Workspaces...",
-                            "defaultDescription": "A value for selection",
+                            "name": "hostPoolInfo",
+                            "type": "Microsoft.Common.EditableGrid",
+                            "visible": "[if(steps('AlertsConfig').optionVMMetrics, true, false)]",
+                            "ariaLabel": "Host Pool to VM Resource Mapping",
+                            "label": "HostPool",
                             "constraints": {
-                                "allowedValues": "[map(steps('basics').LogAnalyticsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
-                                "required": true
-                            },
-                            "visible": true
-                        },
-                        {
-                            "name": "SessionHostsResourceGroupIds",
-                            "type": "Microsoft.Common.DropDown",
-                            "label": "Session Host VM Resource Groups",
-							"multiselect": true,
-							"defaultValue": "[]",
-                            "selectAll": true,
-                            "toolTip": "The Resource Group(s) where the AVD VMs are located.",
-                            "filter": true,
-                            "filterPlaceholder": "Filter Resource Groups...",
-                            "defaultDescription": "A value for selection",
-                            "constraints": {
-                                "allowedValues": "[map(steps('basics').ResGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
-                                "required": true
-                            },
-                            "visible": true
-                        },
+                              "width": "Full",
+                              "rows": {
+                                "count": {
+                                  "min": 1,
+                                  "max": 20
+                                }
+                              },
+                              "columns": [
+                                {
+                                  "id": "colHostPoolName",
+                                  "header": "Host Pool",
+                                  "width": "1fr",
+                                  "element": {
+                                    "type": "Microsoft.Common.DropDown",
+									"placeholder": "",
+                                    "constraints": {
+                                        "allowedValues": "[map(steps('basics').HostPoolsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                        "required": true
+                                    }
+                                  }
+                                },
+                                {
+                                  "id": "colVMresGroup",
+                                  "header": "VM Resource Group",
+                                  "width": "1fr",
+                                  "element": {
+                                    "type": "Microsoft.Common.DropDown",
+                                    "placeholder": "",
+                                    "constraints": {
+                                        "allowedValues": "[map(steps('basics').ResGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                        "required": true
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          },
                         {
                             "name": "optionAzFiles",
                             "type": "Microsoft.Common.CheckBox",
@@ -353,13 +423,16 @@
                 "_ArtifactsLocation": "[steps('AlertsConfig')._ArtifactsLocation]",
                 "_ArtifactsLocationSasToken": "[steps('AlertsConfig')._ArtifactsLocationSasToken]",
                 "AlertNamePrefix": "[steps('AlertsConfig').AlertNamePrefix]",
+                "AllResourcesSameRG": "[if(steps('AlertsConfig').optionVMMetrics, false, true)]",
+                "AutoResolveAlert": "[steps('AlertsConfig').AutoResolveAlert]",
+                "AVDResourceGroupId": "[steps('AlertsConfig').AVDResourceGroupId]",
                 "DistributionGroup": "[steps('AlertsConfig').DistributionGroup]",
                 "Environment": "[steps('AlertsConfig').Environment]",
+                "HostPoolInfo": "[steps('AlertsConfig').hostPoolInfo]",
                 "HostPools": "[steps('AlertsConfig').HostPools]",
-                "LogAnalyticsWorkspaceResourceId": "[steps('AlertsConfig').LogAnalyticsWorkspaceResource]",
+                "LogAnalyticsWorkspaceResourceId": "[steps('AlertsConfig').LogAnalyticsWorkspaceResource.id]",
                 "ResourceGroupName": "[if(equals(steps('AlertsConfig').ResourceGroupStatus, 'New'), steps('AlertsConfig').resourceGroupNameNew, last(split(steps('AlertsConfig').resourceGroupNameExisting, '/')))]",
                 "ResourceGroupStatus": "[steps('AlertsConfig').ResourceGroupStatus]",
-                "SessionHostsResourceGroupIds": "[steps('AlertsConfig').SessionHostsResourceGroupIds]",
                 "StorageAccountResourceIds": "[steps('AlertsConfig').AzFilesStorageSection.StorageAccountResourceIds]",
                 "ANFVolumeResourceIds": "[steps('AlertsConfig').ANFStorageSection.ANFVolumeResourceIds]",
                 "Tags": "[steps('AlertsConfig').Tags]"

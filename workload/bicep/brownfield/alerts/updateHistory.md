@@ -2,6 +2,18 @@
 
 [Home](./readme.md) | [PostDeployment](./postDeploy.md) | [How to Change Thresholds](./changeAlertThreshold.md) | [Alert Reference](./alertReference.md) | [Excel List of Alert Rules](./references/alerts.xlsx)
 
+## 7/17/23 - Fixes - Remove Deployment Script (v2.1.0)
+
+- Removed Identity and Deployment script for VM to Host Pool mapping
+    - should fix API limit issue #392
+    - should fix issue 379 regarding use of Private Endpoints on host pools given no Deployment Script Container used
+- Updated Custom UI to now have flag for mapping VM RG to HostPool(s) or use single RG for VMs and AVD resources
+- Fix typo on alert StorAzFilesAvailBlw-99-Prcnt for windowsSize (55M vs 5M) which would fail deployment (Issue 425)
+- Reverted Custom UI for Log Analytics Selection back to type which allows cross subscription selection (Was API now Resource Selection component)
+- New Option for allowing All Alerts to Auto-Resolve
+- Environment (Production, Dev, Test) letter now at the end of the alert names
+- Added Current Version to Alerts Readme Summary section for awareness and easier tracking
+
 ## 7/10/23 - Additional Alerts Added and Minor fixes (v2.0.2)
 
 These have been added and as usual deployed 'disabled' and duplicated for each Host Pool.
