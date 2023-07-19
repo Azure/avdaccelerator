@@ -89,6 +89,8 @@ Designing a multi-cloud solution is challenging and complex. VMware has develope
 
 
 # Design Areas
+&nbsp;
+
 ## Networking
 Microsoft Horizon Cloud on Microsoft Azure Architecture requires at least one [Microsoft Azure Virtual Network (Vnet)](https://docs.microsoft.com/azure/virtual-network/virtual-networks-overview) to deploy platform and user components onto. This Vnet should contain at least three different subnets for management components of the service, a DMZ, and desktop capacity.
 These subnets are used for the Horizon management appliances and customer-managed workload. Network security group (NSG) policies are applied on the Vnet, to allow and disallow traffic in and out of that Vnet.
@@ -99,6 +101,8 @@ You can select which VNets and subnets are allowed to be used for desktop capaci
 [![Diagram of Horizon Cloud on Azure - Network Reference Architecture](../diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-4.png)](./diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-4.png#lightbox)
 
 A detailed list of infrastructure requirements can be found in the Horizon Cloud on Microsoft Azure product documentation in the [Horizon Cloud Next-Gen on Microsoft Azure – First Pod Deployment – High-Level Workflow document](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service---next-gen/services/hzncloud.nextgen/GUID-67DE260B-6B78-48C0-A483-428642129B92.html).
+&nbsp;
+
 
 ## Identity and access management
 One method of accessing Horizon desktops and applications is through Workspace ONE Access. This requires integration between the Horizon Cloud Service and Workspace ONE Access using the SAML 2.0 standard to establish mutual trust, which is essential for single sign-on (SSO) functionality.
@@ -118,6 +122,7 @@ Resources Review the following resources on Identity integration.
 - [Workspace ONE Access](https://docs.vmware.com/en/VMware-Workspace-ONE-Access/index.html)
 - [Workspace ONE Access - Directory Integration](https://docs.vmware.com/en/VMware-Workspace-ONE-Access/services/ws1_access_directory/GUID-DF53F9EF-6715-469A-A885-9ACFE4B2A35B.html)
 - [Horizon Cloud on Azure Architecture](https://techzone.vmware.com/resource/horizon-cloud-on-microsoft-azure-first-gen-architecture#authentication)
+&nbsp;
 
 ## Security
 All environments should follow, at a minimum, Microsoft's [Cloud Adoption Framework guidance for security](https://learn.microsoft.com/azure/cloud-adoption-framework/secure/security-best-practices-introduction). There are also other considerations in the Network, Identity, and management sections that will help lock down your environmnet from outside influence. Security reviews, and updates should be part of regular maintennace of your environment.  
@@ -126,6 +131,7 @@ All environments should follow, at a minimum, Microsoft's [Cloud Adoption Framew
 •	[Horizon Cloud Pod – Ports and Protocols Requirements](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service/services/hzncloudmsazure.getstarted15/GUID-FE6A6C12-2A0A-4C2D-B578-F1D65475801A.html) – This page is a reference for all of the possible ports and protocols used for communication within a typical Horizon Cloud Service on Microsoft Azure deployment. Use these tables to ensure your network configuration and firewalls will allow the communication traffic that is required for a successful pod deployment and day-to-day operations.
 •	[Horizon Client and Agent Security](https://docs.vmware.com/en/VMware-Horizon/2209/horizon-security/GUID-C4781600-9941-4576-8D81-C2E63A850EE7.html) – Horizon Client is the client software that end users run on their client devices to connect to remote desktops and published applications. Horizon Agent is the agent software that runs in virtual desktops, and on Microsoft RDS hosts that provide published desktops and published applications. Guidance on securing endpoints and virtual machines can be found in the document linked.
 
+&nbsp;
 
 
 ## Resource Organization
@@ -137,6 +143,7 @@ The following list provides more information about platform-based resources crea
 
 **User Resources**
 User resources are organized and displayed in the Horizon Universal Console for administrators to manage. After a Horizon Edge or Horizon Pod has been deployed, you can import images, use them to create pool templates, pools, and entitle users to desktops and applications.
+&nbsp;
 
 ## Images
 A virtual machine image can be imported from the [Microsoft Azure Marketplace](https://learn.microsoft.com/marketplace/purchase-vm-in-azure-portal#purchase-a-vm-using-the-marketplace-experience), the Microsoft [Azure Compute Gallery](https://learn.microsoft.com/azure/virtual-machines/azure-compute-gallery), or from a [Microsoft Azure Custom VM](https://learn.microsoft.com/azure/virtual-machines/windows/tutorial-custom-images). After it is imported, you can remotely connect to the image and make changes such as installing applications.
@@ -146,6 +153,7 @@ When an image is ready to use you publish it to the Horizon Edges where you want
 https://techzone.vmware.com/resource/horizon-cloud-service-next-gen-architecture#image-management-service
 
 
+&nbsp;
 
 ## Applications & Desktop Experience
 **Volume Packages**
@@ -170,6 +178,7 @@ The resources below describe how resources are managed within Horizon Cloud on M
 -	[Integrating FSLogix Profile Containers with VMware Horizon](https://techzone.vmware.com/resource/integrating-fslogix-profile-containers-vmware-horizon) – This document describes a number of different strategies for integrating FSLogix Profile Containers into a VMware Horizon deployment.
 -	[Managing Profiles and Policies for Windows Desktops: Dynamic Environment Manager Operational Tutorial](https://techzone.vmware.com/managing-profiles-and-policies-windows-desktops-dynamic-environment-manager-operational-tutorial) – Learn how to leverage Dynamic Environment Manager to manage Windows profiles and policies.
 
+&nbsp;
 
 
 ## Business Continuity and Disaster Recovery
@@ -191,6 +200,7 @@ By contrast, Horizon allows flexibility for providing disaster recovery to deskt
 The resources below may be useful for designing a resilient virtual workspace and applications environment with Horizon Cloud on Microsoft Azure:
 [Disaster Recovery in VMware Horizon](https://techzone.vmware.com/resource/providing-disaster-recovery-vmware-horizon) – This guide covers the considerations and discusses how to approach providing disaster recovery for Horizon-based workloads
 
+&nbsp;
 
 ## Management
 
@@ -253,6 +263,7 @@ The resources below describe how resources are managed within Horizon Cloud on M
 - [Cloud Monitoring Service](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service/services/hzncloudmsazure.admin15/GUID-9815E322-A13F-4E0A-B4F7-98B34A054D8F.html) – The Cloud Monitoring Service (CMS) is a built-in monitoring platform for Horizon Cloud Service. It provides critical monitoring and reporting capabilities for each Horizon Cloud on Microsoft Azure customer.
 - [Horizon Cloud Service - next-gen Architecture - Management and Moitoring](https://techzone.vmware.com/resource/horizon-cloud-service-next-gen-architecture#monitoring-and-analytics-service)
 
+&nbsp;
 
 
 ## Governance
