@@ -41,18 +41,25 @@ Sizing and scaling detail can also be found in the [Vmware Horizon Cloud Service
 
 
 
+
 **Horizon Cloud on Azure Next-Gen - Deployment Reference Architecture Single Azure Site**
 
 [![Diagram of Horizon Cloud on Azure Next-Gen - Deployment Reference Architecture Single Azure Site](../diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-1.png)](./diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-1.png#lightbox)
+
+
 
 You can find more details on what a typical Horizon Cloud on Microsoft Azure deployment looks like by reviewing the [Horizon Cloud on Microsoft Azure Architecture](https://techzone.vmware.com/resource/horizon-cloud-service-next-gen-architecture) document on VMware TechZone.
 Below is a simple example of site scaling and Multi-site deployments. More information can be found at [Horizon Cloud Service - next-gen Architecture | VMware](https://techzone.vmware.com/resource/horizon-cloud-service-next-gen-architecture#single-horizon-edge-scaling)
 
 
 
+
 **Site Scaling architecture - single region**
 
+
 [![Diagram of Horizon Cloud on Azure Next-Gen - Site Scaling architecture](../diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-2.png)](./diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-2.png#lightbox)
+
+
 
 
 
