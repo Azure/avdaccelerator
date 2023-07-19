@@ -1,5 +1,6 @@
 param AutoMitigate bool
 param Enabled bool
+param Environment string
 param Location string
 param StorageAccountResourceID string
 param MetricAlertsStorageAcct array
@@ -7,10 +8,10 @@ param ActionGroupID string
 param Tags object
 
 module metricAlerts_StorageAcct '../../../../../carml/1.3.0/Microsoft.Insights/metricAlerts/deploy.bicep' = [for i in range(0, length(MetricAlertsStorageAcct)):  {
-  name: 'c_${MetricAlertsStorageAcct[i].name}-${split(StorageAccountResourceID, '/')[8]}'
+  name: 'c_${MetricAlertsStorageAcct[i].name}-${split(StorageAccountResourceID, '/')[8]}-${Environment}'
   params: {
     enableDefaultTelemetry: false
-    name: '${MetricAlertsStorageAcct[i].name}-${split(StorageAccountResourceID, '/')[8]}'
+    name: '${MetricAlertsStorageAcct[i].name}-${split(StorageAccountResourceID, '/')[8]}-${Environment}'
     criterias: MetricAlertsStorageAcct[i].criteria.allOf
     location: 'global'
     alertDescription: MetricAlertsStorageAcct[i].description
