@@ -40,8 +40,8 @@ Details on basic [network design](https://techzone.vmware.com/resource/horizon-c
 Sizing and scaling detail can also be found in the [Vmware Horizon Cloud Service on Microsoft Azure Service Limits](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service/services/hzncloudmsazure.getstarted15/GUID-EE21156D-974D-4C37-820D-1A40CED6346E.html) article in the product documentation.
 
 
-/  
-/  
+  
+  
 
 **Horizon Cloud on Azure Next-Gen - Deployment Reference Architecture Single Azure Site**
 
@@ -49,11 +49,13 @@ Sizing and scaling detail can also be found in the [Vmware Horizon Cloud Service
 
 
 
+  
 You can find more details on what a typical Horizon Cloud on Microsoft Azure deployment looks like by reviewing the [Horizon Cloud on Microsoft Azure Architecture](https://techzone.vmware.com/resource/horizon-cloud-service-next-gen-architecture) document on VMware TechZone.
 Below is a simple example of site scaling and Multi-site deployments. More information can be found at [Horizon Cloud Service - next-gen Architecture | VMware](https://techzone.vmware.com/resource/horizon-cloud-service-next-gen-architecture#single-horizon-edge-scaling)
 
 
 
+  
 
 **Site Scaling architecture - single region**
 
@@ -62,6 +64,7 @@ Below is a simple example of site scaling and Multi-site deployments. More infor
 
 
 
+  
 
 
 **Site Scaling architecture - multi region**
