@@ -44,7 +44,7 @@ Sizing and scaling detail can also be found in the [Vmware Horizon Cloud Service
 
 **Horizon Cloud on Azure Next-Gen - Deployment Reference Architecture Single Azure Site**
 
-[![Diagram of Horizon Cloud on Azure Next-Gen - Deployment Reference Architecture Single Azure Site](../diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-1.png)](./diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-1.png#lightbox)
+[![Diagram of Horizon Cloud on Azure Next-Gen - Deployment Reference Architecture Single Azure Site](/diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-1.png)](/diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-1.png#lightbox)
 
 
 &nbsp;
@@ -71,7 +71,7 @@ Below is a simple example of site scaling and Multi-site deployments. More infor
 **Site Scaling architecture - multi region**
 
 
-[![Diagram of Horizon Cloud on Azure Next-Gen - Site Scaling architecture](../diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-3.png)](./diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-3.png#lightbox)
+[![Diagram of Horizon Cloud on Azure Next-Gen - Site Scaling architecture](diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-3.png)](/diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-3.png#lightbox)
 
 
 
@@ -98,7 +98,7 @@ You can select which VNets and subnets are allowed to be used for desktop capaci
 
 **Horizon Cloud on Azure - Network Reference Architecture**
 
-[![Diagram of Horizon Cloud on Azure - Network Reference Architecture](../diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-4.png)](./diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-4.png#lightbox)
+[![Diagram of Horizon Cloud on Azure - Network Reference Architecture](/diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-4.png)](/diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-4.png#lightbox)
 
 A detailed list of infrastructure requirements can be found in the Horizon Cloud on Microsoft Azure product documentation in the [Horizon Cloud Next-Gen on Microsoft Azure – First Pod Deployment – High-Level Workflow document](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service---next-gen/services/hzncloud.nextgen/GUID-67DE260B-6B78-48C0-A483-428642129B92.html).
 
