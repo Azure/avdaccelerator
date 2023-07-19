@@ -60,7 +60,7 @@ Below is a simple example of site scaling and Multi-site deployments. More infor
 **Site Scaling architecture - single region**
 
 
-[![Diagram of Horizon Cloud on Azure Next-Gen - Site Scaling architecture](../diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-2.png)](./diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-2.png#lightbox)
+[![Diagram of Horizon Cloud on Azure Next-Gen - Site Scaling architecture](/diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-2.png)](/diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-2.png#lightbox)
 
 
 &nbsp;
