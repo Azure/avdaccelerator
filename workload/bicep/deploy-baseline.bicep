@@ -167,11 +167,11 @@ param createAvdFslogixDeployment bool = true
 @sys.description('Deploy MSIX App Attach setup. (Default: false)')
 param createMsixDeployment bool = false
 
-@sys.description('Fslogix file share size. (Default: 10)')
-param fslogixFileShareQuotaSize int = 10
+@sys.description('Fslogix file share size. (Default: 1)')
+param fslogixFileShareQuotaSize int = 1
 
-@sys.description('MSIX file share size. (Default: 10)')
-param msixFileShareQuotaSize int = 10
+@sys.description('MSIX file share size. (Default: 1)')
+param msixFileShareQuotaSize int = 1
 
 @sys.description('Deploy new session hosts. (Default: true)')
 param avdDeploySessionHosts bool = true
