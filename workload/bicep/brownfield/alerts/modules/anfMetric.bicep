@@ -1,5 +1,6 @@
 param AutoMitigate bool
 param Enabled bool
+param Environment string
 param Location string
 param MetricAlertsANF array
 param ANFVolumeResourceID string
@@ -7,10 +8,10 @@ param ActionGroupID string
 param Tags object
 
 module metricAlerts_VirtualMachines '../../../../../carml/1.3.0/Microsoft.Insights/metricAlerts/deploy.bicep' = [for i in range(0, length(MetricAlertsANF)): {
-  name: 'c_${MetricAlertsANF[i].name}-${split(ANFVolumeResourceID, '/')[12]}'
+  name: 'c_${MetricAlertsANF[i].name}-${split(ANFVolumeResourceID, '/')[12]}-${Environment}'
   params: {
     enableDefaultTelemetry: false
-    name: '${MetricAlertsANF[i].name}-${split(ANFVolumeResourceID, '/')[12]}'
+    name: '${MetricAlertsANF[i].name}-${split(ANFVolumeResourceID, '/')[12]}-${Environment}'
     criterias: MetricAlertsANF[i].criteria.allOf
     location: 'global'
     alertDescription: MetricAlertsANF[i].description

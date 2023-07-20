@@ -1,10 +1,16 @@
+## Table of Contents
+
+| [Home](../../../../readme.md) | [Custom Image Build](/workload/docs/getting-started-custom-image-build.md) | [Auto Increase Premium File Share Quota](/workload/bicep/brownfield/autoIncreasePremiumFileShareQuota/readme.md) | [Scaling Tool](/workload/bicep/brownfield/scalingTool/readme.md) | [Start VM On Connect](/workload/bicep/brownfield/startVmOnConnect/readme.md) | [Deep Insights Workbook](/workload/workbooks/deepInsightsWorkbook/readme.md) |
+
 # AVD Alerts Solution
 
-[Home](./readme.md) | [PostDeployment](./postDeploy.md) | [How to Change Thresholds](./changeAlertThreshold.md) | [Alert Reference](./alertReference.md) | [Excel List of Alert Rules](./references/alerts.xlsx) | [Update History](./updateHistory.md)
+[Alerts Home](./readme.md) | [PostDeployment](./postDeploy.md) | [How to Change Thresholds](./changeAlertThreshold.md) | [Alert Reference](./alertReference.md) | [Excel List of Alert Rules](./references/alerts.xlsx) | [Update History](./updateHistory.md)
 
-## Description
+## Summary
 
 This solution provides a baseline of alerts for AVD that are disabled by default and for ensuring administrators and staff get meaningful and timely alerts when there are problems related to an AVD deployment. The deployment has been tested in Azure Global and Azure US Government and will incorporate storage alerts for either or both Azure Files and/or Azure Netapp Files.
+
+[**Current Version:**](./updateHistory.md) v2.1.0
 
 ## Prerequisites  
 
