@@ -1,9 +1,6 @@
 targetScope = 'subscription'
 
-/*   TO BE ADDED
-@description('Determine if you would like to set all deployed alerts to auto-resolve.')
-param SetAutoResolve bool = true
-
+/*
 @description('Determine if you would like to enable all the alerts after deployment.')
 param SetEnabled bool = false
  */
@@ -18,6 +15,12 @@ param _ArtifactsLocationSasToken string = ''
 @description('Alert Name Prefix (Dash will be added after prefix for you.)')
 param AlertNamePrefix string = 'AVD'
 
+@description('Flag to determine if AVD VMs and AVD resources are all in the same Resource Group.')
+param AllResourcesSameRG bool = true
+
+@description('Determine if you would like to set all deployed alerts to auto-resolve.')
+param AutoResolveAlert bool = true
+
 @description('The Distribution Group that will receive email alerts for AVD.')
 param DistributionGroup string
 
@@ -29,8 +32,11 @@ param DistributionGroup string
 @description('The environment is which these resources will be deployed, i.e. Test, Production, Development.')
 param Environment string = 't'
 
-@description('Comma seperated string of Host Pool IDs')
-param HostPools array
+@description('Array of objects with the Resource ID for colHostPoolName and colVMresGroup for each Host Pool.')
+param HostPoolInfo array = []
+
+@description('Host Pool Resource IDs (array)')
+param HostPools array = []
 
 @description('Azure Region for Resources.')
 param Location string = deployment().location
@@ -41,15 +47,16 @@ param LogAnalyticsWorkspaceResourceId string
 @description('Resource Group to deploy the Alerts Solution in.')
 param ResourceGroupName string
 
-@description('Flag to determine if a new resource group needs to be created.')
+//placeholder needed for template validation when VMs in separate RG selected - desktop reader deployment fails otherwise
+@description('AVD Resource Group ID with ALL resources including VMs')
+param AVDResourceGroupId string = '/subscriptions/<subscription ID>/resourceGroups/<Resource Group Name>' 
+
+@description('Flag to determine if a new resource group needs to be created for Alert resources.')
 @allowed([
   'New'
   'Existing'
 ])
 param ResourceGroupStatus string
-
-@description('The Resource Group ID for the AVD session host VMs.')
-param SessionHostsResourceGroupIds array = []
 
 @description('The Resource IDs for the Azure Files Storage Accounts used for FSLogix profile storage.')
 param StorageAccountResourceIds array = []
@@ -66,22 +73,14 @@ var ActionGroupName = 'ag-avdmetrics-${Environment}-${Location}'
 var AlertDescriptionHeader = 'Automated AVD Alert Deployment Solution (v2.1.0)\n'
 var AutomationAccountName = 'aa-avdmetrics-${Environment}-${Location}'
 var CloudEnvironment = environment().name
-var HostPoolSubIdsAll = [for item in HostPools: split(item, '/')[2]]
-var HostPoolSubIds = union(HostPoolSubIdsAll, [])
-var HostPoolRGsAll = [for item in HostPools: split(item, '/')[4]]
-var HostPoolRGs = union(HostPoolRGsAll, [])
 var ResourceGroupCreate = ResourceGroupStatus == 'New' ? true : false
 var RunbookNameGetStorage = 'AvdStorageLogData'
 var RunbookNameGetHostPool = 'AvdHostPoolLogData'
 var RunbookScriptGetStorage = 'Get-StorAcctInfov2.ps1'
 var RunbookScriptGetHostPool = 'Get-HostPoolInfo.ps1'
-var SessionHostRGsAll = [for item in SessionHostsResourceGroupIds: split(item, '/')[4]]
-var SessionHostRGs = union(SessionHostRGsAll, [])
 var StorAcctRGsAll = [for item in StorageAccountResourceIds: split(item, '/')[4]]
 var StorAcctRGs = union(StorAcctRGsAll, [])
-var UsrManagedIdentityName = 'id-ds-avdAlerts-Deployment'
-
-var DesktopReadRoleRGs = union(HostPoolRGs, SessionHostRGs)
+// var UsrManagedIdentityName = 'id-ds-avdAlerts-Deployment'
 
 var RoleAssignments = {
   DesktopVirtualizationRead: {
@@ -1215,9 +1214,9 @@ var LogAlertsHostPool = [
     displayName: '${AlertNamePrefix}-HostPool-VM-Missing Critical Security Updates (xHostPoolNamex)'
     description: '${AlertDescriptionHeader}The VM is missing critical security updates that are not marked "optional" and are "approved" (xHostPoolNamex)\nEnsure patching is working as expected and update the VM as soon as possible.'
     severity: 1
-    evaluationFrequency: 'P1D'
+    evaluationFrequency: 'PT6H'
     windowSize: 'P1D'
-    overrideQueryTimeRange: 'P2D'
+    overrideQueryTimeRange: 'P1D'
     criteria: {
       allOf: [
         {
@@ -1544,7 +1543,7 @@ var MetricAlerts = {
       description: '${AlertDescriptionHeader}Storage for the follow Azure NetApp volume is Moderately low. Verify sufficient storage is available and expand when/where needed.'
       severity: 2
       evaluationFrequency: 'PT1H'
-      windowSize: 'PT3H'
+      windowSize: 'PT1H'
       criteria: {
         allOf: [
           {
@@ -1567,7 +1566,7 @@ var MetricAlerts = {
       description: '${AlertDescriptionHeader}Storage for the follow Azure NetApp volume is Critically low. Verify sufficient storage is available and expand when/where needed.'
       severity: 1
       evaluationFrequency: 'PT1H'
-      windowSize: 'PT3H'
+      windowSize: 'PT1H'
       criteria: {
         allOf: [
           {
@@ -1832,8 +1831,6 @@ var varJobScheduleParamsAzFiles = {
 
 var SubscriptionId = subscription().subscriptionId
 var varScheduleName = 'AVD_Chk-'
-var AVDResIDsString = string(HostPools)
-var HostPoolsAsString = replace(replace(AVDResIDsString, '[', ''), ']', '')
 var varTimeZone = varTimeZones[Location]
 var varTimeZones = {
   australiacentral: 'AUS Eastern Standard Time'
@@ -1912,7 +1909,7 @@ resource resourceGroupAVDMetricsExisting 'Microsoft.Resources/resourceGroups@202
   name: ResourceGroupName
 }
 
-module identityUserManaged '../../../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
+/* module identityUserManaged '../../../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
   name: 'c_UserMgId_${UsrManagedIdentityName}'
   scope: resourceGroup(ResourceGroupCreate ? resourceGroupAVDMetricsCreate.name : resourceGroupAVDMetricsExisting.name)
   params: {
@@ -1922,7 +1919,7 @@ module identityUserManaged '../../../../carml/1.3.0/Microsoft.ManagedIdentity/us
     tags: contains(Tags, 'Microsoft.ManagedIdentity/userAssignedIdentities') ? Tags['Microsoft.ManagedIdentity/userAssignedIdentities'] : {}
   }
   dependsOn: ResourceGroupCreate ? [ resourceGroupAVDMetricsCreate ] : [ resourceGroupAVDMetricsExisting ]
-}
+} */
 
 // Deploy new automation account
 module automationAccount '../../../../carml/1.3.0/Microsoft.Automation/automationAccounts/deploy.bicep' = {
@@ -2131,52 +2128,35 @@ module automationAccount '../../../../carml/1.3.0/Microsoft.Automation/automatio
   dependsOn: ResourceGroupCreate ? [resourceGroupAVDMetricsCreate] : [resourceGroupAVDMetricsExisting]
 }
 
-module roleAssignment_UsrIdDesktopRead '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/subscription/deploy.bicep' = [for HostPoolId in HostPoolSubIds: {
-  name: 'c_UsrID-DS_${guid(HostPoolId)}'
-  scope: subscription(HostPoolId)
-  params: {
-    location: Location
-    enableDefaultTelemetry: false
-    principalId: identityUserManaged.outputs.principalId
-    roleDefinitionIdOrName: 'Desktop Virtualization Reader'
-    principalType: 'ServicePrincipal'
-    subscriptionId: HostPoolId
-  }
-  dependsOn: [
-    identityUserManaged
-  ]
-}]
-
-module roleAssignment_AutoAcctDesktopRead '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for RG in DesktopReadRoleRGs: {
-  scope: resourceGroup(RG)
-  name: 'c_DsktpRead_${RG}'
+module roleAssignment_AutoAcctDesktopRead '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for RG in HostPoolInfo: if(!AllResourcesSameRG) {
+  scope: resourceGroup(split(RG.colVMResGroup, '/')[4])
+  name: 'c_DsktpRead_${split(RG.colVMResGroup, '/')[4]}'
   params: {
     enableDefaultTelemetry: false
     principalId: automationAccount.outputs.systemAssignedPrincipalId
     roleDefinitionIdOrName: 'Desktop Virtualization Reader'
     principalType: 'ServicePrincipal'
-    resourceGroupName: RG
+    resourceGroupName: split(RG.colVMResGroup, '/')[4]
   }
   dependsOn: [
     automationAccount
   ]
 }]
 
-//Get-AzVM in DS Mapping Script requires Microsoft.Compute/VirtualMachines reader right, possible custom role for later dev
-module roleAssignment_DSMapVMContrib '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for vmRG in SessionHostRGs: {
-  scope: resourceGroup(vmRG)
-  name: 'c_DSMapVMContrib_${vmRG}'
+module roleAssignment_AutoAcctDesktopReadSameRG '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if(AllResourcesSameRG) {
+  scope: resourceGroup(split(AVDResourceGroupId, '/')[4])
+  name: 'c_DsktpRead_${split(AVDResourceGroupId, '/')[4]}'
   params: {
     enableDefaultTelemetry: false
-    principalId: identityUserManaged.outputs.principalId
-    roleDefinitionIdOrName: 'Virtual Machine Contributor'
+    principalId: automationAccount.outputs.systemAssignedPrincipalId
+    roleDefinitionIdOrName: 'Desktop Virtualization Reader'
     principalType: 'ServicePrincipal'
-    resourceGroupName: vmRG
+    resourceGroupName: split(AVDResourceGroupId, '/')[4]
   }
   dependsOn: [
     automationAccount
   ]
-}]
+}
 
 module roleAssignment_LogAnalytics '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = {
   scope: resourceGroup(split(LogAnalyticsWorkspaceResourceId, '/')[2], split(LogAnalyticsWorkspaceResourceId, '/')[4])
@@ -2208,37 +2188,17 @@ module roleAssignment_Storage '../../../../carml/1.3.0/Microsoft.Authorization/r
   ]
 }]
 
-module deploymentScript_HP2VM '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
-  name: 'c_ds-PS-GetHostPoolVMAssociation'
-  scope: resourceGroup(ResourceGroupName)
-  params: {
-    enableDefaultTelemetry: false
-    arguments: '-AVDResourceIDs ${HostPoolsAsString}'
-    azPowerShellVersion: '7.1'
-    name: 'ds_GetHostPoolVMAssociation'
-    primaryScriptUri: '${_ArtifactsLocation}dsHostPoolVMMap.ps1${_ArtifactsLocationSasToken}'
-    userAssignedIdentities: {
-      '${identityUserManaged.outputs.resourceId}': {}
-    }
-    kind: 'AzurePowerShell'
-    location: Location
-    timeout: 'PT2H'
-    cleanupPreference: 'OnExpiration'
-    retentionInterval: 'P1D'
-  }
-  dependsOn: [
-    roleAssignment_AutoAcctDesktopRead
-    roleAssignment_DSMapVMContrib
-  ]
-}
-
 module metricsResources './modules/metricsResources.bicep' = {
   name: 'lnk_MonitoringResourcesDeployment'
   scope: resourceGroup(ResourceGroupCreate ? resourceGroupAVDMetricsCreate.name : resourceGroupAVDMetricsExisting.name)
   params: {
+    AllResourcesSameRG: AllResourcesSameRG
+    AVDResourceGroupId: AVDResourceGroupId
+    AutoResolveAlert: AutoResolveAlert
     DistributionGroup: DistributionGroup
+    Environment: Environment
+    HostPoolInfo: HostPoolInfo
     HostPools: HostPools
-    HostPoolInfo: deploymentScript_HP2VM.outputs.outputs.HostPoolInfo
     Location: Location
     LogAnalyticsWorkspaceResourceId: LogAnalyticsWorkspaceResourceId
     LogAlertsHostPool: LogAlertsHostPool
@@ -2251,10 +2211,8 @@ module metricsResources './modules/metricsResources.bicep' = {
     Tags: Tags
   }
   dependsOn: [
-    deploymentScript_HP2VM
     roleAssignment_AutoAcctDesktopRead
     roleAssignment_LogAnalytics
     roleAssignment_Storage
-    roleAssignment_UsrIdDesktopRead
-  ]
+  ] 
 }
