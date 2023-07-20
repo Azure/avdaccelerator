@@ -1,5 +1,6 @@
 param AutoMitigate bool
 param ActionGroupId string
+param Environment string
 param HostPoolName string
 param LogAlertsHostPool array
 param LogAnalyticsWorkspaceResourceId string
@@ -8,10 +9,10 @@ param Tags object
 param Timestamp string = utcNow()
 
 module logAlertHostPoolQueries '../../../../../carml/1.3.0/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(LogAlertsHostPool)): {
-  name: 'c_${guid(replace(LogAlertsHostPool[i].name, 'xHostPoolNamex', HostPoolName),Timestamp)}'
+  name: 'c_${guid(replace(LogAlertsHostPool[i].name, 'xHostPoolNamex', HostPoolName),Timestamp)}-${Environment}'
   params: {
     enableDefaultTelemetry: false
-    name: replace(LogAlertsHostPool[i].name, 'xHostPoolNamex', HostPoolName)
+    name: '${replace(LogAlertsHostPool[i].name, 'xHostPoolNamex', HostPoolName)}-${Environment}'
     autoMitigate: AutoMitigate
     criterias: {
       allOf: [
@@ -27,7 +28,7 @@ module logAlertHostPoolQueries '../../../../../carml/1.3.0/Microsoft.Insights/sc
     scopes: [LogAnalyticsWorkspaceResourceId]
     location: Location
     actions: [ActionGroupId]
-    alertDescription: replace(LogAlertsHostPool[i].description, 'xHostPoolNamex', HostPoolName)
+    alertDescription: '${replace(LogAlertsHostPool[i].description, 'xHostPoolNamex', HostPoolName)}-${Environment}'
     enabled: false
     evaluationFrequency: LogAlertsHostPool[i].evaluationFrequency
     severity: LogAlertsHostPool[i].severity
