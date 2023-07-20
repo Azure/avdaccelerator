@@ -103,7 +103,9 @@ var varAzureCloudName = environment().name
 var varNetworkSecurityGroupDiagnostic = [
     'allLogs'
 ]
-var varVirtualNetworkLogsDiagnostic = [
+var varVirtualNetworkLogsDiagnostic = varAzureCloudName == 'AzureUSGovernment' ? [
+    ''
+] : [
     'allLogs'
 ]
 var varVirtualNetworkMetricsDiagnostic = [
