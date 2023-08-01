@@ -31,6 +31,9 @@ param subscriptionId string
 @sys.description('Quantity of session hosts to deploy.')
 param deploySessionHostsCount int
 
+@sys.description('Max VMs per availability set.')
+param maxAvailabilitySetMembersCount int
+
 @sys.description('The session host number to begin with for the deployment.')
 param sessionHostCountIndex int
 
@@ -39,12 +42,6 @@ param useAvailabilityZones bool
 
 @sys.description('Availablity Set name.')
 param availabilitySetNamePrefix string
-
-@sys.description('Sets the number of fault domains for the availability set.')
-param availabilitySetFaultDomainCount int
-
-@sys.description('Sets the number of update domains for the availability set.')
-param availabilitySetUpdateDomainCount int
 
 @sys.description('Create VM GPU extension policies.')
 param deployGpuPolicies bool
@@ -145,14 +142,11 @@ param time string = utcNow()
 // =========== //
 // Variable declaration //
 // =========== //
-var varMaxSessionHostsPerTemplateDeployment = 30 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
+var varMaxSessionHostsPerTemplateDeployment = 10 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
 var varDivisionValue = deploySessionHostsCount / varMaxSessionHostsPerTemplateDeployment // This determines if any full batches are required.
 var varDivisionRemainderValue = deploySessionHostsCount % varMaxSessionHostsPerTemplateDeployment // This determines if any partial batches are required.
-var varAvdSessionHostBatchCount = varDivisionRemainderValue > 0 ? varDivisionValue + 1 : varDivisionValue // This determines the total number of batches needed, whether full and / or partial.
-var maxAvailabilitySetMembersCount = 199 // This is the max number of session hosts that can be deployed in an availability set.
-var divisionAvSetValue = deploySessionHostsCount / maxAvailabilitySetMembersCount // This determines if any full availability sets are required.
-var divisionAvSetRemainderValue = deploySessionHostsCount % maxAvailabilitySetMembersCount // This determines if any partial availability sets are required.
-var availabilitySetCount = divisionAvSetRemainderValue > 0 ? divisionAvSetValue + 1 : divisionAvSetValue // This determines the total number of availability sets needed, whether full and / or partial.
+var varSessionHostBatchCount = varDivisionRemainderValue > 0 ? varDivisionValue + 1 : varDivisionValue // This determines the total number of batches needed, whether full and / or partial.
+
 
 // =========== //
 // Deployments //
@@ -164,25 +158,9 @@ resource getHostPool 'Microsoft.DesktopVirtualization/hostPools@2019-12-10-previ
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
 }
 
-// Availability set.
-module availabilitySet './.bicep/availabilitySets.bicep' = if (!useAvailabilityZones) {
-  name: 'AVD-Availability-Set-${time}'
-  scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-  params: {
-      workloadSubsId: subscriptionId
-      computeObjectsRgName: computeObjectsRgName
-      availabilitySetNamePrefix: availabilitySetNamePrefix
-      sessionHostLocation: sessionHostLocation
-      availabilitySetCount: availabilitySetCount
-      availabilitySetFaultDomainCount: availabilitySetFaultDomainCount
-      availabilitySetUpdateDomainCount: availabilitySetUpdateDomainCount
-      tags: tags
-  }
-}
-
 // Session hosts.
 @batchSize(1)
-module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varAvdSessionHostBatchCount): {
+module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varSessionHostBatchCount): {
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
   name: 'AVD-SH-Batch-${i-1}-${time}'
   params: {
@@ -200,7 +178,7 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varAvd
     identityDomainName: identityDomainName
     imageTemplateDefinitionId: avdImageTemplateDefinitionId
     sessionHostOuPath: sessionHostOuPath
-    sessionHostsCount: i == varAvdSessionHostBatchCount && varDivisionRemainderValue > 0 ? varDivisionRemainderValue : varMaxSessionHostsPerTemplateDeployment
+    sessionHostsCount: i == varSessionHostBatchCount && varDivisionRemainderValue > 0 ? varDivisionRemainderValue : varMaxSessionHostsPerTemplateDeployment
     sessionHostCountIndex: i == 1 ? sessionHostCountIndex : (((i - 1) * varMaxSessionHostsPerTemplateDeployment) + sessionHostCountIndex)
     sessionHostDiskType: sessionHostDiskType
     sessionHostLocation: sessionHostLocation
@@ -231,9 +209,6 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varAvd
     alaWorkspaceResourceId: alaWorkspaceResourceId
     diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
   }
-  dependsOn: [
-    availabilitySet
-  ]
 }]
 
 // VM GPU extension policies.
