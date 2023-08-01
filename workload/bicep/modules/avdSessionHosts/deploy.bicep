@@ -14,7 +14,7 @@ param subnetId string
 param sessionHostLocation string
 
 @sys.description('Virtual machine time zone.')
-param computeTimeZone string
+param timeZone string
 
 @sys.description('AVD Session Host prefix.')
 param sessionHostNamePrefix string
@@ -32,7 +32,7 @@ param subscriptionId string
 param deploySessionHostsCount int
 
 @sys.description('Max VMs per availability set.')
-param maxAvailabilitySetMembersCount int
+param maxAvsetMembersCount int
 
 @sys.description('The session host number to begin with for the deployment.')
 param sessionHostCountIndex int
@@ -41,7 +41,7 @@ param sessionHostCountIndex int
 param useAvailabilityZones bool
 
 @sys.description('Availablity Set name.')
-param availabilitySetNamePrefix string
+param avsetNamePrefix string
 
 @sys.description('Create VM GPU extension policies.')
 param deployGpuPolicies bool
@@ -101,7 +101,7 @@ param domainJoinUserName string
 param sessionHostOuPath string
 
 @sys.description('Application Security Group (ASG) for the session hosts.')
-param applicationSecurityGroupResourceId string
+param asgResourceId string
 
 @sys.description('AVD Host Pool name.')
 param hostPoolName string
@@ -147,7 +147,6 @@ var varDivisionValue = deploySessionHostsCount / varMaxSessionHostsPerTemplateDe
 var varDivisionRemainderValue = deploySessionHostsCount % varMaxSessionHostsPerTemplateDeployment // This determines if any partial batches are required.
 var varSessionHostBatchCount = varDivisionRemainderValue > 0 ? varDivisionValue + 1 : varDivisionValue // This determines the total number of batches needed, whether full and / or partial.
 
-
 // =========== //
 // Deployments //
 // =========== //
@@ -159,17 +158,17 @@ resource getHostPool 'Microsoft.DesktopVirtualization/hostPools@2019-12-10-previ
 }
 
 // Session hosts.
-@batchSize(1)
+@batchSize(2)
 module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varSessionHostBatchCount): {
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
   name: 'AVD-SH-Batch-${i-1}-${time}'
   params: {
     diskEncryptionSetResourceId: diskEncryptionSetResourceId 
     avdAgentPackageLocation: avdAgentPackageLocation
-    timeZone: computeTimeZone
-    applicationSecurityGroupResourceId: applicationSecurityGroupResourceId
-    availabilitySetNamePrefix: availabilitySetNamePrefix
-    maxAvailabilitySetMembersCount: maxAvailabilitySetMembersCount
+    timeZone: timeZone
+    asgResourceId: asgResourceId
+    avsetNamePrefix: avsetNamePrefix
+    maxAvsetMembersCount: maxAvsetMembersCount
     computeObjectsRgName: computeObjectsRgName
     domainJoinUserName: domainJoinUserName
     wrklKvName: wrklKvName
