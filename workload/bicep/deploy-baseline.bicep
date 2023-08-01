@@ -561,6 +561,14 @@ var varMgmtVmSpecs = {
     ouPath: avdOuPath
     subnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
 }
+var varMaxSessionHostsPerTemplateDeployment = 30
+var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varMaxSessionHostsPerTemplateDeployment
+var varMaxSessionHostsDivisionRemainderValue = avdDeploySessionHostsCount % varMaxSessionHostsPerTemplateDeployment
+var varSessionHostBatchCount = varMaxSessionHostsDivisionRemainderValue > 0 ? varMaxSessionHostsDivisionValue + 1 : varMaxSessionHostsDivisionValue
+var varMaxAvsetMembersCount = 199
+var varDivisionAvsetValue = avdDeploySessionHostsCount / varMaxAvsetMembersCount
+var varDivisionAvsetRemainderValue = avdDeploySessionHostsCount % varMaxAvsetMembersCount
+var varAvsetCount = varDivisionAvsetRemainderValue > 0 ? varDivisionAvsetValue + 1 : varDivisionAvsetValue
 var varScalingPlanSchedules = [
     {
         daysOfWeek: [
@@ -1200,15 +1208,6 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (cr
         monitoringDiagnosticSettings
     ]
 }
-
-var varMaxSessionHostsPerTemplateDeployment = 30
-var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varMaxSessionHostsPerTemplateDeployment
-var varMaxSessionHostsDivisionRemainderValue = avdDeploySessionHostsCount % varMaxSessionHostsPerTemplateDeployment
-var varSessionHostBatchCount = varMaxSessionHostsDivisionRemainderValue > 0 ? varMaxSessionHostsDivisionValue + 1 : varMaxSessionHostsDivisionValue
-var varMaxAvsetMembersCount = 199
-var varDivisionAvsetValue = avdDeploySessionHostsCount / varMaxAvsetMembersCount
-var varDivisionAvsetRemainderValue = avdDeploySessionHostsCount % varMaxAvsetMembersCount
-var varAvsetCount = varDivisionAvsetRemainderValue > 0 ? varDivisionAvsetValue + 1 : varDivisionAvsetValue
 
 // Availability set.
 module availabilitySet './modules/avdSessionHosts/.bicep/availabilitySets.bicep' = if (!availabilityZonesCompute) {
