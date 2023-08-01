@@ -16,6 +16,9 @@ param sessionHostLocation string
 @sys.description('Virtual machine time zone.')
 param timeZone string
 
+@sys.description('General session host batch identifier')
+param sessionHostGeneralBatchId int
+
 @sys.description('AVD Session Host prefix.')
 param sessionHostNamePrefix string
 
@@ -42,9 +45,6 @@ param useAvailabilityZones bool
 
 @sys.description('Availablity Set name.')
 param avsetNamePrefix string
-
-@sys.description('Create VM GPU extension policies.')
-param deployGpuPolicies bool
 
 @sys.description('Required, The service providing domain services for Azure Virtual Desktop.')
 param identityServiceProvider string
@@ -161,12 +161,13 @@ resource getHostPool 'Microsoft.DesktopVirtualization/hostPools@2019-12-10-previ
 @batchSize(3)
 module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varSessionHostBatchCount): {
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-  name: 'AVD-SH-Batch-${i-1}-${time}'
+  name: 'AVD-SH-Batch-${sessionHostGeneralBatchId}-${i}-${time}'
   params: {
     diskEncryptionSetResourceId: diskEncryptionSetResourceId 
     avdAgentPackageLocation: avdAgentPackageLocation
     timeZone: timeZone
     asgResourceId: asgResourceId
+    sessionHostBatchId: '${sessionHostGeneralBatchId}-${i}'
     avsetNamePrefix: avsetNamePrefix
     maxAvsetMembersCount: maxAvsetMembersCount
     computeObjectsRgName: computeObjectsRgName
@@ -209,15 +210,3 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varSes
     diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
   }
 }]
-
-// VM GPU extension policies.
-module gpuPolicies './.bicep/azurePolicyGpuExtensions.bicep' = if (deployGpuPolicies) {
-  scope: subscription('${subscriptionId}')
-  name: 'GPU-VM-Extensions-${time}'
-  params: {
-    computeObjectsRgName: computeObjectsRgName
-    location: sessionHostLocation
-    subscriptionId: subscriptionId
-  }
-  dependsOn: []
-}

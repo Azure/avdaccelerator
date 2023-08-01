@@ -31,6 +31,9 @@ param computeObjectsRgName string
 @sys.description('Resource Group name for the session hosts')
 param serviceObjectsRgName string
 
+@sys.description('General session host batch identifier')
+param sessionHostBatchId string
+
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param subscriptionId string
 
@@ -166,7 +169,7 @@ resource wrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing
 // Session hosts.
 module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(1, sessionHostsCount): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'Session-Host-${padLeft((i + sessionHostCountIndex), 4, '0')}-${time}'
+    name: 'SH-${sessionHostBatchId}-${i}-${time}'
     params: {
         name: '${sessionHostNamePrefix}${padLeft((i + sessionHostCountIndex), 4, '0')}'
         location: sessionHostLocation
@@ -253,7 +256,7 @@ module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
 // Introduce wait for session hosts to be ready.
 module sessionHostsWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'Session-Hosts-Wait-${time}'
+    name: 'SH-Wait-${sessionHostBatchId}-${time}'
     params: {
         name: 'Session-Hosts-Wait-${time}'
         location: sessionHostLocation
@@ -276,7 +279,7 @@ module sessionHostsWait '../../../../../carml/1.3.0/Microsoft.Resources/deployme
 // Add antimalware extension to session host.
 module sessionHostsAntimalwareExtension '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, sessionHostsCount): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Antimalware-${padLeft((i + sessionHostCountIndex), 4, '0')}-${time}'
+    name: 'SH-Antimalware-${sessionHostBatchId}-${i}-${time}'
     params: {
         location: sessionHostLocation
         virtualMachineName: '${sessionHostNamePrefix}${padLeft((i + sessionHostCountIndex), 4, '0')}'
@@ -311,7 +314,7 @@ module sessionHostsAntimalwareExtension '../../../../../carml/1.3.0/Microsoft.Co
 // Introduce wait for antimalware extension to complete to be ready.
 module antimalwareExtensionWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'Antimalware-Extension-Wait-${time}'
+    name: 'Antimalware-Wait-${sessionHostBatchId}-${time}'
     params: {
         name: 'Antimalware-Extension-Wait-${time}'
         location: sessionHostLocation
@@ -340,7 +343,7 @@ resource alaWorkspaceGet 'Microsoft.OperationalInsights/workspaces@2021-06-01' e
 // Add monitoring extension to session host.
 module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, sessionHostsCount): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Mon-${padLeft((i + sessionHostCountIndex), 4, '0')}-${time}'
+    name: 'SH-Mon-${sessionHostBatchId}-${i}-${time}'
     params: {
         location: sessionHostLocation
         virtualMachineName: '${sessionHostNamePrefix}${padLeft((i + sessionHostCountIndex), 4, '0')}'
@@ -367,7 +370,7 @@ module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virt
 // Introduce wait for antimalware extension to complete to be ready.
 module sessionHostsMonitoringWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Monitoring-Wait-${time}'
+    name: 'SH-Monitoring-Wait-${sessionHostBatchId}-${time}' 
     params: {
         name: 'SH-Monitoring-Wait-${time}'
         location: sessionHostLocation
@@ -390,7 +393,7 @@ module sessionHostsMonitoringWait '../../../../../carml/1.3.0/Microsoft.Resource
 // Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
 module configureFsLogixAvdHosts './configureFslogixOnSessionHosts.bicep' = [for i in range(1, sessionHostsCount): if (createAvdFslogixDeployment) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'Fsl-Conf-${padLeft((i + sessionHostCountIndex), 4, '0')}-${time}'
+    name: 'Fsl-Conf-${sessionHostBatchId}-${i}-${time}'
     params: {
         location: sessionHostLocation
         name: '${sessionHostNamePrefix}${padLeft((i + sessionHostCountIndex), 4, '0')}'
@@ -407,7 +410,7 @@ module configureFsLogixAvdHosts './configureFslogixOnSessionHosts.bicep' = [for 
 // Add session hosts to AVD Host pool.
 module addAvdHostsToHostPool './registerSessionHostsOnHopstPool.bicep' = [for i in range(1, sessionHostsCount): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'HP-Join-${padLeft((i + sessionHostCountIndex), 4, '0')}-${time}'
+    name: 'HP-Join-${sessionHostBatchId}-${i}-${time}'
     params: {
         location: sessionHostLocation
         hostPoolToken: hostPoolToken

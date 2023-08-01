@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "1404265043201611063"
+      "templateHash": "5685536171761426084"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -44140,7 +44140,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('Session-Hosts-{0}-{1}', sub(range(1, variables('varSessionHostBatchCount'))[copyIndex()], 1), parameters('time'))]",
+      "name": "[format('Session-Hosts-Batch-{0}-{1}', sub(range(1, variables('varSessionHostBatchCount'))[copyIndex()], 1), parameters('time'))]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
