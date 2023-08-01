@@ -4,7 +4,7 @@ targetScope = 'resourceGroup'
 // Parameters //
 // ========== //
 @sys.description('Location where to deploy compute services.')
-param sessionHostLocation string
+param location string
 
 @sys.description('Availablity Set name.')
 param availabilitySetNamePrefix string
@@ -44,7 +44,7 @@ module availabilitySet '../../../../../carml/1.3.0/Microsoft.Compute/availabilit
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
     params: {
         name: '${availabilitySetNamePrefix}-${padLeft(i, 3, '0')}'
-        location: sessionHostLocation
+        location: location
         availabilitySetFaultDomain: availabilitySetFaultDomainCount
         availabilitySetUpdateDomain: availabilitySetUpdateDomainCount
         tags: tags
