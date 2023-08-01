@@ -20,10 +20,10 @@ param timeZone string
 param sessionHostNamePrefix string
 
 @sys.description('Availablity Set name.')
-param availabilitySetNamePrefix string
+param avsetNamePrefix string
 
 @sys.description('Availablity Set max members.')
-param maxAvailabilitySetMembersCount int
+param maxAvsetMembersCount int
 
 @sys.description('Resource Group name for the session hosts')
 param computeObjectsRgName string
@@ -98,7 +98,7 @@ param wrklKvName string
 param sessionHostOuPath string
 
 @sys.description('Application Security Group for the session hosts.')
-param applicationSecurityGroupResourceId string
+param asgResourceId string
 
 @sys.description('AVD host pool token.')
 param hostPoolToken string
@@ -177,7 +177,7 @@ module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
         systemAssignedIdentity: (identityServiceProvider == 'AAD') ? true: false
         availabilityZone: useAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
         encryptionAtHost: encryptionAtHost
-        availabilitySetResourceId: useAvailabilityZones ? '' : '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/availabilitySets/${availabilitySetNamePrefix}-${padLeft(((1 + (i + sessionHostCountIndex) / maxAvailabilitySetMembersCount)), 3, '0')}'
+        availabilitySetResourceId: useAvailabilityZones ? '' : '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/availabilitySets/${avsetNamePrefix}-${padLeft(((1 + (i + sessionHostCountIndex) / maxAvsetMembersCount)), 3, '0')}'
         osType: 'Windows'
         licenseType: 'Windows_Client'
         vmSize: sessionHostsSize
@@ -198,13 +198,13 @@ module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
                 nicSuffix: 'nic-01-'
                 deleteOption: 'Delete'
                 enableAcceleratedNetworking: enableAcceleratedNetworking
-                ipConfigurations: !empty(applicationSecurityGroupResourceId) ? [
+                ipConfigurations: !empty(asgResourceId) ? [
                     {
                         name: 'ipconfig01'
                         subnetResourceId: subnetId
                         applicationSecurityGroups: [
                             {
-                                id: applicationSecurityGroupResourceId
+                                id: asgResourceId
                             }
                         ] 
                     }

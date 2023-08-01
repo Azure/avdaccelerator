@@ -374,17 +374,13 @@ param avdApplicationGroupCustomName string = 'vdag-desktop-app1-dev-use2-001'
 @sys.description('AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - Dev - 001)')
 param avdApplicationGroupCustomFriendlyName string = 'Desktops - App1 - Dev - East US 2 - 001'
 
-@maxLength(64)
-@sys.description('AVD remote application group custom name. (Default: Remote apps - App1 - East US - 001)')
-param avdApplicationGroupCustomFriendlyNameRapp string = 'Remote apps - App1 - Dev - East US 2 - 001'
-
 @maxLength(11)
 @sys.description('AVD session host prefix custom name. (Default: vmapp1duse2)')
 param avdSessionHostCustomNamePrefix string = 'vmapp1duse2'
 
 @maxLength(9)
 @sys.description('AVD availability set custom name. (Default: avail)')
-param avdAvailabilitySetCustomNamePrefix string = 'avail'
+param avsetCustomNamePrefix string = 'avail'
 
 @maxLength(2)
 @sys.description('AVD FSLogix and MSIX app attach storage account prefix custom name. (Default: st)')
@@ -534,7 +530,7 @@ var varScalingPlanWeekendScheduleName = 'Weekend-${varManagementPlaneNamingStand
 var varWrklKvName = avdUseCustomNaming ? '${avdWrklKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringThreeChar}' : 'kv-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringThreeChar}' // max length limit 24 characters
 var varWrklKvPrivateEndpointName = 'pe-${varWrklKvName}-vault'
 var varSessionHostNamePrefix = avdUseCustomNaming ? avdSessionHostCustomNamePrefix : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
-var varAvailabilitySetNamePrefix = avdUseCustomNaming ? '${avdAvailabilitySetCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'avail-${varComputeStorageResourcesNamingStandard}'
+var varAvsetNamePrefix = avdUseCustomNaming ? '${avsetCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'avail-${varComputeStorageResourcesNamingStandard}'
 var varStorageManagedIdentityName = 'id-storage-${varComputeStorageResourcesNamingStandard}-001'
 var varFslogixFileShareName = avdUseCustomNaming ? fslogixFileShareCustomName : 'fslogix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
 var varMsixFileShareName = avdUseCustomNaming ? msixFileShareCustomName : 'msix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
@@ -1209,10 +1205,10 @@ var varMaxSessionHostsPerTemplateDeployment = 30
 var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varMaxSessionHostsPerTemplateDeployment
 var varMaxSessionHostsDivisionRemainderValue = avdDeploySessionHostsCount % varMaxSessionHostsPerTemplateDeployment
 var varSessionHostBatchCount = varMaxSessionHostsDivisionRemainderValue > 0 ? varMaxSessionHostsDivisionValue + 1 : varMaxSessionHostsDivisionValue
-var varMaxAvailabilitySetMembersCount = 199
-var varDivisionAvSetValue = avdDeploySessionHostsCount / varMaxAvailabilitySetMembersCount
-var varDivisionAvSetRemainderValue = avdDeploySessionHostsCount % varMaxAvailabilitySetMembersCount
-var varAvailabilitySetCount = varDivisionAvSetRemainderValue > 0 ? varDivisionAvSetValue + 1 : varDivisionAvSetValue
+var varMaxAvsetMembersCount = 199
+var varDivisionAvsetValue = avdDeploySessionHostsCount / varMaxAvsetMembersCount
+var varDivisionAvsetRemainderValue = avdDeploySessionHostsCount % varMaxAvsetMembersCount
+var varAvsetCount = varDivisionAvsetRemainderValue > 0 ? varDivisionAvsetValue + 1 : varDivisionAvsetValue
 
 // Availability set.
 module availabilitySet './modules/avdSessionHosts/.bicep/availabilitySets.bicep' = if (!availabilityZonesCompute) {
@@ -1221,13 +1217,17 @@ module availabilitySet './modules/avdSessionHosts/.bicep/availabilitySets.bicep'
     params: {
         workloadSubsId: avdWorkloadSubsId
         computeObjectsRgName: varComputeObjectsRgName
-        availabilitySetNamePrefix: varAvailabilitySetNamePrefix
+        availabilitySetNamePrefix: varAvsetNamePrefix
         location: avdSessionHostLocation
-        availabilitySetCount: varAvailabilitySetCount
+        availabilitySetCount: varAvsetCount
         availabilitySetFaultDomainCount: avdAsFaultDomainCount
         availabilitySetUpdateDomainCount: avdAsUpdateDomainCount
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
+    dependsOn: [
+        baselineResourceGroups
+        monitoringDiagnosticSettings
+    ]
 }
 // Session hosts.
 @batchSize(1)
@@ -1236,12 +1236,12 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
     params: {
         diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
         avdAgentPackageLocation: varAvdAgentPackageLocation
-        computeTimeZone: varTimeZoneSessionHosts
-        applicationSecurityGroupResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment || createMsixDeployment) ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
+        timeZone: varTimeZoneSessionHosts
+        asgResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment || createMsixDeployment) ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
         identityServiceProvider: avdIdentityServiceProvider
         createIntuneEnrollment: createIntuneEnrollment
-        maxAvailabilitySetMembersCount: varMaxAvailabilitySetMembersCount
-        availabilitySetNamePrefix: varAvailabilitySetNamePrefix
+        maxAvsetMembersCount: varMaxAvsetMembersCount
+        avsetNamePrefix: varAvsetNamePrefix
         computeObjectsRgName: varComputeObjectsRgName
         deploySessionHostsCount: avdDeploySessionHostsCount
         sessionHostCountIndex: avdSessionHostCountIndex
