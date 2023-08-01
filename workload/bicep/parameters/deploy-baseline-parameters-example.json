@@ -140,10 +140,10 @@
         "zoneRedundantStorage": {
             "value": false
         },
-        "avdAsFaultDomainCount": {
+        "avsetFaultDomainCount": {
             "value": 2
         },
-        "avdAsUpdateDomainCount": {
+        "avsetUpdateDomainCount": {
             "value": 5
         },
         "fslogixStoragePerformance": {
