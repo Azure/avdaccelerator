@@ -195,7 +195,7 @@ param avdAlaWorkspaceDataRetention int = 90
 param alaExistingWorkspaceResourceId string = ''
 
 @minValue(1)
-@maxValue(999)
+@maxValue(900)
 @sys.description('Quantity of session hosts to deploy. (Default: 1)')
 param avdDeploySessionHostsCount int = 1
 
@@ -1205,18 +1205,42 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (cr
     ]
 }
 
+var varMaxSessionHostsPerTemplateDeployment = 30
+var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varMaxSessionHostsPerTemplateDeployment
+var varMaxSessionHostsDivisionRemainderValue = avdDeploySessionHostsCount % varMaxSessionHostsPerTemplateDeployment
+var varSessionHostBatchCount = varMaxSessionHostsDivisionRemainderValue > 0 ? varMaxSessionHostsDivisionValue + 1 : varMaxSessionHostsDivisionValue
+var varMaxAvailabilitySetMembersCount = 199
+var varDivisionAvSetValue = avdDeploySessionHostsCount / varMaxAvailabilitySetMembersCount
+var varDivisionAvSetRemainderValue = avdDeploySessionHostsCount % varMaxAvailabilitySetMembersCount
+var varAvailabilitySetCount = varDivisionAvSetRemainderValue > 0 ? varDivisionAvSetValue + 1 : varDivisionAvSetValue
+
+// Availability set.
+module availabilitySet './modules/avdSessionHosts/.bicep/availabilitySets.bicep' = if (!availabilityZonesCompute) {
+    name: 'AVD-Availability-Set-${time}'
+    scope: resourceGroup('${avdWorkloadSubsId}', '${varComputeObjectsRgName}')
+    params: {
+        workloadSubsId: avdWorkloadSubsId
+        computeObjectsRgName: varComputeObjectsRgName
+        availabilitySetNamePrefix: varAvailabilitySetNamePrefix
+        location: avdSessionHostLocation
+        availabilitySetCount: varAvailabilitySetCount
+        availabilitySetFaultDomainCount: avdAsFaultDomainCount
+        availabilitySetUpdateDomainCount: avdAsUpdateDomainCount
+        tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+    }
+}
 // Session hosts.
-module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySessionHosts) {
-    name: 'Session-Hosts-${time}'
+@batchSize(1)
+module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1, varSessionHostBatchCount): {
+    name: 'Session-Hosts-${i-1}-${time}'
     params: {
         diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
         avdAgentPackageLocation: varAvdAgentPackageLocation
         computeTimeZone: varTimeZoneSessionHosts
         applicationSecurityGroupResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment || createMsixDeployment) ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
-        availabilitySetFaultDomainCount: avdAsFaultDomainCount
-        availabilitySetUpdateDomainCount: avdAsUpdateDomainCount
         identityServiceProvider: avdIdentityServiceProvider
         createIntuneEnrollment: createIntuneEnrollment
+        maxAvailabilitySetMembersCount: varMaxAvailabilitySetMembersCount
         availabilitySetNamePrefix: varAvailabilitySetNamePrefix
         computeObjectsRgName: varComputeObjectsRgName
         deploySessionHostsCount: avdDeploySessionHostsCount
@@ -1261,8 +1285,9 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = if (avdDeploySess
         networking
         wrklKeyVault
         monitoringDiagnosticSettings
+        availabilitySet
     ]
-}
+}]
 /*
 // Post deployment resources clean up.
 module addShareToDomainScript './modules/postDeploymentTempResourcesCleanUp/deploy.bicep' = if (removePostDeploymentTempResources)  {
