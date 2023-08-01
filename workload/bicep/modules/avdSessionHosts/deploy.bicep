@@ -161,13 +161,13 @@ resource getHostPool 'Microsoft.DesktopVirtualization/hostPools@2019-12-10-previ
 @batchSize(3)
 module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varSessionHostBatchCount): {
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-  name: 'AVD-SH-Batch-${sessionHostGeneralBatchId}-${i}-${time}'
+  name: 'AVD-SH-Batch-${sessionHostGeneralBatchId}-${i-1}-${time}'
   params: {
     diskEncryptionSetResourceId: diskEncryptionSetResourceId 
     avdAgentPackageLocation: avdAgentPackageLocation
     timeZone: timeZone
     asgResourceId: asgResourceId
-    sessionHostBatchId: '${sessionHostGeneralBatchId}-${i}'
+    sessionHostBatchId: '${sessionHostGeneralBatchId}-${i-1}'
     avsetNamePrefix: avsetNamePrefix
     maxAvsetMembersCount: maxAvsetMembersCount
     computeObjectsRgName: computeObjectsRgName
