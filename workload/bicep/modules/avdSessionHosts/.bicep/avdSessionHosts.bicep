@@ -169,7 +169,7 @@ resource wrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing
 // Session hosts.
 module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(1, sessionHostsCount): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-${sessionHostBatchId}-${i}-${time}'
+    name: 'SH-${sessionHostBatchId}-${i-1}-${time}'
     params: {
         name: '${sessionHostNamePrefix}${padLeft((i + sessionHostCountIndex), 4, '0')}'
         location: sessionHostLocation
@@ -279,7 +279,7 @@ module sessionHostsWait '../../../../../carml/1.3.0/Microsoft.Resources/deployme
 // Add antimalware extension to session host.
 module sessionHostsAntimalwareExtension '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, sessionHostsCount): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Antimal-${sessionHostBatchId}-${i}-${time}'
+    name: 'SH-Antimal-${sessionHostBatchId}-${i-1}-${time}'
     params: {
         location: sessionHostLocation
         virtualMachineName: '${sessionHostNamePrefix}${padLeft((i + sessionHostCountIndex), 4, '0')}'
@@ -343,7 +343,7 @@ resource alaWorkspaceGet 'Microsoft.OperationalInsights/workspaces@2021-06-01' e
 // Add monitoring extension to session host.
 module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, sessionHostsCount): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Mon-${sessionHostBatchId}-${i}-${time}'
+    name: 'SH-Mon-${sessionHostBatchId}-${i-1}-${time}'
     params: {
         location: sessionHostLocation
         virtualMachineName: '${sessionHostNamePrefix}${padLeft((i + sessionHostCountIndex), 4, '0')}'
@@ -393,7 +393,7 @@ module sessionHostsMonitoringWait '../../../../../carml/1.3.0/Microsoft.Resource
 // Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
 module configureFsLogixAvdHosts './configureFslogixOnSessionHosts.bicep' = [for i in range(1, sessionHostsCount): if (createAvdFslogixDeployment) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'Fsl-Conf-${sessionHostBatchId}-${i}-${time}'
+    name: 'Fsl-Conf-${sessionHostBatchId}-${i-1}-${time}'
     params: {
         location: sessionHostLocation
         name: '${sessionHostNamePrefix}${padLeft((i + sessionHostCountIndex), 4, '0')}'
