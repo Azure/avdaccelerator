@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "11891844198156864544"
+      "templateHash": "975844425105893744"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -1266,9 +1266,9 @@
     "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(parameters('createMsixDeployment'), true())), true(), false())]",
     "varFslogixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('fslogixStoragePerformance')), format('{0}_LRS', parameters('fslogixStoragePerformance')))]",
     "varMsixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('msixStoragePerformance')), format('{0}_LRS', parameters('msixStoragePerformance')))]",
-    "varMaxSessionHostsPerTemplateDeployment": 30,
-    "varMaxSessionHostsDivisionValue": "[div(parameters('avdDeploySessionHostsCount'), variables('varMaxSessionHostsPerTemplateDeployment'))]",
-    "varMaxSessionHostsDivisionRemainderValue": "[mod(parameters('avdDeploySessionHostsCount'), variables('varMaxSessionHostsPerTemplateDeployment'))]",
+    "varShGeneralBatchsize": 30,
+    "varMaxSessionHostsDivisionValue": "[div(parameters('avdDeploySessionHostsCount'), variables('varShGeneralBatchsize'))]",
+    "varMaxSessionHostsDivisionRemainderValue": "[mod(parameters('avdDeploySessionHostsCount'), variables('varShGeneralBatchsize'))]",
     "varSessionHostBatchCount": "[if(greater(variables('varMaxSessionHostsDivisionRemainderValue'), 0), add(variables('varMaxSessionHostsDivisionValue'), 1), variables('varMaxSessionHostsDivisionValue'))]",
     "varMaxAvsetMembersCount": 199,
     "varDivisionAvsetValue": "[div(parameters('avdDeploySessionHostsCount'), variables('varMaxAvsetMembersCount'))]",
@@ -44272,7 +44272,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "2307422398808610029"
+              "templateHash": "3157224200907752697"
             }
           },
           "parameters": {
@@ -44564,7 +44564,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('AVD-SH-Batch-{0}-{1}-{2}', parameters('sessionHostGeneralBatchId'), range(1, variables('varSessionHostBatchCount'))[copyIndex()], parameters('time'))]",
+              "name": "[format('AVD-SH-Batch-{0}-{1}-{2}', parameters('sessionHostGeneralBatchId'), sub(range(1, variables('varSessionHostBatchCount'))[copyIndex()], 1), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
@@ -44586,7 +44586,7 @@
                     "value": "[parameters('asgResourceId')]"
                   },
                   "sessionHostBatchId": {
-                    "value": "[format('{0}-{1}', parameters('sessionHostGeneralBatchId'), range(1, variables('varSessionHostBatchCount'))[copyIndex()])]"
+                    "value": "[format('{0}-{1}', parameters('sessionHostGeneralBatchId'), sub(range(1, variables('varSessionHostBatchCount'))[copyIndex()], 1))]"
                   },
                   "avsetNamePrefix": {
                     "value": "[parameters('avsetNamePrefix')]"
@@ -44712,7 +44712,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.18.4.5664",
-                      "templateHash": "11403861249875427923"
+                      "templateHash": "5636763242953469542"
                     }
                   },
                   "parameters": {
@@ -45009,7 +45009,7 @@
                       },
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('SH-{0}-{1}-{2}', parameters('sessionHostBatchId'), range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('time'))]",
+                      "name": "[format('SH-{0}-{1}-{2}', parameters('sessionHostBatchId'), sub(range(1, parameters('sessionHostsCount'))[copyIndex()], 1), parameters('time'))]",
                       "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
@@ -49682,7 +49682,7 @@
                       },
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('SH-Antimal-{0}-{1}-{2}', parameters('sessionHostBatchId'), range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('time'))]",
+                      "name": "[format('SH-Antimal-{0}-{1}-{2}', parameters('sessionHostBatchId'), sub(range(1, parameters('sessionHostsCount'))[copyIndex()], 1), parameters('time'))]",
                       "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
@@ -50212,7 +50212,7 @@
                       "condition": "[parameters('deployMonitoring')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('SH-Mon-{0}-{1}-{2}', parameters('sessionHostBatchId'), range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('time'))]",
+                      "name": "[format('SH-Mon-{0}-{1}-{2}', parameters('sessionHostBatchId'), sub(range(1, parameters('sessionHostsCount'))[copyIndex()], 1), parameters('time'))]",
                       "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
@@ -50740,7 +50740,7 @@
                       "condition": "[parameters('createAvdFslogixDeployment')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('Fsl-Conf-{0}-{1}-{2}', parameters('sessionHostBatchId'), range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('time'))]",
+                      "name": "[format('Fsl-Conf-{0}-{1}-{2}', parameters('sessionHostBatchId'), sub(range(1, parameters('sessionHostsCount'))[copyIndex()], 1), parameters('time'))]",
                       "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
                       "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
                       "properties": {
