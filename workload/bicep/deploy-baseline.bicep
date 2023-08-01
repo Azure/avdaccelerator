@@ -561,9 +561,9 @@ var varMgmtVmSpecs = {
     ouPath: avdOuPath
     subnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
 }
-var varMaxSessionHostsPerTemplateDeployment = 30
-var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varMaxSessionHostsPerTemplateDeployment
-var varMaxSessionHostsDivisionRemainderValue = avdDeploySessionHostsCount % varMaxSessionHostsPerTemplateDeployment
+var varShGeneralBatchsize = 30
+var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varShGeneralBatchsize
+var varMaxSessionHostsDivisionRemainderValue = avdDeploySessionHostsCount % varShGeneralBatchsize
 var varSessionHostBatchCount = varMaxSessionHostsDivisionRemainderValue > 0 ? varMaxSessionHostsDivisionValue + 1 : varMaxSessionHostsDivisionValue
 var varMaxAvsetMembersCount = 199
 var varDivisionAvsetValue = avdDeploySessionHostsCount / varMaxAvsetMembersCount
