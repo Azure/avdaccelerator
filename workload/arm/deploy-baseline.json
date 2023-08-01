@@ -8508,9 +8508,7 @@
             "varNetworkSecurityGroupDiagnostic": [
               "allLogs"
             ],
-            "varVirtualNetworkLogsDiagnostic": [
-              "allLogs"
-            ],
+            "varVirtualNetworkLogsDiagnostic": "[if(equals(variables('varAzureCloudName'), 'AzureUSGovernment'), createArray(''), createArray('allLogs'))]",
             "varVirtualNetworkMetricsDiagnostic": [
               "AllMetrics"
             ],
