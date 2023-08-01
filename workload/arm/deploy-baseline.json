@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "6203354488321151192"
+      "templateHash": "11891844198156864544"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -423,14 +423,14 @@
         "description": "When true, ZOne Redudant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)"
       }
     },
-    "avdAsFaultDomainCount": {
+    "avsetFaultDomainCount": {
       "type": "int",
       "defaultValue": 2,
       "metadata": {
         "description": "Sets the number of fault domains for the availability set. (Default: 2)"
       }
     },
-    "avdAsUpdateDomainCount": {
+    "avsetUpdateDomainCount": {
       "type": "int",
       "defaultValue": 5,
       "metadata": {
@@ -43679,10 +43679,10 @@
             "value": "[variables('varAvsetCount')]"
           },
           "availabilitySetFaultDomainCount": {
-            "value": "[parameters('avdAsFaultDomainCount')]"
+            "value": "[parameters('avsetFaultDomainCount')]"
           },
           "availabilitySetUpdateDomainCount": {
-            "value": "[parameters('avdAsUpdateDomainCount')]"
+            "value": "[parameters('avsetUpdateDomainCount')]"
           },
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]"
         },
