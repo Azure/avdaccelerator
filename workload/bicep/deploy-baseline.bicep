@@ -209,10 +209,10 @@ param availabilityZonesCompute bool = true
 param zoneRedundantStorage bool = false
 
 @sys.description('Sets the number of fault domains for the availability set. (Default: 2)')
-param avdAsFaultDomainCount int = 2
+param avsetFaultDomainCount int = 2
 
 @sys.description('Sets the number of update domains for the availability set. (Default: 5)')
-param avdAsUpdateDomainCount int = 5
+param avsetUpdateDomainCount int = 5
 
 @allowed([
     'Standard'
@@ -1219,8 +1219,8 @@ module availabilitySet './modules/avdSessionHosts/.bicep/availabilitySets.bicep'
         availabilitySetNamePrefix: varAvsetNamePrefix
         location: avdSessionHostLocation
         availabilitySetCount: varAvsetCount
-        availabilitySetFaultDomainCount: avdAsFaultDomainCount
-        availabilitySetUpdateDomainCount: avdAsUpdateDomainCount
+        availabilitySetFaultDomainCount: avsetFaultDomainCount
+        availabilitySetUpdateDomainCount: avsetUpdateDomainCount
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
     dependsOn: [
