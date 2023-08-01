@@ -60,8 +60,8 @@ avdDeploySessionHostsCount | No       | Quantity of session hosts to deploy. (De
 avdSessionHostCountIndex | No       | The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 0)
 availabilityZonesCompute | No       | When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Default: true)
 zoneRedundantStorage | No       | When true, ZOne Redudant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)
-avdAsFaultDomainCount | No       | Sets the number of fault domains for the availability set. (Default: 2)
-avdAsUpdateDomainCount | No       | Sets the number of update domains for the availability set. (Default: 5)
+avsetFaultDomainCount | No       | Sets the number of fault domains for the availability set. (Default: 2)
+avsetUpdateDomainCount | No       | Sets the number of update domains for the availability set. (Default: 5)
 fslogixStoragePerformance | No       | Storage account SKU for FSLogix storage. Recommended tier is Premium (Default: Premium)
 msixStoragePerformance | No       | Storage account SKU for MSIX storage. Recommended tier is Premium. (Default: Premium)
 diskZeroTrust  | No       | Enables a zero trust configuration on the session host disks. (Default: false)
@@ -539,7 +539,7 @@ When true, ZOne Redudant Storage (ZRS) is used, when set to false, Locally Redun
 
 - Default value: `False`
 
-### avdAsFaultDomainCount
+### avsetFaultDomainCount
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
@@ -547,7 +547,7 @@ Sets the number of fault domains for the availability set. (Default: 2)
 
 - Default value: `2`
 
-### avdAsUpdateDomainCount
+### avsetUpdateDomainCount
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
@@ -1232,10 +1232,10 @@ Enable usage and telemetry feedback to Microsoft.
         "zoneRedundantStorage": {
             "value": false
         },
-        "avdAsFaultDomainCount": {
+        "avsetFaultDomainCount": {
             "value": 2
         },
-        "avdAsUpdateDomainCount": {
+        "avsetUpdateDomainCount": {
             "value": 5
         },
         "fslogixStoragePerformance": {
