@@ -47,8 +47,8 @@ avdVnetPrivateDnsZoneKeyvaultId | No       | Use existing Azure private DNS zone
 vNetworkGatewayOnHub | No       | Does the hub contains a virtual network gateway. (Default: false)
 createAvdFslogixDeployment | No       | Deploy Fslogix setup. (Default: true)
 createMsixDeployment | No       | Deploy MSIX App Attach setup. (Default: false)
-fslogixFileShareQuotaSize | No       | Fslogix file share size. (Default: 10)
-msixFileShareQuotaSize | No       | MSIX file share size. (Default: 10)
+fslogixFileShareQuotaSize | No       | Fslogix file share size. (Default: 1)
+msixFileShareQuotaSize | No       | MSIX file share size. (Default: 1)
 avdDeploySessionHosts | No       | Deploy new session hosts. (Default: true)
 deployGpuPolicies | No       | Deploy VM GPU extension policies. (Default: true)
 avdDeployMonitoring | No       | Deploy AVD monitoring resources and setings. (Default: false)
@@ -99,9 +99,8 @@ avdHostPoolCustomFriendlyName | No       | AVD host pool custom friendly (Displa
 avdScalingPlanCustomName | No       | AVD scaling plan custom name. (Default: vdscaling-app1-dev-use2-001)
 avdApplicationGroupCustomName | No       | AVD desktop application group custom name. (Default: vdag-desktop-app1-dev-use2-001)
 avdApplicationGroupCustomFriendlyName | No       | AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - Dev - 001)
-avdApplicationGroupCustomFriendlyNameRapp | No       | AVD remote application group custom name. (Default: Remote apps - App1 - East US - 001)
 avdSessionHostCustomNamePrefix | No       | AVD session host prefix custom name. (Default: vmapp1duse2)
-avdAvailabilitySetCustomNamePrefix | No       | AVD availability set custom name. (Default: avail)
+avsetCustomNamePrefix | No       | AVD availability set custom name. (Default: avail)
 storageAccountPrefixCustomName | No       | AVD FSLogix and MSIX app attach storage account prefix custom name. (Default: st)
 fslogixFileShareCustomName | No       | FSLogix file share name. (Default: fslogix-pc-app1-dev-001)
 msixFileShareCustomName | No       | MSIX file share name. (Default: msix-app1-dev-001)
@@ -442,17 +441,17 @@ Deploy MSIX App Attach setup. (Default: false)
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-Fslogix file share size. (Default: 10)
+Fslogix file share size. (Default: 1)
 
-- Default value: `10`
+- Default value: `1`
 
 ### msixFileShareQuotaSize
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-MSIX file share size. (Default: 10)
+MSIX file share size. (Default: 1)
 
-- Default value: `10`
+- Default value: `1`
 
 ### avdDeploySessionHosts
 
@@ -859,14 +858,6 @@ AVD desktop application group custom friendly (Display) name. (Default: Desktops
 
 - Default value: `Desktops - App1 - Dev - East US 2 - 001`
 
-### avdApplicationGroupCustomFriendlyNameRapp
-
-![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
-
-AVD remote application group custom name. (Default: Remote apps - App1 - East US - 001)
-
-- Default value: `Remote apps - App1 - Dev - East US 2 - 001`
-
 ### avdSessionHostCustomNamePrefix
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
@@ -875,7 +866,7 @@ AVD session host prefix custom name. (Default: vmapp1duse2)
 
 - Default value: `vmapp1duse2`
 
-### avdAvailabilitySetCustomNamePrefix
+### avsetCustomNamePrefix
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
@@ -1203,10 +1194,10 @@ Enable usage and telemetry feedback to Microsoft.
             "value": false
         },
         "fslogixFileShareQuotaSize": {
-            "value": 10
+            "value": 1
         },
         "msixFileShareQuotaSize": {
-            "value": 10
+            "value": 1
         },
         "avdDeploySessionHosts": {
             "value": true
@@ -1358,13 +1349,10 @@ Enable usage and telemetry feedback to Microsoft.
         "avdApplicationGroupCustomFriendlyName": {
             "value": "Desktops - App1 - Dev - East US 2 - 001"
         },
-        "avdApplicationGroupCustomFriendlyNameRapp": {
-            "value": "Remote apps - App1 - Dev - East US 2 - 001"
-        },
         "avdSessionHostCustomNamePrefix": {
             "value": "vmapp1duse2"
         },
-        "avdAvailabilitySetCustomNamePrefix": {
+        "avsetCustomNamePrefix": {
             "value": "avail"
         },
         "storageAccountPrefixCustomName": {
