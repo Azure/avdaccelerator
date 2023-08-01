@@ -258,7 +258,7 @@ module sessionHostsWait '../../../../../carml/1.3.0/Microsoft.Resources/deployme
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-Wait-${sessionHostBatchId}-${time}'
     params: {
-        name: 'Session-Hosts-Wait-${time}'
+        name: 'SH-Wait-${sessionHostBatchId}-${time}'
         location: sessionHostLocation
         azPowerShellVersion: '8.3.0'
         cleanupPreference: 'Always'
@@ -279,7 +279,7 @@ module sessionHostsWait '../../../../../carml/1.3.0/Microsoft.Resources/deployme
 // Add antimalware extension to session host.
 module sessionHostsAntimalwareExtension '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, sessionHostsCount): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Antimalware-${sessionHostBatchId}-${i}-${time}'
+    name: 'SH-Antimal-${sessionHostBatchId}-${i}-${time}'
     params: {
         location: sessionHostLocation
         virtualMachineName: '${sessionHostNamePrefix}${padLeft((i + sessionHostCountIndex), 4, '0')}'
@@ -314,9 +314,9 @@ module sessionHostsAntimalwareExtension '../../../../../carml/1.3.0/Microsoft.Co
 // Introduce wait for antimalware extension to complete to be ready.
 module antimalwareExtensionWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'Antimalware-Wait-${sessionHostBatchId}-${time}'
+    name: 'SH-Antimal-Wait-${sessionHostBatchId}-${time}'
     params: {
-        name: 'Antimalware-Extension-Wait-${time}'
+        name: 'SH-Antimal-Wait-${sessionHostBatchId}-${time}'
         location: sessionHostLocation
         azPowerShellVersion: '8.3.0'
         cleanupPreference: 'Always'
@@ -370,9 +370,9 @@ module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virt
 // Introduce wait for antimalware extension to complete to be ready.
 module sessionHostsMonitoringWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Monitoring-Wait-${sessionHostBatchId}-${time}' 
+    name: 'SH-Mon-Wait-${sessionHostBatchId}-${time}' 
     params: {
-        name: 'SH-Monitoring-Wait-${time}'
+        name: 'SH-Mon-Wait-${sessionHostBatchId}-${time}'
         location: sessionHostLocation
         azPowerShellVersion: '8.3.0'
         cleanupPreference: 'Always'
