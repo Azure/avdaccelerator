@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "6739132677234659611"
+      "templateHash": "1350392747272941812"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -399,7 +399,7 @@
       "metadata": {
         "description": "Quantity of session hosts to deploy. (Default: 1)"
       },
-      "maxValue": 999,
+      "maxValue": 900,
       "minValue": 1
     },
     "avdSessionHostCountIndex": {
@@ -740,14 +740,6 @@
       },
       "maxLength": 64
     },
-    "avdApplicationGroupCustomFriendlyNameRapp": {
-      "type": "string",
-      "defaultValue": "Remote apps - App1 - Dev - East US 2 - 001",
-      "metadata": {
-        "description": "AVD remote application group custom name. (Default: Remote apps - App1 - East US - 001)"
-      },
-      "maxLength": 64
-    },
     "avdSessionHostCustomNamePrefix": {
       "type": "string",
       "defaultValue": "vmapp1duse2",
@@ -756,7 +748,7 @@
       },
       "maxLength": 11
     },
-    "avdAvailabilitySetCustomNamePrefix": {
+    "avsetCustomNamePrefix": {
       "type": "string",
       "defaultValue": "avail",
       "metadata": {
@@ -1254,7 +1246,7 @@
     "varWrklKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('avdWrklKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringThreeChar')), format('kv-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringThreeChar')))]",
     "varWrklKvPrivateEndpointName": "[format('pe-{0}-vault', variables('varWrklKvName'))]",
     "varSessionHostNamePrefix": "[if(parameters('avdUseCustomNaming'), parameters('avdSessionHostCustomNamePrefix'), format('vm{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varSessionHostLocationAcronym')))]",
-    "varAvailabilitySetNamePrefix": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}', parameters('avdAvailabilitySetCustomNamePrefix'), variables('varComputeStorageResourcesNamingStandard')), format('avail-{0}', variables('varComputeStorageResourcesNamingStandard')))]",
+    "varAvsetNamePrefix": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}', parameters('avsetCustomNamePrefix'), variables('varComputeStorageResourcesNamingStandard')), format('avail-{0}', variables('varComputeStorageResourcesNamingStandard')))]",
     "varStorageManagedIdentityName": "[format('id-storage-{0}-001', variables('varComputeStorageResourcesNamingStandard'))]",
     "varFslogixFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('fslogixFileShareCustomName'), format('fslogix-pc-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
     "varMsixFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('msixFileShareCustomName'), format('msix-pc-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
@@ -1274,6 +1266,14 @@
     "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(parameters('createMsixDeployment'), true())), true(), false())]",
     "varFslogixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('fslogixStoragePerformance')), format('{0}_LRS', parameters('fslogixStoragePerformance')))]",
     "varMsixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('msixStoragePerformance')), format('{0}_LRS', parameters('msixStoragePerformance')))]",
+    "varMaxSessionHostsPerTemplateDeployment": 30,
+    "varMaxSessionHostsDivisionValue": "[div(parameters('avdDeploySessionHostsCount'), variables('varMaxSessionHostsPerTemplateDeployment'))]",
+    "varMaxSessionHostsDivisionRemainderValue": "[mod(parameters('avdDeploySessionHostsCount'), variables('varMaxSessionHostsPerTemplateDeployment'))]",
+    "varSessionHostBatchCount": "[if(greater(variables('varMaxSessionHostsDivisionRemainderValue'), 0), add(variables('varMaxSessionHostsDivisionValue'), 1), variables('varMaxSessionHostsDivisionValue'))]",
+    "varMaxAvsetMembersCount": 199,
+    "varDivisionAvsetValue": "[div(parameters('avdDeploySessionHostsCount'), variables('varMaxAvsetMembersCount'))]",
+    "varDivisionAvsetRemainderValue": "[mod(parameters('avdDeploySessionHostsCount'), variables('varMaxAvsetMembersCount'))]",
+    "varAvsetCount": "[if(greater(variables('varDivisionAvsetRemainderValue'), 0), add(variables('varDivisionAvsetValue'), 1), variables('varDivisionAvsetValue'))]",
     "varScalingPlanSchedules": [
       {
         "daysOfWeek": [
@@ -43654,10 +43654,493 @@
       ]
     },
     {
-      "condition": "[parameters('avdDeploySessionHosts')]",
+      "condition": "[not(parameters('availabilityZonesCompute'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('Session-Hosts-{0}', parameters('time'))]",
+      "name": "[format('AVD-Availability-Set-{0}', parameters('time'))]",
+      "subscriptionId": "[format('{0}', parameters('avdWorkloadSubsId'))]",
+      "resourceGroup": "[format('{0}', variables('varComputeObjectsRgName'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "workloadSubsId": {
+            "value": "[parameters('avdWorkloadSubsId')]"
+          },
+          "computeObjectsRgName": {
+            "value": "[variables('varComputeObjectsRgName')]"
+          },
+          "availabilitySetNamePrefix": {
+            "value": "[variables('varAvsetNamePrefix')]"
+          },
+          "location": {
+            "value": "[parameters('avdSessionHostLocation')]"
+          },
+          "availabilitySetCount": {
+            "value": "[variables('varAvsetCount')]"
+          },
+          "availabilitySetFaultDomainCount": {
+            "value": "[parameters('avdAsFaultDomainCount')]"
+          },
+          "availabilitySetUpdateDomainCount": {
+            "value": "[parameters('avdAsUpdateDomainCount')]"
+          },
+          "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.18.4.5664",
+              "templateHash": "16836515919390090367"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Location where to deploy compute services."
+              }
+            },
+            "availabilitySetNamePrefix": {
+              "type": "string",
+              "metadata": {
+                "description": "Availablity Set name."
+              }
+            },
+            "availabilitySetCount": {
+              "type": "int",
+              "metadata": {
+                "description": "Availablity Set count."
+              }
+            },
+            "availabilitySetFaultDomainCount": {
+              "type": "int",
+              "metadata": {
+                "description": "Sets the number of fault domains for the availability set."
+              }
+            },
+            "availabilitySetUpdateDomainCount": {
+              "type": "int",
+              "metadata": {
+                "description": "Sets the number of update domains for the availability set."
+              }
+            },
+            "computeObjectsRgName": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource Group name for the session hosts."
+              }
+            },
+            "workloadSubsId": {
+              "type": "string",
+              "metadata": {
+                "description": "AVD workload subscription ID, multiple subscriptions scenario."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "metadata": {
+                "description": "Tags to be applied to resources"
+              }
+            },
+            "time": {
+              "type": "string",
+              "defaultValue": "[utcNow()]",
+              "metadata": {
+                "description": "Do not modify, used to set unique value for resource deployment."
+              }
+            }
+          },
+          "resources": [
+            {
+              "copy": {
+                "name": "availabilitySet",
+                "count": "[length(range(1, parameters('availabilitySetCount')))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('Availability-Set-{0}-{1}', range(1, parameters('availabilitySetCount'))[copyIndex()], parameters('time'))]",
+              "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+              "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[format('{0}-{1}', parameters('availabilitySetNamePrefix'), padLeft(range(1, parameters('availabilitySetCount'))[copyIndex()], 3, '0'))]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "availabilitySetFaultDomain": {
+                    "value": "[parameters('availabilitySetFaultDomainCount')]"
+                  },
+                  "availabilitySetUpdateDomain": {
+                    "value": "[parameters('availabilitySetUpdateDomainCount')]"
+                  },
+                  "tags": {
+                    "value": "[parameters('tags')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.18.4.5664",
+                      "templateHash": "8447272874314804308"
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the availability set that is being created."
+                      }
+                    },
+                    "availabilitySetFaultDomain": {
+                      "type": "int",
+                      "defaultValue": 2,
+                      "metadata": {
+                        "description": "Optional. The number of fault domains to use."
+                      }
+                    },
+                    "availabilitySetUpdateDomain": {
+                      "type": "int",
+                      "defaultValue": 5,
+                      "metadata": {
+                        "description": "Optional. The number of update domains to use."
+                      }
+                    },
+                    "availabilitySetSku": {
+                      "type": "string",
+                      "defaultValue": "Aligned",
+                      "metadata": {
+                        "description": "Optional. SKU of the availability set.\r\n- Use \\'Aligned\\' for virtual machines with managed disks.\r\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\r\n"
+                      }
+                    },
+                    "proximityPlacementGroupId": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. Resource ID of a proximity placement group."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]",
+                      "metadata": {
+                        "description": "Optional. Resource location."
+                      }
+                    },
+                    "lock": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. Specify the type of lock."
+                      },
+                      "allowedValues": [
+                        "",
+                        "CanNotDelete",
+                        "ReadOnly"
+                      ]
+                    },
+                    "roleAssignments": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                      }
+                    },
+                    "tags": {
+                      "type": "object",
+                      "defaultValue": {},
+                      "metadata": {
+                        "description": "Optional. Tags of the availability set resource."
+                      }
+                    },
+                    "enableDefaultTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "condition": "[parameters('enableDefaultTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2021-04-01",
+                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": []
+                        }
+                      }
+                    },
+                    {
+                      "type": "Microsoft.Compute/availabilitySets",
+                      "apiVersion": "2022-11-01",
+                      "name": "[parameters('name')]",
+                      "location": "[parameters('location')]",
+                      "tags": "[parameters('tags')]",
+                      "properties": {
+                        "platformFaultDomainCount": "[parameters('availabilitySetFaultDomain')]",
+                        "platformUpdateDomainCount": "[parameters('availabilitySetUpdateDomain')]",
+                        "proximityPlacementGroup": "[if(not(empty(parameters('proximityPlacementGroupId'))), createObject('id', parameters('proximityPlacementGroupId')), null())]"
+                      },
+                      "sku": {
+                        "name": "[parameters('availabilitySetSku')]"
+                      }
+                    },
+                    {
+                      "condition": "[not(empty(parameters('lock')))]",
+                      "type": "Microsoft.Authorization/locks",
+                      "apiVersion": "2020-05-01",
+                      "scope": "[format('Microsoft.Compute/availabilitySets/{0}', parameters('name'))]",
+                      "name": "[format('{0}-{1}-lock', parameters('name'), parameters('lock'))]",
+                      "properties": {
+                        "level": "[parameters('lock')]",
+                        "notes": "[if(equals(parameters('lock'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot modify the resource or child resources.')]"
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Compute/availabilitySets', parameters('name'))]"
+                      ]
+                    },
+                    {
+                      "copy": {
+                        "name": "availabilitySet_roleAssignments",
+                        "count": "[length(parameters('roleAssignments'))]"
+                      },
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('{0}-AvSet-Rbac-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
+                          "principalIds": {
+                            "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
+                          },
+                          "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
+                          "roleDefinitionIdOrName": {
+                            "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
+                          },
+                          "condition": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), createObject('value', parameters('roleAssignments')[copyIndex()].condition), createObject('value', ''))]",
+                          "delegatedManagedIdentityResourceId": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), createObject('value', parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId), createObject('value', ''))]",
+                          "resourceId": {
+                            "value": "[resourceId('Microsoft.Compute/availabilitySets', parameters('name'))]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.18.4.5664",
+                              "templateHash": "5091916529584467175"
+                            }
+                          },
+                          "parameters": {
+                            "principalIds": {
+                              "type": "array",
+                              "metadata": {
+                                "description": "Required. The IDs of the principals to assign the role to."
+                              }
+                            },
+                            "roleDefinitionIdOrName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+                              }
+                            },
+                            "resourceId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The resource ID of the resource to apply the role assignment to."
+                              }
+                            },
+                            "principalType": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "allowedValues": [
+                                "ServicePrincipal",
+                                "Group",
+                                "User",
+                                "ForeignGroup",
+                                "Device",
+                                ""
+                              ],
+                              "metadata": {
+                                "description": "Optional. The principal type of the assigned principal ID."
+                              }
+                            },
+                            "description": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. The description of the role assignment."
+                              }
+                            },
+                            "condition": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                              }
+                            },
+                            "conditionVersion": {
+                              "type": "string",
+                              "defaultValue": "2.0",
+                              "allowedValues": [
+                                "2.0"
+                              ],
+                              "metadata": {
+                                "description": "Optional. Version of the condition."
+                              }
+                            },
+                            "delegatedManagedIdentityResourceId": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. Id of the delegated managed identity resource."
+                              }
+                            }
+                          },
+                          "variables": {
+                            "builtInRoleNames": {
+                              "Avere Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f8fab4f-1852-4a58-a46a-8eaf358af14a')]",
+                              "Avere Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c025889f-8102-4ebf-b32c-fc0c6f0c6bd9')]",
+                              "Azure Center for SAP solutions administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7b0c7e81-271f-4c71-90bf-e30bdfdbc2f7')]",
+                              "Azure Center for SAP solutions reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '05352d14-a920-4328-a0de-4cbe7430e26b')]",
+                              "Azure Center for SAP solutions service role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aabbc5dd-1af0-458b-a942-81af88f9c138')]",
+                              "Azure Kubernetes Service Policy Add-on Deployment": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18ed5180-3e48-46fd-8541-4ea054d57064')]",
+                              "Compute Gallery Sharing Admin": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1ef6a3be-d0ac-425d-8c01-acb62866290b')]",
+                              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                              "Data Operator for Managed Disks": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '959f8984-c045-4866-89c7-12bf9737be2e')]",
+                              "Desktop Virtualization Power On Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '489581de-a3bd-480d-9518-53dea7416b33')]",
+                              "Desktop Virtualization Power On Off Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '40c5ff49-9181-41f8-ae61-143b0e78555e')]",
+                              "Desktop Virtualization Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a959dbd1-f747-45e3-8ba6-dd80f235f97c')]",
+                              "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
+                              "Disk Backup Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3e5e47e6-65f7-47ef-90b5-e5dd4d455f24')]",
+                              "Disk Pool Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '60fc6e62-5479-42d4-8bf4-67625fcc2840')]",
+                              "Disk Restore Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b50d9833-a0cb-478e-945f-707fcc997c13')]",
+                              "Disk Snapshot Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
+                              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+                              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
+                              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
+                              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
+                              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
+                              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+                              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
+                              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                              "Reservation Purchaser": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f7b75c60-3036-4b75-91c3-6b41c27c1689')]",
+                              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+                              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+                              "Virtual Machine Administrator Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c0163c0-47e6-4577-8991-ea5c82e286e4')]",
+                              "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]",
+                              "Virtual Machine User Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fb879df8-f326-4884-b1cf-06f3ad86be52')]",
+                              "VM Scanner Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'd24ecba3-c1f4-40fa-a7bb-4588a071e8fd')]",
+                              "Windows Admin Center Administrator Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a6333a3e-0164-44c3-b281-7a577aff287f')]"
+                            }
+                          },
+                          "resources": [
+                            {
+                              "copy": {
+                                "name": "roleAssignment",
+                                "count": "[length(parameters('principalIds'))]"
+                              },
+                              "type": "Microsoft.Authorization/roleAssignments",
+                              "apiVersion": "2022-04-01",
+                              "scope": "[format('Microsoft.Compute/availabilitySets/{0}', last(split(parameters('resourceId'), '/')))]",
+                              "name": "[guid(resourceId('Microsoft.Compute/availabilitySets', last(split(parameters('resourceId'), '/'))), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+                              "properties": {
+                                "description": "[parameters('description')]",
+                                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
+                                "principalId": "[parameters('principalIds')[copyIndex()]]",
+                                "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]",
+                                "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]",
+                                "conditionVersion": "[if(and(not(empty(parameters('conditionVersion'))), not(empty(parameters('condition')))), parameters('conditionVersion'), null())]",
+                                "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), null())]"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Compute/availabilitySets', parameters('name'))]"
+                      ]
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the availability set."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the availability set."
+                      },
+                      "value": "[resourceId('Microsoft.Compute/availabilitySets', parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the availability set was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The location the resource was deployed into."
+                      },
+                      "value": "[reference(resourceId('Microsoft.Compute/availabilitySets', parameters('name')), '2022-11-01', 'full').location]"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "baselineResourceGroups",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "sessionHosts",
+        "count": "[length(range(1, variables('varSessionHostBatchCount')))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('Session-Hosts-{0}-{1}', sub(range(1, variables('varSessionHostBatchCount'))[copyIndex()], 1), parameters('time'))]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -43669,24 +44152,21 @@
           "avdAgentPackageLocation": {
             "value": "[variables('varAvdAgentPackageLocation')]"
           },
-          "computeTimeZone": {
+          "timeZone": {
             "value": "[variables('varTimeZoneSessionHosts')]"
           },
-          "applicationSecurityGroupResourceId": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), parameters('createMsixDeployment')), createObject('value', format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.applicationSecurityGroupResourceId.value)), createObject('value', ''))]",
-          "availabilitySetFaultDomainCount": {
-            "value": "[parameters('avdAsFaultDomainCount')]"
-          },
-          "availabilitySetUpdateDomainCount": {
-            "value": "[parameters('avdAsUpdateDomainCount')]"
-          },
+          "asgResourceId": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), parameters('createMsixDeployment')), createObject('value', format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.applicationSecurityGroupResourceId.value)), createObject('value', ''))]",
           "identityServiceProvider": {
             "value": "[parameters('avdIdentityServiceProvider')]"
           },
           "createIntuneEnrollment": {
             "value": "[parameters('createIntuneEnrollment')]"
           },
-          "availabilitySetNamePrefix": {
-            "value": "[variables('varAvailabilitySetNamePrefix')]"
+          "maxAvsetMembersCount": {
+            "value": "[variables('varMaxAvsetMembersCount')]"
+          },
+          "avsetNamePrefix": {
+            "value": "[variables('varAvsetNamePrefix')]"
           },
           "computeObjectsRgName": {
             "value": "[variables('varComputeObjectsRgName')]"
@@ -43794,7 +44274,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "12022050706234241403"
+              "templateHash": "6134543342740925930"
             }
           },
           "parameters": {
@@ -43816,7 +44296,7 @@
                 "description": "Location where to deploy compute services."
               }
             },
-            "computeTimeZone": {
+            "timeZone": {
               "type": "string",
               "metadata": {
                 "description": "Virtual machine time zone."
@@ -43852,6 +44332,12 @@
                 "description": "Quantity of session hosts to deploy."
               }
             },
+            "maxAvsetMembersCount": {
+              "type": "int",
+              "metadata": {
+                "description": "Max VMs per availability set."
+              }
+            },
             "sessionHostCountIndex": {
               "type": "int",
               "metadata": {
@@ -43864,22 +44350,10 @@
                 "description": "Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set."
               }
             },
-            "availabilitySetNamePrefix": {
+            "avsetNamePrefix": {
               "type": "string",
               "metadata": {
                 "description": "Availablity Set name."
-              }
-            },
-            "availabilitySetFaultDomainCount": {
-              "type": "int",
-              "metadata": {
-                "description": "Sets the number of fault domains for the availability set."
-              }
-            },
-            "availabilitySetUpdateDomainCount": {
-              "type": "int",
-              "metadata": {
-                "description": "Sets the number of update domains for the availability set."
               }
             },
             "deployGpuPolicies": {
@@ -43996,7 +44470,7 @@
                 "description": "OU path to join AVd VMs."
               }
             },
-            "applicationSecurityGroupResourceId": {
+            "asgResourceId": {
               "type": "string",
               "metadata": {
                 "description": "Application Security Group (ASG) for the session hosts."
@@ -44077,502 +44551,22 @@
             }
           },
           "variables": {
-            "varMaxSessionHostsPerTemplateDeployment": 30,
+            "varMaxSessionHostsPerTemplateDeployment": 10,
             "varDivisionValue": "[div(parameters('deploySessionHostsCount'), variables('varMaxSessionHostsPerTemplateDeployment'))]",
             "varDivisionRemainderValue": "[mod(parameters('deploySessionHostsCount'), variables('varMaxSessionHostsPerTemplateDeployment'))]",
-            "varAvdSessionHostBatchCount": "[if(greater(variables('varDivisionRemainderValue'), 0), add(variables('varDivisionValue'), 1), variables('varDivisionValue'))]",
-            "maxAvailabilitySetMembersCount": 199,
-            "divisionAvSetValue": "[div(parameters('deploySessionHostsCount'), variables('maxAvailabilitySetMembersCount'))]",
-            "divisionAvSetRemainderValue": "[mod(parameters('deploySessionHostsCount'), variables('maxAvailabilitySetMembersCount'))]",
-            "availabilitySetCount": "[if(greater(variables('divisionAvSetRemainderValue'), 0), add(variables('divisionAvSetValue'), 1), variables('divisionAvSetValue'))]"
+            "varSessionHostBatchCount": "[if(greater(variables('varDivisionRemainderValue'), 0), add(variables('varDivisionValue'), 1), variables('varDivisionValue'))]"
           },
           "resources": [
             {
-              "condition": "[not(parameters('useAvailabilityZones'))]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('AVD-Availability-Set-{0}', parameters('time'))]",
-              "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
-              "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "workloadSubsId": {
-                    "value": "[parameters('subscriptionId')]"
-                  },
-                  "computeObjectsRgName": {
-                    "value": "[parameters('computeObjectsRgName')]"
-                  },
-                  "availabilitySetNamePrefix": {
-                    "value": "[parameters('availabilitySetNamePrefix')]"
-                  },
-                  "sessionHostLocation": {
-                    "value": "[parameters('sessionHostLocation')]"
-                  },
-                  "availabilitySetCount": {
-                    "value": "[variables('availabilitySetCount')]"
-                  },
-                  "availabilitySetFaultDomainCount": {
-                    "value": "[parameters('availabilitySetFaultDomainCount')]"
-                  },
-                  "availabilitySetUpdateDomainCount": {
-                    "value": "[parameters('availabilitySetUpdateDomainCount')]"
-                  },
-                  "tags": {
-                    "value": "[parameters('tags')]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "653461560712595149"
-                    }
-                  },
-                  "parameters": {
-                    "sessionHostLocation": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Location where to deploy compute services."
-                      }
-                    },
-                    "availabilitySetNamePrefix": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Availablity Set name."
-                      }
-                    },
-                    "availabilitySetCount": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Availablity Set count."
-                      }
-                    },
-                    "availabilitySetFaultDomainCount": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Sets the number of fault domains for the availability set."
-                      }
-                    },
-                    "availabilitySetUpdateDomainCount": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Sets the number of update domains for the availability set."
-                      }
-                    },
-                    "computeObjectsRgName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Resource Group name for the session hosts."
-                      }
-                    },
-                    "workloadSubsId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "AVD workload subscription ID, multiple subscriptions scenario."
-                      }
-                    },
-                    "tags": {
-                      "type": "object",
-                      "metadata": {
-                        "description": "Tags to be applied to resources"
-                      }
-                    },
-                    "time": {
-                      "type": "string",
-                      "defaultValue": "[utcNow()]",
-                      "metadata": {
-                        "description": "Do not modify, used to set unique value for resource deployment."
-                      }
-                    }
-                  },
-                  "resources": [
-                    {
-                      "copy": {
-                        "name": "availabilitySet",
-                        "count": "[length(range(1, parameters('availabilitySetCount')))]"
-                      },
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('Availability-Set-{0}-{1}', range(1, parameters('availabilitySetCount'))[copyIndex()], parameters('time'))]",
-                      "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
-                      "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
-                      "properties": {
-                        "expressionEvaluationOptions": {
-                          "scope": "inner"
-                        },
-                        "mode": "Incremental",
-                        "parameters": {
-                          "name": {
-                            "value": "[format('{0}-{1}', parameters('availabilitySetNamePrefix'), padLeft(range(1, parameters('availabilitySetCount'))[copyIndex()], 3, '0'))]"
-                          },
-                          "location": {
-                            "value": "[parameters('sessionHostLocation')]"
-                          },
-                          "availabilitySetFaultDomain": {
-                            "value": "[parameters('availabilitySetFaultDomainCount')]"
-                          },
-                          "availabilitySetUpdateDomain": {
-                            "value": "[parameters('availabilitySetUpdateDomainCount')]"
-                          },
-                          "tags": {
-                            "value": "[parameters('tags')]"
-                          }
-                        },
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "metadata": {
-                            "_generator": {
-                              "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "8447272874314804308"
-                            }
-                          },
-                          "parameters": {
-                            "name": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. The name of the availability set that is being created."
-                              }
-                            },
-                            "availabilitySetFaultDomain": {
-                              "type": "int",
-                              "defaultValue": 2,
-                              "metadata": {
-                                "description": "Optional. The number of fault domains to use."
-                              }
-                            },
-                            "availabilitySetUpdateDomain": {
-                              "type": "int",
-                              "defaultValue": 5,
-                              "metadata": {
-                                "description": "Optional. The number of update domains to use."
-                              }
-                            },
-                            "availabilitySetSku": {
-                              "type": "string",
-                              "defaultValue": "Aligned",
-                              "metadata": {
-                                "description": "Optional. SKU of the availability set.\r\n- Use \\'Aligned\\' for virtual machines with managed disks.\r\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\r\n"
-                              }
-                            },
-                            "proximityPlacementGroupId": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. Resource ID of a proximity placement group."
-                              }
-                            },
-                            "location": {
-                              "type": "string",
-                              "defaultValue": "[resourceGroup().location]",
-                              "metadata": {
-                                "description": "Optional. Resource location."
-                              }
-                            },
-                            "lock": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. Specify the type of lock."
-                              },
-                              "allowedValues": [
-                                "",
-                                "CanNotDelete",
-                                "ReadOnly"
-                              ]
-                            },
-                            "roleAssignments": {
-                              "type": "array",
-                              "defaultValue": [],
-                              "metadata": {
-                                "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                              }
-                            },
-                            "tags": {
-                              "type": "object",
-                              "defaultValue": {},
-                              "metadata": {
-                                "description": "Optional. Tags of the availability set resource."
-                              }
-                            },
-                            "enableDefaultTelemetry": {
-                              "type": "bool",
-                              "defaultValue": true,
-                              "metadata": {
-                                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-                              }
-                            }
-                          },
-                          "resources": [
-                            {
-                              "condition": "[parameters('enableDefaultTelemetry')]",
-                              "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2021-04-01",
-                              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
-                              "properties": {
-                                "mode": "Incremental",
-                                "template": {
-                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                                  "contentVersion": "1.0.0.0",
-                                  "resources": []
-                                }
-                              }
-                            },
-                            {
-                              "type": "Microsoft.Compute/availabilitySets",
-                              "apiVersion": "2022-11-01",
-                              "name": "[parameters('name')]",
-                              "location": "[parameters('location')]",
-                              "tags": "[parameters('tags')]",
-                              "properties": {
-                                "platformFaultDomainCount": "[parameters('availabilitySetFaultDomain')]",
-                                "platformUpdateDomainCount": "[parameters('availabilitySetUpdateDomain')]",
-                                "proximityPlacementGroup": "[if(not(empty(parameters('proximityPlacementGroupId'))), createObject('id', parameters('proximityPlacementGroupId')), null())]"
-                              },
-                              "sku": {
-                                "name": "[parameters('availabilitySetSku')]"
-                              }
-                            },
-                            {
-                              "condition": "[not(empty(parameters('lock')))]",
-                              "type": "Microsoft.Authorization/locks",
-                              "apiVersion": "2020-05-01",
-                              "scope": "[format('Microsoft.Compute/availabilitySets/{0}', parameters('name'))]",
-                              "name": "[format('{0}-{1}-lock', parameters('name'), parameters('lock'))]",
-                              "properties": {
-                                "level": "[parameters('lock')]",
-                                "notes": "[if(equals(parameters('lock'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot modify the resource or child resources.')]"
-                              },
-                              "dependsOn": [
-                                "[resourceId('Microsoft.Compute/availabilitySets', parameters('name'))]"
-                              ]
-                            },
-                            {
-                              "copy": {
-                                "name": "availabilitySet_roleAssignments",
-                                "count": "[length(parameters('roleAssignments'))]"
-                              },
-                              "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
-                              "name": "[format('{0}-AvSet-Rbac-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-                              "properties": {
-                                "expressionEvaluationOptions": {
-                                  "scope": "inner"
-                                },
-                                "mode": "Incremental",
-                                "parameters": {
-                                  "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
-                                  "principalIds": {
-                                    "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
-                                  },
-                                  "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
-                                  "roleDefinitionIdOrName": {
-                                    "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
-                                  },
-                                  "condition": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), createObject('value', parameters('roleAssignments')[copyIndex()].condition), createObject('value', ''))]",
-                                  "delegatedManagedIdentityResourceId": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), createObject('value', parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId), createObject('value', ''))]",
-                                  "resourceId": {
-                                    "value": "[resourceId('Microsoft.Compute/availabilitySets', parameters('name'))]"
-                                  }
-                                },
-                                "template": {
-                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                                  "contentVersion": "1.0.0.0",
-                                  "metadata": {
-                                    "_generator": {
-                                      "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "5091916529584467175"
-                                    }
-                                  },
-                                  "parameters": {
-                                    "principalIds": {
-                                      "type": "array",
-                                      "metadata": {
-                                        "description": "Required. The IDs of the principals to assign the role to."
-                                      }
-                                    },
-                                    "roleDefinitionIdOrName": {
-                                      "type": "string",
-                                      "metadata": {
-                                        "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
-                                      }
-                                    },
-                                    "resourceId": {
-                                      "type": "string",
-                                      "metadata": {
-                                        "description": "Required. The resource ID of the resource to apply the role assignment to."
-                                      }
-                                    },
-                                    "principalType": {
-                                      "type": "string",
-                                      "defaultValue": "",
-                                      "allowedValues": [
-                                        "ServicePrincipal",
-                                        "Group",
-                                        "User",
-                                        "ForeignGroup",
-                                        "Device",
-                                        ""
-                                      ],
-                                      "metadata": {
-                                        "description": "Optional. The principal type of the assigned principal ID."
-                                      }
-                                    },
-                                    "description": {
-                                      "type": "string",
-                                      "defaultValue": "",
-                                      "metadata": {
-                                        "description": "Optional. The description of the role assignment."
-                                      }
-                                    },
-                                    "condition": {
-                                      "type": "string",
-                                      "defaultValue": "",
-                                      "metadata": {
-                                        "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                                      }
-                                    },
-                                    "conditionVersion": {
-                                      "type": "string",
-                                      "defaultValue": "2.0",
-                                      "allowedValues": [
-                                        "2.0"
-                                      ],
-                                      "metadata": {
-                                        "description": "Optional. Version of the condition."
-                                      }
-                                    },
-                                    "delegatedManagedIdentityResourceId": {
-                                      "type": "string",
-                                      "defaultValue": "",
-                                      "metadata": {
-                                        "description": "Optional. Id of the delegated managed identity resource."
-                                      }
-                                    }
-                                  },
-                                  "variables": {
-                                    "builtInRoleNames": {
-                                      "Avere Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f8fab4f-1852-4a58-a46a-8eaf358af14a')]",
-                                      "Avere Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c025889f-8102-4ebf-b32c-fc0c6f0c6bd9')]",
-                                      "Azure Center for SAP solutions administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7b0c7e81-271f-4c71-90bf-e30bdfdbc2f7')]",
-                                      "Azure Center for SAP solutions reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '05352d14-a920-4328-a0de-4cbe7430e26b')]",
-                                      "Azure Center for SAP solutions service role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aabbc5dd-1af0-458b-a942-81af88f9c138')]",
-                                      "Azure Kubernetes Service Policy Add-on Deployment": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18ed5180-3e48-46fd-8541-4ea054d57064')]",
-                                      "Compute Gallery Sharing Admin": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1ef6a3be-d0ac-425d-8c01-acb62866290b')]",
-                                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-                                      "Data Operator for Managed Disks": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '959f8984-c045-4866-89c7-12bf9737be2e')]",
-                                      "Desktop Virtualization Power On Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '489581de-a3bd-480d-9518-53dea7416b33')]",
-                                      "Desktop Virtualization Power On Off Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '40c5ff49-9181-41f8-ae61-143b0e78555e')]",
-                                      "Desktop Virtualization Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a959dbd1-f747-45e3-8ba6-dd80f235f97c')]",
-                                      "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
-                                      "Disk Backup Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3e5e47e6-65f7-47ef-90b5-e5dd4d455f24')]",
-                                      "Disk Pool Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '60fc6e62-5479-42d4-8bf4-67625fcc2840')]",
-                                      "Disk Restore Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b50d9833-a0cb-478e-945f-707fcc997c13')]",
-                                      "Disk Snapshot Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
-                                      "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
-                                      "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
-                                      "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
-                                      "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
-                                      "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
-                                      "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
-                                      "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
-                                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
-                                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                                      "Reservation Purchaser": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f7b75c60-3036-4b75-91c3-6b41c27c1689')]",
-                                      "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
-                                      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
-                                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
-                                      "Virtual Machine Administrator Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c0163c0-47e6-4577-8991-ea5c82e286e4')]",
-                                      "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]",
-                                      "Virtual Machine User Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fb879df8-f326-4884-b1cf-06f3ad86be52')]",
-                                      "VM Scanner Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'd24ecba3-c1f4-40fa-a7bb-4588a071e8fd')]",
-                                      "Windows Admin Center Administrator Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a6333a3e-0164-44c3-b281-7a577aff287f')]"
-                                    }
-                                  },
-                                  "resources": [
-                                    {
-                                      "copy": {
-                                        "name": "roleAssignment",
-                                        "count": "[length(parameters('principalIds'))]"
-                                      },
-                                      "type": "Microsoft.Authorization/roleAssignments",
-                                      "apiVersion": "2022-04-01",
-                                      "scope": "[format('Microsoft.Compute/availabilitySets/{0}', last(split(parameters('resourceId'), '/')))]",
-                                      "name": "[guid(resourceId('Microsoft.Compute/availabilitySets', last(split(parameters('resourceId'), '/'))), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
-                                      "properties": {
-                                        "description": "[parameters('description')]",
-                                        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
-                                        "principalId": "[parameters('principalIds')[copyIndex()]]",
-                                        "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]",
-                                        "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]",
-                                        "conditionVersion": "[if(and(not(empty(parameters('conditionVersion'))), not(empty(parameters('condition')))), parameters('conditionVersion'), null())]",
-                                        "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), null())]"
-                                      }
-                                    }
-                                  ]
-                                }
-                              },
-                              "dependsOn": [
-                                "[resourceId('Microsoft.Compute/availabilitySets', parameters('name'))]"
-                              ]
-                            }
-                          ],
-                          "outputs": {
-                            "name": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The name of the availability set."
-                              },
-                              "value": "[parameters('name')]"
-                            },
-                            "resourceId": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The resource ID of the availability set."
-                              },
-                              "value": "[resourceId('Microsoft.Compute/availabilitySets', parameters('name'))]"
-                            },
-                            "resourceGroupName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The resource group the availability set was deployed into."
-                              },
-                              "value": "[resourceGroup().name]"
-                            },
-                            "location": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The location the resource was deployed into."
-                              },
-                              "value": "[reference(resourceId('Microsoft.Compute/availabilitySets', parameters('name')), '2022-11-01', 'full').location]"
-                            }
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            },
-            {
               "copy": {
                 "name": "sessionHosts",
-                "count": "[length(range(1, variables('varAvdSessionHostBatchCount')))]",
+                "count": "[length(range(1, variables('varSessionHostBatchCount')))]",
                 "mode": "serial",
-                "batchSize": 1
+                "batchSize": 2
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('AVD-SH-Batch-{0}-{1}', sub(range(1, variables('varAvdSessionHostBatchCount'))[copyIndex()], 1), parameters('time'))]",
+              "name": "[format('AVD-SH-Batch-{0}-{1}', sub(range(1, variables('varSessionHostBatchCount'))[copyIndex()], 1), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
@@ -44588,16 +44582,16 @@
                     "value": "[parameters('avdAgentPackageLocation')]"
                   },
                   "timeZone": {
-                    "value": "[parameters('computeTimeZone')]"
+                    "value": "[parameters('timeZone')]"
                   },
-                  "applicationSecurityGroupResourceId": {
-                    "value": "[parameters('applicationSecurityGroupResourceId')]"
+                  "asgResourceId": {
+                    "value": "[parameters('asgResourceId')]"
                   },
-                  "availabilitySetNamePrefix": {
-                    "value": "[parameters('availabilitySetNamePrefix')]"
+                  "avsetNamePrefix": {
+                    "value": "[parameters('avsetNamePrefix')]"
                   },
-                  "maxAvailabilitySetMembersCount": {
-                    "value": "[variables('maxAvailabilitySetMembersCount')]"
+                  "maxAvsetMembersCount": {
+                    "value": "[parameters('maxAvsetMembersCount')]"
                   },
                   "computeObjectsRgName": {
                     "value": "[parameters('computeObjectsRgName')]"
@@ -44623,8 +44617,8 @@
                   "sessionHostOuPath": {
                     "value": "[parameters('sessionHostOuPath')]"
                   },
-                  "sessionHostsCount": "[if(and(equals(range(1, variables('varAvdSessionHostBatchCount'))[copyIndex()], variables('varAvdSessionHostBatchCount')), greater(variables('varDivisionRemainderValue'), 0)), createObject('value', variables('varDivisionRemainderValue')), createObject('value', variables('varMaxSessionHostsPerTemplateDeployment')))]",
-                  "sessionHostCountIndex": "[if(equals(range(1, variables('varAvdSessionHostBatchCount'))[copyIndex()], 1), createObject('value', parameters('sessionHostCountIndex')), createObject('value', add(mul(sub(range(1, variables('varAvdSessionHostBatchCount'))[copyIndex()], 1), variables('varMaxSessionHostsPerTemplateDeployment')), parameters('sessionHostCountIndex'))))]",
+                  "sessionHostsCount": "[if(and(equals(range(1, variables('varSessionHostBatchCount'))[copyIndex()], variables('varSessionHostBatchCount')), greater(variables('varDivisionRemainderValue'), 0)), createObject('value', variables('varDivisionRemainderValue')), createObject('value', variables('varMaxSessionHostsPerTemplateDeployment')))]",
+                  "sessionHostCountIndex": "[if(equals(range(1, variables('varSessionHostBatchCount'))[copyIndex()], 1), createObject('value', parameters('sessionHostCountIndex')), createObject('value', add(mul(sub(range(1, variables('varSessionHostBatchCount'))[copyIndex()], 1), variables('varMaxSessionHostsPerTemplateDeployment')), parameters('sessionHostCountIndex'))))]",
                   "sessionHostDiskType": {
                     "value": "[parameters('sessionHostDiskType')]"
                   },
@@ -44717,7 +44711,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.18.4.5664",
-                      "templateHash": "12611648381072206460"
+                      "templateHash": "731863880378798201"
                     }
                   },
                   "parameters": {
@@ -44751,13 +44745,13 @@
                         "description": "AVD Session Host prefix."
                       }
                     },
-                    "availabilitySetNamePrefix": {
+                    "avsetNamePrefix": {
                       "type": "string",
                       "metadata": {
                         "description": "Availablity Set name."
                       }
                     },
-                    "maxAvailabilitySetMembersCount": {
+                    "maxAvsetMembersCount": {
                       "type": "int",
                       "metadata": {
                         "description": "Availablity Set max members."
@@ -44907,7 +44901,7 @@
                         "description": "OU path to join AVd VMs"
                       }
                     },
-                    "applicationSecurityGroupResourceId": {
+                    "asgResourceId": {
                       "type": "string",
                       "metadata": {
                         "description": "Application Security Group for the session hosts."
@@ -45032,7 +45026,7 @@
                           "encryptionAtHost": {
                             "value": "[parameters('encryptionAtHost')]"
                           },
-                          "availabilitySetResourceId": "[if(parameters('useAvailabilityZones'), createObject('value', ''), createObject('value', format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Compute/availabilitySets/{2}-{3}', parameters('subscriptionId'), parameters('computeObjectsRgName'), parameters('availabilitySetNamePrefix'), padLeft(add(1, div(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), parameters('maxAvailabilitySetMembersCount'))), 3, '0'))))]",
+                          "availabilitySetResourceId": "[if(parameters('useAvailabilityZones'), createObject('value', ''), createObject('value', format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Compute/availabilitySets/{2}-{3}', parameters('subscriptionId'), parameters('computeObjectsRgName'), parameters('avsetNamePrefix'), padLeft(add(1, div(add(range(1, parameters('sessionHostsCount'))[copyIndex()], parameters('sessionHostCountIndex')), parameters('maxAvsetMembersCount'))), 3, '0'))))]",
                           "osType": {
                             "value": "Windows"
                           },
@@ -45077,7 +45071,7 @@
                                 "nicSuffix": "nic-01-",
                                 "deleteOption": "Delete",
                                 "enableAcceleratedNetworking": "[parameters('enableAcceleratedNetworking')]",
-                                "ipConfigurations": "[if(not(empty(parameters('applicationSecurityGroupResourceId'))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('subnetId'), 'applicationSecurityGroups', createArray(createObject('id', parameters('applicationSecurityGroupResourceId'))))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('subnetId'))))]"
+                                "ipConfigurations": "[if(not(empty(parameters('asgResourceId'))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('subnetId'), 'applicationSecurityGroups', createArray(createObject('id', parameters('asgResourceId'))))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('subnetId'))))]"
                               }
                             ]
                           },
@@ -50944,10 +50938,7 @@
                     }
                   ]
                 }
-              },
-              "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-Availability-Set-{0}', parameters('time')))]"
-              ]
+              }
             },
             {
               "condition": "[parameters('deployGpuPolicies')]",
@@ -51562,6 +51553,7 @@
         }
       },
       "dependsOn": [
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varComputeObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-Availability-Set-{0}', parameters('time')))]",
         "baselineResourceGroups",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-FSLogix-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time')))]",
