@@ -8,7 +8,10 @@ param(
 	[string]$subscriptionId,
 
 	[Parameter(Mandatory)]
-	[string]$resourceGroupName
+	[string]$resourceGroupName,
+
+	[Parameter(Mandatory)]
+	[string]$clientId
 )
 
 # Get powershell modules
@@ -18,6 +21,10 @@ Install-Module 'PSDscResources' -Force
 Install-Module -Name Az.Accounts -Force
 Install-Module -Name Az.Resources -Force
 Import-Module -Name activedirectory -Force
+
+# Connecting Azure account
+Write-Log "Connecting to managed identity account"
+Connect-AzAccount -Identity -AccountId $clientId
 
 # Select subscription
 Write-Output "Selecting subscription Subscription $subscriptionId."
