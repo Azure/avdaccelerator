@@ -90,12 +90,12 @@ var computeAndServiceObjectsRgs = [
 var storageRoleAssignments = [
   {
     name: 'Storage Account Contributor'
-    achronym: 'StoraContri'
+    acronym: 'StoraContri'
     id: '17d1049b-9a84-46fb-8f53-869881c3d3ab'
   }
   {
     name: 'Reader'
-    achronym: 'Reader'
+    acronym: 'Reader'
     id: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
   } 
 ]
@@ -152,7 +152,7 @@ module scalingPlanRoleAssignCompute './.bicep/roleAssignment.bicep' = [for compu
 
 // Storage role assignments
 module storageContributorRoleAssign './.bicep/roleAssignment.bicep' = [for storageRoleAssignment in storageRoleAssignments: if (createStorageDeployment) {
-  name: 'Stora-RolAssign-${storageRoleAssignment.achronym}-${time}'
+  name: 'Stora-RolAssign-${storageRoleAssignment.acronym}-${time}'
   scope: resourceGroup('${subscriptionId}', '${storageRoleAssignment}')
   params: {
     roleDefinitionId: createStorageDeployment ? storageRoleAssignment.id : ''
