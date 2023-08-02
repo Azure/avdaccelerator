@@ -965,6 +965,7 @@ module managedIdentitiesRoleAssign './modules/identity/deploy.bicep' = {
         serviceObjectsRgName: varServiceObjectsRgName
         storageObjectsRgName: varStorageObjectsRgName
         workloadSubsId: avdWorkloadSubsId
+        createSessionHosts: avdDeploySessionHosts
         storageManagedIdentityName: varStorageManagedIdentityName
         readerRoleId: varReaderRoleId
         storageSmbShareContributorRoleId: varStorageSmbShareContributorRoleId
@@ -1122,7 +1123,7 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
         vmLocalUserName: avdVmLocalUserName
         workloadSubsId: avdWorkloadSubsId
         encryptionAtHost: diskZeroTrust
-        storageManagedIdentityResourceId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
+        storageManagedIdentityResourceId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityStorageResourceId : ''
         osImage: varMgmtVmSpecs.osImage
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
@@ -1152,7 +1153,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
         deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
         ouStgPath: varOuStgPath
         createOuForStorageString: varCreateOuForStorageString
-        managedIdentityClientId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
+        managedIdentityClientId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityStorageClientId : ''
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
@@ -1195,7 +1196,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (cr
         deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
         ouStgPath: varOuStgPath
         createOuForStorageString: varCreateOuForStorageString
-        managedIdentityClientId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityClientId : ''
+        managedIdentityClientId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityStorageClientId : ''
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
@@ -1277,7 +1278,8 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         subscriptionId: avdWorkloadSubsId
         encryptionAtHost: diskZeroTrust
         createAvdFslogixDeployment: createAvdFslogixDeployment
-        storageManagedIdentityResourceId: (varCreateStorageDeployment) ? managedIdentitiesRoleAssign.outputs.managedIdentityResourceId : ''
+        storageManagedIdentityResourceId: (varCreateStorageDeployment) ? managedIdentitiesRoleAssign.outputs.managedIdentityStorageResourceId : ''
+        storageManagedIdentityClientId: (avdDeploySessionHosts) ? managedIdentitiesRoleAssign.outputs.managedIdentityCleanUpClientId : ''
         fsLogixScript: varFsLogixScript
         fslogixScriptUri: varFslogixScriptUri
         fslogixSharePath: '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
