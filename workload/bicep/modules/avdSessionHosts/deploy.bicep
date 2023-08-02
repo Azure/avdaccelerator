@@ -124,6 +124,12 @@ param fslogixSharePath string
 @sys.description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
 
+@sys.description('URI for compute RG deployment cleanup configuration script.')
+param compRgDeploCleanScriptUri string
+
+@sys.description('URI for compute RG deployment cleanup configuration script.')
+param compRgDeploCleanScript string
+
 @sys.description('Tags to be applied to resources')
 param tags object
 
@@ -199,6 +205,8 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varSes
     fsLogixScriptArguments: fsLogixScriptArguments
     fslogixSharePath: fslogixSharePath
     fslogixScriptUri: fslogixScriptUri
+    compRgDeploCleanScriptUri: compRgDeploCleanScriptUri
+    compRgDeploCleanScript: compRgDeploCleanScript
     hostPoolToken: getHostPool.properties.registrationInfo.token
     marketPlaceGalleryWindows: marketPlaceGalleryWindows
     useSharedImage: useSharedImage

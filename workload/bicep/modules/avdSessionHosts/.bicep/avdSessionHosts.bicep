@@ -127,6 +127,12 @@ param fslogixSharePath string
 @sys.description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
 
+@sys.description('URI for compute RG deployment cleanup configuration script.')
+param compRgDeploCleanScriptUri string
+
+@sys.description('URI for compute RG deployment cleanup configuration script.')
+param compRgDeploCleanScript string
+
 @sys.description('Tags to be applied to resources')
 param tags object
 
@@ -425,3 +431,21 @@ module addAvdHostsToHostPool './registerSessionHostsOnHopstPool.bicep' = [for i 
     ]
 }]
 
+// Clean up depployment on compute objects RG
+module computeRgDeploymentCleanUp './cleanUpRgDeployments.bicep' = {
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+    name: 'Fsl-Conf-${sessionHostBatchId}-1-${time}'
+    params: {
+        location: sessionHostLocation
+        name: '${sessionHostNamePrefix}${padLeft((1 + sessionHostCountIndex), 4, '0')}'
+        file: compRgDeploCleanScript
+        cleanUpScriptArguments: '-subscriptionId ${subscriptionId} -resourceGroupName ${computeObjectsRgName}'
+        baseScriptUri: compRgDeploCleanScriptUri
+    }
+    dependsOn: [
+        sessionHosts
+        sessionHostsMonitoringWait
+        addAvdHostsToHostPool
+        configureFsLogixAvdHosts
+    ]
+}
