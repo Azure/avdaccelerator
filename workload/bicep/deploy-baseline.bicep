@@ -548,6 +548,8 @@ var varFslogixSharePath = '\\\\${varFslogixStorageName}.file.${environment().suf
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var varFslogixScriptUri = (avdIdentityServiceProvider == 'AAD') ? '${varBaseScriptUri}scripts/Set-FSLogixRegKeysAAD.ps1' : '${varBaseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
 var varFsLogixScript = (avdIdentityServiceProvider == 'AAD') ? './Set-FSLogixRegKeysAad.ps1' : './Set-FSLogixRegKeys.ps1'
+var varCompRgDeploCleanScript = './cleanUpRgDeployments.ps1'
+var varCompRgDeploCleanScriptUri = '${varBaseScriptUri}scripts/cleanUpRgDeployments.ps1'
 var varAvdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
 var varDiskEncryptionKeyExpirationInEpoch = dateTimeToEpoch(dateTimeAdd(time, 'P${string(diskEncryptionKeyExpirationInDays)}D'))
 var varCreateStorageDeployment = (createAvdFslogixDeployment || createMsixDeployment == true) ? true : false
@@ -1271,6 +1273,8 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         fslogixScriptUri: varFslogixScriptUri
         fslogixSharePath: '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
         fsLogixScriptArguments: varFsLogixScriptArguments
+        compRgDeploCleanScript: varCompRgDeploCleanScript
+        compRgDeploCleanScriptUri: varCompRgDeploCleanScriptUri
         marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
