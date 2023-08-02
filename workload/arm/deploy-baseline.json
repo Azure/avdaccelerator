@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "6739132677234659611"
+      "templateHash": "17985480055805198897"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -8309,7 +8309,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "14474160130438673429"
+              "templateHash": "16161040747925174642"
             }
           },
           "parameters": {
@@ -8508,9 +8508,7 @@
             "varNetworkSecurityGroupDiagnostic": [
               "allLogs"
             ],
-            "varVirtualNetworkLogsDiagnostic": [
-              "allLogs"
-            ],
+            "varVirtualNetworkLogsDiagnostic": "[if(equals(variables('varAzureCloudName'), 'AzureUSGovernment'), createArray(''), createArray('allLogs'))]",
             "varVirtualNetworkMetricsDiagnostic": [
               "AllMetrics"
             ],
@@ -11175,7 +11173,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.18.4.5664",
-                      "templateHash": "4011441449084317891"
+                      "templateHash": "9596720600329001052"
                     }
                   },
                   "parameters": {
@@ -11328,6 +11326,7 @@
                         "allLogs"
                       ],
                       "allowedValues": [
+                        "",
                         "allLogs",
                         "VMProtectionAlerts"
                       ],
@@ -11359,9 +11358,9 @@
                     "copy": [
                       {
                         "name": "diagnosticsLogsSpecified",
-                        "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
+                        "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', and(not(equals(lambdaVariables('item'), 'allLogs')), not(equals(lambdaVariables('item'), ''))))))]",
                         "input": {
-                          "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
+                          "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', and(not(equals(lambdaVariables('item'), 'allLogs')), not(equals(lambdaVariables('item'), '')))))[copyIndex('diagnosticsLogsSpecified')]]",
                           "enabled": true,
                           "retentionPolicy": {
                             "enabled": true,
@@ -11383,7 +11382,7 @@
                         }
                       }
                     ],
-                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]",
+                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), if(contains(parameters('diagnosticLogCategoriesToEnable'), ''), createArray(), variables('diagnosticsLogsSpecified')))]",
                     "dnsServersVar": {
                       "dnsServers": "[array(parameters('dnsServers'))]"
                     },
