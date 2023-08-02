@@ -724,8 +724,7 @@ var varMarketPlaceGalleryWindows = {
 var varStorageAccountContributorRoleId = '17d1049b-9a84-46fb-8f53-869881c3d3ab'
 var varReaderRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 var varStorageSmbShareContributorRoleId = '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb'
-var varDesktopVirtualizationPowerOnContributorRoleId = '489581de-a3bd-480d-9518-53dea7416b33'
-var varDesktopVirtualizationPowerOnOffContributorRoleId = '40c5ff49-9181-41f8-ae61-143b0e78555e'
+
 var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/vm-count-fix/workload/scripts/DSCStorageScripts.zip'
 //var varTempResourcesCleanUpDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/postDeploymentTempResourcesCleanUp.zip'
 var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
@@ -949,33 +948,30 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     }
     dependsOn: [
         baselineResourceGroups
-        managedIdentitiesRoleAssign
+        identity
         monitoringDiagnosticSettings
     ]
 }
 
 // Identity: managed identities and role assignments.
-module managedIdentitiesRoleAssign './modules/identity/deploy.bicep' = {
+module identity './modules/identity/deploy.bicep' = {
     name: 'Identities-And-RoleAssign-${time}'
     params: {
+        location: avdSessionHostLocation
+        subscriptionId: avdWorkloadSubsId
         computeObjectsRgName: varComputeObjectsRgName
-        enterpriseAppObjectId: avdEnterpriseAppObjectId
-        deployScalingPlan: avdDeployScalingPlan
-        sessionHostLocation: avdSessionHostLocation
+        tempRgName: varTempRgName
         serviceObjectsRgName: varServiceObjectsRgName
         storageObjectsRgName: varStorageObjectsRgName
-        workloadSubsId: avdWorkloadSubsId
+        avdEnterpriseObjectId: avdEnterpriseAppObjectId
+        deployScalingPlan: avdDeployScalingPlan
         createSessionHosts: avdDeploySessionHosts
         storageManagedIdentityName: varStorageManagedIdentityName
-        readerRoleId: varReaderRoleId
-        storageSmbShareContributorRoleId: varStorageSmbShareContributorRoleId
         enableStartVmOnConnect: avdStartVmOnConnect
         identityServiceProvider: avdIdentityServiceProvider
-        storageAccountContributorRoleId: varStorageAccountContributorRoleId
         createStorageDeployment: varCreateStorageDeployment
-        desktopVirtualizationPowerOnContributorRoleId: varDesktopVirtualizationPowerOnContributorRoleId
-        desktopVirtualizationPowerOnOffContributorRoleId: varDesktopVirtualizationPowerOnOffContributorRoleId
-        applicationGroupIdentitiesIds: avdApplicationGroupIdentitiesIds
+        principalType: avdApplicationGroupIdentityType
+        appGroupIdentitiesIds: avdApplicationGroupIdentitiesIds
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
     dependsOn: [
@@ -1010,7 +1006,7 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
         baselineResourceGroups
         baselineStorageResourceGroup
         monitoringDiagnosticSettings
-        managedIdentitiesRoleAssign     
+        identity     
     ]
 }
 
@@ -1123,7 +1119,7 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
         vmLocalUserName: avdVmLocalUserName
         workloadSubsId: avdWorkloadSubsId
         encryptionAtHost: diskZeroTrust
-        storageManagedIdentityResourceId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityStorageResourceId : ''
+        storageManagedIdentityResourceId: varCreateStorageDeployment ? identity.outputs.managedIdentityStorageResourceId : ''
         osImage: varMgmtVmSpecs.osImage
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
@@ -1153,7 +1149,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
         deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
         ouStgPath: varOuStgPath
         createOuForStorageString: varCreateOuForStorageString
-        managedIdentityClientId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityStorageClientId : ''
+        managedIdentityClientId: varCreateStorageDeployment ? identity.outputs.managedIdentityStorageClientId : ''
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
@@ -1196,7 +1192,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (cr
         deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
         ouStgPath: varOuStgPath
         createOuForStorageString: varCreateOuForStorageString
-        managedIdentityClientId: varCreateStorageDeployment ? managedIdentitiesRoleAssign.outputs.managedIdentityStorageClientId : ''
+        managedIdentityClientId: varCreateStorageDeployment ? identity.outputs.managedIdentityStorageClientId : ''
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
@@ -1278,8 +1274,8 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         subscriptionId: avdWorkloadSubsId
         encryptionAtHost: diskZeroTrust
         createAvdFslogixDeployment: createAvdFslogixDeployment
-        storageManagedIdentityResourceId: (varCreateStorageDeployment) ? managedIdentitiesRoleAssign.outputs.managedIdentityStorageResourceId : ''
-        cleanUpManagedIdentityClientId: (avdDeploySessionHosts) ? managedIdentitiesRoleAssign.outputs.managedIdentityCleanUpClientId : ''
+        storageManagedIdentityResourceId: (varCreateStorageDeployment) ? identity.outputs.managedIdentityStorageResourceId : ''
+        cleanUpManagedIdentityClientId: (avdDeploySessionHosts) ? identity.outputs.managedIdentityCleanUpClientId : ''
         fsLogixScript: varFsLogixScript
         fslogixScriptUri: varFslogixScriptUri
         fslogixSharePath: '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
