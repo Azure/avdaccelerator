@@ -434,7 +434,7 @@ module addAvdHostsToHostPool './registerSessionHostsOnHopstPool.bicep' = [for i 
 // Clean up depployment on compute objects RG
 module computeRgDeploymentCleanUp './cleanUpRgDeployments.bicep' = {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'Fsl-Conf-${sessionHostBatchId}-1-${time}'
+    name: 'Comp-Deplo-Clean-${sessionHostBatchId}-1-${time}'
     params: {
         location: sessionHostLocation
         name: '${sessionHostNamePrefix}${padLeft((1 + sessionHostCountIndex), 4, '0')}'
