@@ -79,6 +79,9 @@ param imageTemplateDefinitionId string
 @sys.description('Fslogix Managed Identity Resource ID.')
 param storageManagedIdentityResourceId string
 
+@sys.description('Clean up Managed Identity Resource ID.')
+param cleanUpManagedIdentityClientId string
+
 @sys.description('Local administrator username.')
 param vmLocalUserName string
 
@@ -439,7 +442,7 @@ module computeRgDeploymentCleanUp './cleanUpRgDeployments.bicep' = {
         location: sessionHostLocation
         name: '${sessionHostNamePrefix}${padLeft((1 + sessionHostCountIndex), 4, '0')}'
         file: compRgDeploCleanScript
-        cleanUpScriptArguments: '-subscriptionId ${subscriptionId} -resourceGroupName ${computeObjectsRgName}'
+        cleanUpScriptArguments: '-subscriptionId ${subscriptionId} -resourceGroupName ${computeObjectsRgName} -clientId ${cleanUpManagedIdentityClientId}'
         baseScriptUri: compRgDeploCleanScriptUri
     }
     dependsOn: [

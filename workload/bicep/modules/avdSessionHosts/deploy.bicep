@@ -85,8 +85,8 @@ param avdImageTemplateDefinitionId string
 @sys.description('Storage Managed Identity Resource ID.')
 param storageManagedIdentityResourceId string
 
-@sys.description('Storage Managed Identity Resource ID.')
-param storageManagedIdentityClientId string
+@sys.description('Clean up Managed Identity Resource ID.')
+param cleanUpManagedIdentityClientId string
 
 @sys.description('Local administrator username.')
 param vmLocalUserName string
@@ -210,6 +210,7 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varSes
     fslogixScriptUri: fslogixScriptUri
     compRgDeploCleanScriptUri: compRgDeploCleanScriptUri
     compRgDeploCleanScript: compRgDeploCleanScript
+    cleanUpManagedIdentityClientId: cleanUpManagedIdentityClientId
     hostPoolToken: getHostPool.properties.registrationInfo.token
     marketPlaceGalleryWindows: marketPlaceGalleryWindows
     useSharedImage: useSharedImage
