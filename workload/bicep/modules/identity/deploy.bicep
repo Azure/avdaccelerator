@@ -133,7 +133,7 @@ module startVMonConnectRoleAssignCompute './.bicep/roleAssignment.bicep' = [for 
   params: {
     roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnContributorRole.id}'
     principalType: 'ServicePrincipal'
-    roleDefinitionName: varDesktopVirtualizationPowerOnContributorRole.name
+    roleAssignmentName: guid(subscriptionId, computeAndServiceObjectsRg.rgName, varDesktopVirtualizationPowerOnContributorRole.id, avdEnterpriseObjectId)
     principalId: avdEnterpriseObjectId
   }
 }]
@@ -145,7 +145,7 @@ module scalingPlanRoleAssignCompute './.bicep/roleAssignment.bicep' = [for compu
   params: {
     roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnOffContributorRole.id}'
     principalType: 'ServicePrincipal'
-    roleDefinitionName: varDesktopVirtualizationPowerOnOffContributorRole.name
+    roleAssignmentName: guid(subscriptionId, computeAndServiceObjectsRg.rgName, varDesktopVirtualizationPowerOnOffContributorRole.id, avdEnterpriseObjectId)
     principalId: avdEnterpriseObjectId
   }
 }]
@@ -153,11 +153,11 @@ module scalingPlanRoleAssignCompute './.bicep/roleAssignment.bicep' = [for compu
 // Storage role assignments
 module storageContributorRoleAssign './.bicep/roleAssignment.bicep' = [for storageRoleAssignment in storageRoleAssignments: if (createStorageDeployment) {
   name: 'Stora-RolAssign-${storageRoleAssignment.acronym}-${time}'
-  scope: resourceGroup('${subscriptionId}', '${storageRoleAssignment}')
+  scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
   params: {
     roleDefinitionId: createStorageDeployment ? storageRoleAssignment.id : ''
     principalType: 'ServicePrincipal'
-    roleDefinitionName: storageRoleAssignment.name
+    roleAssignmentName: guid(subscriptionId, storageObjectsRgName, (createStorageDeployment ? storageRoleAssignment.id : ''), (createStorageDeployment ? managedIdentityStorage.outputs.principalId : ''))
     principalId: createStorageDeployment ? managedIdentityStorage.outputs.principalId : ''
   }
   dependsOn: [
@@ -172,7 +172,7 @@ module storageSmbShareContributorRoleAssign './.bicep/roleAssignment.bicep' = [f
   params: {
     roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varStorageSmbShareContributorRole.id}'
     principalType: principalType
-    roleDefinitionName: varStorageSmbShareContributorRole.name
+    roleAssignmentName: guid(subscriptionId, storageObjectsRgName, varStorageSmbShareContributorRole.id, appGroupIdentitiesId)
     principalId: appGroupIdentitiesId
   }
 }]
@@ -184,7 +184,7 @@ module aadIdentityLoginRoleAssign './.bicep/roleAssignment.bicep' = [for appGrou
   params: {
     roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varVirtualMachineUserLoginRole.id}'
     principalType: principalType
-    roleDefinitionName: varVirtualMachineUserLoginRole.name
+    roleAssignmentName: guid(subscriptionId, computeObjectsRgName, varVirtualMachineUserLoginRole.id, appGroupIdentitiesId)
     principalId: appGroupIdentitiesId
   }
 }]
@@ -196,7 +196,7 @@ module aadIdentityLoginAccessServiceObjects './.bicep/roleAssignment.bicep' = [f
   params: {
     roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varVirtualMachineUserLoginRole.id}'
     principalType: principalType
-    roleDefinitionName: varVirtualMachineUserLoginRole.name
+    roleAssignmentName: guid(subscriptionId, serviceObjectsRgName, varVirtualMachineUserLoginRole.id, appGroupIdentitiesId)
     principalId: appGroupIdentitiesId
   }
 }]
@@ -208,7 +208,7 @@ module cleanUpRoleAssign './.bicep/roleAssignment.bicep' = if (createStorageDepl
   params: {
     roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varContributorRole.id}'
     principalType: 'ServicePrincipal'
-    roleDefinitionName: varContributorRole.name
+    roleAssignmentName: guid(subscriptionId, computeObjectsRgName, varContributorRole.id, ((createStorageDeployment || createSessionHosts) ? managedIdentityCleanUp.outputs.principalId : ''))
     principalId: (createStorageDeployment || createSessionHosts) ? managedIdentityCleanUp.outputs.principalId : ''
   }
   dependsOn: [
