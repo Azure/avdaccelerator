@@ -54,6 +54,9 @@ param desktopVirtualizationPowerOnOffContributorRoleId string
 @sys.description('Deploy Storage setup.')
 param createStorageDeployment bool
 
+@sys.description('Deploy Storage setup.')
+param createSessionHosts bool
+
 @sys.description('Tags to be applied to resources')
 param tags object
 
@@ -69,7 +72,18 @@ param time string = utcNow()
 // =========== //
 
 // Managed identity for fslogix/msix app attach
-module managedIdentity '../../../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = if (createStorageDeployment) {
+module managedIdentityStorage '../../../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = if (createStorageDeployment) {
+  scope: resourceGroup('${workloadSubsId}', '${storageObjectsRgName}')
+  name: 'Managed-Identity-${time}'
+  params: {
+    name: storageManagedIdentityName
+    location: sessionHostLocation
+    tags: tags
+  }
+}
+
+// Managed identity for fslogix/msix app attach
+module managedIdentityCleanUp '../../../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = if (createStorageDeployment || createSessionHosts) {
   scope: resourceGroup('${workloadSubsId}', '${storageObjectsRgName}')
   name: 'Managed-Identity-${time}'
   params: {
@@ -98,7 +112,8 @@ module managedIdentityWait '../../../../carml/1.3.0/Microsoft.Resources/deployme
       '''
   }
   dependsOn: [
-    managedIdentity
+    managedIdentityStorage
+    managedIdentityCleanUp
   ]
 }
 
@@ -125,12 +140,12 @@ module startVMonConnectRoleAssignServiceObjects '../../../../carml/1.3.0/Microso
 }
 
 // Storage contributor.
-module contributorRoleAssign '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (createStorageDeployment) {
+module storageContributorRoleAssign '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (createStorageDeployment) {
   name: 'UserAIdentity-ContributorRoleAssign-${time}'
   scope: resourceGroup('${workloadSubsId}', '${storageObjectsRgName}') 
   params: {
     roleDefinitionIdOrName: '/subscriptions/${workloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${storageAccountContributorRoleId}'
-    principalId: createStorageDeployment ? managedIdentity.outputs.principalId: ''
+    principalId: createStorageDeployment ? managedIdentityStorage.outputs.principalId: ''
   }
   dependsOn: [
     managedIdentityWait
@@ -143,12 +158,27 @@ module readerRoleAssign '../../../../carml/1.3.0/Microsoft.Authorization/roleAss
   scope: resourceGroup('${workloadSubsId}', '${storageObjectsRgName}')
   params: {
     roleDefinitionIdOrName: '/subscriptions/${workloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${readerRoleId}'
-    principalId: createStorageDeployment ? managedIdentity.outputs.principalId: ''
+    principalId: createStorageDeployment ? managedIdentityStorage.outputs.principalId: ''
   }
   dependsOn: [
     managedIdentityWait
   ]
 }
+
+// Clean up contributor compute RG.
+module cleanUpRoleAssign '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (createStorageDeployment || createSessionHosts) {
+  name: 'Storage-ReaderRoleAssign-${time}'
+  scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
+  params: {
+    roleDefinitionIdOrName: '/subscriptions/${workloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+    principalId: (createStorageDeployment || createSessionHosts) ? managedIdentityCleanUp.outputs.principalId: ''
+  }
+  dependsOn: [
+    managedIdentityWait
+  ]
+}
+
+
 
 // Storage File Data SMB Share Contributor.
 module storageSmbShareContributorRoleAssign '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for applicationGroupIdentitiesId in applicationGroupIdentitiesIds: if (createStorageDeployment && (identityServiceProvider == 'AAD') && (!empty(applicationGroupIdentitiesIds))) {
@@ -209,5 +239,8 @@ module aadIdentityLoginAccessServiceObjects '../../../../carml/1.3.0/Microsoft.A
 // =========== //
 // Outputs //
 // =========== //
-output managedIdentityResourceId string = (createStorageDeployment) ? managedIdentity.outputs.resourceId: ''
-output managedIdentityClientId string = (createStorageDeployment) ? managedIdentity.outputs.clientId: ''
+output managedIdentityStorageResourceId string = (createStorageDeployment) ? managedIdentityStorage.outputs.resourceId: ''
+output managedIdentityStorageClientId string = (createStorageDeployment) ? managedIdentityStorage.outputs.clientId: ''
+output managedIdentityCleanUpResourceId string = (createStorageDeployment || createSessionHosts) ? managedIdentityCleanUp.outputs.resourceId: ''
+output managedIdentityCleanUpClientId string = (createStorageDeployment || createSessionHosts) ? managedIdentityCleanUp.outputs.clientId: ''
+
