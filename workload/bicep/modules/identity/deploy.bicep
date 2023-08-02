@@ -18,8 +18,8 @@ param computeObjectsRgName string
 @sys.description('Resource Group Name for Azure Files.')
 param storageObjectsRgName string
 
-@sys.description('Resource Group Name for temporal resources.')
-param tempRgName string
+//@sys.description('Resource Group Name for temporal resources.')
+//param tempRgName string
 
 @sys.description('Identity type to grant RBAC role to access AVD application group.')
 param principalType string
@@ -41,6 +41,9 @@ param deployScalingPlan bool
 
 @sys.description('Storage managed identity name.')
 param storageManagedIdentityName string
+
+@sys.description('Clean up managed identity name.')
+param cleanUpManagedIdentityName string
 
 @sys.description('Deploy Storage setup.')
 param createStorageDeployment bool
@@ -120,7 +123,7 @@ module managedIdentityCleanUp '.bicep/createManagedIdentity.bicep' = if (createS
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   name: 'MI-CleanUp-${time}'
   params: {
-    name: storageManagedIdentityName
+    name: cleanUpManagedIdentityName
     location: location
     tags: tags
   }
@@ -165,7 +168,7 @@ module storageContributorRoleAssign './.bicep/roleAssignment.bicep' = [for stora
   ]
 }]
 
-// Storage File Data SMB Share Contributor.
+// Storage File Data SMB Share Contributor
 module storageSmbShareContributorRoleAssign './.bicep/roleAssignment.bicep' = [for appGroupIdentitiesId in appGroupIdentitiesIds: if (createStorageDeployment && (identityServiceProvider == 'AAD') && (!empty(appGroupIdentitiesIds))) {
   name: 'Stora-SmbContri-RolAssign-${take('${appGroupIdentitiesId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
@@ -177,7 +180,7 @@ module storageSmbShareContributorRoleAssign './.bicep/roleAssignment.bicep' = [f
   }
 }]
 
-// VM AAD access roles compute RG.
+// VM AAD access roles compute RG
 module aadIdentityLoginRoleAssign './.bicep/roleAssignment.bicep' = [for appGroupIdentitiesId in appGroupIdentitiesIds: if (identityServiceProvider == 'AAD' && !empty(appGroupIdentitiesIds)) {
   name: 'VM-Login-Comp-${take('${appGroupIdentitiesId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
@@ -189,7 +192,7 @@ module aadIdentityLoginRoleAssign './.bicep/roleAssignment.bicep' = [for appGrou
   }
 }]
 
-// VM AAD access roles service objects RG.
+// VM AAD access roles service objects RG
 module aadIdentityLoginAccessServiceObjects './.bicep/roleAssignment.bicep' = [for appGroupIdentitiesId in appGroupIdentitiesIds: if (identityServiceProvider == 'AAD' && !empty(appGroupIdentitiesIds)) {
   name: 'VM-Login-Serv-${take('${appGroupIdentitiesId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')

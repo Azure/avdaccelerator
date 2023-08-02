@@ -28,6 +28,7 @@ param tags object
 // =========== //
 // Deployments //
 // =========== //
+
 // Availability set.
 resource availabilitySet 'Microsoft.Compute/availabilitySets@2022-11-01' = [for i in range(1, count): {
     name: '${namePrefix}-${padLeft(i, 3, '0')}'
@@ -35,9 +36,6 @@ resource availabilitySet 'Microsoft.Compute/availabilitySets@2022-11-01' = [for 
     properties: {
         platformFaultDomainCount: faultDomainCount
         platformUpdateDomainCount: updateDomainCount
-    }
-    sku: {
-    name: 'Aligned'
-    }
+      }
     tags: tags
 }]
