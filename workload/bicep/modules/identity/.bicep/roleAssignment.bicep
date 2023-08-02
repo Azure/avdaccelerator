@@ -28,7 +28,7 @@ param time string = utcNow()
 
 // Role assignment
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
- name: 'RA-${roleDefinitionName}-${time}'
+ name: roleDefinitionName
   properties: {
     principalId: principalId
     principalType: principalType
