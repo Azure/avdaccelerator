@@ -22,7 +22,7 @@ Import-Module -Name activedirectory -Force
 
 Write-Log "Connecting to managed identity account"
 # Add-AzAccount -Environment $AzureCloudEnvironment -identity
-Connect-AzAccount -Identity #-AccountId $ClientId
+#Connect-AzAccount -Identity #-AccountId $ClientId
 
 # Select subscription
 Write-Output "Selecting subscription Subscription $subscriptionId."
