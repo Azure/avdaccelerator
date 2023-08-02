@@ -505,6 +505,7 @@ var varNetworkObjectsRgName = avdUseCustomNaming ? avdNetworkObjectsRgCustomName
 var varComputeObjectsRgName = avdUseCustomNaming ? avdComputeObjectsRgCustomName : 'rg-avd-${varComputeStorageResourcesNamingStandard}-pool-compute' // max length limit 90 characters
 var varStorageObjectsRgName = avdUseCustomNaming ? avdStorageObjectsRgCustomName : 'rg-avd-${varComputeStorageResourcesNamingStandard}-storage' // max length limit 90 characters
 var varMonitoringRgName = avdUseCustomNaming ? avdMonitoringRgCustomName : 'rg-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}-monitoring' // max length limit 90 characters
+var varTempRgName = 'rg-avd-${varManagementPlaneNamingStandard}-temp'
 //var varAvdSharedResourcesRgName = 'rg-${varAvdSessionHostLocationAcronym}-avd-shared-resources'
 var varVnetName = avdUseCustomNaming ? avdVnetworkCustomName : 'vnet-${varComputeStorageResourcesNamingStandard}-001'
 var varHubVnetName = (createAvdVnet && !empty(existingHubVnetResourceId)) ? split(existingHubVnetResourceId, '/')[8] : ''
@@ -779,6 +780,14 @@ var verResourceGroups = [
         enableDefaultTelemetry: false
         tags: createResourceTags ? union(varAllComputeStorageTags, varAvdDefaultTags) : union(varAvdDefaultTags, varAllComputeStorageTags)
     }
+    {
+        purpose: 'Deployment-Temp'
+        name: varTempRgName
+        location: avdSessionHostLocation
+        enableDefaultTelemetry: false
+        tags: createResourceTags ? union(varAllComputeStorageTags, varAvdDefaultTags) : union(varAvdDefaultTags, varAllComputeStorageTags)
+    }
+    
 ]
 
 // =========== //
@@ -1233,7 +1242,7 @@ module availabilitySet './modules/avdSessionHosts/.bicep/availabilitySets.bicep'
 // Session hosts.
 @batchSize(1)
 module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
-    name: 'Session-Hosts-Batch-${i-1}-${time}'
+    name: 'SH-Batch-${i-1}-${time}'
     params: {
         diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
         avdAgentPackageLocation: varAvdAgentPackageLocation
@@ -1243,7 +1252,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         createIntuneEnrollment: createIntuneEnrollment
         maxAvsetMembersCount: varMaxAvsetMembersCount
         avsetNamePrefix: varAvsetNamePrefix
-        sessionHostGeneralBatchId: i
+        sessionHostGeneralBatchId: i-1
         computeObjectsRgName: varComputeObjectsRgName
         deploySessionHostsCount: avdDeploySessionHostsCount
         sessionHostCountIndex: avdSessionHostCountIndex
