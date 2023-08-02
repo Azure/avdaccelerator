@@ -9,14 +9,11 @@ param principalId string
 @sys.description('Identity type.')
 param principalType string
 
-@sys.description('Role o be assigned.')
+@sys.description('Role ID to be assigned.')
 param roleDefinitionId string
 
-@sys.description('Role o be assigned.')
-param roleDefinitionName string
-
-@sys.description('Do not modify, used to set unique value for resource deployment.')
-param time string = utcNow()
+@sys.description('Role assignment name.')
+param roleAssignmentName string
 
 // =========== //
 // Variable declaration //
@@ -28,7 +25,7 @@ param time string = utcNow()
 
 // Role assignment
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
- name: roleDefinitionName
+ name: roleAssignmentName
   properties: {
     principalId: principalId
     principalType: principalType
