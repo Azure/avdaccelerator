@@ -158,7 +158,7 @@ resource getHostPool 'Microsoft.DesktopVirtualization/hostPools@2019-12-10-previ
 }
 
 // Session hosts.
-@batchSize(3)
+@batchSize(2)
 module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varSessionHostBatchCount): {
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
   name: 'AVD-SH-Batch-${sessionHostGeneralBatchId}-${i-1}-${time}'
