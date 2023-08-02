@@ -13,6 +13,14 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+# Get powershell modules
+Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+Install-Module -Name PowershellGet -MinimumVersion 2.2.4.1 -Force
+Install-Module -Name Az.Accounts -Force
+Install-Module -Name Az.Storage -Force
+Install-Module -Name Az.Network -Force
+Install-Module -Name Az.Resources -Force
+
 # Select subscription
 Write-Output "Selecting subscription Subscription $subscriptionId."
 Select-AzSubscription -subscriptionid $subscriptionId
