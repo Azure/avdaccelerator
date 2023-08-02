@@ -1279,7 +1279,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         encryptionAtHost: diskZeroTrust
         createAvdFslogixDeployment: createAvdFslogixDeployment
         storageManagedIdentityResourceId: (varCreateStorageDeployment) ? managedIdentitiesRoleAssign.outputs.managedIdentityStorageResourceId : ''
-        storageManagedIdentityClientId: (avdDeploySessionHosts) ? managedIdentitiesRoleAssign.outputs.managedIdentityCleanUpClientId : ''
+        cleanUpManagedIdentityClientId: (avdDeploySessionHosts) ? managedIdentitiesRoleAssign.outputs.managedIdentityCleanUpClientId : ''
         fsLogixScript: varFsLogixScript
         fslogixScriptUri: varFslogixScriptUri
         fslogixSharePath: '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
