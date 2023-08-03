@@ -11,13 +11,13 @@ param diskEncryptionSetResourceId string
 param subnetId string
 
 @sys.description('Location where to deploy compute services.')
-param sessionHostLocation string
+param location string
 
 @sys.description('Virtual machine time zone.')
 param timeZone string
 
 @sys.description('AVD Session Host prefix.')
-param sessionHostNamePrefix string
+param namePrefix string
 
 @sys.description('Availablity Set name.')
 param avsetNamePrefix string
@@ -32,16 +32,16 @@ param computeObjectsRgName string
 param serviceObjectsRgName string
 
 @sys.description('General session host batch identifier')
-param sessionHostBatchId string
+param batchId string
 
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param subscriptionId string
 
 @sys.description('Quantity of session hosts to deploy')
-param sessionHostsCount int
+param count int
 
 @sys.description('The session host number to begin with for the deployment.')
-param sessionHostCountIndex int
+param countIndex int
 
 @sys.description('Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set.')
 param useAvailabilityZones bool
@@ -50,7 +50,7 @@ param useAvailabilityZones bool
 param encryptionAtHost bool
 
 @sys.description('Session host VM size.')
-param sessionHostsSize string
+param size string
 
 @sys.description('Specifies the securityType of the virtual machine. It is set as TrustedLaunch to enable UefiSettings.')
 param securityType string
@@ -65,7 +65,7 @@ param vTpmEnabled bool
 param enableAcceleratedNetworking bool
 
 @sys.description('OS disk type for session host.')
-param sessionHostDiskType string
+param diskType string
 
 @sys.description('Market Place OS image.')
 param marketPlaceGalleryWindows object
@@ -78,9 +78,6 @@ param imageTemplateDefinitionId string
 
 @sys.description('Fslogix Managed Identity Resource ID.')
 param storageManagedIdentityResourceId string
-
-@sys.description('Clean up Managed Identity Resource ID.')
-param cleanUpManagedIdentityClientId string
 
 @sys.description('Local administrator username.')
 param vmLocalUserName string
@@ -130,12 +127,6 @@ param fslogixSharePath string
 @sys.description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
 
-@sys.description('URI for compute RG deployment cleanup configuration script.')
-param compRgDeploCleanScriptUri string
-
-@sys.description('URI for compute RG deployment cleanup configuration script.')
-param compRgDeploCleanScript string
-
 @sys.description('Tags to be applied to resources')
 param tags object
 
@@ -154,17 +145,17 @@ param time string = utcNow()
 // =========== //
 // Variable declaration //
 // =========== //
-var varAllAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', sessionHostLocation, 3)
+var varAllAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', location, 3)
 var varNicDiagnosticMetricsToEnable = [
     'AllMetrics'
   ]
 var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
-    storageAccountType: sessionHostDiskType
+    storageAccountType: diskType
 } : {
     diskEncryptionSet: {
         id: diskEncryptionSetResourceId
     }
-    storageAccountType: sessionHostDiskType
+    storageAccountType: diskType
 }
 // =========== //
 // Deployments //
@@ -176,12 +167,12 @@ resource wrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing
 }
 
 // Session hosts.
-module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(1, sessionHostsCount): {
+module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(1, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-${sessionHostBatchId}-${i-1}-${time}'
+    name: 'SH-${batchId}-${i-1}-${time}'
     params: {
-        name: '${sessionHostNamePrefix}${padLeft((i + sessionHostCountIndex), 4, '0')}'
-        location: sessionHostLocation
+        name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+        location: location
         timeZone: timeZone
         userAssignedIdentities: createAvdFslogixDeployment ? {
             '${storageManagedIdentityResourceId}': {}
@@ -189,10 +180,10 @@ module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
         systemAssignedIdentity: (identityServiceProvider == 'AAD') ? true: false
         availabilityZone: useAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
         encryptionAtHost: encryptionAtHost
-        availabilitySetResourceId: useAvailabilityZones ? '' : '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/availabilitySets/${avsetNamePrefix}-${padLeft(((1 + (i + sessionHostCountIndex) / maxAvsetMembersCount)), 3, '0')}'
+        availabilitySetResourceId: useAvailabilityZones ? '' : '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/availabilitySets/${avsetNamePrefix}-${padLeft(((1 + (i + countIndex) / maxAvsetMembersCount)), 3, '0')}'
         osType: 'Windows'
         licenseType: 'Windows_Client'
-        vmSize: sessionHostsSize
+        vmSize: size
         securityType: securityType
         secureBootEnabled: secureBootEnabled
         vTpmEnabled: vTpmEnabled
@@ -263,20 +254,23 @@ module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
 }]
 
 // Introduce wait for session hosts to be ready.
-module sessionHostsWait '../../deploymentScripts/deploy.bicep' = {
+module sessionHostsWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Wait-${sessionHostBatchId}-${time}'
+    name: 'SH-Wait-${batchId}-${time}'
     params: {
-      name: 'SH-Wait-${sessionHostBatchId}-${time}'
-      location: sessionHostLocation
-      scriptContent: '''
+        name: 'SH-Wait-${batchId}-${time}'
+        location: location
+        azPowerShellVersion: '9.7'
+        cleanupPreference: 'Always'
+        timeout: 'PT10M'
+        retentionInterval: 'PT1H'
+        scriptContent: '''
         Write-Host "Start"
         Get-Date
         Start-Sleep -Seconds 60
         Write-Host "Stop"
         Get-Date
         '''
-      tags: tags
     }
     dependsOn: [
         sessionHosts
@@ -284,12 +278,12 @@ module sessionHostsWait '../../deploymentScripts/deploy.bicep' = {
 }
 
 // Add antimalware extension to session host.
-module sessionHostsAntimalwareExtension '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, sessionHostsCount): {
+module sessionHostsAntimalwareExtension '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Antimal-${sessionHostBatchId}-${i-1}-${time}'
+    name: 'SH-Antimal-${batchId}-${i-1}-${time}'
     params: {
-        location: sessionHostLocation
-        virtualMachineName: '${sessionHostNamePrefix}${padLeft((i + sessionHostCountIndex), 4, '0')}'
+        location: location
+        virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         name: 'MicrosoftAntiMalware'
         publisher: 'Microsoft.Azure.Security'
         type: 'IaaSAntimalware'
@@ -319,20 +313,23 @@ module sessionHostsAntimalwareExtension '../../../../../carml/1.3.0/Microsoft.Co
 }]
 
 // Introduce wait for antimalware extension to complete to be ready.
-module antimalwareExtensionWait '../../deploymentScripts/deploy.bicep' = {
+module antimalwareExtensionWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Antimal-Wait-${sessionHostBatchId}-${time}'
+    name: 'SH-Antimal-Wait-${batchId}-${time}'
     params: {
-      name: 'SH-Antimal-Wait-${sessionHostBatchId}-${time}'
-      location: sessionHostLocation
+      name: 'SH-Antimal-Wait-${batchId}-${time}'
+      location: location
+      azPowerShellVersion: '9.7'
+      cleanupPreference: 'Always'
+      timeout: 'PT10M'
+      retentionInterval: 'PT1H'
       scriptContent: '''
-        Write-Host "Start"
-        Get-Date
-        Start-Sleep -Seconds 60
-        Write-Host "Stop"
-        Get-Date
-        '''
-      tags: tags
+      Write-Host "Start"
+      Get-Date
+      Start-Sleep -Seconds 60
+      Write-Host "Stop"
+      Get-Date
+      '''
     }
     dependsOn: [
         sessionHostsAntimalwareExtension
@@ -346,12 +343,12 @@ resource alaWorkspaceGet 'Microsoft.OperationalInsights/workspaces@2021-06-01' e
 }
 
 // Add monitoring extension to session host.
-module monitoring '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, sessionHostsCount): if (deployMonitoring) {
+module monitoring '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, count): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Mon-${sessionHostBatchId}-${i-1}-${time}'
+    name: 'SH-Mon-${batchId}-${i-1}-${time}'
     params: {
-        location: sessionHostLocation
-        virtualMachineName: '${sessionHostNamePrefix}${padLeft((i + sessionHostCountIndex), 4, '0')}'
+        location: location
+        virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         name: 'MicrosoftMonitoringAgent'
         publisher: 'Microsoft.EnterpriseCloud.Monitoring'
         type: 'MicrosoftMonitoringAgent'
@@ -373,20 +370,23 @@ module monitoring '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/
 }]
 
 // Introduce wait for antimalware extension to complete to be ready.
-module sessionHostsMonitoringWait '../../deploymentScripts/deploy.bicep' = if (deployMonitoring) {
+module sessionHostsMonitoringWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Mon-Wait-${sessionHostBatchId}-${time}' 
+    name: 'SH-Mon-Wait-${batchId}-${time}' 
     params: {
-      name: 'SH-Mon-Wait-${sessionHostBatchId}-${time}' 
-      location: sessionHostLocation
+      name: 'SH-Mon-Wait-${batchId}-${time}' 
+      location: location
+      azPowerShellVersion: '9.7'
+      cleanupPreference: 'Always'
+      timeout: 'PT10M'
+      retentionInterval: 'PT1H'
       scriptContent: '''
-        Write-Host "Start"
-        Get-Date
-        Start-Sleep -Seconds 60
-        Write-Host "Stop"
-        Get-Date
-        '''
-      tags: tags
+      Write-Host "Start"
+      Get-Date
+      Start-Sleep -Seconds 60
+      Write-Host "Stop"
+      Get-Date
+      '''
     }
     dependsOn: [
         monitoring
@@ -394,12 +394,12 @@ module sessionHostsMonitoringWait '../../deploymentScripts/deploy.bicep' = if (d
 }
 
 // Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
-module configureFsLogixAvdHosts './configureFslogixOnSessionHosts.bicep' = [for i in range(1, sessionHostsCount): if (createAvdFslogixDeployment) {
+module configureFsLogixAvdHosts './configureFslogixOnSessionHosts.bicep' = [for i in range(1, count): if (createAvdFslogixDeployment) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'Fsl-Conf-${sessionHostBatchId}-${i-1}-${time}'
+    name: 'Fsl-Conf-${batchId}-${i-1}-${time}'
     params: {
-        location: sessionHostLocation
-        name: '${sessionHostNamePrefix}${padLeft((i + sessionHostCountIndex), 4, '0')}'
+        location: location
+        name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         file: fsLogixScriptFile
         fsLogixScriptArguments: fsLogixScriptArguments
         baseScriptUri: fslogixScriptUri
@@ -411,13 +411,13 @@ module configureFsLogixAvdHosts './configureFslogixOnSessionHosts.bicep' = [for 
 }]
 
 // Add session hosts to AVD Host pool.
-module addAvdHostsToHostPool './registerSessionHostsOnHopstPool.bicep' = [for i in range(1, sessionHostsCount): {
+module addAvdHostsToHostPool './registerSessionHostsOnHopstPool.bicep' = [for i in range(1, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'HP-Join-${sessionHostBatchId}-${i}-${time}'
+    name: 'HP-Join-${batchId}-${i}-${time}'
     params: {
-        location: sessionHostLocation
+        location: location
         hostPoolToken: hostPoolToken
-        name: '${sessionHostNamePrefix}${padLeft((i + sessionHostCountIndex), 4, '0')}'
+        name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         hostPoolName: hostPoolName
         avdAgentPackageLocation: avdAgentPackageLocation
     }
@@ -427,23 +427,3 @@ module addAvdHostsToHostPool './registerSessionHostsOnHopstPool.bicep' = [for i 
         configureFsLogixAvdHosts
     ]
 }]
-/*
-// Clean up depployment on compute objects RG
-module computeRgDeploymentCleanUp './cleanUpRgDeployments.bicep' = {
-    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'Comp-Deplo-Clean-${sessionHostBatchId}-1-${time}'
-    params: {
-        location: sessionHostLocation
-        name: '${sessionHostNamePrefix}${padLeft((1 + sessionHostCountIndex), 4, '0')}'
-        file: compRgDeploCleanScript
-        cleanUpScriptArguments: '-subscriptionId ${subscriptionId} -resourceGroupName ${computeObjectsRgName} -clientId ${cleanUpManagedIdentityClientId}'
-        baseScriptUri: compRgDeploCleanScriptUri
-    }
-    dependsOn: [
-        sessionHosts
-        sessionHostsMonitoringWait
-        addAvdHostsToHostPool
-        configureFsLogixAvdHosts
-    ]
-}
-*/
