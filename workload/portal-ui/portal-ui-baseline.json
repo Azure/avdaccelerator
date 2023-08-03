@@ -619,7 +619,7 @@
                                     "constraints": {
                                         "required": true,
                                         "regex": "^([1-9]|[1-9][0-9]|[1][0][0])$",
-                                        "validationMessage": "The count must be between 1-500 session hosts."
+                                        "validationMessage": "The count must be between 1-100 session hosts."
                                     }
                                 },
                                 {
