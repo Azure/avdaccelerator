@@ -195,7 +195,7 @@ param avdAlaWorkspaceDataRetention int = 90
 param alaExistingWorkspaceResourceId string = ''
 
 @minValue(1)
-@maxValue(900)
+@maxValue(100)
 @sys.description('Quantity of session hosts to deploy. (Default: 1)')
 param avdDeploySessionHostsCount int = 1
 
@@ -533,7 +533,7 @@ var varWrklKvPrivateEndpointName = 'pe-${varWrklKvName}-vault'
 var varSessionHostNamePrefix = avdUseCustomNaming ? avdSessionHostCustomNamePrefix : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
 var varAvsetNamePrefix = avdUseCustomNaming ? '${avsetCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'avail-${varComputeStorageResourcesNamingStandard}'
 var varStorageManagedIdentityName = 'id-storage-${varComputeStorageResourcesNamingStandard}-001'
-var varCleanUpManagedIdentityName = 'id-cleanup-${varComputeStorageResourcesNamingStandard}-001'
+//var varCleanUpManagedIdentityName = 'id-cleanup-${varComputeStorageResourcesNamingStandard}-001'
 var varFslogixFileShareName = avdUseCustomNaming ? fslogixFileShareCustomName : 'fslogix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
 var varMsixFileShareName = avdUseCustomNaming ? msixFileShareCustomName : 'msix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
 var varFslogixStorageName = avdUseCustomNaming ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}' : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
@@ -550,8 +550,8 @@ var varFslogixSharePath = '\\\\${varFslogixStorageName}.file.${environment().suf
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/vm-count-fix/workload/'
 var varFslogixScriptUri = (avdIdentityServiceProvider == 'AAD') ? '${varBaseScriptUri}scripts/Set-FSLogixRegKeysAAD.ps1' : '${varBaseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
 var varFsLogixScript = (avdIdentityServiceProvider == 'AAD') ? './Set-FSLogixRegKeysAad.ps1' : './Set-FSLogixRegKeys.ps1'
-var varCompRgDeploCleanScript = './cleanUpRgDeployments.ps1'
-var varCompRgDeploCleanScriptUri = '${varBaseScriptUri}scripts/cleanUpRgDeployments.ps1'
+//var varCompRgDeploCleanScript = './cleanUpRgDeployments.ps1'
+//var varCompRgDeploCleanScriptUri = '${varBaseScriptUri}scripts/cleanUpRgDeployments.ps1'
 var varAvdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
 var varDiskEncryptionKeyExpirationInEpoch = dateTimeToEpoch(dateTimeAdd(time, 'P${string(diskEncryptionKeyExpirationInDays)}D'))
 var varCreateStorageDeployment = (createAvdFslogixDeployment || createMsixDeployment == true) ? true : false
@@ -968,7 +968,7 @@ module identity './modules/identity/deploy.bicep' = {
         deployScalingPlan: avdDeployScalingPlan
         createSessionHosts: avdDeploySessionHosts
         storageManagedIdentityName: varStorageManagedIdentityName
-        cleanUpManagedIdentityName: varCleanUpManagedIdentityName
+        //cleanUpManagedIdentityName: varCleanUpManagedIdentityName
         enableStartVmOnConnect: avdStartVmOnConnect
         identityServiceProvider: avdIdentityServiceProvider
         createStorageDeployment: varCreateStorageDeployment

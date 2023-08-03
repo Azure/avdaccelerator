@@ -42,8 +42,8 @@ param deployScalingPlan bool
 @sys.description('Storage managed identity name.')
 param storageManagedIdentityName string
 
-@sys.description('Clean up managed identity name.')
-param cleanUpManagedIdentityName string
+//@sys.description('Clean up managed identity name.')
+//param cleanUpManagedIdentityName string
 
 @sys.description('Deploy Storage setup.')
 param createStorageDeployment bool
@@ -117,7 +117,7 @@ module managedIdentityStorage '.bicep/createManagedIdentity.bicep' = if (createS
     tags: tags
   }
 }
-
+/*
 // Managed identity for fslogix/msix app attach
 module managedIdentityCleanUp '.bicep/createManagedIdentity.bicep' = if (createStorageDeployment || createSessionHosts) {
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
@@ -128,7 +128,7 @@ module managedIdentityCleanUp '.bicep/createManagedIdentity.bicep' = if (createS
     tags: tags
   }
 }
-
+*/
 // Start VM on connect role assignments
 module startVMonConnectRoleAssignCompute './.bicep/roleAssignment.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (enableStartVmOnConnect && !deployScalingPlan) {
   name: 'StartOnCon-RolAssign-${computeAndServiceObjectsRg.name}-${time}'
@@ -203,7 +203,7 @@ module aadIdentityLoginAccessServiceObjects './.bicep/roleAssignment.bicep' = [f
     principalId: appGroupIdentitiesId
   }
 }]
-
+/*
 // Clean up contributor compute RG
 module cleanUpRoleAssign './.bicep/roleAssignment.bicep' = if (createStorageDeployment || createSessionHosts) {
   name: 'Storage-ReaderRoleAssign-${time}'
@@ -218,6 +218,7 @@ module cleanUpRoleAssign './.bicep/roleAssignment.bicep' = if (createStorageDepl
     managedIdentityCleanUp
   ]
 }
+*/
 //
 
 // =========== //
@@ -225,5 +226,5 @@ module cleanUpRoleAssign './.bicep/roleAssignment.bicep' = if (createStorageDepl
 // =========== //
 output managedIdentityStorageResourceId string = (createStorageDeployment) ? managedIdentityStorage.outputs.resourceId : ''
 output managedIdentityStorageClientId string = (createStorageDeployment) ? managedIdentityStorage.outputs.clientId : ''
-output managedIdentityCleanUpResourceId string = (createStorageDeployment || createSessionHosts) ? managedIdentityCleanUp.outputs.resourceId : ''
-output managedIdentityCleanUpClientId string = (createStorageDeployment || createSessionHosts) ? managedIdentityCleanUp.outputs.clientId : ''
+//output managedIdentityCleanUpResourceId string = (createStorageDeployment || createSessionHosts) ? managedIdentityCleanUp.outputs.resourceId : ''
+//output managedIdentityCleanUpClientId string = (createStorageDeployment || createSessionHosts) ? managedIdentityCleanUp.outputs.clientId : ''
