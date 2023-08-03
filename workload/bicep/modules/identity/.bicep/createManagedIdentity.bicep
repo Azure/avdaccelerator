@@ -30,16 +30,12 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-
   tags: tags
 }
 
-// Introduce wait for management VM to be ready.
-resource managedIdentityWait 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+// Introduce wait for managed identity to be ready
+module managedIdentityWait '../../deploymentScripts/deploy.bicep' = {
   name: 'MI-${name}-Wait-${time}'
-  location: location
-  kind: 'AzurePowerShell'
-  properties: {
-    azPowerShellVersion: '9.7' //'8.3.0'
-    cleanupPreference: 'Always'
-    timeout: 'PT10M'
-    retentionInterval: 'PT1H'
+  params: {
+    name: 'MI-${name}-Wait-${time}'
+    location: location
     scriptContent: '''
       Write-Host "Start"
       Get-Date
@@ -47,8 +43,8 @@ resource managedIdentityWait 'Microsoft.Resources/deploymentScripts@2020-10-01' 
       Write-Host "Stop"
       Get-Date
       '''
+    tags: tags
   }
-  tags: tags
   dependsOn: [
     managedIdentity
   ]
