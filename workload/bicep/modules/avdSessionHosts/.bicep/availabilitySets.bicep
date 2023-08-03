@@ -29,15 +29,16 @@ param tags object
 // Deployments //
 // =========== //
 // Availability set.
-resource availabilitySet 'Microsoft.Compute/availabilitySets@2022-11-01' = [for i in range(1, count): {
+module availabilitySet '../../../../../carml/1.3.0/Microsoft.Compute/availabilitySets/deploy.bicep' = [for i in range(1, count): {
     name: '${namePrefix}-${padLeft(i, 3, '0')}'
-    location: location
-    properties: {
-        platformFaultDomainCount: faultDomainCount
-        platformUpdateDomainCount: updateDomainCount
+    params: {
+        name: '${namePrefix}-${padLeft(i, 3, '0')}'
+        location: location
+        availabilitySetFaultDomain: faultDomainCount
+        availabilitySetUpdateDomain: updateDomainCount
+        tags: tags
     }
-    sku: {
-    name: 'Aligned'
-    }
-    tags: tags
 }]
+
+
+
