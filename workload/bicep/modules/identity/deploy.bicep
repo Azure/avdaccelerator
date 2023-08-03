@@ -18,12 +18,6 @@ param computeObjectsRgName string
 @sys.description('Resource Group Name for Azure Files.')
 param storageObjectsRgName string
 
-//@sys.description('Resource Group Name for temporal resources.')
-//param tempRgName string
-
-@sys.description('Identity type to grant RBAC role to access AVD application group.')
-param principalType string
-
 @sys.description('Azure Virtual Desktop enterprise application object ID.')
 param avdEnterpriseObjectId string
 
@@ -42,8 +36,8 @@ param deployScalingPlan bool
 @sys.description('Storage managed identity name.')
 param storageManagedIdentityName string
 
-//@sys.description('Clean up managed identity name.')
-//param cleanUpManagedIdentityName string
+@sys.description('Clean up managed identity name.')
+param cleanUpManagedIdentityName string
 
 @sys.description('Deploy Storage setup.')
 param createStorageDeployment bool
@@ -108,7 +102,7 @@ var storageRoleAssignments = [
 // =========== //
 
 // Managed identity for fslogix/msix app attach
-module managedIdentityStorage '.bicep/createManagedIdentity.bicep' = if (createStorageDeployment) {
+module managedIdentityStorage '../../../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = if (createStorageDeployment) {
   scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
   name: 'MI-Storage-${time}'
   params: {
@@ -117,9 +111,9 @@ module managedIdentityStorage '.bicep/createManagedIdentity.bicep' = if (createS
     tags: tags
   }
 }
-/*
+
 // Managed identity for fslogix/msix app attach
-module managedIdentityCleanUp '.bicep/createManagedIdentity.bicep' = if (createStorageDeployment || createSessionHosts) {
+module managedIdentityCleanUp '../../../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = if (createStorageDeployment || createSessionHosts) {
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   name: 'MI-CleanUp-${time}'
   params: {
@@ -128,39 +122,58 @@ module managedIdentityCleanUp '.bicep/createManagedIdentity.bicep' = if (createS
     tags: tags
   }
 }
-*/
+
+// Introduce wait for management VM to be ready.
+module managedIdentityWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (createStorageDeployment) {
+  scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
+  name: 'Managed-Identity-Wait-${time}'
+  params: {
+      name: 'Managed-Identity-Wait-${time}'
+      location: location
+      azPowerShellVersion: '9.7'
+      cleanupPreference: 'Always'
+      timeout: 'PT10M'
+      retentionInterval: 'PT1H'
+      scriptContent: '''
+      Write-Host "Start"
+      Get-Date
+      Start-Sleep -Seconds 60
+      Write-Host "Stop"
+      Get-Date
+      '''
+  }
+  dependsOn: [
+    managedIdentityStorage
+    managedIdentityCleanUp
+  ]
+}
+
 // Start VM on connect role assignments
-module startVMonConnectRoleAssignCompute './.bicep/roleAssignment.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (enableStartVmOnConnect && !deployScalingPlan) {
+module startVMonConnectRoleAssignCompute '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (enableStartVmOnConnect && !deployScalingPlan) {
   name: 'StartOnCon-RolAssign-${computeAndServiceObjectsRg.name}-${time}'
   scope: resourceGroup('${subscriptionId}', '${computeAndServiceObjectsRg.rgName}')
   params: {
-    roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnContributorRole.id}'
-    principalType: 'ServicePrincipal'
-    roleAssignmentName: guid(subscriptionId, computeAndServiceObjectsRg.rgName, varDesktopVirtualizationPowerOnContributorRole.id, avdEnterpriseObjectId)
+    roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnContributorRole.id}'
     principalId: avdEnterpriseObjectId
   }
 }]
 
 // Scaling plan role assignments
-module scalingPlanRoleAssignCompute './.bicep/roleAssignment.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (deployScalingPlan) {
+module scalingPlanRoleAssignCompute '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (deployScalingPlan) {
   name: 'ScalingPlan-RolAssign-${computeAndServiceObjectsRg.name}-${time}'
   scope: resourceGroup('${subscriptionId}', '${computeAndServiceObjectsRg.rgName}')
   params: {
-    roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnOffContributorRole.id}'
-    principalType: 'ServicePrincipal'
-    roleAssignmentName: guid(subscriptionId, computeAndServiceObjectsRg.rgName, varDesktopVirtualizationPowerOnOffContributorRole.id, avdEnterpriseObjectId)
+    roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnOffContributorRole.id}'
     principalId: avdEnterpriseObjectId
   }
 }]
 
 // Storage role assignments
-module storageContributorRoleAssign './.bicep/roleAssignment.bicep' = [for storageRoleAssignment in storageRoleAssignments: if (createStorageDeployment) {
+module storageContributorRoleAssign '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for storageRoleAssignment in storageRoleAssignments: if (createStorageDeployment) {
   name: 'Stora-RolAssign-${storageRoleAssignment.acronym}-${time}'
   scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
   params: {
-    roleDefinitionId: createStorageDeployment ? storageRoleAssignment.id : ''
-    principalType: 'ServicePrincipal'
-    roleAssignmentName: guid(subscriptionId, storageObjectsRgName, (createStorageDeployment ? storageRoleAssignment.id : ''), (createStorageDeployment ? managedIdentityStorage.outputs.principalId : ''))
+    roleDefinitionIdOrName: createStorageDeployment ? storageRoleAssignment.id : ''
     principalId: createStorageDeployment ? managedIdentityStorage.outputs.principalId : ''
   }
   dependsOn: [
@@ -169,56 +182,47 @@ module storageContributorRoleAssign './.bicep/roleAssignment.bicep' = [for stora
 }]
 
 // Storage File Data SMB Share Contributor
-module storageSmbShareContributorRoleAssign './.bicep/roleAssignment.bicep' = [for appGroupIdentitiesId in appGroupIdentitiesIds: if (createStorageDeployment && (identityServiceProvider == 'AAD') && (!empty(appGroupIdentitiesIds))) {
+module storageSmbShareContributorRoleAssign '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for appGroupIdentitiesId in appGroupIdentitiesIds: if (createStorageDeployment && (identityServiceProvider == 'AAD') && (!empty(appGroupIdentitiesIds))) {
   name: 'Stora-SmbContri-RolAssign-${take('${appGroupIdentitiesId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
   params: {
-    roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varStorageSmbShareContributorRole.id}'
-    principalType: principalType
-    roleAssignmentName: guid(subscriptionId, storageObjectsRgName, varStorageSmbShareContributorRole.id, appGroupIdentitiesId)
+    roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varStorageSmbShareContributorRole.id}'
     principalId: appGroupIdentitiesId
   }
 }]
 
 // VM AAD access roles compute RG
-module aadIdentityLoginRoleAssign './.bicep/roleAssignment.bicep' = [for appGroupIdentitiesId in appGroupIdentitiesIds: if (identityServiceProvider == 'AAD' && !empty(appGroupIdentitiesIds)) {
+module aadIdentityLoginRoleAssign '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for appGroupIdentitiesId in appGroupIdentitiesIds: if (identityServiceProvider == 'AAD' && !empty(appGroupIdentitiesIds)) {
   name: 'VM-Login-Comp-${take('${appGroupIdentitiesId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
   params: {
-    roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varVirtualMachineUserLoginRole.id}'
-    principalType: principalType
-    roleAssignmentName: guid(subscriptionId, computeObjectsRgName, varVirtualMachineUserLoginRole.id, appGroupIdentitiesId)
+    roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varVirtualMachineUserLoginRole.id}'
     principalId: appGroupIdentitiesId
   }
 }]
 
 // VM AAD access roles service objects RG
-module aadIdentityLoginAccessServiceObjects './.bicep/roleAssignment.bicep' = [for appGroupIdentitiesId in appGroupIdentitiesIds: if (identityServiceProvider == 'AAD' && !empty(appGroupIdentitiesIds)) {
+module aadIdentityLoginAccessServiceObjects '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for appGroupIdentitiesId in appGroupIdentitiesIds: if (identityServiceProvider == 'AAD' && !empty(appGroupIdentitiesIds)) {
   name: 'VM-Login-Serv-${take('${appGroupIdentitiesId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   params: {
-    roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varVirtualMachineUserLoginRole.id}'
-    principalType: principalType
-    roleAssignmentName: guid(subscriptionId, serviceObjectsRgName, varVirtualMachineUserLoginRole.id, appGroupIdentitiesId)
+    roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varVirtualMachineUserLoginRole.id}'
     principalId: appGroupIdentitiesId
   }
 }]
-/*
+
 // Clean up contributor compute RG
-module cleanUpRoleAssign './.bicep/roleAssignment.bicep' = if (createStorageDeployment || createSessionHosts) {
+module cleanUpRoleAssign '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (createStorageDeployment || createSessionHosts) {
   name: 'Storage-ReaderRoleAssign-${time}'
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
   params: {
-    roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varContributorRole.id}'
-    principalType: 'ServicePrincipal'
-    roleAssignmentName: guid(subscriptionId, computeObjectsRgName, varContributorRole.id, ((createStorageDeployment || createSessionHosts) ? managedIdentityCleanUp.outputs.principalId : ''))
+    roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varContributorRole.id}'
     principalId: (createStorageDeployment || createSessionHosts) ? managedIdentityCleanUp.outputs.principalId : ''
   }
   dependsOn: [
     managedIdentityCleanUp
   ]
 }
-*/
 //
 
 // =========== //
@@ -226,5 +230,5 @@ module cleanUpRoleAssign './.bicep/roleAssignment.bicep' = if (createStorageDepl
 // =========== //
 output managedIdentityStorageResourceId string = (createStorageDeployment) ? managedIdentityStorage.outputs.resourceId : ''
 output managedIdentityStorageClientId string = (createStorageDeployment) ? managedIdentityStorage.outputs.clientId : ''
-//output managedIdentityCleanUpResourceId string = (createStorageDeployment || createSessionHosts) ? managedIdentityCleanUp.outputs.resourceId : ''
-//output managedIdentityCleanUpClientId string = (createStorageDeployment || createSessionHosts) ? managedIdentityCleanUp.outputs.clientId : ''
+output managedIdentityCleanUpResourceId string = (createStorageDeployment || createSessionHosts) ? managedIdentityCleanUp.outputs.resourceId : ''
+output managedIdentityCleanUpClientId string = (createStorageDeployment || createSessionHosts) ? managedIdentityCleanUp.outputs.clientId : ''

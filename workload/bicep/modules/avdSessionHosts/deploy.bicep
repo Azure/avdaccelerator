@@ -17,10 +17,10 @@ param sessionHostLocation string
 param timeZone string
 
 @sys.description('General session host batch identifier')
-param sessionHostGeneralBatchId int
+param generalBatchId int
 
 @sys.description('AVD Session Host prefix.')
-param sessionHostNamePrefix string
+param namePrefix string
 
 @sys.description('Resource Group name for the session hosts.')
 param computeObjectsRgName string
@@ -32,13 +32,13 @@ param serviceObjectsRgName string
 param subscriptionId string
 
 @sys.description('Quantity of session hosts to deploy.')
-param deploySessionHostsCount int
+param count int
 
 @sys.description('Max VMs per availability set.')
 param maxAvsetMembersCount int
 
 @sys.description('The session host number to begin with for the deployment.')
-param sessionHostCountIndex int
+param countIndex int
 
 @sys.description('Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set.')
 param useAvailabilityZones bool
@@ -56,7 +56,7 @@ param createIntuneEnrollment bool
 param encryptionAtHost bool
 
 @sys.description('Session host VM size.')
-param sessionHostsSize string
+param size string
 
 @sys.description('Enables accelerated Networking on the session hosts.')
 param enableAcceleratedNetworking bool
@@ -71,7 +71,7 @@ param secureBootEnabled bool
 param vTpmEnabled bool
 
 @sys.description('OS disk type for session host.')
-param sessionHostDiskType string
+param diskType string
 
 @sys.description('Market Place OS image.')
 param marketPlaceGalleryWindows object
@@ -84,9 +84,6 @@ param avdImageTemplateDefinitionId string
 
 @sys.description('Storage Managed Identity Resource ID.')
 param storageManagedIdentityResourceId string
-
-@sys.description('Clean up Managed Identity Resource ID.')
-param cleanUpManagedIdentityClientId string
 
 @sys.description('Local administrator username.')
 param vmLocalUserName string
@@ -127,12 +124,6 @@ param fslogixSharePath string
 @sys.description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
 
-@sys.description('URI for compute RG deployment cleanup configuration script.')
-param compRgDeploCleanScriptUri string
-
-@sys.description('URI for compute RG deployment cleanup configuration script.')
-param compRgDeploCleanScript string
-
 @sys.description('Tags to be applied to resources')
 param tags object
 
@@ -152,8 +143,8 @@ param time string = utcNow()
 // Variable declaration //
 // =========== //
 var varMaxSessionHostsPerTemplateDeployment = 10 // max number of session hosts that can be deployed from the avd-session-hosts.bicep file in each batch / for loop. Math: (800 - <Number of Static Resources>) / <Number of Looped Resources> 
-var varDivisionValue = deploySessionHostsCount / varMaxSessionHostsPerTemplateDeployment // This determines if any full batches are required.
-var varDivisionRemainderValue = deploySessionHostsCount % varMaxSessionHostsPerTemplateDeployment // This determines if any partial batches are required.
+var varDivisionValue = count / varMaxSessionHostsPerTemplateDeployment // This determines if any full batches are required.
+var varDivisionRemainderValue = count % varMaxSessionHostsPerTemplateDeployment // This determines if any partial batches are required.
 var varSessionHostBatchCount = varDivisionRemainderValue > 0 ? varDivisionValue + 1 : varDivisionValue // This determines the total number of batches needed, whether full and / or partial.
 
 // =========== //
@@ -170,13 +161,13 @@ resource getHostPool 'Microsoft.DesktopVirtualization/hostPools@2019-12-10-previ
 @batchSize(2)
 module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varSessionHostBatchCount): {
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-  name: 'AVD-SH-Batch-${sessionHostGeneralBatchId}-${i-1}-${time}'
+  name: 'AVD-SH-Batch-${generalBatchId}-${i-1}-${time}'
   params: {
     diskEncryptionSetResourceId: diskEncryptionSetResourceId 
     avdAgentPackageLocation: avdAgentPackageLocation
     timeZone: timeZone
     asgResourceId: asgResourceId
-    sessionHostBatchId: '${sessionHostGeneralBatchId}-${i-1}'
+    batchId: '${generalBatchId}-${i-1}'
     avsetNamePrefix: avsetNamePrefix
     maxAvsetMembersCount: maxAvsetMembersCount
     computeObjectsRgName: computeObjectsRgName
@@ -187,12 +178,12 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varSes
     identityDomainName: identityDomainName
     imageTemplateDefinitionId: avdImageTemplateDefinitionId
     sessionHostOuPath: sessionHostOuPath
-    sessionHostsCount: i == varSessionHostBatchCount && varDivisionRemainderValue > 0 ? varDivisionRemainderValue : varMaxSessionHostsPerTemplateDeployment
-    sessionHostCountIndex: i == 1 ? sessionHostCountIndex : (((i - 1) * varMaxSessionHostsPerTemplateDeployment) + sessionHostCountIndex)
-    sessionHostDiskType: sessionHostDiskType
-    sessionHostLocation: sessionHostLocation
-    sessionHostNamePrefix: sessionHostNamePrefix
-    sessionHostsSize: sessionHostsSize
+    count: i == varSessionHostBatchCount && varDivisionRemainderValue > 0 ? varDivisionRemainderValue : varMaxSessionHostsPerTemplateDeployment
+    countIndex: i == 1 ? countIndex : (((i - 1) * varMaxSessionHostsPerTemplateDeployment) + countIndex)
+    diskType: diskType
+    location: sessionHostLocation
+    namePrefix: namePrefix
+    size: size
     enableAcceleratedNetworking: enableAcceleratedNetworking
     securityType: securityType
     secureBootEnabled: secureBootEnabled
@@ -208,9 +199,6 @@ module sessionHosts './.bicep/avdSessionHosts.bicep' = [for i in range(1, varSes
     fsLogixScriptArguments: fsLogixScriptArguments
     fslogixSharePath: fslogixSharePath
     fslogixScriptUri: fslogixScriptUri
-    compRgDeploCleanScriptUri: compRgDeploCleanScriptUri
-    compRgDeploCleanScript: compRgDeploCleanScript
-    cleanUpManagedIdentityClientId: cleanUpManagedIdentityClientId
     hostPoolToken: getHostPool.properties.registrationInfo.token
     marketPlaceGalleryWindows: marketPlaceGalleryWindows
     useSharedImage: useSharedImage
