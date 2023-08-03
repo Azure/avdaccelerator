@@ -263,25 +263,27 @@ module sessionHosts '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
 }]
 
 // Introduce wait for session hosts to be ready.
-module sessionHostsWait '../../deploymentScripts/deploy.bicep' = {
+module sessionHostsWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-Wait-${sessionHostBatchId}-${time}'
     params: {
-      name: 'SH-Wait-${sessionHostBatchId}-${time}'
-      location: sessionHostLocation
-      scriptContent: '''
+        name: 'SH-Wait-${sessionHostBatchId}-${time}'
+        location: sessionHostLocation
+        azPowerShellVersion: '8.3.0'
+        cleanupPreference: 'Always'
+        timeout: 'PT10M'
+        scriptContent: '''
         Write-Host "Start"
         Get-Date
         Start-Sleep -Seconds 60
         Write-Host "Stop"
         Get-Date
         '''
-      tags: tags
     }
     dependsOn: [
         sessionHosts
     ]
-}
+} 
 
 // Add antimalware extension to session host.
 module sessionHostsAntimalwareExtension '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, sessionHostsCount): {
@@ -319,25 +321,27 @@ module sessionHostsAntimalwareExtension '../../../../../carml/1.3.0/Microsoft.Co
 }]
 
 // Introduce wait for antimalware extension to complete to be ready.
-module antimalwareExtensionWait '../../deploymentScripts/deploy.bicep' = {
+module antimalwareExtensionWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-Antimal-Wait-${sessionHostBatchId}-${time}'
     params: {
-      name: 'SH-Antimal-Wait-${sessionHostBatchId}-${time}'
-      location: sessionHostLocation
-      scriptContent: '''
+        name: 'SH-Antimal-Wait-${sessionHostBatchId}-${time}'
+        location: sessionHostLocation
+        azPowerShellVersion: '8.3.0'
+        cleanupPreference: 'Always'
+        timeout: 'PT10M'
+        scriptContent: '''
         Write-Host "Start"
         Get-Date
         Start-Sleep -Seconds 60
         Write-Host "Stop"
         Get-Date
         '''
-      tags: tags
     }
     dependsOn: [
         sessionHostsAntimalwareExtension
     ]
-}
+} 
 
 // Call to the ALA workspace.
 resource alaWorkspaceGet 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(alaWorkspaceResourceId) && deployMonitoring) {
@@ -346,7 +350,7 @@ resource alaWorkspaceGet 'Microsoft.OperationalInsights/workspaces@2021-06-01' e
 }
 
 // Add monitoring extension to session host.
-module monitoring '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, sessionHostsCount): if (deployMonitoring) {
+module sessionHostsMonitoring '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, sessionHostsCount): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-Mon-${sessionHostBatchId}-${i-1}-${time}'
     params: {
@@ -373,25 +377,27 @@ module monitoring '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/
 }]
 
 // Introduce wait for antimalware extension to complete to be ready.
-module sessionHostsMonitoringWait '../../deploymentScripts/deploy.bicep' = if (deployMonitoring) {
+module sessionHostsMonitoringWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-Mon-Wait-${sessionHostBatchId}-${time}' 
     params: {
-      name: 'SH-Mon-Wait-${sessionHostBatchId}-${time}' 
-      location: sessionHostLocation
-      scriptContent: '''
+        name: 'SH-Mon-Wait-${sessionHostBatchId}-${time}'
+        location: sessionHostLocation
+        azPowerShellVersion: '8.3.0'
+        cleanupPreference: 'Always'
+        timeout: 'PT10M'
+        scriptContent: '''
         Write-Host "Start"
         Get-Date
         Start-Sleep -Seconds 60
         Write-Host "Stop"
         Get-Date
         '''
-      tags: tags
     }
     dependsOn: [
-        monitoring
+        sessionHostsMonitoring
     ]
-}
+} 
 
 // Add the registry keys for Fslogix. Alternatively can be enforced via GPOs.
 module configureFsLogixAvdHosts './configureFslogixOnSessionHosts.bicep' = [for i in range(1, sessionHostsCount): if (createAvdFslogixDeployment) {
@@ -427,7 +433,7 @@ module addAvdHostsToHostPool './registerSessionHostsOnHopstPool.bicep' = [for i 
         configureFsLogixAvdHosts
     ]
 }]
-/*
+
 // Clean up depployment on compute objects RG
 module computeRgDeploymentCleanUp './cleanUpRgDeployments.bicep' = {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
@@ -446,4 +452,3 @@ module computeRgDeploymentCleanUp './cleanUpRgDeployments.bicep' = {
         configureFsLogixAvdHosts
     ]
 }
-*/
