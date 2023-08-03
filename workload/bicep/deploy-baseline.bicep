@@ -563,9 +563,9 @@ var varMgmtVmSpecs = {
     ouPath: avdOuPath
     subnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
 }
-var varShGeneralBatchsize = 30
-var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varShGeneralBatchsize
-var varMaxSessionHostsDivisionRemainderValue = avdDeploySessionHostsCount % varShGeneralBatchsize
+var varMaxSessionHostsPerTemplate = 20
+var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varMaxSessionHostsPerTemplate
+var varMaxSessionHostsDivisionRemainderValue = avdDeploySessionHostsCount % varMaxSessionHostsPerTemplate
 var varSessionHostBatchCount = varMaxSessionHostsDivisionRemainderValue > 0 ? varMaxSessionHostsDivisionValue + 1 : varMaxSessionHostsDivisionValue
 var varMaxAvsetMembersCount = 199
 var varDivisionAvsetValue = avdDeploySessionHostsCount / varMaxAvsetMembersCount
@@ -878,7 +878,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
         deployAsg: (avdDeploySessionHosts || createAvdFslogixDeployment || createMsixDeployment) ? true : false
         existingPeSubnetResourceId: existingVnetPrivateEndpointSubnetResourceId
         existingAvdSubnetResourceId: existingVnetAvdSubnetResourceId
-        createPrivateDnsZones: createPrivateDnsZones
+        createPrivateDnsZones: deployPrivateEndpointKeyvaultStorage ? createPrivateDnsZones : false
         applicationSecurityGroupName: varApplicationSecurityGroupName 
         computeObjectsRgName: varComputeObjectsRgName
         networkObjectsRgName: varNetworkObjectsRgName
@@ -1233,7 +1233,7 @@ module availabilitySet './modules/avdSessionHosts/.bicep/availabilitySets.bicep'
     ]
 }
 // Session hosts.
-@batchSize(1)
+@batchSize(2)
 module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
     name: 'SH-Batch-${i-1}-${time}'
     params: {
@@ -1245,10 +1245,12 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         createIntuneEnrollment: createIntuneEnrollment
         maxAvsetMembersCount: varMaxAvsetMembersCount
         avsetNamePrefix: varAvsetNamePrefix
-        generalBatchId: i-1
+        batchId: i-1
         computeObjectsRgName: varComputeObjectsRgName
-        count: avdDeploySessionHostsCount
-        countIndex: avdSessionHostCountIndex
+        count: i == varSessionHostBatchCount && varMaxSessionHostsDivisionRemainderValue > 0 ? varMaxSessionHostsDivisionRemainderValue : varMaxSessionHostsPerTemplate
+        //count: varSessionHostsBatchsize
+        countIndex: i == 1 ? avdSessionHostCountIndex : (((i - 1) * varMaxSessionHostsPerTemplate) + avdSessionHostCountIndex)
+        //countIndex: avdSessionHostCountIndex
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
@@ -1257,7 +1259,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
         sessionHostOuPath: avdOuPath
         diskType: avdSessionHostDiskType
-        sessionHostLocation: avdSessionHostLocation
+        location: avdSessionHostLocation
         namePrefix: varSessionHostNamePrefix
         size: avdSessionHostsSize
         enableAcceleratedNetworking: enableAcceleratedNetworking
@@ -1271,10 +1273,10 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         encryptionAtHost: diskZeroTrust
         createAvdFslogixDeployment: createAvdFslogixDeployment
         storageManagedIdentityResourceId: (varCreateStorageDeployment) ? identity.outputs.managedIdentityStorageResourceId : ''
-        fsLogixScript: varFsLogixScript
+        fslogixScript: varFsLogixScript
         fslogixScriptUri: varFslogixScriptUri
         fslogixSharePath: '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
-        fsLogixScriptArguments: varFsLogixScriptArguments
+        fslogixScriptArguments: varFsLogixScriptArguments
         marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
