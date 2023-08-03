@@ -173,7 +173,7 @@ module storageContributorRoleAssign '../../../../carml/1.3.0/Microsoft.Authoriza
   name: 'Stora-RolAssign-${storageRoleAssignment.acronym}-${time}'
   scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
   params: {
-    roleDefinitionIdOrName: createStorageDeployment ? storageRoleAssignment.id : ''
+    roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${storageRoleAssignment.id}'
     principalId: createStorageDeployment ? managedIdentityStorage.outputs.principalId : ''
   }
   dependsOn: [
