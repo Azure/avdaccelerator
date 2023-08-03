@@ -177,7 +177,7 @@ module storageContributorRoleAssign '../../../../carml/1.3.0/Microsoft.Authoriza
     principalId: createStorageDeployment ? managedIdentityStorage.outputs.principalId : ''
   }
   dependsOn: [
-    managedIdentityStorage
+    managedIdentityWait
   ]
 }]
 
@@ -220,7 +220,7 @@ module cleanUpRoleAssign '../../../../carml/1.3.0/Microsoft.Authorization/roleAs
     principalId: (createStorageDeployment || createSessionHosts) ? managedIdentityCleanUp.outputs.principalId : ''
   }
   dependsOn: [
-    managedIdentityCleanUp
+    managedIdentityWait
   ]
 }
 //
