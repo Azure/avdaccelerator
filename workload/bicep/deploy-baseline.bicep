@@ -505,8 +505,6 @@ var varNetworkObjectsRgName = avdUseCustomNaming ? avdNetworkObjectsRgCustomName
 var varComputeObjectsRgName = avdUseCustomNaming ? avdComputeObjectsRgCustomName : 'rg-avd-${varComputeStorageResourcesNamingStandard}-pool-compute' // max length limit 90 characters
 var varStorageObjectsRgName = avdUseCustomNaming ? avdStorageObjectsRgCustomName : 'rg-avd-${varComputeStorageResourcesNamingStandard}-storage' // max length limit 90 characters
 var varMonitoringRgName = avdUseCustomNaming ? avdMonitoringRgCustomName : 'rg-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}-monitoring' // max length limit 90 characters
-//var varTempRgName = 'rg-avd-${varManagementPlaneNamingStandard}-temp'
-//var varAvdSharedResourcesRgName = 'rg-${varAvdSessionHostLocationAcronym}-avd-shared-resources'
 var varVnetName = avdUseCustomNaming ? avdVnetworkCustomName : 'vnet-${varComputeStorageResourcesNamingStandard}-001'
 var varHubVnetName = (createAvdVnet && !empty(existingHubVnetResourceId)) ? split(existingHubVnetResourceId, '/')[8] : ''
 var varVnetPeeringName = 'peer-${varHubVnetName}' 
@@ -533,7 +531,7 @@ var varWrklKvPrivateEndpointName = 'pe-${varWrklKvName}-vault'
 var varSessionHostNamePrefix = avdUseCustomNaming ? avdSessionHostCustomNamePrefix : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
 var varAvsetNamePrefix = avdUseCustomNaming ? '${avsetCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'avail-${varComputeStorageResourcesNamingStandard}'
 var varStorageManagedIdentityName = 'id-storage-${varComputeStorageResourcesNamingStandard}-001'
-//var varCleanUpManagedIdentityName = 'id-cleanup-${varComputeStorageResourcesNamingStandard}-001'
+var varCleanUpManagedIdentityName = 'id-cleanup-${varComputeStorageResourcesNamingStandard}-001'
 var varFslogixFileShareName = avdUseCustomNaming ? fslogixFileShareCustomName : 'fslogix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
 var varMsixFileShareName = avdUseCustomNaming ? msixFileShareCustomName : 'msix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
 var varFslogixStorageName = avdUseCustomNaming ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}' : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
@@ -961,18 +959,16 @@ module identity './modules/identity/deploy.bicep' = {
         location: avdSessionHostLocation
         subscriptionId: avdWorkloadSubsId
         computeObjectsRgName: varComputeObjectsRgName
-        //tempRgName: varTempRgName
         serviceObjectsRgName: varServiceObjectsRgName
         storageObjectsRgName: varStorageObjectsRgName
         avdEnterpriseObjectId: avdEnterpriseAppObjectId
         deployScalingPlan: avdDeployScalingPlan
         createSessionHosts: avdDeploySessionHosts
         storageManagedIdentityName: varStorageManagedIdentityName
-        //cleanUpManagedIdentityName: varCleanUpManagedIdentityName
+        cleanUpManagedIdentityName: varCleanUpManagedIdentityName
         enableStartVmOnConnect: avdStartVmOnConnect
         identityServiceProvider: avdIdentityServiceProvider
         createStorageDeployment: varCreateStorageDeployment
-        principalType: avdApplicationGroupIdentityType
         appGroupIdentitiesIds: avdApplicationGroupIdentitiesIds
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
@@ -1249,10 +1245,10 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         createIntuneEnrollment: createIntuneEnrollment
         maxAvsetMembersCount: varMaxAvsetMembersCount
         avsetNamePrefix: varAvsetNamePrefix
-        sessionHostGeneralBatchId: i-1
+        generalBatchId: i-1
         computeObjectsRgName: varComputeObjectsRgName
-        deploySessionHostsCount: avdDeploySessionHostsCount
-        sessionHostCountIndex: avdSessionHostCountIndex
+        count: avdDeploySessionHostsCount
+        countIndex: avdSessionHostCountIndex
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
@@ -1260,10 +1256,10 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         identityDomainName: avdIdentityDomainName
         avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
         sessionHostOuPath: avdOuPath
-        sessionHostDiskType: avdSessionHostDiskType
+        diskType: avdSessionHostDiskType
         sessionHostLocation: avdSessionHostLocation
-        sessionHostNamePrefix: varSessionHostNamePrefix
-        sessionHostsSize: avdSessionHostsSize
+        namePrefix: varSessionHostNamePrefix
+        size: avdSessionHostsSize
         enableAcceleratedNetworking: enableAcceleratedNetworking
         securityType: securityType == 'Standard' ? '' : securityType
         secureBootEnabled: secureBootEnabled
@@ -1275,13 +1271,10 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         encryptionAtHost: diskZeroTrust
         createAvdFslogixDeployment: createAvdFslogixDeployment
         storageManagedIdentityResourceId: (varCreateStorageDeployment) ? identity.outputs.managedIdentityStorageResourceId : ''
-        cleanUpManagedIdentityClientId: (avdDeploySessionHosts) ? identity.outputs.managedIdentityCleanUpClientId : ''
         fsLogixScript: varFsLogixScript
         fslogixScriptUri: varFslogixScriptUri
         fslogixSharePath: '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
         fsLogixScriptArguments: varFsLogixScriptArguments
-        compRgDeploCleanScript: varCompRgDeploCleanScript
-        compRgDeploCleanScriptUri: varCompRgDeploCleanScriptUri
         marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
         useSharedImage: useSharedImage
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
