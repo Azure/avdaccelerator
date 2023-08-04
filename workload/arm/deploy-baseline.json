@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "1705277797663696765"
+      "templateHash": "11225739111199127490"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -3318,7 +3318,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "7129898890703236287"
+              "templateHash": "13997721719566643375"
             }
           },
           "parameters": {
@@ -5916,7 +5916,7 @@
                     "value": "PT10M"
                   },
                   "retentionInterval": {
-                    "value": "PT15M"
+                    "value": "PT1H"
                   },
                   "scriptContent": {
                     "value": "      Write-Host \"Start\"\r\n      Get-Date\r\n      Start-Sleep -Seconds 120\r\n      Write-Host \"Stop\"\r\n      Get-Date\r\n      "
@@ -15497,7 +15497,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "7352552413094857359"
+              "templateHash": "14451756906747934165"
             }
           },
           "parameters": {
@@ -16305,7 +16305,7 @@
                     "value": "PT10M"
                   },
                   "retentionInterval": {
-                    "value": "PT15M"
+                    "value": "PT1H"
                   },
                   "scriptContent": {
                     "value": "      Write-Host \"Start\"\r\n      Get-Date\r\n      Start-Sleep -Seconds 60\r\n      Write-Host \"Stop\"\r\n      Get-Date\r\n      "
@@ -20735,7 +20735,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "5127698520038372146"
+              "templateHash": "4654257282622285913"
             }
           },
           "parameters": {
@@ -23268,7 +23268,7 @@
                     "value": "PT10M"
                   },
                   "retentionInterval": {
-                    "value": "PT15M"
+                    "value": "PT1H"
                   },
                   "scriptContent": {
                     "value": "        Write-Host \"Start\"\r\n        Get-Date\r\n        Start-Sleep -Seconds 60\r\n        Write-Host \"Stop\"\r\n        Get-Date\r\n        "
@@ -29504,7 +29504,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "16653724440770188069"
+              "templateHash": "8575582116594416846"
             }
           },
           "parameters": {
@@ -34057,7 +34057,7 @@
                     "value": "PT10M"
                   },
                   "retentionInterval": {
-                    "value": "PT15M"
+                    "value": "PT1H"
                   },
                   "scriptContent": {
                     "value": "        Write-Host \"Start\"\r\n        Get-Date\r\n        Start-Sleep -Seconds 120\r\n        Write-Host \"Stop\"\r\n        Get-Date\r\n        "
@@ -43448,7 +43448,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "13935253258591689657"
+              "templateHash": "9542486132206933343"
             }
           },
           "parameters": {
@@ -48126,7 +48126,7 @@
                     "value": "PT10M"
                   },
                   "retentionInterval": {
-                    "value": "PT15M"
+                    "value": "PT1H"
                   },
                   "scriptContent": {
                     "value": "      Write-Host \"Start\"\r\n      Get-Date\r\n      Start-Sleep -Seconds 60\r\n      Write-Host \"Stop\"\r\n      Get-Date\r\n      "
@@ -48658,7 +48658,7 @@
                     "value": "PT10M"
                   },
                   "retentionInterval": {
-                    "value": "PT15M"
+                    "value": "PT1H"
                   },
                   "scriptContent": {
                     "value": "    Write-Host \"Start\"\r\n    Get-Date\r\n    Start-Sleep -Seconds 60\r\n    Write-Host \"Stop\"\r\n    Get-Date\r\n    "
@@ -49189,7 +49189,7 @@
                     "value": "PT10M"
                   },
                   "retentionInterval": {
-                    "value": "PT15M"
+                    "value": "PT1H"
                   },
                   "scriptContent": {
                     "value": "    Write-Host \"Start\"\r\n    Get-Date\r\n    Start-Sleep -Seconds 60\r\n    Write-Host \"Stop\"\r\n    Get-Date\r\n    "
