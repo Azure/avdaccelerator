@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "11225739111199127490"
+      "templateHash": "2836073700113271468"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -399,7 +399,7 @@
       "metadata": {
         "description": "Quantity of session hosts to deploy. (Default: 1)"
       },
-      "maxValue": 500,
+      "maxValue": 100,
       "minValue": 1
     },
     "avdSessionHostCountIndex": {
