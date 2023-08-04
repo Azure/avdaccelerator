@@ -133,7 +133,7 @@ module managedIdentityWait '../../../../carml/1.3.0/Microsoft.Resources/deployme
       azPowerShellVersion: '9.7'
       cleanupPreference: 'Always'
       timeout: 'PT10M'
-      retentionInterval: 'PT1H'
+      retentionInterval: 'PT15M'
       scriptContent: '''
       Write-Host "Start"
       Get-Date
