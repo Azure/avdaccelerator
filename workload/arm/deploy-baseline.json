@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "7597334843405894194"
+      "templateHash": "8529396267405446992"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -1267,7 +1267,7 @@
     "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(parameters('createMsixDeployment'), true())), true(), false())]",
     "varFslogixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('fslogixStoragePerformance')), format('{0}_LRS', parameters('fslogixStoragePerformance')))]",
     "varMsixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('msixStoragePerformance')), format('{0}_LRS', parameters('msixStoragePerformance')))]",
-    "varMaxSessionHostsPerTemplate": 20,
+    "varMaxSessionHostsPerTemplate": 10,
     "varMaxSessionHostsDivisionValue": "[div(parameters('avdDeploySessionHostsCount'), variables('varMaxSessionHostsPerTemplate'))]",
     "varMaxSessionHostsDivisionRemainderValue": "[mod(parameters('avdDeploySessionHostsCount'), variables('varMaxSessionHostsPerTemplate'))]",
     "varSessionHostBatchCount": "[if(greater(variables('varMaxSessionHostsDivisionRemainderValue'), 0), add(variables('varMaxSessionHostsDivisionValue'), 1), variables('varMaxSessionHostsDivisionValue'))]",
@@ -1424,9 +1424,6 @@
         "version": "latest"
       }
     },
-    "varStorageAccountContributorRoleId": "17d1049b-9a84-46fb-8f53-869881c3d3ab",
-    "varReaderRoleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
-    "varStorageSmbShareContributorRoleId": "0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb",
     "varStorageAzureFilesDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip",
     "varStorageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-Storage-Scripts.ps1', variables('varBaseScriptUri'))]",
     "varStorageToDomainScript": "./Manual-DSC-Storage-Scripts.ps1",
