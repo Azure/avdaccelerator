@@ -195,7 +195,7 @@ param avdAlaWorkspaceDataRetention int = 90
 param alaExistingWorkspaceResourceId string = ''
 
 @minValue(1)
-@maxValue(100)
+@maxValue(500)
 @sys.description('Quantity of session hosts to deploy. (Default: 1)')
 param avdDeploySessionHostsCount int = 1
 
