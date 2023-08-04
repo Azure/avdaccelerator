@@ -1230,7 +1230,7 @@ module availabilitySet './modules/avdSessionHosts/.bicep/availabilitySets.bicep'
 }
 
 // Session hosts
-@batchSize(2)
+@batchSize(3)
 module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
     name: 'SH-Batch-${i-1}-${time}'
     params: {
