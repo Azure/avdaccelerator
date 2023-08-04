@@ -87,7 +87,7 @@ module alaWorkspaceWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentS
       azPowerShellVersion: '8.3.0'
       cleanupPreference: 'Always'
       timeout: 'PT10M'
-      retentionInterval: 'PT15M'
+      retentionInterval: 'PT1H'
       scriptContent: '''
       Write-Host "Start"
       Get-Date
