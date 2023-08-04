@@ -563,7 +563,7 @@ var varMgmtVmSpecs = {
     ouPath: avdOuPath
     subnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
 }
-var varMaxSessionHostsPerTemplate = 20
+var varMaxSessionHostsPerTemplate = 10
 var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varMaxSessionHostsPerTemplate
 var varMaxSessionHostsDivisionRemainderValue = avdDeploySessionHostsCount % varMaxSessionHostsPerTemplate
 var varSessionHostBatchCount = varMaxSessionHostsDivisionRemainderValue > 0 ? varMaxSessionHostsDivisionValue + 1 : varMaxSessionHostsDivisionValue
@@ -720,10 +720,6 @@ var varMarketPlaceGalleryWindows = {
         version: 'latest'
     }
 }
-var varStorageAccountContributorRoleId = '17d1049b-9a84-46fb-8f53-869881c3d3ab'
-var varReaderRoleId = 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-var varStorageSmbShareContributorRoleId = '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb'
-
 var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip'
 //var varTempResourcesCleanUpDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/postDeploymentTempResourcesCleanUp.zip'
 var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
@@ -792,7 +788,7 @@ var verResourceGroups = [
 // Deployments //
 // =========== //
 
-//  Telemetry Deployment.
+//  Telemetry Deployment
 resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
     name: varTelemetryId
     location: avdManagementPlaneLocation
@@ -807,8 +803,8 @@ resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (
 }
 
 // Resource groups.
-// Compute, service objects, network.
-// Network.
+// Compute, service objects, network
+// Network
 module baselineNetworkResourceGroup '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdVnet || createPrivateDnsZones) {
     scope: subscription(avdWorkloadSubsId)
     name: 'Deploy-Network-RG-${time}'
@@ -832,7 +828,7 @@ module baselineResourceGroups '../../carml/1.3.0/Microsoft.Resources/resourceGro
     }
 }]
 
-// Storage.
+// Storage
 module baselineStorageResourceGroup '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (varCreateStorageDeployment) {
     scope: subscription(avdWorkloadSubsId)
     name: 'Storage-RG-${time}'
@@ -870,7 +866,7 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
     ]
 }
 
-// Networking.
+// Networking
 module networking './modules/networking/deploy.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts || createAvdFslogixDeployment || createMsixDeployment) {
     name: 'Networking-${time}'
     params: {
@@ -912,7 +908,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
     ]
 }
 
-// AVD management plane.
+// AVD management plane
 module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     name: 'AVD-MGMT-Plane-${time}'
     params: {
@@ -952,7 +948,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     ]
 }
 
-// Identity: managed identities and role assignments.
+// Identity: managed identities and role assignments
 module identity './modules/identity/deploy.bicep' = {
     name: 'Identities-And-RoleAssign-${time}'
     params: {
@@ -979,7 +975,7 @@ module identity './modules/identity/deploy.bicep' = {
     ]
 }
 
-// Zero trust.
+// Zero trust
 module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDeploySessionHosts) {
     scope: subscription(avdWorkloadSubsId)
     name: 'Zero-Trust-${time}'
@@ -1008,7 +1004,7 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
     ]
 }
 
-// Key vault.
+// Key vault
 module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
     scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
     name: 'Workload-KeyVault-${time}'
@@ -1128,7 +1124,7 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
     ]
 }
 
-// FSLogix storage.
+// FSLogix storage
 module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (createAvdFslogixDeployment) {
     name: 'Storage-FSLogix-${time}'
     params: {
@@ -1171,7 +1167,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
     ]
 }
 
-// MSIX storage.
+// MSIX storage
 module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (createMsixDeployment) {
     name: 'Storage-MSIX-${time}'
     params: {
@@ -1215,7 +1211,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (cr
     ]
 }
 
-// Availability set.
+// Availability set
 module availabilitySet './modules/avdSessionHosts/.bicep/availabilitySets.bicep' = if (!availabilityZonesCompute && avdDeploySessionHosts) {
     name: 'AVD-Availability-Set-${time}'
     scope: resourceGroup('${avdWorkloadSubsId}', '${varComputeObjectsRgName}')
@@ -1232,7 +1228,8 @@ module availabilitySet './modules/avdSessionHosts/.bicep/availabilitySets.bicep'
         monitoringDiagnosticSettings
     ]
 }
-// Session hosts.
+
+// Session hosts
 @batchSize(2)
 module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
     name: 'SH-Batch-${i-1}-${time}'
@@ -1248,9 +1245,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         batchId: i-1
         computeObjectsRgName: varComputeObjectsRgName
         count: i == varSessionHostBatchCount && varMaxSessionHostsDivisionRemainderValue > 0 ? varMaxSessionHostsDivisionRemainderValue : varMaxSessionHostsPerTemplate
-        //count: varSessionHostsBatchsize
         countIndex: i == 1 ? avdSessionHostCountIndex : (((i - 1) * varMaxSessionHostsPerTemplate) + avdSessionHostCountIndex)
-        //countIndex: avdSessionHostCountIndex
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
@@ -1295,7 +1290,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
     ]
 }]
 
-// VM GPU extension policies.
+// VM GPU extension policies
 module gpuPolicies './modules/avdSessionHosts/.bicep/azurePolicyGpuExtensions.bicep' = if (deployGpuPolicies) {
     scope: subscription('${avdWorkloadSubsId}')
     name: 'GPU-VM-Extensions-${time}'
