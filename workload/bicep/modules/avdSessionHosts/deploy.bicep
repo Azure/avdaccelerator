@@ -261,7 +261,7 @@ module sessionHostsWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentS
       azPowerShellVersion: '9.7'
       cleanupPreference: 'Always'
       timeout: 'PT10M'
-      retentionInterval: 'PT15M'
+      retentionInterval: 'PT1H'
       scriptContent: '''
       Write-Host "Start"
       Get-Date
@@ -320,7 +320,7 @@ module antimalwareExtensionWait '../../../../carml/1.3.0/Microsoft.Resources/dep
     azPowerShellVersion: '9.7'
     cleanupPreference: 'Always'
     timeout: 'PT10M'
-    retentionInterval: 'PT15M'
+    retentionInterval: 'PT1H'
     scriptContent: '''
     Write-Host "Start"
     Get-Date
@@ -377,7 +377,7 @@ module sessionHostsMonitoringWait '../../../../carml/1.3.0/Microsoft.Resources/d
     azPowerShellVersion: '9.7'
     cleanupPreference: 'Always'
     timeout: 'PT10M'
-    retentionInterval: 'PT15M'
+    retentionInterval: 'PT1H'
     scriptContent: '''
     Write-Host "Start"
     Get-Date
