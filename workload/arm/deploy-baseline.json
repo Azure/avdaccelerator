@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "8529396267405446992"
+      "templateHash": "8516294843286230053"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -43304,7 +43304,7 @@
         "name": "sessionHosts",
         "count": "[length(range(1, variables('varSessionHostBatchCount')))]",
         "mode": "serial",
-        "batchSize": 2
+        "batchSize": 3
       },
       "condition": "[parameters('avdDeploySessionHosts')]",
       "type": "Microsoft.Resources/deployments",
