@@ -668,7 +668,7 @@ var varMarketPlaceGalleryWindows = {
     win10_22h2_office_g2: {
         publisher: 'MicrosoftWindowsDesktop'
         offer: 'office-365'
-        sku: 'win10-21h2-avd-m365-g2'
+        sku: 'win10-22h2-avd-m365-g2'
         version: 'latest'
     }
     win11_21h2: {
