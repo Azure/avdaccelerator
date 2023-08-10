@@ -2,6 +2,10 @@
 
 [Home](./readme.md) | [PostDeployment](./postDeploy.md) | [How to Change Thresholds](./changeAlertThreshold.md) | [Alert Reference](./alertReference.md) | [Excel List of Alert Rules](./references/alerts.xlsx)
 
+## 8/10/23 - Fix - Deployment Name too long Host Pool Alerts (V2.1.1)
+
+- Added logic to truncate Host Pool name when deploying Host Pool specific alerts to last 20 characters
+
 ## 7/17/23 - Fixes - Remove Deployment Script (v2.1.0)
 
 - Removed Identity and Deployment script for VM to Host Pool mapping
