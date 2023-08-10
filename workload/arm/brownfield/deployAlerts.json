@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "95248788692583083"
+      "templateHash": "6922736694813885321"
     }
   },
   "parameters": {
@@ -7550,7 +7550,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "11958278007069116472"
+              "templateHash": "1982138811988431585"
             }
           },
           "parameters": {
@@ -8172,7 +8172,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "11029514031348514834"
+                      "templateHash": "6469356085595730943"
                     }
                   },
                   "parameters": {
@@ -8204,6 +8204,9 @@
                       "type": "string"
                     }
                   },
+                  "variables": {
+                    "HostPoolResourceName": "[if(less(length(parameters('HostPoolName')), 20), parameters('HostPoolName'), skip(parameters('HostPoolName'), sub(length(parameters('HostPoolName')), 20)))]"
+                  },
                   "resources": [
                     {
                       "copy": {
@@ -8212,7 +8215,7 @@
                       },
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('c_{0}-{1}', replace(parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].name, 'xHostPoolNamex', parameters('HostPoolName')), parameters('Environment'))]",
+                      "name": "[format('c_{0}-{1}', replace(parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].name, 'xHostPoolNamex', variables('HostPoolResourceName')), parameters('Environment'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -8223,7 +8226,7 @@
                             "value": false
                           },
                           "name": {
-                            "value": "[format('{0}-{1}', replace(parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].name, 'xHostPoolNamex', parameters('HostPoolName')), parameters('Environment'))]"
+                            "value": "[format('{0}-{1}', replace(parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].name, 'xHostPoolNamex', variables('HostPoolResourceName')), parameters('Environment'))]"
                           },
                           "criterias": {
                             "value": "[parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].criteria.allOf]"
@@ -8849,7 +8852,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "11029514031348514834"
+                      "templateHash": "6469356085595730943"
                     }
                   },
                   "parameters": {
@@ -8881,6 +8884,9 @@
                       "type": "string"
                     }
                   },
+                  "variables": {
+                    "HostPoolResourceName": "[if(less(length(parameters('HostPoolName')), 20), parameters('HostPoolName'), skip(parameters('HostPoolName'), sub(length(parameters('HostPoolName')), 20)))]"
+                  },
                   "resources": [
                     {
                       "copy": {
@@ -8889,7 +8895,7 @@
                       },
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('c_{0}-{1}', replace(parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].name, 'xHostPoolNamex', parameters('HostPoolName')), parameters('Environment'))]",
+                      "name": "[format('c_{0}-{1}', replace(parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].name, 'xHostPoolNamex', variables('HostPoolResourceName')), parameters('Environment'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -8900,7 +8906,7 @@
                             "value": false
                           },
                           "name": {
-                            "value": "[format('{0}-{1}', replace(parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].name, 'xHostPoolNamex', parameters('HostPoolName')), parameters('Environment'))]"
+                            "value": "[format('{0}-{1}', replace(parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].name, 'xHostPoolNamex', variables('HostPoolResourceName')), parameters('Environment'))]"
                           },
                           "criterias": {
                             "value": "[parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].criteria.allOf]"
