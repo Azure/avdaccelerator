@@ -9,7 +9,7 @@ param Location string
 param VMResourceGroupId string
 
 // Help ensure entire deployment name is under 64 characters
-var HostPoolResourceName = length(HostPoolName) < 25 ? HostPoolName : skip(HostPoolName, length(HostPoolName)-20)
+var HostPoolResourceName = length(HostPoolName) < 25 ? HostPoolName : skip(HostPoolName, length(HostPoolName)-25)
 
 module metricAlerts_VirtualMachines '../../../../../carml/1.3.0/Microsoft.Insights/metricAlerts/deploy.bicep' = [for i in range(0, length(MetricAlerts.virtualMachines)): {
   name: 'c_${replace(MetricAlerts.virtualMachines[i].name, 'xHostPoolNamex', HostPoolResourceName)}-${Environment}'
@@ -18,7 +18,7 @@ module metricAlerts_VirtualMachines '../../../../../carml/1.3.0/Microsoft.Insigh
     name: '${replace(MetricAlerts.virtualMachines[i].name, 'xHostPoolNamex', HostPoolResourceName)}-${Environment}'
     criterias: MetricAlerts.virtualMachines[i].criteria.allOf
     location: 'global'
-    alertDescription: MetricAlerts.virtualMachines[i].description
+    alertDescription: replace(MetricAlerts.virtualMachines[i].description, 'xHostPoolNamex', HostPoolName)
     severity: MetricAlerts.virtualMachines[i].severity
     enabled: Enabled
     scopes: [VMResourceGroupId]
