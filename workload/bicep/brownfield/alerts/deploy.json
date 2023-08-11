@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "11322218491692870546"
+      "templateHash": "878633952349361858"
     }
   },
   "parameters": {
@@ -174,7 +174,7 @@
       {
         "name": "[format('{0}-HP-Cap-85Prcnt-xHostPoolNamex', parameters('AlertNamePrefix'))]",
         "displayName": "[format('{0}-HostPool-Capacity 85% (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-        "description": "[format('{0}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad', variables('AlertDescriptionHeader'))]",
+        "description": "[format('{0}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad', variables('AlertDescriptionHeader'))]",
         "severity": 2,
         "evaluationFrequency": "PT1M",
         "windowSize": "PT5M",
@@ -242,7 +242,7 @@
       {
         "name": "[format('{0}-HP-Cap-50Prcnt-xHostPoolNamex', parameters('AlertNamePrefix'))]",
         "displayName": "[format('{0}-HostPool-Capacity 50% (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-        "description": "[format('{0}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad', variables('AlertDescriptionHeader'))]",
+        "description": "[format('{0}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad', variables('AlertDescriptionHeader'))]",
         "severity": 3,
         "evaluationFrequency": "PT1M",
         "windowSize": "PT5M",
@@ -310,7 +310,7 @@
       {
         "name": "[format('{0}-HP-Cap-95Prcnt-xHostPoolNamex', parameters('AlertNamePrefix'))]",
         "displayName": "[format('{0}-HostPool-Capacity 95% (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-        "description": "[format('{0}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad', variables('AlertDescriptionHeader'))]",
+        "description": "[format('{0}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad', variables('AlertDescriptionHeader'))]",
         "severity": 1,
         "evaluationFrequency": "PT1M",
         "windowSize": "PT5M",
@@ -378,7 +378,7 @@
       {
         "name": "[format('{0}-HP-NoResAvail-xHostPoolNamex', parameters('AlertNamePrefix'))]",
         "displayName": "[format('{0}-HostPool-No Resources Available (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-        "description": "[format('{0}Catastrophic Event! Indicates potential problems with dependencies, diagnose and resolve.', variables('AlertDescriptionHeader'))]",
+        "description": "[format('{0}Catastrophic Event! Indicates potential problems with dependencies, diagnose and resolve for xHostPoolNamex.', variables('AlertDescriptionHeader'))]",
         "severity": 1,
         "evaluationFrequency": "PT15M",
         "windowSize": "PT15M",
@@ -417,7 +417,7 @@
       {
         "name": "[format('{0}-HP-DiscUser24Hrs-xHostPoolNamex', parameters('AlertNamePrefix'))]",
         "displayName": "[format('{0}-HostPool-Disconnected User over 24 Hours (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-        "description": "[format('{0}Verify Remote Desktop Policies are applied relating to Session Limits. This could impact your scaling plan as well.', variables('AlertDescriptionHeader'))]",
+        "description": "[format('{0}Verify Remote Desktop Policies are applied relating to Session Limits for xHostPoolNamex. This could impact your scaling plan as well.', variables('AlertDescriptionHeader'))]",
         "severity": 2,
         "evaluationFrequency": "PT1H",
         "windowSize": "PT1H",
@@ -456,7 +456,7 @@
       {
         "name": "[format('{0}-HP-DiscUser72Hrs-xHostPoolNamex', parameters('AlertNamePrefix'))]",
         "displayName": "[format('{0}-HostPool-Disconnected User over 72 Hours (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-        "description": "[format('{0}Verify Remote Desktop Policies are applied relating to Session Limits. This could impact your scaling plan as well.', variables('AlertDescriptionHeader'))]",
+        "description": "[format('{0}Verify Remote Desktop Policies are applied relating to Session Limits for xHostPoolNamex. This could impact your scaling plan as well.', variables('AlertDescriptionHeader'))]",
         "severity": 1,
         "evaluationFrequency": "PT1H",
         "windowSize": "PT1H",
@@ -495,7 +495,7 @@
       {
         "name": "[format('{0}-HP-VM-LocDskFree10Prcnt-xHostPoolNamex', parameters('AlertNamePrefix'))]",
         "displayName": "[format('{0}-HostPool-VM-Local Disk Free Space 10 Percent (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-        "description": "[format('{0}Disk space Moderately Low. \nConsider review of the VM local C drive and determine what is consuming disk space. This could be local profiles or temp files that need to be cleaned up or removed.', variables('AlertDescriptionHeader'))]",
+        "description": "[format('{0}Disk space Moderately Low. \nConsider review of the VM local C drive and determine what is consuming disk space for the VM in xHostPoolNamex. This could be local profiles or temp files that need to be cleaned up or removed.', variables('AlertDescriptionHeader'))]",
         "severity": 2,
         "evaluationFrequency": "PT15M",
         "windowSize": "PT15M",
@@ -541,7 +541,7 @@
       {
         "name": "[format('{0}-HP-VM-LocDskFree5Prcnt-xHostPoolNamex', parameters('AlertNamePrefix'))]",
         "displayName": "[format('{0}-HostPool-VM-Local Disk Free Space 5 Percent (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-        "description": "[format('{0}Disk space Critically Low. \nConsider review of the VM local C drive and determine what is consuming disk space. This could be local profiles or temp files that need to be cleaned up or removed.', variables('AlertDescriptionHeader'))]",
+        "description": "[format('{0}Disk space Critically Low. \nConsider review of the VM local C drive and determine what is consuming disk space for the VM in xHostPoolNamex. This could be local profiles or temp files that need to be cleaned up or removed.', variables('AlertDescriptionHeader'))]",
         "severity": 1,
         "evaluationFrequency": "PT15M",
         "windowSize": "PT15M",
@@ -587,7 +587,7 @@
       {
         "name": "[format('{0}-HP-VM-FSLgxProf5PrcntFree-xHostPoolNamex', parameters('AlertNamePrefix'))]",
         "displayName": "[format('{0}-HostPool-VM-FSLogix Profile Less Than 5% Free Space (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-        "description": "[format('{0}User Profiles Service logged Event ID 33. Expand User''s Virtual Profile Disk and/or clean up user profile data.', variables('AlertDescriptionHeader'))]",
+        "description": "[format('{0}User Profiles Service logged Event ID 33. Expand User''s Virtual Profile Disk and/or clean up user profile data on the VM in xHostPoolNamex.', variables('AlertDescriptionHeader'))]",
         "severity": 2,
         "evaluationFrequency": "PT5M",
         "windowSize": "PT5M",
@@ -640,7 +640,7 @@
       {
         "name": "[format('{0}-HP-VM-FSLgxProf2PrcntFree-xHostPoolNamex', parameters('AlertNamePrefix'))]",
         "displayName": "[format('{0}-HostPool-VM-FSLogix Profile Less Than 2% Free Space (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-        "description": "[format('{0}User Profiles Service logged Event ID 34. Expand User''s Virtual Profile Disk and/or clean up user profile data.', variables('AlertDescriptionHeader'))]",
+        "description": "[format('{0}User Profiles Service logged Event ID 34. Expand User''s Virtual Profile Disk and/or clean up user profile data on the VM in xHostPoolNamex.', variables('AlertDescriptionHeader'))]",
         "severity": 1,
         "evaluationFrequency": "PT5M",
         "windowSize": "PT5M",
@@ -693,7 +693,7 @@
       {
         "name": "[format('{0}-HP-VM-FSLgxProf-NetwrkIssue-xHostPoolNamex', parameters('AlertNamePrefix'))]",
         "displayName": "[format('{0}-HostPool-VM-FSLogix Profile Failed due to Network Issue (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-        "description": "[format('{0}User Profiles Service logged Event ID 43. Verify network communications between the storage and AVD VM.', variables('AlertDescriptionHeader'))]",
+        "description": "[format('{0}User Profiles Service logged Event ID 43. Verify network communications between the storage and AVD VM related to xHostPoolNamex.', variables('AlertDescriptionHeader'))]",
         "severity": 1,
         "evaluationFrequency": "PT5M",
         "windowSize": "PT5M",
@@ -746,7 +746,7 @@
       {
         "name": "[format('{0}-HP-VM-FSLgxProf-FailAttVHD-xHostPoolNamex', parameters('AlertNamePrefix'))]",
         "displayName": "[format('{0}-HostPool-VM-FSLogix Profile Disk Failed to Attach (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-        "description": "[format('{0}User Profiles Service logged an Event ID 52 or 40. Investigate error details for reason.', variables('AlertDescriptionHeader'))]",
+        "description": "[format('{0}User Profiles Service logged an Event ID 52 or 40. Investigate error details for reason regarding xHostPoolNamex.', variables('AlertDescriptionHeader'))]",
         "severity": 1,
         "evaluationFrequency": "PT5M",
         "windowSize": "PT5M",
@@ -799,7 +799,7 @@
       {
         "name": "[format('{0}-HP-VM-FSLgxProf-SvcDisabled-xHostPoolNamex', parameters('AlertNamePrefix'))]",
         "displayName": "[format('{0}-HostPool-VM-FSLogix Profile Service Disabled (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-        "description": "[format('{0}User Profile Service Disabled. Determine why service was disabled and re-enable / start the FSLogix service', variables('AlertDescriptionHeader'))]",
+        "description": "[format('{0}User Profile Service Disabled. Determine why service was disabled and re-enable / start the FSLogix service. Regarding xHostPoolNamex', variables('AlertDescriptionHeader'))]",
         "severity": 1,
         "evaluationFrequency": "PT5M",
         "windowSize": "PT5M",
@@ -852,7 +852,7 @@
       {
         "name": "[format('{0}-HP-VM-FSLgxProf-DskCompFailed-xHostPoolNamex', parameters('AlertNamePrefix'))]",
         "displayName": "[format('{0}-HostPool-VM-FSLogix Profile Disk Compaction Failed (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-        "description": "[format('{0}User Profile Service logged Event ID 62 or 63. The profile Disk was marked for compaction due to additional white space but failed. See error details for additional information.', variables('AlertDescriptionHeader'))]",
+        "description": "[format('{0}User Profile Service logged Event ID 62 or 63. The profile Disk was marked for compaction due to additional white space but failed. See error details for additional information regarding xHostPoolNamex.', variables('AlertDescriptionHeader'))]",
         "severity": 2,
         "evaluationFrequency": "PT5M",
         "windowSize": "PT5M",
@@ -905,7 +905,7 @@
       {
         "name": "[format('{0}-HP-VM-FSLgxProf-DskInUse-xHostPoolNamex', parameters('AlertNamePrefix'))]",
         "displayName": "[format('{0}-HostPool-VM-FSLogix Profile Disk Attached to another VM (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-        "description": "[format('{0}User Profile Service logged an Event ID 51. This indicates that a user attempted to load their profile disk but it was in use or possibly mapped to another VM. Ensure the user is not connected to another host pool or remote app with the same profile.', variables('AlertDescriptionHeader'))]",
+        "description": "[format('{0}User Profile Service logged an Event ID 51. This indicates that a user attempted to load their profile disk but it was in use or possibly mapped to another VM. Ensure the user is not connected to another host pool or remote app with the same profile. Regarding xHostPoolNamex.', variables('AlertDescriptionHeader'))]",
         "severity": 2,
         "evaluationFrequency": "PT5M",
         "windowSize": "PT5M",
@@ -1057,7 +1057,7 @@
       {
         "name": "[format('{0}-HP-Usr-ConnectionFailed-xHostPoolNamex', parameters('AlertNamePrefix'))]",
         "displayName": "[format('{0}-HostPool-User-Connection Failed (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-        "description": "[format('{0}While trying to connect to xHostPoolNamex a user had an error and failed to connect to a VM. There are lots of variables between the end uers and AVD VMs. If this is frequent for the user, determine if their Internet connection is slow or latency is over 150 ms.', variables('AlertDescriptionHeader'))]",
+        "description": "[format('{0}While trying to connect to xHostPoolNamex a user had an error and failed to connect to a VM. There are lots of variables between the end uers and AVD VMs. If this is frequent for the user, determine if their Internet connection is slow or latency is over 150 ms. Regarding xHostPoolNamex.', variables('AlertDescriptionHeader'))]",
         "severity": 3,
         "evaluationFrequency": "PT15M",
         "windowSize": "PT15M",
@@ -1476,7 +1476,7 @@
         {
           "name": "[format('{0}-HP-VM-HighCPU-85-Prcnt-xHostPoolNamex', parameters('AlertNamePrefix'))]",
           "displayName": "[format('{0}-HostPool-VM-High CPU 85% (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-          "description": "[format('{0}Potential performance issues for users on the same host due to moderately limited CPU (Avarage over 5 mins.) Investigate session host CPU usage per user and/or CPU requirements and adjust if/as needed.  Check user active vs. disconnected status.', variables('AlertDescriptionHeader'))]",
+          "description": "[format('{0}Potential performance issues for users on the same host due to moderately limited CPU (Avarage over 5 mins.) Investigate session host CPU usage per user and/or CPU requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.', variables('AlertDescriptionHeader'))]",
           "severity": 2,
           "evaluationFrequency": "PT1M",
           "windowSize": "PT5M",
@@ -1499,7 +1499,7 @@
         {
           "name": "[format('{0}-HP-VM-HighCPU-95-Prcnt-xHostPoolNamex', parameters('AlertNamePrefix'))]",
           "displayName": "[format('{0}-HostPool-VM-High CPU 95% (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-          "description": "[format('{0}Potential performance issues for users on the same host due to critically limited CPU (Avarage over 5 mins.) Investigate session host CPU usage per user and/or CPU requirements and adjust if/as needed.  Check user active vs. disconnected status.', variables('AlertDescriptionHeader'))]",
+          "description": "[format('{0}Potential performance issues for users on the same host due to critically limited CPU (Avarage over 5 mins.) Investigate session host CPU usage per user and/or CPU requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.', variables('AlertDescriptionHeader'))]",
           "severity": 1,
           "evaluationFrequency": "PT1M",
           "windowSize": "PT5M",
@@ -1522,7 +1522,7 @@
         {
           "name": "[format('{0}-HP-VM-AvailMemLess-2GB-xHostPoolNamex', parameters('AlertNamePrefix'))]",
           "displayName": "[format('{0}-HostPool-VM-Available Memory Less Than 2GB (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-          "description": "[format('{0}Potential performance issues for users on the same host due to moderately low memory. Investigate session host memory usage per user and/or memory requirements and adjust if/as needed.  Check user active vs. disconnected status.', variables('AlertDescriptionHeader'))]",
+          "description": "[format('{0}Potential performance issues for users on the same host due to moderately low memory. Investigate session host memory usage per user and/or memory requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.', variables('AlertDescriptionHeader'))]",
           "severity": 2,
           "evaluationFrequency": "PT1M",
           "windowSize": "PT5M",
@@ -1545,7 +1545,7 @@
         {
           "name": "[format('{0}-HP-VM-AvailMemLess-1GB-xHostPoolNamex', parameters('AlertNamePrefix'))]",
           "displayName": "[format('{0}-HostPool-VM-Available Memory Less Than 1GB (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-          "description": "[format('{0}Potential performance issues for users on the same host due to critically low memory. Investigate session host memory usage per user and/or memory requirements and adjust if/as needed.  Check user active vs. disconnected status.', variables('AlertDescriptionHeader'))]",
+          "description": "[format('{0}Potential performance issues for users on the same host due to critically low memory. Investigate session host memory usage per user and/or memory requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.', variables('AlertDescriptionHeader'))]",
           "severity": 1,
           "evaluationFrequency": "PT1M",
           "windowSize": "PT5M",
@@ -1568,7 +1568,7 @@
         {
           "name": "[format('{0}-HP-VM-OSDiskBandwidthAvg85-xHostPoolNamex', parameters('AlertNamePrefix'))]",
           "displayName": "[format('{0}-HostPool-VM-OS Disk Bandwidth Average Consumed 85% (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-          "description": "[format('{0}The OS Disk is nearing it''s allowed IO maximum based on the Disk SKU. Consider review of what applications are possibly causing excessive disk activity and potentially move to a larger or premium disk SKU.', variables('AlertDescriptionHeader'))]",
+          "description": "[format('{0}The OS Disk is nearing it''s allowed IO maximum based on the Disk SKU within xHostPoolNamex. Consider review of what applications are possibly causing excessive disk activity and potentially move to a larger or premium disk SKU.', variables('AlertDescriptionHeader'))]",
           "severity": 2,
           "evaluationFrequency": "PT5M",
           "windowSize": "PT15M",
@@ -1600,7 +1600,7 @@
         {
           "name": "[format('{0}-HP-VM-OSDiskBandwidthAvg95-xHostPoolNamex', parameters('AlertNamePrefix'))]",
           "displayName": "[format('{0}-HostPool-VM-OS Disk Bandwidth Average Consumed 95% (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
-          "description": "[format('{0}The OS Disk is near it''s allowed IO maximum based on the Disk SKU. Consider review of what applications are possibly causing excessive disk activity and potentially move to a larger or premium disk SKU.', variables('AlertDescriptionHeader'))]",
+          "description": "[format('{0}The OS Disk is near it''s allowed IO maximum based on the Disk SKU within xHostPoolNamex. Consider review of what applications are possibly causing excessive disk activity and potentially move to a larger or premium disk SKU.', variables('AlertDescriptionHeader'))]",
           "severity": 1,
           "evaluationFrequency": "PT5M",
           "windowSize": "PT15M",
@@ -7550,7 +7550,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.20.4.51522",
-              "templateHash": "12641030310328819595"
+              "templateHash": "16175527348705950135"
             }
           },
           "parameters": {
@@ -8172,7 +8172,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "13707153423665402625"
+                      "templateHash": "2363372546223715620"
                     }
                   },
                   "parameters": {
@@ -8205,7 +8205,7 @@
                     }
                   },
                   "variables": {
-                    "HostPoolResourceName": "[if(less(length(parameters('HostPoolName')), 25), parameters('HostPoolName'), skip(parameters('HostPoolName'), sub(length(parameters('HostPoolName')), 20)))]"
+                    "HostPoolResourceName": "[if(less(length(parameters('HostPoolName')), 25), parameters('HostPoolName'), skip(parameters('HostPoolName'), sub(length(parameters('HostPoolName')), 25)))]"
                   },
                   "resources": [
                     {
@@ -8235,7 +8235,7 @@
                             "value": "global"
                           },
                           "alertDescription": {
-                            "value": "[parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].description]"
+                            "value": "[replace(parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].description, 'xHostPoolNamex', parameters('HostPoolName'))]"
                           },
                           "severity": {
                             "value": "[parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].severity]"
@@ -8852,7 +8852,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "13707153423665402625"
+                      "templateHash": "2363372546223715620"
                     }
                   },
                   "parameters": {
@@ -8885,7 +8885,7 @@
                     }
                   },
                   "variables": {
-                    "HostPoolResourceName": "[if(less(length(parameters('HostPoolName')), 25), parameters('HostPoolName'), skip(parameters('HostPoolName'), sub(length(parameters('HostPoolName')), 20)))]"
+                    "HostPoolResourceName": "[if(less(length(parameters('HostPoolName')), 25), parameters('HostPoolName'), skip(parameters('HostPoolName'), sub(length(parameters('HostPoolName')), 25)))]"
                   },
                   "resources": [
                     {
@@ -8915,7 +8915,7 @@
                             "value": "global"
                           },
                           "alertDescription": {
-                            "value": "[parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].description]"
+                            "value": "[replace(parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].description, 'xHostPoolNamex', parameters('HostPoolName'))]"
                           },
                           "severity": {
                             "value": "[parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].severity]"
@@ -12108,7 +12108,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "9362672817292700823"
+                      "templateHash": "13226932970908692337"
                     }
                   },
                   "parameters": {
@@ -12142,7 +12142,7 @@
                     }
                   },
                   "variables": {
-                    "HostPoolResourceName": "[if(less(length(parameters('HostPoolName')), 25), parameters('HostPoolName'), skip(parameters('HostPoolName'), sub(length(parameters('HostPoolName')), 20)))]"
+                    "HostPoolResourceName": "[if(less(length(parameters('HostPoolName')), 25), parameters('HostPoolName'), skip(parameters('HostPoolName'), sub(length(parameters('HostPoolName')), 25)))]"
                   },
                   "resources": [
                     {
@@ -12787,7 +12787,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.20.4.51522",
-                      "templateHash": "9362672817292700823"
+                      "templateHash": "13226932970908692337"
                     }
                   },
                   "parameters": {
@@ -12821,7 +12821,7 @@
                     }
                   },
                   "variables": {
-                    "HostPoolResourceName": "[if(less(length(parameters('HostPoolName')), 25), parameters('HostPoolName'), skip(parameters('HostPoolName'), sub(length(parameters('HostPoolName')), 20)))]"
+                    "HostPoolResourceName": "[if(less(length(parameters('HostPoolName')), 25), parameters('HostPoolName'), skip(parameters('HostPoolName'), sub(length(parameters('HostPoolName')), 25)))]"
                   },
                   "resources": [
                     {
