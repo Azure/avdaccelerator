@@ -9,10 +9,10 @@ param Tags object
 param Timestamp string = utcNow()
 
 // Help ensure entire deployment name is under 64 characters
-var HostPoolResourceName = length(HostPoolName) < 20 ? HostPoolName : skip(HostPoolName, length(HostPoolName)-20)
+var HostPoolResourceName = length(HostPoolName) < 25 ? HostPoolName : skip(HostPoolName, length(HostPoolName)-20)
 
 module logAlertHostPoolQueries '../../../../../carml/1.3.0/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(LogAlertsHostPool)): {
-  name: 'c_${guid(replace(LogAlertsHostPool[i].name, 'xHostPoolNamex', HostPoolResourceName),Timestamp)}-${Environment}'
+  name: 'c_${replace(LogAlertsHostPool[i].name, 'xHostPoolNamex', HostPoolResourceName)}-${Environment}'
   params: {
     enableDefaultTelemetry: false
     name: '${replace(LogAlertsHostPool[i].name, 'xHostPoolNamex', HostPoolResourceName)}-${Environment}'
