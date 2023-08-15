@@ -8,11 +8,14 @@ param Location string
 param Tags object
 param Timestamp string = utcNow()
 
+// Help ensure entire deployment name is under 64 characters
+var HostPoolResourceName = length(HostPoolName) < 25 ? HostPoolName : skip(HostPoolName, length(HostPoolName)-25)
+
 module logAlertHostPoolQueries '../../../../../carml/1.3.0/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(LogAlertsHostPool)): {
-  name: 'c_${guid(replace(LogAlertsHostPool[i].name, 'xHostPoolNamex', HostPoolName),Timestamp)}-${Environment}'
+  name: 'c_${replace(LogAlertsHostPool[i].name, 'xHostPoolNamex', HostPoolResourceName)}-${Environment}'
   params: {
     enableDefaultTelemetry: false
-    name: '${replace(LogAlertsHostPool[i].name, 'xHostPoolNamex', HostPoolName)}-${Environment}'
+    name: '${replace(LogAlertsHostPool[i].name, 'xHostPoolNamex', HostPoolResourceName)}-${Environment}'
     autoMitigate: AutoMitigate
     criterias: {
       allOf: [
@@ -36,3 +39,7 @@ module logAlertHostPoolQueries '../../../../../carml/1.3.0/Microsoft.Insights/sc
     windowSize: LogAlertsHostPool[i].windowSize
   }
 }]
+
+output HostPoolResourceName string = HostPoolResourceName
+output HostPoolName string = HostPoolName
+output HostPoolNameLength int = length(HostPoolName)
