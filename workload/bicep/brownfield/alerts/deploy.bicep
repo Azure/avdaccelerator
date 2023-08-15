@@ -70,7 +70,7 @@ param ANFVolumeResourceIds array = []
 param Tags object = {}
 
 var ActionGroupName = 'ag-avdmetrics-${Environment}-${Location}'
-var AlertDescriptionHeader = 'Automated AVD Alert Deployment Solution (v2.1.0)\n'
+var AlertDescriptionHeader = 'Automated AVD Alert Deployment Solution (v2.1.1)\n'
 var AutomationAccountName = 'aa-avdmetrics-${Environment}-${Location}'
 var CloudEnvironment = environment().name
 var ResourceGroupCreate = ResourceGroupStatus == 'New' ? true : false
@@ -104,7 +104,7 @@ var LogAlertsHostPool = [
   {// Based on Runbook script Output to LAW
     name: '${AlertNamePrefix}-HP-Cap-85Prcnt-xHostPoolNamex'
     displayName: '${AlertNamePrefix}-HostPool-Capacity 85% (xHostPoolNamex)'
-    description: '${AlertDescriptionHeader}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad'
+    description: '${AlertDescriptionHeader}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad'
     severity: 2
     evaluationFrequency: 'PT1M'
     windowSize: 'PT5M'
@@ -189,7 +189,7 @@ var LogAlertsHostPool = [
   {// Based on Runbook script Output to LAW
     name: '${AlertNamePrefix}-HP-Cap-50Prcnt-xHostPoolNamex'
     displayName: '${AlertNamePrefix}-HostPool-Capacity 50% (xHostPoolNamex)'
-    description: '${AlertDescriptionHeader}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad'
+    description: '${AlertDescriptionHeader}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad'
     severity: 3
     evaluationFrequency: 'PT1M'
     windowSize: 'PT5M'
@@ -274,7 +274,7 @@ var LogAlertsHostPool = [
   {// Based on Runbook script Output to LAW
     name: '${AlertNamePrefix}-HP-Cap-95Prcnt-xHostPoolNamex'
     displayName: '${AlertNamePrefix}-HostPool-Capacity 95% (xHostPoolNamex)'
-    description: '${AlertDescriptionHeader}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad'
+    description: '${AlertDescriptionHeader}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad'
     severity: 1
     evaluationFrequency: 'PT1M'
     windowSize: 'PT5M'
@@ -359,7 +359,7 @@ var LogAlertsHostPool = [
   {
     name: '${AlertNamePrefix}-HP-NoResAvail-xHostPoolNamex'
     displayName: '${AlertNamePrefix}-HostPool-No Resources Available (xHostPoolNamex)'
-    description: '${AlertDescriptionHeader}Catastrophic Event! Indicates potential problems with dependencies, diagnose and resolve.'
+    description: '${AlertDescriptionHeader}Catastrophic Event! Indicates potential problems with dependencies, diagnose and resolve for xHostPoolNamex.'
     severity: 1
     evaluationFrequency: 'PT15M'
     windowSize: 'PT15M'
@@ -398,7 +398,7 @@ var LogAlertsHostPool = [
   {
     name: '${AlertNamePrefix}-HP-DiscUser24Hrs-xHostPoolNamex'
     displayName: '${AlertNamePrefix}-HostPool-Disconnected User over 24 Hours (xHostPoolNamex)'
-    description: '${AlertDescriptionHeader}Verify Remote Desktop Policies are applied relating to Session Limits. This could impact your scaling plan as well.'
+    description: '${AlertDescriptionHeader}Verify Remote Desktop Policies are applied relating to Session Limits for xHostPoolNamex. This could impact your scaling plan as well.'
     severity: 2
     evaluationFrequency: 'PT1H'
     windowSize: 'PT1H'
@@ -437,7 +437,7 @@ var LogAlertsHostPool = [
   {
     name: '${AlertNamePrefix}-HP-DiscUser72Hrs-xHostPoolNamex'
     displayName: '${AlertNamePrefix}-HostPool-Disconnected User over 72 Hours (xHostPoolNamex)'
-    description: '${AlertDescriptionHeader}Verify Remote Desktop Policies are applied relating to Session Limits. This could impact your scaling plan as well.'
+    description: '${AlertDescriptionHeader}Verify Remote Desktop Policies are applied relating to Session Limits for xHostPoolNamex. This could impact your scaling plan as well.'
     severity: 1
     evaluationFrequency: 'PT1H'
     windowSize: 'PT1H'
@@ -476,7 +476,7 @@ var LogAlertsHostPool = [
   {
     name: '${AlertNamePrefix}-HP-VM-LocDskFree10Prcnt-xHostPoolNamex'
     displayName: '${AlertNamePrefix}-HostPool-VM-Local Disk Free Space 10 Percent (xHostPoolNamex)'
-    description: '${AlertDescriptionHeader}Disk space Moderately Low. \nConsider review of the VM local C drive and determine what is consuming disk space. This could be local profiles or temp files that need to be cleaned up or removed.'
+    description: '${AlertDescriptionHeader}Disk space Moderately Low. \nConsider review of the VM local C drive and determine what is consuming disk space for the VM in xHostPoolNamex. This could be local profiles or temp files that need to be cleaned up or removed.'
     severity: 2
     evaluationFrequency: 'PT15M'
     windowSize: 'PT15M'
@@ -539,7 +539,7 @@ var LogAlertsHostPool = [
   {
     name: '${AlertNamePrefix}-HP-VM-LocDskFree5Prcnt-xHostPoolNamex'
     displayName: '${AlertNamePrefix}-HostPool-VM-Local Disk Free Space 5 Percent (xHostPoolNamex)'
-    description: '${AlertDescriptionHeader}Disk space Critically Low. \nConsider review of the VM local C drive and determine what is consuming disk space. This could be local profiles or temp files that need to be cleaned up or removed.'
+    description: '${AlertDescriptionHeader}Disk space Critically Low. \nConsider review of the VM local C drive and determine what is consuming disk space for the VM in xHostPoolNamex. This could be local profiles or temp files that need to be cleaned up or removed.'
     severity: 1
     evaluationFrequency: 'PT15M'
     windowSize: 'PT15M'
@@ -602,7 +602,7 @@ var LogAlertsHostPool = [
   {
     name: '${AlertNamePrefix}-HP-VM-FSLgxProf5PrcntFree-xHostPoolNamex'
     displayName: '${AlertNamePrefix}-HostPool-VM-FSLogix Profile Less Than 5% Free Space (xHostPoolNamex)'
-    description: '${AlertDescriptionHeader}User Profiles Service logged Event ID 33. Expand User\'s Virtual Profile Disk and/or clean up user profile data.'
+    description: '${AlertDescriptionHeader}User Profiles Service logged Event ID 33. Expand User\'s Virtual Profile Disk and/or clean up user profile data on the VM in xHostPoolNamex.'
     severity: 2
     evaluationFrequency: 'PT5M'
     windowSize: 'PT5M'
@@ -655,7 +655,7 @@ var LogAlertsHostPool = [
   {
     name: '${AlertNamePrefix}-HP-VM-FSLgxProf2PrcntFree-xHostPoolNamex'
     displayName: '${AlertNamePrefix}-HostPool-VM-FSLogix Profile Less Than 2% Free Space (xHostPoolNamex)'
-    description: '${AlertDescriptionHeader}User Profiles Service logged Event ID 34. Expand User\'s Virtual Profile Disk and/or clean up user profile data.'
+    description: '${AlertDescriptionHeader}User Profiles Service logged Event ID 34. Expand User\'s Virtual Profile Disk and/or clean up user profile data on the VM in xHostPoolNamex.'
     severity: 1
     evaluationFrequency: 'PT5M'
     windowSize: 'PT5M'
@@ -708,7 +708,7 @@ var LogAlertsHostPool = [
   {
     name: '${AlertNamePrefix}-HP-VM-FSLgxProf-NetwrkIssue-xHostPoolNamex'
     displayName: '${AlertNamePrefix}-HostPool-VM-FSLogix Profile Failed due to Network Issue (xHostPoolNamex)'
-    description: '${AlertDescriptionHeader}User Profiles Service logged Event ID 43. Verify network communications between the storage and AVD VM.'
+    description: '${AlertDescriptionHeader}User Profiles Service logged Event ID 43. Verify network communications between the storage and AVD VM related to xHostPoolNamex.'
     severity: 1
     evaluationFrequency: 'PT5M'
     windowSize: 'PT5M'
@@ -762,7 +762,7 @@ var LogAlertsHostPool = [
   {
     name: '${AlertNamePrefix}-HP-VM-FSLgxProf-FailAttVHD-xHostPoolNamex'
     displayName: '${AlertNamePrefix}-HostPool-VM-FSLogix Profile Disk Failed to Attach (xHostPoolNamex)'
-    description: '${AlertDescriptionHeader}User Profiles Service logged an Event ID 52 or 40. Investigate error details for reason.'
+    description: '${AlertDescriptionHeader}User Profiles Service logged an Event ID 52 or 40. Investigate error details for reason regarding xHostPoolNamex.'
     severity: 1
     evaluationFrequency: 'PT5M'
     windowSize: 'PT5M'
@@ -815,7 +815,7 @@ var LogAlertsHostPool = [
   {
     name: '${AlertNamePrefix}-HP-VM-FSLgxProf-SvcDisabled-xHostPoolNamex'
     displayName: '${AlertNamePrefix}-HostPool-VM-FSLogix Profile Service Disabled (xHostPoolNamex)'
-    description: '${AlertDescriptionHeader}User Profile Service Disabled. Determine why service was disabled and re-enable / start the FSLogix service'
+    description: '${AlertDescriptionHeader}User Profile Service Disabled. Determine why service was disabled and re-enable / start the FSLogix service. Regarding xHostPoolNamex'
     severity: 1
     evaluationFrequency: 'PT5M'
     windowSize: 'PT5M'
@@ -868,7 +868,7 @@ var LogAlertsHostPool = [
   {
     name: '${AlertNamePrefix}-HP-VM-FSLgxProf-DskCompFailed-xHostPoolNamex'
     displayName: '${AlertNamePrefix}-HostPool-VM-FSLogix Profile Disk Compaction Failed (xHostPoolNamex)'
-    description: '${AlertDescriptionHeader}User Profile Service logged Event ID 62 or 63. The profile Disk was marked for compaction due to additional white space but failed. See error details for additional information.'
+    description: '${AlertDescriptionHeader}User Profile Service logged Event ID 62 or 63. The profile Disk was marked for compaction due to additional white space but failed. See error details for additional information regarding xHostPoolNamex.'
     severity: 2
     evaluationFrequency: 'PT5M'
     windowSize: 'PT5M'
@@ -921,7 +921,7 @@ var LogAlertsHostPool = [
   {
     name: '${AlertNamePrefix}-HP-VM-FSLgxProf-DskInUse-xHostPoolNamex'
     displayName: '${AlertNamePrefix}-HostPool-VM-FSLogix Profile Disk Attached to another VM (xHostPoolNamex)'
-    description: '${AlertDescriptionHeader}User Profile Service logged an Event ID 51. This indicates that a user attempted to load their profile disk but it was in use or possibly mapped to another VM. Ensure the user is not connected to another host pool or remote app with the same profile.'
+    description: '${AlertDescriptionHeader}User Profile Service logged an Event ID 51. This indicates that a user attempted to load their profile disk but it was in use or possibly mapped to another VM. Ensure the user is not connected to another host pool or remote app with the same profile. Regarding xHostPoolNamex.'
     severity: 2
     evaluationFrequency: 'PT5M'
     windowSize: 'PT5M'
@@ -1092,7 +1092,7 @@ var LogAlertsHostPool = [
   {
     name: '${AlertNamePrefix}-HP-Usr-ConnectionFailed-xHostPoolNamex'
     displayName: '${AlertNamePrefix}-HostPool-User-Connection Failed (xHostPoolNamex)'
-    description: '${AlertDescriptionHeader}While trying to connect to xHostPoolNamex a user had an error and failed to connect to a VM. There are lots of variables between the end uers and AVD VMs. If this is frequent for the user, determine if their Internet connection is slow or latency is over 150 ms.'
+    description: '${AlertDescriptionHeader}While trying to connect to xHostPoolNamex a user had an error and failed to connect to a VM. There are lots of variables between the end uers and AVD VMs. If this is frequent for the user, determine if their Internet connection is slow or latency is over 150 ms. Regarding xHostPoolNamex.'
     severity: 3
     evaluationFrequency: 'PT15M'
     windowSize: 'PT15M'
@@ -1588,7 +1588,7 @@ var MetricAlerts = {
     {
       name: '${AlertNamePrefix}-HP-VM-HighCPU-85-Prcnt-xHostPoolNamex'
       displayName: '${AlertNamePrefix}-HostPool-VM-High CPU 85% (xHostPoolNamex)'
-      description: '${AlertDescriptionHeader}Potential performance issues for users on the same host due to moderately limited CPU (Avarage over 5 mins.) Investigate session host CPU usage per user and/or CPU requirements and adjust if/as needed.  Check user active vs. disconnected status.'
+      description: '${AlertDescriptionHeader}Potential performance issues for users on the same host due to moderately limited CPU (Avarage over 5 mins.) Investigate session host CPU usage per user and/or CPU requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.'
       severity: 2
       evaluationFrequency: 'PT1M'
       windowSize: 'PT5M'
@@ -1611,7 +1611,7 @@ var MetricAlerts = {
     {
       name: '${AlertNamePrefix}-HP-VM-HighCPU-95-Prcnt-xHostPoolNamex'
       displayName: '${AlertNamePrefix}-HostPool-VM-High CPU 95% (xHostPoolNamex)'
-      description: '${AlertDescriptionHeader}Potential performance issues for users on the same host due to critically limited CPU (Avarage over 5 mins.) Investigate session host CPU usage per user and/or CPU requirements and adjust if/as needed.  Check user active vs. disconnected status.'
+      description: '${AlertDescriptionHeader}Potential performance issues for users on the same host due to critically limited CPU (Avarage over 5 mins.) Investigate session host CPU usage per user and/or CPU requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.'
       severity: 1
       evaluationFrequency: 'PT1M'
       windowSize: 'PT5M'
@@ -1634,7 +1634,7 @@ var MetricAlerts = {
     {
       name: '${AlertNamePrefix}-HP-VM-AvailMemLess-2GB-xHostPoolNamex'
       displayName: '${AlertNamePrefix}-HostPool-VM-Available Memory Less Than 2GB (xHostPoolNamex)'
-      description: '${AlertDescriptionHeader}Potential performance issues for users on the same host due to moderately low memory. Investigate session host memory usage per user and/or memory requirements and adjust if/as needed.  Check user active vs. disconnected status.'
+      description: '${AlertDescriptionHeader}Potential performance issues for users on the same host due to moderately low memory. Investigate session host memory usage per user and/or memory requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.'
       severity: 2
       evaluationFrequency: 'PT1M'
       windowSize: 'PT5M'
@@ -1657,7 +1657,7 @@ var MetricAlerts = {
     {
       name: '${AlertNamePrefix}-HP-VM-AvailMemLess-1GB-xHostPoolNamex'
       displayName: '${AlertNamePrefix}-HostPool-VM-Available Memory Less Than 1GB (xHostPoolNamex)'
-      description: '${AlertDescriptionHeader}Potential performance issues for users on the same host due to critically low memory. Investigate session host memory usage per user and/or memory requirements and adjust if/as needed.  Check user active vs. disconnected status.'
+      description: '${AlertDescriptionHeader}Potential performance issues for users on the same host due to critically low memory. Investigate session host memory usage per user and/or memory requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.'
       severity: 1
       evaluationFrequency: 'PT1M'
       windowSize: 'PT5M'
@@ -1680,7 +1680,7 @@ var MetricAlerts = {
     {
       name: '${AlertNamePrefix}-HP-VM-OSDiskBandwidthAvg85-xHostPoolNamex'
       displayName: '${AlertNamePrefix}-HostPool-VM-OS Disk Bandwidth Average Consumed 85% (xHostPoolNamex)'
-      description: '${AlertDescriptionHeader}The OS Disk is nearing it\'s allowed IO maximum based on the Disk SKU. Consider review of what applications are possibly causing excessive disk activity and potentially move to a larger or premium disk SKU.'
+      description: '${AlertDescriptionHeader}The OS Disk is nearing it\'s allowed IO maximum based on the Disk SKU within xHostPoolNamex. Consider review of what applications are possibly causing excessive disk activity and potentially move to a larger or premium disk SKU.'
       severity: 2
       evaluationFrequency: 'PT5M'
       windowSize: 'PT15M'
@@ -1712,7 +1712,7 @@ var MetricAlerts = {
     {
       name: '${AlertNamePrefix}-HP-VM-OSDiskBandwidthAvg95-xHostPoolNamex'
       displayName: '${AlertNamePrefix}-HostPool-VM-OS Disk Bandwidth Average Consumed 95% (xHostPoolNamex)'
-      description: '${AlertDescriptionHeader}The OS Disk is near it\'s allowed IO maximum based on the Disk SKU. Consider review of what applications are possibly causing excessive disk activity and potentially move to a larger or premium disk SKU.'
+      description: '${AlertDescriptionHeader}The OS Disk is near it\'s allowed IO maximum based on the Disk SKU within xHostPoolNamex. Consider review of what applications are possibly causing excessive disk activity and potentially move to a larger or premium disk SKU.'
       severity: 1
       evaluationFrequency: 'PT5M'
       windowSize: 'PT15M'
