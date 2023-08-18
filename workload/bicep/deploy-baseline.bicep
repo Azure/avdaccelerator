@@ -571,6 +571,16 @@ var varMaxAvsetMembersCount = 199
 var varDivisionAvsetValue = avdDeploySessionHostsCount / varMaxAvsetMembersCount
 var varDivisionAvsetRemainderValue = avdDeploySessionHostsCount % varMaxAvsetMembersCount
 var varAvsetCount = varDivisionAvsetRemainderValue > 0 ? varDivisionAvsetValue + 1 : varDivisionAvsetValue
+var varHostPoolAgentUpdateSchedule = [
+    {
+        dayOfWeek: 'Saturday'
+        hour: 18
+    }
+    {
+        dayOfWeek: 'Tuesday'
+        hour: 18
+    }
+]
 var varScalingPlanSchedules = [
     {
         daysOfWeek: [
@@ -940,6 +950,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         diagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
+        hostPoolAgentUpdateSchedule: varHostPoolAgentUpdateSchedule
     }
     dependsOn: [
         baselineResourceGroups
