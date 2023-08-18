@@ -621,9 +621,9 @@ var varScalingPlanSchedules = [
     }
     {
         daysOfWeek: [
-            'Tuesdays'
+            'Tuesday'
         ]
-        name: '${varScalingPlanWeekdaysScheduleName}-Agent-updates'
+        name: '${varScalingPlanWeekdaysScheduleName}-agent-updates'
         offPeakLoadBalancingAlgorithm: 'DepthFirst'
         offPeakStartTime: {
             hour: 20
