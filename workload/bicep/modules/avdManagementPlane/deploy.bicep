@@ -221,7 +221,7 @@ module hostPool '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/hostpoo
     diagnosticLogCategoriesToEnable: varHostPoolDiagnostic
     agentUpdate: !empty(hostPoolAgentUpdateSchedule) ? {
         maintenanceWindows: hostPoolAgentUpdateSchedule
-        maintenanceWindowTimeZone: 'string'
+        maintenanceWindowTimeZone: computeTimeZone
         type: 'Scheduled'
         useSessionHostLocalTime: true
     }: {}
