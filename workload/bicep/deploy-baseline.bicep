@@ -574,7 +574,7 @@ var varAvsetCount = varDivisionAvsetRemainderValue > 0 ? varDivisionAvsetValue +
 var varHostPoolAgentUpdateSchedule = [
     {
         dayOfWeek: 'Saturday'
-        hour: 18
+        hour: 10
     }
     {
         dayOfWeek: 'Tuesday'
