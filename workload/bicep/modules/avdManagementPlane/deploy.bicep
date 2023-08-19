@@ -92,6 +92,9 @@ param hostPoolMaxSessions int
 @sys.description('Optional. AVD host pool start VM on Connect.')
 param startVmOnConnect bool
 
+@sys.description('Optional. AVD host pool start VM on Connect.')
+param hostPoolAgentUpdateSchedule array
+
 @sys.description('Tags to be applied to resources')
 param tags object
 
@@ -216,17 +219,12 @@ module hostPool '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/hostpoo
     diagnosticWorkspaceId: alaWorkspaceResourceId
     diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
     diagnosticLogCategoriesToEnable: varHostPoolDiagnostic
-    agentUpdate: {
-      //useSessionHostLocalTime: true
-      //maintenanceWindowTimeZone: computeTimeZone
-      //type: 'Default'
-      //maintenanceWindows: [
-      //  {
-      //    dayOfWeek: 'string'
-      //    hour: int
-      //  }
-      //]
-    }
+    agentUpdate: !empty(hostPoolAgentUpdateSchedule) ? {
+        maintenanceWindows: hostPoolAgentUpdateSchedule
+        maintenanceWindowTimeZone: computeTimeZone
+        type: 'Scheduled'
+        useSessionHostLocalTime: true
+    }: {}
   }
 }
 
