@@ -571,11 +571,20 @@ var varMaxAvsetMembersCount = 199
 var varDivisionAvsetValue = avdDeploySessionHostsCount / varMaxAvsetMembersCount
 var varDivisionAvsetRemainderValue = avdDeploySessionHostsCount % varMaxAvsetMembersCount
 var varAvsetCount = varDivisionAvsetRemainderValue > 0 ? varDivisionAvsetValue + 1 : varDivisionAvsetValue
+var varHostPoolAgentUpdateSchedule = [
+    {
+        dayOfWeek: 'Tuesday'
+        hour: 18
+    }
+    {
+        dayOfWeek: 'Friday'
+        hour: 17
+    }
+]
 var varScalingPlanSchedules = [
     {
         daysOfWeek: [
             'Monday'
-            'Tuesday'
             'Wednesday'
             'Thursday'
             'Friday'
@@ -598,6 +607,40 @@ var varScalingPlanSchedules = [
         rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
         rampDownStartTime: {
             hour: 18
+            minute: 0
+        }
+        rampDownStopHostsWhen: 'ZeroActiveSessions'
+        rampDownWaitTimeMinutes: 30
+        rampUpCapacityThresholdPct: 80
+        rampUpLoadBalancingAlgorithm: 'BreadthFirst'
+        rampUpMinimumHostsPct: 20
+        rampUpStartTime: {
+            hour: 7
+            minute: 0
+        }
+    }
+    {
+        daysOfWeek: [
+            'Tuesday'
+        ]
+        name: '${varScalingPlanWeekdaysScheduleName}-agent-updates'
+        offPeakLoadBalancingAlgorithm: 'DepthFirst'
+        offPeakStartTime: {
+            hour: 20
+            minute: 0
+        }
+        peakLoadBalancingAlgorithm: 'DepthFirst'
+        peakStartTime: {
+            hour: 9
+            minute: 0
+        }
+        rampDownCapacityThresholdPct: 90
+        rampDownForceLogoffUsers: true
+        rampDownLoadBalancingAlgorithm: 'DepthFirst'
+        rampDownMinimumHostsPct: 0 //10
+        rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
+        rampDownStartTime: {
+            hour: 19
             minute: 0
         }
         rampDownStopHostsWhen: 'ZeroActiveSessions'
@@ -940,6 +983,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         diagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
+        hostPoolAgentUpdateSchedule: varHostPoolAgentUpdateSchedule
     }
     dependsOn: [
         baselineResourceGroups
