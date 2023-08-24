@@ -397,7 +397,7 @@ param msixFileShareCustomName string = 'msix-app1-dev-use2-001'
 //param avdFslogixOfficeContainerFileShareCustomName string = 'fslogix-oc-app1-dev-001'
 
 @maxLength(5)
-@sys.description('AVD keyvault prefix custom name. (Default: kv)')
+@sys.description('AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv)')
 param avdWrklKvPrefixCustomName string = 'kv'
 
 @maxLength(6)
@@ -408,9 +408,9 @@ param ztDiskEncryptionSetCustomNamePrefix string = 'des-zt'
 @sys.description('AVD managed identity for zero trust to encrypt managed disks using a customer managed key.  (Default: id-zt)')
 param ztManagedIdentityCustomName string = 'id-zt'
 
-@maxLength(5)
-@sys.description('AVD key vault name custom name for zero trust (Default: kv-zt)')
-param ztKvPrefixCustomName string = 'kv-zt'
+@maxLength(6)
+@sys.description('AVD key vault name custom name for zero trust and store store disk encryption key (Default: kv-key)')
+param ztKvPrefixCustomName string = 'kv-key'
 
 //
 // Resource tagging
@@ -526,7 +526,7 @@ var varScalingPlanName = avdUseCustomNaming ? avdScalingPlanCustomName : 'vdscal
 var varScalingPlanExclusionTag = 'exclude-${varScalingPlanName}'
 var varScalingPlanWeekdaysScheduleName = 'Weekdays-${varManagementPlaneNamingStandard}'
 var varScalingPlanWeekendScheduleName = 'Weekend-${varManagementPlaneNamingStandard}'
-var varWrklKvName = avdUseCustomNaming ? '${avdWrklKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringThreeChar}' : 'kv-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringThreeChar}' // max length limit 24 characters
+var varWrklKvName = avdUseCustomNaming ? '${avdWrklKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringThreeChar}' : diskZeroTrust ? 'kv-sec-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringThreeChar}' : 'kv-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringThreeChar}' // max length limit 24 characters
 var varWrklKvPrivateEndpointName = 'pe-${varWrklKvName}-vault'
 var varSessionHostNamePrefix = avdUseCustomNaming ? avdSessionHostCustomNamePrefix : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
 var varAvsetNamePrefix = avdUseCustomNaming ? '${avsetCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'avail-${varComputeStorageResourcesNamingStandard}'
@@ -540,7 +540,7 @@ var varMsixStorageName = avdUseCustomNaming ? '${storageAccountPrefixCustomName}
 var varManagementVmName = 'vmmgmt${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
 //var varAvdWrklStoragePrivateEndpointName = 'pe-stavd${varDeploymentPrefixLowercase}${varAvdNamingUniqueStringSixChar}-file'
 var varAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}' //'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
-var varZtKvName = avdUseCustomNaming ? '${ztKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringThreeChar}' : 'kv-zt-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringThreeChar}' // max length limit 24 characters
+var varZtKvName = avdUseCustomNaming ? '${ztKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringThreeChar}' : 'kv-key-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringThreeChar}' // max length limit 24 characters
 var varZtKvPrivateEndpointName = 'pe-${varZtKvName}-vault'
 //
 var varFsLogixScriptArguments = (avdIdentityServiceProvider == 'AAD') ? '-volumeshare ${varFslogixSharePath} -storageAccountName ${varFslogixStorageName} -identityDomainName ${avdIdentityDomainName}' : '-volumeshare ${varFslogixSharePath}'
