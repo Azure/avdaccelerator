@@ -409,7 +409,7 @@ param ztDiskEncryptionSetCustomNamePrefix string = 'des-zt'
 param ztManagedIdentityCustomName string = 'id-zt'
 
 @maxLength(6)
-@sys.description('AVD key vault name custom name for zero trust and store store disk encryption key (Default: kv-key)')
+@sys.description('AVD key vault custom name for zero trust and store store disk encryption key (Default: kv-key)')
 param ztKvPrefixCustomName string = 'kv-key'
 
 //
@@ -800,6 +800,12 @@ var varAvdDefaultTags = {
     ServiceWorkload: 'AVD'
     CreationTimeUTC: time
 }
+var varWorkloadKeyvaultTag = {
+    Purpose: 'Secrets for local admin and domain join credentials'
+}
+var varZtKeyvaultTag = {
+    Purpose: 'Disk encryption keys for zero trust'
+}
 //
 var varTelemetryId = 'pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-${avdManagementPlaneLocation}'
 var verResourceGroups = [
@@ -1039,6 +1045,7 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
         deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
         keyVaultprivateDNSResourceId: createPrivateDnsZones ? networking.outputs.KeyVaultDnsZoneResourceId : avdVnetPrivateDnsZoneKeyvaultId
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+        kvTags: varZtKeyvaultTag
     }
     dependsOn: [
         baselineResourceGroups
@@ -1123,7 +1130,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
                 }
             ]
         }
-        tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+        tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags, varWorkloadKeyvaultTag) : union(varAvdDefaultTags, varWorkloadKeyvaultTag)
 
     }
     dependsOn: [
