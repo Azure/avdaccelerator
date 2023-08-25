@@ -40,6 +40,9 @@ param privateEndpointsubnetResourceId string
 @sys.description('Tags to be applied to resources')
 param tags object
 
+@sys.description('Tags to be added to key vault')
+param kvTags object
+
 @sys.description('Encryption set name')
 param diskEncryptionSetName string
 
@@ -244,7 +247,7 @@ module ztKeyVault './.bicep/zeroTrustKeyVault.bicep' = if (diskZeroTrust) {
         diskEncryptionKeyExpirationInEpoch: diskEncryptionKeyExpirationInEpoch
         diskEncryptionSetName: diskEncryptionSetName
         ztManagedIdentityResourceId: diskZeroTrust ? ztManagedIdentity.outputs.resourceId : ''
-        tags: tags
+        tags: union(tags, kvTags)
     }
 }
 
