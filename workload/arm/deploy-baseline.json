@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "12485075760852757520"
+      "templateHash": "16059823249270768996"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -1492,7 +1492,7 @@
       "Purpose": "Secrets for local admin and domain join credentials"
     },
     "varZtKeyvaultTag": {
-      "Purpose": "Disk ecnryption keys for zero trust"
+      "Purpose": "Disk encryption keys for zero trust"
     },
     "varTelemetryId": "[format('pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-{0}', parameters('avdManagementPlaneLocation'))]",
     "verResourceGroups": [
