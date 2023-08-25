@@ -104,10 +104,10 @@ avsetCustomNamePrefix | No       | AVD availability set custom name. (Default: a
 storageAccountPrefixCustomName | No       | AVD FSLogix and MSIX app attach storage account prefix custom name. (Default: st)
 fslogixFileShareCustomName | No       | FSLogix file share name. (Default: fslogix-pc-app1-dev-001)
 msixFileShareCustomName | No       | MSIX file share name. (Default: msix-app1-dev-001)
-avdWrklKvPrefixCustomName | No       | AVD keyvault prefix custom name. (Default: kv)
+avdWrklKvPrefixCustomName | No       | AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv)
 ztDiskEncryptionSetCustomNamePrefix | No       | AVD disk encryption set custom name. (Default: des-zt)
 ztManagedIdentityCustomName | No       | AVD managed identity for zero trust to encrypt managed disks using a customer managed key.  (Default: id-zt)
-ztKvPrefixCustomName | No       | AVD key vault name custom name for zero trust (Default: kv-zt)
+ztKvPrefixCustomName | No       | AVD key vault custom name for zero trust and store store disk encryption key (Default: kv-key)
 createResourceTags | No       | Apply tags on resources and resource groups. (Default: false)
 workloadNameTag | No       | The name of workload for tagging purposes. (Default: Contoso-Workload)
 workloadTypeTag | No       | Reference to the size of the VM for your workloads (Default: Light)
@@ -902,7 +902,7 @@ MSIX file share name. (Default: msix-app1-dev-001)
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-AVD keyvault prefix custom name. (Default: kv)
+AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv)
 
 - Default value: `kv`
 
@@ -926,9 +926,9 @@ AVD managed identity for zero trust to encrypt managed disks using a customer ma
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-AVD key vault name custom name for zero trust (Default: kv-zt)
+AVD key vault custom name for zero trust and store store disk encryption key (Default: kv-key)
 
-- Default value: `kv-zt`
+- Default value: `kv-key`
 
 ### createResourceTags
 
@@ -1374,7 +1374,7 @@ Enable usage and telemetry feedback to Microsoft.
             "value": "id-zt"
         },
         "ztKvPrefixCustomName": {
-            "value": "kv-zt"
+            "value": "kv-key"
         },
         "createResourceTags": {
             "value": false
