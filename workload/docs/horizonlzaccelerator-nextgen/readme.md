@@ -12,22 +12,22 @@ ms.custom: think-tank, e2e-avd
 # Disclaimer
 Please Note that Horizon Landing Zone Accelerator IS STILL A WORK IN PROGRESS!   Periodically, we will be tweaking things and making changes–so expect to be surprised periodically as we do our best to make the LZ content better for all of you. Thank you for your understanding and please feel free to open Git issues with feedback/suggestions.
 
-# Adopt the Horizon Cloud and Azure Landing Zone Acceleratorr
+# Adopt the VMware Horizon Cloud Next-Gen and Azure Landing Zone Acceleratorr
 
 VMware and Microsoft partnered together to accelerate the future of work. Employees need a consistent experience and seamless access to the applications and insights vital to doing their best work wherever work needs to get done – in the office, on the road, or at home.
-Horizon offers flexible deployment options across private and public clouds, from on-premises to Microsoft Azure, and other cloud providers, enabling hybrid and multi-cloud architectures. Always up-to-date services in the Horizon Control Plane connect entitlement and management layers across Horizon pods in different datacenters and clouds, addressing challenges such as monitoring and image, application, and lifecycle management.
+Horizon Cloud Next-Gen offers flexible deployment options across private and public clouds, from on-premises to Microsoft Azure, and other cloud providers, enabling hybrid and multi-cloud architectures. Always up-to-date services in the Horizon Control Plane connect entitlement and management layers across Horizon sites, and edge deplolyments in different datacenters and clouds, addressing challenges such as monitoring and image, application, and lifecycle management.
 The reference implementation below adheres to the architecture and best practices of the Microsoft Cloud Adoption Framework's Azure landing zones with a particular focus on the enterprise-scale design principles as well as best practices from VMware for Horizon on Azure deployments.  Although this implementation can be deployed in any Azure environment that complies with the [prerequisites](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service---next-gen/services/hzncloud.nextgen/GUID-63AB2398-E82F-4EF2-BC7F-145D79E28769.html), it is recommended to use this solution after implementing an enterprise-scale landing zone for Horizon. To ensure a secure and properly functioning environment, both [Azure Enterprise Scale Landing Zone Architectural guidance](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/) and [VMware Horizon Cloud Next-Gen](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service---next-gen/services/hzncloud.nextgen/GUID-6E1B1AEA-67A5-4255-A4BD-EE2F80511E1D.html) deployment document should be reviewed thoroughly prior to standing up a Horizon environment. The rest of this document walks you through an architectural overview, and key design areas you should consider when deploying Horizon Cloud Next-Gen on Azure.
+
+NOTE:  This docuemnt is inteded to give guidance on best practices for Horizon Cloud Service Next-Gen on Azure. It does not explore an on premises or Azure VMware Services deployment of VMware Horizon 8. Please see the [Horizon 8 documentation page](https://techzone.vmware.com/resource/horizon-architecture#architectural-overview) for more detail on the Horizon 8 deployment options.  
 
 # Design Considerations and Recommendations
 
 ## Customer Profile
-Consider the Horizon solution if:
+Consider the Horizon Next Gen on Azure solution if:
 
-- You have already deployed VMWare Horizon on-premises and would like to continue to use the platform for future Horizon workloads on Azure or in a Hybrid model
-- You have decided on VMWare Horizon as your new desktop platform or wish to deploy Horizon into Azure or in a hybrid cloud model
-- You wish to have a single control plane to manage Horizon on Azure or a hybrid deployment of Horizon
-- Critical applications or services are identified that will remain on-premises, in Azure, or in other cloud or hosted infrastructure platforms
-- Your business leverages multiple cloud platforms for hosting critical applications
+- You plan to deploy Horizon Cloud Service Next-Gen in your Azure environment 
+- Want to take advantage of VMware's thin edge deployment to simplify your cloud deployment
+- Your business leverages multiple cloud platforms for hosting critical applications on virtual desktop infrastrucutre
 
 ## Design Scenarios
 
@@ -36,8 +36,8 @@ Horizon Cloud Service provides a single cloud control plane, run by VMware, that
 VMware is responsible for hosting the Horizon Cloud Service control plane and providing feature updates and enhancements for a software-as-a-service experience. The Horizon Cloud Service is an application service that runs in multiple Microsoft Azure regions.
 Customers are responsible for hosting an Azure Environment (Tenant and Subscriptions) and providing the necessary, network, security, and identity services for the Horizon environment. 
 The deployment is straightforward: You prepare and provide information to the VMware Horizon Service about your Microsoft Azure Landing Zone (Identity, networking, subscriptions, etc.), and the Horizon Service deploys a Horizon Cloud Next-Gen components into the Microsoft Azure subscription on your behalf. You may decide to leverage a single or multiple [Microsoft Azure Regions](https://azure.microsoft.com/explore/global-infrastructure/geographies/#overview). More on Hybrid and multi site deployments are below. 
-Details on basic [network design](https://techzone.vmware.com/resource/horizon-cloud-on-microsoft-azure-architecture#network-design), [single-site design](https://techzone.vmware.com/resource/horizon-cloud-on-microsoft-azure-architecture#single-site-design), and [multi-site design](https://techzone.vmware.com/resource/horizon-cloud-on-microsoft-azure-architecture#multi-site-design) can be found in the respective sections of the Horizon Cloud on Microsoft Azure Architecture document on VMware TechZone.
-Sizing and scaling detail can also be found in the [Vmware Horizon Cloud Service on Microsoft Azure Service Limits](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service/services/hzncloudmsazure.getstarted15/GUID-EE21156D-974D-4C37-820D-1A40CED6346E.html) article in the product documentation.
+Details on basic network design, single-site design, and multi-site design can be found in the respective sections of the Horizon Cloud on Microsoft Azure Architecture document on VMware [TechZone](https://techzone.vmware.com/resource/horizon-cloud-service-next-gen-architecture#scaling-and-availability).
+Sizing and scaling detail can also be found in the [Vmware Horizon Cloud Service on Microsoft Azure Service Limits](https://techzone.vmware.com/resource/horizon-cloud-service-next-gen-architecture#microsoft-azure-deployment-scaling-overview) article in the product documentation.
 
 &nbsp;
 
