@@ -149,20 +149,45 @@ User resources are organized and displayed in the Horizon Universal Console for 
 &nbsp;
 
 ## Images
-A virtual machine image can be imported from the [Microsoft Azure Marketplace](https://learn.microsoft.com/marketplace/purchase-vm-in-azure-portal#purchase-a-vm-using-the-marketplace-experience), the Microsoft [Azure Compute Gallery](https://learn.microsoft.com/azure/virtual-machines/azure-compute-gallery), or from a [Microsoft Azure Custom VM](https://learn.microsoft.com/azure/virtual-machines/windows/tutorial-custom-images). After it is imported, you can remotely connect to the image and make changes such as installing applications.
-When an image is ready to use you publish it to the Horizon Edges where you want to use it. Publishing an image to a Horizon Edge copies the image to each provider in that edge, making it available for use in creating pools of virtual machines on that edge, and in any provider capacity assigned to that edge.
+Golden images are fundamental to the creation of desktop pools and RDS server farms. The Horizon Image Management Service can be used to create, customize, and publish golden image versions across your cloud-managed edge deployments. See [Managing Horizon Images from the Cloud](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service---next-gen/services/hzncloud.nextgen/GUID-5BE14BDA-F86F-4D99-865A-15F97DC54B8F.html) for more information.
+
+With Horizon Edge deployments on cloud-native providers, the platform cloud services can be used to import a suitable image that can then be customized and used in pool and farm creation.
+
+You use this service to create, customize, and publish image versions for desktop and server entitlements across your cloud-managed edge deployments.
+
+The Horizon work flow depends upon the prompt administration of the system images. The system images power up the virtual machines, which provision entitlements to end users. To manage system images, every image customization needs the administrator to add and publish new versions of an image, and update the associated entitlements individually.
+
+Horizon Image Management Service simplifies and streamlines this process by offering the following features and benefits across your cloud-managed edge deployments.
+
+- Centralized image catalogs, listing the images with their versions and copies across edges.
+- Easy-to-use guided steps to publish an image.
+- Entitlements on different cloud-connected edges and sites, which can easily and consistently use the same image version managed by the image service.
+- Simplified image conversioning to control and track customizations.
+
+For Azure-based deployments of Horizon Edge, see [Images with Microsoft Azure Deployments](https://techzone.vmware.com/resource/horizon-cloud-service-next-gen-architecture#images-with-microsoft-azure-deployments).
+When an image is ready to use you publish it to the Horizon Edges where you want to use it. Publishing an image to a Horizon Edge copies the image to each provider in that edge making it available for use in creating pools of virtual machines on that edge, and in any provider capacity assigned to that edge.
+
+When the Horizon Edge deployment is on Azure, a virtual machine image can be imported from the Microsoft Azure Marketplace, the Microsoft Azure Compute Gallery, or from a Microsoft Azure Custom VM. After it is imported, you can remotely connect to the image and make changes such as installing applications.
 
 **Recommended Content**
 https://techzone.vmware.com/resource/horizon-cloud-service-next-gen-architecture#image-management-service
 
 
+
 &nbsp;
 
 ## Applications & Desktop Experience
-**Volume Packages**
-VMware App Volumes™ is an application packaging solution that provides real-time application delivery and life-cycle management for digital workspaces. App Volumes provides faster application delivery and simplified and unified management of apps and users, while at the same time reducing IT costs. App Volumes does this by abstracting Windows applications from the base operating system and delivering those applications through virtual disks. This is a different way of doing things, which enables you to clean up your golden desktop image and manage it separately from the applications that are installed.
+**Application Volume Packages**
+[VMware App Volumes™](https://techzone.vmware.com/resource/horizon-cloud-service-next-gen-architecture#app-volumes) allows for the separation of applications from the OS image, simplifying application management with real-time application delivery, and one-to-many provisioning. App Volumes functionality is available in Horizon Cloud Service – next gen. App Volumes management components are provided as part of the cloud service, and App Volumes agents and packages reside in the deployed Horizon Edge.
+
+App Volumes provides the delivery of software programs that are not in the golden image VM image for VDI and RDSH. This is a different way of doing things, which enables you to clean up your golden desktop image and manage it separately from the applications that are installed.
 Using App Volumes applications functionality, you can manage the entire life cycle of applications, including packaging, updating, and retiring an application. You can also customize application assignments to deliver specific versions of an application to end users.
-Note: VMware App Volumes has different implementations and feature sets based on whether you use it with a [Horizon 8](https://techzone.vmware.com/resource/app-volumes-architecture) or a [Horizon Cloud on Microsoft Azure](https://techzone.vmware.com/resource/horizon-cloud-on-microsoft-azure-architecture#app-volumes-packages-in-horizon-cloud-on-microsoft-azure) deployment for your VDI and published desktop environment.
+- **Packages** - App Volumes groups one or more programs into packages, based on the requirements of each use case. A package is a virtual disk containing one or more programs that are captured together.
+- **Applications** – An Application contains one or more Package, where each represents a different version of the Application and the programs in contains. Users and groups are entitlements are to an Application.
+
+See link below for more detail on use App Volumes with Horizon Next-Gen.
+
+In some cases it also can make sense to [integrate App Volumes with FSlogix](https://techzone.vmware.com/resource/integrating-fslogix-profile-containers-vmware-horizon#_Toc50543897). Please see the linked document for more detail 
 
 
 **Desktop and User Experience**
@@ -189,8 +214,6 @@ Organizations depend on Horizon to deliver key services to users. Proper design 
 
 Disaster recovery for Horizon workloads should be viewed from the perspective of the users. Where a user is being delivered Horizon-based desktops or published applications from a particular location, contingencies should be made to provide equivalent services from a separate location.
 
-With Horizon Edge deployments in Next Gen, Providers, Service Principals and Sites can be used for scaling out an environment. Providers are supported hypervisors and cloud platforms that offer the necessary resource capacity to provision and deliver desktops and applications to end users. Multiple Service Principals are required for Azure deployments larger than 1,000 VMs or users. Sites are a logical grouping of Horizon Edge(s) to define from where end users can source capacity.
-
 A remote-first approach that relies on physical desktops is challenging and introduces many operational and security concerns. Providing disaster recovery for physical desktops is difficult, especially when combined with the need for the flexibility of a remote-first experience.
 
 By contrast, Horizon allows flexibility for providing disaster recovery to desktops and applications.
@@ -201,7 +224,7 @@ By contrast, Horizon allows flexibility for providing disaster recovery to deskt
 
 **Recommended Content**
 The resources below may be useful for designing a resilient virtual workspace and applications environment with Horizon Cloud on Microsoft Azure:
-[Disaster Recovery in VMware Horizon](https://techzone.vmware.com/resource/providing-disaster-recovery-vmware-horizon) – This guide covers the considerations and discusses how to approach providing disaster recovery for Horizon-based workloads
+[Disaster Recovery in VMware Horizon](https://techzone.vmware.com/resource/providing-disaster-recovery-vmware-horizon#disaster-recovery-in-horizon-design) – This guide covers the considerations and discusses how to approach providing disaster recovery for Horizon-based workloads
 
 &nbsp;
 
@@ -209,6 +232,14 @@ The resources below may be useful for designing a resilient virtual workspace an
 
 You can use a variety of procedures for monitoring, diagnosing, and fixing problems that you might encounter when using VMware Horizon. Horizon Cloud on Microsoft Azure comes with built-in monitoring and reporting features.
 To maintain the health and efficient operation of any VDI platform, it is important to monitor for availability of critical platform and infrastructure components. Every Virtual Workspace implementation is unique, bult on unique infrastructure implementations based on organizational requirements. It is critical to understand that a virtual workspace solution is reliant on all the infrastructure and environmental resources being available performant and secure.
+
+There are three components used for monitoring in the Horizon Cloud Service.
+
+- Horizon Infrastructure Monitoring – Monitors all of the critical components of a Horizon deployment along with critical infrastructure components (such as DNS).
+- User Monitoring – Monitors individual session and virtual desktop usage by end-user to provide details use for troubleshooting purposes.
+- User Capacity Monitoring and Metrics - Monitors the health and performance of all end-user capacity (virtual machines). Monitoring data is collected by Horizon Agents, and other managed Horizon Cloud Service – next-gen resources, located in customer environments and sent to the Horizon Edge Gateway.  From there the monitoring data is handled differently based on license entitlement.
+
+The the [Tracking Monitoring Events page](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service---next-gen/services/hzncloud.nextgen/GUID-956DE018-E8F3-4144-BE76-1FA1645BDF4F.html) for more detail on Monitoring a Horizon Next-Gen environment. 
 
 **Design Recommendations**
 The following list of basic platform and infrastructure monitoring metrics should be measured and monitored for a healthy implementation.
@@ -263,7 +294,6 @@ Note that thresholds for metrics should be set based on differentiated values fo
 The resources below describe how resources are managed within Horizon Cloud on Microsoft Azure:
 
 - [Horizon Cloud Service – Monitoring Dashboard](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service/services/hzncloudmsazure.admin15/GUID-86BBC3B3-31B6-4F96-98C6-A6CED86A8E39.html) – The Horizon Cloud Service has several built-in dashboards to help provide at-a-glance notifications about system, configuration, and infrastructure status.
-- [Cloud Monitoring Service](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service/services/hzncloudmsazure.admin15/GUID-9815E322-A13F-4E0A-B4F7-98B34A054D8F.html) – The Cloud Monitoring Service (CMS) is a built-in monitoring platform for Horizon Cloud Service. It provides critical monitoring and reporting capabilities for each Horizon Cloud on Microsoft Azure customer.
 - [Horizon Cloud Service - next-gen Architecture - Management and Moitoring](https://techzone.vmware.com/resource/horizon-cloud-service-next-gen-architecture#monitoring-and-analytics-service)
 
 &nbsp;
@@ -272,8 +302,15 @@ The resources below describe how resources are managed within Horizon Cloud on M
 ## Governance
 In Horizon Cloud Next Gen, the pod management and database functions move into the Horizon control plane, thus introducing the concept of the Horizon Edge. Each edge can scale to 20K sessions, it is equipped with the proactive monitoring we previously pointed out as well as the API integration and automation
 
-Support for (PCoIP) or a display protocol that allows complete compression of a desktop.[PCoIP: What is PC-over-IP and How Does it Work? (petri.com)](https://petri.com/what-is-pc-over-ip/)
- 
+In Horizon Cloud Next-Gen Edge deployments, Providers, Service Principals and Sites can be used for scaling out an environment. Providers are supported hypervisors and cloud platforms that offer the necessary resource capacity to provision and deliver desktops and applications to end users. Multiple Service Principals are required for Azure deployments larger than 1,000 VMs or users. Sites are a logical grouping of Horizon Edge(s) to define from where end users can source capacity.
+
+&nbsp;
+
+### Tagging
+Tagging is an important part of any cloud strategy. When you apply metadata tags to your cloud resources, include information that couldn't be included in the resource name. For example, include information about the asset. You can use that information to run more sophisticated filtering and reporting on resources. You want these tags to include context about the resource's associated workload or application, operational requirements, and ownership information. IT or business teams use this information to find resources or generate reports about resource usage and billing.
+
+Tagging is built into the Horizon Cloud Service Next-Gen design. Customer should develop a robust tagging strategy for use with Horizon Cloud Next-Gen. Check out the [Azure Cloud Adoption Framework Tagging page](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-tagging) for best practices around tagging Azure resources. 
+
 
 **Recommended Content**
 Review the following resources to find security controls and governance details for your Horizon Cloud on Microsoft Azure deployment. Most of the design considerations and recommendations for this topic can be found in these assets.
