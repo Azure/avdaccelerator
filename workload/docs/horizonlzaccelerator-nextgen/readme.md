@@ -12,7 +12,7 @@ ms.custom: think-tank, e2e-avd
 # Disclaimer
 Please Note that Horizon Landing Zone Accelerator IS STILL A WORK IN PROGRESS!   Periodically, we will be tweaking things and making changes–so expect to be surprised periodically as we do our best to make the LZ content better for all of you. Thank you for your understanding and please feel free to open Git issues with feedback/suggestions.
 
-# Adopt the VMware Horizon Cloud Next-Gen and Azure Landing Zone Acceleratorr
+# Adopt the VMware Horizon Cloud Next-Gen and Azure Landing Zone Accelerator
 
 VMware and Microsoft partnered together to accelerate the future of work. Employees need a consistent experience and seamless access to the applications and insights vital to doing their best work wherever work needs to get done – in the office, on the road, or at home.
 Horizon Cloud Next-Gen offers flexible deployment options across private and public clouds, from on-premises to Microsoft Azure, and other cloud providers, enabling hybrid and multi-cloud architectures. Always up-to-date services in the Horizon Control Plane connect entitlement and management layers across Horizon sites, and edge deplolyments in different datacenters and clouds, addressing challenges such as monitoring and image, application, and lifecycle management.
@@ -314,6 +314,7 @@ Tagging is built into the Horizon Cloud Service Next-Gen design. Customer should
 &nbsp;
 
 **Recommended Content**
+&nbsp;
 Review the following resources to find security controls and governance details for your Horizon Cloud on Microsoft Azure deployment. Most of the design considerations and recommendations for this topic can be found in these assets.
 - [Introduction to Using VMware Horizon Cloud Service - next-gen](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service---next-gen/services/hzncloud.nextgen/GUID-6E1B1AEA-67A5-4255-A4BD-EE2F80511E1D.html) – This article discusses the new Horizon Cloud updates. With Horizon Cloud, you have a global view of your desktops and applications spanning your cloud-connected Horizon deployments.
 - [Deploying a Horizon 8 Edge for Use with Horizon 8 Deployments and the Horizon Cloud](https://docs.vmware.com/en/VMware-Horizon-Cloud-Service---next-gen/services/hzncloud.nextgen/GUID-EDA62396-F36E-4A01-8442-A57E7A62ECE2.html) - next-gen Control Plane (vmware.com)– This documentation page describes the Horizon Universal Console Add Horizon Edge workflow steps for the use case where you are creating a Horizon Edge that uses a Horizon 8 pod as its resource provider and that pod is in a vSphere environment (an on-premises or all-in-SDDC deployment). Only one Horizon Connection Server pod is supported on a Horizon Edge.
