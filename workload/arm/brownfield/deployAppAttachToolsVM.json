@@ -1,0 +1,319 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.20.4.51522",
+      "templateHash": "1393177165637027262"
+    }
+  },
+  "parameters": {
+    "adminUsername": {
+      "type": "string",
+      "defaultValue": "vmadmin",
+      "metadata": {
+        "description": "Username for the Virtual Machine."
+      }
+    },
+    "adminPassUseKv": {
+      "type": "bool",
+      "metadata": {
+        "description": "Keyvault Option for Local Admin Password."
+      }
+    },
+    "adminPassKv": {
+      "type": "object"
+    },
+    "adminPassKvSecret": {
+      "type": "string"
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "defaultValue": "[newGuid()]",
+      "minLength": 12,
+      "metadata": {
+        "description": "Password for the Virtual Machine."
+      }
+    },
+    "publicIPAllowed": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Create the VM with a Public IP to access the Virtual Machine?"
+      }
+    },
+    "OSoffer": {
+      "type": "string",
+      "metadata": {
+        "description": "The Windows version for the VM."
+      }
+    },
+    "OSVersion": {
+      "type": "string",
+      "defaultValue": "win11-22h2-ent",
+      "metadata": {
+        "description": "The Windows build version for the VM."
+      }
+    },
+    "vmDiskType": {
+      "type": "string",
+      "metadata": {
+        "description": "Size of the virtual machine."
+      }
+    },
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_D2s_v5",
+      "metadata": {
+        "description": "Size of the virtual machine."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
+    },
+    "vmName": {
+      "type": "string",
+      "defaultValue": "vmAppAttach01",
+      "maxLength": 15,
+      "metadata": {
+        "description": "Name of the virtual machine. (must be 15 characters or less)"
+      }
+    },
+    "VNet": {
+      "type": "object",
+      "defaultValue": {
+        "name": "",
+        "id": "",
+        "location": "",
+        "subscriptionName": ""
+      },
+      "metadata": {
+        "description": "Virtual Network to attach MSIX Tools VM to."
+      }
+    },
+    "SubnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet to use for MSIX VM Tools VM."
+      }
+    },
+    "Timestamp": {
+      "type": "string",
+      "defaultValue": "[utcNow('u')]",
+      "metadata": {
+        "description": "Do not change. Used for deployment purposes only."
+      }
+    }
+  },
+  "variables": {
+    "PostDeployScriptURI": "https://github.com/Azure/avdaccelerator/blob/main/workload/scripts/appAttachToolsVM/",
+    "VNetSub": "[split(parameters('VNet').id, '/')[2]]",
+    "VNetRG": "[split(parameters('VNet').id, '/')[4]]",
+    "VNetName": "[parameters('VNet').name]",
+    "KVLocalAdminSubId": "[split(parameters('adminPassKv').id, '/')[2]]",
+    "KVLocalAdminRG": "[split(parameters('adminPassKv').id, '/')[4]]"
+  },
+  "resources": [
+    {
+      "condition": "[parameters('publicIPAllowed')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2022-01-01",
+      "name": "[format('pip-{0}', parameters('vmName'))]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Basic"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2022-01-01",
+      "name": "[format('nic-{0}', parameters('vmName'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[resourceId(variables('VNetSub'), variables('VNetRG'), 'Microsoft.VirtualNetwork/virtualNetworks/subnets', variables('VNetName'), parameters('SubnetName'))]"
+              },
+              "publicIPAddress": "[if(parameters('publicIPAllowed'), createObject('id', resourceId('Microsoft.Network/publicIPAddresses', format('pip-{0}', parameters('vmName')))), null())]"
+            }
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', format('pip-{0}', parameters('vmName')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('linked_VMDeployment-{0}', guid(parameters('Timestamp')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "AdminUserName": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "AdminPassword": "[if(parameters('adminPassUseKv'), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', variables('KVLocalAdminSubId'), variables('KVLocalAdminRG')), 'Microsoft.KeyVault/vaults', parameters('adminPassKv').name)), 'secretName', parameters('adminPassKvSecret'))), createObject('value', parameters('adminPassword')))]",
+          "Location": {
+            "value": "[parameters('location')]"
+          },
+          "NIC": {
+            "value": "[format('nic-{0}', parameters('vmName'))]"
+          },
+          "OSoffer": {
+            "value": "[parameters('OSoffer')]"
+          },
+          "OSVersion": {
+            "value": "[parameters('OSVersion')]"
+          },
+          "PostDeployScriptURI": {
+            "value": "[variables('PostDeployScriptURI')]"
+          },
+          "Timestamp": {
+            "value": "[parameters('Timestamp')]"
+          },
+          "VMDiskType": {
+            "value": "[parameters('vmDiskType')]"
+          },
+          "VMName": {
+            "value": "[parameters('vmName')]"
+          },
+          "VMSize": {
+            "value": "[parameters('vmSize')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.20.4.51522",
+              "templateHash": "4640866721526377412"
+            }
+          },
+          "parameters": {
+            "AdminUserName": {
+              "type": "string"
+            },
+            "AdminPassword": {
+              "type": "securestring"
+            },
+            "Location": {
+              "type": "string"
+            },
+            "NIC": {
+              "type": "string"
+            },
+            "OSoffer": {
+              "type": "string"
+            },
+            "OSVersion": {
+              "type": "string"
+            },
+            "PostDeployScriptURI": {
+              "type": "string"
+            },
+            "Timestamp": {
+              "type": "string"
+            },
+            "VMDiskType": {
+              "type": "string"
+            },
+            "VMName": {
+              "type": "string"
+            },
+            "VMSize": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Compute/virtualMachines",
+              "apiVersion": "2022-03-01",
+              "name": "[parameters('VMName')]",
+              "location": "[parameters('Location')]",
+              "properties": {
+                "hardwareProfile": {
+                  "vmSize": "[parameters('VMSize')]"
+                },
+                "osProfile": {
+                  "computerName": "[parameters('VMName')]",
+                  "adminUsername": "[parameters('AdminUserName')]",
+                  "adminPassword": "[parameters('AdminPassword')]"
+                },
+                "storageProfile": {
+                  "imageReference": {
+                    "publisher": "MicrosoftWindowsDesktop",
+                    "offer": "[parameters('OSoffer')]",
+                    "sku": "[parameters('OSVersion')]",
+                    "version": "latest"
+                  },
+                  "osDisk": {
+                    "createOption": "FromImage",
+                    "managedDisk": {
+                      "storageAccountType": "[parameters('VMDiskType')]"
+                    }
+                  }
+                },
+                "networkProfile": {
+                  "networkInterfaces": [
+                    {
+                      "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('NIC'))]"
+                    }
+                  ]
+                },
+                "diagnosticsProfile": {
+                  "bootDiagnostics": {
+                    "enabled": false
+                  }
+                }
+              }
+            },
+            {
+              "type": "Microsoft.Compute/virtualMachines/extensions",
+              "apiVersion": "2022-03-01",
+              "name": "[format('{0}/{1}', parameters('VMName'), 'VmExtension-PS-InstallConfigAppAttachTools')]",
+              "location": "[parameters('Location')]",
+              "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.10",
+                "settings": {
+                  "fileUris": [
+                    "[format('{0}AppAttachVMConfig.ps1', parameters('PostDeployScriptURI'))]"
+                  ],
+                  "timestamp": "[parameters('Timestamp')]"
+                },
+                "protectedSettings": {
+                  "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File AppAttachVMConfig.ps1 -VMUserName {0} -VMUserPassword {1} -PostDeployScriptURI {2}', parameters('AdminUserName'), parameters('AdminPassword'), parameters('PostDeployScriptURI'))]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('VMName'))]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', format('nic-{0}', parameters('vmName')))]"
+      ]
+    }
+  ]
+}
