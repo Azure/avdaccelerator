@@ -8,6 +8,7 @@ The brownfield deployments section contains templates to deploy specific feature
 - [Auto Increase Premium File Share Quota](./bicep/brownfield/autoIncreasePremiumFileShareQuota/readme.md)
 - [Scaling Tool](./bicep/brownfield/scalingTool/readme.md)
 - [Start VM On Connect](./bicep/brownfield/startVmOnConnect/readme.md)
+- [Deploy App Attach Tools VM](./bicep/brownfield/appAttachToolsVM/Readme.md)
 
 ## Azure Virtual Desktop: Azure monitor workbooks
 - [Deep Insights Workbook](./workbooks/deepInsightsWorkbook/readme.md)
