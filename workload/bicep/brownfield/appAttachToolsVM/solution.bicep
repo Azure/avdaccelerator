@@ -2,10 +2,10 @@
 param adminUsername string = 'vmadmin'
 
 @description('Keyvault Option for Local Admin Password.')
-param adminPassUseKv bool
+param adminPassUseKv bool = false
 
-param adminPassKv object
-param adminPassKvSecret string
+param adminPassKv object = {}
+param adminPassKvSecret string = ''
 
 @description('Password for the Virtual Machine.')
 @minLength(12)
