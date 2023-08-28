@@ -244,7 +244,7 @@
 			"resourceGroupId": "[steps('basics').resourceScope.resourceGroup.id]",
 			"parameters": {
 				"adminUsername": "[steps('basics').adminUsername]",
-				"adminPassword": "[steps('basics').adminPassword]",
+				"adminPassword": "[steps('basics').adminPassword.password]",
 				"adminPassUseKv": "[steps('basics').optionLocalCredsKeyvault]",
 				"adminPassKv": "[steps('basics').kvLocal]",
 				"adminPassKvSecret": "[steps('basics').kvLocalSecretName]",
