@@ -92,6 +92,7 @@ Designing a multi-cloud solution is challenging and complex. VMware has develope
 
 
 **Azure Architecture - Single Site**
+&nbsp;
 [![Diagram of Horizon Cloud on Azure Next-Gen - Azure deployment](diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-5.png)](diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-5.png#lightbox)
 
 
@@ -100,13 +101,12 @@ Designing a multi-cloud solution is challenging and complex. VMware has develope
 
   
 
-
-**Azure Architecture - Enterprise Scal Landing Zone View**
+**Azure Architecture - Enterprise Scale Landing Zone View**
+&nbsp;
 [![Diagram of Horizon Cloud on Azure Next-Gen - Azure Enterprise Scale Landing Zone View](diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-6.png)](diagrams/horizon-cloud-nextgen-azure-virtual-desktop-architecture-6.png#lightbox)
 
-
-
-
+&nbsp;
+&nbsp;
 
 
 # Design Areas
