@@ -31,10 +31,6 @@ variable "identity_rg" {
   description = "Name of the Resource group in which to identity resources are deployed"
 }
 
-variable "rg_fslogix" {
-  description = "Resource group FSLogix VM"
-}
-
 variable "vnet" {
   type        = string
   description = "Name of avd vnet"
@@ -95,11 +91,6 @@ variable "rg_shared_name" {
   description = "Name of the Resource group in which to deploy shared resources"
 }
 
-variable "rg_image_name" {
-  type        = string
-  description = "Name of the Resource group in which to deploy image resources"
-}
-
 variable "workspace" {
   type        = string
   description = "Name of the Azure Virtual Desktop workspace"
@@ -154,9 +145,11 @@ variable "hub_connectivity_rg" {
   description = "The resource group for hub connectivity resources"
 }
 
+/*
 variable "avd_users" {
   description = "AVD users"
 }
+*/
 
 variable "aad_group_name" {
   type        = string
@@ -262,6 +255,7 @@ variable "hub_dns_zone_rg" {
   description = "The resource group for the hub DNS zone"
 }
 
+# variables for firewall policy 
 variable "next_hop_ip" {
   type        = string
   description = "Next hop IP address"

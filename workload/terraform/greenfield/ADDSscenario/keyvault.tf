@@ -100,28 +100,3 @@ resource "azurerm_role_assignment" "keystor" {
     time_sleep.wait
   ]
 }
-
-# Customer Managed Key for Storage Account
-resource "azurerm_storage_account_customer_managed_key" "cmky" {
-  storage_account_id = azurerm_storage_account.storage.id
-  key_vault_id       = azurerm_key_vault.kv.id
-  key_name           = azurerm_key_vault.kv.name
-  provider           = azurerm.spoke
-
-  depends_on = [
-    azurerm_storage_account.storage, azurerm_key_vault.kv, azurerm_resource_group.rg_storage, azurerm_key_vault_key.stcmky
-  ]
-}
-
-# Customer Managed Key for Disk Encryption
-resource "azurerm_key_vault_key" "stcmky" {
-  name         = "stor-key"
-  key_vault_id = azurerm_key_vault.kv.id
-  key_type     = "RSA"
-  key_size     = 2048
-  key_opts     = ["decrypt", "encrypt", "sign", "unwrapKey", "verify", "wrapKey"]
-
-  depends_on = [
-    azurerm_role_assignment.keystor
-  ]
-}
