@@ -124,13 +124,20 @@ Validated on provider versions:
 2. Change your terminal into that new subdirectory:
 
 ```bash
-  cd workload/terraform/greenfield/ADDSscenario
+  cd avdaccelerator/workload/terraform/greenfield/ADDSscenario
   az account list --output table
   az account set --subscription 'Your AVD workload subscription ID'
 ```
 
-3. Rename terraform.tfvars.example and to remove the .copy TFVAR File
-4. Customize configuration variables in terraform.tfvars to your environment.
+3. Rename `terraform.tfvars.sample` to `terraform.tfvars` 
+4. Edit the `terraform.tfvars` configuration variables in the section `Modify the following variables to match your environment` to your preferences  
+5. Run terraform: 
+
+```bash
+terraform init
+terraform plan 
+terraform apply
+``` 
 
 ## Backends
 
@@ -192,15 +199,6 @@ az keyvault create --name "<Azure Virtual Desktopkeyvaultdemo>" --resource-group
 az keyvault secret set --vault-name "<Azure Virtual Desktopkeyvaultdemo>" --name terraform-backend-key --value "<W.........................................>"
 ```
 
-</details>
-## Deployment Steps
-
-1. Modify the `terraform.tfvars` file to define the desired names, location, networking, and other variables
-2. Before deploying, confirm the correct subscription
-3. Change directory to the Terraform folder
-4. Run `terraform init` to initialize this directory
-5. Run `terraform plan` to view the planned deployment
-5. Run `terraform apply` to confirm the deployment
 
 ## Estimated Cost
 
