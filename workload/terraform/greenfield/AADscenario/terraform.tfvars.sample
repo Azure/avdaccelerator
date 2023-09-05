@@ -1,17 +1,7 @@
 /*tested on
 Terraform v1.4.2
 on windows_amd64
-+ provider registry.terraform.io/azure/azapi v1.7.0
-+ provider registry.terraform.io/hashicorp/azuread v2.25.0
-+ provider registry.terraform.io/hashicorp/azurerm v3.44.1
-+ provider registry.terraform.io/hashicorp/local v2.2.3
-+ provider registry.terraform.io/hashicorp/random v3.3.2
-+ provider registry.terraform.io/hashicorp/time v0.8.0
-*/
-/*tested on
-Terraform v1.4.2
-on windows_amd64
-+ provider registry.terraform.io/azure/azapi v1.7.0
++ provider registry.terraform.io/azure/azapi v1.9.0
 + provider registry.terraform.io/hashicorp/azuread v2.25.0
 + provider registry.terraform.io/hashicorp/azurerm v3.44.1
 + provider registry.terraform.io/hashicorp/local v2.2.3
@@ -19,11 +9,37 @@ on windows_amd64
 + provider registry.terraform.io/hashicorp/time v0.8.0
 */
 
-prefix = "aad8" # prefix for all resources (max 4 characters, lowercase only)
+##############  Modify the following variables to match your environment by replacing the values in quotes #####################
+avdLocation               = "eastus"                              # change to your Azure region
+prefix                    = "poc1"                                # change to your prefix 4 characters (letters and numbers only)
+local_admin_username      = "localadmin"                          # Your AVD VM local Windows administrator login username (administrator is not allowed)
+ou_path                   = "OU=AVD,OU=AAD,DC=contoso,DC=net"     # optional 
+vm_size                   = "Standard_D2s_v5"                     # Session host compute 
+vnet_range                = ["10.13.1.0/24"]                      # change to your cidr for the avd spoke vnet to be created
+subnet_range              = ["10.13.1.0/26"]                      # change to your cidr for the avd spoke subnet to be created
+pesubnet_range            = ["10.13.1.192/27"]                    # change to your cider for avd spoke private endpoint subnet to be created
+allow_list_ip             = ["13.22.43.118"]                      # optional for access to browswer resources with private endpoint you can add your IP address to allowlist
+dns_servers               = ["10.0.1.6", "168.63.129.16"]         # optional if you want to use your own DNS servers
+next_hop_ip               = "10.100.0.4"                          # next hop ip address for route table
+aad_group_name            = "avdusersgrp"                         # user group must pre-created on your AD server and sync to Azure AD
+domain_name               = "contoso.net"                         # your on-perm AD server domain name 
+domain_user               = "domainjoiner"                        # do not include domain name as this is appended
+rdsh_count                = 2                                     # Number of session host vm to deploy
+image_name                = "avdImage-win11-21h2-avd-m365"        # custom image name
+image_rg                  = "rg-image-resources"                  # resource group for custom image and image gallery
+gallery_name              = "avdgallery"                          # azure compute gallery name for custom image
+hub_vnet                  = "hub-eastus"                          # hub connectivity vnet name 
+hub_connectivity_rg       = "vnethub-eastus"                      # hub connectivity subscription network resource group
+hub_dns_zone_rg           = "rg-privatedns"                       # private DNS zones resource group name
+identity_rg               = "infra-rg"                            # identity subscription resource group
+identity_vnet             = "infra-network"                       # identity subscription vnet name
+fw_policy                 = "fwpol-hub"                           # firewall policy for AVD assumes that firewall is already deployed in hub subscription
+spoke_subscription_id     = "#######-####-####-acbc-##########"   # subscription where AVD resources will be deployed
+hub_subscription_id       = "#######-####-####-acbc-##########"   # subscription where hub resources are deployed (If you are using a single subscription for hub and spoke, use the same subscription id as spoke_subscription_id)
+identity_subscription_id  = "#######-####-####-acbc-##########"   # subscription where identity resources are deployed (If you are using a single subscription for hub and spoke, use the same subscription id as spoke_subscription_id)
+avdshared_subscription_id = "#######-####-####-acbc-##########"   # optional subscription where shared resources are deployed (If you are using a single subscription for hub and spoke, use the same subscription id as spoke_subscription_id)
 
-# Azure Reagion
-avdLocation = "eastus"
-
+############## Do not modify below this line unless you want to change naming convention#####################
 # Resource Groups
 rg_shared_name = "shared-resources" #output rg-avd-<Azure Region>-<prefix>-shared-resources
 rg_network     = "network"          #rg-avd-<Azure Region>-<prefix>-network
@@ -57,45 +73,9 @@ ws_log_categories        = ["Checkpoint", "Management", "Error", "Feed"]
 ## Scaling Plan Objects
 scplan = "scaling-plan" #avd-<location>-<prefix>-scaling-plan
 
-# Compute Objects
-local_admin_username = "<replace with local admin name>" # Your AVD VM local Windows administrator login username (administrator is not allowed)
-vm_size              = "Standard_D2s_v5"
-rdsh_count           = 1 # Number of session host VMs to create
-
-# Identity Objects
-aad_group_name = "<replace with avd users groupname>" #user group must pre-created on your ADDS server and sync to Azure AD
-
 # Network Objects
-rt                  = "route-avd"  #route-avd-<azure region>-<prefix>-<nnn> Route Table
-nsg                 = "nsg-avd"    #nsg-avd-<azure region>-<prefix>-<nnn> Network Security Group
-vnet                = "vnet-avd"   #vnet-avd-<azure region>-<prefix>-<nnn> Virtual Network
-snet                = "snet-avd"   #snet-avd-<azure region>-<prefix>-<nnn> Subnet
-pesnet              = "pesnet-avd" #snet-avd-<azure region>-<prefix>-<nnn> Private Endpoint Subnet
-vnet_range          = ["x.x.x.x/24"] #replace with your ip address cidr range (251 IPs)
-subnet_range        = ["x.x.x.x/26"] #replace with your ip address cidr range (59 IPs)
-pesubnet_range      = ["x.x.x.x/28"] #avd spoke private endpoint subnet replace with your ip address cidr range (11 IPs)
-allow_list_ip       = ["x.x.x.x/30"]  #replace with your ip address cidr range
-dns_servers         = ["x.x.x.x", "168.63.129.16"] # DNS servers for the VNet Custom DNS and Azure provided DNS
-hub_vnet            = "<replace with your hub vnet name>"    # hub connectivity vnet name 
-hub_connectivity_rg = "<replace with hub vnet resource_group_name>" # hub connectivity subscription network resource group
-hub_dns_zone_rg     = "<replace with resource group name for private DNS zones>" # private DNS zones resource group name
-identity_rg         = "<replace with identity resource group name>"      # identity subscription resource group
-identity_vnet       = "<replace with identity vnet name>" # identity subscription vnet name
-next_hop_ip         = "x.x.x.x"    # next hop ip address replace with your ip address for next hop
-fw_policy           = "<replace with azure firewall policy name>"     # fw policy name
-
-# Custom Image Objects if using the custom image build
-image_name   = "<replace with the image_name associated with the azure compute gallery>"
-image_rg     = "<replace with the resource_group_name for the azure compute gallery>"
-gallery_name = "<replace with azure compute gallery name>"
-
-# Subscription IDs
-spoke_subscription_id     = "<replace with your AVD Spoke Subscription ID>"
-hub_subscription_id       = "<replace with your Hub or Connectivity Subscription ID>" 
-identity_subscription_id  = "<replace with your Identity Subscription ID>" # if applicable
-avdshared_subscription_id = "<replace with your Shared Subscription ID>" # if applicable
-
-
-
-
-
+rt     = "route-avd"  #route-avd-<azure region>-<prefix>-<nnn> Route Table
+nsg    = "nsg-avd"    #nsg-avd-<azure region>-<prefix>-<nnn> Network Security Group
+vnet   = "vnet-avd"   #vnet-avd-<azure region>-<prefix>-<nnn> Virtual Network
+snet   = "snet-avd"   #snet-avd-<azure region>-<prefix>-<nnn> Subnet
+pesnet = "pesnet-avd" #snet-avd-<azure region>-<prefix>-<nnn> Private Endpoint Subnet
