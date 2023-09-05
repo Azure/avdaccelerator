@@ -164,39 +164,22 @@ resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
 }
 
 # Create Diagnostic Settings for AVD Desktop App Group
-resource "azurerm_monitor_diagnostic_setting" "avd-dag2" {
+resource "azurerm_monitor_diagnostic_setting" "avd-dag1" {
   name                       = "diag-avd-${var.prefix}"
   target_resource_id         = azurerm_virtual_desktop_application_group.dag.id
   log_analytics_workspace_id = data.azurerm_log_analytics_workspace.lawksp.id
 
   depends_on = [
-    data.azurerm_log_analytics_workspace.lawksp,
-    azurerm_virtual_desktop_application_group.dag
+    data.azurerm_log_analytics_workspace.lawksp
   ]
-  enabled_log {
-    category = "Checkpoint"
-
-    retention_policy {
-      days    = 7
-      enabled = true
+  dynamic "enabled_log" {
+    for_each = var.dag_log_categories
+    content {
+      category = enabled_log.value
     }
   }
-
-  enabled_log {
-    category = "Error"
-
-    retention_policy {
-      days    = 7
-      enabled = true
-    }
-  }
-  enabled_log {
-    category = "Management"
-
-    retention_policy {
-      days    = 7
-      enabled = true
-    }
+  lifecycle {
+    ignore_changes = [log]
   }
 }
 
@@ -218,40 +201,3 @@ resource "azurerm_monitor_diagnostic_setting" "avd-ws" {
     }
   }
 }
-/*
-  enabled_log {
-    category = "Checkpoint"
-
-    retention_policy {
-      days    = 7
-      enabled = true
-    }
-  }
-
-  enabled_log {
-    category = "Error"
-
-    retention_policy {
-      days    = 7
-      enabled = true
-    }
-  }
-  enabled_log {
-    category = "Management"
-
-    retention_policy {
-      days    = 7
-      enabled = true
-    }
-  }
-
-  enabled_log {
-    category = "Feed"
-
-    retention_policy {
-      days    = 7
-      enabled = true
-    }
-  }
-}
-*/

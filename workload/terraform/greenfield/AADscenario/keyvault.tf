@@ -92,3 +92,16 @@ resource "azurerm_private_dns_zone_virtual_network_link" "vaultlink" {
 
   lifecycle { ignore_changes = [tags] }
 }
+
+resource "time_sleep" "wait" {
+  create_duration = "300s"
+}
+
+resource "azurerm_role_assignment" "keystor" {
+  scope                = azurerm_key_vault.kv.id
+  role_definition_name = "Key Vault Administrator"
+  principal_id         = data.azurerm_client_config.current.object_id
+  depends_on = [
+    time_sleep.wait
+  ]
+}
