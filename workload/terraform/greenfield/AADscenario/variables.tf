@@ -79,6 +79,16 @@ variable "dag" {
   description = "Name of the Azure Virtual Desktop desktop application group"
 }
 
+variable "rag" {
+  type        = string
+  description = "Name of the Azure Virtual Desktop remote application group"
+}
+
+variable "pag" {
+  type        = string
+  description = "Name of the Azure Virtual Desktop remote application group"
+}
+
 variable "scplan" {
   type        = string
   description = "Name of the session host scaling plan"
@@ -99,9 +109,29 @@ variable "workspace" {
   description = "Name of the Azure Virtual Desktop workspace"
 }
 
+variable "pworkspace" {
+  type        = string
+  description = "Name of the Azure Virtual Desktop Personal workspace"
+}
+
 variable "hostpool" {
   type        = string
   description = "Name of the Azure Virtual Desktop host pool"
+}
+
+variable "personalpool" {
+  type        = string
+  description = "Name of the Azure Virtual Desktop host pool"
+}
+
+variable "raghostpool" {
+  type        = string
+  description = "Name of the Azure Virtual Desktop remote app group"
+}
+
+variable "ragworkspace" {
+  type        = string
+  description = "Name of the Azure Virtual Desktop workspace"
 }
 
 variable "dns_servers" {
@@ -185,6 +215,7 @@ variable "avdshared_subscription_id" {
   type        = string
   description = "Spoke Subscription id"
 }
+
 variable "host_pool_log_categories" {
   description = "value of the log categories to be enabled for the host pool"
 }
