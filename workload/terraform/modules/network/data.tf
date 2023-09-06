@@ -9,7 +9,7 @@ data "azurerm_virtual_network" "remote" {
 }
 
 data "azurerm_virtual_network" "identity" {
-  provider            = azurerm.hub
+  provider            = azurerm.identity
   name                = var.identity_vnet
   resource_group_name = var.identity_rg
 }
