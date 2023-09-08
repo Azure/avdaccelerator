@@ -1647,10 +1647,10 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Key vault prefix",
                                     "toolTip": "Key vault prefix custom name.",
-                                    "placeholder": "Example: kv",
+                                    "placeholder": "Example: kv-sec",
                                     "constraints": {
                                         "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,5}$",
+                                        "regex": "^[a-z0-9A-Z-]{1,6}$",
                                         "validationMessage": "Value must be 1-6 characters."
                                     }
                                 }
@@ -1999,7 +1999,7 @@
                                     "label": "Key vault prefix",
                                     "visible": "[and(steps('resourceNaming').resourceNamingSelection, steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust)]",
                                     "toolTip": "Key Vault that stores the encryption key for disk encryption.",
-                                    "placeholder": "Example: kv-zt",
+                                    "placeholder": "Example: kv-key",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,6}$",
