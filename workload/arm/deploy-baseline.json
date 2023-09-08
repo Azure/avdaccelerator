@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "12995636867525664"
+      "templateHash": "5851400224283530184"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -780,11 +780,11 @@
     },
     "avdWrklKvPrefixCustomName": {
       "type": "string",
-      "defaultValue": "kv",
+      "defaultValue": "kv-sec",
       "metadata": {
-        "description": "AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv)"
+        "description": "AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv-sec)"
       },
-      "maxLength": 5
+      "maxLength": 6
     },
     "ztDiskEncryptionSetCustomNamePrefix": {
       "type": "string",
@@ -1244,7 +1244,7 @@
     "varScalingPlanExclusionTag": "[format('exclude-{0}', variables('varScalingPlanName'))]",
     "varScalingPlanWeekdaysScheduleName": "[format('Weekdays-{0}', variables('varManagementPlaneNamingStandard'))]",
     "varScalingPlanWeekendScheduleName": "[format('Weekend-{0}', variables('varManagementPlaneNamingStandard'))]",
-    "varWrklKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('avdWrklKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')), if(parameters('diskZeroTrust'), format('kv-sec-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringThreeChar')), format('kv-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar'))))]",
+    "varWrklKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('avdWrklKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')), format('kv-sec-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')))]",
     "varWrklKvPrivateEndpointName": "[format('pe-{0}-vault', variables('varWrklKvName'))]",
     "varSessionHostNamePrefix": "[if(parameters('avdUseCustomNaming'), parameters('avdSessionHostCustomNamePrefix'), format('vm{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varSessionHostLocationAcronym')))]",
     "varAvsetNamePrefix": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}', parameters('avsetCustomNamePrefix'), variables('varComputeStorageResourcesNamingStandard')), format('avail-{0}', variables('varComputeStorageResourcesNamingStandard')))]",
