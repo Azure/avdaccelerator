@@ -45,67 +45,32 @@ param VNet object = {
 @description('Subnet to use for MSIX VM Tools VM.')
 param SubnetName string
 
-
-@description('Do not change. Used for deployment purposes only.')
-param Timestamp string = utcNow('u')
-
 var PostDeployScriptURI = 'https://github.com/Azure/avdaccelerator/blob/main/workload/scripts/appAttachToolsVM/'
 var VNetSub = split(VNet.id, '/')[2]
-var VNetRG = split(VNet.id, '/')[4]
+var VNetRG = split(VNet.id, '/')[4]  
 var VNetName = VNet.name
-var KVLocalAdminSubId = split(adminPassKv.id, '/')[2]
-var KVLocalAdminRG = split(adminPassKv.id, '/')[4]
+var KVLocalAdminSubId = adminPassUseKv ? split(adminPassKv.id, '/')[2] : ''
+var KVLocalAdminRG = adminPassUseKv ? split(adminPassKv.id, '/')[4] : ''
 
 resource kvVMPassword 'Microsoft.KeyVault/vaults@2023-02-01' existing = if(adminPassUseKv) {
   name: adminPassKv.name
   scope: resourceGroup(KVLocalAdminSubId, KVLocalAdminRG)
 }
 
-resource pip 'Microsoft.Network/publicIPAddresses@2022-01-01' = if(publicIPAllowed) {
-  name: 'pip-${vmName}'
-  location: location
-  sku: {
-    name: 'Basic'
-  }
-  properties: {
-    publicIPAllocationMethod: 'Dynamic'
-  }
-}
-
-resource nic 'Microsoft.Network/networkInterfaces@2022-01-01' = {
-  name: 'nic-${vmName}'
-  location: location
-  properties: {
-    ipConfigurations: [
-      {
-        name: 'ipconfig1'
-        properties: {
-          privateIPAllocationMethod: 'Dynamic'
-          subnet: {
-            id: resourceId(VNetSub, VNetRG, 'Microsoft.VirtualNetwork/virtualNetworks/subnets', VNetName, SubnetName)
-          }
-          publicIPAddress: publicIPAllowed ? {
-            id: pip.id
-          } : null
-        }
-      }
-    ]
-  }
-}
-
 module vmDeploy './modules/VM.bicep' = {
-  name: 'linked_VMDeployment-${guid(Timestamp)}'
+  name: 'linked_${vmName}_Deployment'
   params: {   
     AdminUserName: adminUsername
     AdminPassword: adminPassUseKv ? kvVMPassword.getSecret(adminPassKvSecret) : adminPassword
-     Location: location
-    NIC: nic.name
+    Location: location
     OSoffer: OSoffer
     OSVersion: OSVersion
     PostDeployScriptURI: PostDeployScriptURI
-    Timestamp: Timestamp
+    UsePublicIP: publicIPAllowed
     VMDiskType: vmDiskType
     VMName: vmName
+    VMSubResId: resourceId(VNetSub, VNetRG, 'Microsoft.VirtualNetwork/virtualNetworks/subnets', VNetName, SubnetName)
     VMSize: vmSize
   }
 }
+
