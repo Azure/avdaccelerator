@@ -80,7 +80,7 @@ var diagnosticsMetrics = [for metric in diagnosticMetricsToEnable: {
   timeGrain: null
   enabled: true
   retentionPolicy: {
-    enabled: true
+    enabled: false
     days: diagnosticLogsRetentionInDays
   }
 }]
