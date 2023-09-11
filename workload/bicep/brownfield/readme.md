@@ -1,3 +1,3 @@
 # Azure Virtual Desktop - LZA Brownfield scenarios
 
-[Brownfield scenarios](../../readme.md)
+[Brownfield scenarios](../../../readme.md)
