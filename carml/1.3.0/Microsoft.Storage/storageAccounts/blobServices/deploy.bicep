@@ -62,20 +62,20 @@ var name = 'default'
 var diagnosticsLogsSpecified = [for category in filter(diagnosticLogCategoriesToEnable, item => item != 'allLogs'): {
   category: category
   enabled: true
-  retentionPolicy: {
-    enabled: false
-    days: diagnosticLogsRetentionInDays
-  }
+  /*retentionPolicy: {
+      enabled: true
+      days: diagnosticLogsRetentionInDays
+  }*/
 }]
 
 var diagnosticsLogs = contains(diagnosticLogCategoriesToEnable, 'allLogs') ? [
   {
     categoryGroup: 'allLogs'
     enabled: true
-    retentionPolicy: {
-      enabled: false
+    /*retentionPolicy: {
+      enabled: true
       days: diagnosticLogsRetentionInDays
-    }
+  }*/
   }
 ] : diagnosticsLogsSpecified
 
@@ -83,10 +83,10 @@ var diagnosticsMetrics = [for metric in diagnosticMetricsToEnable: {
   category: metric
   timeGrain: null
   enabled: true
-  retentionPolicy: {
-    enabled: false
-    days: diagnosticLogsRetentionInDays
-  }
+  /*retentionPolicy: {
+      enabled: true
+      days: diagnosticLogsRetentionInDays
+  }*/
 }]
 
 var enableReferencedModulesTelemetry = false
