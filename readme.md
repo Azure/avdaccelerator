@@ -17,7 +17,7 @@ As of today, we have a first reference implementation scenario that is one of th
 
 ## Getting Started
 
-## Azure Virtual Desktop - LZA - Baseline
+## Azure Virtual Desktop - LZA Baseline
 
 [Getting Started](/workload/docs/getting-started-baseline.md) deploying Azure Virtual Desktop (AVD) resources and dependent services for establishing the baseline
 
@@ -33,9 +33,19 @@ As of today, we have a first reference implementation scenario that is one of th
 | Command line (Bicep/ARM) | [![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](./workload/bicep/readme.md#avd-accelerator-baseline) |
 | Terraform | [![Terraform](./workload/docs/icons/terraform.png)](./workload/terraform/greenfield/readme.md) |
 
-[Brownfield deployments](/workload/brownfieldReadme.md) deploy new features to existing Azure Virtual Desktop deployments.
+## Azure Virtual Desktop - LZA Optional Deployments
 
-## Azure Virtual Desktop - LZA - Custom image build (Optional)
+### Brownfield scenarios 
+
+The brownfield section contains templates to deploy additional features for Azure Virtual Desktop when existing infrastructure already exists. These templates can be used individually as required. Here is the list of deployment options available:
+
+- [Alerts](./workload/bicep/brownfield/alerts/readme.md)
+- [Auto Increase Premium File Share Quota](./workload/bicep/brownfield/autoIncreasePremiumFileShareQuota/readme.md)
+- [Scaling Tool](./workload/bicep/brownfield/scalingTool/readme.md)
+- [Start VM On Connect](./bicep/workload/brownfield/startVmOnConnect/readme.md)
+- [Deep Insights Workbook](./workload/workbooks/deepInsightsWorkbook/readme.md)
+
+### Custom image build
 
 [Getting Started](/workload/docs/getting-started-custom-image-build.md) deploying a custom image based on the latest version of the Azure marketplace image to an Azure Compute Gallery. The following images are offered: 
  - Windows 10 21H2
