@@ -949,7 +949,6 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
         dnsServers: varDnsServers
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
-        diagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
     dependsOn: [
         baselineNetworkResourceGroup
@@ -989,7 +988,6 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
         applicationGroupIdentityType: avdApplicationGroupIdentityType
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
-        diagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
         hostPoolAgentUpdateSchedule: varHostPoolAgentUpdateSchedule
     }
     dependsOn: [
@@ -1208,7 +1206,6 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
         workloadSubsId: avdWorkloadSubsId
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
-        diagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
     dependsOn: [
         baselineStorageResourceGroup
@@ -1251,7 +1248,6 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (cr
         workloadSubsId: avdWorkloadSubsId
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
-        diagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
     dependsOn: [
         fslogixAzureFilesStorage
@@ -1329,7 +1325,6 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         deployMonitoring: avdDeployMonitoring
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
-        diagnosticLogsRetentionInDays: avdAlaWorkspaceDataRetention
     }
     dependsOn: [
         fslogixAzureFilesStorage

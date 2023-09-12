@@ -90,9 +90,6 @@ param tags object
 @sys.description('Log analytics workspace for diagnostic logs.')
 param alaWorkspaceResourceId string
 
-@sys.description('Diagnostic logs retention.')
-param diagnosticLogsRetentionInDays int
-
 @sys.description('Do not modify, used to set unique value for resource deployment')
 param time string = utcNow()
 
@@ -133,7 +130,6 @@ module networksecurityGroupAvd '../../../../carml/1.3.0/Microsoft.Network/networ
         location: sessionHostLocation
         tags: tags
         diagnosticWorkspaceId: alaWorkspaceResourceId
-        diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
         diagnosticLogCategoriesToEnable: varNetworkSecurityGroupDiagnostic
         securityRules: [
             {
@@ -248,7 +244,6 @@ module networksecurityGroupPrivateEndpoint '../../../../carml/1.3.0/Microsoft.Ne
         location: sessionHostLocation
         tags: tags
         diagnosticWorkspaceId: alaWorkspaceResourceId
-        diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
         diagnosticLogCategoriesToEnable: varNetworkSecurityGroupDiagnostic
         securityRules: []
     }
@@ -359,7 +354,6 @@ module virtualNetwork '../../../../carml/1.3.0/Microsoft.Network/virtualNetworks
 
         tags: tags
         diagnosticWorkspaceId: alaWorkspaceResourceId
-        diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
         diagnosticLogCategoriesToEnable: varVirtualNetworkLogsDiagnostic
         diagnosticMetricsToEnable: varVirtualNetworkMetricsDiagnostic
     }

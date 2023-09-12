@@ -104,9 +104,6 @@ param scalingPlanExclusionTag string
 @sys.description('Log analytics workspace for diagnostic logs.')
 param alaWorkspaceResourceId string
 
-@sys.description('Diagnostic logs retention.')
-param diagnosticLogsRetentionInDays int
-
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
@@ -217,7 +214,6 @@ module hostPool '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/hostpoo
     personalDesktopAssignmentType: personalAssignType
     tags: tags
     diagnosticWorkspaceId: alaWorkspaceResourceId
-    diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
     diagnosticLogCategoriesToEnable: varHostPoolDiagnostic
     agentUpdate: !empty(hostPoolAgentUpdateSchedule) ? {
         maintenanceWindows: hostPoolAgentUpdateSchedule
@@ -248,7 +244,6 @@ module applicationGroups '../../../../carml/1.3.0/Microsoft.DesktopVirtualizatio
       }
     ]: []   
     diagnosticWorkspaceId: alaWorkspaceResourceId
-    diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
     diagnosticLogCategoriesToEnable: varApplicationGroupDiagnostic
   }
   dependsOn: [
@@ -269,7 +264,6 @@ module workSpace '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/worksp
       ]
       tags: tags
       diagnosticWorkspaceId: alaWorkspaceResourceId
-      diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
       diagnosticLogCategoriesToEnable: varWorkspaceDiagnostic
   }
   dependsOn: [
@@ -297,7 +291,6 @@ module scalingPlan '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/scal
       ]
       tags: tags
       diagnosticWorkspaceId: alaWorkspaceResourceId
-      diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
       diagnosticLogCategoriesToEnable: varScalingPlanDiagnostic
   }
   dependsOn: [
