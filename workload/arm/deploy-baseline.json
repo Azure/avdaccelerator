@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.18.4.5664",
-      "templateHash": "5851400224283530184"
+      "version": "0.17.1.54307",
+      "templateHash": "17199024280522508418"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -1559,8 +1559,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "8823794279696588123"
+              "version": "0.17.1.54307",
+              "templateHash": "16670742080494531396"
             }
           },
           "parameters": {
@@ -1668,8 +1668,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "10196623923433376428"
+                      "version": "0.17.1.54307",
+                      "templateHash": "6601448312481874939"
                     }
                   },
                   "parameters": {
@@ -1798,8 +1798,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "12106659644963784818"
+                      "version": "0.17.1.54307",
+                      "templateHash": "10998474410748060366"
                     }
                   },
                   "parameters": {
@@ -2159,8 +2159,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "8823794279696588123"
+              "version": "0.17.1.54307",
+              "templateHash": "16670742080494531396"
             }
           },
           "parameters": {
@@ -2268,8 +2268,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "10196623923433376428"
+                      "version": "0.17.1.54307",
+                      "templateHash": "6601448312481874939"
                     }
                   },
                   "parameters": {
@@ -2398,8 +2398,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "12106659644963784818"
+                      "version": "0.17.1.54307",
+                      "templateHash": "10998474410748060366"
                     }
                   },
                   "parameters": {
@@ -2754,8 +2754,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "8823794279696588123"
+              "version": "0.17.1.54307",
+              "templateHash": "16670742080494531396"
             }
           },
           "parameters": {
@@ -2863,8 +2863,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "10196623923433376428"
+                      "version": "0.17.1.54307",
+                      "templateHash": "6601448312481874939"
                     }
                   },
                   "parameters": {
@@ -2993,8 +2993,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "12106659644963784818"
+                      "version": "0.17.1.54307",
+                      "templateHash": "10998474410748060366"
                     }
                   },
                   "parameters": {
@@ -3367,8 +3367,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "13997721719566643375"
+              "version": "0.17.1.54307",
+              "templateHash": "3035548163754880904"
             }
           },
           "parameters": {
@@ -3491,8 +3491,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "8823794279696588123"
+                      "version": "0.17.1.54307",
+                      "templateHash": "16670742080494531396"
                     }
                   },
                   "parameters": {
@@ -3600,8 +3600,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "10196623923433376428"
+                              "version": "0.17.1.54307",
+                              "templateHash": "6601448312481874939"
                             }
                           },
                           "parameters": {
@@ -3730,8 +3730,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "12106659644963784818"
+                              "version": "0.17.1.54307",
+                              "templateHash": "10998474410748060366"
                             }
                           },
                           "parameters": {
@@ -4091,8 +4091,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "8596842132721557367"
+                      "version": "0.17.1.54307",
+                      "templateHash": "9723296804992458231"
                     }
                   },
                   "parameters": {
@@ -4485,8 +4485,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "16114201815220186510"
+                              "version": "0.17.1.54307",
+                              "templateHash": "1015616738226483875"
                             }
                           },
                           "parameters": {
@@ -4629,8 +4629,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "9475182064400951000"
+                              "version": "0.17.1.54307",
+                              "templateHash": "9976669288431551452"
                             }
                           },
                           "parameters": {
@@ -4763,8 +4763,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "4737981453812272169"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3402933947779868845"
                             }
                           },
                           "parameters": {
@@ -4898,8 +4898,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "3112143349780297195"
+                              "version": "0.17.1.54307",
+                              "templateHash": "12988075953101096314"
                             }
                           },
                           "parameters": {
@@ -5070,8 +5070,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "123582376075481853"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3289166297924789550"
                             }
                           },
                           "parameters": {
@@ -5217,8 +5217,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "16949430988646737619"
+                              "version": "0.17.1.54307",
+                              "templateHash": "18044483929875331860"
                             }
                           },
                           "parameters": {
@@ -5444,8 +5444,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "16367350850509170627"
+                              "version": "0.17.1.54307",
+                              "templateHash": "1145398762062008037"
                             }
                           },
                           "parameters": {
@@ -5613,8 +5613,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "4259405973831985687"
+                              "version": "0.17.1.54307",
+                              "templateHash": "15503229472224280826"
                             }
                           },
                           "parameters": {
@@ -5764,8 +5764,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "8241310064803100775"
+                              "version": "0.17.1.54307",
+                              "templateHash": "7352784420507326330"
                             }
                           },
                           "parameters": {
@@ -5978,8 +5978,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "14509232230386518393"
+                      "version": "0.17.1.54307",
+                      "templateHash": "6119857452463366145"
                     }
                   },
                   "parameters": {
@@ -6287,8 +6287,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "18140433925264498395"
+                      "version": "0.17.1.54307",
+                      "templateHash": "16579532157576436548"
                     }
                   },
                   "parameters": {
@@ -6619,8 +6619,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "2291336375760157964"
+                              "version": "0.17.1.54307",
+                              "templateHash": "5657647834665443119"
                             }
                           },
                           "parameters": {
@@ -6802,8 +6802,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "16175402431461753105"
+                              "version": "0.17.1.54307",
+                              "templateHash": "5539435599928560626"
                             }
                           },
                           "parameters": {
@@ -6981,8 +6981,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "12228099095722756446"
+                              "version": "0.17.1.54307",
+                              "templateHash": "17165573628970783202"
                             }
                           },
                           "parameters": {
@@ -7250,8 +7250,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "7109016207306775504"
+                              "version": "0.17.1.54307",
+                              "templateHash": "13416191842446717007"
                             }
                           },
                           "parameters": {
@@ -7331,8 +7331,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "1941283932562101832"
+                      "version": "0.17.1.54307",
+                      "templateHash": "7759814680098607558"
                     }
                   },
                   "parameters": {
@@ -7803,8 +7803,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "16949430988646737619"
+                              "version": "0.17.1.54307",
+                              "templateHash": "18044483929875331860"
                             }
                           },
                           "parameters": {
@@ -8036,8 +8036,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "16949430988646737619"
+                              "version": "0.17.1.54307",
+                              "templateHash": "18044483929875331860"
                             }
                           },
                           "parameters": {
@@ -8341,10 +8341,7 @@
             "value": "[variables('varDnsServers')]"
           },
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]",
-          "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]",
-          "diagnosticLogsRetentionInDays": {
-            "value": "[parameters('avdAlaWorkspaceDataRetention')]"
-          }
+          "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
@@ -8352,8 +8349,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "16161040747925174642"
+              "version": "0.17.1.54307",
+              "templateHash": "3756011210515160191"
             }
           },
           "parameters": {
@@ -8533,12 +8530,6 @@
                 "description": "Log analytics workspace for diagnostic logs."
               }
             },
-            "diagnosticLogsRetentionInDays": {
-              "type": "int",
-              "metadata": {
-                "description": "Diagnostic logs retention."
-              }
-            },
             "time": {
               "type": "string",
               "defaultValue": "[utcNow()]",
@@ -8587,9 +8578,6 @@
                   },
                   "diagnosticWorkspaceId": {
                     "value": "[parameters('alaWorkspaceResourceId')]"
-                  },
-                  "diagnosticLogsRetentionInDays": {
-                    "value": "[parameters('diagnosticLogsRetentionInDays')]"
                   },
                   "diagnosticLogCategoriesToEnable": {
                     "value": "[variables('varNetworkSecurityGroupDiagnostic')]"
@@ -8703,8 +8691,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "16587720134751287236"
+                      "version": "0.17.1.54307",
+                      "templateHash": "2369963613204181171"
                     }
                   },
                   "parameters": {
@@ -8740,15 +8728,6 @@
                       "defaultValue": "",
                       "metadata": {
                         "description": "Optional. Resource ID of the diagnostic storage account."
-                      }
-                    },
-                    "diagnosticLogsRetentionInDays": {
-                      "type": "int",
-                      "defaultValue": 365,
-                      "maxValue": 365,
-                      "minValue": 0,
-                      "metadata": {
-                        "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
                       }
                     },
                     "diagnosticWorkspaceId": {
@@ -8834,16 +8813,12 @@
                         "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                         "input": {
                           "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                          "enabled": true,
-                          "retentionPolicy": {
-                            "enabled": true,
-                            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                          }
+                          "enabled": true
                         }
                       }
                     ],
                     "enableReferencedModulesTelemetry": false,
-                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]"
+                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]"
                   },
                   "resources": [
                     {
@@ -8980,8 +8955,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "12788403587110473233"
+                              "version": "0.17.1.54307",
+                              "templateHash": "2452007385443009245"
                             }
                           },
                           "parameters": {
@@ -9225,8 +9200,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "7097336330611846796"
+                              "version": "0.17.1.54307",
+                              "templateHash": "175852501961116138"
                             }
                           },
                           "parameters": {
@@ -9427,9 +9402,6 @@
                   "diagnosticWorkspaceId": {
                     "value": "[parameters('alaWorkspaceResourceId')]"
                   },
-                  "diagnosticLogsRetentionInDays": {
-                    "value": "[parameters('diagnosticLogsRetentionInDays')]"
-                  },
                   "diagnosticLogCategoriesToEnable": {
                     "value": "[variables('varNetworkSecurityGroupDiagnostic')]"
                   },
@@ -9443,8 +9415,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "16587720134751287236"
+                      "version": "0.17.1.54307",
+                      "templateHash": "2369963613204181171"
                     }
                   },
                   "parameters": {
@@ -9480,15 +9452,6 @@
                       "defaultValue": "",
                       "metadata": {
                         "description": "Optional. Resource ID of the diagnostic storage account."
-                      }
-                    },
-                    "diagnosticLogsRetentionInDays": {
-                      "type": "int",
-                      "defaultValue": 365,
-                      "maxValue": 365,
-                      "minValue": 0,
-                      "metadata": {
-                        "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
                       }
                     },
                     "diagnosticWorkspaceId": {
@@ -9574,16 +9537,12 @@
                         "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                         "input": {
                           "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                          "enabled": true,
-                          "retentionPolicy": {
-                            "enabled": true,
-                            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                          }
+                          "enabled": true
                         }
                       }
                     ],
                     "enableReferencedModulesTelemetry": false,
-                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]"
+                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]"
                   },
                   "resources": [
                     {
@@ -9720,8 +9679,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "12788403587110473233"
+                              "version": "0.17.1.54307",
+                              "templateHash": "2452007385443009245"
                             }
                           },
                           "parameters": {
@@ -9965,8 +9924,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "7097336330611846796"
+                              "version": "0.17.1.54307",
+                              "templateHash": "175852501961116138"
                             }
                           },
                           "parameters": {
@@ -10171,8 +10130,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "1026634425206978147"
+                      "version": "0.17.1.54307",
+                      "templateHash": "4126277245845030634"
                     }
                   },
                   "parameters": {
@@ -10294,8 +10253,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "17311918279735735244"
+                              "version": "0.17.1.54307",
+                              "templateHash": "9764104744913843180"
                             }
                           },
                           "parameters": {
@@ -10501,8 +10460,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "16308363173981707308"
+                      "version": "0.17.1.54307",
+                      "templateHash": "3459157471784143501"
                     }
                   },
                   "parameters": {
@@ -10641,8 +10600,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "5826842078108214123"
+                              "version": "0.17.1.54307",
+                              "templateHash": "17826830289819287737"
                             }
                           },
                           "parameters": {
@@ -10850,8 +10809,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "16308363173981707308"
+                      "version": "0.17.1.54307",
+                      "templateHash": "3459157471784143501"
                     }
                   },
                   "parameters": {
@@ -10990,8 +10949,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "5826842078108214123"
+                              "version": "0.17.1.54307",
+                              "templateHash": "17826830289819287737"
                             }
                           },
                           "parameters": {
@@ -11200,9 +11159,6 @@
                   "diagnosticWorkspaceId": {
                     "value": "[parameters('alaWorkspaceResourceId')]"
                   },
-                  "diagnosticLogsRetentionInDays": {
-                    "value": "[parameters('diagnosticLogsRetentionInDays')]"
-                  },
                   "diagnosticLogCategoriesToEnable": {
                     "value": "[variables('varVirtualNetworkLogsDiagnostic')]"
                   },
@@ -11216,8 +11172,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "9596720600329001052"
+                      "version": "0.17.1.54307",
+                      "templateHash": "10436531327774101026"
                     }
                   },
                   "parameters": {
@@ -11293,15 +11249,6 @@
                         "description": "Optional. The flow timeout in minutes for the Virtual Network, which is used to enable connection tracking for intra-VM flows. Possible values are between 4 and 30 minutes. Default value 0 will set the property to null."
                       },
                       "maxValue": 30
-                    },
-                    "diagnosticLogsRetentionInDays": {
-                      "type": "int",
-                      "defaultValue": 365,
-                      "maxValue": 365,
-                      "minValue": 0,
-                      "metadata": {
-                        "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
-                      }
                     },
                     "diagnosticStorageAccountId": {
                       "type": "string",
@@ -11405,11 +11352,7 @@
                         "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', and(not(equals(lambdaVariables('item'), 'allLogs')), not(equals(lambdaVariables('item'), ''))))))]",
                         "input": {
                           "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', and(not(equals(lambdaVariables('item'), 'allLogs')), not(equals(lambdaVariables('item'), '')))))[copyIndex('diagnosticsLogsSpecified')]]",
-                          "enabled": true,
-                          "retentionPolicy": {
-                            "enabled": true,
-                            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                          }
+                          "enabled": true
                         }
                       },
                       {
@@ -11418,15 +11361,11 @@
                         "input": {
                           "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
                           "timeGrain": null,
-                          "enabled": true,
-                          "retentionPolicy": {
-                            "enabled": true,
-                            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                          }
+                          "enabled": true
                         }
                       }
                     ],
-                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), if(contains(parameters('diagnosticLogCategoriesToEnable'), ''), createArray(), variables('diagnosticsLogsSpecified')))]",
+                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), if(contains(parameters('diagnosticLogCategoriesToEnable'), ''), createArray(), variables('diagnosticsLogsSpecified')))]",
                     "dnsServersVar": {
                       "dnsServers": "[array(parameters('dnsServers'))]"
                     },
@@ -11567,8 +11506,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "15295044205283590639"
+                              "version": "0.17.1.54307",
+                              "templateHash": "12913964363513527115"
                             }
                           },
                           "parameters": {
@@ -11760,8 +11699,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "15804363095104832975"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "1508597549221173835"
                                     }
                                   },
                                   "parameters": {
@@ -11983,8 +11922,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "14113542671107167377"
+                              "version": "0.17.1.54307",
+                              "templateHash": "12896423701864490964"
                             }
                           },
                           "parameters": {
@@ -12149,8 +12088,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "14113542671107167377"
+                              "version": "0.17.1.54307",
+                              "templateHash": "12896423701864490964"
                             }
                           },
                           "parameters": {
@@ -12310,8 +12249,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "18431427062084145620"
+                              "version": "0.17.1.54307",
+                              "templateHash": "7449417204208520653"
                             }
                           },
                           "parameters": {
@@ -12547,8 +12486,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "10793736702090211494"
+                      "version": "0.17.1.54307",
+                      "templateHash": "9421903776734870810"
                     }
                   },
                   "parameters": {
@@ -12635,8 +12574,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "10793736702090211494"
+                      "version": "0.17.1.54307",
+                      "templateHash": "9421903776734870810"
                     }
                   },
                   "parameters": {
@@ -12723,8 +12662,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "10793736702090211494"
+                      "version": "0.17.1.54307",
+                      "templateHash": "9421903776734870810"
                     }
                   },
                   "parameters": {
@@ -12811,8 +12750,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "10793736702090211494"
+                      "version": "0.17.1.54307",
+                      "templateHash": "9421903776734870810"
                     }
                   },
                   "parameters": {
@@ -12983,9 +12922,6 @@
           },
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]",
           "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]",
-          "diagnosticLogsRetentionInDays": {
-            "value": "[parameters('avdAlaWorkspaceDataRetention')]"
-          },
           "hostPoolAgentUpdateSchedule": {
             "value": "[variables('varHostPoolAgentUpdateSchedule')]"
           }
@@ -12996,8 +12932,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "15982398525226753115"
+              "version": "0.17.1.54307",
+              "templateHash": "3669216872795545582"
             }
           },
           "parameters": {
@@ -13187,12 +13123,6 @@
                 "description": "Log analytics workspace for diagnostic logs."
               }
             },
-            "diagnosticLogsRetentionInDays": {
-              "type": "int",
-              "metadata": {
-                "description": "Diagnostic logs retention."
-              }
-            },
             "time": {
               "type": "string",
               "defaultValue": "[utcNow()]",
@@ -13276,9 +13206,6 @@
                   "diagnosticWorkspaceId": {
                     "value": "[parameters('alaWorkspaceResourceId')]"
                   },
-                  "diagnosticLogsRetentionInDays": {
-                    "value": "[parameters('diagnosticLogsRetentionInDays')]"
-                  },
                   "diagnosticLogCategoriesToEnable": {
                     "value": "[variables('varHostPoolDiagnostic')]"
                   },
@@ -13290,8 +13217,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "649450619186273171"
+                      "version": "0.17.1.54307",
+                      "templateHash": "14753481159691076868"
                     }
                   },
                   "parameters": {
@@ -13398,15 +13325,6 @@
                       "defaultValue": "[utcNow('u')]",
                       "metadata": {
                         "description": "Generated. Do not provide a value! This date value is used to generate a registration token."
-                      }
-                    },
-                    "diagnosticLogsRetentionInDays": {
-                      "type": "int",
-                      "defaultValue": 365,
-                      "maxValue": 365,
-                      "minValue": 0,
-                      "metadata": {
-                        "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
                       }
                     },
                     "diagnosticStorageAccountId": {
@@ -13573,15 +13491,11 @@
                         "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                         "input": {
                           "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                          "enabled": true,
-                          "retentionPolicy": {
-                            "enabled": true,
-                            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                          }
+                          "enabled": true
                         }
                       }
                     ],
-                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]",
+                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]",
                     "tokenExpirationTime": "[dateTimeAdd(parameters('baseTime'), parameters('tokenValidityLength'))]"
                   },
                   "resources": [
@@ -13695,8 +13609,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "14279396732857224845"
+                              "version": "0.17.1.54307",
+                              "templateHash": "2314964423044495570"
                             }
                           },
                           "parameters": {
@@ -13903,9 +13817,6 @@
                   "diagnosticWorkspaceId": {
                     "value": "[parameters('alaWorkspaceResourceId')]"
                   },
-                  "diagnosticLogsRetentionInDays": {
-                    "value": "[parameters('diagnosticLogsRetentionInDays')]"
-                  },
                   "diagnosticLogCategoriesToEnable": {
                     "value": "[variables('varApplicationGroupDiagnostic')]"
                   }
@@ -13916,8 +13827,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "16629665836116638883"
+                      "version": "0.17.1.54307",
+                      "templateHash": "782391975946165786"
                     }
                   },
                   "parameters": {
@@ -13970,15 +13881,6 @@
                       "defaultValue": [],
                       "metadata": {
                         "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalIds' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                      }
-                    },
-                    "diagnosticLogsRetentionInDays": {
-                      "type": "int",
-                      "defaultValue": 365,
-                      "maxValue": 365,
-                      "minValue": 0,
-                      "metadata": {
-                        "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
                       }
                     },
                     "diagnosticStorageAccountId": {
@@ -14072,15 +13974,11 @@
                         "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                         "input": {
                           "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                          "enabled": true,
-                          "retentionPolicy": {
-                            "enabled": true,
-                            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                          }
+                          "enabled": true
                         }
                       }
                     ],
-                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]",
+                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]",
                     "enableReferencedModulesTelemetry": false
                   },
                   "resources": [
@@ -14182,8 +14080,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "6664287599840054041"
+                              "version": "0.17.1.54307",
+                              "templateHash": "7203259033747042619"
                             }
                           },
                           "parameters": {
@@ -14360,8 +14258,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "3347591711902057245"
+                              "version": "0.17.1.54307",
+                              "templateHash": "1752140700494840741"
                             }
                           },
                           "parameters": {
@@ -14557,9 +14455,6 @@
                   "diagnosticWorkspaceId": {
                     "value": "[parameters('alaWorkspaceResourceId')]"
                   },
-                  "diagnosticLogsRetentionInDays": {
-                    "value": "[parameters('diagnosticLogsRetentionInDays')]"
-                  },
                   "diagnosticLogCategoriesToEnable": {
                     "value": "[variables('varWorkspaceDiagnostic')]"
                   }
@@ -14570,8 +14465,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "12860422037075423458"
+                      "version": "0.17.1.54307",
+                      "templateHash": "324317554219687604"
                     }
                   },
                   "parameters": {
@@ -14607,15 +14502,6 @@
                       "defaultValue": "",
                       "metadata": {
                         "description": "Optional. The description of the Workspace to be created."
-                      }
-                    },
-                    "diagnosticLogsRetentionInDays": {
-                      "type": "int",
-                      "defaultValue": 365,
-                      "maxValue": 365,
-                      "minValue": 0,
-                      "metadata": {
-                        "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
                       }
                     },
                     "diagnosticStorageAccountId": {
@@ -14710,15 +14596,11 @@
                         "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                         "input": {
                           "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                          "enabled": true,
-                          "retentionPolicy": {
-                            "enabled": true,
-                            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                          }
+                          "enabled": true
                         }
                       }
                     ],
-                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]"
+                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]"
                   },
                   "resources": [
                     {
@@ -14812,8 +14694,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "9797264344352680473"
+                              "version": "0.17.1.54307",
+                              "templateHash": "6421047844253253523"
                             }
                           },
                           "parameters": {
@@ -15023,9 +14905,6 @@
                   "diagnosticWorkspaceId": {
                     "value": "[parameters('alaWorkspaceResourceId')]"
                   },
-                  "diagnosticLogsRetentionInDays": {
-                    "value": "[parameters('diagnosticLogsRetentionInDays')]"
-                  },
                   "diagnosticLogCategoriesToEnable": {
                     "value": "[variables('varScalingPlanDiagnostic')]"
                   }
@@ -15036,8 +14915,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "10855178142469757598"
+                      "version": "0.17.1.54307",
+                      "templateHash": "17010593045994332917"
                     }
                   },
                   "parameters": {
@@ -15153,15 +15032,6 @@
                         "description": "Optional. Tags of the resource."
                       }
                     },
-                    "diagnosticLogsRetentionInDays": {
-                      "type": "int",
-                      "defaultValue": 365,
-                      "maxValue": 365,
-                      "minValue": 0,
-                      "metadata": {
-                        "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
-                      }
-                    },
                     "diagnosticStorageAccountId": {
                       "type": "string",
                       "defaultValue": "",
@@ -15225,15 +15095,11 @@
                         "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                         "input": {
                           "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                          "enabled": true,
-                          "retentionPolicy": {
-                            "enabled": true,
-                            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                          }
+                          "enabled": true
                         }
                       }
                     ],
-                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]"
+                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]"
                   },
                   "resources": [
                     {
@@ -15317,8 +15183,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "7819863254022282170"
+                              "version": "0.17.1.54307",
+                              "templateHash": "12892308842611713996"
                             }
                           },
                           "parameters": {
@@ -15554,8 +15420,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "14451756906747934165"
+              "version": "0.17.1.54307",
+              "templateHash": "16001375654748927393"
             }
           },
           "parameters": {
@@ -15731,8 +15597,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "15737913196788172522"
+                      "version": "0.17.1.54307",
+                      "templateHash": "15136491551081535379"
                     }
                   },
                   "parameters": {
@@ -15854,8 +15720,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "943002000979437913"
+                              "version": "0.17.1.54307",
+                              "templateHash": "8490200634198428200"
                             }
                           },
                           "parameters": {
@@ -16047,8 +15913,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "15737913196788172522"
+                      "version": "0.17.1.54307",
+                      "templateHash": "15136491551081535379"
                     }
                   },
                   "parameters": {
@@ -16170,8 +16036,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "943002000979437913"
+                              "version": "0.17.1.54307",
+                              "templateHash": "8490200634198428200"
                             }
                           },
                           "parameters": {
@@ -16375,8 +16241,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "14509232230386518393"
+                      "version": "0.17.1.54307",
+                      "templateHash": "6119857452463366145"
                     }
                   },
                   "parameters": {
@@ -16676,8 +16542,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "16771064281561658183"
+                      "version": "0.17.1.54307",
+                      "templateHash": "10569201387143117913"
                     }
                   },
                   "parameters": {
@@ -17256,8 +17122,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "16771064281561658183"
+                      "version": "0.17.1.54307",
+                      "templateHash": "10569201387143117913"
                     }
                   },
                   "parameters": {
@@ -17834,8 +17700,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "16771064281561658183"
+                      "version": "0.17.1.54307",
+                      "templateHash": "10569201387143117913"
                     }
                   },
                   "parameters": {
@@ -18418,8 +18284,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "16771064281561658183"
+                      "version": "0.17.1.54307",
+                      "templateHash": "10569201387143117913"
                     }
                   },
                   "parameters": {
@@ -18998,8 +18864,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "16771064281561658183"
+                      "version": "0.17.1.54307",
+                      "templateHash": "10569201387143117913"
                     }
                   },
                   "parameters": {
@@ -19578,8 +19444,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "16771064281561658183"
+                      "version": "0.17.1.54307",
+                      "templateHash": "10569201387143117913"
                     }
                   },
                   "parameters": {
@@ -20152,8 +20018,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "16771064281561658183"
+                      "version": "0.17.1.54307",
+                      "templateHash": "10569201387143117913"
                     }
                   },
                   "parameters": {
@@ -20795,8 +20661,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "13817365626687960451"
+              "version": "0.17.1.54307",
+              "templateHash": "12497703365980086846"
             }
           },
           "parameters": {
@@ -20962,8 +20828,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "2291336375760157964"
+                      "version": "0.17.1.54307",
+                      "templateHash": "5657647834665443119"
                     }
                   },
                   "parameters": {
@@ -21151,8 +21017,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "12228099095722756446"
+                      "version": "0.17.1.54307",
+                      "templateHash": "17165573628970783202"
                     }
                   },
                   "parameters": {
@@ -21421,8 +21287,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "7109016207306775504"
+                      "version": "0.17.1.54307",
+                      "templateHash": "13416191842446717007"
                     }
                   },
                   "parameters": {
@@ -21515,8 +21381,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "12228099095722756446"
+                      "version": "0.17.1.54307",
+                      "templateHash": "17165573628970783202"
                     }
                   },
                   "parameters": {
@@ -21785,8 +21651,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "7109016207306775504"
+                      "version": "0.17.1.54307",
+                      "templateHash": "13416191842446717007"
                     }
                   },
                   "parameters": {
@@ -21855,8 +21721,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "16771064281561658183"
+                      "version": "0.17.1.54307",
+                      "templateHash": "10569201387143117913"
                     }
                   },
                   "parameters": {
@@ -22439,8 +22305,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "16771064281561658183"
+                      "version": "0.17.1.54307",
+                      "templateHash": "10569201387143117913"
                     }
                   },
                   "parameters": {
@@ -23020,8 +22886,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "15737913196788172522"
+                      "version": "0.17.1.54307",
+                      "templateHash": "15136491551081535379"
                     }
                   },
                   "parameters": {
@@ -23143,8 +23009,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "943002000979437913"
+                              "version": "0.17.1.54307",
+                              "templateHash": "8490200634198428200"
                             }
                           },
                           "parameters": {
@@ -23347,8 +23213,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "14509232230386518393"
+                      "version": "0.17.1.54307",
+                      "templateHash": "6119857452463366145"
                     }
                   },
                   "parameters": {
@@ -23644,8 +23510,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "16771064281561658183"
+                      "version": "0.17.1.54307",
+                      "templateHash": "10569201387143117913"
                     }
                   },
                   "parameters": {
@@ -24254,8 +24120,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "7227063824414734829"
+                      "version": "0.17.1.54307",
+                      "templateHash": "17450213271810432516"
                     }
                   },
                   "parameters": {
@@ -24395,8 +24261,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "1658651451767507348"
+                              "version": "0.17.1.54307",
+                              "templateHash": "10530929595373885258"
                             }
                           },
                           "parameters": {
@@ -24639,11 +24505,7 @@
                                 "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                                 "input": {
                                   "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                                  "enabled": true,
-                                  "retentionPolicy": {
-                                    "enabled": true,
-                                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  }
+                                  "enabled": true
                                 }
                               },
                               {
@@ -24652,11 +24514,7 @@
                                 "input": {
                                   "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
                                   "timeGrain": null,
-                                  "enabled": true,
-                                  "retentionPolicy": {
-                                    "enabled": true,
-                                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  }
+                                  "enabled": true
                                 }
                               },
                               {
@@ -24670,7 +24528,7 @@
                                 }
                               }
                             ],
-                            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]",
+                            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]",
                             "secretList": "[if(not(empty(parameters('secrets'))), parameters('secrets').secureList, createArray())]",
                             "enableReferencedModulesTelemetry": false
                           },
@@ -24773,8 +24631,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "10979748506364891487"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "6036891804343016093"
                                     }
                                   },
                                   "parameters": {
@@ -24905,8 +24763,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "13473011612578499281"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "8593614529812859648"
                                     }
                                   },
                                   "parameters": {
@@ -25042,8 +24900,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.18.4.5664",
-                                              "templateHash": "12036621733642341793"
+                                              "version": "0.17.1.54307",
+                                              "templateHash": "7411396567157179257"
                                             }
                                           },
                                           "parameters": {
@@ -25237,8 +25095,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "3591721400415712312"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "1124355010779190486"
                                     }
                                   },
                                   "parameters": {
@@ -25420,8 +25278,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.18.4.5664",
-                                              "templateHash": "4889573445396956380"
+                                              "version": "0.17.1.54307",
+                                              "templateHash": "7260777690340402293"
                                             }
                                           },
                                           "parameters": {
@@ -25623,8 +25481,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "12991773916541265724"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "7311288048246157848"
                                     }
                                   },
                                   "parameters": {
@@ -25820,8 +25678,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.18.4.5664",
-                                              "templateHash": "3520683536217550590"
+                                              "version": "0.17.1.54307",
+                                              "templateHash": "12718574346799900200"
                                             }
                                           },
                                           "parameters": {
@@ -25955,8 +25813,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.18.4.5664",
-                                              "templateHash": "11724106538771429164"
+                                              "version": "0.17.1.54307",
+                                              "templateHash": "12287935360262920219"
                                             }
                                           },
                                           "parameters": {
@@ -26169,8 +26027,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "7774490315865318008"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "2925986724999389514"
                                     }
                                   },
                                   "parameters": {
@@ -26400,8 +26258,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "3591721400415712312"
+                              "version": "0.17.1.54307",
+                              "templateHash": "1124355010779190486"
                             }
                           },
                           "parameters": {
@@ -26583,8 +26441,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "4889573445396956380"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "7260777690340402293"
                                     }
                                   },
                                   "parameters": {
@@ -26786,8 +26644,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "16707004874708060114"
+                              "version": "0.17.1.54307",
+                              "templateHash": "9857842888967195839"
                             }
                           },
                           "parameters": {
@@ -26997,8 +26855,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "12172667945223907975"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "2377303483140510674"
                                     }
                                   },
                                   "parameters": {
@@ -27073,8 +26931,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.18.4.5664",
-                                              "templateHash": "2530846489831075796"
+                                              "version": "0.17.1.54307",
+                                              "templateHash": "1764649882380429233"
                                             }
                                           },
                                           "parameters": {
@@ -27145,8 +27003,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.18.4.5664",
-                                              "templateHash": "10979748506364891487"
+                                              "version": "0.17.1.54307",
+                                              "templateHash": "6036891804343016093"
                                             }
                                           },
                                           "parameters": {
@@ -27276,8 +27134,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "5693310049980820424"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "205693325076049461"
                                     }
                                   },
                                   "parameters": {
@@ -27544,8 +27402,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "1658651451767507348"
+              "version": "0.17.1.54307",
+              "templateHash": "10530929595373885258"
             }
           },
           "parameters": {
@@ -27788,11 +27646,7 @@
                 "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                 "input": {
                   "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                  "enabled": true,
-                  "retentionPolicy": {
-                    "enabled": true,
-                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                  }
+                  "enabled": true
                 }
               },
               {
@@ -27801,11 +27655,7 @@
                 "input": {
                   "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
                   "timeGrain": null,
-                  "enabled": true,
-                  "retentionPolicy": {
-                    "enabled": true,
-                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                  }
+                  "enabled": true
                 }
               },
               {
@@ -27819,7 +27669,7 @@
                 }
               }
             ],
-            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]",
+            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]",
             "secretList": "[if(not(empty(parameters('secrets'))), parameters('secrets').secureList, createArray())]",
             "enableReferencedModulesTelemetry": false
           },
@@ -27922,8 +27772,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "10979748506364891487"
+                      "version": "0.17.1.54307",
+                      "templateHash": "6036891804343016093"
                     }
                   },
                   "parameters": {
@@ -28054,8 +27904,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "13473011612578499281"
+                      "version": "0.17.1.54307",
+                      "templateHash": "8593614529812859648"
                     }
                   },
                   "parameters": {
@@ -28191,8 +28041,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "12036621733642341793"
+                              "version": "0.17.1.54307",
+                              "templateHash": "7411396567157179257"
                             }
                           },
                           "parameters": {
@@ -28386,8 +28236,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "3591721400415712312"
+                      "version": "0.17.1.54307",
+                      "templateHash": "1124355010779190486"
                     }
                   },
                   "parameters": {
@@ -28569,8 +28419,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "4889573445396956380"
+                              "version": "0.17.1.54307",
+                              "templateHash": "7260777690340402293"
                             }
                           },
                           "parameters": {
@@ -28772,8 +28622,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "12991773916541265724"
+                      "version": "0.17.1.54307",
+                      "templateHash": "7311288048246157848"
                     }
                   },
                   "parameters": {
@@ -28969,8 +28819,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "3520683536217550590"
+                              "version": "0.17.1.54307",
+                              "templateHash": "12718574346799900200"
                             }
                           },
                           "parameters": {
@@ -29104,8 +28954,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "11724106538771429164"
+                              "version": "0.17.1.54307",
+                              "templateHash": "12287935360262920219"
                             }
                           },
                           "parameters": {
@@ -29318,8 +29168,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "7774490315865318008"
+                      "version": "0.17.1.54307",
+                      "templateHash": "2925986724999389514"
                     }
                   },
                   "parameters": {
@@ -29570,8 +29420,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "8575582116594416846"
+              "version": "0.17.1.54307",
+              "templateHash": "11482310091325103089"
             }
           },
           "parameters": {
@@ -29851,8 +29701,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "16231583765337904850"
+                      "version": "0.17.1.54307",
+                      "templateHash": "7668761013193612810"
                     }
                   },
                   "parameters": {
@@ -30274,15 +30124,6 @@
                         "description": "Optional. Location for all resources."
                       }
                     },
-                    "diagnosticLogsRetentionInDays": {
-                      "type": "int",
-                      "defaultValue": 365,
-                      "maxValue": 365,
-                      "minValue": 0,
-                      "metadata": {
-                        "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
-                      }
-                    },
                     "diagnosticStorageAccountId": {
                       "type": "string",
                       "defaultValue": "",
@@ -30664,9 +30505,6 @@
                           "diagnosticStorageAccountId": {
                             "value": "[parameters('diagnosticStorageAccountId')]"
                           },
-                          "diagnosticLogsRetentionInDays": {
-                            "value": "[parameters('diagnosticLogsRetentionInDays')]"
-                          },
                           "diagnosticWorkspaceId": {
                             "value": "[parameters('diagnosticWorkspaceId')]"
                           },
@@ -30699,8 +30537,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "17209228417067578044"
+                              "version": "0.17.1.54307",
+                              "templateHash": "10525586211840772754"
                             }
                           },
                           "parameters": {
@@ -30744,9 +30582,6 @@
                             },
                             "diagnosticStorageAccountId": {
                               "type": "string"
-                            },
-                            "diagnosticLogsRetentionInDays": {
-                              "type": "int"
                             },
                             "diagnosticWorkspaceId": {
                               "type": "string"
@@ -30819,9 +30654,6 @@
                                   "diagnosticLogCategoriesToEnable": {
                                     "value": "[parameters('pipdiagnosticLogCategoriesToEnable')]"
                                   },
-                                  "diagnosticLogsRetentionInDays": {
-                                    "value": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  },
                                   "diagnosticMetricsToEnable": {
                                     "value": "[parameters('pipdiagnosticMetricsToEnable')]"
                                   },
@@ -30860,8 +30692,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "9360762827164855564"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "3109828817825228978"
                                     }
                                   },
                                   "parameters": {
@@ -30927,15 +30759,6 @@
                                       ],
                                       "metadata": {
                                         "description": "Optional. IP address version."
-                                      }
-                                    },
-                                    "diagnosticLogsRetentionInDays": {
-                                      "type": "int",
-                                      "defaultValue": 365,
-                                      "maxValue": 365,
-                                      "minValue": 0,
-                                      "metadata": {
-                                        "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
                                       }
                                     },
                                     "diagnosticStorageAccountId": {
@@ -31069,11 +30892,7 @@
                                         "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                                         "input": {
                                           "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                                          "enabled": true,
-                                          "retentionPolicy": {
-                                            "enabled": true,
-                                            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                          }
+                                          "enabled": true
                                         }
                                       },
                                       {
@@ -31082,15 +30901,11 @@
                                         "input": {
                                           "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
                                           "timeGrain": null,
-                                          "enabled": true,
-                                          "retentionPolicy": {
-                                            "enabled": true,
-                                            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                          }
+                                          "enabled": true
                                         }
                                       }
                                     ],
-                                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]"
+                                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]"
                                   },
                                   "resources": [
                                     {
@@ -31193,8 +31008,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.18.4.5664",
-                                              "templateHash": "8727835156180887119"
+                                              "version": "0.17.1.54307",
+                                              "templateHash": "9526391067242259796"
                                             }
                                           },
                                           "parameters": {
@@ -31411,9 +31226,6 @@
                                   "diagnosticEventHubName": {
                                     "value": "[parameters('diagnosticEventHubName')]"
                                   },
-                                  "diagnosticLogsRetentionInDays": {
-                                    "value": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  },
                                   "diagnosticStorageAccountId": {
                                     "value": "[parameters('diagnosticStorageAccountId')]"
                                   },
@@ -31448,8 +31260,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "9874341872740922868"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "4280335810449335065"
                                     }
                                   },
                                   "parameters": {
@@ -31552,15 +31364,6 @@
                                         "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                                       }
                                     },
-                                    "diagnosticLogsRetentionInDays": {
-                                      "type": "int",
-                                      "defaultValue": 365,
-                                      "maxValue": 365,
-                                      "minValue": 0,
-                                      "metadata": {
-                                        "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
-                                      }
-                                    },
                                     "diagnosticStorageAccountId": {
                                       "type": "string",
                                       "defaultValue": "",
@@ -31617,11 +31420,7 @@
                                         "input": {
                                           "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
                                           "timeGrain": null,
-                                          "enabled": true,
-                                          "retentionPolicy": {
-                                            "enabled": true,
-                                            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                          }
+                                          "enabled": true
                                         }
                                       }
                                     ]
@@ -31746,8 +31545,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.18.4.5664",
-                                              "templateHash": "12339568584101080218"
+                                              "version": "0.17.1.54307",
+                                              "templateHash": "934300040337690336"
                                             }
                                           },
                                           "parameters": {
@@ -31962,8 +31761,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "1490032793186823332"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3345220041904522099"
                             }
                           },
                           "parameters": {
@@ -32165,8 +31964,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "1490032793186823332"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3345220041904522099"
                             }
                           },
                           "parameters": {
@@ -32363,8 +32162,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "1490032793186823332"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3345220041904522099"
                             }
                           },
                           "parameters": {
@@ -32566,8 +32365,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "1490032793186823332"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3345220041904522099"
                             }
                           },
                           "parameters": {
@@ -32759,8 +32558,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "1490032793186823332"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3345220041904522099"
                             }
                           },
                           "parameters": {
@@ -32952,8 +32751,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "1490032793186823332"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3345220041904522099"
                             }
                           },
                           "parameters": {
@@ -33149,8 +32948,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "1490032793186823332"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3345220041904522099"
                             }
                           },
                           "parameters": {
@@ -33354,8 +33153,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "1490032793186823332"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3345220041904522099"
                             }
                           },
                           "parameters": {
@@ -33552,8 +33351,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "1490032793186823332"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3345220041904522099"
                             }
                           },
                           "parameters": {
@@ -33753,8 +33552,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "9244336776798438387"
+                              "version": "0.17.1.54307",
+                              "templateHash": "542004733048752795"
                             }
                           },
                           "parameters": {
@@ -33919,8 +33718,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "16997355648608834977"
+                              "version": "0.17.1.54307",
+                              "templateHash": "5545265229641785727"
                             }
                           },
                           "parameters": {
@@ -34136,8 +33935,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "14509232230386518393"
+                      "version": "0.17.1.54307",
+                      "templateHash": "6119857452463366145"
                     }
                   },
                   "parameters": {
@@ -34500,10 +34299,7 @@
             "value": "[parameters('avdWorkloadSubsId')]"
           },
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]",
-          "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]",
-          "diagnosticLogsRetentionInDays": {
-            "value": "[parameters('avdAlaWorkspaceDataRetention')]"
-          }
+          "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
@@ -34511,8 +34307,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "5108709096061162439"
+              "version": "0.17.1.54307",
+              "templateHash": "443290892200518911"
             }
           },
           "parameters": {
@@ -34648,12 +34444,6 @@
                 "description": "Log analytics workspace for diagnostic logs."
               }
             },
-            "diagnosticLogsRetentionInDays": {
-              "type": "int",
-              "metadata": {
-                "description": "Diagnostic logs retention."
-              }
-            },
             "time": {
               "type": "string",
               "defaultValue": "[utcNow()]",
@@ -34768,9 +34558,6 @@
                   },
                   "diagnosticWorkspaceId": {
                     "value": "[parameters('alaWorkspaceResourceId')]"
-                  },
-                  "diagnosticLogsRetentionInDays": {
-                    "value": "[parameters('diagnosticLogsRetentionInDays')]"
                   }
                 },
                 "template": {
@@ -34779,8 +34566,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "10333603057132654028"
+                      "version": "0.17.1.54307",
+                      "templateHash": "13503792698356233940"
                     }
                   },
                   "parameters": {
@@ -35037,15 +34824,6 @@
                         "description": "Optional. If true, enables NFS 3.0 support for the storage account. Requires enableHierarchicalNamespace to be true."
                       }
                     },
-                    "diagnosticLogsRetentionInDays": {
-                      "type": "int",
-                      "defaultValue": 365,
-                      "maxValue": 365,
-                      "minValue": 0,
-                      "metadata": {
-                        "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
-                      }
-                    },
                     "diagnosticStorageAccountId": {
                       "type": "string",
                       "defaultValue": "",
@@ -35194,11 +34972,7 @@
                         "input": {
                           "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
                           "timeGrain": null,
-                          "enabled": true,
-                          "retentionPolicy": {
-                            "enabled": true,
-                            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                          }
+                          "enabled": true
                         }
                       }
                     ],
@@ -35340,8 +35114,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "17399845773033742131"
+                              "version": "0.17.1.54307",
+                              "templateHash": "14509829261817545327"
                             }
                           },
                           "parameters": {
@@ -35535,8 +35309,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "12991773916541265724"
+                              "version": "0.17.1.54307",
+                              "templateHash": "7311288048246157848"
                             }
                           },
                           "parameters": {
@@ -35732,8 +35506,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "3520683536217550590"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "12718574346799900200"
                                     }
                                   },
                                   "parameters": {
@@ -35867,8 +35641,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "11724106538771429164"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "12287935360262920219"
                                     }
                                   },
                                   "parameters": {
@@ -36074,8 +35848,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "5299530817966477918"
+                              "version": "0.17.1.54307",
+                              "templateHash": "6611019192370176160"
                             }
                           },
                           "parameters": {
@@ -36198,8 +35972,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "4867276107242068354"
+                              "version": "0.17.1.54307",
+                              "templateHash": "887985521850583920"
                             }
                           },
                           "parameters": {
@@ -36356,8 +36130,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "15213751123686607933"
+                              "version": "0.17.1.54307",
+                              "templateHash": "10541476086832691043"
                             }
                           },
                           "parameters": {
@@ -36482,11 +36256,7 @@
                                 "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                                 "input": {
                                   "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                                  "enabled": true,
-                                  "retentionPolicy": {
-                                    "enabled": true,
-                                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  }
+                                  "enabled": true
                                 }
                               },
                               {
@@ -36495,16 +36265,12 @@
                                 "input": {
                                   "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
                                   "timeGrain": null,
-                                  "enabled": true,
-                                  "retentionPolicy": {
-                                    "enabled": true,
-                                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  }
+                                  "enabled": true
                                 }
                               }
                             ],
                             "name": "default",
-                            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]",
+                            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]",
                             "enableReferencedModulesTelemetry": false
                           },
                           "resources": [
@@ -36585,8 +36351,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "8477599286867291799"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "4711998299496378361"
                                     }
                                   },
                                   "parameters": {
@@ -36699,8 +36465,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.18.4.5664",
-                                              "templateHash": "2796131294243404206"
+                                              "version": "0.17.1.54307",
+                                              "templateHash": "9600027410745431357"
                                             }
                                           },
                                           "parameters": {
@@ -36827,8 +36593,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.18.4.5664",
-                                              "templateHash": "9471266450275905523"
+                                              "version": "0.17.1.54307",
+                                              "templateHash": "2765385875040083757"
                                             }
                                           },
                                           "parameters": {
@@ -37065,8 +36831,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "11735671726195697680"
+                              "version": "0.17.1.54307",
+                              "templateHash": "1150612779421396008"
                             }
                           },
                           "parameters": {
@@ -37194,11 +36960,7 @@
                                 "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                                 "input": {
                                   "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                                  "enabled": true,
-                                  "retentionPolicy": {
-                                    "enabled": true,
-                                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  }
+                                  "enabled": true
                                 }
                               },
                               {
@@ -37207,15 +36969,11 @@
                                 "input": {
                                   "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
                                   "timeGrain": null,
-                                  "enabled": true,
-                                  "retentionPolicy": {
-                                    "enabled": true,
-                                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  }
+                                  "enabled": true
                                 }
                               }
                             ],
-                            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]",
+                            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]",
                             "enableReferencedModulesTelemetry": false
                           },
                           "resources": [
@@ -37297,8 +37055,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "6048855322985506812"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "17475626136384362732"
                                     }
                                   },
                                   "parameters": {
@@ -37426,8 +37184,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.18.4.5664",
-                                              "templateHash": "3454304478574190517"
+                                              "version": "0.17.1.54307",
+                                              "templateHash": "398511802813701603"
                                             }
                                           },
                                           "parameters": {
@@ -37665,8 +37423,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "16446761132064405013"
+                              "version": "0.17.1.54307",
+                              "templateHash": "8639862570197941224"
                             }
                           },
                           "parameters": {
@@ -37770,11 +37528,7 @@
                                 "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                                 "input": {
                                   "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                                  "enabled": true,
-                                  "retentionPolicy": {
-                                    "enabled": true,
-                                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  }
+                                  "enabled": true
                                 }
                               },
                               {
@@ -37792,7 +37546,7 @@
                               }
                             ],
                             "name": "default",
-                            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]",
+                            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]",
                             "enableReferencedModulesTelemetry": false
                           },
                           "resources": [
@@ -37866,8 +37620,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "9116292018335087361"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "8626996903060982853"
                                     }
                                   },
                                   "parameters": {
@@ -37963,8 +37717,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.18.4.5664",
-                                              "templateHash": "8826781769055434429"
+                                              "version": "0.17.1.54307",
+                                              "templateHash": "7868704077465009471"
                                             }
                                           },
                                           "parameters": {
@@ -38199,8 +37953,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "15589712361439512608"
+                              "version": "0.17.1.54307",
+                              "templateHash": "2885217159765875903"
                             }
                           },
                           "parameters": {
@@ -38304,11 +38058,7 @@
                                 "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                                 "input": {
                                   "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                                  "enabled": true,
-                                  "retentionPolicy": {
-                                    "enabled": true,
-                                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  }
+                                  "enabled": true
                                 }
                               },
                               {
@@ -38317,16 +38067,12 @@
                                 "input": {
                                   "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
                                   "timeGrain": null,
-                                  "enabled": true,
-                                  "retentionPolicy": {
-                                    "enabled": true,
-                                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  }
+                                  "enabled": true
                                 }
                               }
                             ],
                             "name": "default",
-                            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]",
+                            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]",
                             "enableReferencedModulesTelemetry": false
                           },
                           "resources": [
@@ -38398,8 +38144,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "18313788100863691650"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "10506944460358814800"
                                     }
                                   },
                                   "parameters": {
@@ -38591,8 +38337,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "13091364540241869728"
+                      "version": "0.17.1.54307",
+                      "templateHash": "16133335500075476844"
                     }
                   },
                   "parameters": {
@@ -38753,10 +38499,7 @@
             "value": "[parameters('avdWorkloadSubsId')]"
           },
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]",
-          "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]",
-          "diagnosticLogsRetentionInDays": {
-            "value": "[parameters('avdAlaWorkspaceDataRetention')]"
-          }
+          "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
@@ -38764,8 +38507,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "5108709096061162439"
+              "version": "0.17.1.54307",
+              "templateHash": "443290892200518911"
             }
           },
           "parameters": {
@@ -38901,12 +38644,6 @@
                 "description": "Log analytics workspace for diagnostic logs."
               }
             },
-            "diagnosticLogsRetentionInDays": {
-              "type": "int",
-              "metadata": {
-                "description": "Diagnostic logs retention."
-              }
-            },
             "time": {
               "type": "string",
               "defaultValue": "[utcNow()]",
@@ -39021,9 +38758,6 @@
                   },
                   "diagnosticWorkspaceId": {
                     "value": "[parameters('alaWorkspaceResourceId')]"
-                  },
-                  "diagnosticLogsRetentionInDays": {
-                    "value": "[parameters('diagnosticLogsRetentionInDays')]"
                   }
                 },
                 "template": {
@@ -39032,8 +38766,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "10333603057132654028"
+                      "version": "0.17.1.54307",
+                      "templateHash": "13503792698356233940"
                     }
                   },
                   "parameters": {
@@ -39290,15 +39024,6 @@
                         "description": "Optional. If true, enables NFS 3.0 support for the storage account. Requires enableHierarchicalNamespace to be true."
                       }
                     },
-                    "diagnosticLogsRetentionInDays": {
-                      "type": "int",
-                      "defaultValue": 365,
-                      "maxValue": 365,
-                      "minValue": 0,
-                      "metadata": {
-                        "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
-                      }
-                    },
                     "diagnosticStorageAccountId": {
                       "type": "string",
                       "defaultValue": "",
@@ -39447,11 +39172,7 @@
                         "input": {
                           "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
                           "timeGrain": null,
-                          "enabled": true,
-                          "retentionPolicy": {
-                            "enabled": true,
-                            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                          }
+                          "enabled": true
                         }
                       }
                     ],
@@ -39593,8 +39314,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "17399845773033742131"
+                              "version": "0.17.1.54307",
+                              "templateHash": "14509829261817545327"
                             }
                           },
                           "parameters": {
@@ -39788,8 +39509,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "12991773916541265724"
+                              "version": "0.17.1.54307",
+                              "templateHash": "7311288048246157848"
                             }
                           },
                           "parameters": {
@@ -39985,8 +39706,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "3520683536217550590"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "12718574346799900200"
                                     }
                                   },
                                   "parameters": {
@@ -40120,8 +39841,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "11724106538771429164"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "12287935360262920219"
                                     }
                                   },
                                   "parameters": {
@@ -40327,8 +40048,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "5299530817966477918"
+                              "version": "0.17.1.54307",
+                              "templateHash": "6611019192370176160"
                             }
                           },
                           "parameters": {
@@ -40451,8 +40172,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "4867276107242068354"
+                              "version": "0.17.1.54307",
+                              "templateHash": "887985521850583920"
                             }
                           },
                           "parameters": {
@@ -40609,8 +40330,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "15213751123686607933"
+                              "version": "0.17.1.54307",
+                              "templateHash": "10541476086832691043"
                             }
                           },
                           "parameters": {
@@ -40735,11 +40456,7 @@
                                 "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                                 "input": {
                                   "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                                  "enabled": true,
-                                  "retentionPolicy": {
-                                    "enabled": true,
-                                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  }
+                                  "enabled": true
                                 }
                               },
                               {
@@ -40748,16 +40465,12 @@
                                 "input": {
                                   "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
                                   "timeGrain": null,
-                                  "enabled": true,
-                                  "retentionPolicy": {
-                                    "enabled": true,
-                                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  }
+                                  "enabled": true
                                 }
                               }
                             ],
                             "name": "default",
-                            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]",
+                            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]",
                             "enableReferencedModulesTelemetry": false
                           },
                           "resources": [
@@ -40838,8 +40551,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "8477599286867291799"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "4711998299496378361"
                                     }
                                   },
                                   "parameters": {
@@ -40952,8 +40665,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.18.4.5664",
-                                              "templateHash": "2796131294243404206"
+                                              "version": "0.17.1.54307",
+                                              "templateHash": "9600027410745431357"
                                             }
                                           },
                                           "parameters": {
@@ -41080,8 +40793,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.18.4.5664",
-                                              "templateHash": "9471266450275905523"
+                                              "version": "0.17.1.54307",
+                                              "templateHash": "2765385875040083757"
                                             }
                                           },
                                           "parameters": {
@@ -41318,8 +41031,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "11735671726195697680"
+                              "version": "0.17.1.54307",
+                              "templateHash": "1150612779421396008"
                             }
                           },
                           "parameters": {
@@ -41447,11 +41160,7 @@
                                 "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                                 "input": {
                                   "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                                  "enabled": true,
-                                  "retentionPolicy": {
-                                    "enabled": true,
-                                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  }
+                                  "enabled": true
                                 }
                               },
                               {
@@ -41460,15 +41169,11 @@
                                 "input": {
                                   "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
                                   "timeGrain": null,
-                                  "enabled": true,
-                                  "retentionPolicy": {
-                                    "enabled": true,
-                                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  }
+                                  "enabled": true
                                 }
                               }
                             ],
-                            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]",
+                            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]",
                             "enableReferencedModulesTelemetry": false
                           },
                           "resources": [
@@ -41550,8 +41255,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "6048855322985506812"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "17475626136384362732"
                                     }
                                   },
                                   "parameters": {
@@ -41679,8 +41384,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.18.4.5664",
-                                              "templateHash": "3454304478574190517"
+                                              "version": "0.17.1.54307",
+                                              "templateHash": "398511802813701603"
                                             }
                                           },
                                           "parameters": {
@@ -41918,8 +41623,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "16446761132064405013"
+                              "version": "0.17.1.54307",
+                              "templateHash": "8639862570197941224"
                             }
                           },
                           "parameters": {
@@ -42023,11 +41728,7 @@
                                 "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                                 "input": {
                                   "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                                  "enabled": true,
-                                  "retentionPolicy": {
-                                    "enabled": true,
-                                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  }
+                                  "enabled": true
                                 }
                               },
                               {
@@ -42045,7 +41746,7 @@
                               }
                             ],
                             "name": "default",
-                            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]",
+                            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]",
                             "enableReferencedModulesTelemetry": false
                           },
                           "resources": [
@@ -42119,8 +41820,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "9116292018335087361"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "8626996903060982853"
                                     }
                                   },
                                   "parameters": {
@@ -42216,8 +41917,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.18.4.5664",
-                                              "templateHash": "8826781769055434429"
+                                              "version": "0.17.1.54307",
+                                              "templateHash": "7868704077465009471"
                                             }
                                           },
                                           "parameters": {
@@ -42452,8 +42153,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "15589712361439512608"
+                              "version": "0.17.1.54307",
+                              "templateHash": "2885217159765875903"
                             }
                           },
                           "parameters": {
@@ -42557,11 +42258,7 @@
                                 "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                                 "input": {
                                   "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                                  "enabled": true,
-                                  "retentionPolicy": {
-                                    "enabled": true,
-                                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  }
+                                  "enabled": true
                                 }
                               },
                               {
@@ -42570,16 +42267,12 @@
                                 "input": {
                                   "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
                                   "timeGrain": null,
-                                  "enabled": true,
-                                  "retentionPolicy": {
-                                    "enabled": true,
-                                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  }
+                                  "enabled": true
                                 }
                               }
                             ],
                             "name": "default",
-                            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]",
+                            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]",
                             "enableReferencedModulesTelemetry": false
                           },
                           "resources": [
@@ -42651,8 +42344,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "18313788100863691650"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "10506944460358814800"
                                     }
                                   },
                                   "parameters": {
@@ -42844,8 +42537,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "13091364540241869728"
+                      "version": "0.17.1.54307",
+                      "templateHash": "16133335500075476844"
                     }
                   },
                   "parameters": {
@@ -42960,8 +42653,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "8648238951029079364"
+              "version": "0.17.1.54307",
+              "templateHash": "14889137037653853520"
             }
           },
           "parameters": {
@@ -43039,8 +42732,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "8447272874314804308"
+                      "version": "0.17.1.54307",
+                      "templateHash": "11940163391569342138"
                     }
                   },
                   "parameters": {
@@ -43197,8 +42890,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "5091916529584467175"
+                              "version": "0.17.1.54307",
+                              "templateHash": "10835079600690809858"
                             }
                           },
                           "parameters": {
@@ -43503,10 +43196,7 @@
           "deployMonitoring": {
             "value": "[parameters('avdDeployMonitoring')]"
           },
-          "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]",
-          "diagnosticLogsRetentionInDays": {
-            "value": "[parameters('avdAlaWorkspaceDataRetention')]"
-          }
+          "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
@@ -43514,8 +43204,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "9542486132206933343"
+              "version": "0.17.1.54307",
+              "templateHash": "12382067254059662962"
             }
           },
           "parameters": {
@@ -43771,12 +43461,6 @@
                 "description": "Log analytics workspace for diagnostic logs."
               }
             },
-            "diagnosticLogsRetentionInDays": {
-              "type": "int",
-              "metadata": {
-                "description": "Diagnostic logs retention."
-              }
-            },
             "deployMonitoring": {
               "type": "bool",
               "metadata": {
@@ -43907,9 +43591,6 @@
                   },
                   "nicdiagnosticMetricsToEnable": "[if(parameters('deployMonitoring'), createObject('value', variables('varNicDiagnosticMetricsToEnable')), createObject('value', createArray()))]",
                   "diagnosticWorkspaceId": "[if(parameters('deployMonitoring'), createObject('value', parameters('alaWorkspaceResourceId')), createObject('value', ''))]",
-                  "diagnosticLogsRetentionInDays": {
-                    "value": "[parameters('diagnosticLogsRetentionInDays')]"
-                  },
                   "tags": {
                     "value": "[parameters('tags')]"
                   }
@@ -43920,8 +43601,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "16231583765337904850"
+                      "version": "0.17.1.54307",
+                      "templateHash": "7668761013193612810"
                     }
                   },
                   "parameters": {
@@ -44343,15 +44024,6 @@
                         "description": "Optional. Location for all resources."
                       }
                     },
-                    "diagnosticLogsRetentionInDays": {
-                      "type": "int",
-                      "defaultValue": 365,
-                      "maxValue": 365,
-                      "minValue": 0,
-                      "metadata": {
-                        "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
-                      }
-                    },
                     "diagnosticStorageAccountId": {
                       "type": "string",
                       "defaultValue": "",
@@ -44733,9 +44405,6 @@
                           "diagnosticStorageAccountId": {
                             "value": "[parameters('diagnosticStorageAccountId')]"
                           },
-                          "diagnosticLogsRetentionInDays": {
-                            "value": "[parameters('diagnosticLogsRetentionInDays')]"
-                          },
                           "diagnosticWorkspaceId": {
                             "value": "[parameters('diagnosticWorkspaceId')]"
                           },
@@ -44768,8 +44437,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "17209228417067578044"
+                              "version": "0.17.1.54307",
+                              "templateHash": "10525586211840772754"
                             }
                           },
                           "parameters": {
@@ -44813,9 +44482,6 @@
                             },
                             "diagnosticStorageAccountId": {
                               "type": "string"
-                            },
-                            "diagnosticLogsRetentionInDays": {
-                              "type": "int"
                             },
                             "diagnosticWorkspaceId": {
                               "type": "string"
@@ -44888,9 +44554,6 @@
                                   "diagnosticLogCategoriesToEnable": {
                                     "value": "[parameters('pipdiagnosticLogCategoriesToEnable')]"
                                   },
-                                  "diagnosticLogsRetentionInDays": {
-                                    "value": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  },
                                   "diagnosticMetricsToEnable": {
                                     "value": "[parameters('pipdiagnosticMetricsToEnable')]"
                                   },
@@ -44929,8 +44592,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "9360762827164855564"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "3109828817825228978"
                                     }
                                   },
                                   "parameters": {
@@ -44996,15 +44659,6 @@
                                       ],
                                       "metadata": {
                                         "description": "Optional. IP address version."
-                                      }
-                                    },
-                                    "diagnosticLogsRetentionInDays": {
-                                      "type": "int",
-                                      "defaultValue": 365,
-                                      "maxValue": 365,
-                                      "minValue": 0,
-                                      "metadata": {
-                                        "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
                                       }
                                     },
                                     "diagnosticStorageAccountId": {
@@ -45138,11 +44792,7 @@
                                         "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                                         "input": {
                                           "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                                          "enabled": true,
-                                          "retentionPolicy": {
-                                            "enabled": true,
-                                            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                          }
+                                          "enabled": true
                                         }
                                       },
                                       {
@@ -45151,15 +44801,11 @@
                                         "input": {
                                           "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
                                           "timeGrain": null,
-                                          "enabled": true,
-                                          "retentionPolicy": {
-                                            "enabled": true,
-                                            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                          }
+                                          "enabled": true
                                         }
                                       }
                                     ],
-                                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]"
+                                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]"
                                   },
                                   "resources": [
                                     {
@@ -45262,8 +44908,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.18.4.5664",
-                                              "templateHash": "8727835156180887119"
+                                              "version": "0.17.1.54307",
+                                              "templateHash": "9526391067242259796"
                                             }
                                           },
                                           "parameters": {
@@ -45480,9 +45126,6 @@
                                   "diagnosticEventHubName": {
                                     "value": "[parameters('diagnosticEventHubName')]"
                                   },
-                                  "diagnosticLogsRetentionInDays": {
-                                    "value": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  },
                                   "diagnosticStorageAccountId": {
                                     "value": "[parameters('diagnosticStorageAccountId')]"
                                   },
@@ -45517,8 +45160,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.18.4.5664",
-                                      "templateHash": "9874341872740922868"
+                                      "version": "0.17.1.54307",
+                                      "templateHash": "4280335810449335065"
                                     }
                                   },
                                   "parameters": {
@@ -45621,15 +45264,6 @@
                                         "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                                       }
                                     },
-                                    "diagnosticLogsRetentionInDays": {
-                                      "type": "int",
-                                      "defaultValue": 365,
-                                      "maxValue": 365,
-                                      "minValue": 0,
-                                      "metadata": {
-                                        "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
-                                      }
-                                    },
                                     "diagnosticStorageAccountId": {
                                       "type": "string",
                                       "defaultValue": "",
@@ -45686,11 +45320,7 @@
                                         "input": {
                                           "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
                                           "timeGrain": null,
-                                          "enabled": true,
-                                          "retentionPolicy": {
-                                            "enabled": true,
-                                            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                          }
+                                          "enabled": true
                                         }
                                       }
                                     ]
@@ -45815,8 +45445,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.18.4.5664",
-                                              "templateHash": "12339568584101080218"
+                                              "version": "0.17.1.54307",
+                                              "templateHash": "934300040337690336"
                                             }
                                           },
                                           "parameters": {
@@ -46031,8 +45661,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "1490032793186823332"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3345220041904522099"
                             }
                           },
                           "parameters": {
@@ -46234,8 +45864,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "1490032793186823332"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3345220041904522099"
                             }
                           },
                           "parameters": {
@@ -46432,8 +46062,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "1490032793186823332"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3345220041904522099"
                             }
                           },
                           "parameters": {
@@ -46635,8 +46265,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "1490032793186823332"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3345220041904522099"
                             }
                           },
                           "parameters": {
@@ -46828,8 +46458,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "1490032793186823332"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3345220041904522099"
                             }
                           },
                           "parameters": {
@@ -47021,8 +46651,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "1490032793186823332"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3345220041904522099"
                             }
                           },
                           "parameters": {
@@ -47218,8 +46848,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "1490032793186823332"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3345220041904522099"
                             }
                           },
                           "parameters": {
@@ -47423,8 +47053,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "1490032793186823332"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3345220041904522099"
                             }
                           },
                           "parameters": {
@@ -47621,8 +47251,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "1490032793186823332"
+                              "version": "0.17.1.54307",
+                              "templateHash": "3345220041904522099"
                             }
                           },
                           "parameters": {
@@ -47822,8 +47452,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "9244336776798438387"
+                              "version": "0.17.1.54307",
+                              "templateHash": "542004733048752795"
                             }
                           },
                           "parameters": {
@@ -47988,8 +47618,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.18.4.5664",
-                              "templateHash": "16997355648608834977"
+                              "version": "0.17.1.54307",
+                              "templateHash": "5545265229641785727"
                             }
                           },
                           "parameters": {
@@ -48205,8 +47835,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "14509232230386518393"
+                      "version": "0.17.1.54307",
+                      "templateHash": "6119857452463366145"
                     }
                   },
                   "parameters": {
@@ -48538,8 +48168,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "1490032793186823332"
+                      "version": "0.17.1.54307",
+                      "templateHash": "3345220041904522099"
                     }
                   },
                   "parameters": {
@@ -48737,8 +48367,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "14509232230386518393"
+                      "version": "0.17.1.54307",
+                      "templateHash": "6119857452463366145"
                     }
                   },
                   "parameters": {
@@ -49068,8 +48698,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "1490032793186823332"
+                      "version": "0.17.1.54307",
+                      "templateHash": "3345220041904522099"
                     }
                   },
                   "parameters": {
@@ -49268,8 +48898,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "14509232230386518393"
+                      "version": "0.17.1.54307",
+                      "templateHash": "6119857452463366145"
                     }
                   },
                   "parameters": {
@@ -49577,8 +49207,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "2897218414027100934"
+                      "version": "0.17.1.54307",
+                      "templateHash": "14854652588114627341"
                     }
                   },
                   "parameters": {
@@ -49677,8 +49307,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "886630281819911694"
+                      "version": "0.17.1.54307",
+                      "templateHash": "7172748536042045689"
                     }
                   },
                   "parameters": {
@@ -49793,8 +49423,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "12570414431099862364"
+              "version": "0.17.1.54307",
+              "templateHash": "231872691044961836"
             }
           },
           "parameters": {
@@ -49886,8 +49516,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "2291336375760157964"
+                      "version": "0.17.1.54307",
+                      "templateHash": "5657647834665443119"
                     }
                   },
                   "parameters": {
@@ -50061,8 +49691,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "12228099095722756446"
+                      "version": "0.17.1.54307",
+                      "templateHash": "17165573628970783202"
                     }
                   },
                   "parameters": {
@@ -50330,8 +49960,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "7109016207306775504"
+                      "version": "0.17.1.54307",
+                      "templateHash": "13416191842446717007"
                     }
                   },
                   "parameters": {
