@@ -70,9 +70,6 @@ param deployPrivateEndpoint bool
 @sys.description('Log analytics workspace for diagnostic logs.')
 param alaWorkspaceResourceId string
 
-@sys.description('Diagnostic logs retention.')
-param diagnosticLogsRetentionInDays int
-
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
@@ -177,7 +174,6 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
         ] : []
         tags: tags
         diagnosticWorkspaceId: alaWorkspaceResourceId
-        diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
     }
 }
 
