@@ -12,7 +12,7 @@ param networkSecurityGroupResourceId string = ''
 param ipConfigurations array
 param lock string = ''
 param diagnosticStorageAccountId string
-param diagnosticLogsRetentionInDays int
+//param diagnosticLogsRetentionInDays int
 param diagnosticWorkspaceId string
 param diagnosticEventHubAuthorizationRuleId string
 param diagnosticEventHubName string
@@ -38,7 +38,7 @@ module networkInterface_publicIPAddresses '../../../Microsoft.Network/publicIPAd
     diagnosticEventHubAuthorizationRuleId: diagnosticEventHubAuthorizationRuleId
     diagnosticEventHubName: diagnosticEventHubName
     diagnosticLogCategoriesToEnable: pipdiagnosticLogCategoriesToEnable
-    diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
+    //diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
     diagnosticMetricsToEnable: pipdiagnosticMetricsToEnable
     diagnosticSettingsName: pipDiagnosticSettingsName
     diagnosticStorageAccountId: diagnosticStorageAccountId
@@ -80,7 +80,7 @@ module networkInterface '../../../Microsoft.Network/networkInterfaces/deploy.bic
     tags: tags
     diagnosticEventHubAuthorizationRuleId: diagnosticEventHubAuthorizationRuleId
     diagnosticEventHubName: diagnosticEventHubName
-    diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
+    //diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
     diagnosticStorageAccountId: diagnosticStorageAccountId
     diagnosticMetricsToEnable: nicDiagnosticMetricsToEnable
     diagnosticSettingsName: nicDiagnosticSettingsName

@@ -130,9 +130,6 @@ param tags object
 @sys.description('Log analytics workspace for diagnostic logs.')
 param alaWorkspaceResourceId string
 
-@sys.description('Diagnostic logs retention.')
-param diagnosticLogsRetentionInDays int
-
 @sys.description('Deploy AVD monitoring resources and setings. (Default: true)')
 param deployMonitoring bool
 
@@ -243,7 +240,6 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
       }
       nicdiagnosticMetricsToEnable: deployMonitoring ? varNicDiagnosticMetricsToEnable : []
       diagnosticWorkspaceId: deployMonitoring ? alaWorkspaceResourceId : ''
-      diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
       tags: tags
   }
   dependsOn: [
