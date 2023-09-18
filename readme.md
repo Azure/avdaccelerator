@@ -42,7 +42,7 @@ The brownfield section contains templates to deploy additional features for Azur
 - [Alerts](./workload/bicep/brownfield/alerts/readme.md)
 - [Auto Increase Premium File Share Quota](./workload/bicep/brownfield/autoIncreasePremiumFileShareQuota/readme.md)
 - [Scaling Tool](./workload/bicep/brownfield/scalingTool/readme.md)
-- [Start VM On Connect](./bicep/workload/brownfield/startVmOnConnect/readme.md)
+- [Start VM On Connect](./workload/bicep/brownfield/startVmOnConnect/readme.md)
 - [Deep Insights Workbook](./workload/workbooks/deepInsightsWorkbook/readme.md)
 
 ### Custom image build
