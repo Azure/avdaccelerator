@@ -1,7 +1,3 @@
-## Table of Contents
-
-| [Home](../../../../readme.md) | [Custom Image Build](/workload/docs/getting-started-custom-image-build.md) | [Auto Increase Premium File Share Quota](/workload/bicep/brownfield/autoIncreasePremiumFileShareQuota/readme.md) | [Scaling Tool](/workload/bicep/brownfield/scalingTool/readme.md) | [Start VM On Connect](/workload/bicep/brownfield/startVmOnConnect/readme.md) | [Deep Insights Workbook](/workload/workbooks/deepInsightsWorkbook/readme.md) |
-
 # AVD Alerts Solution
 
 [Alerts Home](./readme.md) | [PostDeployment](./postDeploy.md) | [How to Change Thresholds](./changeAlertThreshold.md) | [Alert Reference](./alertReference.md) | [Excel List of Alert Rules](./references/alerts.xlsx) | [Update History](./updateHistory.md)
