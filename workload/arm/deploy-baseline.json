@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "17199024280522508418"
+      "templateHash": "18069407191382665045"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -29421,7 +29421,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "11482310091325103089"
+              "templateHash": "2907237861517290313"
             }
           },
           "parameters": {
@@ -29702,7 +29702,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "7668761013193612810"
+                      "templateHash": "547922033158170612"
                     }
                   },
                   "parameters": {
@@ -31746,6 +31746,9 @@
                           "name": {
                             "value": "AADLogin"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "publisher": {
                             "value": "Microsoft.Azure.ActiveDirectory"
                           },
@@ -31936,6 +31939,9 @@
                           },
                           "name": {
                             "value": "DomainJoin"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
                           },
                           "publisher": {
                             "value": "Microsoft.Compute"
@@ -32140,6 +32146,9 @@
                           "name": {
                             "value": "MicrosoftAntiMalware"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "publisher": {
                             "value": "Microsoft.Azure.Security"
                           },
@@ -32337,6 +32346,9 @@
                           },
                           "name": {
                             "value": "MicrosoftMonitoringAgent"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
                           },
                           "publisher": {
                             "value": "Microsoft.EnterpriseCloud.Monitoring"
@@ -32541,6 +32553,9 @@
                           "name": {
                             "value": "DependencyAgent"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "publisher": {
                             "value": "Microsoft.Azure.Monitoring.DependencyAgent"
                           },
@@ -32734,6 +32749,9 @@
                           "name": {
                             "value": "NetworkWatcherAgent"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "publisher": {
                             "value": "Microsoft.Azure.NetworkWatcher"
                           },
@@ -32926,6 +32944,9 @@
                           },
                           "name": {
                             "value": "DesiredStateConfiguration"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
                           },
                           "publisher": {
                             "value": "Microsoft.Powershell"
@@ -33123,6 +33144,9 @@
                           },
                           "name": {
                             "value": "CustomScriptExtension"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
                           },
                           "publisher": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'Microsoft.Compute'), createObject('value', 'Microsoft.Azure.Extensions'))]",
                           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'CustomScriptExtension'), createObject('value', 'CustomScript'))]",
@@ -33330,6 +33354,9 @@
                           "name": {
                             "value": "AzureDiskEncryption"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "publisher": {
                             "value": "Microsoft.Azure.Security"
                           },
@@ -33526,6 +33553,9 @@
                         "parameters": {
                           "name": {
                             "value": "[format('vm;iaasvmcontainerv2;{0};{1}', resourceGroup().name, parameters('name'))]"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
                           },
                           "policyId": {
                             "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', parameters('backupVaultName'), parameters('backupPolicyName'))]"
@@ -43205,7 +43235,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "12382067254059662962"
+              "templateHash": "5800190286840239570"
             }
           },
           "parameters": {
@@ -43602,7 +43632,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "7668761013193612810"
+                      "templateHash": "547922033158170612"
                     }
                   },
                   "parameters": {
@@ -45646,6 +45676,9 @@
                           "name": {
                             "value": "AADLogin"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "publisher": {
                             "value": "Microsoft.Azure.ActiveDirectory"
                           },
@@ -45836,6 +45869,9 @@
                           },
                           "name": {
                             "value": "DomainJoin"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
                           },
                           "publisher": {
                             "value": "Microsoft.Compute"
@@ -46040,6 +46076,9 @@
                           "name": {
                             "value": "MicrosoftAntiMalware"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "publisher": {
                             "value": "Microsoft.Azure.Security"
                           },
@@ -46237,6 +46276,9 @@
                           },
                           "name": {
                             "value": "MicrosoftMonitoringAgent"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
                           },
                           "publisher": {
                             "value": "Microsoft.EnterpriseCloud.Monitoring"
@@ -46441,6 +46483,9 @@
                           "name": {
                             "value": "DependencyAgent"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "publisher": {
                             "value": "Microsoft.Azure.Monitoring.DependencyAgent"
                           },
@@ -46634,6 +46679,9 @@
                           "name": {
                             "value": "NetworkWatcherAgent"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "publisher": {
                             "value": "Microsoft.Azure.NetworkWatcher"
                           },
@@ -46826,6 +46874,9 @@
                           },
                           "name": {
                             "value": "DesiredStateConfiguration"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
                           },
                           "publisher": {
                             "value": "Microsoft.Powershell"
@@ -47023,6 +47074,9 @@
                           },
                           "name": {
                             "value": "CustomScriptExtension"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
                           },
                           "publisher": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'Microsoft.Compute'), createObject('value', 'Microsoft.Azure.Extensions'))]",
                           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'CustomScriptExtension'), createObject('value', 'CustomScript'))]",
@@ -47230,6 +47284,9 @@
                           "name": {
                             "value": "AzureDiskEncryption"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "publisher": {
                             "value": "Microsoft.Azure.Security"
                           },
@@ -47426,6 +47483,9 @@
                         "parameters": {
                           "name": {
                             "value": "[format('vm;iaasvmcontainerv2;{0};{1}', resourceGroup().name, parameters('name'))]"
+                          },
+                          "location": {
+                            "value": "[parameters('location')]"
                           },
                           "policyId": {
                             "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', parameters('backupVaultName'), parameters('backupPolicyName'))]"
