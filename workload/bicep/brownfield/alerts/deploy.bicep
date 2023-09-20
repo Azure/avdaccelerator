@@ -1931,7 +1931,6 @@ module automationAccount '../../../../carml/1.3.0/Microsoft.Automation/automatio
       'JobStreams'
     ]
     enableDefaultTelemetry: false
-    diagnosticLogsRetentionInDays: 30
     diagnosticWorkspaceId: LogAnalyticsWorkspaceResourceId
     name: AutomationAccountName
     jobSchedules: !empty(StorageAccountResourceIds) ? [
