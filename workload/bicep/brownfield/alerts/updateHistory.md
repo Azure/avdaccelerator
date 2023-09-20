@@ -2,6 +2,13 @@
 
 [Home](./readme.md) | [PostDeployment](./postDeploy.md) | [How to Change Thresholds](./changeAlertThreshold.md) | [Alert Reference](./alertReference.md) | [Excel List of Alert Rules](./references/alerts.xlsx)
 
+## 8/10/23 - Fix - Deployment Name too long and Critical Updates Missing failure (V2.1.2)
+
+- c_AVD-HP-VM-MissingCriticalUpdates deployment would fail due to search syntax incorrectly defined
+- c_AVD-StorAcct-Over-100msLatencyClnt-Stor deployment name was still too long depencing on the name of the storage account appended
+- Additonal Alert names truncated to avoid deployment name length being over 64 characters
+(Trying to avoid logic to use GUIDs for clarity during deployment)
+
 ## 8/10/23 - Fix - Deployment Name too long Host Pool Alerts (V2.1.1)
 
 - Added logic to truncate Host Pool name when deploying Host Pool specific alerts to last 25 characters to prevent deployment name over allowed 64 characters
