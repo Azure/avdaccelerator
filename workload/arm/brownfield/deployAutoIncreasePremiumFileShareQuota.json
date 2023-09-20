@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "1979977178093283459"
+      "version": "0.21.1.54444",
+      "templateHash": "14199085282161303395"
     }
   },
   "parameters": {
@@ -34,7 +34,7 @@
       "type": "string",
       "defaultValue": "Contoso-CC",
       "metadata": {
-        "description": "Optional. Cost center of owner team. (Defualt: Contoso-CC)"
+        "description": "Optional. Cost center of owner team. (Default: Contoso-CC)"
       }
     },
     "criticalityCustomTag": {
@@ -47,16 +47,16 @@
     "criticalityTag": {
       "type": "string",
       "defaultValue": "Low",
-      "metadata": {
-        "description": "Optional. criticality of each workload. (Default: Low)"
-      },
       "allowedValues": [
         "Low",
         "Medium",
         "High",
         "Mission-critical",
         "custom"
-      ]
+      ],
+      "metadata": {
+        "description": "Optional. criticality of each workload. (Default: Low)"
+      }
     },
     "customNaming": {
       "type": "bool",
@@ -68,16 +68,16 @@
     "dataClassificationTag": {
       "type": "string",
       "defaultValue": "Non-business",
-      "metadata": {
-        "description": "Optional. Sensitivity of data hosted (Default: Non-business)"
-      },
       "allowedValues": [
         "Non-business",
         "Public",
         "General",
         "Confidential",
         "Highly confidential"
-      ]
+      ],
+      "metadata": {
+        "description": "Optional. Sensitivity of data hosted (Default: Non-business)"
+      }
     },
     "departmentTag": {
       "type": "string",
@@ -117,14 +117,14 @@
     "environmentTag": {
       "type": "string",
       "defaultValue": "Dev",
-      "metadata": {
-        "description": "Optional. Deployment environment of the application, workload. (Default: Dev)"
-      },
       "allowedValues": [
         "Prod",
         "Dev",
         "Staging"
-      ]
+      ],
+      "metadata": {
+        "description": "Optional. Deployment environment of the application, workload. (Default: Dev)"
+      }
     },
     "existingAutomationAccountResourceId": {
       "type": "string",
@@ -184,10 +184,10 @@
     "resourceGroupCustomName": {
       "type": "string",
       "defaultValue": "rg-avd-shared",
+      "maxLength": 90,
       "metadata": {
         "description": "Optional. Custom name for Resource Group. (Default: rg-avd-use2-shared-services)"
-      },
-      "maxLength": 90
+      }
     },
     "sharedServicesSubscriptionId": {
       "type": "string",
@@ -519,7 +519,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('Resource-Group-{0}', parameters('time'))]",
+      "name": "[format('RG-{0}', parameters('time'))]",
       "subscriptionId": "[parameters('sharedServicesSubscriptionId')]",
       "location": "[deployment().location]",
       "properties": {
@@ -542,8 +542,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "5633885625559620564"
+              "version": "0.21.1.54444",
+              "templateHash": "16305048561599990873"
             }
           },
           "parameters": {
@@ -563,14 +563,14 @@
             "lock": {
               "type": "string",
               "defaultValue": "",
-              "metadata": {
-                "description": "Optional. Specify the type of lock."
-              },
               "allowedValues": [
                 "",
                 "CanNotDelete",
                 "ReadOnly"
-              ]
+              ],
+              "metadata": {
+                "description": "Optional. Specify the type of lock."
+              }
             },
             "roleAssignments": {
               "type": "array",
@@ -651,8 +651,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "9812260853981246180"
+                      "version": "0.21.1.54444",
+                      "templateHash": "6750369994052504038"
                     }
                   },
                   "parameters": {
@@ -665,13 +665,13 @@
                     },
                     "level": {
                       "type": "string",
-                      "metadata": {
-                        "description": "Required. Set lock level."
-                      },
                       "allowedValues": [
                         "CanNotDelete",
                         "ReadOnly"
-                      ]
+                      ],
+                      "metadata": {
+                        "description": "Required. Set lock level."
+                      }
                     },
                     "notes": {
                       "type": "string",
@@ -781,8 +781,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "11153449749419185622"
+                      "version": "0.21.1.54444",
+                      "templateHash": "1146156557420886689"
                     }
                   },
                   "parameters": {
@@ -1111,7 +1111,7 @@
       "condition": "[and(parameters('enableMonitoringAlerts'), empty(parameters('existingLogAnalyticsWorkspaceResourceId')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('Log-Analytics-Workspace-{0}', parameters('time'))]",
+      "name": "[format('LA-Workspace-{0}', parameters('time'))]",
       "subscriptionId": "[parameters('sharedServicesSubscriptionId')]",
       "resourceGroup": "[variables('varResourceGroupName')]",
       "properties": {
@@ -1140,8 +1140,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "17656666052247098911"
+              "version": "0.21.1.54444",
+              "templateHash": "1156178304169403377"
             }
           },
           "parameters": {
@@ -1230,8 +1230,8 @@
             "dataRetention": {
               "type": "int",
               "defaultValue": 365,
-              "maxValue": 730,
               "minValue": 0,
+              "maxValue": 730,
               "metadata": {
                 "description": "Optional. Number of days data will be retained for."
               }
@@ -1290,8 +1290,8 @@
             "diagnosticLogsRetentionInDays": {
               "type": "int",
               "defaultValue": 365,
-              "maxValue": 365,
               "minValue": 0,
+              "maxValue": 365,
               "metadata": {
                 "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
               }
@@ -1334,14 +1334,14 @@
             "lock": {
               "type": "string",
               "defaultValue": "",
-              "metadata": {
-                "description": "Optional. Specify the type of lock."
-              },
               "allowedValues": [
                 "",
                 "CanNotDelete",
                 "ReadOnly"
-              ]
+              ],
+              "metadata": {
+                "description": "Optional. Specify the type of lock."
+              }
             },
             "roleAssignments": {
               "type": "array",
@@ -1534,8 +1534,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "11072840145105211426"
+                      "version": "0.21.1.54444",
+                      "templateHash": "13379431903908500265"
                     }
                   },
                   "parameters": {
@@ -1678,8 +1678,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "1910654083211710276"
+                      "version": "0.21.1.54444",
+                      "templateHash": "18035599797024630806"
                     }
                   },
                   "parameters": {
@@ -1812,8 +1812,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "10886725735622529375"
+                      "version": "0.21.1.54444",
+                      "templateHash": "15194527127560537713"
                     }
                   },
                   "parameters": {
@@ -1947,8 +1947,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "7339664764266649587"
+                      "version": "0.21.1.54444",
+                      "templateHash": "14867461711977977980"
                     }
                   },
                   "parameters": {
@@ -2119,15 +2119,15 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "3314778664153070065"
+                      "version": "0.21.1.54444",
+                      "templateHash": "1856549003153181310"
                     }
                   },
                   "parameters": {
                     "name": {
                       "type": "string",
-                      "maxLength": 63,
                       "minLength": 4,
+                      "maxLength": 63,
                       "metadata": {
                         "description": "Required. The data export rule name."
                       }
@@ -2266,8 +2266,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "11431006553018849947"
+                      "version": "0.21.1.54444",
+                      "templateHash": "3069063252346343891"
                     }
                   },
                   "parameters": {
@@ -2493,8 +2493,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "18444272838380580196"
+                      "version": "0.21.1.54444",
+                      "templateHash": "15607599815412583880"
                     }
                   },
                   "parameters": {
@@ -2538,8 +2538,8 @@
                     "retentionInDays": {
                       "type": "int",
                       "defaultValue": -1,
-                      "maxValue": 730,
                       "minValue": -1,
+                      "maxValue": 730,
                       "metadata": {
                         "description": "Optional. The table retention in days, between 4 and 730. Setting this property to -1 will default to the workspace retention."
                       }
@@ -2561,8 +2561,8 @@
                     "totalRetentionInDays": {
                       "type": "int",
                       "defaultValue": -1,
-                      "maxValue": 2555,
                       "minValue": -1,
+                      "maxValue": 2555,
                       "metadata": {
                         "description": "Optional. The table total retention in days, between 4 and 2555. Setting this property to -1 will default to table retention."
                       }
@@ -2662,8 +2662,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "13983506370486161923"
+                      "version": "0.21.1.54444",
+                      "templateHash": "15387093705469323985"
                     }
                   },
                   "parameters": {
@@ -2813,8 +2813,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "12619724914463621505"
+                      "version": "0.21.1.54444",
+                      "templateHash": "3735355062180278453"
                     }
                   },
                   "parameters": {
@@ -2983,14 +2983,14 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('sharedServicesSubscriptionId'), 'Microsoft.Resources/deployments', format('Resource-Group-{0}', parameters('time')))]"
+        "[subscriptionResourceId(parameters('sharedServicesSubscriptionId'), 'Microsoft.Resources/deployments', format('RG-{0}', parameters('time')))]"
       ]
     },
     {
       "condition": "[and(parameters('enableMonitoringAlerts'), empty(parameters('existingLogAnalyticsWorkspaceResourceId')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('Log-Analytics-Workspace-Wait-{0}', parameters('time'))]",
+      "name": "[format('LA-Workspace-Wait-{0}', parameters('time'))]",
       "subscriptionId": "[parameters('sharedServicesSubscriptionId')]",
       "resourceGroup": "[variables('varResourceGroupName')]",
       "properties": {
@@ -3000,7 +3000,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('Log-Analytics-Workspace-Wait-{0}', parameters('time'))]"
+            "value": "[format('LA-Workspace-Wait-{0}', parameters('time'))]"
           },
           "location": {
             "value": "[parameters('deploymentLocation')]"
@@ -3014,6 +3014,9 @@
           "timeout": {
             "value": "PT10M"
           },
+          "retentionInterval": {
+            "value": "PT1H"
+          },
           "scriptContent": {
             "value": "      Write-Host \"Start\"\r\n      Get-Date\r\n      Start-Sleep -Seconds 60\r\n      Write-Host \"Stop\"\r\n      Get-Date\r\n      "
           }
@@ -3024,8 +3027,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "5032871535674616411"
+              "version": "0.21.1.54444",
+              "templateHash": "8145106657487286483"
             }
           },
           "parameters": {
@@ -3166,14 +3169,14 @@
             "lock": {
               "type": "string",
               "defaultValue": "",
-              "metadata": {
-                "description": "Optional. Specify the type of lock."
-              },
               "allowedValues": [
                 "",
                 "CanNotDelete",
                 "ReadOnly"
-              ]
+              ],
+              "metadata": {
+                "description": "Optional. Specify the type of lock."
+              }
             },
             "tags": {
               "type": "object",
@@ -3291,14 +3294,14 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-{0}', parameters('time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time')))]"
       ]
     },
     {
       "condition": "[not(empty(parameters('existingAutomationAccountResourceId')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('Existing_Automation-Account-{0}', parameters('time'))]",
+      "name": "[format('Existing-AA-{0}', parameters('time'))]",
       "subscriptionId": "[parameters('sharedServicesSubscriptionId')]",
       "resourceGroup": "[variables('varAutomationAccountScope')]",
       "properties": {
@@ -3317,8 +3320,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "2451911312764097763"
+              "version": "0.21.1.54444",
+              "templateHash": "17316527543296696046"
             }
           },
           "parameters": {
@@ -3347,7 +3350,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('Automation-Account-{0}', parameters('time'))]",
+      "name": "[format('AA-{0}', parameters('time'))]",
       "subscriptionId": "[parameters('sharedServicesSubscriptionId')]",
       "resourceGroup": "[variables('varAutomationAccountScope')]",
       "properties": {
@@ -3365,8 +3368,8 @@
           "diagnosticLogsRetentionInDays": {
             "value": 30
           },
-          "diagnosticWorkspaceId": "[if(empty(parameters('existingLogAnalyticsWorkspaceResourceId')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', parameters('existingLogAnalyticsWorkspaceResourceId')))]",
-          "name": "[if(empty(parameters('existingAutomationAccountResourceId')), createObject('value', variables('varAutomationAccountName')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varAutomationAccountScope')), 'Microsoft.Resources/deployments', format('Existing_Automation-Account-{0}', parameters('time'))), '2022-09-01').outputs.name.value))]",
+          "diagnosticWorkspaceId": "[if(empty(parameters('existingLogAnalyticsWorkspaceResourceId')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', parameters('existingLogAnalyticsWorkspaceResourceId')))]",
+          "name": "[if(empty(parameters('existingAutomationAccountResourceId')), createObject('value', variables('varAutomationAccountName')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varAutomationAccountScope')), 'Microsoft.Resources/deployments', format('Existing-AA-{0}', parameters('time'))), '2022-09-01').outputs.name.value))]",
           "jobSchedules": {
             "value": [
               {
@@ -3441,8 +3444,8 @@
               }
             ]
           },
-          "skuName": "[if(empty(parameters('existingAutomationAccountResourceId')), createObject('value', 'Free'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varAutomationAccountScope')), 'Microsoft.Resources/deployments', format('Existing_Automation-Account-{0}', parameters('time'))), '2022-09-01').outputs.properties.value.sku.name))]",
-          "tags": "[if(not(empty(parameters('existingAutomationAccountResourceId'))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varAutomationAccountScope')), 'Microsoft.Resources/deployments', format('Existing_Automation-Account-{0}', parameters('time'))), '2022-09-01').outputs.tags.value), if(parameters('enableResourceTags'), createObject('value', variables('varCommonResourceTags')), createObject('value', createObject())))]",
+          "skuName": "[if(empty(parameters('existingAutomationAccountResourceId')), createObject('value', 'Free'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varAutomationAccountScope')), 'Microsoft.Resources/deployments', format('Existing-AA-{0}', parameters('time'))), '2022-09-01').outputs.properties.value.sku.name))]",
+          "tags": "[if(not(empty(parameters('existingAutomationAccountResourceId'))), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varAutomationAccountScope')), 'Microsoft.Resources/deployments', format('Existing-AA-{0}', parameters('time'))), '2022-09-01').outputs.tags.value), if(parameters('enableResourceTags'), createObject('value', variables('varCommonResourceTags')), createObject('value', createObject())))]",
           "systemAssignedIdentity": {
             "value": true
           }
@@ -3453,8 +3456,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "17382893164201981005"
+              "version": "0.21.1.54444",
+              "templateHash": "3330372472596925837"
             }
           },
           "parameters": {
@@ -3595,11 +3598,11 @@
             "diagnosticLogsRetentionInDays": {
               "type": "int",
               "defaultValue": 365,
+              "minValue": 0,
+              "maxValue": 365,
               "metadata": {
                 "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
-              },
-              "maxValue": 365,
-              "minValue": 0
+              }
             },
             "diagnosticStorageAccountId": {
               "type": "string",
@@ -3646,14 +3649,14 @@
             "lock": {
               "type": "string",
               "defaultValue": "",
-              "metadata": {
-                "description": "Optional. Specify the type of lock."
-              },
               "allowedValues": [
                 "",
                 "CanNotDelete",
                 "ReadOnly"
-              ]
+              ],
+              "metadata": {
+                "description": "Optional. Specify the type of lock."
+              }
             },
             "roleAssignments": {
               "type": "array",
@@ -3718,11 +3721,7 @@
                 "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                 "input": {
                   "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                  "enabled": true,
-                  "retentionPolicy": {
-                    "enabled": true,
-                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                  }
+                  "enabled": true
                 }
               },
               {
@@ -3731,16 +3730,12 @@
                 "input": {
                   "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
                   "timeGrain": null,
-                  "enabled": true,
-                  "retentionPolicy": {
-                    "enabled": true,
-                    "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                  }
+                  "enabled": true
                 }
               }
             ],
             "enableReferencedModulesTelemetry": false,
-            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]",
+            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]",
             "identityType": "[if(parameters('systemAssignedIdentity'), if(not(empty(parameters('userAssignedIdentities'))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(parameters('userAssignedIdentities'))), 'UserAssigned', 'None'))]",
             "identity": "[if(not(equals(variables('identityType'), 'None')), createObject('type', variables('identityType'), 'userAssignedIdentities', if(not(empty(parameters('userAssignedIdentities'))), parameters('userAssignedIdentities'), null())), null())]"
           },
@@ -3849,8 +3844,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "6029770799843890344"
+                      "version": "0.21.1.54444",
+                      "templateHash": "17170735581525169641"
                     }
                   },
                   "parameters": {
@@ -4003,8 +3998,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "9071198861930234993"
+                      "version": "0.21.1.54444",
+                      "templateHash": "5479295006707878833"
                     }
                   },
                   "parameters": {
@@ -4047,9 +4042,6 @@
                     "frequency": {
                       "type": "string",
                       "defaultValue": "OneTime",
-                      "metadata": {
-                        "description": "Optional. The frequency of the schedule."
-                      },
                       "allowedValues": [
                         "Day",
                         "Hour",
@@ -4057,7 +4049,10 @@
                         "Month",
                         "OneTime",
                         "Week"
-                      ]
+                      ],
+                      "metadata": {
+                        "description": "Optional. The frequency of the schedule."
+                      }
                     },
                     "interval": {
                       "type": "int",
@@ -4196,8 +4191,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "12776542730233712799"
+                      "version": "0.21.1.54444",
+                      "templateHash": "17442703444396836746"
                     }
                   },
                   "parameters": {
@@ -4215,16 +4210,16 @@
                     },
                     "type": {
                       "type": "string",
-                      "metadata": {
-                        "description": "Required. The type of the runbook."
-                      },
                       "allowedValues": [
                         "Graph",
                         "GraphPowerShell",
                         "GraphPowerShellWorkflow",
                         "PowerShell",
                         "PowerShellWorkflow"
-                      ]
+                      ],
+                      "metadata": {
+                        "description": "Required. The type of the runbook."
+                      }
                     },
                     "description": {
                       "type": "string",
@@ -4398,8 +4393,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "10564026705976903954"
+                      "version": "0.21.1.54444",
+                      "templateHash": "16872455273402734811"
                     }
                   },
                   "parameters": {
@@ -4547,8 +4542,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "10485683485216622133"
+                      "version": "0.21.1.54444",
+                      "templateHash": "15739346377207105668"
                     }
                   },
                   "parameters": {
@@ -4682,8 +4677,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "1910654083211710276"
+                      "version": "0.21.1.54444",
+                      "templateHash": "18035599797024630806"
                     }
                   },
                   "parameters": {
@@ -4821,8 +4816,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "13983506370486161923"
+                      "version": "0.21.1.54444",
+                      "templateHash": "15387093705469323985"
                     }
                   },
                   "parameters": {
@@ -5004,8 +4999,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "8546684199978548257"
+                      "version": "0.21.1.54444",
+                      "templateHash": "5587147182178326997"
                     }
                   },
                   "parameters": {
@@ -5475,8 +5470,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "6190814122913989119"
+                      "version": "0.21.1.54444",
+                      "templateHash": "14559775667395480629"
                     }
                   },
                   "parameters": {
@@ -5542,14 +5537,14 @@
                     "lock": {
                       "type": "string",
                       "defaultValue": "",
-                      "metadata": {
-                        "description": "Optional. Specify the type of lock."
-                      },
                       "allowedValues": [
                         "",
                         "CanNotDelete",
                         "ReadOnly"
-                      ]
+                      ],
+                      "metadata": {
+                        "description": "Optional. Specify the type of lock."
+                      }
                     },
                     "roleAssignments": {
                       "type": "array",
@@ -5672,8 +5667,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.16.2.56959",
-                              "templateHash": "14237990210174167995"
+                              "version": "0.21.1.54444",
+                              "templateHash": "10817246518679375966"
                             }
                           },
                           "parameters": {
@@ -5685,8 +5680,8 @@
                             },
                             "privateDNSResourceIds": {
                               "type": "array",
-                              "maxLength": 5,
                               "minLength": 1,
+                              "maxLength": 5,
                               "metadata": {
                                 "description": "Required. Array of private DNS zone resource IDs. A DNS zone group can support up to 5 DNS zones."
                               }
@@ -5807,8 +5802,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.16.2.56959",
-                              "templateHash": "5679997820891604517"
+                              "version": "0.21.1.54444",
+                              "templateHash": "13032708393704093995"
                             }
                           },
                           "parameters": {
@@ -6021,8 +6016,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "2540427780836869322"
+                      "version": "0.21.1.54444",
+                      "templateHash": "10676519467876912979"
                     }
                   },
                   "parameters": {
@@ -6180,8 +6175,8 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varAutomationAccountScope')), 'Microsoft.Resources/deployments', format('Existing_Automation-Account-{0}', parameters('time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-{0}', parameters('time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varAutomationAccountScope')), 'Microsoft.Resources/deployments', format('Existing-AA-{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time')))]"
       ]
     },
     {
@@ -6200,7 +6195,7 @@
             "value": "Storage Account Contributor"
           },
           "principalId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varAutomationAccountScope')), 'Microsoft.Resources/deployments', format('Automation-Account-{0}', parameters('time'))), '2022-09-01').outputs.systemAssignedPrincipalId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varAutomationAccountScope')), 'Microsoft.Resources/deployments', format('AA-{0}', parameters('time'))), '2022-09-01').outputs.systemAssignedPrincipalId.value]"
           },
           "principalType": {
             "value": "ServicePrincipal"
@@ -6212,8 +6207,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "4231849657270221795"
+              "version": "0.21.1.54444",
+              "templateHash": "17317977123822737513"
             }
           },
           "parameters": {
@@ -6762,7 +6757,7 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varAutomationAccountScope')), 'Microsoft.Resources/deployments', format('Automation-Account-{0}', parameters('time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varAutomationAccountScope')), 'Microsoft.Resources/deployments', format('AA-{0}', parameters('time')))]"
       ]
     },
     {
@@ -6807,8 +6802,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "1801949816843987262"
+              "version": "0.21.1.54444",
+              "templateHash": "6773203042735005838"
             }
           },
           "parameters": {
@@ -7000,8 +6995,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "14454452188832949335"
+                      "version": "0.21.1.54444",
+                      "templateHash": "2628891413283540922"
                     }
                   },
                   "parameters": {
@@ -7278,7 +7273,7 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId(parameters('sharedServicesSubscriptionId'), 'Microsoft.Resources/deployments', format('Resource-Group-{0}', parameters('time')))]"
+        "[subscriptionResourceId(parameters('sharedServicesSubscriptionId'), 'Microsoft.Resources/deployments', format('RG-{0}', parameters('time')))]"
       ]
     },
     {
@@ -7289,7 +7284,7 @@
       "condition": "[parameters('enableMonitoringAlerts')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('Scheduled-Query-Rule-{0}-{1}', range(0, length(variables('varAlerts')))[copyIndex()], parameters('time'))]",
+      "name": "[format('Sche-Query-Rule-{0}-{1}', range(0, length(variables('varAlerts')))[copyIndex()], parameters('time'))]",
       "subscriptionId": "[parameters('sharedServicesSubscriptionId')]",
       "resourceGroup": "[variables('varResourceGroupName')]",
       "properties": {
@@ -7325,7 +7320,7 @@
           "roleAssignments": {
             "value": []
           },
-          "scopes": "[if(empty(parameters('existingLogAnalyticsWorkspaceResourceId')), createObject('value', createArray(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value)), createObject('value', createArray(parameters('existingLogAnalyticsWorkspaceResourceId'))))]",
+          "scopes": "[if(empty(parameters('existingLogAnalyticsWorkspaceResourceId')), createObject('value', createArray(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value)), createObject('value', createArray(parameters('existingLogAnalyticsWorkspaceResourceId'))))]",
           "severity": {
             "value": "[variables('varAlerts')[range(0, length(variables('varAlerts')))[copyIndex()]].severity]"
           },
@@ -7347,8 +7342,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "4869517801244614046"
+              "version": "0.21.1.54444",
+              "templateHash": "3364210327753707174"
             }
           },
           "parameters": {
@@ -7570,8 +7565,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "12524426472999369584"
+                      "version": "0.21.1.54444",
+                      "templateHash": "15352642791797157407"
                     }
                   },
                   "parameters": {
@@ -7849,7 +7844,7 @@
       },
       "dependsOn": [
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Action-Group-{0}', parameters('time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-{0}', parameters('time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubscriptionId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time')))]"
       ]
     }
   ]
