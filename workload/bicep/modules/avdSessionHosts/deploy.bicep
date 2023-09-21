@@ -373,7 +373,6 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
   params: {
       virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
       dataCollectionRuleId: dataCollectionRuleId
-
   }
   dependsOn: [
       monitoring

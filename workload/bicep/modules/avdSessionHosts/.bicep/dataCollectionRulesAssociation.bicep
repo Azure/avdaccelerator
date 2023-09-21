@@ -16,14 +16,24 @@ param dataCollectionRuleId string
 // Variable declaration //
 // =========== //
 
-
 // =========== //
 // Deployments //
 // =========== //
+// Get Vm object
+resource getVm 'Microsoft.Compute/virtualMachines@2021-11-01' existing = {
+  name: virtualMachineName
+}
+
+// Deploy VM data rule collection association
 resource symbolicname 'Microsoft.Insights/dataCollectionRuleAssociations@2022-06-01' = {
   name: virtualMachineName
+  scope: getVm
   properties: {
     dataCollectionRuleId: dataCollectionRuleId
     description: 'AVD Insights data collection rule association'
+
   }
+  dependsOn: [
+    getVm
+  ]
 }
