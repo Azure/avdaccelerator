@@ -45,7 +45,7 @@
                             "type": "Microsoft.Common.TextBlock",
                             "visible": true,
                             "options": {
-                                "text": "Azure Azure Virtual Desktop Landing Zones will create the resource group hierarchy under the subscriptions with the prefix provided in this step.",
+                                "text": "Azure Virtual Desktop Landing Zones will create the resource group hierarchy under the subscriptions with the prefix provided in this step.",
                                 "link": {
                                     "label": "Learn more",
                                     "uri": "https://docs.microsoft.com/azure/cloud-adoption-framework/ready/enterprise-scale/management-group-and-subscription-organization"

@@ -231,7 +231,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
               options: '3'
           }
       }
-      // Azure AD (AAD) Join.
+      // Microsoft Entra ID (AAD) Join.
       extensionAadJoinConfig: {
           enabled: (identityServiceProvider == 'AAD') ? true: false
           settings: createIntuneEnrollment ? {
