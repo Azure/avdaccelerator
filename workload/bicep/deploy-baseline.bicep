@@ -47,7 +47,7 @@ param avdVmLocalUserPassword string
 @allowed([
     'ADDS' // Active Directory Domain Services
     'AADDS' // Azure Active Directory Domain Services
-    'AAD' // Azure AD Join
+    'AAD' // Microsoft Entra ID Join
 ])
 @sys.description('Required, The service providing domain services for Azure Virtual Desktop. (Default: ADDS)')
 param avdIdentityServiceProvider string = 'ADDS'
