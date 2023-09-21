@@ -611,6 +611,15 @@
                                     }
                                 },
                                 {
+                                    "name": "sessionHostSizeInfobox",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "options": {
+                                        "text": "Session host virtual machine sizing guidelines",
+                                        "uri": "https://learn.microsoft.com/windows-server/remote/remote-desktop-services/virtual-machine-recs",
+                                        "style": "Info"
+                                    }
+                                },
+                                {
                                     "name": "sessionHostsCount",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "VM count",
