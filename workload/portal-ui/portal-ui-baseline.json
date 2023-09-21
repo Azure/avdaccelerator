@@ -147,7 +147,7 @@
                                                 "value": "ADDS"
                                             },
                                             {
-                                                "label": "Microsoft Entra ID Domain Services (AAD DS)",
+                                                "label": "Azure AD Domain Services (AAD DS)",
                                                 "value": "AADDS"
                                             }
                                         ]
