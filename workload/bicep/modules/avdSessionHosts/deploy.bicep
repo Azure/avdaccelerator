@@ -402,6 +402,7 @@ module sessionHostsMonitoringWait '../../../../carml/1.3.0/Microsoft.Resources/d
   }
   dependsOn: [
       monitoring
+      dataCollectionRuleAssociation
   ]
 }
 
