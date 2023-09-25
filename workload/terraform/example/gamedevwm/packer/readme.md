@@ -71,6 +71,7 @@ To install the Packer configuration, follow these steps:
 
    This command will create a new virtual machine image based on the Packer configuration. The process may take several minutes to complete.
 
+More details in this [article](https://learn.microsoft.com/en-us/azure/virtual-machines/windows/build-image-with-packer)
 
 <!-- USAGE EXAMPLES -->
 ## Usage
