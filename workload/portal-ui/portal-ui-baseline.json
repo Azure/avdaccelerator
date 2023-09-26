@@ -2291,7 +2291,7 @@
                 "avdHostPoolType": "[steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType]",
                 "hostPoolPreferredAppGroupType": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneAppGroupOptions.preferredAppGroupType, 'Desktop')]",
                 "avdHostPoolLoadBalancerType": "[steps('managementPlane').managementPlaneHostPoolSettings.loadBalancerType]",
-                "avhHostPoolMaxSessions": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneHostPoolSettings.maxSessions, 1)]",
+                "hostPoolMaxSessions": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneHostPoolSettings.maxSessions, 1)]",
                 "avdPersonalAssignType": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolSettings.assignmentType, 'Automatic')]",
                 "avdIdentityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
                 "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",

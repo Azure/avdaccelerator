@@ -111,7 +111,7 @@ param avdPersonalAssignType string = 'Automatic'
 param avdHostPoolLoadBalancerType string = 'BreadthFirst'
 
 @sys.description('AVD host pool maximum number of user sessions per session host. (Default: 8)')
-param avhHostPoolMaxSessions int = 8
+param hostPoolMaxSessions int = 8
 
 @sys.description('AVD host pool start VM on Connect. (Default: true)')
 param avdStartVmOnConnect bool = true
@@ -521,8 +521,9 @@ var varWorkSpaceName = avdUseCustomNaming ? avdWorkSpaceCustomName : 'vdws-${var
 var varWorkSpaceFriendlyName = avdUseCustomNaming ? avdWorkSpaceCustomFriendlyName : 'Workspace ${deploymentPrefix} ${deploymentEnvironment} ${avdManagementPlaneLocation} 001'
 var varHostPoolName = avdUseCustomNaming ? avdHostPoolCustomName : 'vdpool-${varManagementPlaneNamingStandard}-001'
 var varHostFriendlyName = avdUseCustomNaming ? avdHostPoolCustomFriendlyName : 'Hostpool ${deploymentPrefix} ${deploymentEnvironment} ${avdManagementPlaneLocation} 001'
-var varApplicationGroupName = avdUseCustomNaming ? avdApplicationGroupCustomName : 'vdag-${hostPoolPreferredAppGroupType}-${varManagementPlaneNamingStandard}-001'
-var varApplicationGroupFriendlyName = avdUseCustomNaming ? avdApplicationGroupCustomFriendlyName : '${hostPoolPreferredAppGroupType} ${deploymentPrefix} ${deploymentEnvironment} ${avdManagementPlaneLocation} 001'
+var varHostPoolPreferredAppGroupType = toLower(hostPoolPreferredAppGroupType)
+var varApplicationGroupName = avdUseCustomNaming ? avdApplicationGroupCustomName : 'vdag-${varHostPoolPreferredAppGroupType}-${varManagementPlaneNamingStandard}-001'
+var varApplicationGroupFriendlyName = avdUseCustomNaming ? avdApplicationGroupCustomFriendlyName : '${varHostPoolPreferredAppGroupType} ${deploymentPrefix} ${deploymentEnvironment} ${avdManagementPlaneLocation} 001'
 var varScalingPlanName = avdUseCustomNaming ? avdScalingPlanCustomName : 'vdscaling-${varManagementPlaneNamingStandard}-001'
 var varScalingPlanExclusionTag = 'exclude-${varScalingPlanName}'
 var varScalingPlanWeekdaysScheduleName = 'Weekdays-${varManagementPlaneNamingStandard}'
@@ -977,7 +978,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
         scalingPlanExclusionTag: varScalingPlanExclusionTag
         scalingPlanSchedules: varScalingPlanSchedules
         scalingPlanName: varScalingPlanName
-        hostPoolMaxSessions: avhHostPoolMaxSessions
+        hostPoolMaxSessions: hostPoolMaxSessions
         personalAssignType: avdPersonalAssignType
         managementPlaneLocation: avdManagementPlaneLocation
         serviceObjectsRgName: varServiceObjectsRgName
