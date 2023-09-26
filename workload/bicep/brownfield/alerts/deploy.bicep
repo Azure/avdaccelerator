@@ -70,7 +70,7 @@ param ANFVolumeResourceIds array = []
 param Tags object = {}
 
 var ActionGroupName = 'ag-avdmetrics-${Environment}-${Location}'
-var AlertDescriptionHeader = 'Automated AVD Alert Deployment Solution (v2.1.1)\n'
+var AlertDescriptionHeader = 'Automated AVD Alert Deployment Solution (v2.1.2)\n'
 var AutomationAccountName = 'aa-avdmetrics-${Environment}-${Location}'
 var CloudEnvironment = environment().name
 var ResourceGroupCreate = ResourceGroupStatus == 'New' ? true : false
@@ -1209,75 +1209,6 @@ var LogAlertsHostPool = [
       ]
     }
   }
-  {
-    name: '${AlertNamePrefix}-HP-VM-MissingCritclUpdts-xHostPoolNamex'
-    displayName: '${AlertNamePrefix}-HostPool-VM-Missing Critical Security Updates (xHostPoolNamex)'
-    description: '${AlertDescriptionHeader}The VM is missing critical security updates that are not marked "optional" and are "approved" (xHostPoolNamex)\nEnsure patching is working as expected and update the VM as soon as possible.'
-    severity: 1
-    evaluationFrequency: 'PT6H'
-    windowSize: 'P1D'
-    overrideQueryTimeRange: 'P2D'
-    criteria: {
-      allOf: [
-        {
-          query: '''
-          // Missing security or critical updates 
-          // Count how many security or other critical updates are missing. 
-          Update
-          | where Classification == 'Security Updates'
-          | where UpdateState == 'Needed' and Optional == false and Approved == true
-          | where MSRCSeverity == 'Critical'
-          | lookup kind=inner  (
-          WVDAgentHealthStatus
-              | where TimeGenerated >= ago(4h) // should have matching host with info in this time frame
-              | summarize by SessionHostName, _ResourceId
-              ) on $left.Computer == $right.SessionHostName
-          | summarize count() by Computer, Classification, _ResourceId, _ResourceId1
-          | extend HostPoolName=tostring(split(_ResourceId1, '/')[8])
-          | extend VMResourceGroup=tostring(split(_ResourceId, '/')[4])
-          | where HostPoolName == 'xHostPoolNamex'      
-          '''
-          timeAggregation: 'Count'
-          dimensions: [
-            {
-              name: 'Computer'
-              operator: 'Include'
-              values: [
-                '*'
-              ]
-            }
-            {
-              name: 'count_'
-              operator: 'Include'
-              values: [
-                '*'
-              ]
-            }
-            {
-              name: 'HostPoolName'
-              operator: 'Include'
-              values: [
-                '*'
-              ]
-            }
-            {
-              name: 'VMResourceGroup'
-              operator: 'Include'
-              values: [
-                '*'
-              ]
-            }
-          ]
-          operator: 'GreaterThanOrEqual'
-          threshold: 1
-          failingPeriods: {
-            numberOfEvaluationPeriods: 1
-            minFailingPeriodsToAlert: 1
-          }
-        }
-      ]
-    }
-  }
 ]
 
 var LogAlertsStorage = [
@@ -1590,8 +1521,8 @@ var MetricAlerts = {
       displayName: '${AlertNamePrefix}-HostPool-VM-High CPU 85% (xHostPoolNamex)'
       description: '${AlertDescriptionHeader}Potential performance issues for users on the same host due to moderately limited CPU (Avarage over 5 mins.) Investigate session host CPU usage per user and/or CPU requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.'
       severity: 2
-      evaluationFrequency: 'PT1M'
-      windowSize: 'PT5M'
+      evaluationFrequency: 'PT5M'
+      windowSize: 'PT15M'
       criteria: {
         allOf: [
           {
@@ -1613,8 +1544,8 @@ var MetricAlerts = {
       displayName: '${AlertNamePrefix}-HostPool-VM-High CPU 95% (xHostPoolNamex)'
       description: '${AlertDescriptionHeader}Potential performance issues for users on the same host due to critically limited CPU (Avarage over 5 mins.) Investigate session host CPU usage per user and/or CPU requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.'
       severity: 1
-      evaluationFrequency: 'PT1M'
-      windowSize: 'PT5M'
+      evaluationFrequency: 'PT5M'
+      windowSize: 'PT15M'
       criteria: {
         allOf: [
           {
@@ -1636,8 +1567,8 @@ var MetricAlerts = {
       displayName: '${AlertNamePrefix}-HostPool-VM-Available Memory Less Than 2GB (xHostPoolNamex)'
       description: '${AlertDescriptionHeader}Potential performance issues for users on the same host due to moderately low memory. Investigate session host memory usage per user and/or memory requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.'
       severity: 2
-      evaluationFrequency: 'PT1M'
-      windowSize: 'PT5M'
+      evaluationFrequency: 'PT5M'
+      windowSize: 'PT15M'
       criteria: {
         allOf: [
           {
@@ -1659,8 +1590,8 @@ var MetricAlerts = {
       displayName: '${AlertNamePrefix}-HostPool-VM-Available Memory Less Than 1GB (xHostPoolNamex)'
       description: '${AlertDescriptionHeader}Potential performance issues for users on the same host due to critically low memory. Investigate session host memory usage per user and/or memory requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.'
       severity: 1
-      evaluationFrequency: 'PT1M'
-      windowSize: 'PT5M'
+      evaluationFrequency: 'PT5M'
+      windowSize: 'PT15M'
       criteria: {
         allOf: [
           {
