@@ -28,9 +28,9 @@ resource dataCollectionRules 'Microsoft.Insights/dataCollectionRules@2022-06-01'
   location: location
   tags: tags
   kind: 'Windows'
-  identity: {
-    type: 'SystemAssigned'
-  }
+  // identity: {
+  //   type: 'SystemAssigned'
+  // }
   properties: {
     // dataCollectionEndpointId: 'string'
     dataFlows: [
@@ -68,7 +68,7 @@ resource dataCollectionRules 'Microsoft.Insights/dataCollectionRules@2022-06-01'
                 '\\RemoteFX Network(*)\\Current TCP RTT'
                 '\\RemoteFX Network(*)\\Current UDP Bandwidth'
             ]
-            name: 'perfCounterDataSource30'
+            name: 'perfCounterDataSource10'
         }
         {
             streams: [
@@ -82,7 +82,7 @@ resource dataCollectionRules 'Microsoft.Insights/dataCollectionRules@2022-06-01'
                 '\\Terminal Services(*)\\Inactive Sessions'
                 '\\Terminal Services(*)\\Total Sessions'
             ]
-            name: 'perfCounterDataSource60'
+            name: 'perfCounterDataSource30'
         }
     ]
     windowsEventLogs: [
