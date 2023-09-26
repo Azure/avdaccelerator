@@ -31,7 +31,7 @@ resource symbolicname 'Microsoft.Insights/dataCollectionRuleAssociations@2022-06
   properties: {
     dataCollectionRuleId: dataCollectionRuleId
     description: 'AVD Insights data collection rule association'
-
+    
   }
   dependsOn: [
     getVm
