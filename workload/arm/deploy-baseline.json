@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "18069407191382665045"
+      "templateHash": "1320913085188889159"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -197,7 +197,7 @@
         "DepthFirst"
       ]
     },
-    "avhHostPoolMaxSessions": {
+    "hostPoolMaxSessions": {
       "type": "int",
       "defaultValue": 8,
       "metadata": {
@@ -1238,8 +1238,9 @@
     "varWorkSpaceFriendlyName": "[if(parameters('avdUseCustomNaming'), parameters('avdWorkSpaceCustomFriendlyName'), format('Workspace {0} {1} {2} 001', parameters('deploymentPrefix'), parameters('deploymentEnvironment'), parameters('avdManagementPlaneLocation')))]",
     "varHostPoolName": "[if(parameters('avdUseCustomNaming'), parameters('avdHostPoolCustomName'), format('vdpool-{0}-001', variables('varManagementPlaneNamingStandard')))]",
     "varHostFriendlyName": "[if(parameters('avdUseCustomNaming'), parameters('avdHostPoolCustomFriendlyName'), format('Hostpool {0} {1} {2} 001', parameters('deploymentPrefix'), parameters('deploymentEnvironment'), parameters('avdManagementPlaneLocation')))]",
-    "varApplicationGroupName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomName'), format('vdag-{0}-{1}-001', parameters('hostPoolPreferredAppGroupType'), variables('varManagementPlaneNamingStandard')))]",
-    "varApplicationGroupFriendlyName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomFriendlyName'), format('{0} {1} {2} {3} 001', parameters('hostPoolPreferredAppGroupType'), parameters('deploymentPrefix'), parameters('deploymentEnvironment'), parameters('avdManagementPlaneLocation')))]",
+    "varHostPoolPreferredAppGroupType": "[toLower(parameters('hostPoolPreferredAppGroupType'))]",
+    "varApplicationGroupName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomName'), format('vdag-{0}-{1}-001', variables('varHostPoolPreferredAppGroupType'), variables('varManagementPlaneNamingStandard')))]",
+    "varApplicationGroupFriendlyName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomFriendlyName'), format('{0} {1} {2} {3} 001', variables('varHostPoolPreferredAppGroupType'), parameters('deploymentPrefix'), parameters('deploymentEnvironment'), parameters('avdManagementPlaneLocation')))]",
     "varScalingPlanName": "[if(parameters('avdUseCustomNaming'), parameters('avdScalingPlanCustomName'), format('vdscaling-{0}-001', variables('varManagementPlaneNamingStandard')))]",
     "varScalingPlanExclusionTag": "[format('exclude-{0}', variables('varScalingPlanName'))]",
     "varScalingPlanWeekdaysScheduleName": "[format('Weekdays-{0}', variables('varManagementPlaneNamingStandard'))]",
@@ -12896,7 +12897,7 @@
             "value": "[variables('varScalingPlanName')]"
           },
           "hostPoolMaxSessions": {
-            "value": "[parameters('avhHostPoolMaxSessions')]"
+            "value": "[parameters('hostPoolMaxSessions')]"
           },
           "personalAssignType": {
             "value": "[parameters('avdPersonalAssignType')]"
