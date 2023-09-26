@@ -70,7 +70,7 @@ param ANFVolumeResourceIds array = []
 param Tags object = {}
 
 var ActionGroupName = 'ag-avdmetrics-${Environment}-${Location}'
-var AlertDescriptionHeader = 'Automated AVD Alert Deployment Solution (v2.1.1)\n'
+var AlertDescriptionHeader = 'Automated AVD Alert Deployment Solution (v2.1.2)\n'
 var AutomationAccountName = 'aa-avdmetrics-${Environment}-${Location}'
 var CloudEnvironment = environment().name
 var ResourceGroupCreate = ResourceGroupStatus == 'New' ? true : false
@@ -866,7 +866,7 @@ var LogAlertsHostPool = [
     }
   }
   {
-    name: '${AlertNamePrefix}-HP-VM-FSLgxProf-DskCompFailed-xHostPoolNamex'
+    name: '${AlertNamePrefix}-HP-VM-FSLgxProf-DskCmpFail-xHostPoolNamex'
     displayName: '${AlertNamePrefix}-HostPool-VM-FSLogix Profile Disk Compaction Failed (xHostPoolNamex)'
     description: '${AlertDescriptionHeader}User Profile Service logged Event ID 62 or 63. The profile Disk was marked for compaction due to additional white space but failed. See error details for additional information regarding xHostPoolNamex.'
     severity: 2
@@ -1025,7 +1025,7 @@ var LogAlertsHostPool = [
     }
   }
   {
-    name: '${AlertNamePrefix}-HP-VM-PersonalAssignedUnhlthy-xHostPoolNamex'
+    name: '${AlertNamePrefix}-HP-VM-PersnlAssigndUnhlthy-xHostPoolNamex'
     displayName: '${AlertNamePrefix}-HostPool-VM-Personal Assigned Health Check Failure (xHostPoolNamex)'
     description: '${AlertDescriptionHeader}VM is assigned to a user but one of the dependent resources is in a failed state for hostpool xHostPoolNamex'
     severity: 1
@@ -1090,7 +1090,7 @@ var LogAlertsHostPool = [
     }
   }
   {
-    name: '${AlertNamePrefix}-HP-Usr-ConnectionFailed-xHostPoolNamex'
+    name: '${AlertNamePrefix}-HP-Usr-ConnctnFailed-xHostPoolNamex'
     displayName: '${AlertNamePrefix}-HostPool-User-Connection Failed (xHostPoolNamex)'
     description: '${AlertDescriptionHeader}While trying to connect to xHostPoolNamex a user had an error and failed to connect to a VM. There are lots of variables between the end uers and AVD VMs. If this is frequent for the user, determine if their Internet connection is slow or latency is over 150 ms. Regarding xHostPoolNamex.'
     severity: 3
@@ -1209,75 +1209,6 @@ var LogAlertsHostPool = [
       ]
     }
   }
-  {
-    name: '${AlertNamePrefix}-HP-VM-MissingCriticalUpdates-xHostPoolNamex'
-    displayName: '${AlertNamePrefix}-HostPool-VM-Missing Critical Security Updates (xHostPoolNamex)'
-    description: '${AlertDescriptionHeader}The VM is missing critical security updates that are not marked "optional" and are "approved" (xHostPoolNamex)\nEnsure patching is working as expected and update the VM as soon as possible.'
-    severity: 1
-    evaluationFrequency: 'PT6H'
-    windowSize: 'P1D'
-    overrideQueryTimeRange: 'P1D'
-    criteria: {
-      allOf: [
-        {
-          query: '''
-          // Missing security or critical updates 
-          // Count how many security or other critical updates are missing. 
-          Update
-          | where Classification == 'Security Updates'
-          | where UpdateState == 'Needed' and Optional == false and Approved == true
-          | where MSRCSeverity == 'Critical'
-          | lookup kind=inner  (
-          WVDAgentHealthStatus
-              | where TimeGenerated >= ago(4h) // should have matching host with info in this time frame
-              | summarize by SessionHostName, _ResourceId
-              ) on $left.Computer == $right.SessionHostName
-          | summarize count() by Computer, Classification, _ResourceId, _ResourceId1
-          | extend HostPoolName=tostring(split(_ResourceId1, '/')[8])
-          | extend VMResourceGroup=tostring(split(_ResourceId, '/')[4])
-          | where HostPoolName == 'xHostPoolNamex'      
-          '''
-          timeAggregation: 'Count'
-          dimensions: [
-            {
-              name: 'Computer'
-              operator: 'Include'
-              values: [
-                '*'
-              ]
-            }
-            {
-              name: 'count_'
-              operator: 'Include'
-              values: [
-                '*'
-              ]
-            }
-            {
-              name: 'HostPoolName'
-              operator: 'Include'
-              values: [
-                '*'
-              ]
-            }
-            {
-              name: 'VMResourceGroup'
-              operator: 'Include'
-              values: [
-                '*'
-              ]
-            }
-          ]
-          operator: 'GreaterThanOrEqual'
-          threshold: 1
-          failingPeriods: {
-            numberOfEvaluationPeriods: 1
-            minFailingPeriodsToAlert: 1
-          }
-        }
-      ]
-    }
-  }
 ]
 
 var LogAlertsStorage = [
@@ -1379,7 +1310,7 @@ var LogAlertsStorage = [
 var MetricAlerts = {
   storageAccounts: [
     {
-      name: '${AlertNamePrefix}-StorAcct-Over-50msLatency'
+      name: '${AlertNamePrefix}-StorAcct-Ovr-50msLatncy'
       displayName: '${AlertNamePrefix}-Storage-Over 50ms Latency for Storage Acct'
       description: '${AlertDescriptionHeader}\nThis could indicate a lag or poor performance for user Profiles or Apps using MSIX App Attach.\nThis alert is specific to the Storage Account itself and does not include network latency.\nFor additional details on troubleshooting see:\n"https://learn.microsoft.com/en-us/azure/storage/files/storage-troubleshooting-files-performance#very-high-latency-for-requests"'
       severity: 2
@@ -1401,7 +1332,7 @@ var MetricAlerts = {
       targetResourceType: 'Microsoft.Storage/storageAccounts'
     }
     {
-      name: '${AlertNamePrefix}-StorAcct-Over-100msLatency'
+      name: '${AlertNamePrefix}-StorAcct-Ovr-100msLatncy'
       displayName: '${AlertNamePrefix}-Storage-Over 100ms Latency for Storage Acct'
       description: '${AlertDescriptionHeader}\nThis could indicate a lag or poor performance for user Profiles or Apps using MSIX App Attach.\nThis alert is specific to the Storage Account itself and does not include network latency.\nFor additional details on troubleshooting see:\n"https://learn.microsoft.com/en-us/azure/storage/files/storage-troubleshooting-files-performance#very-high-latency-for-requests"'
       severity: 1
@@ -1423,7 +1354,7 @@ var MetricAlerts = {
       targetResourceType: 'Microsoft.Storage/storageAccounts'
     }
     {
-      name: '${AlertNamePrefix}-StorAcct-Over-50msLatencyClnt-Stor'
+      name: '${AlertNamePrefix}-StorAcct-Ovr-50msLatncyClnt-Stor'
       displayName: '${AlertNamePrefix}-Storage-Over 50ms Latency Between Client-Storage'
       description: '${AlertDescriptionHeader}\nThis could indicate a lag or poor performance for user Profiles or Apps using MSIX App Attach.\nThis is a total latency from end to end between the Host VM and Storage to include network.\nFor additional details on troubleshooting see:\n"https://learn.microsoft.com/en-us/azure/storage/files/storage-troubleshooting-files-performance#very-high-latency-for-requests"'
       severity: 2
@@ -1445,7 +1376,7 @@ var MetricAlerts = {
       targetResourceType: 'Microsoft.Storage/storageAccounts'
     }
     {
-      name: '${AlertNamePrefix}-StorAcct-Over-100msLatencyClnt-Stor'
+      name: '${AlertNamePrefix}-StorAcct-Ovr-100msLatncyClnt-Stor'
       displayName: '${AlertNamePrefix}-Storage-Over 100ms Latency Between Client-Storage'
       description: '${AlertDescriptionHeader}\nThis could indicate a lag or poor performance for user Profiles or Apps using MSIX App Attach.\nThis is a total latency from end to end between the Host VM and Storage to include network.\nFor additional details on troubleshooting see:\n"https://learn.microsoft.com/en-us/azure/storage/files/storage-troubleshooting-files-performance#very-high-latency-for-requests"'
       severity: 1
@@ -1590,8 +1521,8 @@ var MetricAlerts = {
       displayName: '${AlertNamePrefix}-HostPool-VM-High CPU 85% (xHostPoolNamex)'
       description: '${AlertDescriptionHeader}Potential performance issues for users on the same host due to moderately limited CPU (Avarage over 5 mins.) Investigate session host CPU usage per user and/or CPU requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.'
       severity: 2
-      evaluationFrequency: 'PT1M'
-      windowSize: 'PT5M'
+      evaluationFrequency: 'PT5M'
+      windowSize: 'PT15M'
       criteria: {
         allOf: [
           {
@@ -1613,8 +1544,8 @@ var MetricAlerts = {
       displayName: '${AlertNamePrefix}-HostPool-VM-High CPU 95% (xHostPoolNamex)'
       description: '${AlertDescriptionHeader}Potential performance issues for users on the same host due to critically limited CPU (Avarage over 5 mins.) Investigate session host CPU usage per user and/or CPU requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.'
       severity: 1
-      evaluationFrequency: 'PT1M'
-      windowSize: 'PT5M'
+      evaluationFrequency: 'PT5M'
+      windowSize: 'PT15M'
       criteria: {
         allOf: [
           {
@@ -1636,8 +1567,8 @@ var MetricAlerts = {
       displayName: '${AlertNamePrefix}-HostPool-VM-Available Memory Less Than 2GB (xHostPoolNamex)'
       description: '${AlertDescriptionHeader}Potential performance issues for users on the same host due to moderately low memory. Investigate session host memory usage per user and/or memory requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.'
       severity: 2
-      evaluationFrequency: 'PT1M'
-      windowSize: 'PT5M'
+      evaluationFrequency: 'PT5M'
+      windowSize: 'PT15M'
       criteria: {
         allOf: [
           {
@@ -1659,8 +1590,8 @@ var MetricAlerts = {
       displayName: '${AlertNamePrefix}-HostPool-VM-Available Memory Less Than 1GB (xHostPoolNamex)'
       description: '${AlertDescriptionHeader}Potential performance issues for users on the same host due to critically low memory. Investigate session host memory usage per user and/or memory requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.'
       severity: 1
-      evaluationFrequency: 'PT1M'
-      windowSize: 'PT5M'
+      evaluationFrequency: 'PT5M'
+      windowSize: 'PT15M'
       criteria: {
         allOf: [
           {
