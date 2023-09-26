@@ -9,7 +9,7 @@ param Location string
 param VMResourceGroupId string
 
 // Help ensure entire deployment name is under 64 characters
-var HostPoolResourceName = length(HostPoolName) < 25 ? HostPoolName : skip(HostPoolName, length(HostPoolName)-25)
+var HostPoolResourceName = length(HostPoolName) < 20 ? HostPoolName : skip(HostPoolName, length(HostPoolName)-20)
 
 module metricAlerts_VirtualMachines '../../../../../carml/1.3.0/Microsoft.Insights/metricAlerts/deploy.bicep' = [for i in range(0, length(MetricAlerts.virtualMachines)): {
   name: 'c_${replace(MetricAlerts.virtualMachines[i].name, 'xHostPoolNamex', HostPoolResourceName)}-${Environment}'
