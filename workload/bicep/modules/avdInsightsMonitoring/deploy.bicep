@@ -129,7 +129,7 @@ module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
   name: 'DCR-${time}'
   params: {
       location: location
-      name: dataCollectionRulesName
+      name: 'microsoft-avdi-eastus' //dataCollectionRulesName
       alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
       tags: tags
   }
