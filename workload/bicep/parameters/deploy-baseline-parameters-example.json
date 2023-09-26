@@ -65,8 +65,8 @@
         "avdHostPoolLoadBalancerType": {
             "value": "BreadthFirst"
         },
-        "avhHostPoolMaxSessions": {
-            "value": 15
+        "hostPoolMaxSessions": {
+            "value": 8
         },
         "avdStartVmOnConnect": {
             "value": true
