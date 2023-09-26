@@ -1327,7 +1327,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         deployMonitoring: avdDeployMonitoring
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
-        dataCollectionRuleId: monitoringDiagnosticSettings.outputs.dataCollectionRuleId
+        dataCollectionRuleId: avdDeployMonitoring ? monitoringDiagnosticSettings.outputs.dataCollectionRuleId: ''
     }
     dependsOn: [
         fslogixAzureFilesStorage
