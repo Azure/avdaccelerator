@@ -28,9 +28,9 @@ resource dataCollectionRules 'Microsoft.Insights/dataCollectionRules@2022-06-01'
   location: location
   tags: tags
   kind: 'Windows'
-  // identity: {
-  //   type: 'SystemAssigned'
-  // }
+  identity: {
+    type: 'systemassigned'
+  }
   properties: {
     // dataCollectionEndpointId: 'string'
     dataFlows: [
