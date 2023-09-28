@@ -180,7 +180,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
       userAssignedIdentities: createAvdFslogixDeployment ? {
           '${storageManagedIdentityResourceId}': {}
       } : {}
-      systemAssignedIdentity: (identityServiceProvider == 'AAD') ? true: false
+      systemAssignedIdentity: (identityServiceProvider == 'AAD' || deployMonitoring) ? true: false
       availabilityZone: useAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
       encryptionAtHost: encryptionAtHost
       availabilitySetResourceId: useAvailabilityZones ? '' : '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/availabilitySets/${avsetNamePrefix}-${padLeft(((1 + (i + countIndex) / maxAvsetMembersCount)), 3, '0')}'

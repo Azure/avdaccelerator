@@ -32,7 +32,6 @@ resource dataCollectionRules 'Microsoft.Insights/dataCollectionRules@2022-06-01'
     type: 'systemassigned'
   }
   properties: {
-    // dataCollectionEndpointId: 'string'
     dataFlows: [
       {
         streams: [
