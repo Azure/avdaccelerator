@@ -49,6 +49,12 @@ param tags object
 param time string = utcNow()
 
 // =========== //
+// Variable declaration //
+// =========== //
+
+var varDcrRgName = 'AzureMonitor-DataCollectionRules'
+
+// =========== //
 // Deployments //
 // =========== //
 
@@ -125,7 +131,8 @@ module deployDiagnosticsAzurePolicyForAvd './.bicep/azurePolicyMonitoring.bicep'
 
 // data collection rules
 module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
-  scope: resourceGroup('${subscriptionId}', (deployAlaWorkspace ? '${monitoringRgName}': '${serviceObjectsRgName}'))
+  //scope: resourceGroup('${subscriptionId}', (deployAlaWorkspace ? '${monitoringRgName}': '${serviceObjectsRgName}'))
+  scope: resourceGroup('${subscriptionId}', '${varDcrRgName}')
   name: 'DCR-${time}'
   params: {
       location: location
