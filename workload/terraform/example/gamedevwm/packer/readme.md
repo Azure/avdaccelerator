@@ -55,7 +55,27 @@ Before you can use this Packer configuration, you will need to have the followin
 
 You will also need to have an Azure subscription and have the necessary permissions to create and manage virtual machines.
 
-Prior to running packer build create a resource group name `rg_gmdv_packer`
+Prior to running packer build a resource group name must be pre-created. Various options can be used to create a resource group in Azure with automation. These steps outline simple GUI steps via Azure Portal. [Create a Resource Group][rg]
+
+### Customizations
+
+The variables for creating a custom image using Packer are located in 2 files:
+| File Name                      | Description                                                                                                       |
+| -------------------------------| ----------------------------------------------------------------------------------------------------------------- |
+| variables.pkr.hcl              | This file contains the variables used in the Packer template for creating the custom image for gaming workloads.  |
+| variables.auto.pkrvars.hcl     | This file has settings for variables for creating a custom image. Modify these to customize.                      |
+
+Modify the variables.auto.pkrvars.hcl to change the most common options.
+The variables include:
+- image_offer: The offer of the image to use. Need help finding [available Azure image details](https://learn.microsoft.com/en-us/azure/virtual-machines/windows/cli-ps-findimage#list-images) 
+- image_publisher: The publisher of the image to use.
+- image_sku: The SKU of the image to use.
+- image_version: The version of the image to use.
+- vm_size: The size of the virtual machine to use. Need help finding [GPU vm sizes](https://learn.microsoft.com/en-us/azure/virtual-machines/sizes-gpu) 
+- resource_group_name: The name of the resource group to use.
+- region: The region where the resource group and virtual machine will be created.
+
+If you need further customizations look at modifying the defaults in the variables.pkr.hcl file.
 
 ### Installation
 
@@ -125,4 +145,6 @@ Microsoft Support is not yet handling issues for any published tools in this rep
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [Packer.io]: https://www.packer.io
+[def]: https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal#create-resource-groups
+[rg]: https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal#create-resource-groups
 
