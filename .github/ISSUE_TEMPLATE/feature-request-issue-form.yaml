@@ -1,0 +1,43 @@
+name: Feature Request
+description: Request a new feature!
+title: "[PLACEHOLDER] - Place a descriptive title here"
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We always appreciate the community involvement! Request the feature below
+  - type: textarea
+    id: describe-feature
+    attributes:
+      label: Describe the feature end to end, including deployment scenario details under which the feature would occur.
+    validations:
+      required: true
+  - type: textarea
+    id: feature-why
+    attributes:
+      label: Why is this feature important. Describe why this would be important for your organization and others. Would this impact similar orgs in the same way?
+    validations:
+      required: true
+  - type: textarea
+    id: correlation-id
+    attributes:
+      label: Please provide the correlation id associated with your error or bug.
+      description: You can use the example [here](https://learn.microsoft.com/azure/azure-resource-manager/templates/deployment-history?tabs=azure-portal) on how to find it 
+      value: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+    validations:
+      required: false
+  - type: textarea
+    id: feature-alternatives
+    attributes:
+      label: Can you describe any alternatives that you have taken since this feature does not exist?
+    validations:
+      required: false
+  - type: textarea
+    id: feature-implementation
+    attributes:
+      label: Feature Implementation
+      description: Did you successfully implement the feature on your own? Do you have code to share? Link to your branch, if applicable.
+      render: Shell
+    validations:
+      required: false
