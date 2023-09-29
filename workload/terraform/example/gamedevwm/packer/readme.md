@@ -13,13 +13,14 @@
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#customizations">Customizations</a></li>
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#Trademarks">Trademarks</a></li>
-    <li><a href="#Reportingissues">Reporting issues</a></li>
+    <li><a href="#issues">Reporting issues</a></li>
   </ol>
 </details>
 
@@ -65,7 +66,7 @@ The variables for creating a custom image using Packer are located in 2 files:
 | variables.pkr.hcl              | This file contains the variables used in the Packer template for creating the custom image for gaming workloads.  |
 | variables.auto.pkrvars.hcl     | This file has settings for variables for creating a custom image. Modify these to customize.                      |
 
-Modify the variables.auto.pkrvars.hcl to change the most common options.
+Modify the `variables.auto.pkrvars.hcl` to change the most common options.
 The variables include:
 - image_offer: The offer of the image to use. Need help finding [available Azure image details](https://learn.microsoft.com/en-us/azure/virtual-machines/windows/cli-ps-findimage#list-images) 
 - image_publisher: The publisher of the image to use.
@@ -75,7 +76,9 @@ The variables include:
 - resource_group_name: The name of the resource group to use.
 - region: The region where the resource group and virtual machine will be created.
 
-If you need further customizations look at modifying the defaults in the variables.pkr.hcl file.
+If you need further customizations look at modifying the defaults in the `variables.pkr.hcl` file.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Installation
 
@@ -92,6 +95,8 @@ To install the Packer configuration, follow these steps:
    This command will create a new virtual machine image based on the Packer configuration. The process may take several minutes to complete.
 
 More details in this [article](https://learn.microsoft.com/en-us/azure/virtual-machines/windows/build-image-with-packer)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- USAGE EXAMPLES -->
 ## Usage
@@ -139,7 +144,7 @@ This project may contain trademarks or logos for projects, products, or services
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Reporting issues
+## Issues
 Microsoft Support is not yet handling issues for any published tools in this repository. However, we would like to welcome you to open issues using GitHub [issues](https://github.com/Azure/avdaccelerator/issues) to collaborate and improve these tools.
 
 <!-- MARKDOWN LINKS & IMAGES -->
