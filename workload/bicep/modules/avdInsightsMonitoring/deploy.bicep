@@ -129,6 +129,18 @@ module deployDiagnosticsAzurePolicyForAvd './.bicep/azurePolicyMonitoring.bicep'
   ]
 }
 
+// AVD insights DCR RG (this will be deprecated soon)
+module dcrResourceGroup '../../../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
+  scope: subscription(subscriptionId)
+  name: 'Deploy-DCR-RG-${time}'
+  params: {
+      name: 'AzureMonitor-DataCollectionRules'
+      location: location
+      enableDefaultTelemetry: false
+      tags: tags
+  }
+}
+
 // data collection rules
 module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
   //scope: resourceGroup('${subscriptionId}', (deployAlaWorkspace ? '${monitoringRgName}': '${serviceObjectsRgName}'))
@@ -142,6 +154,7 @@ module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
   }
   dependsOn: [
     alaWorkspaceWait
+    dcrResourceGroup
   ]
 }
 
