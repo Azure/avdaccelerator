@@ -139,7 +139,7 @@
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Microsoft Entra ID (AAD)",
+                                                "label": "Microsoft Entra ID",
                                                 "value": "AAD"
                                             },
                                             {
@@ -1257,7 +1257,7 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, true))]",
                             "options": {
-                                "text": "When using private endpoints, an existing Azure Virtual Desktop vNet, and creating new private DNS zones, custom DNS servers may NOT be used (unless they are connected to the same vNet used for the Azure Virtual Desktop dpeloyment) in order for FSlogix/MSIX App Attach deployment to be successful, given that the private DNS zone will be linked to the existing vNet and this will be the only network able to resolve private endpoint DNS records. <br/> ***Note: selected options (existing vNet and create DNS zones) are only recommended when using Microsoft Entra ID (AAD) as identity service provider.",
+                                "text": "When using private endpoints, an existing Azure Virtual Desktop vNet, and creating new private DNS zones, custom DNS servers may NOT be used (unless they are connected to the same vNet used for the Azure Virtual Desktop dpeloyment) in order for FSlogix/MSIX App Attach deployment to be successful, given that the private DNS zone will be linked to the existing vNet and this will be the only network able to resolve private endpoint DNS records. <br/> ***Note: selected options (existing vNet and create DNS zones) are only recommended when using Microsoft Entra ID as identity service provider.",
                                 "uri": "https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy",
                                 "style": "Warning"
                             }
@@ -1363,7 +1363,7 @@
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
                                     "options": {
-                                        "text": "vNet peering to identity services is not required when Microsoft Entra ID (AAD) as identity service provider .",
+                                        "text": "vNet peering to identity services is not required when Microsoft Entra ID as identity service provider .",
                                         "uri": "https://learn.microsoft.com/azure/architecture/example-scenario/wvd/azure-virtual-desktop-azure-active-directory-join",
                                         "style": "info"
                                     }
