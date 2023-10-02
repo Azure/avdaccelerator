@@ -10,13 +10,23 @@ Follow the steps below to troubleshoot and resolve the issue:
 
 ### Validate environment and account configuration
 
-- **Check Configuration**: Review your Azure Virtual Desktop (AVD) virtual network configuration and ensure that DNS is properly configured and the virtual network is peered to Hub or Identity Services virtual network.
+- **Check Configuration**: Review your Azure Virtual Desktop (AVD) virtual network configuration and ensure that DNS is properly configured and the virtual network is peered to the network Hub or Identity Services virtual network. When using AD DS or AAD DS commonly the virtual network will need to be setup with custom DNS servers settings that point to the domain controllers IPs.
+    - Resources:
+        - 
 
-- **Credentials**: Verify that the domain join account credentials (username and password) provided in your AVD configuration are accurate and have the necessary permissions to join devices to the domain.
+- **Credentials**: Verify that the domain join account credentials (username and password) provided in your AVD LZA configuration are accurate and have the necessary permissions to join devices to the domain. After deployment the credentials used by the automation are aved in the workload key vault.
+    - Key vault naming: *kv-sec-<DeploymentPrefix>-<Environment(test/dev/prod)>-<Location>-<UniqueString(2)>*
+    - Domain user name secret: *domainJoinUserName*
+    - Dmain user password secret: *domainJoinUserPassword*
 
 ### Verify DNS and Network Connectivity
 
-- **DNS Resolution**: Ensure that DNS resolution is functioning correctly. Ping the FQDN (Fully Qualified Domain Name) of your domain from the deployed temporary management VM. If the ping fails, it indicates a DNS resolution problem.
+- **DNS Resolution**: Ensure that DNS resolution of the domain name is functioning correctly. Run an nslookup/Resolve-DnsName to the FQDN (Fully Qualified Domain Name) of your domain (i.e.: contoso.com) from the deployed temporary management VM or session hosts. If the name is not resolved, it indicates a DNS resolution problem.
+    - Resources:
+        - [nslookup](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/nslookup)
+        - [Resolve-DnsName](https://learn.microsoft.com/en-us/powershell/module/dnsclient/resolve-dnsname?view=windowsserver2022-ps)
+
+- **Domain controller connectivity**: ensure that the AV
 
 ### Check Domain Join Account
 
