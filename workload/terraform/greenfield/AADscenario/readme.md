@@ -8,7 +8,7 @@ This accelerator is to be used as starter kit and you can expand its functionali
 
 ## Table of contents
 
-- [Implement Azure Virtual Desktop with Azure Active Directory](#implement-azure-virtual-desktop-with-azure-active-directory)
+- [Implement Azure Virtual Desktop with Microsoft Entra ID](#implement-azure-virtual-desktop-with-azure-active-directory)
   - [Table of contents](#table-of-contents)
   - [Scenario Overview](#scenario-overview)
     - [Azure Architecture](#azure-architecture)
@@ -35,7 +35,7 @@ The solution implements a new:
   - 1 Workspaces – 1 pooled
   - AVD Monitoring, log analytics workspace and diagnostic logs enabled
   - AVD Scaling plan
-- Azure Files Storage with FSLogix share, RBAC role assignment and private endpoint joined to Azure Active Directory
+- Azure Files Storage with FSLogix share, RBAC role assignment and private endpoint joined to Microsoft Entra ID
 - Key Vault and private endpoint
 - Azure Virtual Desktop spoke resources:
   - Virtual Network
