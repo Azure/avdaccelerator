@@ -15,10 +15,9 @@ Follow the steps below to troubleshoot and resolve the issue:
         - [Name resolution for resources in Azure virtual networks](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-name-resolution-for-vms-and-role-instances?tabs=redhat)
 
 - **Credentials**: Verify that the domain join account credentials (username and password) provided in your AVD LZA configuration are accurate and have the necessary permissions to join devices to the domain. After deployment the credentials used by the automation are aved in the workload key vault.
-    - Key vault naming: *kv-sec-<'DeploymentPrefix'>-<'Environment(test/dev/prod)'>-<'Location'>-<'UniqueString(2)'>*
+    - Key vault naming: *kv-sec-<DeploymentPrefix>-<Environment(test/dev/prod)>-<Location>-<UniqueString(2)>*
     - Domain user name secret: *domainJoinUserName*
-    - Dmain user password secret: *domainJoinUserPassword*
-    Note: when deploying with private endpoints the networking settings of the key vault will need to be modify if accessing it from outside the virtual network ([key vault firewalls and virtual networks](https://learn.microsoft.com/en-us/azure/key-vault/general/network-security)).
+    - Domain user password secret: *domainJoinUserPassword*
 
 ### Verify DNS and Network Connectivity
 
@@ -27,7 +26,11 @@ Follow the steps below to troubleshoot and resolve the issue:
         - [nslookup](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/nslookup)
         - [Resolve-DnsName](https://learn.microsoft.com/en-us/powershell/module/dnsclient/resolve-dnsname?view=windowsserver2022-ps)
 
-- **Domain controller connectivity**: ensure that the AV
+- **Domain controller connectivity**: ensure that the AVD session hosts have line of sight to domain controllers. Ping the domain controller from the session host to verify line of sight and use dcdiag for further analysis on the state of the domain controllers. 
+    - Resources:
+        - [ping](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/ping)
+        - [dcdiag](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/dcdiag)
+        
 
 ### Check Domain Join Account
 
@@ -39,13 +42,15 @@ Follow the steps below to troubleshoot and resolve the issue:
 
 - **UPN Mismatch**: Confirm that the User Principal Name (UPN) of the domain joiner account matches the expected format (mail@domain.com)
 
+For further domain join troubleshooting, refer to [Active Directory domain join troubleshooting guidance](https://learn.microsoft.com/en-us/troubleshoot/windows-server/identity/active-directory-domain-join-troubleshooting-guidance).
+
 ## FSLogix Issues
 
-After successful deployment and enabling FSLogix, if users' containers are not beind created or mounted, follow these steps for troubleshooting:
+After successful deployment and enabling roaming profiles with FSLogix, if FSLogix is not working as expected, follow these steps for troubleshooting:
 
 ### Validate configuration
 - **Validate storage account configuration**: Review the storage account file share domain join status. If it appears as "Not Configured". If "Not Configured" first ensure domain join on the management virtual machine was successful as this is evidence that the domain join did not fail for usual reasons. 
 - **If using private endpoints**: Ensure you are able to resolve to the created file share in the storage account from the management virtual machine. If unable to resolve, ensure DNS is correctly set up, including:
 
-    - Private DNS Zones are correctly configured to the Identity Services virtual network
-    - If using custom DNS, conditional forwarders should be configured.
+    - Verify that Private DNS Zones are correctly configured to the Identity Services virtual network.
+    - If using custom DNS, conditional forwarders should be configured. Verify this is correctly configured.
