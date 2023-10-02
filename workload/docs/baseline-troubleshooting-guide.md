@@ -34,6 +34,8 @@ Follow the steps below to troubleshoot and resolve the issue:
 
 - **Password Expiry**: Ensure that the password for the domain joiner account has not expired. Reset the password if needed, and update it in your AVD configuration.
 
+- **Multi Factor Authentication (MFA)**: The account used for the deployment and the Active Directory Domain Join account cannot have multi-factor authentication (MFA) enabled.
+
 - **UPN Mismatch**: Confirm that the User Principal Name (UPN) of the domain joiner account matches the expected format (mail@domain.com)
 
 ## FSLogix Issues
