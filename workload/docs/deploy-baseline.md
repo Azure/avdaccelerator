@@ -11,7 +11,7 @@
   - **Environment** – Deployment Environment type (Development/Test/Production), will be used for naming and tagging purposes.
 - **Identity provider** blade
   - **Identity Service Provider** - Identity service provider (AD DS, AAD DS, AAD) that already exists and will be used for Azure Virtual Desktop.
-    - Microsoft Entra ID (AAD).
+    - Microsoft Entra ID.
     - Active Directory (AD DS).
     - Microsoft Entra ID Domain Services (AAD DS).
   - **Azure Virtual Desktop access assignment** - These identities will be granted access to Azure Virtual Desktop application groups (role "Desktop Virtualization User").
