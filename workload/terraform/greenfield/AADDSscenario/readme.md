@@ -8,7 +8,7 @@ This accelerator is to be used as starter kit and you can expand its functionali
 
 ## Table of contents
 
-- [Implement Azure Virtual Desktop with Azure Active Directory](#implement-azure-virtual-desktop-with-azure-active-directory)
+- [Implement Azure Virtual Desktop with Microsoft Entra ID](#implement-azure-virtual-desktop-with-azure-active-directory)
   - [Table of contents](#table-of-contents)
   - [Scenario Overview](#scenario-overview)
     - [Azure Architecture](#azure-architecture)
