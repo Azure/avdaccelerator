@@ -18,6 +18,7 @@ Follow the steps below to troubleshoot and resolve the issue:
     - Key vault naming: *kv-sec-<'DeploymentPrefix'>-<'Environment(test/dev/prod)'>-<'Location'>-<'UniqueString(2)'>*
     - Domain user name secret: *domainJoinUserName*
     - Dmain user password secret: *domainJoinUserPassword*
+    Note: when deploying with private endpoints the networking settings of the key vault will need to be modify if accessing it from outside the virtual network ([key vault firewalls and virtual networks](https://learn.microsoft.com/en-us/azure/key-vault/general/network-security)).
 
 ### Verify DNS and Network Connectivity
 
@@ -40,7 +41,7 @@ Follow the steps below to troubleshoot and resolve the issue:
 
 ## FSLogix Issues
 
-After successful deployment and enabling roaming profiles with FSLogix, if FSLogix is not working as expected, follow these steps for troubleshooting:
+After successful deployment and enabling FSLogix, if users' containers are not beind created or mounted, follow these steps for troubleshooting:
 
 ### Validate configuration
 - **Validate storage account configuration**: Review the storage account file share domain join status. If it appears as "Not Configured". If "Not Configured" first ensure domain join on the management virtual machine was successful as this is evidence that the domain join did not fail for usual reasons. 
