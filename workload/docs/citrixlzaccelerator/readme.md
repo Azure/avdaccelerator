@@ -315,7 +315,7 @@ Depending on how your Citrix Cloud and Azure AD are configured, one or more Ente
 | 5c913119-2257-4316-9994-5e8f3832265b | Default connection between Azure AD and Citrix Cloud with Citrix Endpoint Management |
 | e067934c-b52d-4e92-b1ca-70700bd1124e | Legacy connection between Azure AD and Citrix Cloud with Citrix Endpoint Management | 
 
-Each Enterprise application grants Citrix Cloud specific permissions to either the Microsoft Graph or the Windows Azure Active Directory API. For instance, the Workspace subscriber login grants User.Read permissions to both APIs so that users can sign-in and read their profile. More information about the permissions granted can be found [here](https://docs.citrix.com/en-us/citrix-cloud/citrix-cloud-management/identity-access-management/azure-ad-permissions.html). 
+Each Enterprise application grants Citrix Cloud specific permissions to either the Microsoft Graph or the Windows Microsoft Entra ID API. For instance, the Workspace subscriber login grants User.Read permissions to both APIs so that users can sign-in and read their profile. More information about the permissions granted can be found [here](https://docs.citrix.com/en-us/citrix-cloud/citrix-cloud-management/identity-access-management/azure-ad-permissions.html). 
 
 **Using Built-in Roles**
 	
