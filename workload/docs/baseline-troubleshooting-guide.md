@@ -12,7 +12,7 @@ Follow the steps below to troubleshoot and resolve the issue:
 
 - **Check Configuration**: Review your Azure Virtual Desktop (AVD) virtual network configuration and ensure that DNS is properly configured and the virtual network is peered to the network Hub or Identity Services virtual network. When using AD DS or AAD DS commonly the virtual network will need to be setup with custom DNS servers settings that point to the domain controllers IPs.
     - Resources:
-        - 
+        - [Name resolution for resources in Azure virtual networks](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-name-resolution-for-vms-and-role-instances?tabs=redhat)
 
 - **Credentials**: Verify that the domain join account credentials (username and password) provided in your AVD LZA configuration are accurate and have the necessary permissions to join devices to the domain. After deployment the credentials used by the automation are aved in the workload key vault.
     - Key vault naming: *kv-sec-<DeploymentPrefix>-<Environment(test/dev/prod)>-<Location>-<UniqueString(2)>*
