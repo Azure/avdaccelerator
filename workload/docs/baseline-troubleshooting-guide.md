@@ -15,9 +15,9 @@ Follow the steps below to troubleshoot and resolve the issue:
         - [Name resolution for resources in Azure virtual networks](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-name-resolution-for-vms-and-role-instances?tabs=redhat)
 
 - **Credentials**: Verify that the domain join account credentials (username and password) provided in your AVD LZA configuration are accurate and have the necessary permissions to join devices to the domain. After deployment the credentials used by the automation are aved in the workload key vault.
-    - Key vault naming: *kv-sec-<DeploymentPrefix>-<Environment(test/dev/prod)>-<Location>-<UniqueString(2)>*
+    - Key vault naming: Key vault naming: *kv-sec-<'DeploymentPrefix'>-<'Environment(test/dev/prod)'>-<'Location'>-<'UniqueString(2)'>*
     - Domain user name secret: *domainJoinUserName*
-    - Domain user password secret: *domainJoinUserPassword*
+    - Dmain user password secret: *domainJoinUserPassword*
 
 ### Verify DNS and Network Connectivity
 
@@ -46,7 +46,7 @@ For further domain join troubleshooting, refer to [Active Directory domain join 
 
 ## FSLogix Issues
 
-After successful deployment and enabling roaming profiles with FSLogix, if FSLogix is not working as expected, follow these steps for troubleshooting:
+After successful deployment and enabling FSLogix, if users' containers are not being created or mounted, follow these steps for troubleshooting:
 
 ### Validate configuration
 - **Validate storage account configuration**: Review the storage account file share domain join status. If it appears as "Not Configured". If "Not Configured" first ensure domain join on the management virtual machine was successful as this is evidence that the domain join did not fail for usual reasons. 
