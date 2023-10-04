@@ -123,30 +123,30 @@ module managedIdentityCleanUp '../../../../carml/1.3.0/Microsoft.ManagedIdentity
   }
 }
 
-// Introduce wait for management VM to be ready.
-module managedIdentityWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (createStorageDeployment) {
-  scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
-  name: 'Managed-Identity-Wait-${time}'
-  params: {
-      name: 'Managed-Identity-Wait-${time}'
-      location: location
-      azPowerShellVersion: '9.7'
-      cleanupPreference: 'Always'
-      timeout: 'PT10M'
-      retentionInterval: 'PT1H'
-      scriptContent: '''
-      Write-Host "Start"
-      Get-Date
-      Start-Sleep -Seconds 60
-      Write-Host "Stop"
-      Get-Date
-      '''
-  }
-  dependsOn: [
-    managedIdentityStorage
-    managedIdentityCleanUp
-  ]
-}
+// // Introduce wait for management VM to be ready.
+// module managedIdentityWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (createStorageDeployment) {
+//   scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
+//   name: 'Managed-Identity-Wait-${time}'
+//   params: {
+//       name: 'Managed-Identity-Wait-${time}'
+//       location: location
+//       azPowerShellVersion: '9.7'
+//       cleanupPreference: 'Always'
+//       timeout: 'PT10M'
+//       retentionInterval: 'PT1H'
+//       scriptContent: '''
+//       Write-Host "Start"
+//       Get-Date
+//       Start-Sleep -Seconds 60
+//       Write-Host "Stop"
+//       Get-Date
+//       '''
+//   }
+//   dependsOn: [
+//     managedIdentityStorage
+//     managedIdentityCleanUp
+//   ]
+// }
 
 // Start VM on connect role assignments
 module startVMonConnectRoleAssignCompute '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (enableStartVmOnConnect && !deployScalingPlan) {
@@ -177,7 +177,8 @@ module storageContributorRoleAssign '../../../../carml/1.3.0/Microsoft.Authoriza
     principalId: createStorageDeployment ? managedIdentityStorage.outputs.principalId : ''
   }
   dependsOn: [
-    managedIdentityWait
+    // managedIdentityWait
+    managedIdentityStorage
   ]
 }]
 
@@ -220,7 +221,8 @@ module cleanUpRoleAssign '../../../../carml/1.3.0/Microsoft.Authorization/roleAs
     principalId: (createStorageDeployment || createSessionHosts) ? managedIdentityCleanUp.outputs.principalId : ''
   }
   dependsOn: [
-    managedIdentityWait
+    // managedIdentityWait
+    managedIdentityStorage
   ]
 }
 //
