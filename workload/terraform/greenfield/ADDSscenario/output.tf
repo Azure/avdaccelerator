@@ -39,7 +39,7 @@ output "vnetrange" {
 }
 
 output "AVD_user_groupname" {
-  description = "Azure Active Directory Group for AVD users"
+  description = "Microsoft Entra ID Group for AVD users"
   value       = data.azuread_group.adds_group.display_name
 }
 output "vault_uri" {

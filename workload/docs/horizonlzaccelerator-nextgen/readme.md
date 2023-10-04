@@ -138,7 +138,7 @@ The following list provides more information about platform-based resources:
 
 - [Providing Access to VMware Horizon Cloud Service Desktops and Applications in Workspace ONE Access](https://docs.vmware.com/en/VMware-Workspace-ONE-Access/services/ws1-access-resources/GUID-361DF7AB-D944-4E87-8F6E-7F0425D23ACD.html) – Explains how to configure Workspace One for use with Horizon Cloud Service
 
-Typically, Horizon Cloud on Microsoft Azure integrates with Azure Active Directory or Workspace ONE Access for identity services. If you need to integrate a 3rd party prover like OKTA or OpenLDAP you can consider using Workspace ONE Access which has the ability to integrate with other LDAP providers.
+Typically, Horizon Cloud on Microsoft Azure integrates with Microsoft Entra ID or Workspace ONE Access for identity services. If you need to integrate a 3rd party prover like OKTA or OpenLDAP you can consider using Workspace ONE Access which has the ability to integrate with other LDAP providers.
 Resources Review the following resources on Identity integration.
 - [Workspace ONE Access](https://docs.vmware.com/en/VMware-Workspace-ONE-Access/index.html)
 - [Workspace ONE Access - Directory Integration](https://docs.vmware.com/en/VMware-Workspace-ONE-Access/services/ws1_access_directory/GUID-DF53F9EF-6715-469A-A885-9ACFE4B2A35B.html)
