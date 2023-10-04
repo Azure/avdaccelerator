@@ -44,8 +44,8 @@ This folder is laid out hierarchically so that different levels of modules may b
 | ------------------- | ------------------------------------------------------------ |
 | [modules](../modules)            | This folder contains re-usable modules that create infrastructure components that are used to compose more complex scenarios |
 | [ADDS scenarios](./ADDSscenario/readme.md)  | This folder contains scenario root modules that deploy AVD with ADDS join session host. |
-| [AAD scenarios](./AADscenario/readme.md)  | This folder contains scenario root modules that deploy AVD with Azure Active Directory join session host. |
-| [AAD Zero Trust scenarios](./zerotrust/readme.md)  | This folder contains scenario root modules that deploy AVD with Azure Active Directory join session host following zero trust principles. |
+| [AAD scenarios](./AADscenario/readme.md)  | This folder contains scenario root modules that deploy AVD with Microsoft Entra ID join session host. |
+| [AAD Zero Trust scenarios](./zerotrust/readme.md)  | This folder contains scenario root modules that deploy AVD with Microsoft Entra ID join session host following zero trust principles. |
 
 <details>
 <summary>Click to expand</summary>
