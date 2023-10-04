@@ -4,7 +4,7 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 @sys.description('Location where to deploy AVD management plane.')
-param managementPlaneLocation string
+param location string
 
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param subscriptionId string
@@ -55,7 +55,7 @@ module baselineMonitoringResourceGroup '../../../../carml/1.3.0/Microsoft.Resour
   name: 'Monitoing-RG-${time}'
   params: {
       name: monitoringRgName
-      location: managementPlaneLocation
+      location: location
       enableDefaultTelemetry: false
       tags: tags
   }
@@ -66,7 +66,7 @@ module alaWorkspace '../../../../carml/1.3.0/Microsoft.OperationalInsights/works
   scope: resourceGroup('${subscriptionId}', '${monitoringRgName}')
   name: 'LA-Workspace-${time}'
   params: {
-    location: managementPlaneLocation
+    location: location
     name: alaWorkspaceName
     dataRetention: alaWorkspaceDataRetention
     useResourcePermissions: true
@@ -83,7 +83,7 @@ module alaWorkspaceWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentS
   name: 'LA-Workspace-Wait-${time}'
   params: {
       name: 'LA-Workspace-Wait-${time}'
-      location: managementPlaneLocation
+      location: location
       azPowerShellVersion: '8.3.0'
       cleanupPreference: 'Always'
       timeout: 'PT10M'
@@ -107,7 +107,7 @@ module deployDiagnosticsAzurePolicyForAvd './.bicep/azurePolicyMonitoring.bicep'
   name: 'Custom-Policy-Monitoring-${time}'
   params: {
     alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
-    location: managementPlaneLocation
+    location: location
     subscriptionId: subscriptionId
     computeObjectsRgName: computeObjectsRgName
     serviceObjectsRgName: serviceObjectsRgName
