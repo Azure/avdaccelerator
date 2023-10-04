@@ -772,29 +772,29 @@ module workspace '../../carml/1.3.0/Microsoft.OperationalInsights/workspaces/dep
     ]
 }
 
-// Introduce wait after log analitics workspace creation.
-module workspaceWait '../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
-    scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'LA-Workspace-Wait-${time}'
-    params: {
-        name: 'LA-Workspace-Wait-${time}'
-        location: deploymentLocation
-        azPowerShellVersion: '8.3.0'
-        cleanupPreference: 'Always'
-        timeout: 'PT10M'
-        retentionInterval: 'PT1H'
-        scriptContent: '''
-        Write-Host "Start"
-        Get-Date
-        Start-Sleep -Seconds 60
-        Write-Host "Stop"
-        Get-Date
-        '''
-    }
-    dependsOn: [
-        workspace
-    ]
-}
+// // Introduce wait after log analitics workspace creation.
+// module workspaceWait '../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
+//     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
+//     name: 'LA-Workspace-Wait-${time}'
+//     params: {
+//         name: 'LA-Workspace-Wait-${time}'
+//         location: deploymentLocation
+//         azPowerShellVersion: '8.3.0'
+//         cleanupPreference: 'Always'
+//         timeout: 'PT10M'
+//         retentionInterval: 'PT1H'
+//         scriptContent: '''
+//         Write-Host "Start"
+//         Get-Date
+//         Start-Sleep -Seconds 60
+//         Write-Host "Stop"
+//         Get-Date
+//         '''
+//     }
+//     dependsOn: [
+//         workspace
+//     ]
+// }
 
 // Automation account.
 module automationAccount '../../carml/1.3.0/Microsoft.Automation/automationAccounts/deploy.bicep' = {
@@ -854,9 +854,12 @@ module automationAccount '../../carml/1.3.0/Microsoft.Automation/automationAccou
             '${userAssignedManagedIdentity.outputs.resourceId}': {}
         }
     }
-    dependsOn: empty(existingLogAnalyticsWorkspaceResourceId) ? [
-        workspaceWait
-    ] : []
+    // dependsOn: empty(existingLogAnalyticsWorkspaceResourceId) ? [
+    //     workspaceWait
+    // ] : []
+    dependsOn: [
+        workspace
+    ]
 }
 
 // Automation accounts.
@@ -953,7 +956,10 @@ module scheduledQueryRules '../../carml/1.3.0/Microsoft.Insights/scheduledQueryR
         criterias: varAlerts[i].criterias
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
-    dependsOn: empty(existingLogAnalyticsWorkspaceResourceId) ? [
-        workspaceWait
-    ] : []
+    // dependsOn: empty(existingLogAnalyticsWorkspaceResourceId) ? [
+    //     workspaceWait
+    // ] : []
+    dependsOn: [
+        workspace
+    ]
 }]
