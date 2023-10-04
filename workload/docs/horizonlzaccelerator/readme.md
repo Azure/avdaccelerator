@@ -111,7 +111,7 @@ Horizon offers flexible deployment options across private and public clouds, fro
 Designing a multi-cloud solution is challenging and complex. VMware has developed guidance for deploying Horizon on each of the supported cloud-based infrastructure platforms. Review the different reference architectures for other platforms on the [Horizon Reference Architecture](https://techzone.vmware.com/reference-architecture#horizon) on VMware TechZone. 
 
 # Design area – Identity
-Typically, Horizon Cloud on Microsoft Azure integrates with Azure Active Directory or Workspace ONE Access for identity services. If you need to integrate a 3rd party prover like OKTA or OpenLDAP you can consider using Workspace ONE Access which has the ability to integrate with other LDAP providers.
+Typically, Horizon Cloud on Microsoft Azure integrates with Microsoft Entra ID or Workspace ONE Access for identity services. If you need to integrate a 3rd party prover like OKTA or OpenLDAP you can consider using Workspace ONE Access which has the ability to integrate with other LDAP providers.
 
 Resources
 Review the following resources on Identity integration.
