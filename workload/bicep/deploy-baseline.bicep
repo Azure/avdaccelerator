@@ -766,11 +766,8 @@ var varMarketPlaceGalleryWindows = {
     }
 }
 var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip'
-//var varTempResourcesCleanUpDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/postDeploymentTempResourcesCleanUp.zip'
 var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
-//var varPostDeploymentTempResuorcesCleanUpScriptUri = '${varBaseScriptUri}scripts/postDeploymentTempResuorcesCleanUp.ps1'
 var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
-//var varPostDeploymentTempResuorcesCleanUpScript = './PostDeploymentTempResuorcesCleanUp.ps1'
 var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
 var varDefaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers' : 'Computers'
 var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
@@ -824,15 +821,7 @@ var verResourceGroups = [
         location: avdSessionHostLocation
         enableDefaultTelemetry: false
         tags: createResourceTags ? union(varAllComputeStorageTags, varAvdDefaultTags) : union(varAvdDefaultTags, varAllComputeStorageTags)
-    }
-    //{
-    //    purpose: 'Deployment-Temp'
-    //    name: varTempRgName
-    //    location: avdSessionHostLocation
-    //    enableDefaultTelemetry: false
-    //    tags: createResourceTags ? union(varAllComputeStorageTags, varAvdDefaultTags) : union(varAvdDefaultTags, varAllComputeStorageTags)
-    //}
-    
+    }    
 ]
 
 // =========== //
@@ -895,7 +884,7 @@ module baselineStorageResourceGroup '../../carml/1.3.0/Microsoft.Resources/resou
 module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bicep' = if (avdDeployMonitoring) {
     name: 'Monitoring-${time}'
     params: {
-        managementPlaneLocation: avdManagementPlaneLocation
+        location: avdManagementPlaneLocation
         deployAlaWorkspace: deployAlaWorkspace
         computeObjectsRgName: varComputeObjectsRgName
         serviceObjectsRgName: varServiceObjectsRgName
@@ -1351,33 +1340,3 @@ module gpuPolicies './modules/avdSessionHosts/.bicep/azurePolicyGpuExtensions.bi
         sessionHosts
     ]
   }
-
-/*
-// Post deployment resources clean up.
-module addShareToDomainScript './modules/postDeploymentTempResourcesCleanUp/deploy.bicep' = if (removePostDeploymentTempResources)  {
-    scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
-    name: 'CleanUp-Temp-Resources-${time}'
-    params: {
-        location: avdSessionHostLocation
-        managementVmName: varManagementVmName
-        scriptFile: varPostDeploymentTempResuorcesCleanUpScript
-        //scriptArguments: varPostDeploymentTempResuorcesCleanUpScriptArgs
-        baseScriptUri: varPostDeploymentTempResuorcesCleanUpScriptUri
-        azureCloudName: varAzureCloudName
-        dscAgentPackageLocation: varTempResourcesCleanUpDscAgentPackageLocation
-        subscriptionId: avdWorkloadSubsId
-        serviceObjectsRgName: varServiceObjectsRgName
-        computeObjectsRgName: varComputeObjectsRgName
-        storageObjectsRgName: varStorageObjectsRgName
-        networkObjectsRgName: varNetworkObjectsRgName
-        monitoringObjectsRgName: varMonitoringRgName
-    }
-    dependsOn: [
-        sessionHosts
-        msixStorageAzureFiles
-        fslogixStorageAzureFiles
-        managementPLane
-        networking
-    ]
-}
-*/

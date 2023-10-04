@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "13370814242442732598"
+      "templateHash": "4213240222200296045"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -3332,7 +3332,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "managementPlaneLocation": {
+          "location": {
             "value": "[parameters('avdManagementPlaneLocation')]"
           },
           "deployAlaWorkspace": {
@@ -3369,11 +3369,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "3035548163754880904"
+              "templateHash": "6291822394343754042"
             }
           },
           "parameters": {
-            "managementPlaneLocation": {
+            "location": {
               "type": "string",
               "metadata": {
                 "description": "Location where to deploy AVD management plane."
@@ -3477,7 +3477,7 @@
                     "value": "[parameters('monitoringRgName')]"
                   },
                   "location": {
-                    "value": "[parameters('managementPlaneLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "enableDefaultTelemetry": {
                     "value": false
@@ -4071,7 +4071,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "location": {
-                    "value": "[parameters('managementPlaneLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "name": {
                     "value": "[parameters('alaWorkspaceName')]"
@@ -5955,7 +5955,7 @@
                     "value": "[format('LA-Workspace-Wait-{0}', parameters('time'))]"
                   },
                   "location": {
-                    "value": "[parameters('managementPlaneLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "azPowerShellVersion": {
                     "value": "8.3.0"
@@ -6264,7 +6264,7 @@
                 "parameters": {
                   "alaWorkspaceId": "[if(parameters('deployAlaWorkspace'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', parameters('alaWorkspaceId')))]",
                   "location": {
-                    "value": "[parameters('managementPlaneLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "subscriptionId": {
                     "value": "[parameters('subscriptionId')]"
