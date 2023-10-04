@@ -195,29 +195,29 @@ module ztManagedIdentity '../../../../carml/1.3.0/Microsoft.ManagedIdentity/user
     ]
 }
 
-// Introduce wait for managed identity to be ready.
-module ztManagedIdentityWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
-    scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
-    name: 'ZT-Mana-Ident-Wait-${time}'
-    params: {
-        name: 'Managed-Idenity-Wait-${time}'
-        location: location
-        azPowerShellVersion: '8.3.0'
-        cleanupPreference: 'Always'
-        timeout: 'PT10M'
-        retentionInterval: 'PT1H'
-        scriptContent: '''
-        Write-Host "Start"
-        Get-Date
-        Start-Sleep -Seconds 60
-        Write-Host "Stop"
-        Get-Date
-        '''
-    }
-    dependsOn: [
-        ztManagedIdentity
-    ]
-  }
+// // Introduce wait for managed identity to be ready.
+// module ztManagedIdentityWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
+//     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+//     name: 'ZT-Mana-Ident-Wait-${time}'
+//     params: {
+//         name: 'Managed-Idenity-Wait-${time}'
+//         location: location
+//         azPowerShellVersion: '8.3.0'
+//         cleanupPreference: 'Always'
+//         timeout: 'PT10M'
+//         retentionInterval: 'PT1H'
+//         scriptContent: '''
+//         Write-Host "Start"
+//         Get-Date
+//         Start-Sleep -Seconds 60
+//         Write-Host "Stop"
+//         Get-Date
+//         '''
+//     }
+//     dependsOn: [
+//         ztManagedIdentity
+//     ]
+//   }
 
 // Role Assignment for Zero Trust.
 module ztRoleAssignment '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (diskZeroTrust) {
