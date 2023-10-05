@@ -23,10 +23,20 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
 ### Account and Access requirements
 
 - [x]  The account used for the deployment and the Active Directory Domain Join account cannot have multi-factor authentication (MFA) enabled.
+- [x] The account used for joining to the domain must have at minimum these permissions on the specified Organizational Unit (OU). Default OU is "Computers" if none is specified in deployment.
+  - Object and all descendant objects:
+    - Create Computer Object
+  - Descendant Computer Objects:
+    - Write All Properties
+    - Modify Permissions
+    - Change Password
+    - Validate Write to DNS hostname
+    - Validate Write to Service Principal Name
 - [x]  The Domain Controllers used for AD join purposes should be standard writable Domain Controllers, not Read Only Domain Controllers (when using AD DS or AAD DS).
 - [x]  Ensure you have the appropriate [licenses](https://docs.microsoft.com/azure/virtual-desktop/prerequisites#operating-systems-and-licenses) for proper Azure Virtual Desktop entitlement.
 
 ### Networking requirements
+
 - [x]  If the new Azure Virtual Desktop workload will be connected (peered) with a Hub VNet, contributor permissions are required on the referenced Hub VNet.
 - [x]  Virtual network subnet used for Azure Virtual Desktop session host deployment, needs to access the following:
   - [list of URLs](https://learn.microsoft.com/azure/virtual-desktop/safe-url-list?tabs=azure#session-host-virtual-machines) session host VMs need to access for Azure Virtual Desktop (During and after deployment).
@@ -42,6 +52,7 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
   - Azure Government: privatelink.file.core.usgovcloudapi.net (Azure Files) and privatelink.vaultcore.usgovcloudapi.net (Key Vault).
 
 ### Other requirements
+
 - [x]  If implementing Zero Trust, ensure the prerequisites for encryption at host have been implemented: [Prerequisites](https://learn.microsoft.com/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell#prerequisites).
 - [x]  If enabling Start VM on Connect or Scaling Plans features, it is required to provide the ObjectID for the enterprise application Azure Virtual Desktop (Name can also be displayed as 'Windows Virtual Desktops'). To get the ObjectID got to Azure AD > Enterprise applications, remove all filters and search for 'Virtual Desktops' and copy the ObjectID that is paired with the Application ID: 9cdead84-a844-4324-93f2-b2e6bb768d07.
 - [x]  Account used for portal UI deployment, needs to be able to query Azure AD tenant and get the ObjectID of the Azure Virtual Desktop enterprise app, query will be executed by the automation using the user context.
@@ -54,12 +65,11 @@ This Azure Virtual Desktop accelerator supports deployment into greenfield scena
 
 ## Greenfield deployment
 
-In the Greenfield scenario, there are no existing Azure infrastructure components for Azure Virtual Desktop deployment. The automation framework will create an Azure Virtual Desktop workload in the desired Azure region, create a new VNet or reuse an existing VNet, and configure basic connectivity. 
+In the Greenfield scenario, there are no existing Azure infrastructure components for Azure Virtual Desktop deployment. The automation framework will create an Azure Virtual Desktop workload in the desired Azure region, create a new VNet or reuse an existing VNet, and configure basic connectivity.
 
 It is important to consider the life cycle of each of these components. If you want to deploy these items individually or via separate executions, then please see the Brownfield Deployment section.
 
 The Azure Virtual Desktop Green Field template provides a complete Azure Virtual Desktop landing zone reference implementation within a single template.
-
 
 ## Brownfield deployment
 
