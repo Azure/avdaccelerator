@@ -102,7 +102,6 @@ We have these other options available:
 
 - After successful deployment, you can remove the following temporary resources used only during deployment:
     - Management virtual machine (`vmmgmt{deploymentPrefix}{DeploymentEnvironment-d/t/p}{AzureRegionAcronym}`) and its associated OS disk and network interface.
-    Note: deployment scripts used to introduce wait times: Management-VM-Wait-{timestamp}, Managed-Identity-Wait-{timestamp}, Antimalware-Extension-Wait-{timestamp}, Session-Hosts-Wait-{timestamp}, SH-Monitoring-Wait-{timestamp} will automatically delete themselves 1 hour after the deployment, no need to trigger a manual delete.
 - You should assign specific roles, including [Azure Virtual Desktop - Specific roles](https://learn.microsoft.com/en-us/azure/virtual-desktop/rbac) based on your organization’s policies.
 - Preferably enable NSG Flow logs and Traffic Analytics.
 
