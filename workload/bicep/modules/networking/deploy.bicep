@@ -15,9 +15,6 @@ param deployAsg bool
 @sys.description('Existing virtual network subnet for AVD.')
 param existingAvdSubnetResourceId string
 
-@sys.description('Existing virtual network subnet for private endpoints.')
-param existingPeSubnetResourceId string
-
 @sys.description('Resource Group Name for the AVD session hosts')
 param computeObjectsRgName string
 
@@ -113,10 +110,6 @@ var varExistingAvdVnetSubId = !createVnet ? split(existingAvdSubnetResourceId, '
 var varExistingAvdVnetSubRgName = !createVnet ? split(existingAvdSubnetResourceId, '/')[4] : ''
 var varExistingAvdVnetName = !createVnet ? split(existingAvdSubnetResourceId, '/')[8] : ''
 var varExistingAvdVnetResourceId = !createVnet ? '/subscriptions/${varExistingAvdVnetSubId}/resourceGroups/${varExistingAvdVnetSubRgName}/providers/Microsoft.Network/virtualNetworks/${varExistingAvdVnetName}' : ''
-//var varExistingPeVnetSubId = split(existingPeSubnetResourceId, '/')[2]
-//var varExistingPeVnetSubRgName = split(existingPeSubnetResourceId, '/')[4]
-//var varExistingAPeVnetName = split(existingPeSubnetResourceId, '/')[8]
-//var varExistingPeVnetResourceId = '/subscriptions/${varExistingPeVnetSubId}/resourceGroups/${varExistingPeVnetSubRgName}/providers/Microsoft.Network/virtualNetworks/${varExistingAPeVnetName}'
 // =========== //
 // Deployments //
 // =========== //
