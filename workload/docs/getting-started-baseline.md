@@ -23,6 +23,15 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
 ### Account and Access requirements
 
 - [x]  The account used for the deployment and the Active Directory Domain Join account cannot have multi-factor authentication (MFA) enabled.
+- [x] The account used for joining to the domain must have at minimum these permissions on the specified Organizational Unit (OU). Default OU is "Computers" if none is specified in deployment.
+  - Object and all descendant objects: 
+	  - Create Computer Object
+  - Descendant Computer Objects: 
+	  - Write All Properties
+	  - Modify Permissions
+	  - Change Password
+	  - Validate Write to DNS hostname
+    - Validate Write to Service Principal Name
 - [x]  The Domain Controllers used for AD join purposes should be standard writable Domain Controllers, not Read Only Domain Controllers (when using AD DS or AAD DS).
 - [x]  Ensure you have the appropriate [licenses](https://docs.microsoft.com/azure/virtual-desktop/prerequisites#operating-systems-and-licenses) for proper Azure Virtual Desktop entitlement.
 
