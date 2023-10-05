@@ -49,12 +49,6 @@ param osDiskType string
 @sys.description('Market Place OS image')
 param osImage object
 
-//@sys.description('Set to deploy image from Azure. Compute Gallery')
-//param useSharedImage bool
-
-//@sys.description('Source custom image ID.')
-//param imageTemplateDefinitionId string
-
 @sys.description('Storage Managed Identity Resource ID.')
 param storageManagedIdentityResourceId string
 
