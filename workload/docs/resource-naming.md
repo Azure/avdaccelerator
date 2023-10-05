@@ -15,7 +15,6 @@ The naming of resources is hard coded in the templates but can also be modified 
 | `vdag-desktop-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{nnn}` | Azure Virtual Desktop Application group (Desktop) | |
 | `vdag-rapp-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{nnn}` | Azure Virtual Desktop Application group (RemoteApp) | |
 | `vdscaling-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{nnn}` | Azure Virtual Desktop Scaling Plan | |
-| `Managed-Identity-Wait-{Timestamp}` | Deployment script (Zero Trust) | Introduce wait time after managed identity creation. |
 | `des-zt-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{uniqueString}` | Disk Encryption Set (Zero Trust) | |
 | `DiskEncryptionKey` | Key (Zero Trust) | |
 | `kv-sec-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{uniqueString}` | Key vault | |
@@ -25,7 +24,6 @@ The naming of resources is hard coded in the templates but can also be modified 
 | `pe-kv-key-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{uniqueString}-vault` | Private endpoint (Zero Trust) | Private endpoint attached to key vault. |
 | `nic-{nn}-pe-kv-sec-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{uniqueString}-vault` | Network Interface | Network interface attached to key vault private endpoint. |
 | `nic-{nn}-pe-kv-key-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{uniqueString}-vault` | Network Interface (Zero Trust) | Network interface attached to key vault private endpoint. |
-| `AVD-managementVmWait-{Timestamp}` | Deployment script | Introduce wait time after management VM creation. |
 | `vmmgmt{deploymentPrefix}{DeploymentEnvironment-d/t/p}{AzureRegionAcronym}` | Virtual Machine | VM used to run management tasks (FSLogix, NTFS permissions, etc.). |
 | `osdisk-{nn}-vmmgmt{deploymentPrefix}{DeploymentEnvironment-d/t/p}{AzureRegionAcronym}` | Disk | OS disk attached to management VM. |
 | `nic-{nn}-vm-vmmgmt{deploymentPrefix}{DeploymentEnvironment-d/t/p}{AzureRegionAcronym}` | Network Interface | Network interface attached to management VM. |
@@ -40,9 +38,6 @@ The naming of resources is hard coded in the templates but can also be modified 
 | `vm{deploymentPrefix}{DeploymentEnvironment-d/t/p}{AzureRegionAcronym}{nnnn}` | Virtual Machine | |
 | `osdisk-{nn}-vm{deploymentPrefix}{DeploymentEnvironment-d/t/p}{AzureRegionAcronym}{nnnn}` | Disk | OS disk attached to session hosts. |
 | `nic-{nn}-vm{deploymentPrefix}{DeploymentEnvironment-d/t/p}{AzureRegionAcronym}{nnnn}` | Network Interface | NEtwork interface attached to session hosts. |
-| `Antimalware-Extension-Wait-{Timestamp}` | Deployment script | Introduce wait time after antimalware extension configuration. |
-| `Session-Hosts-Wait-{Timestamp}` | Deployment script | Introduce wait time after session host creation. |
-| `SH-Monitoring-Wait-{Timestamp}` | Deployment script | Introduce wait time after session monitoring agent. |
 
 ### Storage naming (FSLogix & MSIX App Attach)
 
@@ -50,7 +45,6 @@ The naming of resources is hard coded in the templates but can also be modified 
 |:--|:--|:--|
 | `rg-avd-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-storage` | Resource Group | |
 | `id-storage-{deploymentPrefix}-{DeploymentEnvironment}-{AzureRegionAcronym}-{nnn}` | Managed identity | Identity used for FSLogix setup. |
-| `Managed-Identity-Wait-{Timestamp}` | Deployment script | Introduce wait time after managed identity creation. |
 | `stfsl{deploymentPrefix}{DeploymentEnvironment-d/t/p}{uniqueString}` | Storage account | FSLogix file shares. |
 | `pe-stfsl{deploymentPrefix}{DeploymentEnvironment-d/t/p}{uniqueString}-file` | Private endpoint | Private endpoint attached to FSLogix storage account files service. |
 | `nic-{nn}-pe-stfsl{deploymentPrefix}{DeploymentEnvironment-d/t/p}{uniqueString}-file` | Network Interface | Network interface attached to FSLogix storage account's private endpoint. |
@@ -76,7 +70,6 @@ The naming of resources is hard coded in the templates but can also be modified 
 | Resource Name | Resource Type | |
 |:--|:--|:--|
 | `rg-avd-{DeploymentEnvironment}-{AzureRegionAcronym}-monitoring` | Resource Group | |
-| `Log-Analytics-Workspace-Wait-{Timestamp}` | Deployment Script | Introduce wait time after log analytics workspace creation. |
 | `log-avd-{DeploymentEnvironment}-{AzureRegionAcronym}` | Log Analytics Workspace | |
 
 ### Resource naming for the custom image build deployment
