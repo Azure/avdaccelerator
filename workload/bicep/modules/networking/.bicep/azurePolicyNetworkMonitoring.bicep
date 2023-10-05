@@ -44,36 +44,34 @@ var varCustomPolicySetDefinitions = {
   libSetDefinition: json(loadTextContent('../../../../policies/networking/policy-sets/policy-set-definition-es-deploy-networking.json'))
 }
 
-
 // =========== //
 // Deployments //
 // =========== //
 
-
 // Storage account for NSG flow logs. If blank value passed - then to 
 
 module deployStgAccountForFlowLogs '../../../../../carml/1.3.0/Microsoft.Storage/storageAccounts/deploy.bicep' = if (empty(stgAccountForFlowLogsId)) {
-scope: resourceGroup ('${monitoringRgName}')
-name: (length('Deploy-Stg-Account-for-Flow-Logs-${stgAccountForFlowLogsName}-${time}') > 64) ? take('Deploy-Stg-Account-for-Flow-Logs-${stgAccountForFlowLogsName}-${time}',64) : 'Deploy-Stg-Account-for-Flow-Logs-${stgAccountForFlowLogsName}-${time}'
-params: {
-  location: managementPlaneLocation
-  tags: tags
-  name: stgAccountForFlowLogsName
-  kind: 'StorageV2'
-  publicNetworkAccess: 'Disabled'
-  networkAcls: {
-    bypass: 'AzureServices'
-    defaultAction: 'Deny'
+  scope: resourceGroup('${monitoringRgName}')
+  name: (length('Deploy-Stg-Account-for-Flow-Logs-${stgAccountForFlowLogsName}-${time}') > 64) ? take('Deploy-Stg-Account-for-Flow-Logs-${stgAccountForFlowLogsName}-${time}', 64) : 'Deploy-Stg-Account-for-Flow-Logs-${stgAccountForFlowLogsName}-${time}'
+  params: {
+    location: managementPlaneLocation
+    tags: tags
+    name: stgAccountForFlowLogsName
+    kind: 'StorageV2'
+    publicNetworkAccess: 'Disabled'
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
   }
 }
-  }
 // Policy definitions.
 
 // Policy set definition.
- 
+
 module networkingPolicySetDefinition '../../../../../carml/1.3.0/Microsoft.Authorization/policySetDefinitions/subscription/deploy.bicep' = {
   scope: subscription('${workloadSubsId}')
-  name: (length('NetPolicySetDefini-${time}') > 64) ? take('AVD-Network-Policy-Set-Definition-${time}',64) : 'AVD-Network-Policy-Set-Definition-${time}'
+  name: (length('NetPolicySetDefini-${time}') > 64) ? take('AVD-Network-Policy-Set-Definition-${time}', 64) : 'AVD-Network-Policy-Set-Definition-${time}'
   params: {
     location: managementPlaneLocation
     name: varCustomPolicySetDefinitions.name
@@ -90,9 +88,9 @@ module networkingPolicySetDefinition '../../../../../carml/1.3.0/Microsoft.Autho
 // Policy set assignment.
 module networkingPolicySetDefinitionAssignment '../../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = {
   scope: subscription('${workloadSubsId}')
-  name: (length('NetPolicySetAssign-${time}') > 64) ? take('AVD-NetPolicySetAssign-${time}',64) : 'AVD-NetPolicySetAssign-${time}'
+  name: (length('NetPolicySetAssign-${time}') > 64) ? take('AVD-NetPolicySetAssign-${time}', 64) : 'AVD-NetPolicySetAssign-${time}'
   params: {
-    name: (length('${varCustomPolicySetDefinitions.name}-${workloadSubsId}') > 64) ? take('${varCustomPolicySetDefinitions.name}-${workloadSubsId}',64) : '${varCustomPolicySetDefinitions.name}-${workloadSubsId}'
+    name: (length('${varCustomPolicySetDefinitions.name}-${workloadSubsId}') > 64) ? take('${varCustomPolicySetDefinitions.name}-${workloadSubsId}', 64) : '${varCustomPolicySetDefinitions.name}-${workloadSubsId}'
     displayName: varCustomPolicySetDefinitions.libSetDefinition.properties.displayName
     description: varCustomPolicySetDefinitions.libSetDefinition.properties.description
     location: managementPlaneLocation
@@ -103,20 +101,20 @@ module networkingPolicySetDefinitionAssignment '../../../../../carml/1.3.0/Micro
     ]
     parameters: {
       nsgRegion: { value: managementPlaneLocation }
-      storageId: { value: (empty(stgAccountForFlowLogsId)) ? '${deployStgAccountForFlowLogs.outputs.resourceId}' : stgAccountForFlowLogsId  }
+      storageId: { value: (empty(stgAccountForFlowLogsId)) ? '${deployStgAccountForFlowLogs.outputs.resourceId}' : stgAccountForFlowLogsId }
       workspaceResourceId: { value: alaWorkspaceResourceId }
       workspaceRegion: { value: managementPlaneLocation }
       workspaceId: { value: alaWorkspaceId }
       networkWatcherRG: { value: 'NetworkWatcherRG' }
       networkWatcherName: { value: 'NetworkWatcher_${managementPlaneLocation}' }
 
+    }
   }
-      }
-      dependsOn: [ 
-        networkingPolicySetDefinition
-        deployStgAccountForFlowLogs
-       ]
-  }
+  dependsOn: [
+    networkingPolicySetDefinition
+    deployStgAccountForFlowLogs
+  ]
+}
 // =========== //
 // Outputs     //
 // =========== //
