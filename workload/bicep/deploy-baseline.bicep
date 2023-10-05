@@ -907,7 +907,6 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
     params: {
         createVnet: createAvdVnet
         deployAsg: (avdDeploySessionHosts || createAvdFslogixDeployment || createMsixDeployment) ? true : false
-        existingPeSubnetResourceId: existingVnetPrivateEndpointSubnetResourceId
         existingAvdSubnetResourceId: existingVnetAvdSubnetResourceId
         createPrivateDnsZones: deployPrivateEndpointKeyvaultStorage ? createPrivateDnsZones : false
         applicationSecurityGroupName: varApplicationSecurityGroupName
