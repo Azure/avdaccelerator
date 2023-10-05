@@ -28,7 +28,7 @@ avdHostPoolType | No       | AVD host pool type. (Default: Pooled)
 hostPoolPreferredAppGroupType | No       | Optional. The type of preferred application group type, default to Desktop Application Group.
 avdPersonalAssignType | No       | AVD host pool type. (Default: Automatic)
 avdHostPoolLoadBalancerType | No       | AVD host pool load balacing type. (Default: BreadthFirst)
-avhHostPoolMaxSessions | No       | AVD host pool maximum number of user sessions per session host. (Default: 8)
+hostPoolMaxSessions | No       | AVD host pool maximum number of user sessions per session host. (Default: 8)
 avdStartVmOnConnect | No       | AVD host pool start VM on Connect. (Default: true)
 avdHostPoolRdpProperties | No       | AVD host pool Custom RDP properties. (Default: audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2)
 avdDeployScalingPlan | No       | AVD deploy scaling plan. (Default: true)
@@ -104,7 +104,7 @@ avsetCustomNamePrefix | No       | AVD availability set custom name. (Default: a
 storageAccountPrefixCustomName | No       | AVD FSLogix and MSIX app attach storage account prefix custom name. (Default: st)
 fslogixFileShareCustomName | No       | FSLogix file share name. (Default: fslogix-pc-app1-dev-001)
 msixFileShareCustomName | No       | MSIX file share name. (Default: msix-app1-dev-001)
-avdWrklKvPrefixCustomName | No       | AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv)
+avdWrklKvPrefixCustomName | No       | AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv-sec)
 ztDiskEncryptionSetCustomNamePrefix | No       | AVD disk encryption set custom name. (Default: des-zt)
 ztManagedIdentityCustomName | No       | AVD managed identity for zero trust to encrypt managed disks using a customer managed key.  (Default: id-zt)
 ztKvPrefixCustomName | No       | AVD key vault custom name for zero trust and store store disk encryption key (Default: kv-key)
@@ -297,7 +297,7 @@ AVD host pool load balacing type. (Default: BreadthFirst)
 
 - Allowed values: `BreadthFirst`, `DepthFirst`
 
-### avhHostPoolMaxSessions
+### hostPoolMaxSessions
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
@@ -902,9 +902,9 @@ MSIX file share name. (Default: msix-app1-dev-001)
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv)
+AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv-sec)
 
-- Default value: `kv`
+- Default value: `kv-sec`
 
 ### ztDiskEncryptionSetCustomNamePrefix
 
@@ -1136,7 +1136,7 @@ Enable usage and telemetry feedback to Microsoft.
         "avdHostPoolLoadBalancerType": {
             "value": "BreadthFirst"
         },
-        "avhHostPoolMaxSessions": {
+        "hostPoolMaxSessions": {
             "value": 8
         },
         "avdStartVmOnConnect": {
@@ -1365,7 +1365,7 @@ Enable usage and telemetry feedback to Microsoft.
             "value": "msix-app1-dev-use2-001"
         },
         "avdWrklKvPrefixCustomName": {
-            "value": "kv"
+            "value": "kv-sec"
         },
         "ztDiskEncryptionSetCustomNamePrefix": {
             "value": "des-zt"
