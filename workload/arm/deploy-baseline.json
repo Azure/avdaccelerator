@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "6111832751492244000"
+      "templateHash": "11204760193048117934"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -7957,9 +7957,6 @@
             "value": "[parameters('createAvdVnet')]"
           },
           "deployAsg": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), parameters('createMsixDeployment')), createObject('value', true()), createObject('value', false()))]",
-          "existingPeSubnetResourceId": {
-            "value": "[parameters('existingVnetPrivateEndpointSubnetResourceId')]"
-          },
           "existingAvdSubnetResourceId": {
             "value": "[parameters('existingVnetAvdSubnetResourceId')]"
           },
@@ -8038,7 +8035,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "3756011210515160191"
+              "templateHash": "13214055304476289623"
             }
           },
           "parameters": {
@@ -8065,12 +8062,6 @@
               "type": "string",
               "metadata": {
                 "description": "Existing virtual network subnet for AVD."
-              }
-            },
-            "existingPeSubnetResourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Existing virtual network subnet for private endpoints."
               }
             },
             "computeObjectsRgName": {
