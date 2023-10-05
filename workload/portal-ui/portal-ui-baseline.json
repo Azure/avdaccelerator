@@ -1780,7 +1780,7 @@
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,2}$",
-                                        "validationMessage": "Value must be 1-5 characters."
+                                        "validationMessage": "Value must be 1-2 characters."
                                     }
                                 },
                                 {
