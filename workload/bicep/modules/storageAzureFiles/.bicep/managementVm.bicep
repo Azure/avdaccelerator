@@ -183,30 +183,6 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
     ]
 }
 
-// // Introduce wait for management VM to be ready.
-// module managementVmWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
-//     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
-//     name: 'MGMT-VM-Wait-${time}'
-//     params: {
-//         name: 'MGMT-VM-Wait-${time}'
-//         location: location
-//         azPowerShellVersion: '8.3.0'
-//         cleanupPreference: 'Always'
-//         timeout: 'PT10M'
-//         retentionInterval: 'PT1H'
-//         scriptContent: '''
-//         Write-Host "Start"
-//         Get-Date
-//         Start-Sleep -Seconds 120
-//         Write-Host "Stop"
-//         Get-Date
-//         '''
-//     }
-//     dependsOn: [
-//         managementVm
-//     ]
-// } 
-
 // =========== //
 //   Outputs   //
 // =========== //
