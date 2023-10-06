@@ -32,6 +32,16 @@
                             }
                         },
                         {
+                            "name": "deploymentInfo",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                                "style": "Info",
+                                "text": "The subscription selected in the 'Project details' section below will be used to deploy all resources. \n\nThe region selected in 'Instance details' section below will be used to deploy the Azure Virtual Desktop management plane resources (workspace, host pool, and application group, etc.). These resource types are not available in all regions, but they are globally replicated.\n\nThe session hosts do not have to be deployed to the same region, therefore you will have the option to select that region on the 'Session Hosts' blade.",
+                                "uri": "https://docs.microsoft.com/azure/virtual-desktop/data-locations"
+                            }
+                        },
+                        {
                             "name": "resourceScope",
                             "type": "Microsoft.Common.ResourceScope",
                             "location": {
@@ -95,16 +105,6 @@
                                     }
                                 }
                             ]
-                        },
-                        {
-                            "name": "deploymentInfo",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "style": "Info",
-                                "text": "The subscription selected in the 'Project details' section below will be used to deploy all resources. \n\nThe region selected in 'Instance details' section below will be used to deploy the Azure Virtual Desktop management plane resources (workspace, host pool, and application group, etc.). These resource types are not available in all regions, but they are globally replicated.\n\nThe session hosts do not have to be deployed to the same region, therefore you will have the option to select that region on the 'Session Hosts' blade.",
-                                "uri": "https://docs.microsoft.com/azure/virtual-desktop/data-locations"
-                            }
                         }
                     ]
                 },
