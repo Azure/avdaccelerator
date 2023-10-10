@@ -8,17 +8,18 @@ param name string
 @sys.description('Location where to deploy compute services.')
 param location string
 
-@sys.description('Location for the AVD agent installation package.')
-param avdAgentPackageLocation string
-
-@sys.description('AVD Host Pool Name')
-param hostPoolName string
-
-param systemData object = {}
+@sys.description('URI for FSlogix configuration script.')
+param baseScriptUri string
 
 @sys.description('AVD Host Pool registration token')
 //@secure()
 param hostPoolToken string
+
+// =========== //
+// Variable declaration //
+// =========== //
+var varScriptArguments = '-HostPoolRegistrationToken ${hostPoolToken}'
+var file = './Set-AvdAgents.ps1'
 
 // =========== //
 // Deployments //
@@ -28,19 +29,13 @@ resource addToHostPool 'Microsoft.Compute/virtualMachines/extensions@2022-08-01'
   name: '${name}/HostPoolRegistration'
   location: location
   properties: {
-    publisher: 'Microsoft.PowerShell'
-    type: 'DSC'
-    typeHandlerVersion: '2.73'
+    publisher: 'Microsoft.Compute'
+    type: 'CustomScriptExtension'
+    typeHandlerVersion: '1.10'
     autoUpgradeMinorVersion: true
-    settings: {
-      modulesUrl: avdAgentPackageLocation
-      configurationFunction: 'Configuration.ps1\\AddSessionHost'
-      properties: {
-        hostPoolName: hostPoolName
-        registrationInfoToken: hostPoolToken
-        aadJoin: false
-        sessionHostConfigurationLastUpdateTime: contains(systemData,'hostpoolUpdate') ? systemData.sessionHostConfigurationVersion : ''
-      }
+    protectedSettings: {
+      fileUris: array(baseScriptUri)
+      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File ${file} ${varScriptArguments}'
     }
   }
 }

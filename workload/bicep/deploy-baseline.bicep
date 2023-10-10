@@ -544,8 +544,9 @@ var varZtKvPrivateEndpointName = 'pe-${varZtKvName}-vault'
 //
 var varFsLogixScriptArguments = (avdIdentityServiceProvider == 'AAD') ? '-volumeshare ${varFslogixSharePath} -storageAccountName ${varFslogixStorageName} -identityDomainName ${avdIdentityDomainName}' : '-volumeshare ${varFslogixSharePath}'
 var varFslogixSharePath = '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
-var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
+var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/avd-agent-install-update/workload/'
 var varFslogixScriptUri = (avdIdentityServiceProvider == 'AAD') ? '${varBaseScriptUri}scripts/Set-FSLogixRegKeysAAD.ps1' : '${varBaseScriptUri}scripts/Set-FSLogixRegKeys.ps1'
+var varAvdAgentsScriptUri = '${varBaseScriptUri}scripts/Set-AvdAgents.ps1'
 var varFsLogixScript = (avdIdentityServiceProvider == 'AAD') ? './Set-FSLogixRegKeysAad.ps1' : './Set-FSLogixRegKeys.ps1'
 var varAvdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
 var varDiskEncryptionKeyExpirationInEpoch = dateTimeToEpoch(dateTimeAdd(time, 'P${string(diskEncryptionKeyExpirationInDays)}D'))
@@ -760,7 +761,7 @@ var varMarketPlaceGalleryWindows = {
         version: 'latest'
     }
 }
-var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip'
+var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/avd-agent-install-update/workload/scripts/DSCStorageScripts.zip'
 var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
 var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
 var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
@@ -1300,6 +1301,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         storageManagedIdentityResourceId: (varCreateStorageDeployment) ? identity.outputs.managedIdentityStorageResourceId : ''
         fslogixScript: varFsLogixScript
         fslogixScriptUri: varFslogixScriptUri
+        avdAgentsScriptUri: varAvdAgentsScriptUri
         fslogixSharePath: '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
         fslogixScriptArguments: varFsLogixScriptArguments
         marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
