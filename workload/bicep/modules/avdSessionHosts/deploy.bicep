@@ -124,6 +124,9 @@ param fslogixSharePath string
 @sys.description('URI for FSlogix configuration script.')
 param fslogixScriptUri string
 
+@sys.description('URI for AVD agents configuration script.')
+param avdAgentsScriptUri string
+
 @sys.description('Tags to be applied to resources')
 param tags object
 
@@ -338,10 +341,9 @@ module addAvdHostsToHostPool '.bicep/registerSessionHostsOnHopstPool.bicep' = [f
     name: 'HP-Join-${batchId}-${i}-${time}'
     params: {
         location: location
-        hostPoolToken: hostPool.properties.registrationInfo.token
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        hostPoolName: hostPoolName
-        avdAgentPackageLocation: avdAgentPackageLocation
+        hostPoolToken: hostPool.properties.registrationInfo.token
+        baseScriptUri: avdAgentsScriptUri
     }
     dependsOn: [
         sessionHosts
