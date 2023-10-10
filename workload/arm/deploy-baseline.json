@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "18197702742347957183"
+      "templateHash": "2675032123942285838"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -1264,7 +1264,6 @@
     "varFslogixScriptUri": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), format('{0}scripts/Set-FSLogixRegKeysAAD.ps1', variables('varBaseScriptUri')), format('{0}scripts/Set-FSLogixRegKeys.ps1', variables('varBaseScriptUri')))]",
     "varAvdAgentsScriptUri": "[format('{0}scripts/Set-AvdAgents.ps1', variables('varBaseScriptUri'))]",
     "varFsLogixScript": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), './Set-FSLogixRegKeysAad.ps1', './Set-FSLogixRegKeys.ps1')]",
-    "varAvdAgentPackageLocation": "[format('https://wvdportalstorageblob.blob.{0}/galleryartifacts/Configuration_09-08-2022.zip', environment().suffixes.storage)]",
     "varDiskEncryptionKeyExpirationInEpoch": "[dateTimeToEpoch(dateTimeAdd(parameters('time'), format('P{0}D', string(parameters('diskEncryptionKeyExpirationInDays')))))]",
     "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(parameters('createMsixDeployment'), true())), true(), false())]",
     "varFslogixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('fslogixStoragePerformance')), format('{0}_LRS', parameters('fslogixStoragePerformance')))]",
@@ -40940,9 +40939,6 @@
         "mode": "Incremental",
         "parameters": {
           "diskEncryptionSetResourceId": "[if(parameters('diskZeroTrust'), createObject('value', reference(subscriptionResourceId(parameters('avdWorkloadSubsId'), 'Microsoft.Resources/deployments', format('Zero-Trust-{0}', parameters('time'))), '2022-09-01').outputs.ztDiskEncryptionSetResourceId.value), createObject('value', ''))]",
-          "avdAgentPackageLocation": {
-            "value": "[variables('varAvdAgentPackageLocation')]"
-          },
           "timeZone": {
             "value": "[variables('varTimeZoneSessionHosts')]"
           },
@@ -41061,7 +41057,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "6146784391132807539"
+              "templateHash": "3061266772808801501"
             }
           },
           "parameters": {
@@ -41267,12 +41263,6 @@
               "type": "string",
               "metadata": {
                 "description": "AVD Host Pool name."
-              }
-            },
-            "avdAgentPackageLocation": {
-              "type": "string",
-              "metadata": {
-                "description": "Location for the AVD agent installation package."
               }
             },
             "createAvdFslogixDeployment": {

@@ -106,9 +106,6 @@ param asgResourceId string
 @sys.description('AVD Host Pool name.')
 param hostPoolName string
 
-@sys.description('Location for the AVD agent installation package.')
-param avdAgentPackageLocation string
-
 @sys.description('Deploy Fslogix setup.')
 param createAvdFslogixDeployment bool
 
