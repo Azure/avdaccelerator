@@ -544,7 +544,7 @@ var varZtKvName = avdUseCustomNaming ? '${ztKvPrefixCustomName}-${varComputeStor
 var varZtKvPrivateEndpointName = 'pe-${varZtKvName}-vault'
 //
 var varFslogixSharePath = '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
-var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
+var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/avd-agent-install-update/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
 var varDiskEncryptionKeyExpirationInEpoch = dateTimeToEpoch(dateTimeAdd(time, 'P${string(diskEncryptionKeyExpirationInDays)}D'))
@@ -759,7 +759,7 @@ var varMarketPlaceGalleryWindows = {
         version: 'latest'
     }
 }
-var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip'
+var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/avd-agent-install-update/workload/scripts/DSCStorageScripts.zip'
 var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
 var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
 var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
