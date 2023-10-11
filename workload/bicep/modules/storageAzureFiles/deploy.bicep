@@ -31,7 +31,7 @@ param sessionHostLocation string
 @sys.description('File share SMB multichannel.')
 param fileShareMultichannel bool
 
-@sys.description('AD domain name.')
+@sys.description('Identity domain name.')
 param identityDomainName string
 
 @sys.description('AD domain GUID.')
