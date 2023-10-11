@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "2675032123942285838"
+      "templateHash": "6038917382285619570"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -1262,9 +1262,9 @@
     "varFslogixSharePath": "[format('\\\\{0}.file.{1}\\{2}', variables('varFslogixStorageName'), environment().suffixes.storage, variables('varFslogixFileShareName'))]",
     "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
     "varFslogixScriptUri": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), format('{0}scripts/Set-FSLogixRegKeysAAD.ps1', variables('varBaseScriptUri')), format('{0}scripts/Set-FSLogixRegKeys.ps1', variables('varBaseScriptUri')))]",
-    "varAvdAgentsScriptUri": "[format('{0}scripts/Set-AvdAgents.ps1', variables('varBaseScriptUri'))]",
     "varFsLogixScript": "[if(equals(parameters('avdIdentityServiceProvider'), 'AAD'), './Set-FSLogixRegKeysAad.ps1', './Set-FSLogixRegKeys.ps1')]",
     "varDiskEncryptionKeyExpirationInEpoch": "[dateTimeToEpoch(dateTimeAdd(parameters('time'), format('P{0}D', string(parameters('diskEncryptionKeyExpirationInDays')))))]",
+    "varAvdAgentPackageLocation": "[format('https://wvdportalstorageblob.blob.{0}/galleryartifacts/Configuration_09-08-2022.zip', environment().suffixes.storage)]",
     "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(parameters('createMsixDeployment'), true())), true(), false())]",
     "varFslogixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('fslogixStoragePerformance')), format('{0}_LRS', parameters('fslogixStoragePerformance')))]",
     "varMsixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('msixStoragePerformance')), format('{0}_LRS', parameters('msixStoragePerformance')))]",
@@ -40942,6 +40942,9 @@
           "timeZone": {
             "value": "[variables('varTimeZoneSessionHosts')]"
           },
+          "avdAgentPackageLocation": {
+            "value": "[variables('varAvdAgentPackageLocation')]"
+          },
           "asgResourceId": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), parameters('createMsixDeployment')), createObject('value', format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.applicationSecurityGroupResourceId.value)), createObject('value', ''))]",
           "identityServiceProvider": {
             "value": "[parameters('avdIdentityServiceProvider')]"
@@ -41029,9 +41032,6 @@
           "fslogixScriptUri": {
             "value": "[variables('varFslogixScriptUri')]"
           },
-          "avdAgentsScriptUri": {
-            "value": "[variables('varAvdAgentsScriptUri')]"
-          },
           "fslogixSharePath": {
             "value": "[format('\\\\{0}.file.{1}\\{2}', variables('varFslogixStorageName'), environment().suffixes.storage, variables('varFslogixFileShareName'))]"
           },
@@ -41057,7 +41057,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "3061266772808801501"
+              "templateHash": "16056519774968078820"
             }
           },
           "parameters": {
@@ -41265,6 +41265,12 @@
                 "description": "AVD Host Pool name."
               }
             },
+            "avdAgentPackageLocation": {
+              "type": "string",
+              "metadata": {
+                "description": "Location for the AVD agent installation package."
+              }
+            },
             "createAvdFslogixDeployment": {
               "type": "bool",
               "metadata": {
@@ -41293,12 +41299,6 @@
               "type": "string",
               "metadata": {
                 "description": "URI for FSlogix configuration script."
-              }
-            },
-            "avdAgentsScriptUri": {
-              "type": "string",
-              "metadata": {
-                "description": "URI for AVD agents configuration script."
               }
             },
             "tags": {
@@ -46239,14 +46239,17 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
-                  "name": {
-                    "value": "[format('{0}{1}', parameters('namePrefix'), padLeft(add(range(1, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]"
-                  },
                   "hostPoolToken": {
                     "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.DesktopVirtualization/hostPools', parameters('hostPoolName')), '2019-12-10-preview').registrationInfo.token]"
                   },
-                  "baseScriptUri": {
-                    "value": "[parameters('avdAgentsScriptUri')]"
+                  "name": {
+                    "value": "[format('{0}{1}', parameters('namePrefix'), padLeft(add(range(1, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]"
+                  },
+                  "hostPoolName": {
+                    "value": "[parameters('hostPoolName')]"
+                  },
+                  "avdAgentPackageLocation": {
+                    "value": "[parameters('avdAgentPackageLocation')]"
                   }
                 },
                 "template": {
@@ -46256,7 +46259,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "5639292628945455424"
+                      "templateHash": "7172748536042045689"
                     }
                   },
                   "parameters": {
@@ -46272,11 +46275,21 @@
                         "description": "Location where to deploy compute services."
                       }
                     },
-                    "baseScriptUri": {
+                    "avdAgentPackageLocation": {
                       "type": "string",
                       "metadata": {
-                        "description": "URI for FSlogix configuration script."
+                        "description": "Location for the AVD agent installation package."
                       }
+                    },
+                    "hostPoolName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "AVD Host Pool Name"
+                      }
+                    },
+                    "systemData": {
+                      "type": "object",
+                      "defaultValue": {}
                     },
                     "hostPoolToken": {
                       "type": "string",
@@ -46285,10 +46298,6 @@
                       }
                     }
                   },
-                  "variables": {
-                    "varScriptArguments": "[format('-HostPoolRegistrationToken {0}', parameters('hostPoolToken'))]",
-                    "file": "./Set-AvdAgents.ps1"
-                  },
                   "resources": [
                     {
                       "type": "Microsoft.Compute/virtualMachines/extensions",
@@ -46296,13 +46305,19 @@
                       "name": "[format('{0}/HostPoolRegistration', parameters('name'))]",
                       "location": "[parameters('location')]",
                       "properties": {
-                        "publisher": "Microsoft.Compute",
-                        "type": "CustomScriptExtension",
-                        "typeHandlerVersion": "1.10",
+                        "publisher": "Microsoft.PowerShell",
+                        "type": "DSC",
+                        "typeHandlerVersion": "2.73",
                         "autoUpgradeMinorVersion": true,
-                        "protectedSettings": {
-                          "fileUris": "[array(parameters('baseScriptUri'))]",
-                          "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File {0} {1}', variables('file'), variables('varScriptArguments'))]"
+                        "settings": {
+                          "modulesUrl": "[parameters('avdAgentPackageLocation')]",
+                          "configurationFunction": "Configuration.ps1\\AddSessionHost",
+                          "properties": {
+                            "hostPoolName": "[parameters('hostPoolName')]",
+                            "registrationInfoToken": "[parameters('hostPoolToken')]",
+                            "aadJoin": false,
+                            "sessionHostConfigurationLastUpdateTime": "[if(contains(parameters('systemData'), 'hostpoolUpdate'), parameters('systemData').sessionHostConfigurationVersion, '')]"
+                          }
                         }
                       }
                     }
