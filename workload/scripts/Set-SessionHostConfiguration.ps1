@@ -249,7 +249,7 @@ try {
                         }
                 )
         }
-        if ($DomainServices -eq "AAD") {
+        if ($IdentityServiceProvider -eq "AAD") {
                 $Settings += @(
                         [PSCustomObject]@{
                                 Name         = 'CloudKerberosTicketRetrievalEnabled'
@@ -276,7 +276,7 @@ try {
         ##############################################################
         #  Add Azure AD Join Setting
         ##############################################################
-        if ($DomainServices -eq "AAD") {
+        if ($IdentityServiceProvider -eq "AAD") {
                 $Settings += @(
 
                         # Enable PKU2U: https://docs.microsoft.com/en-us/azure/virtual-desktop/troubleshoot-azure-ad-connections#windows-desktop-client
