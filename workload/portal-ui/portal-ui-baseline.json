@@ -158,7 +158,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "visible": true,
                                     "label": "Domain name",
-                                    "toolTip": "Provide identity service domain name.",
+                                    "toolTip": "The full qualified domain name of the on-premises domain where the hybrid identities originated from, this information is used for Azure files authentication setup.",
                                     "placeholder": "Example: contoso.com",
                                     "constraints": {
                                         "required": true
