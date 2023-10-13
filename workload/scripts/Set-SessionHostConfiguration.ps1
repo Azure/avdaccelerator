@@ -249,7 +249,7 @@ try {
                         }
                 )
         }
-        if ($IdentityServiceProvider -eq "AAD") {
+        if ($IdentityServiceProvider -eq "AAD" -and $Fslogix -eq 'true') {
                 $Settings += @(
                         [PSCustomObject]@{
                                 Name         = 'CloudKerberosTicketRetrievalEnabled'
@@ -266,7 +266,7 @@ try {
                         [PSCustomObject]@{
                                 Name         = $IdentityDomainName
                                 Path         = 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\Kerberos\domain_realm'
-                                PropertyType = 'MultiString'
+                                PropertyType = 'String'
                                 Value        = $fslogixStorageFqdn
                         }
 
