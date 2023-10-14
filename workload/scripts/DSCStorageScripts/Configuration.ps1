@@ -59,6 +59,10 @@ param
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string] $DomainAdminUserName,
+
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $StorageAccountFqdn,
 	
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
