@@ -37,7 +37,10 @@
         },            
         "avdApplicationGroupIdentitiesIds": {
             "value": ""
-        },           
+        },        
+        "securityPrincipalName": {
+            "value": ""
+        },    
         "avdApplicationGroupIdentityType": {
             "value": "Group"
         },       
