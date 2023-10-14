@@ -76,7 +76,6 @@ managementVmOsImage | No       | Management VM image SKU (Default: winServer_202
 useSharedImage | No       | Set to deploy image from Azure Compute Gallery. (Default: false)
 avdImageTemplateDefinitionId | No       | Source custom image ID. (Default: "")
 storageOuPath  | No       | OU name for Azure Storage Account. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.  (Default: "")
-createOuForStorage | No       | If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: false)
 avdUseCustomNaming | No       | AVD resources custom naming. (Default: false)
 avdServiceObjectsRgCustomName | No       | AVD service resources resource group custom name. (Default: rg-avd-app1-dev-use2-service-objects)
 avdNetworkObjectsRgCustomName | No       | AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-network)
@@ -673,14 +672,6 @@ Source custom image ID. (Default: "")
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
 OU name for Azure Storage Account. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.  (Default: "")
-
-### createOuForStorage
-
-![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
-
-If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: false)
-
-- Default value: `False`
 
 ### avdUseCustomNaming
 
@@ -1279,9 +1270,6 @@ Enable usage and telemetry feedback to Microsoft.
         },
         "storageOuPath": {
             "value": ""
-        },
-        "createOuForStorage": {
-            "value": false
         },
         "avdUseCustomNaming": {
             "value": false

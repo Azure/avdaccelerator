@@ -282,9 +282,6 @@ param avdImageTemplateDefinitionId string = ''
 @sys.description('OU name for Azure Storage Account. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.  (Default: "")')
 param storageOuPath string = ''
 
-@sys.description('If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: false)')
-param createOuForStorage bool = false
-
 // Custom Naming
 // Input must followe resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
 @sys.description('AVD resources custom naming. (Default: false)')
@@ -765,7 +762,6 @@ var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
 var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
 var varDefaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers' : 'Computers'
 var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
-var varCreateOuForStorageString = string(createOuForStorage)
 var varAllDnsServers = '${customDnsIps},168.63.129.16'
 var varDnsServers = empty(customDnsIps) ? [] : (split(varAllDnsServers, ','))
 var varCreateVnetPeering = !empty(existingHubVnetResourceId) ? true : false
@@ -1173,7 +1169,6 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
         managementVmName: varManagementVmName
         deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
         ouStgPath: varOuStgPath
-        createOuForStorageString: varCreateOuForStorageString
         managedIdentityClientId: varCreateStorageDeployment ? identity.outputs.managedIdentityStorageClientId : ''
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
@@ -1215,7 +1210,6 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (cr
         managementVmName: varManagementVmName
         deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
         ouStgPath: varOuStgPath
-        createOuForStorageString: varCreateOuForStorageString
         managedIdentityClientId: varCreateStorageDeployment ? identity.outputs.managedIdentityStorageClientId : ''
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
