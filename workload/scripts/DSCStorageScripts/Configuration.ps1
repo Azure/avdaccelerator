@@ -44,6 +44,10 @@ param
     [ValidateNotNullOrEmpty()]
     [string] $ClientId,
 
+    [Parameter(Mandatory = $false)]
+    [ValidateNotNullOrEmpty()]
+    [string]$SecurityPrincipalName,
+
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string] $OUName,
@@ -102,6 +106,10 @@ Configuration DomainJoinFileShare
         [ValidateNotNullOrEmpty()]
         [string] $ClientId,
 
+        [Parameter(Mandatory = $false)]
+        [ValidateNotNullOrEmpty()]
+        [string]$SecurityPrincipalName,
+
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $OUName,
@@ -113,6 +121,10 @@ Configuration DomainJoinFileShare
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $DomainAdminUserName,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $StorageAccountFqdn,
 	
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -146,7 +158,7 @@ Configuration DomainJoinFileShare
                 . (Join-Path $using:ScriptPath "Logger.ps1")
                 try {
                     Write-Log "DSC DomainJoinStorage SetScript Domain joining storage account $Using:StorageAccountName"
-                    & "$using:ScriptPath\Script-DomainJoinStorage.ps1" -StorageAccountName $Using:StorageAccountName -StorageAccountRG $Using:StorageAccountRG -SubscriptionId $Using:SubscriptionId -ClientId $Using:ClientId -ShareName $Using:ShareName -DomainName $Using:DomainName -IdentityServiceProvider $Using:IdentityServiceProvider -AzureCloudEnvironment $Using:AzureCloudEnvironment -CustomOuPath $Using:CustomOuPath -OUName $Using:OUName -StoragePurpose $Using:StoragePurpose
+                    & "$using:ScriptPath\Script-DomainJoinStorage.ps1" -StorageAccountName $Using:StorageAccountName -StorageAccountRG $Using:StorageAccountRG -SubscriptionId $Using:SubscriptionId -ClientId $Using:ClientId -SecurityPrincipalName $Using:SecurityPrincipalName -ShareName $Using:ShareName -DomainName $Using:DomainName -IdentityServiceProvider $Using:IdentityServiceProvider -AzureCloudEnvironment $Using:AzureCloudEnvironment -CustomOuPath $Using:CustomOuPath -OUName $Using:OUName -StoragePurpose $Using:StoragePurpose -StorageAccountFqdn $Using:StorageAccountFqdn
 
                     Write-Log "Successfully domain joined and/or NTFS permission set on Storage account"
                 }
@@ -200,4 +212,4 @@ $config = @{
     )
 }
 
-DomainJoinFileShare -ConfigurationData $config -StorageAccountName $StorageAccountName -StorageAccountRG $StorageAccountRG -SubscriptionId $SubscriptionId -ShareName $ShareName -DomainName $DomainName -IdentityServiceProvider $IdentityServiceProvider -AzureCloudEnvironment $AzureCloudEnvironment -CustomOuPath $CustomOuPath -OUName $OUName -DomainAdminUserName $DomainAdminUserName -DomainAdminUserPassword ($DomainAdminUserPassword -replace , '"', '\"') -ClientId $ClientId -StoragePurpose $StoragePurpose -Verbose;
+DomainJoinFileShare -ConfigurationData $config -StorageAccountName $StorageAccountName -StorageAccountRG $StorageAccountRG -SubscriptionId $SubscriptionId -ShareName $ShareName -DomainName $DomainName -IdentityServiceProvider $IdentityServiceProvider -AzureCloudEnvironment $AzureCloudEnvironment -CustomOuPath $CustomOuPath -OUName $OUName -DomainAdminUserName $DomainAdminUserName -DomainAdminUserPassword $DomainAdminUserPassword -ClientId $ClientId -SecurityPrincipalName $SecurityPrincipalName -StoragePurpose $StoragePurpose -StorageAccountFqdn $StorageAccountFqdn -Verbose;

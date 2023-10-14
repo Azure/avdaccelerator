@@ -18,6 +18,10 @@ param (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $ClientId,
+
+        [Parameter(Mandatory = $false)]
+        [ValidateNotNullOrEmpty()]
+        [String]$SecurityPrincipalName,
         
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -53,8 +57,11 @@ param (
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $StoragePurpose
+        [string] $StorageAccountFqdn,
 
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $StoragePurpose
 )
 
 Write-Host "Add domain join account as local administrator"
@@ -102,7 +109,7 @@ function Set-EscapeCharacters {
 }
 $DomainAdminUserPasswordEscaped = Set-EscapeCharacters $DomainAdminUserPassword
 
-$DscCompileCommand = "./Configuration.ps1 -StorageAccountName """ + $StorageAccountName + """ -StorageAccountRG """ + $StorageAccountRG + """ -StoragePurpose """ + $StoragePurpose + """ -ShareName """ + $ShareName + """ -SubscriptionId """ + $SubscriptionId + """ -ClientId """ + $ClientId + """ -DomainName """ + $DomainName + """ -IdentityServiceProvider """ + $IdentityServiceProvider + """ -AzureCloudEnvironment """ + $AzureCloudEnvironment + """ -CustomOuPath " + $CustomOuPath + " -OUName """ + $OUName + """ -DomainAdminUserName """ + $DomainAdminUserName + """ -DomainAdminUserPassword """ + $DomainAdminUserPasswordEscaped + """ -Verbose"
+$DscCompileCommand = "./Configuration.ps1 -StorageAccountName """ + $StorageAccountName + """ -StorageAccountRG """ + $StorageAccountRG + """ -StoragePurpose """ + $StoragePurpose + """ -StorageAccountFqdn """ + $StorageAccountFqdn + """ -ShareName """ + $ShareName + """ -SubscriptionId """ + $SubscriptionId + """ -ClientId """ + $ClientId + """ -SecurityPrincipalName """ + $SecurityPrincipalName + """ -DomainName """ + $DomainName + """ -IdentityServiceProvider """ + $IdentityServiceProvider + """ -AzureCloudEnvironment """ + $AzureCloudEnvironment + """ -CustomOuPath " + $CustomOuPath + " -OUName """ + $OUName + """ -DomainAdminUserName """ + $DomainAdminUserName + """ -DomainAdminUserPassword """ + $DomainAdminUserPasswordEscaped + """ -Verbose"
 
 Write-Host "Executing the commmand $DscCompileCommand" 
 Invoke-Expression -Command $DscCompileCommand

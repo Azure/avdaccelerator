@@ -55,8 +55,21 @@ param avdIdentityServiceProvider string = 'ADDS'
 @sys.description('Required, Eronll session hosts on Intune. (Default: false)')
 param createIntuneEnrollment bool = false
 
+
+
+
+
+
 @sys.description('Optional, Identity ID array to grant RBAC role to access AVD application group. (Default: "")')
 param avdApplicationGroupIdentitiesIds array = []
+
+@sys.description('Optional, Identity name to grant RBAC role to access AVD application group and NTFS permissions. (Default: "")')
+param securityPrincipalName string = ''
+
+
+
+
+
 
 @allowed([
     'Group'
@@ -534,6 +547,7 @@ var varFslogixFileShareName = avdUseCustomNaming ? fslogixFileShareCustomName : 
 var varMsixFileShareName = avdUseCustomNaming ? msixFileShareCustomName : 'msix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
 var varFslogixStorageName = avdUseCustomNaming ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}' : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
 var varFslogixStorageFqdn = '${varFslogixStorageName}.file.${environment().suffixes.storage}'
+var varMsixStorageFqdn = '${varMsixStorageName}.file.${environment().suffixes.storage}'
 var varMsixStorageName = avdUseCustomNaming ? '${storageAccountPrefixCustomName}msx${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}' : 'stmsx${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
 var varManagementVmName = 'vmmgmt${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
 var varAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}' //'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
@@ -1160,6 +1174,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
         fileShareMultichannel: (fslogixStoragePerformance == 'Premium') ? true : false
         storageSku: varFslogixStorageSku
         fileShareQuotaSize: fslogixFileShareQuotaSize
+        storageAccountFqdn: varFslogixStorageFqdn
         storageAccountName: varFslogixStorageName
         storageToDomainScript: varStorageToDomainScript
         storageToDomainScriptUri: varStorageToDomainScriptUri
@@ -1170,6 +1185,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
         deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
         ouStgPath: varOuStgPath
         managedIdentityClientId: varCreateStorageDeployment ? identity.outputs.managedIdentityStorageClientId : ''
+        securityPrincipalName: securityPrincipalName
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
@@ -1201,6 +1217,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (cr
         fileShareMultichannel: (msixStoragePerformance == 'Premium') ? true : false
         storageSku: varMsixStorageSku
         fileShareQuotaSize: msixFileShareQuotaSize
+        storageAccountFqdn: varMsixStorageFqdn
         storageAccountName: varMsixStorageName
         storageToDomainScript: varStorageToDomainScript
         storageToDomainScriptUri: varStorageToDomainScriptUri
@@ -1211,6 +1228,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (cr
         deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
         ouStgPath: varOuStgPath
         managedIdentityClientId: varCreateStorageDeployment ? identity.outputs.managedIdentityStorageClientId : ''
+        securityPrincipalName: securityPrincipalName
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
