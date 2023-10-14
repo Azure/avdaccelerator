@@ -89,6 +89,12 @@ param ouStgPath string
 @sys.description('Managed Identity Client ID')
 param managedIdentityClientId string
 
+@sys.description('Identity name array to grant RBAC role to access AVD application group and NTFS permissions.')
+param securityPrincipalName string
+
+@sys.description('storage account FDQN.')
+param storageAccountFqdn string
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -102,7 +108,8 @@ var varAvdFileShareMetricsDiagnostic = [
 ]
 var varWrklStoragePrivateEndpointName = 'pe-${storageAccountName}-file'
 var vardirectoryServiceOptions = (identityServiceProvider == 'AADDS') ? 'AADDS': (identityServiceProvider == 'AAD') ? 'AADKERB': 'None'
-var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -DomainAdminUserName ${domainJoinUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId}'
+
+var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -DomainAdminUserName ${domainJoinUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName ${securityPrincipalName} -StorageAccountFqdn ${storageAccountFqdn} '
 // =========== //
 // Deployments //
 // =========== //
