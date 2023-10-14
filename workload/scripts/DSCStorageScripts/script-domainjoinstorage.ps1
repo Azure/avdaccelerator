@@ -141,7 +141,7 @@ Try {
 		Write-Log "Storage key: $StorageKey"
 		Write-Log "File Share location: $FileShareLocation"
 		net use ${DriveLetter}: $FileShareLocation $UserStorage $StorageKey.Value
-		#New-PSDrive -Name $DriveLetter -PSProvider FileSystem -Root $FileShareLocation -Persist
+		New-PSDrive -Name $DriveLetter -PSProvider FileSystem -Root $FileShareLocation -Persist
 	}
     else {
         Write-Log "Drive $DriveLetter already mounted."
@@ -155,9 +155,18 @@ Catch {
 
 Try {
     Write-Log "setting up NTFS permission for FSLogix"
-    $Commands = "icacls ${DriveLetter}: /remove ('BUILTIN\Administrators')"
+	$test = 'd2lsolutions.com\d2l-wvd-fslogix-users'
+	icacls ${DriveLetter}: /remove "BUILTIN\Administrators"
+	icacls ${DriveLetter}: /grant "${test}:(M)"
+	icacls ${DriveLetter}: /grant "Creator Owner:(OI)(CI)(IO)(M)"
+	icacls ${DriveLetter}: /remove "Authenticated Users"
+	icacls ${DriveLetter}: /remove "Builtin\Users"
     Invoke-Expression -Command $Commands
     Write-Log "ACLs set"
+
+	Write-Log "Unmounting drive"
+	Remove-PSDrive -Name $DriveLetter -Force
+	Write-Log "Drive unmounted"
 }
 Catch {
     Write-Log -Err "Error while setting up NTFS permission for FSLogix"
