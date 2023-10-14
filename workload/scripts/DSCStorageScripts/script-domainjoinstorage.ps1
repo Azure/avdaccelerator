@@ -42,10 +42,6 @@ param(
 	[ValidateNotNullOrEmpty()]
 	[string] $OUName,
 
-	[Parameter(Mandatory = $true)]
-	[ValidateNotNullOrEmpty()]
-	[string] $CreateNewOU,
-
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string] $StoragePurpose,
@@ -101,24 +97,9 @@ if ($IdentityServiceProvider -eq 'ADDS') {
 		Write-Log "Storage account $StorageAccountName is already domain joined."
 		return
 	}
-	if ( $CreateNewOU -eq 'true') {
-		Write-Log "Creating AD Organizational unit $OUName'"
-		Get-ADOrganizationalUnit -Filter 'Name -like $OUName'
-		$OrganizationalUnit = Get-ADOrganizationalUnit -Filter 'Name -like $OUName '
-		if (-not $OrganizationalUnit) {
-			foreach ($DCName in $DomainName.split('.')) {
-				$OUPath = $OUPath + ',DC=' + $DCName
-			}
-
-			$OUPath = $OUPath.substring(1)
-			New-ADOrganizationalUnit -name $OUName -path $OUPath
-		}
-
-	}
 }
 
 Write-Log "Connecting to managed identity account"
-# Add-AzAccount -Environment $AzureCloudEnvironment -identity
 Connect-AzAccount -Identity -AccountId $ClientId
 
 Write-Log "Setting Azure subscription to $SubscriptionId"
@@ -127,25 +108,17 @@ Select-AzSubscription -SubscriptionId $SubscriptionId
 if ($IdentityServiceProvider -eq 'ADDS') {
 	Write-Log "Domain joining storage account $StorageAccountName in Resource group $StorageAccountRG"
 	if ( $CustomOuPath -eq 'true') {
-		Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitDistinguishedName $OUName -OverwriteExistingADObject
+		#Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitDistinguishedName $OUName -OverwriteExistingADObject
+		Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitDistinguishedName $OUName -DomainAccountType 'ComputerAccount' -EncryptionType 'AES256' -OverwriteExistingADObject #-SamAccountName $SamAccountName
 		Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to custom OU path $OUName"
 	} else {
-		Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitName $OUName -OverwriteExistingADObject
+		#Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitName $OUName -OverwriteExistingADObject
+		Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitName $OUName -DomainAccountType 'ComputerAccount' -EncryptionType 'AES256' -OverwriteExistingADObject #-SamAccountName $SamAccountName
 		Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to default OU path $OUName"
 	}
 }
 
-## Setting default permissions 
-#$defaultPermission = "None | StorageFileDataSmbShareContributor | StorageFileDataSmbShareReader | StorageFileDataSmbShareElevatedContributor" # Set the default permission of your choice
-
-$defaultPermission = "StorageFileDataSmbShareContributor" # Set the default permission of your choice
-Write-Log "Setting up the default permission of $defaultPermission to storage account $StorageAccountName in $StorageAccountRG"
-$account = Set-AzStorageAccount -ResourceGroupName $StorageAccountRG -AccountName $StorageAccountName -DefaultSharePermission $defaultPermission
-$account.AzureFilesIdentityBasedAuth
-
 # Remove Administrators from full control
-
-
 if ($StoragePurpose -eq 'fslogix') {
 	$DriveLetter = 'Y'
 	 }
