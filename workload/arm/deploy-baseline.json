@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "6968990442597961537"
+      "templateHash": "13104425112291453888"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -100,11 +100,11 @@
         "description": "Required, Eronll session hosts on Intune. (Default: false)"
       }
     },
-    "avdApplicationGroupIdentitiesIds": {
-      "type": "array",
-      "defaultValue": [],
+    "securityPrincipalId": {
+      "type": "string",
+      "defaultValue": "",
       "metadata": {
-        "description": "Optional, Identity ID array to grant RBAC role to access AVD application group. (Default: \"\")"
+        "description": "Optional, Identity ID to grant RBAC role to access AVD application group and NTFS permissions. (Default: \"\")"
       }
     },
     "securityPrincipalName": {
@@ -113,18 +113,6 @@
       "metadata": {
         "description": "Optional, Identity name to grant RBAC role to access AVD application group and NTFS permissions. (Default: \"\")"
       }
-    },
-    "avdApplicationGroupIdentityType": {
-      "type": "string",
-      "defaultValue": "Group",
-      "metadata": {
-        "description": "Optional, Identity type to grant RBAC role to access AVD application group. (Default: Group)"
-      },
-      "allowedValues": [
-        "Group",
-        "ServicePrincipal",
-        "User"
-      ]
     },
     "avdIdentityDomainName": {
       "type": "string",
@@ -1254,6 +1242,7 @@
     "varMsixFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('msixFileShareCustomName'), format('msix-pc-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
     "varFslogixStorageName": "[if(parameters('avdUseCustomNaming'), format('{0}fsl{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')), format('stfsl{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')))]",
     "varFslogixStorageFqdn": "[format('{0}.file.{1}', variables('varFslogixStorageName'), environment().suffixes.storage)]",
+    "varMsixStorageFqdn": "[format('{0}.file.{1}', variables('varMsixStorageName'), environment().suffixes.storage)]",
     "varMsixStorageName": "[if(parameters('avdUseCustomNaming'), format('{0}msx{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')), format('stmsx{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')))]",
     "varManagementVmName": "[format('vmmgmt{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varSessionHostLocationAcronym'))]",
     "varAlaWorkspaceName": "[if(parameters('avdUseCustomNaming'), parameters('avdAlaWorkspaceCustomName'), format('log-avd-{0}-{1}', variables('varDeploymentEnvironmentLowercase'), variables('varManagementPlaneLocationAcronym')))]",
@@ -12591,11 +12580,8 @@
           "identityServiceProvider": {
             "value": "[parameters('avdIdentityServiceProvider')]"
           },
-          "applicationGroupIdentitiesIds": {
-            "value": "[parameters('avdApplicationGroupIdentitiesIds')]"
-          },
-          "applicationGroupIdentityType": {
-            "value": "[parameters('avdApplicationGroupIdentityType')]"
+          "securityPrincipalIds": {
+            "value": "[array(parameters('securityPrincipalId'))]"
           },
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]",
           "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]",
@@ -12610,7 +12596,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "3669216872795545582"
+              "templateHash": "10975402800010178371"
             }
           },
           "parameters": {
@@ -12638,16 +12624,10 @@
                 "description": "The service providing domain services for Azure Virtual Desktop."
               }
             },
-            "applicationGroupIdentitiesIds": {
+            "securityPrincipalIds": {
               "type": "array",
               "metadata": {
                 "description": "Identity ID to grant RBAC role to access AVD application group."
-              }
-            },
-            "applicationGroupIdentityType": {
-              "type": "string",
-              "metadata": {
-                "description": "Identity type to grant RBAC role to access AVD application group."
               }
             },
             "osImage": {
@@ -13490,7 +13470,7 @@
                     "value": "[parameters('tags')]"
                   },
                   "applications": "[if(equals(variables('varApplicaitonGroups')[copyIndex()].applicationGroupType, 'RemoteApp'), createObject('value', variables('varRAppApplicationGroupsApps')), createObject('value', createArray()))]",
-                  "roleAssignments": "[if(not(empty(parameters('applicationGroupIdentitiesIds'))), createObject('value', createArray(createObject('roleDefinitionIdOrName', 'Desktop Virtualization User', 'principalIds', parameters('applicationGroupIdentitiesIds'), 'principalType', parameters('applicationGroupIdentityType')))), createObject('value', createArray()))]",
+                  "roleAssignments": "[if(not(empty(parameters('securityPrincipalIds'))), createObject('value', createArray(createObject('roleDefinitionIdOrName', 'Desktop Virtualization User', 'principalIds', parameters('securityPrincipalIds'), 'principalType', 'Group'))), createObject('value', createArray()))]",
                   "diagnosticWorkspaceId": {
                     "value": "[parameters('alaWorkspaceResourceId')]"
                   },
@@ -15080,8 +15060,8 @@
           "createStorageDeployment": {
             "value": "[variables('varCreateStorageDeployment')]"
           },
-          "appGroupIdentitiesIds": {
-            "value": "[parameters('avdApplicationGroupIdentitiesIds')]"
+          "securityPrincipalIds": {
+            "value": "[array(parameters('securityPrincipalId'))]"
           },
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]"
         },
@@ -15092,7 +15072,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "15264992477587934933"
+              "templateHash": "5612319827069459467"
             }
           },
           "parameters": {
@@ -15144,7 +15124,7 @@
                 "description": "Required, The service providing domain services for Azure Virtual Desktop."
               }
             },
-            "appGroupIdentitiesIds": {
+            "securityPrincipalIds": {
               "type": "array",
               "metadata": {
                 "description": "Required, Identity ID to grant RBAC role to access AVD application group."
@@ -17283,12 +17263,12 @@
             {
               "copy": {
                 "name": "storageSmbShareContributorRoleAssign",
-                "count": "[length(parameters('appGroupIdentitiesIds'))]"
+                "count": "[length(parameters('securityPrincipalIds'))]"
               },
-              "condition": "[and(parameters('createStorageDeployment'), not(empty(parameters('appGroupIdentitiesIds'))))]",
+              "condition": "[and(parameters('createStorageDeployment'), not(empty(parameters('securityPrincipalIds'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('Stora-SmbContri-RolAssign-{0}-{1}', take(format('{0}', parameters('appGroupIdentitiesIds')[copyIndex()]), 6), parameters('time'))]",
+              "name": "[format('Stora-SmbContri-RolAssign-{0}-{1}', take(format('{0}', parameters('securityPrincipalIds')[copyIndex()]), 6), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('storageObjectsRgName'))]",
               "properties": {
@@ -17301,7 +17281,7 @@
                     "value": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/roleDefinitions/{1}', parameters('subscriptionId'), variables('varStorageSmbShareContributorRole').id)]"
                   },
                   "principalId": {
-                    "value": "[parameters('appGroupIdentitiesIds')[copyIndex()]]"
+                    "value": "[parameters('securityPrincipalIds')[copyIndex()]]"
                   }
                 },
                 "template": {
@@ -17863,12 +17843,12 @@
             {
               "copy": {
                 "name": "aadIdentityLoginRoleAssign",
-                "count": "[length(parameters('appGroupIdentitiesIds'))]"
+                "count": "[length(parameters('securityPrincipalIds'))]"
               },
-              "condition": "[and(equals(parameters('identityServiceProvider'), 'AAD'), not(empty(parameters('appGroupIdentitiesIds'))))]",
+              "condition": "[and(equals(parameters('identityServiceProvider'), 'AAD'), not(empty(parameters('securityPrincipalIds'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('VM-Login-Comp-{0}-{1}', take(format('{0}', parameters('appGroupIdentitiesIds')[copyIndex()]), 6), parameters('time'))]",
+              "name": "[format('VM-Login-Comp-{0}-{1}', take(format('{0}', parameters('securityPrincipalIds')[copyIndex()]), 6), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
@@ -17881,7 +17861,7 @@
                     "value": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/roleDefinitions/{1}', parameters('subscriptionId'), variables('varVirtualMachineUserLoginRole').id)]"
                   },
                   "principalId": {
-                    "value": "[parameters('appGroupIdentitiesIds')[copyIndex()]]"
+                    "value": "[parameters('securityPrincipalIds')[copyIndex()]]"
                   }
                 },
                 "template": {
@@ -18443,12 +18423,12 @@
             {
               "copy": {
                 "name": "aadIdentityLoginAccessServiceObjects",
-                "count": "[length(parameters('appGroupIdentitiesIds'))]"
+                "count": "[length(parameters('securityPrincipalIds'))]"
               },
-              "condition": "[and(equals(parameters('identityServiceProvider'), 'AAD'), not(empty(parameters('appGroupIdentitiesIds'))))]",
+              "condition": "[and(equals(parameters('identityServiceProvider'), 'AAD'), not(empty(parameters('securityPrincipalIds'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('VM-Login-Serv-{0}-{1}', take(format('{0}', parameters('appGroupIdentitiesIds')[copyIndex()]), 6), parameters('time'))]",
+              "name": "[format('VM-Login-Serv-{0}-{1}', take(format('{0}', parameters('securityPrincipalIds')[copyIndex()]), 6), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('serviceObjectsRgName'))]",
               "properties": {
@@ -18461,7 +18441,7 @@
                     "value": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/roleDefinitions/{1}', parameters('subscriptionId'), variables('varVirtualMachineUserLoginRole').id)]"
                   },
                   "principalId": {
-                    "value": "[parameters('appGroupIdentitiesIds')[copyIndex()]]"
+                    "value": "[parameters('securityPrincipalIds')[copyIndex()]]"
                   }
                 },
                 "template": {
@@ -32091,6 +32071,9 @@
           "fileShareQuotaSize": {
             "value": "[parameters('fslogixFileShareQuotaSize')]"
           },
+          "storageAccountFqdn": {
+            "value": "[variables('varFslogixStorageFqdn')]"
+          },
           "storageAccountName": {
             "value": "[variables('varFslogixStorageName')]"
           },
@@ -32158,7 +32141,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "753816252936351341"
+              "templateHash": "5936570404205322394"
             }
           },
           "parameters": {
@@ -32336,6 +32319,12 @@
               "metadata": {
                 "description": "Identity name array to grant RBAC role to access AVD application group and NTFS permissions."
               }
+            },
+            "storageAccountFqdn": {
+              "type": "string",
+              "metadata": {
+                "description": "storage account FDQN."
+              }
             }
           },
           "variables": {
@@ -32349,7 +32338,7 @@
             ],
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', parameters('storageAccountName'))]",
             "vardirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'AADDS'), 'AADDS', if(equals(parameters('identityServiceProvider'), 'AAD'), 'AADKERB', 'None'))]",
-            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12} -SecurityPrincipalName {13} ', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'), parameters('securityPrincipalName'))]"
+            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12} -SecurityPrincipalName {13} -StorageAccountFqdn {14} ', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'), parameters('securityPrincipalName'), parameters('storageAccountFqdn'))]"
           },
           "resources": [
             {
@@ -36291,6 +36280,9 @@
           "fileShareQuotaSize": {
             "value": "[parameters('msixFileShareQuotaSize')]"
           },
+          "storageAccountFqdn": {
+            "value": "[variables('varMsixStorageFqdn')]"
+          },
           "storageAccountName": {
             "value": "[variables('varMsixStorageName')]"
           },
@@ -36358,7 +36350,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "753816252936351341"
+              "templateHash": "5936570404205322394"
             }
           },
           "parameters": {
@@ -36536,6 +36528,12 @@
               "metadata": {
                 "description": "Identity name array to grant RBAC role to access AVD application group and NTFS permissions."
               }
+            },
+            "storageAccountFqdn": {
+              "type": "string",
+              "metadata": {
+                "description": "storage account FDQN."
+              }
             }
           },
           "variables": {
@@ -36549,7 +36547,7 @@
             ],
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', parameters('storageAccountName'))]",
             "vardirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'AADDS'), 'AADDS', if(equals(parameters('identityServiceProvider'), 'AAD'), 'AADKERB', 'None'))]",
-            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12} -SecurityPrincipalName {13} ', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'), parameters('securityPrincipalName'))]"
+            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12} -SecurityPrincipalName {13} -StorageAccountFqdn {14} ', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'), parameters('securityPrincipalName'), parameters('storageAccountFqdn'))]"
           },
           "resources": [
             {

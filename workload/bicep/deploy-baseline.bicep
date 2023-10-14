@@ -55,29 +55,11 @@ param avdIdentityServiceProvider string = 'ADDS'
 @sys.description('Required, Eronll session hosts on Intune. (Default: false)')
 param createIntuneEnrollment bool = false
 
-
-
-
-
-
-@sys.description('Optional, Identity ID array to grant RBAC role to access AVD application group. (Default: "")')
-param avdApplicationGroupIdentitiesIds array = []
+@sys.description('Optional, Identity ID to grant RBAC role to access AVD application group and NTFS permissions. (Default: "")')
+param securityPrincipalId string = ''
 
 @sys.description('Optional, Identity name to grant RBAC role to access AVD application group and NTFS permissions. (Default: "")')
 param securityPrincipalName string = ''
-
-
-
-
-
-
-@allowed([
-    'Group'
-    'ServicePrincipal'
-    'User'
-])
-@sys.description('Optional, Identity type to grant RBAC role to access AVD application group. (Default: Group)')
-param avdApplicationGroupIdentityType string = 'Group'
 
 @sys.description('Identity domain name.')
 param avdIdentityDomainName string
@@ -977,8 +959,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
         startVmOnConnect: (avdHostPoolType == 'Pooled') ? avdDeployScalingPlan : avdStartVmOnConnect
         workloadSubsId: avdWorkloadSubsId
         identityServiceProvider: avdIdentityServiceProvider
-        applicationGroupIdentitiesIds: avdApplicationGroupIdentitiesIds
-        applicationGroupIdentityType: avdApplicationGroupIdentityType
+        securityPrincipalIds: array(securityPrincipalId)
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         hostPoolAgentUpdateSchedule: varHostPoolAgentUpdateSchedule
@@ -1005,7 +986,7 @@ module identity './modules/identity/deploy.bicep' = {
         enableStartVmOnConnect: avdStartVmOnConnect
         identityServiceProvider: avdIdentityServiceProvider
         createStorageDeployment: varCreateStorageDeployment
-        appGroupIdentitiesIds: avdApplicationGroupIdentitiesIds
+        securityPrincipalIds: array(securityPrincipalId)
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
     dependsOn: [
