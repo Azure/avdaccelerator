@@ -149,8 +149,9 @@ Try {
 		$StorageKey = (Get-AzStorageAccountKey -ResourceGroupName $StorageAccountRG -AccountName $StorageAccountName) | Where-Object { $_.KeyName -eq "key1" }
 		Write-Log "Storage key: $StorageKey"
 		Write-Log "File Share location: $FileShareLocation"
-		net use ${DriveLetter}: $FileShareLocation $UserStorage $StorageKey.Value
-		#New-PSDrive -Name $DriveLetter -PSProvider FileSystem -Root $FileShareLocation -Persist
+		#net use ${DriveLetter}: $FileShareLocation $UserStorage $StorageKey.Value
+		$credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList "Azure\$storageAccountName", $StorageKey
+		New-PSDrive -Name $DriveLetter -PSProvider FileSystem -Root $FileShareLocation -Credential $credential
 	}
 	else {
 		Write-Log "Drive $DriveLetter already mounted."
@@ -174,7 +175,7 @@ Try {
 	Write-Log "ACLs set"
 
 	Write-Log "Unmounting drive"
-	net use ${DriveLetter} /delete
+	Remove-PSDrive -Name $DriveLetter -Force
 	Write-Log "Drive unmounted"
 }
 Catch {
