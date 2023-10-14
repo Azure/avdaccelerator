@@ -182,9 +182,6 @@
         "storageOuPath": {
             "value": ""
         },
-        "createOuForStorage": {
-            "value": false
-        },
         "createResourceTags": {
             "value": false
         },

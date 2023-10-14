@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "16692539523913101495"
+      "templateHash": "17253864037543517275"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -556,13 +556,6 @@
       "defaultValue": "",
       "metadata": {
         "description": "OU name for Azure Storage Account. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.  (Default: \"\")"
-      }
-    },
-    "createOuForStorage": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: false)"
       }
     },
     "avdUseCustomNaming": {
@@ -1473,7 +1466,6 @@
     "varOuStgPath": "[if(not(empty(parameters('storageOuPath'))), format('\"{0}\"', parameters('storageOuPath')), format('\"{0}\"', variables('varDefaultStorageOuPath')))]",
     "varDefaultStorageOuPath": "[if(equals(parameters('avdIdentityServiceProvider'), 'AADDS'), 'AADDC Computers', 'Computers')]",
     "varStorageCustomOuPath": "[if(not(empty(parameters('storageOuPath'))), 'true', 'false')]",
-    "varCreateOuForStorageString": "[string(parameters('createOuForStorage'))]",
     "varAllDnsServers": "[format('{0},168.63.129.16', parameters('customDnsIps'))]",
     "varDnsServers": "[if(empty(parameters('customDnsIps')), createArray(), split(variables('varAllDnsServers'), ','))]",
     "varCreateVnetPeering": "[if(not(empty(parameters('existingHubVnetResourceId'))), true(), false())]",
@@ -32119,9 +32111,6 @@
           "ouStgPath": {
             "value": "[variables('varOuStgPath')]"
           },
-          "createOuForStorageString": {
-            "value": "[variables('varCreateOuForStorageString')]"
-          },
           "managedIdentityClientId": "[if(variables('varCreateStorageDeployment'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageClientId.value), createObject('value', ''))]",
           "domainJoinUserName": {
             "value": "[parameters('avdDomainJoinUserName')]"
@@ -32159,7 +32148,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "14846694558510430058"
+              "templateHash": "13730256229078240317"
             }
           },
           "parameters": {
@@ -32326,12 +32315,6 @@
                 "description": "OU Storage Path"
               }
             },
-            "createOuForStorageString": {
-              "type": "string",
-              "metadata": {
-                "description": "If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain."
-              }
-            },
             "managedIdentityClientId": {
               "type": "string",
               "metadata": {
@@ -32350,7 +32333,7 @@
             ],
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', parameters('storageAccountName'))]",
             "vardirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'AADDS'), 'AADDS', if(equals(parameters('identityServiceProvider'), 'AAD'), 'AADKERB', 'None'))]",
-            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -CustomOuPath {9} -OUName {10} -CreateNewOU {11} -ShareName {12} -ClientId {13}', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('createOuForStorageString'), parameters('fileShareName'), parameters('managedIdentityClientId'))]"
+            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12}', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'))]"
           },
           "resources": [
             {
@@ -32382,7 +32365,8 @@
                   "azureFilesIdentityBasedAuthentication": {
                     "value": {
                       "directoryServiceOptions": "[variables('vardirectoryServiceOptions')]",
-                      "activeDirectoryProperties": "[if(equals(parameters('identityServiceProvider'), 'AAD'), createObject('domainGuid', parameters('identityDomainGuid'), 'domainName', parameters('identityDomainName')), createObject())]"
+                      "activeDirectoryProperties": "[if(equals(parameters('identityServiceProvider'), 'AAD'), createObject('domainGuid', parameters('identityDomainGuid'), 'domainName', parameters('identityDomainName')), createObject())]",
+                      "defaultSharePermission": "None"
                     }
                   },
                   "accessTier": {
@@ -36319,9 +36303,6 @@
           "ouStgPath": {
             "value": "[variables('varOuStgPath')]"
           },
-          "createOuForStorageString": {
-            "value": "[variables('varCreateOuForStorageString')]"
-          },
           "managedIdentityClientId": "[if(variables('varCreateStorageDeployment'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageClientId.value), createObject('value', ''))]",
           "domainJoinUserName": {
             "value": "[parameters('avdDomainJoinUserName')]"
@@ -36359,7 +36340,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "14846694558510430058"
+              "templateHash": "13730256229078240317"
             }
           },
           "parameters": {
@@ -36526,12 +36507,6 @@
                 "description": "OU Storage Path"
               }
             },
-            "createOuForStorageString": {
-              "type": "string",
-              "metadata": {
-                "description": "If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain."
-              }
-            },
             "managedIdentityClientId": {
               "type": "string",
               "metadata": {
@@ -36550,7 +36525,7 @@
             ],
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', parameters('storageAccountName'))]",
             "vardirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'AADDS'), 'AADDS', if(equals(parameters('identityServiceProvider'), 'AAD'), 'AADKERB', 'None'))]",
-            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -CustomOuPath {9} -OUName {10} -CreateNewOU {11} -ShareName {12} -ClientId {13}', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('createOuForStorageString'), parameters('fileShareName'), parameters('managedIdentityClientId'))]"
+            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -DomainAdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12}', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), parameters('domainJoinUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'))]"
           },
           "resources": [
             {
@@ -36582,7 +36557,8 @@
                   "azureFilesIdentityBasedAuthentication": {
                     "value": {
                       "directoryServiceOptions": "[variables('vardirectoryServiceOptions')]",
-                      "activeDirectoryProperties": "[if(equals(parameters('identityServiceProvider'), 'AAD'), createObject('domainGuid', parameters('identityDomainGuid'), 'domainName', parameters('identityDomainName')), createObject())]"
+                      "activeDirectoryProperties": "[if(equals(parameters('identityServiceProvider'), 'AAD'), createObject('domainGuid', parameters('identityDomainGuid'), 'domainName', parameters('identityDomainName')), createObject())]",
+                      "defaultSharePermission": "None"
                     }
                   },
                   "accessTier": {
