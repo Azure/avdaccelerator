@@ -133,7 +133,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
                 domainGuid: identityDomainGuid
                 domainName: identityDomainName
             }: {}
-            defaultSharePermission: 'StorageFileDataSmbShareContributor' //defaultSharePermission
+            defaultSharePermission: 'None' //defaultSharePermission
         }
         accessTier: 'Hot'
         networkAcls: deployPrivateEndpoint ? {
