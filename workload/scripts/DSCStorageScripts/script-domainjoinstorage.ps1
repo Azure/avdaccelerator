@@ -162,7 +162,6 @@ Try {
 	icacls ${DriveLetter}: /grant "Creator Owner:(OI)(CI)(IO)(M)"
 	icacls ${DriveLetter}: /remove "Authenticated Users"
 	icacls ${DriveLetter}: /remove "Builtin\Users"
-    Invoke-Expression -Command $Commands
     Write-Log "ACLs set"
 
 	Write-Log "Unmounting drive"
