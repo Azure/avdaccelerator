@@ -59,7 +59,7 @@ Write-Log "Forcing group policy updates"
 gpupdate /force
 
 Write-Log "Waiting for domain policies to be applied (2 minutes)"
-Start-Sleep -Seconds 120
+Start-Sleep -Seconds 60
 
 
 Write-Log "Turning off Windows firewall. "
@@ -126,22 +126,23 @@ if ($StoragePurpose -eq 'msix') {
 	$DriveLetter = 'X'
 	}
 Write-Log "Mounting $StoragePurpose storage account on Drive $DriveLetter"
-		
+
 $FileShareLocation = '\\'+ $StorageAccountName + '.file.core.windows.net\'+$ShareName
 $StorageAccountNameFull = $StorageAccountName + '.file.core.windows.net'
 $connectTestResult = Test-NetConnection -ComputerName $StorageAccountNameFull -Port 445
+
 Write-Log "Test connection access to port 445 for $StorageAccountNameFull was $connectTestResult"
+
 Try {
     Write-Log "Mounting Profile storage $StorageAccountName as a drive $DriveLetter"
     if (-not (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue)) {
-		
         $UserStorage = "/user:Azure\$StorageAccountName"
 		Write-Log "User storage: $UserStorage"
         $StorageKey = (Get-AzStorageAccountKey -ResourceGroupName $StorageAccountRG -AccountName $StorageAccountName) | Where-Object {$_.KeyName -eq "key1"}
 		Write-Log "Storage key: $StorageKey"
 		Write-Log "File Share location: $FileShareLocation"
 		net use ${DriveLetter}: $FileShareLocation $UserStorage $StorageKey.Value
-		New-PSDrive -Name $DriveLetter -PSProvider FileSystem -Root $FileShareLocation -Persist
+		#New-PSDrive -Name $DriveLetter -PSProvider FileSystem -Root $FileShareLocation -Persist
 	}
     else {
         Write-Log "Drive $DriveLetter already mounted."
@@ -165,7 +166,7 @@ Try {
     Write-Log "ACLs set"
 
 	Write-Log "Unmounting drive"
-	Remove-PSDrive -Name $DriveLetter -Force
+	net use ${DriveLetter} /delete
 	Write-Log "Drive unmounted"
 }
 Catch {
