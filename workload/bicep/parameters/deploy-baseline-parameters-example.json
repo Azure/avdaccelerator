@@ -35,14 +35,11 @@
         "createIntuneEnrollment": {
             "value": false
         },            
-        "avdApplicationGroupIdentitiesIds": {
+        "securityPrincipalId": {
             "value": ""
         },        
         "securityPrincipalName": {
             "value": ""
-        },    
-        "avdApplicationGroupIdentityType": {
-            "value": "Group"
         },       
         "avdIdentityDomainName": {
             "value": "<<IdentityDomainName>>"

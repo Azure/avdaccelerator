@@ -150,7 +150,7 @@ Try {
 		Write-Log "Storage key: $StorageKey"
 		Write-Log "File Share location: $FileShareLocation"
 		#net use ${DriveLetter}: $FileShareLocation $UserStorage $StorageKey.Value
-		$credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList "Azure\$storageAccountName", $StorageKey
+		$credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList "Azure\$storageAccountName", $StorageKey.Value
 		New-PSDrive -Name $DriveLetter -PSProvider FileSystem -Root $FileShareLocation -Credential $credential
 	}
 	else {
