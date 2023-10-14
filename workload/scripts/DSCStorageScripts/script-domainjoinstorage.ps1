@@ -121,10 +121,10 @@ if ($IdentityServiceProvider -eq 'ADDS') {
 # Remove Administrators from full control
 if ($StoragePurpose -eq 'fslogix') {
 	$DriveLetter = 'Y'
-	 }
+	}
 if ($StoragePurpose -eq 'msix') {
 	$DriveLetter = 'X'
-	 }
+	}
 Write-Log "Mounting $StoragePurpose storage account on Drive $DriveLetter"
 		
 $FileShareLocation = '\\'+ $StorageAccountName + '.file.core.windows.net\'+$ShareName
