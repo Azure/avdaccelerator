@@ -31,9 +31,9 @@ $HostPoolRegistrationToken,
 [string]
 $NvidiaVmSize,
 
-[parameter(Mandatory)]
-[string]
-$ScreenCaptureProtection
+# [parameter(Mandatory)]
+# [string]
+# $ScreenCaptureProtection
 )
 
 ##############################################################
@@ -178,21 +178,21 @@ try {
                 )
         }
 
-        ##############################################################
-        #  Add Screen Capture Protection Setting
-        ##############################################################
-        if ($ScreenCaptureProtection -eq 'true') {
-                $Settings += @(
+        # ##############################################################
+        # #  Add Screen Capture Protection Setting
+        # ##############################################################
+        # if ($ScreenCaptureProtection -eq 'true') {
+        #         $Settings += @(
 
-                        # Enable Screen Capture Protection: https://docs.microsoft.com/en-us/azure/virtual-desktop/screen-capture-protection
-                        [PSCustomObject]@{
-                                Name         = 'fEnableScreenCaptureProtect'
-                                Path         = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services'
-                                PropertyType = 'DWord'
-                                Value        = 1
-                        }
-                )
-        }
+        #                 # Enable Screen Capture Protection: https://docs.microsoft.com/en-us/azure/virtual-desktop/screen-capture-protection
+        #                 [PSCustomObject]@{
+        #                         Name         = 'fEnableScreenCaptureProtect'
+        #                         Path         = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services'
+        #                         PropertyType = 'DWord'
+        #                         Value        = 1
+        #                 }
+        #         )
+        # }
 
         ##############################################################
         #  Add Fslogix Settings
