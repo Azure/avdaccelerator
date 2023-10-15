@@ -18,7 +18,7 @@ param scriptArguments string
 
 @secure()
 @sys.description('Domain join user password.')
-param  domainJoinUserPassword string
+param domainJoinUserPassword string
 
 // =========== //
 // Variable declaration //
