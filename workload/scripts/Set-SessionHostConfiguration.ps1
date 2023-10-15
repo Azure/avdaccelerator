@@ -29,7 +29,7 @@ $HostPoolRegistrationToken,
 
 [parameter(Mandatory)]
 [string]
-$NvidiaVmSize,
+$NvidiaVmSize
 
 # [parameter(Mandatory)]
 # [string]
