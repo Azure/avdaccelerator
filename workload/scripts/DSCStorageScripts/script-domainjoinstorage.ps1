@@ -147,10 +147,10 @@ Try {
 		$UserStorage = "/user:Azure\$StorageAccountName"
 		Write-Log "User storage: $UserStorage"
 		$StorageKey = (Get-AzStorageAccountKey -ResourceGroupName $StorageAccountRG -AccountName $StorageAccountName) | Where-Object { $_.KeyName -eq "key1" }
-		Write-Log "Storage key: $StorageKey"
 		Write-Log "File Share location: $FileShareLocation"
 		#net use ${DriveLetter}: $FileShareLocation $UserStorage $StorageKey.Value
-		$credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList "Azure\$storageAccountName", $StorageKey.Value
+		$StorageKey1 = ConvertTo-SecureString $StorageKey.value -AsPlainText -Force
+		$credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("Azure\stfsly206dorg", $StorageKey1)
 		New-PSDrive -Name $DriveLetter -PSProvider FileSystem -Root $FileShareLocation -Credential $credential
 	}
 	else {
