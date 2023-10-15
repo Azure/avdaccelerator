@@ -31,7 +31,7 @@ param sessionHostLocation string
 @sys.description('File share SMB multichannel.')
 param fileShareMultichannel bool
 
-@sys.description('AD domain name.')
+@sys.description('Identity domain name.')
 param identityDomainName string
 
 @sys.description('AD domain GUID.')
@@ -86,11 +86,14 @@ param storageCustomOuPath string
 @sys.description('OU Storage Path')
 param ouStgPath string
 
-@sys.description('If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain.')
-param createOuForStorageString string
-
 @sys.description('Managed Identity Client ID')
 param managedIdentityClientId string
+
+@sys.description('Identity name array to grant RBAC role to access AVD application group and NTFS permissions.')
+param securityPrincipalName string
+
+@sys.description('storage account FDQN.')
+param storageAccountFqdn string
 
 // =========== //
 // Variable declaration //
@@ -105,7 +108,8 @@ var varAvdFileShareMetricsDiagnostic = [
 ]
 var varWrklStoragePrivateEndpointName = 'pe-${storageAccountName}-file'
 var vardirectoryServiceOptions = (identityServiceProvider == 'AADDS') ? 'AADDS': (identityServiceProvider == 'AAD') ? 'AADKERB': 'None'
-var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -DomainAdminUserName ${domainJoinUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -CreateNewOU ${createOuForStorageString} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId}'
+
+var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -DomainAdminUserName ${domainJoinUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName ${securityPrincipalName} -StorageAccountFqdn ${storageAccountFqdn} '
 // =========== //
 // Deployments //
 // =========== //
@@ -193,7 +197,3 @@ module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = {
         storageAndFile
     ]
 }
-
-// =========== //
-//   Outputs   //
-// =========== //

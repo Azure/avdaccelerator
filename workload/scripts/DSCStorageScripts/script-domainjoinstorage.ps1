@@ -18,6 +18,10 @@ param(
 	[ValidateNotNullOrEmpty()]
 	[string] $ClientId,
 
+	[Parameter(Mandatory = $false)]
+	[ValidateNotNullOrEmpty()]
+	[string]$SecurityPrincipalName,
+
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
 	[string] $SubscriptionId,
@@ -31,8 +35,8 @@ param(
 	[string] $CustomOuPath,
 
 	[Parameter(Mandatory = $true)]
-    [ValidateNotNullOrEmpty()]
-    [string] $IdentityServiceProvider,
+	[ValidateNotNullOrEmpty()]
+	[string] $IdentityServiceProvider,
 
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
@@ -44,11 +48,11 @@ param(
 
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
-	[string] $CreateNewOU,
+	[string] $StoragePurpose,
 
-    [Parameter(Mandatory = $true)]
-    [ValidateNotNullOrEmpty()]
-    [string] $StoragePurpose,
+	[Parameter(Mandatory = $true)]
+	[ValidateNotNullOrEmpty()]
+	[string] $StorageAccountFqdn,
 
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
@@ -62,8 +66,8 @@ $ErrorActionPreference = "Stop"
 Write-Log "Forcing group policy updates"
 gpupdate /force
 
-Write-Log "Waiting for domain policies to be applied (2 minutes)"
-Start-Sleep -Seconds 120
+Write-Log "Waiting for domain policies to be applied (1 minute)"
+Start-Sleep -Seconds 60
 
 
 Write-Log "Turning off Windows firewall. "
@@ -101,24 +105,9 @@ if ($IdentityServiceProvider -eq 'ADDS') {
 		Write-Log "Storage account $StorageAccountName is already domain joined."
 		return
 	}
-	if ( $CreateNewOU -eq 'true') {
-		Write-Log "Creating AD Organizational unit $OUName'"
-		Get-ADOrganizationalUnit -Filter 'Name -like $OUName'
-		$OrganizationalUnit = Get-ADOrganizationalUnit -Filter 'Name -like $OUName '
-		if (-not $OrganizationalUnit) {
-			foreach ($DCName in $DomainName.split('.')) {
-				$OUPath = $OUPath + ',DC=' + $DCName
-			}
-
-			$OUPath = $OUPath.substring(1)
-			New-ADOrganizationalUnit -name $OUName -path $OUPath
-		}
-
-	}
 }
 
 Write-Log "Connecting to managed identity account"
-# Add-AzAccount -Environment $AzureCloudEnvironment -identity
 Connect-AzAccount -Identity -AccountId $ClientId
 
 Write-Log "Setting Azure subscription to $SubscriptionId"
@@ -127,67 +116,71 @@ Select-AzSubscription -SubscriptionId $SubscriptionId
 if ($IdentityServiceProvider -eq 'ADDS') {
 	Write-Log "Domain joining storage account $StorageAccountName in Resource group $StorageAccountRG"
 	if ( $CustomOuPath -eq 'true') {
-		Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitDistinguishedName $OUName -OverwriteExistingADObject
+		#Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitDistinguishedName $OUName -OverwriteExistingADObject
+		Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitDistinguishedName $OUName -DomainAccountType 'ComputerAccount' -EncryptionType 'AES256' -OverwriteExistingADObject #-SamAccountName $SamAccountName
 		Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to custom OU path $OUName"
-	} else {
-		Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitName $OUName -OverwriteExistingADObject
+	}
+ else {
+		#Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitName $OUName -OverwriteExistingADObject
+		Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitName $OUName -DomainAccountType 'ComputerAccount' -EncryptionType 'AES256' -OverwriteExistingADObject #-SamAccountName $SamAccountName
 		Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to default OU path $OUName"
 	}
 }
 
-## Setting default permissions 
-#$defaultPermission = "None | StorageFileDataSmbShareContributor | StorageFileDataSmbShareReader | StorageFileDataSmbShareElevatedContributor" # Set the default permission of your choice
-
-$defaultPermission = "StorageFileDataSmbShareContributor" # Set the default permission of your choice
-Write-Log "Setting up the default permission of $defaultPermission to storage account $StorageAccountName in $StorageAccountRG"
-$account = Set-AzStorageAccount -ResourceGroupName $StorageAccountRG -AccountName $StorageAccountName -DefaultSharePermission $defaultPermission
-$account.AzureFilesIdentityBasedAuth
-
 # Remove Administrators from full control
-
-
 if ($StoragePurpose -eq 'fslogix') {
 	$DriveLetter = 'Y'
-	 }
+}
 if ($StoragePurpose -eq 'msix') {
 	$DriveLetter = 'X'
-	 }
+}
 Write-Log "Mounting $StoragePurpose storage account on Drive $DriveLetter"
-		
-$FileShareLocation = '\\'+ $StorageAccountName + '.file.core.windows.net\'+$ShareName
-$StorageAccountNameFull = $StorageAccountName + '.file.core.windows.net'
-$connectTestResult = Test-NetConnection -ComputerName $StorageAccountNameFull -Port 445
-Write-Log "Test connection access to port 445 for $StorageAccountNameFull was $connectTestResult"
+
+$FileShareLocation = '\\' + $StorageAccountFqdn + '\' + $ShareName
+$connectTestResult = Test-NetConnection -ComputerName $StorageAccountFqdn -Port 445
+
+Write-Log "Test connection access to port 445 for $StorageAccountFqdn was $connectTestResult"
+
 Try {
-    Write-Log "Mounting Profile storage $StorageAccountName as a drive $DriveLetter"
-    if (-not (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue)) {
-		
-        $UserStorage = "/user:Azure\$StorageAccountName"
+	Write-Log "Mounting Profile storage $StorageAccountName as a drive $DriveLetter"
+	if (-not (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue)) {
+		$UserStorage = "/user:Azure\$StorageAccountName"
 		Write-Log "User storage: $UserStorage"
-        $StorageKey = (Get-AzStorageAccountKey -ResourceGroupName $StorageAccountRG -AccountName $StorageAccountName) | Where-Object {$_.KeyName -eq "key1"}
-		Write-Log "Storage key: $StorageKey"
+		$StorageKey = (Get-AzStorageAccountKey -ResourceGroupName $StorageAccountRG -AccountName $StorageAccountName) | Where-Object { $_.KeyName -eq "key1" }
 		Write-Log "File Share location: $FileShareLocation"
 		net use ${DriveLetter}: $FileShareLocation $UserStorage $StorageKey.Value
-		#New-PSDrive -Name $DriveLetter -PSProvider FileSystem -Root $FileShareLocation -Persist
+		#$StorageKey1 = ConvertTo-SecureString $StorageKey.value -AsPlainText -Force
+		#$credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("Azure\stfsly206dorg", $StorageKey1)
+		#New-PSDrive -Name $DriveLetter -PSProvider FileSystem -Root $FileShareLocation -Credential $credential
 	}
-    else {
-        Write-Log "Drive $DriveLetter already mounted."
-    }
+	else {
+		Write-Log "Drive $DriveLetter already mounted."
+	}
 }
 Catch {
-    Write-Log -Err "Error while mounting profile storage as drive $DriveLetter"
-    Write-Log -Err $_.Exception.Message
-    Throw $_
+	Write-Log -Err "Error while mounting profile storage as drive $DriveLetter"
+	Write-Log -Err $_.Exception.Message
+	Throw $_
 }
 
 Try {
-    Write-Log "setting up NTFS permission for FSLogix"
-    $Commands = "icacls ${DriveLetter}: /remove ('BUILTIN\Administrators')"
-    Invoke-Expression -Command $Commands
-    Write-Log "ACLs set"
+	Write-Log "setting up NTFS permission for FSLogix"
+	icacls ${DriveLetter}: /remove "BUILTIN\Administrators"
+	icacls ${DriveLetter}: /grant "Creator Owner:(OI)(CI)(IO)(M)"
+	icacls ${DriveLetter}: /remove "Authenticated Users"
+	icacls ${DriveLetter}: /remove "Builtin\Users"
+	# AVD group permissions
+	$Group = $DomainName + '\' + $SecurityPrincipalName
+	icacls ${DriveLetter}: /grant "${Group}:(M)"
+	Write-Log "ACLs set"
+
+	Write-Log "Unmounting drive"
+	# Remove-PSDrive -Name $DriveLetter -Force
+	net use ${DriveLetter} /delete
+	Write-Log "Drive unmounted"
 }
 Catch {
-    Write-Log -Err "Error while setting up NTFS permission for FSLogix"
-    Write-Log -Err $_.Exception.Message
-    Throw $_
+	Write-Log -Err "Error while setting up NTFS permission for FSLogix"
+	Write-Log -Err $_.Exception.Message
+	Throw $_
 }

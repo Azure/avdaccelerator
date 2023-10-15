@@ -35,13 +35,13 @@
         "createIntuneEnrollment": {
             "value": false
         },            
-        "avdApplicationGroupIdentitiesIds": {
+        "securityPrincipalId": {
             "value": ""
-        },           
-        "avdApplicationGroupIdentityType": {
-            "value": "Group"
+        },        
+        "securityPrincipalName": {
+            "value": ""
         },       
-        "avdIdentityDomainName": {
+        "identityDomainName": {
             "value": "<<IdentityDomainName>>"
         },
         "avdDomainJoinUserName": {
@@ -181,9 +181,6 @@
         },
         "storageOuPath": {
             "value": ""
-        },
-        "createOuForStorage": {
-            "value": false
         },
         "createResourceTags": {
             "value": false
