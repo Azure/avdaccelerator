@@ -41,7 +41,7 @@
         "securityPrincipalName": {
             "value": ""
         },       
-        "avdIdentityDomainName": {
+        "identityDomainName": {
             "value": "<<IdentityDomainName>>"
         },
         "avdDomainJoinUserName": {
