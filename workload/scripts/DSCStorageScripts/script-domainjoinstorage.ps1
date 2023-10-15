@@ -66,7 +66,7 @@ $ErrorActionPreference = "Stop"
 Write-Log "Forcing group policy updates"
 gpupdate /force
 
-Write-Log "Waiting for domain policies to be applied (2 minutes)"
+Write-Log "Waiting for domain policies to be applied (1 minute)"
 Start-Sleep -Seconds 60
 
 
@@ -174,9 +174,10 @@ Try {
 	icacls ${DriveLetter}: /grant "${Group}:(M)"
 	Write-Log "ACLs set"
 
-	# Write-Log "Unmounting drive"
+	Write-Log "Unmounting drive"
 	# Remove-PSDrive -Name $DriveLetter -Force
-	# Write-Log "Drive unmounted"
+	net use ${DriveLetter} /delete
+	Write-Log "Drive unmounted"
 }
 Catch {
 	Write-Log -Err "Error while setting up NTFS permission for FSLogix"
