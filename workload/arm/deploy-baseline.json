@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "13104425112291453888"
+      "templateHash": "2118718137737085068"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -114,10 +114,11 @@
         "description": "Optional, Identity name to grant RBAC role to access AVD application group and NTFS permissions. (Default: \"\")"
       }
     },
-    "avdIdentityDomainName": {
+    "identityDomainName": {
       "type": "string",
+      "defaultValue": "",
       "metadata": {
-        "description": "Identity domain name."
+        "description": "FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: \"\")"
       }
     },
     "identityDomainGuid": {
@@ -1467,7 +1468,7 @@
     "varCreateVnetPeering": "[if(not(empty(parameters('existingHubVnetResourceId'))), true(), false())]",
     "varCustomResourceTags": "[if(parameters('createResourceTags'), createObject('WorkloadName', parameters('workloadNameTag'), 'WorkloadType', parameters('workloadTypeTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('workloadCriticalityTag'), 'Custom'), parameters('workloadCriticalityCustomValueTag'), parameters('workloadCriticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'ServiceClass', parameters('workloadSlaTag'), 'OpsTeam', parameters('opsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag')), createObject())]",
     "varAllComputeStorageTags": {
-      "DomainName": "[parameters('avdIdentityDomainName')]",
+      "DomainName": "[parameters('identityDomainName')]",
       "IdentityServiceProvider": "[parameters('avdIdentityServiceProvider')]"
     },
     "varAvdDefaultTags": {
@@ -27482,7 +27483,7 @@
             "value": "[variables('varServiceObjectsRgName')]"
           },
           "identityDomainName": {
-            "value": "[parameters('avdIdentityDomainName')]"
+            "value": "[parameters('identityDomainName')]"
           },
           "ouPath": {
             "value": "[createObject('osImage', variables('varMarketPlaceGalleryWindows')[parameters('managementVmOsImage')], 'osDiskType', 'Standard_LRS', 'mgmtVmSize', 'Standard_B2ms', 'enableAcceleratedNetworking', false(), 'ouPath', parameters('avdOuPath'), 'subnetId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName')), parameters('existingVnetAvdSubnetResourceId'))).ouPath]"
@@ -32115,7 +32116,7 @@
             "value": "[variables('varServiceObjectsRgName')]"
           },
           "identityDomainName": {
-            "value": "[parameters('avdIdentityDomainName')]"
+            "value": "[parameters('identityDomainName')]"
           },
           "identityDomainGuid": {
             "value": "[parameters('identityDomainGuid')]"
@@ -36324,7 +36325,7 @@
             "value": "[variables('varServiceObjectsRgName')]"
           },
           "identityDomainName": {
-            "value": "[parameters('avdIdentityDomainName')]"
+            "value": "[parameters('identityDomainName')]"
           },
           "identityDomainGuid": {
             "value": "[parameters('identityDomainGuid')]"
@@ -40972,7 +40973,7 @@
             "value": "[variables('varHostPoolName')]"
           },
           "identityDomainName": {
-            "value": "[parameters('avdIdentityDomainName')]"
+            "value": "[parameters('identityDomainName')]"
           },
           "avdImageTemplateDefinitionId": {
             "value": "[parameters('avdImageTemplateDefinitionId')]"

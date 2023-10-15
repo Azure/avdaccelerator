@@ -154,17 +154,6 @@
                                     }
                                 },
                                 {
-                                    "name": "identityDomainName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "visible": true,
-                                    "label": "Domain name",
-                                    "toolTip": "Provide identity service domain name.",
-                                    "placeholder": "Example: contoso.com",
-                                    "constraints": {
-                                        "required": true
-                                    }
-                                },
-                                {
                                     "name": "identityServiceProviderIntuneEnrollment",
                                     "type": "Microsoft.Common.CheckBox",
                                     "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
@@ -199,33 +188,41 @@
                                     }
                                 },
                                 {
-                                    "name": "identityAvdUserAccessGroupsDropDown",
+                                    "name": "identityAvdUserAccessGroupDropDown",
                                     "type": "Microsoft.Common.DropDown",
-                                    "visible": "[not(steps('identity').identityAvdAccess.identityAvdUserAccessGroupsCheckBox)]",
+                                    "visible": "[not(steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox)]",
                                     "label": "Groups",
                                     "defaultValue": "",
                                     "filter": true,
-                                    "toolTip": "Select the desired group(s) to give access to Azure Virtual Desktop resources and if applicable to FSLogix file share.",
-                                    "multiselect": true,
+                                    "toolTip": "Select the desired group to give access to Azure Virtual Desktop resources and if applicable to FSLogix file share",
+                                    "multiselect": false,
                                     "constraints": {
                                         "allowedValues": "[map(steps('identity').identityAvdAccess.groupsApi.value, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\": {\"name\":\"', item.displayName, '\",\"id\":\"', item.id, '\"}}')))]"
                                     }
                                 },
                                 {
-                                    "name": "identityAvdUserAccessGroupsCheckBox",
+                                    "name": "identityAvdUserAccessGroupCheckBox",
                                     "type": "Microsoft.Common.CheckBox",
                                     "visible": true,
-                                    "label": "Provide groups IDs instead",
+                                    "label": "Provide group details",
                                     "defaultValue": false,
-                                    "toolTip": "When the desired groups are not listed in the drop down, selecting this box will allow for entering the group's ObjectIDs."
+                                    "toolTip": "When the desired group is not listed in the drop down, selecting this box will allow for entering the group's ObjectID and name. this information will be used to setup AVD access and FSLogix's file share NTFS permissions."
                                 },
                                 {
-                                    "name": "identityAvdUserAccessGroupsTextBox",
+                                    "name": "identityAvdUserAccessGroupTextBox1",
                                     "type": "Microsoft.Common.TextBox",
-                                    "visible": "[steps('identity').identityAvdAccess.identityAvdUserAccessGroupsCheckBox]",
-                                    "label": "ObjectIDs",
-                                    "toolTip": "Comma separated list of security groups (ObjectIDs) to be granted access to Azure Virtual Desktop published items and to create sessions on VMs and single sign-on (SSO) when using AAD as identity provider.",
-                                    "placeholder": "Example: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX,XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+                                    "visible": "[steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox]",
+                                    "label": "Name",
+                                    "toolTip": "Group name to be granted access to Azure Virtual Desktop published items and FSLogix NTFS permissions.",
+                                    "placeholder": "Example: AVD-users"
+                                },
+                                {
+                                    "name": "identityAvdUserAccessGroupTextBox2",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "visible": "[steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox]",
+                                    "label": "Object ID",
+                                    "toolTip": "Group objectID to be granted access to Azure Virtual Desktop published items and FSLogix NTFS permissions.",
+                                    "placeholder": "Example: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
                                 }
                             ]
                         },
@@ -854,6 +851,17 @@
                             "label": "General settings:",
                             "visible": true,
                             "elements": [
+                                {
+                                    "name": "identityDomainName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "visible": "[or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment)]",
+                                    "label": "AD Domain name",
+                                    "toolTip": "The full qualified domain name of the on-premises domain where the hybrid identities originated from, this information is used for Azure files authentication setup..",
+                                    "placeholder": "Example: contoso.com",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
                                 {
                                     "name": "identityDomainOuPathStorageExisting",
                                     "type": "Microsoft.Common.TextBox",
@@ -2295,7 +2303,7 @@
                 "avdPersonalAssignType": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolSettings.assignmentType, 'Automatic')]",
                 "avdIdentityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
                 "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
-                "avdIdentityDomainName": "[steps('identity').identityDomainInformation.identityDomainName]",
+                "identityDomainName": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment), steps('storage').storageGeneralSettings.identityDomainName, '')]",
                 "avdOuPath": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
                 "avdDomainJoinUserName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserName)]",
                 "avdDomainJoinUserPassword": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserPassword)]",
@@ -2375,7 +2383,8 @@
                 "opsTeamTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOpsTeamTag, 'no')]",
                 "ownerTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOwnerTag, 'no')]",
                 "costCenterTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsCostCenterTag, 'no')]",
-                "avdApplicationGroupIdentitiesIds": "[if(equals(steps('identity').identityAvdAccess.identityAvdUserAccessGroupsCheckBox, true), split(steps('identity').identityAvdAccess.identityAvdUserAccessGroupsTextBox, ','), map(steps('identity').identityAvdAccess.identityAvdUserAccessGroupsDropDown, (item) => item.id))]",
+                "avdApplicationGroupIdentityId": "[if(steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox, steps('identity').identityAvdAccess.identityAvdUserAccessGroupTextBox2, steps('identity').identityAvdAccess.identityAvdUserAccessGroupDropDown.id)]",
+                "avdApplicationGroupIdentityName": "[if(equals(steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox, true), steps('identity').identityAvdAccess.identityAvdUserAccessGroupTextBox1, steps('identity').identityAvdAccess.identityAvdUserAccessGroupDropDown.name)]",
                 "avdDeployMonitoring": "[steps('monitoring').deployMonitoring]",
                 "deployAlaWorkspace": "[if(equals(steps('monitoring').deployMonitoring, true), steps('monitoring').deployMonitoringAlaWorkspace, false)]",
                 "avdAlaWorkspaceDataRetention": "[if(equals(steps('monitoring').deployMonitoringAlaWorkspace, true), steps('monitoring').deployMonitoringNewAlaWorkspaceRetention, 0)]",
