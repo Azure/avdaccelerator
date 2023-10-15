@@ -148,10 +148,10 @@ Try {
 		Write-Log "User storage: $UserStorage"
 		$StorageKey = (Get-AzStorageAccountKey -ResourceGroupName $StorageAccountRG -AccountName $StorageAccountName) | Where-Object { $_.KeyName -eq "key1" }
 		Write-Log "File Share location: $FileShareLocation"
-		#net use ${DriveLetter}: $FileShareLocation $UserStorage $StorageKey.Value
-		$StorageKey1 = ConvertTo-SecureString $StorageKey.value -AsPlainText -Force
-		$credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("Azure\stfsly206dorg", $StorageKey1)
-		New-PSDrive -Name $DriveLetter -PSProvider FileSystem -Root $FileShareLocation -Credential $credential
+		net use ${DriveLetter}: $FileShareLocation $UserStorage $StorageKey.Value
+		#$StorageKey1 = ConvertTo-SecureString $StorageKey.value -AsPlainText -Force
+		#$credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("Azure\stfsly206dorg", $StorageKey1)
+		#New-PSDrive -Name $DriveLetter -PSProvider FileSystem -Root $FileShareLocation -Credential $credential
 	}
 	else {
 		Write-Log "Drive $DriveLetter already mounted."
@@ -174,9 +174,9 @@ Try {
 	icacls ${DriveLetter}: /grant "${Group}:(M)"
 	Write-Log "ACLs set"
 
-	Write-Log "Unmounting drive"
-	Remove-PSDrive -Name $DriveLetter -Force
-	Write-Log "Drive unmounted"
+	# Write-Log "Unmounting drive"
+	# Remove-PSDrive -Name $DriveLetter -Force
+	# Write-Log "Drive unmounted"
 }
 Catch {
 	Write-Log -Err "Error while setting up NTFS permission for FSLogix"
