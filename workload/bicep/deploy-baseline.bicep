@@ -61,8 +61,8 @@ param securityPrincipalId string = ''
 @sys.description('Optional, Identity name to grant RBAC role to access AVD application group and NTFS permissions. (Default: "")')
 param securityPrincipalName string = ''
 
-@sys.description('Identity domain name.')
-param avdIdentityDomainName string
+@sys.description('FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")')
+param identityDomainName string = ''
 
 @sys.description('AD domain GUID. (Default: "")')
 param identityDomainGuid string = ''
@@ -776,7 +776,7 @@ var varCustomResourceTags = createResourceTags ? {
     CostCenter: costCenterTag
 } : {}
 var varAllComputeStorageTags = {
-    DomainName: avdIdentityDomainName
+    DomainName: identityDomainName
     IdentityServiceProvider: avdIdentityServiceProvider
 }
 var varAvdDefaultTags = {
@@ -1122,7 +1122,7 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
-        identityDomainName: avdIdentityDomainName
+        identityDomainName: identityDomainName
         ouPath: varMgmtVmSpecs.ouPath
         osDiskType: varMgmtVmSpecs.osDiskType
         location: avdSessionHostLocation
@@ -1170,7 +1170,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
-        identityDomainName: avdIdentityDomainName
+        identityDomainName: identityDomainName
         identityDomainGuid: identityDomainGuid
         sessionHostLocation: avdSessionHostLocation
         storageObjectsRgName: varStorageObjectsRgName
@@ -1213,7 +1213,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (cr
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
-        identityDomainName: avdIdentityDomainName
+        identityDomainName: identityDomainName
         identityDomainGuid: identityDomainGuid
         sessionHostLocation: avdSessionHostLocation
         storageObjectsRgName: varStorageObjectsRgName
@@ -1271,7 +1271,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
         hostPoolName: varHostPoolName
-        identityDomainName: avdIdentityDomainName
+        identityDomainName: identityDomainName
         avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
         sessionHostOuPath: avdOuPath
         diskType: avdSessionHostDiskType
