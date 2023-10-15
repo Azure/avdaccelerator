@@ -37,7 +37,7 @@ If you are having deployment challenges, refer to the [LZA baseline troubleshoot
 
 ## Azure Virtual Desktop - LZA Optional Deployments
 
-### Brownfield scenarios 
+### Brownfield scenarios
 
 The brownfield section contains templates to deploy additional features for Azure Virtual Desktop when existing infrastructure already exists. These templates can be used individually as required. Here is the list of deployment options available:
 
