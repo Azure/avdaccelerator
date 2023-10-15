@@ -541,6 +541,7 @@ var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/m
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
 var varDiskEncryptionKeyExpirationInEpoch = dateTimeToEpoch(dateTimeAdd(time, 'P${string(diskEncryptionKeyExpirationInDays)}D'))
+var varAvdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
 var varCreateStorageDeployment = (createAvdFslogixDeployment || createMsixDeployment == true) ? true : false
 var varFslogixStorageSku = zoneRedundantStorage ? '${fslogixStoragePerformance}_ZRS' : '${fslogixStoragePerformance}_LRS'
 var varMsixStorageSku = zoneRedundantStorage ? '${msixStoragePerformance}_ZRS' : '${msixStoragePerformance}_LRS'
@@ -1258,6 +1259,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
     params: {
         diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
         timeZone: varTimeZoneSessionHosts
+        avdAgentPackageLocation: varAvdAgentPackageLocation
         asgResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment || createMsixDeployment) ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
         identityServiceProvider: avdIdentityServiceProvider
         createIntuneEnrollment: createIntuneEnrollment
