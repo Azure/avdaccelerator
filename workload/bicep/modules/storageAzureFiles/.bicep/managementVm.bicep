@@ -55,7 +55,7 @@ param storageManagedIdentityResourceId string
 @sys.description('Local administrator username.')
 param vmLocalUserName string
 
-@sys.description('AD domain name.')
+@sys.description('Identity domain name.')
 param identityDomainName string
 
 @sys.description('Keyvault name to get credentials from.')
