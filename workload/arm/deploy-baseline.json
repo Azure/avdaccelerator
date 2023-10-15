@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "2118718137737085068"
+      "templateHash": "7371001557121029238"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -1250,7 +1250,7 @@
     "varZtKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('ztKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')), format('kv-key-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')))]",
     "varZtKvPrivateEndpointName": "[format('pe-{0}-vault', variables('varZtKvName'))]",
     "varFslogixSharePath": "[format('\\\\{0}.file.{1}\\{2}', variables('varFslogixStorageName'), environment().suffixes.storage, variables('varFslogixFileShareName'))]",
-    "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/avd-agent-install-update/workload/",
+    "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
     "varSessionHostConfigurationScriptUri": "[format('{0}scripts/Set-SessionHostConfiguration.ps1', variables('varBaseScriptUri'))]",
     "varSessionHostConfigurationScript": "./Set-SessionHostConfiguration.ps1",
     "varDiskEncryptionKeyExpirationInEpoch": "[dateTimeToEpoch(dateTimeAdd(parameters('time'), format('P{0}D', string(parameters('diskEncryptionKeyExpirationInDays')))))]",
@@ -1457,7 +1457,7 @@
         "version": "latest"
       }
     },
-    "varStorageAzureFilesDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/avd-agent-install-update/workload/scripts/DSCStorageScripts.zip",
+    "varStorageAzureFilesDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip",
     "varStorageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-Storage-Scripts.ps1', variables('varBaseScriptUri'))]",
     "varStorageToDomainScript": "./Manual-DSC-Storage-Scripts.ps1",
     "varOuStgPath": "[if(not(empty(parameters('storageOuPath'))), format('\"{0}\"', parameters('storageOuPath')), format('\"{0}\"', variables('varDefaultStorageOuPath')))]",
@@ -41051,7 +41051,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "3531657024852310241"
+              "templateHash": "10362929169289211539"
             }
           },
           "parameters": {
@@ -46164,7 +46164,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "14857736631993081799"
+                      "templateHash": "17926581562507911667"
                     }
                   },
                   "parameters": {
@@ -46236,8 +46236,7 @@
                     }
                   },
                   "variables": {
-                    "ScreenCaptureProtection": true,
-                    "varScriptArguments": "[format('-IdentityDomainName {0} -AmdVmSize {1} -IdentityServiceProvider {2} -Fslogix {3} -FslogixFileShare {4} -FslogixStorageFqdn {5} -HostPoolRegistrationToken {6} -NvidiaVmSize {7} -ScreenCaptureProtection {8} -verbose', parameters('identityDomainName'), variables('varAmdVmSize'), parameters('identityServiceProvider'), parameters('fslogix'), parameters('fslogixFileShare'), parameters('fslogixStorageFqdn'), parameters('hostPoolToken'), variables('varNvidiaVmSize'), variables('ScreenCaptureProtection'))]",
+                    "varScriptArguments": "[format('-IdentityDomainName {0} -AmdVmSize {1} -IdentityServiceProvider {2} -Fslogix {3} -FslogixFileShare {4} -FslogixStorageFqdn {5} -HostPoolRegistrationToken {6} -NvidiaVmSize {7} -verbose', parameters('identityDomainName'), variables('varAmdVmSize'), parameters('identityServiceProvider'), parameters('fslogix'), parameters('fslogixFileShare'), parameters('fslogixStorageFqdn'), parameters('hostPoolToken'), variables('varNvidiaVmSize'))]",
                     "varAmdVmSizes": [
                       "Standard_NV4as_v4",
                       "Standard_NV8as_v4",

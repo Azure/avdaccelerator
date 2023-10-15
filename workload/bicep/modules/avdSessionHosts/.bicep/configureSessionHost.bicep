@@ -39,8 +39,8 @@ param hostPoolToken string
 // =========== //
 // Variable declaration //
 // =========== //
-var ScreenCaptureProtection = true
-var varScriptArguments = '-IdentityDomainName ${identityDomainName} -AmdVmSize ${varAmdVmSize} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -FslogixFileShare ${fslogixFileShare} -FslogixStorageFqdn ${fslogixStorageFqdn} -HostPoolRegistrationToken ${hostPoolToken} -NvidiaVmSize ${varNvidiaVmSize} -ScreenCaptureProtection ${ScreenCaptureProtection} -verbose'
+// var ScreenCaptureProtection = true
+var varScriptArguments = '-IdentityDomainName ${identityDomainName} -AmdVmSize ${varAmdVmSize} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -FslogixFileShare ${fslogixFileShare} -FslogixStorageFqdn ${fslogixStorageFqdn} -HostPoolRegistrationToken ${hostPoolToken} -NvidiaVmSize ${varNvidiaVmSize} -verbose' // -ScreenCaptureProtection ${ScreenCaptureProtection} -verbose'
 var varAmdVmSizes = [
   'Standard_NV4as_v4'
   'Standard_NV8as_v4'
