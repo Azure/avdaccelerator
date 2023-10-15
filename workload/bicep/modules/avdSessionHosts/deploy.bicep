@@ -46,17 +46,17 @@ param useAvailabilityZones bool
 @sys.description('Availablity Set name.')
 param avsetNamePrefix string
 
-@sys.description('Required, The service providing domain services for Azure Virtual Desktop.')
+@sys.description('The service providing domain services for Azure Virtual Desktop.')
 param identityServiceProvider string
 
-@sys.description('Required, Eronll session hosts on Intune.')
+@sys.description('Eronll session hosts on Intune.')
 param createIntuneEnrollment bool
 
 @sys.description('This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param encryptionAtHost bool
 
 @sys.description('Session host VM size.')
-param size string
+param vmSize string
 
 @sys.description('Enables accelerated Networking on the session hosts.')
 param enableAcceleratedNetworking bool
@@ -91,7 +91,7 @@ param vmLocalUserName string
 @sys.description('Name of keyvault that contains credentials.')
 param wrklKvName string
 
-@sys.description('AD domain name.')
+@sys.description('Identity domain name.')
 param identityDomainName string
 
 @sys.description('AVD session host domain join credentials.')
@@ -106,23 +106,20 @@ param asgResourceId string
 @sys.description('AVD Host Pool name.')
 param hostPoolName string
 
-@sys.description('Location for the AVD agent installation package.')
-param avdAgentPackageLocation string
-
 @sys.description('Deploy Fslogix setup.')
 param createAvdFslogixDeployment bool
-
-@sys.description('FSlogix configuration script file name.')
-param fslogixScript string
-
-@sys.description('Configuration arguments for FSlogix.')
-param fslogixScriptArguments string
 
 @sys.description('Path for the FSlogix share.')
 param fslogixSharePath string
 
-@sys.description('URI for FSlogix configuration script.')
-param fslogixScriptUri string
+@sys.description('FSLogix storage account FDQN.')
+param fslogixStorageFqdn string
+
+@sys.description('URI for AVD session host configuration script URI.')
+param sessionHostConfigurationScriptUri string
+
+@sys.description('URI for AVD session host configuration script.')
+param sessionHostConfigurationScript string
 
 @sys.description('Tags to be applied to resources')
 param tags object
@@ -183,7 +180,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
         availabilitySetResourceId: useAvailabilityZones ? '' : '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/availabilitySets/${avsetNamePrefix}-${padLeft(((1 + (i + countIndex) / maxAvsetMembersCount)), 3, '0')}'
         osType: 'Windows'
         licenseType: 'Windows_Client'
-        vmSize: size
+        vmSize: vmSize
         securityType: securityType
         secureBootEnabled: secureBootEnabled
         vTpmEnabled: vTpmEnabled
@@ -315,37 +312,25 @@ module monitoring '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/ext
     ]
 }]
 
-// Add the registry keys for Fslogix. Alternatively can be enforced via GPOs
-module configureFsLogixAvdHosts '.bicep/configureFslogixOnSessionHosts.bicep' = [for i in range(1, count): if (createAvdFslogixDeployment) {
+// Apply AVD session host configurations
+module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in range(1, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'Fsl-Conf-${batchId}-${i - 1}-${time}'
+    name: 'SH-Config-${batchId}-${i}-${time}'
     params: {
         location: location
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        file: fslogixScript
-        fsLogixScriptArguments: fslogixScriptArguments
-        baseScriptUri: fslogixScriptUri
-    }
-    dependsOn: [
-        sessionHosts
-        monitoring
-    ]
-}]
-
-// Add session hosts to AVD Host pool
-module addAvdHostsToHostPool '.bicep/registerSessionHostsOnHopstPool.bicep' = [for i in range(1, count): {
-    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'HP-Join-${batchId}-${i}-${time}'
-    params: {
-        location: location
         hostPoolToken: hostPool.properties.registrationInfo.token
-        name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        hostPoolName: hostPoolName
-        avdAgentPackageLocation: avdAgentPackageLocation
+        baseScriptUri: sessionHostConfigurationScriptUri
+        scriptName: sessionHostConfigurationScript
+        fslogix: createAvdFslogixDeployment
+        identityDomainName: identityDomainName
+        vmSize: vmSize
+        fslogixFileShare: fslogixSharePath
+        fslogixStorageFqdn: fslogixStorageFqdn
+        identityServiceProvider: identityServiceProvider
     }
     dependsOn: [
         sessionHosts
         monitoring
-        configureFsLogixAvdHosts
     ]
 }]
