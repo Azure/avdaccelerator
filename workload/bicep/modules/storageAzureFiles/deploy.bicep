@@ -197,7 +197,3 @@ module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = {
         storageAndFile
     ]
 }
-
-// =========== //
-//   Outputs   //
-// =========== //
