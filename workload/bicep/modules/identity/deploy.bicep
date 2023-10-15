@@ -137,7 +137,7 @@ module storageContributorRoleAssign '../../../../carml/1.3.0/Microsoft.Authoriza
 
 // Storage File Data SMB Share Contributor
 module storageSmbShareContributorRoleAssign '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for appGroupIdentitiesId in securityPrincipalIds: if (createStorageDeployment && (!empty(securityPrincipalIds))) {
-  name: 'Stora-SmbContri-RolAssign-${take('${appGroupIdentitiesId}', 6)}-${time}'
+  name: 'Stora-SmbContri-RolAssign${take('${appGroupIdentitiesId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
   params: {
     roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varStorageSmbShareContributorRole.id}'
