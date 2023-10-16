@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "15990316284086594663"
+      "templateHash": "11881349639014510533"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -416,7 +416,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "When true, ZOne Redudant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)"
+        "description": "When true, Zone Redundant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)"
       }
     },
     "avsetFaultDomainCount": {
@@ -15074,7 +15074,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "5612319827069459467"
+              "templateHash": "9066192464594903933"
             }
           },
           "parameters": {
@@ -17270,7 +17270,7 @@
               "condition": "[and(parameters('createStorageDeployment'), not(empty(parameters('securityPrincipalIds'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('Stora-SmbContri-RolAssign-{0}-{1}', take(format('{0}', parameters('securityPrincipalIds')[copyIndex()]), 6), parameters('time'))]",
+              "name": "[format('Stora-SmbContri-RolAssign{0}-{1}', take(format('{0}', parameters('securityPrincipalIds')[copyIndex()]), 6), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('storageObjectsRgName'))]",
               "properties": {
