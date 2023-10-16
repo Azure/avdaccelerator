@@ -856,7 +856,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "visible": "[or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment)]",
                                     "label": "AD Domain name",
-                                    "toolTip": "The full qualified domain name of the on-premises domain where the hybrid identities originated from, this information is used for Azure files authentication setup..",
+                                    "toolTip": "The full qualified domain name of the on-premises domain where the hybrid identities originated from, this information is used for Azure files authentication setup.",
                                     "placeholder": "Example: contoso.com",
                                     "constraints": {
                                         "required": true
