@@ -169,10 +169,16 @@ Try {
 	icacls ${DriveLetter}: /grant "Creator Owner:(OI)(CI)(IO)(M)"
 	icacls ${DriveLetter}: /remove "Authenticated Users"
 	icacls ${DriveLetter}: /remove "Builtin\Users"
-	# AVD group permissions
-	$Group = $DomainName + '\' + $SecurityPrincipalName
-	icacls ${DriveLetter}: /grant "${Group}:(M)"
 	Write-Log "ACLs set"
+	# AVD group permissions
+	if ($SecurityPrincipalName -eq 'none') {
+		Write-Log "AD group not provided, ACLs for AD group not set"
+	}
+	else {
+		$Group = $DomainName + '\' + $SecurityPrincipalName
+		icacls ${DriveLetter}: /grant "${Group}:(M)"
+		Write-Log "AD group $Group ACLs set"
+	}
 
 	Write-Log "Unmounting drive"
 	# Remove-PSDrive -Name $DriveLetter -Force
