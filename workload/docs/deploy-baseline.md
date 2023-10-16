@@ -17,7 +17,6 @@
   - **Azure Virtual Desktop access assignment** - These identities will be granted access to Azure Virtual Desktop application groups (role "Desktop Virtualization User").
     - Groups - select from the drop down the groups to be granted access to Azure Virtual Desktop published items and to create sessions on VMs and single sign-on (SSO) when using AAD as identity provider.
     - Note: when using AAD as identity service provider, an additional role (virtual machine user login) will be granted to compute resource group during deployment.
-    - Domain Name- Your Active Directory domain like contoso.com
   - **When selecting AD DS or AAD DS:**
     - Domain join credentials The Username and password with rights to join computers to the domain.
   - **When selecting ADD:**
@@ -47,7 +46,8 @@
   - **OS image source** - Select a marketplace image or an image from Azure Compute Gallery (Custom image build deployment will create images in compute gallery).
   - **OS version or image** - Choose the OS version or desired image from the Azure compute gallery.
 - **Storage** blade
-  - **General Settings**: 
+  - **General Settings**:
+    - **AD Domain name**: The full qualified domain name of the on-premises domain where the hybrid identities originated from, this information is used for Azure files authentication setup, Example: contoso.com.
     - **Custom OU Path (Optional)**: specify an OU path to create domain storage objects.
     - **Zone redundant storage**: Select to replicate storage across availability zones or only use local redundancy.
   - **FSLogix profile management**: Deploys FSLogix containers and session host setup for user's profiles.
