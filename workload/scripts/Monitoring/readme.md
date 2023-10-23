@@ -4,7 +4,6 @@
 
 ## The main purposes of the scripts are:
 
-
 ## How to use it?
 
 * 01_MMA_Report.ps1- is to gather current AVD hosts wich have been monitored via MMA agent and export it to csv file
