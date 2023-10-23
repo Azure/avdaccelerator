@@ -1,7 +1,7 @@
 
 
 $PathToCsv = "C:\Temp\MMA_VMs.csv"
-$computers = (Import-Csv -Path $PathToCsv).vmname
+$computers = (Import-Csv -Path $PathToCsv).name
 
 foreach ($vmName in $computers) { 
     $vmAzure = Get-AzVM -Name $vmName
