@@ -17,9 +17,9 @@ avdVmLocalUserName | Yes      | AVD session host local username.
 avdVmLocalUserPassword | Yes      | AVD session host local password.
 avdIdentityServiceProvider | No       | Required, The service providing domain services for Azure Virtual Desktop. (Default: ADDS)
 createIntuneEnrollment | No       | Required, Eronll session hosts on Intune. (Default: false)
-avdApplicationGroupIdentitiesIds | No       | Optional, Identity ID array to grant RBAC role to access AVD application group. (Default: "")
-avdApplicationGroupIdentityType | No       | Optional, Identity type to grant RBAC role to access AVD application group. (Default: Group)
-avdIdentityDomainName | Yes      | AD domain name.
+securityPrincipalId | No       | Optional, Identity ID to grant RBAC role to access AVD application group and NTFS permissions. (Default: "")
+securityPrincipalName | No       | Optional, Identity name to grant RBAC role to access AVD application group and NTFS permissions. (Default: "")
+identityDomainName | No       | FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")
 identityDomainGuid | No       | AD domain GUID. (Default: "")
 avdDomainJoinUserName | No       | AVD session host domain join user principal name. (Default: none)
 avdDomainJoinUserPassword | No       | AVD session host domain join password. (Default: none)
@@ -59,7 +59,7 @@ alaExistingWorkspaceResourceId | No       | Existing Azure log analytics workspa
 avdDeploySessionHostsCount | No       | Quantity of session hosts to deploy. (Default: 1)
 avdSessionHostCountIndex | No       | The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 0)
 availabilityZonesCompute | No       | When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Default: true)
-zoneRedundantStorage | No       | When true, ZOne Redudant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)
+zoneRedundantStorage | No       | When true, Zone Redundant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)
 avsetFaultDomainCount | No       | Sets the number of fault domains for the availability set. (Default: 2)
 avsetUpdateDomainCount | No       | Sets the number of update domains for the availability set. (Default: 5)
 fslogixStoragePerformance | No       | Storage account SKU for FSLogix storage. Recommended tier is Premium (Default: Premium)
@@ -206,27 +206,23 @@ Required, Eronll session hosts on Intune. (Default: false)
 
 - Default value: `False`
 
-### avdApplicationGroupIdentitiesIds
+### securityPrincipalId
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-Optional, Identity ID array to grant RBAC role to access AVD application group. (Default: "")
+Optional, Identity ID to grant RBAC role to access AVD application group and NTFS permissions. (Default: "")
 
-### avdApplicationGroupIdentityType
+### securityPrincipalName
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-Optional, Identity type to grant RBAC role to access AVD application group. (Default: Group)
+Optional, Identity name to grant RBAC role to access AVD application group and NTFS permissions. (Default: "")
 
-- Default value: `Group`
+### identityDomainName
 
-- Allowed values: `Group`, `ServicePrincipal`, `User`
+![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-### avdIdentityDomainName
-
-![Parameter Setting](https://img.shields.io/badge/parameter-required-orange?style=flat-square)
-
-AD domain name.
+FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")
 
 ### identityDomainGuid
 
@@ -534,7 +530,7 @@ When true VMs are distributed across availability zones, when set to false, VMs 
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-When true, ZOne Redudant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)
+When true, Zone Redundant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)
 
 - Default value: `False`
 
@@ -1089,13 +1085,13 @@ Enable usage and telemetry feedback to Microsoft.
         "createIntuneEnrollment": {
             "value": false
         },
-        "avdApplicationGroupIdentitiesIds": {
-            "value": []
+        "securityPrincipalId": {
+            "value": ""
         },
-        "avdApplicationGroupIdentityType": {
-            "value": "Group"
+        "securityPrincipalName": {
+            "value": ""
         },
-        "avdIdentityDomainName": {
+        "identityDomainName": {
             "value": ""
         },
         "identityDomainGuid": {
