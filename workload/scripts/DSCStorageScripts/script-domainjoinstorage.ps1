@@ -171,7 +171,7 @@ Try {
 	icacls ${DriveLetter}: /remove "Builtin\Users"
 	Write-Log "ACLs set"
 	# AVD group permissions
-	if ($SecurityPrincipalName -eq 'none' -and $IdentityServiceProvider -eq 'AAD') {
+	if ($SecurityPrincipalName -eq 'none' -or $IdentityServiceProvider -eq 'AAD') {
 		Write-Log "AD group not provided or using Microsoft Entra ID joined session hosts, ACLs for AD group not set"
 	}
 	else {
