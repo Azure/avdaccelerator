@@ -220,20 +220,20 @@ try {
                                 PropertyType = 'DWord'
                                 Value        = 1
                         },
-                        # Loads FRXShell if there's a failure attaching to, or using an existing profile VHD(X): https://docs.microsoft.com/en-us/fslogix/profile-container-configuration-reference#preventloginwithfailure
-                        [PSCustomObject]@{
-                                Name         = 'PreventLoginWithFailure'
-                                Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
-                                PropertyType = 'DWord'
-                                Value        = 1
-                        },
-                        # Loads FRXShell if it's determined a temp profile has been created: https://docs.microsoft.com/en-us/fslogix/profile-container-configuration-reference#preventloginwithtempprofile
-                        [PSCustomObject]@{
-                                Name         = 'PreventLoginWithTempProfile'
-                                Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
-                                PropertyType = 'DWord'
-                                Value        = 1
-                        },
+                        # # Loads FRXShell if there's a failure attaching to, or using an existing profile VHD(X): https://docs.microsoft.com/en-us/fslogix/profile-container-configuration-reference#preventloginwithfailure
+                        # [PSCustomObject]@{
+                        #         Name         = 'PreventLoginWithFailure'
+                        #         Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
+                        #         PropertyType = 'DWord'
+                        #         Value        = 1
+                        # },
+                        # # Loads FRXShell if it's determined a temp profile has been created: https://docs.microsoft.com/en-us/fslogix/profile-container-configuration-reference#preventloginwithtempprofile
+                        # [PSCustomObject]@{
+                        #         Name         = 'PreventLoginWithTempProfile'
+                        #         Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
+                        #         PropertyType = 'DWord'
+                        #         Value        = 1
+                        # },
                         # List of file system locations to search for the user's profile VHD(X) file: https://docs.microsoft.com/en-us/fslogix/profile-container-configuration-reference#vhdlocations
                         [PSCustomObject]@{
                                 Name         = 'VHDLocations'
