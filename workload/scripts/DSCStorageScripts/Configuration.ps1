@@ -228,7 +228,7 @@ Configuration DomainJoinFileShare
                     . (Join-Path $using:ScriptPath "Logger.ps1")
                     try {
                         Write-Log "AAD setting NTFS permissions on $Using:StorageAccountName"
-                        & "$using:ScriptPath\Script-AadNtfsSetup.ps1" -StorageAccountName $Using:StorageAccountName -StorageAccountRG $Using:StorageAccountRG -SubscriptionId $Using:SubscriptionId -ClientId $Using:ClientId -SecurityPrincipalName $Using:SecurityPrincipalName -ShareName $Using:ShareName -DomainName $Using:DomainName -IdentityServiceProvider $Using:IdentityServiceProvider -AzureCloudEnvironment $Using:AzureCloudEnvironment -CustomOuPath $Using:CustomOuPath -OUName $Using:OUName -StoragePurpose $Using:StoragePurpose -StorageAccountFqdn $Using:StorageAccountFqdn
+                        & "$using:ScriptPath\Script-AadNtfsSetup.ps1" -StorageAccountName $Using:StorageAccountName -StorageAccountRG $Using:StorageAccountRG -SubscriptionId $Using:SubscriptionId -ClientId $Using:ClientId -ShareName $Using:ShareName -StoragePurpose $Using:StoragePurpose -StorageAccountFqdn $Using:StorageAccountFqdn
                         Write-Log "Successfully applied NTFS permissions on Storage account"
                     }
                     catch {
