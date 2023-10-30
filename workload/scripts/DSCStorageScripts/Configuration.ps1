@@ -200,7 +200,6 @@ Configuration DomainJoinFileShare
                     throw [System.Exception]::new("Some error occurred in DSC DomainJoinStorage TestScript: $ErrMsg", $PSItem.Exception)
                 }
             }
-		
             PsDscRunAsCredential = $DomainAdminCred
         }
     }

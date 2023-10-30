@@ -190,7 +190,7 @@ module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = {
         name: managementVmName
         file: storageToDomainScript
         scriptArguments: varStorageToDomainScriptArgs
-        domainJoinUserPassword: avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
+        domainJoinUserPassword: (identityServiceProvider == 'AAD') ? '' : avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
         baseScriptUri: storageToDomainScriptUri
     }
     dependsOn: [

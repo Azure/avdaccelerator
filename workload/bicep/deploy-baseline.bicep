@@ -1092,12 +1092,12 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
                 }
                 {
                     name: 'domainJoinUserName'
-                    value: 'AAD-Joined-Deployment-No-Domain-Credentials'
+                    value: 'NoUsername'
                     contentType: 'Domain join credentials'
                 }
                 {
                     name: 'domainJoinUserPassword'
-                    value: 'AAD-Joined-Deployment-No-Domain-Credentials'
+                    value: 'NoPassword'
                     contentType: 'Domain join credentials'
                 }
             ]
