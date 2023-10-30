@@ -63,12 +63,13 @@ $ErrorActionPreference = "Stop"
 
 . (Join-Path $ScriptPath "Logger.ps1")
 
-Write-Log "Forcing group policy updates"
-gpupdate /force
-
-Write-Log "Waiting for domain policies to be applied (1 minute)"
-Start-Sleep -Seconds 60
-
+if($IdentityServiceProvider -ne 'AAD')
+{
+	Write-Log "Forcing group policy updates"
+	gpupdate /force
+	Write-Log "Waiting for domain policies to be applied (1 minute)"
+	Start-Sleep -Seconds 60
+}
 
 Write-Log "Turning off Windows firewall. "
 Set-NetFirewallProfile -Profile Domain, Public, Private -Enabled False
@@ -127,7 +128,6 @@ if ($IdentityServiceProvider -eq 'ADDS') {
 	}
 }
 
-# Remove Administrators from full control
 if ($StoragePurpose -eq 'fslogix') {
 	$DriveLetter = 'Y'
 }
