@@ -18,13 +18,13 @@ param scriptArguments string
 
 @secure()
 @sys.description('Domain join user password.')
-param domainJoinUserPassword string
+param adminUserPassword string
 
 // =========== //
 // Variable declaration //
 // =========== //
 
-var varscriptArgumentsWithPassword = '${scriptArguments} -DomainAdminUserPassword ${domainJoinUserPassword} -verbose'
+var varscriptArgumentsWithPassword = '${scriptArguments} -AdminUserPassword ${adminUserPassword} -verbose'
 
 // =========== //
 // Deployments //

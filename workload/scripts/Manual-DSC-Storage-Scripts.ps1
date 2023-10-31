@@ -49,11 +49,11 @@ param (
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $DomainAdminUserName,
+        [string] $AdminUserName,
 	
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $DomainAdminUserPassword,
+        [string] $AdminUserPassword,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -66,7 +66,7 @@ param (
 
 Write-Host "Add domain join account as local administrator"
 if ($IdentityServiceProvider -ne 'AAD') {
-        Add-LocalGroupMember -Group "Administrators" -Member $DomainAdminUserName
+        Add-LocalGroupMember -Group "Administrators" -Member $AdminUserName
         Write-Host "Domain join account added to local administrators group"
 }
 else {
@@ -92,35 +92,31 @@ Set-Location -Path $LocalPath
 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
 Install-Module 'PSDscResources' -Force
 
-if ($IdentityServiceProvider -ne 'AAD') {
-        # Handling special characters on password
-        function Set-EscapeCharacters {
-                Param(
-                        [parameter(Mandatory = $true, Position = 0)]
-                        [String]
-                        $string
-                )
-                $string = $string -replace '\*', '`*'
-                $string = $string -replace '\\', '`\'
-                $string = $string -replace '\~', '`~'
-                $string = $string -replace '\;', '`;'
-                $string = $string -replace '\(', '`('
-                $string = $string -replace '\%', '`%'
-                $string = $string -replace '\?', '`?'
-                $string = $string -replace '\.', '`.'
-                $string = $string -replace '\:', '`:'
-                $string = $string -replace '\@', '`@'
-                $string = $string -replace '\/', '`/'
-                $string = $string -replace '\$', '`$'
+# Handling special characters on password
+function Set-EscapeCharacters {
+        Param(
+                [parameter(Mandatory = $true, Position = 0)]
+                [String]
                 $string
-        }
-        $DomainAdminUserPasswordEscaped = Set-EscapeCharacters $DomainAdminUserPassword
+        )
+        $string = $string -replace '\*', '`*'
+        $string = $string -replace '\\', '`\'
+        $string = $string -replace '\~', '`~'
+        $string = $string -replace '\;', '`;'
+        $string = $string -replace '\(', '`('
+        $string = $string -replace '\%', '`%'
+        $string = $string -replace '\?', '`?'
+        $string = $string -replace '\.', '`.'
+        $string = $string -replace '\:', '`:'
+        $string = $string -replace '\@', '`@'
+        $string = $string -replace '\/', '`/'
+        $string = $string -replace '\$', '`$'
+        $string
 }
-else {
-        $DomainAdminUserPasswordEscaped = $DomainAdminUserPassword
-}
+$AdminUserPasswordEscaped = Set-EscapeCharacters $AdminUserPassword
 
-$DscCompileCommand = "./Configuration.ps1 -StorageAccountName """ + $StorageAccountName + """ -StorageAccountRG """ + $StorageAccountRG + """ -StoragePurpose """ + $StoragePurpose + """ -StorageAccountFqdn """ + $StorageAccountFqdn + """ -ShareName """ + $ShareName + """ -SubscriptionId """ + $SubscriptionId + """ -ClientId """ + $ClientId + """ -SecurityPrincipalName """ + $SecurityPrincipalName + """ -DomainName """ + $DomainName + """ -IdentityServiceProvider """ + $IdentityServiceProvider + """ -AzureCloudEnvironment """ + $AzureCloudEnvironment + """ -CustomOuPath " + $CustomOuPath + " -OUName """ + $OUName + """ -DomainAdminUserName """ + $DomainAdminUserName + """ -DomainAdminUserPassword """ + $DomainAdminUserPasswordEscaped + """ -Verbose"
+
+$DscCompileCommand = "./Configuration.ps1 -StorageAccountName """ + $StorageAccountName + """ -StorageAccountRG """ + $StorageAccountRG + """ -StoragePurpose """ + $StoragePurpose + """ -StorageAccountFqdn """ + $StorageAccountFqdn + """ -ShareName """ + $ShareName + """ -SubscriptionId """ + $SubscriptionId + """ -ClientId """ + $ClientId + """ -SecurityPrincipalName """ + $SecurityPrincipalName + """ -DomainName """ + $DomainName + """ -IdentityServiceProvider """ + $IdentityServiceProvider + """ -AzureCloudEnvironment """ + $AzureCloudEnvironment + """ -CustomOuPath " + $CustomOuPath + " -OUName """ + $OUName + """ -AdminUserName """ + $AdminUserName + """ -AdminUserPassword """ + $AdminUserPasswordEscaped + """ -Verbose"
 
 Write-Host "Executing the commmand $DscCompileCommand" 
 Invoke-Expression -Command $DscCompileCommand
