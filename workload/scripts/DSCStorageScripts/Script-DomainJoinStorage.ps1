@@ -182,7 +182,8 @@ Try {
 
 	Write-Log "Unmounting drive"
 	# Remove-PSDrive -Name $DriveLetter -Force
-	net use ${DriveLetter} /delete
+	# HACK: Disabled because it fails
+	#net use ${DriveLetter} /delete
 	Write-Log "Drive unmounted"
 }
 Catch {
