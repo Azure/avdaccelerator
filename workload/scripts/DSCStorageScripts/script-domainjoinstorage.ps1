@@ -63,11 +63,13 @@ $ErrorActionPreference = "Stop"
 
 . (Join-Path $ScriptPath "Logger.ps1")
 
-Write-Log "Forcing group policy updates"
-gpupdate /force
+if ($IdentityServiceProvider -ne 'AAD') {
+	Write-Log "Forcing group policy updates"
+	gpupdate /force
 
-Write-Log "Waiting for domain policies to be applied (1 minute)"
-Start-Sleep -Seconds 60
+	Write-Log "Waiting for domain policies to be applied (1 minute)"
+	Start-Sleep -Seconds 60
+}
 
 Write-Log "Turning off Windows firewall. "
 Set-NetFirewallProfile -Profile Domain, Public, Private -Enabled False
@@ -169,11 +171,14 @@ Try {
 	icacls ${DriveLetter}: /remove "Builtin\Users"
 	Write-Log "ACLs set"
 	# AVD group permissions
-	Write-Log "AD group not provided or using Microsoft Entra ID joined session hosts, ACLs for AD group not set"
-	$Group = $DomainName + '\' + $SecurityPrincipalName
-	icacls ${DriveLetter}: /grant "${Group}:(M)"
-	Write-Log "AD group $Group ACLs set"
-
+	if ($SecurityPrincipalName -eq 'none' -or $IdentityServiceProvider -eq 'AAD') {
+		Write-Log "AD group not provided or using Microsoft Entra ID joined session hosts, ACLs for AD group not set"
+	}
+	else {
+		$Group = $DomainName + '\' + $SecurityPrincipalName
+		icacls ${DriveLetter}: /grant "${Group}:(M)"
+		Write-Log "AD group $Group ACLs set"
+	}
 	Write-Log "Unmounting drive"
 	# Remove-PSDrive -Name $DriveLetter -Force
 	net use ${DriveLetter} /delete
