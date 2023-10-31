@@ -1152,6 +1152,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
     name: 'Storage-FSLogix-${time}'
     params: {
         storagePurpose: 'fslogix'
+        vmLocalUserName: avdVmLocalUserName
         fileShareName: varFslogixFileShareName
         fileShareMultichannel: (fslogixStoragePerformance == 'Premium') ? true : false
         storageSku: varFslogixStorageSku
@@ -1195,6 +1196,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (cr
     name: 'Storage-MSIX-${time}'
     params: {
         storagePurpose: 'msix'
+        vmLocalUserName: avdVmLocalUserName
         fileShareName: varMsixFileShareName
         fileShareMultichannel: (msixStoragePerformance == 'Premium') ? true : false
         storageSku: varMsixStorageSku
