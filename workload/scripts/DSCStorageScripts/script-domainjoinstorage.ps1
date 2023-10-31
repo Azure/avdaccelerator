@@ -171,19 +171,19 @@ Try {
 	icacls ${DriveLetter}: /remove "Authenticated Users"
 	icacls ${DriveLetter}: /remove "BUILTIN\Users"
 	Write-Log "ACLs set"
-	# AVD group permissions
-	# if ($SecurityPrincipalName -eq 'none' -or $IdentityServiceProvider -eq 'AAD') {
-	# 	Write-Log "AD group not provided or using Microsoft Entra ID joined session hosts, ACLs for AD group not set"
-	# }
-	# else {
+	#AVD group permissions
+	if ($SecurityPrincipalName -eq 'none' -or $IdentityServiceProvider -eq 'AAD') {
+		Write-Log "AD group not provided or using Microsoft Entra ID joined session hosts, ACLs for AD group not set"
+	}
+	else {
 		$Group = $DomainName + '\' + $SecurityPrincipalName
 		icacls ${DriveLetter}: /grant "${Group}:(M)"
 		Write-Log "AD group $Group ACLs set"
-	#}
-	# Write-Log "Unmounting drive"
-	# # Remove-PSDrive -Name $DriveLetter -Force
-	# net use ${DriveLetter} /delete
-	# Write-Log "Drive unmounted"
+	}
+	Write-Log "Unmounting drive"
+	# Remove-PSDrive -Name $DriveLetter -Force
+	net use ${DriveLetter} /delete
+	Write-Log "Drive unmounted"
 }
 Catch {
 	Write-Log -Err "Error while setting up NTFS permission for FSLogix"
