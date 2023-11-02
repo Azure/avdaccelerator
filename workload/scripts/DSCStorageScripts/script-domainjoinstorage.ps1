@@ -162,25 +162,18 @@ Catch {
 	Write-Log -Err $_.Exception.Message
 	Throw $_
 }
-
-Try {
-	if ($SecurityPrincipalName -eq 'none' -or $IdentityServiceProvider -eq 'AAD') {
-		Write-Log "AD group not provided or using Microsoft Entra ID joined session hosts, ACLs for AD group not set"
-	}
-	else {
 	Write-Log "setting up NTFS permission for FSLogix"
 	icacls ${DriveLetter}: /inheritance:r
 	icacls ${DriveLetter}: /remove "BUILTIN\Administrators"
 	icacls ${DriveLetter}: /grant "Creator Owner:(OI)(CI)(IO)(M)"
-	icacls ${DriveLetter}: /remove "Authenticated Users"
 	icacls ${DriveLetter}: /remove "BUILTIN\Users"
 	Write-Log "ACLs set"
-	}
 	#AVD group permissions
 	if ($SecurityPrincipalName -eq 'none' -or $IdentityServiceProvider -eq 'AAD') {
 		Write-Log "AD group not provided or using Microsoft Entra ID joined session hosts, ACLs for AD group not set"
 	}
 	else {
+		icacls ${DriveLetter}: /remove "Authenticated Users"
 		$Group = $DomainName + '\' + $SecurityPrincipalName
 		icacls ${DriveLetter}: /grant "${Group}:(M)"
 		Write-Log "AD group $Group ACLs set"
