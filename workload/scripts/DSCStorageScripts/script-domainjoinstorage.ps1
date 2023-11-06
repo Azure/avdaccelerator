@@ -162,6 +162,8 @@ Catch {
 	Write-Log -Err $_.Exception.Message
 	Throw $_
 }
+
+Try {
 	Write-Log "setting up NTFS permission for FSLogix"
 	icacls ${DriveLetter}: /inheritance:r
 	icacls ${DriveLetter}: /remove "BUILTIN\Administrators"
