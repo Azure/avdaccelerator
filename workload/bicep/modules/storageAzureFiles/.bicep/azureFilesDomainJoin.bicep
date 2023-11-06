@@ -18,13 +18,7 @@ param scriptArguments string
 
 @secure()
 @sys.description('Domain join user password.')
-param domainJoinUserPassword string
-
-// =========== //
-// Variable declaration //
-// =========== //
-
-var varscriptArgumentsWithPassword = '${scriptArguments} -DomainAdminUserPassword ${domainJoinUserPassword} -verbose'
+param adminUserPassword string
 
 // =========== //
 // Deployments //
@@ -42,7 +36,7 @@ resource dscStorageScript 'Microsoft.Compute/virtualMachines/extensions@2022-08-
     settings: {}
     protectedSettings: {
       fileUris: array(baseScriptUri)
-      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File ${file} ${varscriptArgumentsWithPassword}'
+      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File ${file} ${scriptArguments} -AdminUserPassword ${adminUserPassword} -verbose'
     }
   }
 }
