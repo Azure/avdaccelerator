@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "4374850285059951273"
+      "templateHash": "12645194561011046179"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -32140,7 +32140,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "12836745950301434989"
+              "templateHash": "18138942451660271553"
             }
           },
           "parameters": {
@@ -36177,7 +36177,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "2307914902179659195"
+                      "templateHash": "17031945091476279498"
                     }
                   },
                   "parameters": {
@@ -36215,9 +36215,6 @@
                       }
                     }
                   },
-                  "variables": {
-                    "varscriptArgumentsWithPassword": "[format('{0} -AdminUserPassword {1} -verbose', parameters('scriptArguments'), parameters('adminUserPassword'))]"
-                  },
                   "resources": [
                     {
                       "type": "Microsoft.Compute/virtualMachines/extensions",
@@ -36232,7 +36229,7 @@
                         "settings": {},
                         "protectedSettings": {
                           "fileUris": "[array(parameters('baseScriptUri'))]",
-                          "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File {0} {1}', parameters('file'), variables('varscriptArgumentsWithPassword'))]"
+                          "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File {0} {1} -AdminUserPassword {2} -verbose', parameters('file'), parameters('scriptArguments'), parameters('adminUserPassword'))]"
                         }
                       }
                     }
@@ -36351,7 +36348,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "12836745950301434989"
+              "templateHash": "18138942451660271553"
             }
           },
           "parameters": {
@@ -40388,7 +40385,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "2307914902179659195"
+                      "templateHash": "17031945091476279498"
                     }
                   },
                   "parameters": {
@@ -40426,9 +40423,6 @@
                       }
                     }
                   },
-                  "variables": {
-                    "varscriptArgumentsWithPassword": "[format('{0} -AdminUserPassword {1} -verbose', parameters('scriptArguments'), parameters('adminUserPassword'))]"
-                  },
                   "resources": [
                     {
                       "type": "Microsoft.Compute/virtualMachines/extensions",
@@ -40443,7 +40437,7 @@
                         "settings": {},
                         "protectedSettings": {
                           "fileUris": "[array(parameters('baseScriptUri'))]",
-                          "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File {0} {1}', parameters('file'), variables('varscriptArgumentsWithPassword'))]"
+                          "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File {0} {1} -AdminUserPassword {2} -verbose', parameters('file'), parameters('scriptArguments'), parameters('adminUserPassword'))]"
                         }
                       }
                     }
