@@ -13,19 +13,19 @@ $VMs = Get-AzVM
 $WindowsVMs = $VMs | Where-Object  {$_.StorageProfile.OsDisk.OsType -eq "Windows" }
 foreach ($VM in $WindowsVMs) {
 
-    $ReportDetails = "" | Select VmName, ResourceGroupName
+    $ReportDetails = "" | Select Name, ResourceGroupName
 
-    $extension = Get-AzVMExtension -ResourceGroupName $Vm.ResourceGroupName -VMName $VM.Name
+    $extension = Get-AzVMExtension -ResourceGroupName $Vm.ResourceGroupName -Name $VM.Name
 
     if ($extension.Name -contains "MicrosoftMonitoringAgent") {
         #Write-Host "Microsoft Monitoring Agent is Installed on" $VM.Name "in the RG:" $VM.ResourceGroupName
-        $ReportDetails.VMName = $vm.Name 
+        $ReportDetails.Name = $vm.Name 
         $ReportDetails.ResourceGroupName = $vm.ResourceGroupName 
         $report+=$ReportDetails 
         }
 }
 
-$report | ft -AutoSize VmName, ResourceGroupName
+$report | ft -AutoSize Name, ResourceGroupName
  
 #Change the path based on your convenience
 $report | Export-CSV  "c:\temp\$reportName" –NoTypeInformation
