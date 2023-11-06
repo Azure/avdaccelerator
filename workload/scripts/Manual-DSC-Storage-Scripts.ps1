@@ -49,11 +49,11 @@ param (
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $DomainAdminUserName,
+        [string] $AdminUserName,
 	
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $DomainAdminUserPassword,
+        [string] $AdminUserPassword,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -65,7 +65,13 @@ param (
 )
 
 Write-Host "Add domain join account as local administrator"
-Add-LocalGroupMember -Group "Administrators" -Member $DomainAdminUserName
+if ($IdentityServiceProvider -ne 'AAD') {
+        Add-LocalGroupMember -Group "Administrators" -Member $AdminUserName
+        Write-Host "Domain join account added to local administrators group"
+}
+else {
+        Write-Host "Using AAD, no domain join account to add to local administrators group"
+}
 
 Write-Host "Downloading the DSCStorageScripts.zip from $DscPath"
 $DscArhive = "DSCStorageScripts.zip"
@@ -107,9 +113,10 @@ function Set-EscapeCharacters {
         $string = $string -replace '\$', '`$'
         $string
 }
-$DomainAdminUserPasswordEscaped = Set-EscapeCharacters $DomainAdminUserPassword
+$AdminUserPasswordEscaped = Set-EscapeCharacters $AdminUserPassword
 
-$DscCompileCommand = "./Configuration.ps1 -StorageAccountName """ + $StorageAccountName + """ -StorageAccountRG """ + $StorageAccountRG + """ -StoragePurpose """ + $StoragePurpose + """ -StorageAccountFqdn """ + $StorageAccountFqdn + """ -ShareName """ + $ShareName + """ -SubscriptionId """ + $SubscriptionId + """ -ClientId """ + $ClientId + """ -SecurityPrincipalName """ + $SecurityPrincipalName + """ -DomainName """ + $DomainName + """ -IdentityServiceProvider """ + $IdentityServiceProvider + """ -AzureCloudEnvironment """ + $AzureCloudEnvironment + """ -CustomOuPath " + $CustomOuPath + " -OUName """ + $OUName + """ -DomainAdminUserName """ + $DomainAdminUserName + """ -DomainAdminUserPassword """ + $DomainAdminUserPasswordEscaped + """ -Verbose"
+
+$DscCompileCommand = "./Configuration.ps1 -StorageAccountName """ + $StorageAccountName + """ -StorageAccountRG """ + $StorageAccountRG + """ -StoragePurpose """ + $StoragePurpose + """ -StorageAccountFqdn """ + $StorageAccountFqdn + """ -ShareName """ + $ShareName + """ -SubscriptionId """ + $SubscriptionId + """ -ClientId """ + $ClientId + """ -SecurityPrincipalName """ + $SecurityPrincipalName + """ -DomainName """ + $DomainName + """ -IdentityServiceProvider """ + $IdentityServiceProvider + """ -AzureCloudEnvironment """ + $AzureCloudEnvironment + """ -CustomOuPath " + $CustomOuPath + " -OUName """ + $OUName + """ -AdminUserName """ + $AdminUserName + """ -AdminUserPassword """ + $AdminUserPasswordEscaped + """ -Verbose"
 
 Write-Host "Executing the commmand $DscCompileCommand" 
 Invoke-Expression -Command $DscCompileCommand
