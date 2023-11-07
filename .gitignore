@@ -57,6 +57,3 @@ workload/bicep/parameters/deploy-baseline-parameters-MSA.json
 # local test files
 localTest
 
-# Ignore files that might be used for local testing
-/workload/bicep/*.json
-/workload/bicep/*.bicepparam
