@@ -102,7 +102,6 @@ param storageAccountFqdn string
 // Variable declaration //
 // =========== //
 var varAzureCloudName = environment().name
-var varStoragePurposeLower = toLower(storagePurpose)
 var varAvdFileShareLogsDiagnostic = [
     'allLogs'
 ]
@@ -140,7 +139,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
             activeDirectoryProperties: (identityServiceProvider == 'AAD') ? {
                 domainGuid: identityDomainGuid
                 domainName: identityDomainName
-            }: {}
+            } : {}
         }
         accessTier: 'Hot'
         networkAcls: deployPrivateEndpoint ? {
@@ -176,7 +175,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
                 privateDnsZoneGroup: {
                     privateDNSResourceIds: [
                         vnetPrivateDnsZoneFilesId
-                    ]                    
+                    ]
                 }
             }
         ] : []

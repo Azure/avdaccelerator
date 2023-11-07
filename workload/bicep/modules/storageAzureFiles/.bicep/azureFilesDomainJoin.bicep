@@ -21,6 +21,13 @@ param scriptArguments string
 param adminUserPassword string
 
 // =========== //
+// Variable declaration //
+// =========== //
+
+var varscriptArgumentsWithPassword = '${scriptArguments} -DomainAdminUserPassword "${replace(adminUserPassword, '"', '""')}" -verbose'
+
+
+// =========== //
 // Deployments //
 // =========== //
 
@@ -36,7 +43,8 @@ resource dscStorageScript 'Microsoft.Compute/virtualMachines/extensions@2022-08-
     settings: {}
     protectedSettings: {
       fileUris: array(baseScriptUri)
-      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File ${file} ${scriptArguments} -AdminUserPassword ${adminUserPassword} -verbose'
+      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File ${file} ${varscriptArgumentsWithPassword} -verbose'
     }
   }
 }
+
