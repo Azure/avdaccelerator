@@ -180,10 +180,12 @@ Try {
 		icacls ${DriveLetter}: /grant "${Group}:(M)"
 		Write-Log "AD group $Group ACLs set"
 	}
+
 	# Write-Log "Unmounting drive"
 	# # Remove-PSDrive -Name $DriveLetter -Force
 	# net use ${DriveLetter} /delete
 	# Write-Log "Drive unmounted"
+
 }
 Catch {
 	Write-Log -Err "Error while setting up NTFS permission for FSLogix"
