@@ -102,7 +102,6 @@ param storageAccountFqdn string
 // Variable declaration //
 // =========== //
 var varAzureCloudName = environment().name
-var varStoragePurposeLower = toLower(storagePurpose)
 var varAvdFileShareLogsDiagnostic = [
     'allLogs'
 ]
@@ -113,7 +112,9 @@ var varWrklStoragePrivateEndpointName = 'pe-${storageAccountName}-file'
 var varDirectoryServiceOptions = (identityServiceProvider == 'AADDS') ? 'AADDS': (identityServiceProvider == 'AAD') ? 'AADKERB': 'None'
 var varSecurityPrincipalName = !empty(securityPrincipalName)? securityPrincipalName : 'none'
 var varAdminUserName = (identityServiceProvider == 'AAD') ? vmLocalUserName : domainJoinUserName
-var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -AdminUserName ${varAdminUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName ${varSecurityPrincipalName} -StorageAccountFqdn ${storageAccountFqdn} '
+var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -AdminUserName ${varAdminUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName "${varSecurityPrincipalName}" -StorageAccountFqdn ${storageAccountFqdn} '
+
+
 // =========== //
 // Deployments //
 // =========== //
@@ -140,7 +141,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
             activeDirectoryProperties: (identityServiceProvider == 'AAD') ? {
                 domainGuid: identityDomainGuid
                 domainName: identityDomainName
-            }: {}
+            } : {}
         }
         accessTier: 'Hot'
         networkAcls: deployPrivateEndpoint ? {
@@ -176,7 +177,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
                 privateDnsZoneGroup: {
                     privateDNSResourceIds: [
                         vnetPrivateDnsZoneFilesId
-                    ]                    
+                    ]
                 }
             }
         ] : []
