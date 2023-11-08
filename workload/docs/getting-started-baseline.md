@@ -44,7 +44,7 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
     - <https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/Set-FSLogixRegKeys.ps1>
     - <https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/Set-FSLogixRegKeysAAD.ps1>
     - <https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/Manual-DSC-Storage-Scripts.ps1>
-    - <https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip>
+    - https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/<version_number>/DSCStorageScripts.zip
     - <https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration_09-08-2022.zip>
 - [x]  If using existing Virtual Networks, disable deny private endpoint network policies. The deployment will fail if deny private endpoint network policies are enabled. See the following article on disabling them: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy).
 - [x]  Set up private DNS zones for Azure Files and Key Vault private endpoints name resolution. Link the private DNS zones to the Azure Virtual Desktop vNet when NOT using custom DNS servers or to the vNet where the custom DNS servers are located if configured on the Azure Virtual Desktop vNet.
