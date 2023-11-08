@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "16279945587676051429"
+      "templateHash": "8712748689773639861"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -1254,7 +1254,6 @@
     "varSessionHostConfigurationScriptUri": "[format('{0}scripts/Set-SessionHostConfiguration.ps1', variables('varBaseScriptUri'))]",
     "varSessionHostConfigurationScript": "./Set-SessionHostConfiguration.ps1",
     "varDiskEncryptionKeyExpirationInEpoch": "[dateTimeToEpoch(dateTimeAdd(parameters('time'), format('P{0}D', string(parameters('diskEncryptionKeyExpirationInDays')))))]",
-    "varAvdAgentPackageLocation": "[format('https://wvdportalstorageblob.blob.{0}/galleryartifacts/Configuration_09-08-2022.zip', environment().suffixes.storage)]",
     "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(parameters('createMsixDeployment'), true())), true(), false())]",
     "varFslogixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('fslogixStoragePerformance')), format('{0}_LRS', parameters('fslogixStoragePerformance')))]",
     "varMsixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('msixStoragePerformance')), format('{0}_LRS', parameters('msixStoragePerformance')))]",
@@ -1458,7 +1457,7 @@
         "version": "latest"
       }
     },
-    "varStorageAzureFilesDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip",
+    "varStorageAzureFilesDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/1.0.0/DSCStorageScripts.zip",
     "varStorageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-Storage-Scripts.ps1', variables('varBaseScriptUri'))]",
     "varStorageToDomainScript": "./Manual-DSC-Storage-Scripts.ps1",
     "varOuStgPath": "[if(not(empty(parameters('storageOuPath'))), format('\"{0}\"', parameters('storageOuPath')), format('\"{0}\"', variables('varDefaultStorageOuPath')))]",
@@ -41044,7 +41043,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "10362929169289211539"
+              "templateHash": "1891310422586033958"
             }
           },
           "parameters": {
@@ -41341,7 +41340,6 @@
                   "timeZone": {
                     "value": "[parameters('timeZone')]"
                   },
-                  "userAssignedIdentities": "[if(parameters('createAvdFslogixDeployment'), createObject('value', createObject(format('{0}', parameters('storageManagedIdentityResourceId')), createObject())), createObject('value', createObject()))]",
                   "systemAssignedIdentity": "[if(equals(parameters('identityServiceProvider'), 'AAD'), createObject('value', true()), createObject('value', false()))]",
                   "availabilityZone": "[if(parameters('useAvailabilityZones'), createObject('value', take(skip(variables('varAllAvailabilityZones'), mod(range(1, parameters('count'))[copyIndex()], length(variables('varAllAvailabilityZones')))), 1)), createObject('value', createArray()))]",
                   "encryptionAtHost": {

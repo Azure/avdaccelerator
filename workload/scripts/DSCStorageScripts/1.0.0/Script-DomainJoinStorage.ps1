@@ -164,7 +164,7 @@ Catch {
 }
 
 Try {
-	Write-Log "setting up NTFS permission for FSLogix"
+	Write-Log "setting up NTFS permission for FSLogix or App attach"
 	icacls ${DriveLetter}: /inheritance:r
 	icacls ${DriveLetter}: /remove "BUILTIN\Administrators"
 	icacls ${DriveLetter}: /grant "Creator Owner:(OI)(CI)(IO)(M)"
@@ -186,7 +186,7 @@ Try {
 	# Write-Log "Drive unmounted"
 }
 Catch {
-	Write-Log -Err "Error while setting up NTFS permission for FSLogix"
+	Write-Log -Err "Error while setting up NTFS permission for FSLogix or App attach"
 	Write-Log -Err $_.Exception.Message
 	Throw $_
 }
