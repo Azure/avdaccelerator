@@ -171,9 +171,6 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         location: location
         timeZone: timeZone
-        userAssignedIdentities: createAvdFslogixDeployment ? {
-            '${storageManagedIdentityResourceId}': {}
-        } : {}
         systemAssignedIdentity: (identityServiceProvider == 'AAD') ? true : false
         availabilityZone: useAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
         encryptionAtHost: encryptionAtHost
