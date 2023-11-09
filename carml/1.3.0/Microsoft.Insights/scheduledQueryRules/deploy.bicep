@@ -94,7 +94,7 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2021-02-01-preview' =
     autoMitigate: (kind == 'LogAlert') ? autoMitigate : null
     criteria: criterias
     description: alertDescription
-    displayName: (alertDisplayName != null) ? alertDisplayName : name
+    displayName: !empty(alertDisplayName) ? alertDisplayName : name
     enabled: enabled
     evaluationFrequency: (kind == 'LogAlert' && !empty(evaluationFrequency)) ? evaluationFrequency : null
     muteActionsDuration: (kind == 'LogAlert' && !empty(suppressForMinutes)) ? suppressForMinutes : null
