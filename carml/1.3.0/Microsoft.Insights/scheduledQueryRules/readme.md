@@ -32,6 +32,7 @@ This module deploys a scheduled query rule.
 | Parameter Name | Type | Default Value | Allowed Values | Description |
 | :-- | :-- | :-- | :-- | :-- |
 | `actions` | array | `[]` |  | Actions to invoke when the alert fires. |
+| `alertDisplayName` | string | `''` |  | The display name of the scheduled query rule. |
 | `alertDescription` | string | `''` |  | The description of the scheduled query rule. |
 | `autoMitigate` | bool | `True` |  | The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert. |
 | `enabled` | bool | `True` |  | The flag which indicates whether this scheduled query rule is enabled. |
