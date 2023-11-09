@@ -214,6 +214,7 @@ module scheduledQueryRules './Microsoft.Insights/scheduledQueryRules/deploy.bice
     ]
     // Non-required parameters
     alertDescription: 'My sample Alert'
+    alertDisplayName: 'My alert friendly name'
     autoMitigate: false
     enableDefaultTelemetry: '<enableDefaultTelemetry>'
     evaluationFrequency: 'PT5M'
@@ -290,6 +291,9 @@ module scheduledQueryRules './Microsoft.Insights/scheduledQueryRules/deploy.bice
     // Non-required parameters
     "alertDescription": {
       "value": "My sample Alert"
+    },
+    "alertDisplayName": {
+      "value": "My alert friendly name"
     },
     "autoMitigate": {
       "value": false
