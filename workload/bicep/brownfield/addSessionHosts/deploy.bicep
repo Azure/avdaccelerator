@@ -244,9 +244,9 @@ var varComputeRgName = split(computeRgResourceID, '/')[4]
 var varHostpoolSubId = split(hostPoolResourceID, '/')[2]
 var varHostpoolRgName = split(hostPoolResourceID, '/')[4]
 var varHostPoolName = split(hostPoolResourceID, '/')[8]
-var varKeyVaultSubId = (identityServiceProvider != 'AAD') ? split(keyVaultResourceId, '/')[2] : ''
-var varKeyVaultRgName = (identityServiceProvider != 'AAD') ? split(keyVaultResourceId, '/')[4] : ''
-var varKeyVaultName = (identityServiceProvider != 'AAD') ? split(keyVaultResourceId, '/')[8] : ''
+var varKeyVaultSubId = split(keyVaultResourceId, '/')[2]
+var varKeyVaultRgName = split(keyVaultResourceId, '/')[4]
+var varKeyVaultName = split(keyVaultResourceId, '/')[8]
 var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
   storageAccountType: diskType
 } : {
@@ -258,7 +258,7 @@ var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
 var varFslogixStorageAccountName = createAvdFslogixDeployment ? split(fslogixStorageResourceId, '/')[8] : ''
 var varFslogixStorageFqdn = createAvdFslogixDeployment ? '${varFslogixStorageAccountName}.file.${environment().suffixes.storage}' : ''
 var varFslogixSharePath = createAvdFslogixDeployment ? '\\\\${varFslogixStorageAccountName}.file.${environment().suffixes.storage}\\${fslogixFileShareName}' : ''
-var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
+var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/aad-sh/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
 var varAllAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', location, 3)
@@ -294,7 +294,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2019-12-10-preview'
 }
 
 // call on the keyvault
-resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = if (identityServiceProvider != 'AAD') {
+resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
   name: varKeyVaultName
   scope: resourceGroup('${varKeyVaultSubId}', '${varKeyVaultRgName}')
 }
