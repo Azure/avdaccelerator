@@ -4,39 +4,73 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
-@sys.description('AVD disk encryption set resource ID to enable server side encyption. (Default: "")')
-param diskEncryptionSetResourceId string = ''
+@sys.description('Log analytics workspace for diagnostic logs. (Default: "")')
+param alaWorkspaceResourceId string = ''
 
-@sys.description('AVD subnet ID. (Default: )')
-param subnetId string
+@sys.description('Details about the application.')
+param applicationNameTag string = 'Contoso-App'
 
-@sys.description('Location where to deploy compute services. (Default: )')
-param location string
+@sys.description('Sets the number of fault domains for the availability set. (Default: 2)')
+param avsetFaultDomainCount int = 2
 
-@minLength(2)
-@maxLength(4)
-@sys.description('The name of the resource group to deploy. (Default: AVD1)')
-param deploymentPrefix string = 'AVD1'
+@sys.description('Sets the number of update domains for the availability set. (Default: 5)')
+param avsetUpdateDomainCount int = 5
 
-@sys.description('AVD resources custom naming. (Default: false)')
-param customNaming bool = false
-
-// @sys.description('General session host batch identifier')
-// param managedIdentityStorageResourceId int
-
-@maxLength(11)
-@sys.description('AVD session host prefix custom name. (Default: vmapp1duse2)')
-param sessionHostCustomNamePrefix string = 'vmapp1duse2'
+@sys.description('Application Security Group (ASG) for the session hosts. (Default: "")')
+param asgResourceId string = ''
 
 @maxLength(9)
 @sys.description('AVD availability set custom name. (Default: avail)')
 param avsetCustomNamePrefix string = 'avail'
+
+@sys.description('Source custom image ID. (Default: "")')
+param avdImageTemplateDefinitionId string = ''
 
 @sys.description('Resource Group name for the session hosts. (Default: )')
 param computeRgResourceID string
 
 @sys.description('Quantity of session hosts to deploy. (Default: 1)')
 param count int = 1
+
+@sys.description('The session host number to begin with for the deployment. (Default: )')
+param countIndex int
+
+@sys.description('AVD resources custom naming. (Default: false)')
+param customNaming bool = false
+
+@sys.description('Required, Eronll session hosts on Intune. (Default: false)')
+param createIntuneEnrollment bool = false
+
+@sys.description('Deploy Fslogix setup. (Default: false)')
+param createAvdFslogixDeployment bool = false
+
+@sys.description('Apply tags on resources and resource groups. (Default: false)')
+param createResourceTags bool = false
+
+@sys.description('Cost center of owner team. (Default: Contoso-CC)')
+param costCenterTag string = 'Contoso-CC'
+
+@sys.description('AVD disk encryption set resource ID to enable server side encyption. (Default: "")')
+param diskEncryptionSetResourceId string = ''
+
+@sys.description('Department that owns the deployment, (Dafult: Contoso-AVD)')
+param departmentTag string = 'Contoso-AVD'
+
+@allowed([
+  'Non-business'
+  'Public'
+  'General'
+  'Confidential'
+  'Highly-confidential'
+])
+@sys.description('Sensitivity of data hosted (Default: Non-business)')
+param dataClassificationTag string = 'Non-business'
+
+@sys.description('Enables a zero trust configuration on the session host disks. (Default: false)')
+param diskZeroTrust bool = false
+
+@sys.description('Deploy AVD monitoring resources and setings. (Default: false)')
+param deployMonitoring bool = false
 
 @allowed([
   'Dev' // Development
@@ -46,8 +80,47 @@ param count int = 1
 @sys.description('The name of the resource group to deploy. (Default: Dev)')
 param deploymentEnvironment string = 'Dev'
 
-@sys.description('The session host number to begin with for the deployment. (Default: )')
-param countIndex int
+@minLength(2)
+@maxLength(4)
+@sys.description('The name of the resource group to deploy. (Default: AVD1)')
+param deploymentPrefix string = 'AVD1'
+
+@sys.description('AVD session host domain join user principal name. (Default: NoUsername)')
+param domainJoinUserName string = 'NoUsername'
+
+@sys.description('OS disk type for session host. (Default: Standard_LRS)')
+param diskType string = 'Standard_LRS'
+
+@sys.description('Domain join user password keyvault secret name. (Default: domainJoinUserPassword)')
+param domainJoinPasswordSecretName string = 'domainJoinUserPassword'
+
+@sys.description('Enables accelerated Networking on the session hosts. (Default: true)')
+param enableAcceleratedNetworking bool = true
+
+@sys.description('FSLogix storage resource ID. (Default: )')
+param fslogixStorageResourceId string = ''
+
+@sys.description('FSLogix file share name. (Default: )')
+param fslogixFileShareName string = ''
+
+@sys.description('AVD Host Pool resource ID. (Default: )')
+param hostPoolResourceID string
+
+@sys.description('FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")')
+param identityDomainName string = ''
+
+@sys.description('AVD subnet ID. (Default: )')
+param subnetId string
+
+@sys.description('Location where to deploy compute services. (Default: )')
+param location string
+
+// @sys.description('General session host batch identifier')
+// param managedIdentityStorageResourceId int
+
+@maxLength(11)
+@sys.description('AVD session host prefix custom name. (Default: vmapp1duse2)')
+param sessionHostCustomNamePrefix string = 'vmapp1duse2'
 
 @sys.description('Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Default: true)')
 param useAvailabilityZones bool = true
@@ -55,14 +128,12 @@ param useAvailabilityZones bool = true
 @sys.description('The service providing domain services for Azure Virtual Desktop. (Default: ADDS)')
 param identityServiceProvider string = 'ADDS'
 
-@sys.description('Required, Eronll session hosts on Intune. (Default: false)')
-param createIntuneEnrollment bool = false
 
 @sys.description('Session host VM size. (Default: Standard_D4ads_v5)')
 param vmSize string = 'Standard_D4ads_v5'
 
-@sys.description('Enables accelerated Networking on the session hosts. (Default: true)')
-param enableAcceleratedNetworking bool = true
+@sys.description('Disk encryption set to use for zero trust setup. (Default: )')
+param ztDiskEncryptionSetResourceId string = ''
 
 @allowed([
   'Standard'
@@ -78,14 +149,8 @@ param secureBootEnabled bool = true
 @sys.description('Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings. (Default: true)')
 param vTpmEnabled bool = true
 
-@sys.description('OS disk type for session host. (Default: Standard_LRS)')
-param diskType string = 'Standard_LRS'
-
 @sys.description('Set to deploy image from Azure Compute Gallery. (Default: false)')
 param useSharedImage bool = false
-
-@sys.description('Source custom image ID. (Default: "")')
-param avdImageTemplateDefinitionId string = ''
 
 @sys.description('Storage Managed Identity Resource ID.')
 param storageManagedIdentityResourceId string = ''
@@ -99,38 +164,8 @@ param keyVaultResourceId string
 @sys.description('VM local admin keyvault secret name. (Default: )')
 param vmLocalAdminPasswordSecretName string
 
-@sys.description('Domain join user password keyvault secret name. (Default: domainJoinUserPassword)')
-param domainJoinPasswordSecretName string = 'domainJoinUserPassword'
-
-@sys.description('FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")')
-param identityDomainName string = ''
-
-@sys.description('AVD session host domain join user principal name. (Default: NoUsername)')
-param domainJoinUserName string = 'NoUsername'
-
 @sys.description('OU path to join AVd VMs. (Default: "")')
 param sessionHostOuPath string = ''
-
-@sys.description('Application Security Group (ASG) for the session hosts. (Default: "")')
-param asgResourceId string = ''
-
-@sys.description('AVD Host Pool resource ID. (Default: )')
-param hostPoolResourceID string
-
-@sys.description('Deploy Fslogix setup. (Default: false)')
-param createAvdFslogixDeployment bool = false
-
-@sys.description('FSLogix storage resource ID. (Default: )')
-param fslogixStorageResourceId string = ''
-
-@sys.description('FSLogix file share name. (Default: )')
-param fslogixFileShareName string = ''
-
-@sys.description('Log analytics workspace for diagnostic logs. (Default: "")')
-param alaWorkspaceResourceId string = ''
-
-@sys.description('Deploy AVD monitoring resources and setings. (Default: false)')
-param deployMonitoring bool = false
 
 @allowed([
   'win10_21h2'
@@ -148,15 +183,6 @@ param osImage string = 'win11_22h2'
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
-@sys.description('Enables a zero trust configuration on the session host disks. (Default: false)')
-param diskZeroTrust bool = false
-
-@sys.description('Disk encryption set to use for zero trust setup. (Default: )')
-param ztDiskEncryptionSetResourceId string = ''
-
-@sys.description('Apply tags on resources and resource groups. (Default: false)')
-param createResourceTags bool = false
-
 @sys.description('The name of workload for tagging purposes. (Default: Contoso-Workload)')
 param workloadNameTag string = 'Contoso-Workload'
 
@@ -168,19 +194,6 @@ param workloadNameTag string = 'Contoso-Workload'
 ])
 @sys.description('Reference to the size of the VM for your workloads (Default: Light)')
 param workloadTypeTag string = 'Light'
-
-@allowed([
-  'Non-business'
-  'Public'
-  'General'
-  'Confidential'
-  'Highly-confidential'
-])
-@sys.description('Sensitivity of data hosted (Default: Non-business)')
-param dataClassificationTag string = 'Non-business'
-
-@sys.description('Department that owns the deployment, (Dafult: Contoso-AVD)')
-param departmentTag string = 'Contoso-AVD'
 
 @allowed([
   'Low'
@@ -195,9 +208,6 @@ param workloadCriticalityTag string = 'Low'
 @sys.description('Tag value for custom criticality value. (Default: Contoso-Critical)')
 param workloadCriticalityCustomValueTag string = 'Contoso-Critical'
 
-@sys.description('Details about the application.')
-param applicationNameTag string = 'Contoso-App'
-
 @sys.description('Service level agreement level of the worload. (Contoso-SLA)')
 param workloadSlaTag string = 'Contoso-SLA'
 
@@ -206,15 +216,6 @@ param opsTeamTag string = 'workload-admins@Contoso.com'
 
 @sys.description('Organizational owner of the AVD deployment. (Default: workload-owner@Contoso.com)')
 param ownerTag string = 'workload-owner@Contoso.com'
-
-@sys.description('Cost center of owner team. (Default: Contoso-CC)')
-param costCenterTag string = 'Contoso-CC'
-
-@sys.description('Sets the number of fault domains for the availability set. (Default: 2)')
-param avsetFaultDomainCount int = 2
-
-@sys.description('Sets the number of update domains for the availability set. (Default: 5)')
-param avsetUpdateDomainCount int = 5
 
 // =========== //
 // Variable declaration //
@@ -227,6 +228,7 @@ var varDeploymentEnvironmentLowercase = toLower(deploymentEnvironment)
 var varComputeStorageResourcesNamingStandard = '${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}'
 var varAvsetNamePrefix = customNaming ? '${avsetCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'avail-${varComputeStorageResourcesNamingStandard}'
 var varLocations = loadJsonContent('../../../variables/locations.json')
+var varMarketPlaceGalleryWindows = loadJsonContent('../../../variables/osMarketPlaceImages.json')
 var varTimeZoneSessionHosts = varLocations[varSessionHostLocationLowercase].timeZone
 var varSessionHostLocationLowercase = toLower(replace(location, ' ', ''))
 var varMaxSessionHostsPerTemplate = 10
@@ -281,81 +283,6 @@ var varCustomResourceTags = createResourceTags ? {
 var varNicDiagnosticMetricsToEnable = [
   'AllMetrics'
 ]
-var varMarketPlaceGalleryWindows = {
-  win10_21h2: {
-    publisher: 'MicrosoftWindowsDesktop'
-    offer: 'windows-10'
-    sku: 'win10-21h2-avd'
-    version: 'latest'
-  }
-  win10_21h2_office: {
-    publisher: 'MicrosoftWindowsDesktop'
-    offer: 'office-365'
-    sku: 'win10-21h2-avd-m365'
-    version: 'latest'
-  }
-  win10_22h2_g2: {
-    publisher: 'MicrosoftWindowsDesktop'
-    offer: 'windows-10'
-    sku: 'win10-22h2-avd-g2'
-    version: 'latest'
-  }
-  win10_22h2_office_g2: {
-    publisher: 'MicrosoftWindowsDesktop'
-    offer: 'office-365'
-    sku: 'win10-22h2-avd-m365-g2'
-    version: 'latest'
-  }
-  win11_21h2: {
-    publisher: 'MicrosoftWindowsDesktop'
-    offer: 'Windows-11'
-    sku: 'win11-21h2-avd'
-    version: 'latest'
-  }
-  win11_21h2_office: {
-    publisher: 'MicrosoftWindowsDesktop'
-    offer: 'office-365'
-    sku: 'win11-21h2-avd-m365'
-    version: 'latest'
-  }
-  win11_22h2: {
-    publisher: 'MicrosoftWindowsDesktop'
-    offer: 'Windows-11'
-    sku: 'win11-22h2-avd'
-    version: 'latest'
-  }
-  win11_22h2_office: {
-    publisher: 'MicrosoftWindowsDesktop'
-    offer: 'office-365'
-    sku: 'win11-22h2-avd-m365'
-    version: 'latest'
-  }
-  winServer_2022_Datacenter: {
-    publisher: 'MicrosoftWindowsServer'
-    offer: 'WindowsServer'
-    sku: '2022-datacenter-g2'
-    version: 'latest'
-  }
-  winServer_2022_Datacenter_smalldisk_g2: {
-    publisher: 'MicrosoftWindowsServer'
-    offer: 'WindowsServer'
-    sku: '2022-datacenter-smalldisk-g2'
-    version: 'latest'
-  }
-  winServer_2022_datacenter_core: {
-    publisher: 'MicrosoftWindowsServer'
-    offer: 'WindowsServer'
-    sku: '2022-datacenter-core-g2'
-    version: 'latest'
-  }
-  winServer_2022_Datacenter_core_smalldisk_g2: {
-    publisher: 'MicrosoftWindowsServer'
-    offer: 'WindowsServer'
-    sku: '2022-datacenter-core-smalldisk-g2'
-    version: 'latest'
-  }
-}
-
 // =========== //
 // Deployments //
 // =========== //
@@ -445,9 +372,9 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
       }
     ]
     // ADDS or AADDS domain join.
-    extensionDomainJoinPassword: (identityServiceProvider != 'AAD') ? keyVault.getSecret(domainJoinPasswordSecretName) : 'domainJoinUserPassword'
+    extensionDomainJoinPassword: (identityServiceProvider == 'ADDS' || identityServiceProvider == 'AADDS') ? keyVault.getSecret(domainJoinPasswordSecretName) : 'domainJoinUserPassword'
     extensionDomainJoinConfig: {
-      enabled: (identityServiceProvider == 'AAD') ? false : true
+      enabled: (identityServiceProvider == 'ADDS' || identityServiceProvider == 'AADDS') ? true : false
       settings: {
         name: identityDomainName
         ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
@@ -469,6 +396,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
   }
   dependsOn: [
     keyVault
+    availabilitySet
   ]
 }]
 
@@ -554,5 +482,6 @@ module sessionHostConfiguration '../../modules/avdSessionHosts/.bicep/configureS
   dependsOn: [
     sessionHosts
     monitoring
+    hostPool
   ]
 }]
