@@ -1,5 +1,5 @@
 Param(
-[parameter(Mandatory=$false)]
+[parameter(Mandatory)]
 [string]
 $IdentityDomainName, 
 
@@ -15,11 +15,11 @@ $IdentityServiceProvider,
 [string]
 $Fslogix,
 
-[parameter(Mandatory=$false)]
+[parameter(Mandatory=)]
 [string]
 $FslogixFileShare,
 
-[parameter(Mandatory=$false)]
+[parameter(Mandatory)]
 [string]
 $fslogixStorageFqdn,
 
