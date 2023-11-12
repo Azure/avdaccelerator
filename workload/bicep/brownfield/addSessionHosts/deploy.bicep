@@ -1,6 +1,5 @@
 targetScope = 'subscription'
 
-
 // ========== //
 // Parameters //
 // ========== //
@@ -162,10 +161,10 @@ param createResourceTags bool = false
 param workloadNameTag string = 'Contoso-Workload'
 
 @allowed([
-    'Light'
-    'Medium'
-    'High'
-    'Power'
+  'Light'
+  'Medium'
+  'High'
+  'Power'
 ])
 @sys.description('Reference to the size of the VM for your workloads (Default: Light)')
 param workloadTypeTag string = 'Light'
@@ -227,7 +226,6 @@ var varSessionHostNamePrefix = customNaming ? sessionHostCustomNamePrefix : 'vm$
 var varDeploymentEnvironmentLowercase = toLower(deploymentEnvironment)
 var varComputeStorageResourcesNamingStandard = '${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}'
 var varAvsetNamePrefix = customNaming ? '${avsetCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'avail-${varComputeStorageResourcesNamingStandard}'
-
 var varLocations = loadJsonContent('../../../variables/locations.json')
 var varTimeZoneSessionHosts = varLocations[varSessionHostLocationLowercase].timeZone
 var varSessionHostLocationLowercase = toLower(replace(location, ' ', ''))
@@ -239,14 +237,11 @@ var varMaxAvsetMembersCount = 199
 var varDivisionAvsetValue = count / varMaxAvsetMembersCount
 var varDivisionAvsetRemainderValue = count % varMaxAvsetMembersCount
 var varAvsetCount = varDivisionAvsetRemainderValue > 0 ? varDivisionAvsetValue + 1 : varDivisionAvsetValue
-
 var varComputeSubId = split(computeRgResourceID, '/')[2]
 var varComputeRgName = split(computeRgResourceID, '/')[4]
-
 var varHostpoolSubId = split(hostPoolResourceID, '/')[2]
 var varHostpoolRgName = split(hostPoolResourceID, '/')[4]
 var varHostPoolName = split(hostPoolResourceID, '/')[8]
-
 var varKeyVaultSubId = (identityServiceProvider != 'AAD') ? split(keyVaultResourceId, '/')[2] : ''
 var varKeyVaultRgName = (identityServiceProvider != 'AAD') ? split(keyVaultResourceId, '/')[4] : ''
 var varKeyVaultName = (identityServiceProvider != 'AAD') ? split(keyVaultResourceId, '/')[8] : ''
@@ -254,14 +249,13 @@ var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
   storageAccountType: diskType
 } : {
   diskEncryptionSet: {
-      id: diskEncryptionSetResourceId
+    id: diskEncryptionSetResourceId
   }
   storageAccountType: diskType
 }
 var varFslogixStorageAccountName = createAvdFslogixDeployment ? split(fslogixStorageResourceId, '/')[8] : ''
-var varFslogixStorageFqdn = createAvdFslogixDeployment ?  '${varFslogixStorageAccountName}.file.${environment().suffixes.storage}' : ''
-var varFslogixSharePath = createAvdFslogixDeployment ?  '\\\\${varFslogixStorageAccountName}.file.${environment().suffixes.storage}\\${fslogixFileShareName}' : ''
-
+var varFslogixStorageFqdn = createAvdFslogixDeployment ? '${varFslogixStorageAccountName}.file.${environment().suffixes.storage}' : ''
+var varFslogixSharePath = createAvdFslogixDeployment ? '\\\\${varFslogixStorageAccountName}.file.${environment().suffixes.storage}\\${fslogixFileShareName}' : ''
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
@@ -289,76 +283,76 @@ var varNicDiagnosticMetricsToEnable = [
 ]
 var varMarketPlaceGalleryWindows = {
   win10_21h2: {
-      publisher: 'MicrosoftWindowsDesktop'
-      offer: 'windows-10'
-      sku: 'win10-21h2-avd'
-      version: 'latest'
+    publisher: 'MicrosoftWindowsDesktop'
+    offer: 'windows-10'
+    sku: 'win10-21h2-avd'
+    version: 'latest'
   }
   win10_21h2_office: {
-      publisher: 'MicrosoftWindowsDesktop'
-      offer: 'office-365'
-      sku: 'win10-21h2-avd-m365'
-      version: 'latest'
+    publisher: 'MicrosoftWindowsDesktop'
+    offer: 'office-365'
+    sku: 'win10-21h2-avd-m365'
+    version: 'latest'
   }
   win10_22h2_g2: {
-      publisher: 'MicrosoftWindowsDesktop'
-      offer: 'windows-10'
-      sku: 'win10-22h2-avd-g2'
-      version: 'latest'
+    publisher: 'MicrosoftWindowsDesktop'
+    offer: 'windows-10'
+    sku: 'win10-22h2-avd-g2'
+    version: 'latest'
   }
   win10_22h2_office_g2: {
-      publisher: 'MicrosoftWindowsDesktop'
-      offer: 'office-365'
-      sku: 'win10-22h2-avd-m365-g2'
-      version: 'latest'
+    publisher: 'MicrosoftWindowsDesktop'
+    offer: 'office-365'
+    sku: 'win10-22h2-avd-m365-g2'
+    version: 'latest'
   }
   win11_21h2: {
-      publisher: 'MicrosoftWindowsDesktop'
-      offer: 'Windows-11'
-      sku: 'win11-21h2-avd'
-      version: 'latest'
+    publisher: 'MicrosoftWindowsDesktop'
+    offer: 'Windows-11'
+    sku: 'win11-21h2-avd'
+    version: 'latest'
   }
   win11_21h2_office: {
-      publisher: 'MicrosoftWindowsDesktop'
-      offer: 'office-365'
-      sku: 'win11-21h2-avd-m365'
-      version: 'latest'
+    publisher: 'MicrosoftWindowsDesktop'
+    offer: 'office-365'
+    sku: 'win11-21h2-avd-m365'
+    version: 'latest'
   }
   win11_22h2: {
-      publisher: 'MicrosoftWindowsDesktop'
-      offer: 'Windows-11'
-      sku: 'win11-22h2-avd'
-      version: 'latest'
+    publisher: 'MicrosoftWindowsDesktop'
+    offer: 'Windows-11'
+    sku: 'win11-22h2-avd'
+    version: 'latest'
   }
   win11_22h2_office: {
-      publisher: 'MicrosoftWindowsDesktop'
-      offer: 'office-365'
-      sku: 'win11-22h2-avd-m365'
-      version: 'latest'
+    publisher: 'MicrosoftWindowsDesktop'
+    offer: 'office-365'
+    sku: 'win11-22h2-avd-m365'
+    version: 'latest'
   }
   winServer_2022_Datacenter: {
-      publisher: 'MicrosoftWindowsServer'
-      offer: 'WindowsServer'
-      sku: '2022-datacenter-g2'
-      version: 'latest'
+    publisher: 'MicrosoftWindowsServer'
+    offer: 'WindowsServer'
+    sku: '2022-datacenter-g2'
+    version: 'latest'
   }
   winServer_2022_Datacenter_smalldisk_g2: {
-      publisher: 'MicrosoftWindowsServer'
-      offer: 'WindowsServer'
-      sku: '2022-datacenter-smalldisk-g2'
-      version: 'latest'
+    publisher: 'MicrosoftWindowsServer'
+    offer: 'WindowsServer'
+    sku: '2022-datacenter-smalldisk-g2'
+    version: 'latest'
   }
   winServer_2022_datacenter_core: {
-      publisher: 'MicrosoftWindowsServer'
-      offer: 'WindowsServer'
-      sku: '2022-datacenter-core-g2'
-      version: 'latest'
+    publisher: 'MicrosoftWindowsServer'
+    offer: 'WindowsServer'
+    sku: '2022-datacenter-core-g2'
+    version: 'latest'
   }
   winServer_2022_Datacenter_core_smalldisk_g2: {
-      publisher: 'MicrosoftWindowsServer'
-      offer: 'WindowsServer'
-      sku: '2022-datacenter-core-smalldisk-g2'
-      version: 'latest'
+    publisher: 'MicrosoftWindowsServer'
+    offer: 'WindowsServer'
+    sku: '2022-datacenter-core-smalldisk-g2'
+    version: 'latest'
   }
 }
 
@@ -389,15 +383,14 @@ module availabilitySet '../../modules/avdSessionHosts/.bicep/availabilitySets.bi
   name: 'AVD-Availability-Set-${time}'
   scope: resourceGroup('${varComputeSubId}', '${varComputeRgName}')
   params: {
-      namePrefix: varAvsetNamePrefix
-      location: location
-      count: varAvsetCount
-      faultDomainCount: avsetFaultDomainCount
-      updateDomainCount: avsetUpdateDomainCount
-      tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+    namePrefix: varAvsetNamePrefix
+    location: location
+    count: varAvsetCount
+    faultDomainCount: avsetFaultDomainCount
+    updateDomainCount: avsetUpdateDomainCount
+    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
   }
-  dependsOn: [
-  ]
+  dependsOn: []
 }
 
 // Session hosts
@@ -406,76 +399,76 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
   scope: resourceGroup('${varComputeSubId}', '${varComputeRgName}')
   name: 'SH-${i - 1}-${time}'
   params: {
-      name: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
-      location: location
-      timeZone: time
-      systemAssignedIdentity: (identityServiceProvider == 'AAD') ? true : false
-      availabilityZone: useAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
-      encryptionAtHost: diskZeroTrust
-      availabilitySetResourceId: useAvailabilityZones ? '' : '/subscriptions/${varComputeSubId}/resourceGroups/${varComputeRgName}/providers/Microsoft.Compute/availabilitySets/${varAvsetNamePrefix}-${padLeft(((1 + (i + countIndex) / varMaxAvsetMembersCount)), 3, '0')}'
-      osType: 'Windows'
-      licenseType: 'Windows_Client'
-      vmSize: vmSize
-      securityType: securityType
-      secureBootEnabled: secureBootEnabled
-      vTpmEnabled: vTpmEnabled
-      imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinitionId}\'}') : varMarketPlaceGalleryWindows[osImage]
-      osDisk: {
-          createOption: 'fromImage'
-          deleteOption: 'Delete'
-          diskSizeGB: 128
-          managedDisk: varManagedDisk
-      }
-      adminUsername: vmLocalUserName
-      adminPassword: keyVault.getSecret(vmLocalAdminPasswordSecretName)
-      nicConfigurations: [
+    name: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
+    location: location
+    timeZone: varTimeZoneSessionHosts
+    systemAssignedIdentity: (identityServiceProvider == 'AAD') ? true : false
+    availabilityZone: useAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
+    encryptionAtHost: diskZeroTrust
+    availabilitySetResourceId: useAvailabilityZones ? '' : '/subscriptions/${varComputeSubId}/resourceGroups/${varComputeRgName}/providers/Microsoft.Compute/availabilitySets/${varAvsetNamePrefix}-${padLeft(((1 + (i + countIndex) / varMaxAvsetMembersCount)), 3, '0')}'
+    osType: 'Windows'
+    licenseType: 'Windows_Client'
+    vmSize: vmSize
+    securityType: securityType
+    secureBootEnabled: secureBootEnabled
+    vTpmEnabled: vTpmEnabled
+    imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinitionId}\'}') : varMarketPlaceGalleryWindows[osImage]
+    osDisk: {
+      createOption: 'fromImage'
+      deleteOption: 'Delete'
+      diskSizeGB: 128
+      managedDisk: varManagedDisk
+    }
+    adminUsername: vmLocalUserName
+    adminPassword: keyVault.getSecret(vmLocalAdminPasswordSecretName)
+    nicConfigurations: [
+      {
+        nicSuffix: 'nic-01-'
+        deleteOption: 'Delete'
+        enableAcceleratedNetworking: enableAcceleratedNetworking
+        ipConfigurations: !empty(asgResourceId) ? [
           {
-              nicSuffix: 'nic-01-'
-              deleteOption: 'Delete'
-              enableAcceleratedNetworking: enableAcceleratedNetworking
-              ipConfigurations: !empty(asgResourceId) ? [
-                  {
-                      name: 'ipconfig01'
-                      subnetResourceId: subnetId
-                      applicationSecurityGroups: [
-                          {
-                              id: asgResourceId
-                          }
-                      ]
-                  }
-              ] : [
-                  {
-                      name: 'ipconfig01'
-                      subnetResourceId: subnetId
-                  }
-              ]
+            name: 'ipconfig01'
+            subnetResourceId: subnetId
+            applicationSecurityGroups: [
+              {
+                id: asgResourceId
+              }
+            ]
           }
-      ]
-      // ADDS or AADDS domain join.
-      extensionDomainJoinPassword: (identityServiceProvider != 'AAD') ? keyVault.getSecret(domainJoinPasswordSecretName) : 'domainJoinUserPassword'
-      extensionDomainJoinConfig: {
-          enabled: (identityServiceProvider == 'AAD') ? false : true
-          settings: {
-              name: identityDomainName
-              ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
-              user: domainJoinUserName
-              restart: 'true'
-              options: '3'
+        ] : [
+          {
+            name: 'ipconfig01'
+            subnetResourceId: subnetId
           }
+        ]
       }
-      // Microsoft Entra ID Join.
-      extensionAadJoinConfig: {
-          enabled: (identityServiceProvider == 'AAD') ? true : false
-          settings: createIntuneEnrollment ? {
-              mdmId: '0000000a-0000-0000-c000-000000000000'
-          } : {}
+    ]
+    // ADDS or AADDS domain join.
+    extensionDomainJoinPassword: (identityServiceProvider != 'AAD') ? keyVault.getSecret(domainJoinPasswordSecretName) : 'domainJoinUserPassword'
+    extensionDomainJoinConfig: {
+      enabled: (identityServiceProvider == 'AAD') ? false : true
+      settings: {
+        name: identityDomainName
+        ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
+        user: domainJoinUserName
+        restart: 'true'
+        options: '3'
       }
-      nicdiagnosticMetricsToEnable: deployMonitoring ? varNicDiagnosticMetricsToEnable : []
-      diagnosticWorkspaceId: deployMonitoring ? alaWorkspaceResourceId : ''
-      tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+    }
+    // Microsoft Entra ID Join.
+    extensionAadJoinConfig: {
+      enabled: (identityServiceProvider == 'AAD') ? true : false
+      settings: createIntuneEnrollment ? {
+        mdmId: '0000000a-0000-0000-c000-000000000000'
+      } : {}
+    }
+    nicdiagnosticMetricsToEnable: deployMonitoring ? varNicDiagnosticMetricsToEnable : []
+    diagnosticWorkspaceId: deployMonitoring ? alaWorkspaceResourceId : ''
+    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
   }
   dependsOn: [
-      keyVault
+    keyVault
   ]
 }]
 
@@ -484,33 +477,33 @@ module sessionHostsAntimalwareExtension '../../../../carml/1.3.0/Microsoft.Compu
   scope: resourceGroup('${varComputeSubId}', '${varComputeRgName}')
   name: 'SH-Antimal-${i - 1}-${time}'
   params: {
-      location: location
-      virtualMachineName: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
-      name: 'MicrosoftAntiMalware'
-      publisher: 'Microsoft.Azure.Security'
-      type: 'IaaSAntimalware'
-      typeHandlerVersion: '1.3'
-      autoUpgradeMinorVersion: true
-      enableAutomaticUpgrade: false
-      settings: {
-          AntimalwareEnabled: true
-          RealtimeProtectionEnabled: 'true'
-          ScheduledScanSettings: {
-              isEnabled: 'true'
-              day: '7' // Day of the week for scheduled scan (1-Sunday, 2-Monday, ..., 7-Saturday)
-              time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
-              scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
-          }
-          Exclusions: createAvdFslogixDeployment ? {
-              Extensions: '*.vhd;*.vhdx'
-              Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${varFslogixSharePath}\\*\\*.VHD;${varFslogixSharePath}\\*\\*.VHDX'
-              Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
-          } : {}
+    location: location
+    virtualMachineName: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
+    name: 'MicrosoftAntiMalware'
+    publisher: 'Microsoft.Azure.Security'
+    type: 'IaaSAntimalware'
+    typeHandlerVersion: '1.3'
+    autoUpgradeMinorVersion: true
+    enableAutomaticUpgrade: false
+    settings: {
+      AntimalwareEnabled: true
+      RealtimeProtectionEnabled: 'true'
+      ScheduledScanSettings: {
+        isEnabled: 'true'
+        day: '7' // Day of the week for scheduled scan (1-Sunday, 2-Monday, ..., 7-Saturday)
+        time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
+        scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
       }
-      enableDefaultTelemetry: false
+      Exclusions: createAvdFslogixDeployment ? {
+        Extensions: '*.vhd;*.vhdx'
+        Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${varFslogixSharePath}\\*\\*.VHD;${varFslogixSharePath}\\*\\*.VHDX'
+        Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
+      } : {}
+    }
+    enableDefaultTelemetry: false
   }
   dependsOn: [
-      sessionHosts
+    sessionHosts
   ]
 }]
 
@@ -519,25 +512,25 @@ module monitoring '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/ext
   scope: resourceGroup('${varComputeSubId}', '${varComputeRgName}')
   name: 'SH-Mon-${i - 1}-${time}'
   params: {
-      location: location
-      virtualMachineName: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
-      name: 'MicrosoftMonitoringAgent'
-      publisher: 'Microsoft.EnterpriseCloud.Monitoring'
-      type: 'MicrosoftMonitoringAgent'
-      typeHandlerVersion: '1.0'
-      autoUpgradeMinorVersion: true
-      enableAutomaticUpgrade: false
-      settings: {
-          workspaceId: !empty(alaWorkspaceResourceId) ? reference(alaWorkspace.id, alaWorkspace.apiVersion).customerId : ''
-      }
-      protectedSettings: {
-          workspaceKey: !empty(alaWorkspaceResourceId) ? alaWorkspace.listKeys().primarySharedKey : ''
-      }
-      enableDefaultTelemetry: false
+    location: location
+    virtualMachineName: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
+    name: 'MicrosoftMonitoringAgent'
+    publisher: 'Microsoft.EnterpriseCloud.Monitoring'
+    type: 'MicrosoftMonitoringAgent'
+    typeHandlerVersion: '1.0'
+    autoUpgradeMinorVersion: true
+    enableAutomaticUpgrade: false
+    settings: {
+      workspaceId: !empty(alaWorkspaceResourceId) ? reference(alaWorkspace.id, alaWorkspace.apiVersion).customerId : ''
+    }
+    protectedSettings: {
+      workspaceKey: !empty(alaWorkspaceResourceId) ? alaWorkspace.listKeys().primarySharedKey : ''
+    }
+    enableDefaultTelemetry: false
   }
   dependsOn: [
-      sessionHostsAntimalwareExtension
-      alaWorkspace
+    sessionHostsAntimalwareExtension
+    alaWorkspace
   ]
 }]
 
@@ -546,20 +539,20 @@ module sessionHostConfiguration '../../modules/avdSessionHosts/.bicep/configureS
   scope: resourceGroup('${varComputeSubId}', '${varComputeRgName}')
   name: 'SH-Config-${i}-${time}'
   params: {
-      location: location
-      name: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
-      hostPoolToken: hostPool.properties.registrationInfo.token
-      baseScriptUri: varSessionHostConfigurationScriptUri
-      scriptName: varSessionHostConfigurationScript
-      fslogix: createAvdFslogixDeployment
-      identityDomainName: identityDomainName
-      vmSize: vmSize
-      fslogixFileShare: varFslogixSharePath
-      fslogixStorageFqdn: varFslogixStorageFqdn
-      identityServiceProvider: identityServiceProvider
+    location: location
+    name: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
+    hostPoolToken: hostPool.properties.registrationInfo.token //hostPool.properties.registrationInfo.token
+    baseScriptUri: varSessionHostConfigurationScriptUri
+    scriptName: varSessionHostConfigurationScript
+    fslogix: createAvdFslogixDeployment
+    identityDomainName: identityDomainName
+    vmSize: vmSize
+    fslogixFileShare: varFslogixSharePath
+    fslogixStorageFqdn: varFslogixStorageFqdn
+    identityServiceProvider: identityServiceProvider
   }
   dependsOn: [
-      sessionHosts
-      monitoring
+    sessionHosts
+    monitoring
   ]
 }]
