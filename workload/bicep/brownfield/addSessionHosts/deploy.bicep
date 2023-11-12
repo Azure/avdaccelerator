@@ -98,7 +98,7 @@ param domainJoinPasswordSecretName string = 'domainJoinUserPassword'
 param enableAcceleratedNetworking bool = true
 
 @sys.description('FSLogix storage resource ID. (Default: )')
-param fslogixStorageResourceId string = ''
+param fslogixStorageAccountName string = ''
 
 @sys.description('FSLogix file share name. (Default: )')
 param fslogixFileShareName string = ''
@@ -255,10 +255,9 @@ var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
   }
   storageAccountType: diskType
 }
-var varFslogixStorageAccountName = createAvdFslogixDeployment ? split(fslogixStorageResourceId, '/')[8] : ''
-var varFslogixStorageFqdn = createAvdFslogixDeployment ? '${varFslogixStorageAccountName}.file.${environment().suffixes.storage}' : ''
-var varFslogixSharePath = createAvdFslogixDeployment ? '\\\\${varFslogixStorageAccountName}.file.${environment().suffixes.storage}\\${fslogixFileShareName}' : ''
-var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/aad-sh/workload/'
+var varFslogixStorageFqdn = createAvdFslogixDeployment ? '${fslogixStorageAccountName}.file.${environment().suffixes.storage}' : ''
+var varFslogixSharePath = createAvdFslogixDeployment ? '\\\\${fslogixStorageAccountName}.file.${environment().suffixes.storage}\\${fslogixFileShareName}' : ''
+var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/add-sh/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
 var varAllAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', location, 3)
@@ -473,10 +472,10 @@ module sessionHostConfiguration '../../modules/avdSessionHosts/.bicep/configureS
     baseScriptUri: varSessionHostConfigurationScriptUri
     scriptName: varSessionHostConfigurationScript
     fslogix: createAvdFslogixDeployment
-    identityDomainName: identityDomainName
+    identityDomainName: createAvdFslogixDeployment ? identityDomainName : 'none'
     vmSize: vmSize
-    fslogixFileShare: varFslogixSharePath
-    fslogixStorageFqdn: varFslogixStorageFqdn
+    fslogixFileShare: createAvdFslogixDeployment ? varFslogixSharePath : 'none'
+    fslogixStorageFqdn: createAvdFslogixDeployment ? varFslogixStorageFqdn  : 'none'
     identityServiceProvider: identityServiceProvider
   }
   dependsOn: [
