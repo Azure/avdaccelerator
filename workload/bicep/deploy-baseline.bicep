@@ -537,7 +537,7 @@ var varZtKvName = avdUseCustomNaming ? '${ztKvPrefixCustomName}-${varComputeStor
 var varZtKvPrivateEndpointName = 'pe-${varZtKvName}-vault'
 //
 var varFslogixSharePath = '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
-var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
+var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/issue-536/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
 var varDiskEncryptionKeyExpirationInEpoch = dateTimeToEpoch(dateTimeAdd(time, 'P${string(diskEncryptionKeyExpirationInDays)}D'))
@@ -752,7 +752,7 @@ var varMarketPlaceGalleryWindows = {
         version: 'latest'
     }
 }
-var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/1.0.0/DSCStorageScripts.zip'
+var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/issue-536/workload/scripts/DSCStorageScripts/1.0.0/DSCStorageScripts.zip'
 var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
 var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
 var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
@@ -1291,8 +1291,8 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         encryptionAtHost: diskZeroTrust
         createAvdFslogixDeployment: createAvdFslogixDeployment
         storageManagedIdentityResourceId: (varCreateStorageDeployment) ? identity.outputs.managedIdentityStorageResourceId : ''
-        fslogixSharePath: varFslogixSharePath
-        fslogixStorageFqdn: varFslogixStorageFqdn
+        fslogixSharePath: createAvdFslogixDeployment ? varFslogixSharePath : ''
+        fslogixStorageFqdn: createAvdFslogixDeployment ? varFslogixStorageFqdn : ''
         sessionHostConfigurationScriptUri: varSessionHostConfigurationScriptUri
         sessionHostConfigurationScript: varSessionHostConfigurationScript
         marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
