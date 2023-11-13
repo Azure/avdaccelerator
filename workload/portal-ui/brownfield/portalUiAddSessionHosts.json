@@ -51,6 +51,28 @@
                             }
                         },
                         {
+                            "name": "resourceGroupsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/resourceGroups?api-version=2021-04-01')]"
+                            }
+                        },
+                        {
+                            "name": "ComputeResourceGroup",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Pool compute resource group",
+                            "multiselect": false,
+                            "defaultValue": "",
+                            "toolTip": "Select the name of the existing resource group where the host pool compute resources will be deployed.",
+                            "constraints": {
+                                "allowedValues": "[map(steps('basics').resourceGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.name, '\"}')))]",
+                                "required": true
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
                             "name": "infoResourceGroupNaming",
                             "type": "Microsoft.Common.TextBlock",
                             "visible": true,
@@ -227,48 +249,48 @@
                             ]
                         },
                         {
-                            "name": "identityDomainCredentials",
+                            "name": "identityCredentials",
                             "type": "Microsoft.Common.Section",
-                            "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
-                            "label": "Domain join credentials",
+                            "visible": true,
+                            "label": "Credentials",
                             "elements": [
+                                {
+                                    "name": "secretsKeyvault",
+                                    "type": "Microsoft.Solutions.ResourceSelector",
+                                    "label": "Key vault",
+                                    "toolTip": "Select the AVD LZA deployed keyvault that contains the local user and domain join credentials.",
+                                    "resourceType": "Microsoft.KeyVault/vaults",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
                                 {
                                     "name": "identityDomainJoinUserName",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "User principal name",
-                                    "toolTip": "Provide username with permissions to join session host to the domain.",
+                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                                    "label": "Domain join principal name",
                                     "placeholder": "Example: '***REMOVED***'@contoso.com",
                                     "defaultValue": "",
+                                    "toolTip": "Provide username with permissions to join session host to the domain.",
                                     "constraints": {
                                         "required": true
                                     }
                                 },
                                 {
                                     "name": "identityDomainJoinUserPassword",
-                                    "type": "Microsoft.Common.PasswordBox",
-                                    "label": {
-                                        "password": "Password"
-                                    },
-                                    "toolTip": "Provide password for domain join account.",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                                    "label": "Domain Join Password secret name",
+                                    "toolTip": "Provide keyvault secret name for domain join password.",
+                                    "defaultValue": "domainJoinUserPassword",
                                     "constraints": {
                                         "required": true
-                                    },
-                                    "options": {
-                                        "hideConfirmation": true
                                     }
-                                }
-                            ]
-                        },
-                        {
-                            "name": "identityLocalCredentials",
-                            "type": "Microsoft.Common.Section",
-                            "visible": true,
-                            "label": "Session host local admin credentials",
-                            "elements": [
+                                },
                                 {
                                     "name": "identityLocalUserName",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Username",
+                                    "label": "VM local admin username",
                                     "toolTip": "Provide username for session host local admin account. Administrator can't be used as username, it is reserved by the system.",
                                     "placeholder": "Example: '***REMOVED***'",
                                     "defaultValue": "",
@@ -280,221 +302,12 @@
                                 },
                                 {
                                     "name": "identityLocalUserPassword",
-                                    "type": "Microsoft.Compute.CredentialsCombo",
-                                    "visible": true,
-                                    "label": {
-                                        "password": "Password",
-                                        "confirmPassword": "Confirm password"
-                                    },
-                                    "toolTip": {
-                                        "password": "The password must be alphanumeric, contain at least 12 characters, have at least 1 letter,1 number and 1 special character."
-                                    },
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "VM local admin password secret name",
+                                    "toolTip": "Provide keyvault secret name for VM local admin password.",
+                                    "defaultValue": "vmLocalUserPassword",
                                     "constraints": {
                                         "required": true
-                                    },
-                                    "options": {
-                                        "hideConfirmation": false
-                                    },
-                                    "osPlatform": "Windows"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "managementPlane",
-                    "label": "Management plane",
-                    "elements": [
-                        {
-                            "name": "managementPlaneHostPoolSettings",
-                            "type": "Microsoft.Common.Section",
-                            "visible": true,
-                            "label": "Host pool settings",
-                            "elements": [
-                                {
-                                    "name": "hostPoolType",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "visible": true,
-                                    "label": "Host pool type",
-                                    "defaultValue": "Pooled",
-                                    "multiLine": true,
-                                    "toolTip": "",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Pooled",
-                                                "description": "",
-                                                "value": "Pooled"
-                                            },
-                                            {
-                                                "label": "Personal",
-                                                "description": "",
-                                                "value": "Personal"
-                                            }
-                                        ]
-                                    }
-                                },
-                                {
-                                    "name": "hostPoolWarning",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": true,
-                                    "options": {
-                                        "icon": "Warning",
-                                        "text": "Host pool type can not be changed after deployment.",
-                                        "uri": "https://docs.microsoft.com/azure/virtual-desktop/environment-setup"
-                                    }
-                                },
-                                {
-                                    "name": "loadBalancerType",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "visible": "[equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
-                                    "label": "Load balancing algorithm",
-                                    "defaultValue": "BreadthFirst",
-                                    "multiLine": true,
-                                    "toolTip": "Breadth-first load balancing distributes new user sessions across all available session hosts in the host pool. Depth-first load balancing distributes new user sessions to an available session host with the highest number of connections but has not reached its maximum session limit threshold.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "BreadthFirst",
-                                                "description": "Each new user is placed on the next VM. (Performance Optimized)",
-                                                "value": "BreadthFirst"
-                                            },
-                                            {
-                                                "label": "DepthFirst",
-                                                "description": "Each new user is placed on the same VM until max sessions limit. (Cost Optimized)",
-                                                "value": "DepthFirst"
-                                            }
-                                        ]
-                                    }
-                                },
-                                {
-                                    "name": "maxSessions",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "visible": "[equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
-                                    "label": "Max session limit",
-                                    "defaultValue": "8",
-                                    "toolTip": "The maximum number of users that have concurrent sessions on a session host. When setting a host pool to have depth first load balancing or planning to use Autoscaling, you must set an appropriate max session limit according to the configuration of your deployment and capacity of your VMs.",
-                                    "constraints": {
-                                        "required": false,
-                                        "regex": "",
-                                        "validationMessage": ""
-                                    }
-                                },
-                                {
-                                    "name": "assignmentType",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "visible": "[equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal')]",
-                                    "label": "Machine assignment",
-                                    "defaultValue": "Automatic (Recommended)",
-                                    "multiLine": true,
-                                    "toolTip": "Automatic assignment – The service will select an available host and assign it to an user. Direct assignment – Admin selects a specific host to assign to an user.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Automatic (Recommended)",
-                                                "description": "Users are assigned an available VM the first time they connect.",
-                                                "value": "Automatic"
-                                            },
-                                            {
-                                                "label": "Direct",
-                                                "description": "An administrator assigns a VM for each individual user.",
-                                                "value": "Direct"
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "name": "managementPlaneAppGroupOptions",
-                            "type": "Microsoft.Common.Section",
-                            "visible": "[equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
-                            "label": "",
-                            "elements": [
-                                {
-                                    "name": "preferredAppGroupType",
-                                    "type": "Microsoft.Common.OptionsGroup",
-                                    "visible": true,
-                                    "label": "Preferred app group type",
-                                    "defaultValue": "Desktop",
-                                    "toolTip": "Select the preferred type of application group for the host pool, the option selected will be used to deploy the default application group of the host pool.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Desktop",
-                                                "value": "Desktop"
-                                            },
-                                            {
-                                                "label": "Remote App (RAIL)",
-                                                "value": "RemoteApp"
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "name": "managementPlaneHostPoolScaling",
-                            "type": "Microsoft.Common.Section",
-                            "visible": true,
-                            "label": "Session host scaling options",
-                            "elements": [
-                                {
-                                    "name": "scalingPlan",
-                                    "type": "Microsoft.Common.CheckBox",
-                                    "visible": "[equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
-                                    "label": "Scaling plan",
-                                    "defaultValue": true,
-                                    "toolTip": "Will automatically manage session host power state based on usage and schedules (weekdays and weekend schedules will be created)."
-                                },
-                                {
-                                    "name": "startVmOnConnect",
-                                    "type": "Microsoft.Common.CheckBox",
-                                    "visible": "[equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal')]",
-                                    "label": "Start VM on connect",
-                                    "defaultValue": true,
-                                    "toolTip": "If VM is powered off (deallocated), VM will be started automatically once user connects."
-                                },
-                                {
-                                    "name": "avdEnterpriseApplication",
-                                    "type": "Microsoft.Solutions.GraphApiControl",
-                                    "request": {
-                                        "method": "GET",
-                                        "path": "/v1.0/serviceprincipals?$filter=appId eq '9cdead84-a844-4324-93f2-b2e6bb768d07'"
-                                    }
-                                },
-                                {
-                                    "name": "startVmOnConnectRoleInfo",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect]",
-                                    "options": {
-                                        "text": "Deployment will automatically grant role 'Desktop Virtualization Power On Contributor' to Azure virtual Desktop enterprise application (AppID: 9cdead84-a844-4324-93f2-b2e6bb768d07)",
-                                        "uri": "https://learn.microsoft.com/azure/virtual-desktop/start-virtual-machine-connect?tabs=azure-portal",
-                                        "style": "Info"
-                                    }
-                                },
-                                {
-                                    "name": "scalingPlanRoleInfo",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan]",
-                                    "options": {
-                                        "text": "Deployment will automatically grant role 'Desktop Virtualization Power On Off Contributor' to Azure virtual Desktop enterprise application (AppID: 9cdead84-a844-4324-93f2-b2e6bb768d07)",
-                                        "uri": "https://learn.microsoft.com/azure/virtual-desktop/autoscale-scaling-plan",
-                                        "style": "Info"
-                                    }
-                                },
-                                {
-                                    "name": "scalingPlanInfo",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan]",
-                                    "options": {
-                                        "text": "Session hosts can be excluded from the scaling plan by assigning the tag name exclude-'Scaling-PLan-Name'. When not using custom resource naming, the default exclusion tag name will be exclude-vdscaling-'DeploymentPrefix'-'Environment'-'DeploymentLocation'-001 <br/> - Example: exclude-vdscaling-app1-dev-use2-001",
-                                        "uri": "https://docs.microsoft.com/azure/virtual-desktop/autoscale-scenarios#scenario-4-how-do-exclusion-tags-work",
-                                        "style": "Info"
                                     }
                                 }
                             ]
@@ -505,14 +318,6 @@
                     "name": "sessionHosts",
                     "label": "Session hosts",
                     "elements": [
-                        {
-                            "name": "deploySessionHosts",
-                            "type": "Microsoft.Common.CheckBox",
-                            "visible": true,
-                            "label": "Deploy session hosts",
-                            "defaultValue": true,
-                            "toolTip": "Create session hosts compute and storage resources."
-                        },
                         {
                             "name": "sessionHostsRegionSection",
                             "type": "Microsoft.Common.Section",
@@ -846,157 +651,65 @@
                             }
                         },
                         {
-                            "name": "storageGeneralSettings",
+                            "name": "storageGeneralInfromation",
                             "type": "Microsoft.Common.Section",
-                            "label": "General settings:",
+                            "label": "General information:",
                             "visible": true,
                             "elements": [
                                 {
                                     "name": "identityDomainName",
                                     "type": "Microsoft.Common.TextBox",
-                                    "visible": "[or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment)]",
+                                    "visible": "[steps('storage').storageFslogix.fslogixDeployment]",
                                     "label": "AD Domain name",
                                     "toolTip": "The full qualified domain name of the on-premises domain where the hybrid identities originated from, this information is used for Azure files authentication setup.",
                                     "placeholder": "Example: contoso.com",
                                     "constraints": {
                                         "required": true
                                     }
-                                },
-                                {
-                                    "name": "identityDomainOuPathStorageExisting",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
-                                    "label": "Custom OU path (Optional)",
-                                    "toolTip": "Provide OU where to locate storage account file share. If not provided, file share will be placed on the default (computers) OU.",
-                                    "placeholder": "Example: OU=storage,OU=avd,DC=contoso,DC=com",
-                                    "constraints": {}
-                                },
-                                {
-                                    "name": "storageGeneralSettingsZoneRedundancy",
-                                    "type": "Microsoft.Common.CheckBox",
-                                    "visible": true,
-                                    "label": "Zone redundant storage",
-                                    "defaultValue": false,
-                                    "toolTip": "Select to replicate storage across availability zones or only use local redundancy."
                                 }
                             ]
                         },
                         {
                             "name": "storageFslogix",
                             "type": "Microsoft.Common.Section",
-                            "label": "FSLogix settings:",
-                            "visible": true,
+                            "label": "FSLogix configuration:",
                             "elements": [
                                 {
                                     "name": "fslogixDeployment",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "label": "FSLogix profile management",
+                                    "label": "Configure FSLogix settings",
                                     "defaultValue": true,
-                                    "toolTip": "Deploys FSLogix containers and session host setup for user's profiles."
+                                    "toolTip": "Configure session host to use FSLogix."
                                 },
                                 {
-                                    "name": "fslogixStorageAccountSku",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "visible": "[steps('storage').storageFslogix.fslogixDeployment]",
-                                    "label": "File share peformance",
-                                    "filter": true,
-                                    "defaultValue": "Premium",
-                                    "toolTip": "Storage account performance for FSLogix storage. Recommended tier is Premium.",
+                                    "name": "fslogixStorageAccountSelector",
+                                    "type": "Microsoft.Solutions.ResourceSelector",
+                                    "label": "FSLogix storage account",
+                                    "toolTip": "Select the FSLogix storage account.",
+                                    "resourceType": "Microsoft.Storage/storageAccounts",
                                     "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Premium",
-                                                "description": "",
-                                                "value": "Premium"
-                                            },
-                                            {
-                                                "label": "Standard",
-                                                "description": "",
-                                                "value": "Standard"
-                                            }
-                                        ]
-                                    }
-                                },
-                                {
-                                    "name": "sessionHostsFslogixFileShareQuota",
-                                    "type": "Microsoft.Common.Slider",
-                                    "visible": "[steps('storage').storageFslogix.fslogixDeployment]",
-                                    "label": "File share size",
-                                    "subLabel": "x 100GB",
-                                    "toolTip": "Size of Azure File share quota, the maximum sizes are 5TB for standard SKU and 100TB for premium SKU",
-                                    "min": 1,
-                                    "max": 100,
-                                    "defaultValue": 1,
-                                    "showStepMarkers": true,
-                                    "constraints": {
+
+
+
+
+
+
+
                                         "required": true
                                     }
                                 },
                                 {
-                                    "name": "StorageDeploymentDisabledAad",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
-                                    "options": {
-                                        "text": "Granting admin consent to the storage account service principal (your-storage-account-name.file.core.windows.net) is a requirememt, the link in this box contains the steps to grant the consent.",
-                                        "uri": "https://learn.microsoft.com/azure/storage/files/storage-files-identity-auth-azure-active-directory-enable?tabs=azure-portal#grant-admin-consent-to-the-new-service-principal",
-                                        "style": "Warning"
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "name": "storageMsix",
-                            "type": "Microsoft.Common.Section",
-                            "label": "MSIX App Attach settings:",
-                            "visible": true,
-                            "elements": [
-                                {
-                                    "name": "msixDeployment",
-                                    "type": "Microsoft.Common.CheckBox",
-                                    "label": "Create MSIX App Attach storage",
-                                    "defaultValue": false,
-                                    "toolTip": "Deploys MSIX App Attach containers and permissions setup."
-                                },
-                                {
-                                    "name": "msixStorageAccountSku",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "visible": "[steps('storage').storageMsix.msixDeployment]",
-                                    "label": "File share performance",
-                                    "filter": true,
-                                    "defaultValue": "Premium",
-                                    "toolTip": "Storage account performance for MSIX App Attach storage. Recommended tier is Premium.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Premium",
-                                                "description": "",
-                                                "value": "Premium"
-                                            },
-                                            {
-                                                "label": "Standard",
-                                                "description": "",
-                                                "value": "Standard"
-                                            }
-                                        ]
-                                    }
-                                },
-                                {
-                                    "name": "sessionHostsMsixFileShareQuota",
-                                    "type": "Microsoft.Common.Slider",
-                                    "visible": "[steps('storage').storageMsix.msixDeployment]",
-                                    "label": "File share size",
-                                    "subLabel": "x 100GB",
-                                    "toolTip": "Size of Azure File share quota, the maximum sizes are 5TB for standard SKU and 100TB for premium SKU",
-                                    "min": 1,
-                                    "max": 100,
-                                    "defaultValue": 1,
-                                    "showStepMarkers": true,
+                                    "name": "fslogixStorageAccount",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "visible": "[steps('storage').storageFslogix.fslogixDeployment]",
+                                    "label": "AD Domain name",
+                                    "toolTip": "The full qualified domain name of the on-premises domain where the hybrid identities originated from, this information is used for Azure files authentication setup.",
+                                    "placeholder": "Example: contoso.com",
                                     "constraints": {
                                         "required": true
                                     }
                                 }
+
                             ]
                         },
                         {
@@ -2290,111 +2003,6 @@
         },
         "outputs": {
             "parameters": {
-                // "deploymentPrefix": "[steps('basics').deploymentSpecs.deploymentPrefix]",
-                // "deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
-                // "diskZeroTrust": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust]",
-                // "avdManagementPlaneLocation": "[steps('basics').resourceScope.location.name]",
-                // "avdSessionHostLocation": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion, steps('basics').resourceScope.location.name)]",
-                // "avdWorkloadSubsId": "[steps('basics').resourceScope.subscription.subscriptionId]",
-                // "avdHostPoolType": "[steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType]",
-                // "hostPoolPreferredAppGroupType": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneAppGroupOptions.preferredAppGroupType, 'Desktop')]",
-                // "avdHostPoolLoadBalancerType": "[steps('managementPlane').managementPlaneHostPoolSettings.loadBalancerType]",
-                // "hostPoolMaxSessions": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneHostPoolSettings.maxSessions, 1)]",
-                // "avdPersonalAssignType": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolSettings.assignmentType, 'Automatic')]",
-                // "avdIdentityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
-                // "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
-                // "identityDomainName": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment), steps('storage').storageGeneralSettings.identityDomainName, '')]",
-                // "avdOuPath": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
-                // "avdDomainJoinUserName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserName)]",
-                // "avdDomainJoinUserPassword": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserPassword)]",
-                // "avdVmLocalUserName": "[steps('identity').identityLocalCredentials.identityLocalUserName]",
-                // "avdVmLocalUserPassword": "[steps('identity').identityLocalCredentials.identityLocalUserPassword.password]",
-                // "createAvdVnet": "[steps('network').createAvdVirtualNetwork]",
-                // "avdVnetworkAddressPrefixes": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkSize, '10.10.0.0/23')]",
-                // "vNetworkAvdSubnetAddressPrefix": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkAvdSubnetSize, '10.10.0.0/24')]",
-                // "vNetworkPrivateEndpointSubnetAddressPrefix": "[if(and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true)), steps('network').virtualNetworkPrivateEndpointSubnetSize, '10.10.1.0/27')]",
-                // "customDnsIps": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkDns, '')]",
-                // "existingHubVnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.existingHubVirtualNetwork, '')]",
-                // "vNetworkGatewayOnHub": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.hubVirtualNetworkGateway, false)]",
-                // "existingVnetAvdSubnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, false), steps('network').virtualNetworkAvdSubnetSelectorName, 'no')]",
-                // "existingVnetPrivateEndpointSubnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, false), steps('network').virtualNetworkPrivateEndpointSubnetSelectorName, 'no')]",
-                // "avdDeploySessionHosts": "[steps('sessionHosts').deploySessionHosts]",
-                // "avdStartVmOnConnect": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, false)]",
-                // "avdDeployScalingPlan": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, false)]",
-                // "avdEnterpriseAppObjectId": "[first(map(steps('managementPlane').managementPlaneHostPoolScaling.avdEnterpriseApplication.value, (item) => item.id))]",
-                // "availabilityZonesCompute": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings]",
-                // "zoneRedundantStorage": "[steps('storage').storageGeneralSettings.storageGeneralSettingsZoneRedundancy]",
-                // "avdDeploySessionHostsCount": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
-                // "useSharedImage": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false)]",
-                // "avdOsImage": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false), steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11_21h2')]",
-                // "securityType": "[steps('sessionHosts').sessionHostsSecuritySection.securityType]",
-                // "secureBootEnabled": "[steps('sessionHosts').sessionHostsSecuritySection.secureBootEnabled]",
-                // "vTpmEnabled": "[steps('sessionHosts').sessionHostsSecuritySection.vTpmEnabled]",
-                // "avdImageTemplateDefinitionId": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage.id, 'no')]",
-                // "avdSessionHostDiskType": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskType]",
-                // "enableAcceleratedNetworking": "[steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking]",
-                // "avdSessionHostsSize": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize, 'Standard_D4ads_v5')]",
-                // "deployPrivateEndpointKeyvaultStorage": "[steps('network').deployPrivateEndpointKeyvaultStorage]",
-                // "createPrivateDnsZones": "[if(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), steps('network').virtualNetworkPrivateDnsZone, false)]",
-                // "avdVnetPrivateDnsZoneFilesId": "[if(and(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneFilesSelector.id, '')]",
-                // "avdVnetPrivateDnsZoneKeyvaultId": "[if(and(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneKeyvaultSelector.id, '')]",
-                // "createAvdFslogixDeployment": "[steps('storage').storageFslogix.fslogixDeployment]",
-                // "fslogixStoragePerformance": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.fslogixStorageAccountSku, 'Premium')]",
-                // "fslogixFileShareQuotaSize": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.sessionHostsFslogixFileShareQuota, 1 )]",
-                // "createMsixDeployment": "[steps('storage').storageMsix.msixDeployment]",
-                // "msixStoragePerformance": "[if(equals(steps('storage').storageMsix.msixDeployment, true), steps('storage').storageMsix.msixStorageAccountSku, 'Premium')]",
-                // "msixFileShareQuotaSize": "[if(equals(steps('storage').storageMsix.msixDeployment, true), steps('storage').storageMsix.sessionHostsMsixFileShareQuota, 1 )]",
-                // "storageOuPath": "[steps('storage').storageGeneralSettings.identityDomainOuPathStorageExisting]",
-                // "avdUseCustomNaming": "[steps('resourceNaming').resourceNamingSelection]",
-                // "avdServiceObjectsRgCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.serviceObjectsRgCustomName, 'no')]",
-                // "avdNetworkObjectsRgCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingNetwork.networkObjectsRgCustomName, 'no')]",
-                // "avdComputeObjectsRgCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.computeObjectsRgCustomName, 'no')]",
-                // "avdStorageObjectsRgCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.storageObjectsRgCustomName, 'no')]",
-                // "avdVnetworkCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingNetwork.virtualNetworkCustomName, 'no')]",
-                // "avdVnetworkSubnetCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingNetwork.virtualNetworkAvdSubnetCustomName, 'no')]",
-                // "avdNetworksecurityGroupCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingNetwork.avdNetworkSecurityGroupCustomName, 'no')]",
-                // "avdRouteTableCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingNetwork.avdRouteTableCustomName, 'no')]",
-                // "privateEndpointVnetworkSubnetCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingNetwork.virtualNetworkPrivateEndpointSubnetCustomName, 'no')]",
-                // "privateEndpointNetworksecurityGroupCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingNetwork.privateEndpointNetworkSecurityGroupCustomName, 'no')]",
-                // "privateEndpointRouteTableCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingNetwork.privateEndpointRouteTableCustomName, 'no')]",
-                // "avdApplicationSecurityGroupCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.applicationSecurityGroupCustomName, 'no')]",
-                // "avdWorkSpaceCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.workSpaceCustomName, 'no')]",
-                // "avdWorkSpaceCustomFriendlyName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.workSpaceCustomFriendlyName, 'no')]",
-                // "avdHostPoolCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.hostPoolCustomName, 'no')]",
-                // "avdHostPoolCustomFriendlyName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.hostPoolCustomFriendlyName, 'no')]",
-                // "avdScalingPlanCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.scalingPlanCustomName, 'no')]",
-                // "avdApplicationGroupCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.applicationGroupCustomName, 'no')]",
-                // "avdApplicationGroupCustomFriendlyName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.applicationGroupCustomFriendlyName, 'no')]",
-                // "avdSessionHostCustomNamePrefix": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.sessionHostCustomNamePrefix, 'no')]",
-                // "avdAvailabilitySetCustomNamePrefix": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.availabilitySetCustomNamePrefix, 'no')]",
-                // "storageAccountPrefixCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.storageAccountPrefixCustomName, 'no')]",
-                // "fslogixFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.fslogixFileShareCustomName, 'no')]",
-                // "msixFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.msixFileShareCustomName, 'no')]",
-                // "avdWrklKvPrefixCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.workloadKvCustomName, 'no')]",
-                // "createResourceTags": "[steps('resourceTagging').resourceTaggingSelection]",
-                // "workloadNameTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsWorkloadName, 'no')]",
-                // "workloadTypeTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsWorkloadType, 'Light')]",
-                // "dataClassificationTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsDataClassificationTag, 'Non-business')]",
-                // "departmentTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsDepartmentTag, 'no')]",
-                // "workloadCriticalityTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsCriticalityTag, 'Low')]",
-                // "workloadCriticalityCustomValueTag": "[if(equals(steps('resourceTagging').resourceTags.tagsCriticalityTag, 'Custom'), steps('resourceTagging').resourceTags.tagsCustomWorkloadCriticality, 'Low')]",
-                // "applicationNameTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsApplicationNameTag, 'no')]",
-                // "workloadSlaTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsWorkloadSlaTag, 'no')]",
-                // "opsTeamTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOpsTeamTag, 'no')]",
-                // "ownerTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOwnerTag, 'no')]",
-                // "costCenterTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsCostCenterTag, 'no')]",
-                // "securityPrincipalId": "[if(steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox, steps('identity').identityAvdAccess.identityAvdUserAccessGroupTextBox2, steps('identity').identityAvdAccess.identityAvdUserAccessGroupDropDown.id)]",
-                // "securityPrincipalName": "[if(steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox, steps('identity').identityAvdAccess.identityAvdUserAccessGroupTextBox1, steps('identity').identityAvdAccess.identityAvdUserAccessGroupDropDown.name)]",
-                // "avdDeployMonitoring": "[steps('monitoring').deployMonitoring]",
-                // "deployAlaWorkspace": "[if(equals(steps('monitoring').deployMonitoring, true), steps('monitoring').deployMonitoringAlaWorkspace, false)]",
-                // "avdAlaWorkspaceDataRetention": "[if(equals(steps('monitoring').deployMonitoringAlaWorkspace, true), steps('monitoring').deployMonitoringNewAlaWorkspaceRetention, 0)]",
-                // "alaExistingWorkspaceResourceId": "[if(equals(steps('monitoring').deployMonitoringAlaWorkspace, false), steps('monitoring').alaWorkspaceExistingWorkspacesSelection.id, 'no')]",
-                // "deployCustomPolicyMonitoring": "[if(equals(steps('monitoring').deployMonitoring, true), steps('monitoring').deployMonitoringPolicies, false)]",
-                // "avdMonitoringRgCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingMonitoring.monitoringObjectsRgCustomName, 'no')]",
-                // "avdAlaWorkspaceCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingMonitoring.monitoringLogAnalyticsWorkspaceName, 'no')]",
-                // "ztDiskEncryptionSetCustomNamePrefix": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsDiskEncryptionSetCustomName]",
-                // "ztKvPrefixCustomName ": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsKeyVaultCustomPrefix]",
-                // "ztManagedIdentityCustomName": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsManagedIdentityCustomName]"
             },
             "kind": "Subscription",
             "location": "[steps('basics').resourceScope.location.name]",
