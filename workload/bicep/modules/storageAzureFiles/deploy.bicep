@@ -134,7 +134,8 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
         skuName: storageSku
         allowBlobPublicAccess: false
         publicNetworkAccess: deployPrivateEndpoint ? 'Disabled' : 'Enabled'
-        kind: ((storageSku =~ 'Premium_LRS') || (storageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
+        kind: ((storageSku == 'Premium_LRS') || (storageSku == 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
+        largeFileSharesState: (storageSku == 'Standard_LRS') || (storageSku == 'Standard_ZRS') ? 'Enabled': 'Disabled'
         azureFilesIdentityBasedAuthentication: {
             directoryServiceOptions: varDirectoryServiceOptions
             activeDirectoryProperties: (identityServiceProvider == 'AAD') ? {
