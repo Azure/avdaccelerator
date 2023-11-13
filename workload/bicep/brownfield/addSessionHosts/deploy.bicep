@@ -115,9 +115,6 @@ param subnetId string
 @sys.description('Location where to deploy compute services. (Default: )')
 param location string
 
-// @sys.description('General session host batch identifier')
-// param managedIdentityStorageResourceId int
-
 @maxLength(11)
 @sys.description('AVD session host prefix custom name. (Default: vmapp1duse2)')
 param sessionHostCustomNamePrefix string = 'vmapp1duse2'
@@ -131,9 +128,6 @@ param identityServiceProvider string = 'ADDS'
 
 @sys.description('Session host VM size. (Default: Standard_D4ads_v5)')
 param vmSize string = 'Standard_D4ads_v5'
-
-@sys.description('Disk encryption set to use for zero trust setup. (Default: )')
-param ztDiskEncryptionSetResourceId string = ''
 
 @allowed([
   'Standard'
@@ -151,9 +145,6 @@ param vTpmEnabled bool = true
 
 @sys.description('Set to deploy image from Azure Compute Gallery. (Default: false)')
 param useSharedImage bool = false
-
-@sys.description('Storage Managed Identity Resource ID.')
-param storageManagedIdentityResourceId string = ''
 
 @sys.description('Local administrator username. (Default: "")')
 param vmLocalUserName string = 'avdVmLocalUserName'
@@ -231,10 +222,6 @@ var varLocations = loadJsonContent('../../../variables/locations.json')
 var varMarketPlaceGalleryWindows = loadJsonContent('../../../variables/osMarketPlaceImages.json')
 var varTimeZoneSessionHosts = varLocations[varSessionHostLocationLowercase].timeZone
 var varSessionHostLocationLowercase = toLower(replace(location, ' ', ''))
-var varMaxSessionHostsPerTemplate = 10
-var varMaxSessionHostsDivisionValue = count / varMaxSessionHostsPerTemplate
-var varMaxSessionHostsDivisionRemainderValue = count % varMaxSessionHostsPerTemplate
-var varSessionHostBatchCount = varMaxSessionHostsDivisionRemainderValue > 0 ? varMaxSessionHostsDivisionValue + 1 : varMaxSessionHostsDivisionValue
 var varMaxAvsetMembersCount = 199
 var varDivisionAvsetValue = count / varMaxAvsetMembersCount
 var varDivisionAvsetRemainderValue = count % varMaxAvsetMembersCount
@@ -468,7 +455,7 @@ module sessionHostConfiguration '../../modules/avdSessionHosts/.bicep/configureS
   params: {
     location: location
     name: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
-    hostPoolToken: hostPool.properties.registrationInfo.token //hostPool.properties.registrationInfo.token
+    hostPoolToken: hostPool.properties.registrationInfo.token
     baseScriptUri: varSessionHostConfigurationScriptUri
     scriptName: varSessionHostConfigurationScript
     fslogix: createAvdFslogixDeployment
