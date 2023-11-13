@@ -732,7 +732,7 @@
                             "visible": true,
                             "elements": [
                                 {
-                                    "name": "avdVirtualNetworkSelectorId",
+                                    "name": "virtualNetworkSelectorId",
                                     "type": "Microsoft.Solutions.ResourceSelector",
                                     "label": "Virtual network",
                                     "resourceType": "Microsoft.Network/virtualNetworks",
@@ -747,27 +747,40 @@
                                     }
                                 },
                                 {
-                                    "name": "avdSubnetApi",
+                                    "name": "subnetApi",
                                     "type": "Microsoft.Solutions.ArmApiControl",
                                     "request": {
                                         "method": "GET",
-                                        "path": "[concat(steps('network').avdVirtualNetworkSelectorId.id, '/subnets?api-version=2021-03-01')]"
+                                        "path": "[concat(steps('network').networkSettings.virtualNetworkSelectorId.id, '/subnets?api-version=2021-03-01')]"
                                     }
                                 },
                                 {
-                                    "name": "virtualNetworkAvdSubnetSelectorName",
+                                    "name": "virtualNetworkSubnetSelectorName",
                                     "label": "Subnet",
                                     "type": "Microsoft.Common.DropDown",
+                                    "visible": "[not(steps('network').createAvdVirtualNetwork)]",
                                     "defaultValue": "",
-                                    "toolTip": "Select the subnet.",
+                                    "toolTip": "Azure Virtual Desktop subnet.",
                                     "multiselect": false,
                                     "selectAll": false,
                                     "filter": true,
                                     "filterPlaceholder": "Filter items ...",
                                     "multiLine": true,
                                     "constraints": {
-                                        "allowedValues": "[map(steps('network').avdSubnetApi.value,(item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\",\"description\":\"', 'Resource Group: ', last(take(split(item.id, '/'), 5)), '\"}')))]",
+                                        "allowedValues": "[map(steps('network').networkSettings.subnetApi.value,(item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\",\"description\":\"', 'Resource Group: ', last(take(split(item.id, '/'), 5)), '\"}')))]",
                                         "required": true
+                                    }
+                                },
+                                {
+                                    "name": "applicationSecurityGroupSelectorId",
+                                    "type": "Microsoft.Solutions.ResourceSelector",
+                                    "label": "Application Security Group",
+                                    "resourceType": "Microsoft.Network/applicationSecurityGroups",
+                                    "options": {
+                                        "filter": {
+                                            "subscription": "onBasics",
+                                            "location": "[steps('SessionHosts').SessionHostsRegionSection.SessionHostsRegion.location.name]"
+                                        }
                                     }
                                 }
                             ]
@@ -781,84 +794,47 @@
                     "visible": true,
                     "elements": [
                         {
-                            "name": "deployMonitoring",
+                            "name": "configureMonitoring",
                             "type": "Microsoft.Common.CheckBox",
                             "visible": true,
-                            "label": "Deploy monitoring",
+                            "label": "Configure monitoring",
                             "defaultValue": false,
                             "toolTip": "Deploy monitoring settings and if selected deploy Azure log analytics workspace."
                         },
                         {
-                            "name": "deployMonitoringAlaWorkspace",
-                            "type": "Microsoft.Common.OptionsGroup",
-                            "visible": "[steps('monitoring').deployMonitoring]",
-                            "label": "Log analytics workspace",
-                            "defaultValue": "New",
-                            "toolTip": "Deploy monitoring settings and if selected deploy Azure log analytics workspace.",
-                            "constraints": {
-                                "required": true,
-                                "allowedValues": [
-                                    {
-                                        "label": "New",
-                                        "value": true
-                                    },
-                                    {
-                                        "label": "Existing",
-                                        "value": false
+                            "name": "motoringSettings",
+                            "type": "Microsoft.Common.Section",
+                            "label": "Settings:",
+                            "visible": "[steps('monitoring').configureMonitoring]",
+                            "elements": [
+                                {
+                                    "name": "monitoringWorkspaceSelection",
+                                    "type": "Microsoft.Solutions.ResourceSelector",
+                                    "label": "Log analytics workspace",
+                                    "resourceType": "Microsoft.OperationalInsights/workspaces",
+                                    "constraints": {
+                                        "required": true
                                     }
-                                ]
-                            }
-                        },
-                        {
-                            "name": "deployMonitoringNewAlaWorkspaceRetention",
-                            "type": "Microsoft.Common.TextBox",
-                            "visible": "[and(steps('monitoring').deployMonitoring, steps('monitoring').deployMonitoringAlaWorkspace)]",
-                            "label": "Retention policy (Days)",
-                            "toolTip": "Number of days data will be retained in the workspace.",
-                            "defaultValue": 90,
-                            "constraints": {
-                                "required": true,
-                                "regex": "^[a-z0-9A-Z-]{1,90}$",
-                                "validationMessage": "Value must be 1-90 characters."
-                            }
-                        },
-                        {
-                            "name": "alaWorkspaceExistingWorkspacesSelection",
-                            "type": "Microsoft.Solutions.ResourceSelector",
-                            "visible": "[and(steps('monitoring').deployMonitoring, not(steps('monitoring').deployMonitoringAlaWorkspace))]",
-                            "label": "Existing workspace",
-                            "resourceType": "Microsoft.OperationalInsights/workspaces",
-                            "constraints": {
-                                "required": true
-                            }
-                        },
-                        {
-                            "name": "deployMonitoringPolicies",
-                            "type": "Microsoft.Common.CheckBox",
-                            "visible": "[steps('monitoring').deployMonitoring]",
-                            "label": "Deploy monitoring policies (subscription level)",
-                            "defaultValue": false,
-                            "toolTip": "Deploy monitoring policy and policy set definitions to set diagnostic settings on new deployed resources."
-                        },
-                        {
-                            "name": "deployMonitoringInfo1",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": "[steps('monitoring').deployMonitoring]",
-                            "options": {
-                                "text": "Azure Virtual Desktop monitoring requires an existing Azure Log Analytics Workspace or the creation of a new one.",
-                                "uri": "https://docs.microsoft.com/azure/virtual-desktop/azure-monitor",
-                                "style": "Info"
-                            }
-                        },
-                        {
-                            "name": "deployMonitoringInfo2",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": "[steps('monitoring').deployMonitoring]",
-                            "options": {
-                                "text": "Deployment will configured all required settings to use the Azure Virtual Desktop insights workbook.",
-                                "uri": "https://learn.microsoft.com/azure/virtual-desktop/azure-monitor?WT.mc_id=Portal-AppInsightsExtension",
-                                "style": "Info"
-                            }
+                                },
+                                {
+                                    "name": "deployMonitoringInfo1",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "options": {
+                                        "text": "Azure Virtual Desktop monitoring requires an existing Azure Log Analytics Workspace or the creation of a new one.",
+                                        "uri": "https://docs.microsoft.com/azure/virtual-desktop/azure-monitor",
+                                        "style": "Info"
+                                    }
+                                },
+                                {
+                                    "name": "deployMonitoringInfo2",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "options": {
+                                        "text": "Deployment will configured all required settings to use the Azure Virtual Desktop insights workbook.",
+                                        "uri": "https://learn.microsoft.com/azure/virtual-desktop/azure-monitor?WT.mc_id=Portal-AppInsightsExtension",
+                                        "style": "Info"
+                                    }
+                                }
+                            ]
                         }
                     ]
                 },
@@ -897,151 +873,11 @@
                             }
                         },
                         {
-                            "name": "resourceNamingAvdManagementPlane",
-                            "type": "Microsoft.Common.Section",
-                            "label": "Azure Virtual Desktop Management plane naming:",
-                            "visible": "[steps('resourceNaming').resourceNamingSelection]",
-                            "elements": [
-                                {
-                                    "name": "serviceObjectsRgCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Resource group",
-                                    "toolTip": "Azure Virtual Desktop management plane resources (Workspace, Host pool, Application groups, Key vault) resource group custom name.",
-                                    "placeholder": "Example: rg-avd-app1-dev-use2-service-objects",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
-                                        "validationMessage": "Value must be 1-90 characters."
-                                    }
-                                },
-                                {
-                                    "name": "workSpaceCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Workspace",
-                                    "toolTip": "Workspace custom name.",
-                                    "placeholder": "Example: vdws-app1-dev-use2-001",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
-                                        "validationMessage": "Value must be 1-64 characters."
-                                    }
-                                },
-                                {
-                                    "name": "workSpaceCustomFriendlyName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Workspace (Friendly name)",
-                                    "toolTip": "Workspace custom friendly name.",
-                                    "placeholder": "Example: App1 - Dev - East US 2 - 001",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
-                                        "validationMessage": "Value must be 1-64 characters."
-                                    }
-                                },
-                                {
-                                    "name": "hostPoolCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Host pool",
-                                    "toolTip": "Host pool custom name.",
-                                    "placeholder": "Example: vdpool-app1-dev-use2-001",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
-                                        "validationMessage": "Value must be 1-64 characters."
-                                    }
-                                },
-                                {
-                                    "name": "hostPoolCustomFriendlyName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Host pool (Friendly name)",
-                                    "toolTip": "Host pool custom friendly name.",
-                                    "placeholder": "Example: App1 - Dev - East US 2 - 001",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
-                                        "validationMessage": "Value must be 1-64 characters."
-                                    }
-                                },
-                                {
-                                    "name": "scalingPlanCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Scaling Plan",
-                                    "toolTip": "Host pool scaling plan.",
-                                    "placeholder": "Example: vdscaling-app1-dev-use2-001",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
-                                        "validationMessage": "Value must be 1-64 characters."
-                                    }
-                                },
-                                {
-                                    "name": "applicationGroupCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Application group",
-                                    "toolTip": "Application group custom name.",
-                                    "placeholder": "Example: vdag-desktop-app1-dev-use2-001",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
-                                        "validationMessage": "Value must be 1-64 characters."
-                                    }
-                                },
-                                {
-                                    "name": "applicationGroupCustomFriendlyName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Application group (Friendly name)",
-                                    "toolTip": "Desktop application group custom name.",
-                                    "placeholder": "Example: Desktops - App1 - Dev - East US 2 - 001",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
-                                        "validationMessage": "Value must be 1-64 characters."
-                                    }
-                                },
-                                {
-                                    "name": "workloadKvCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Key vault prefix",
-                                    "toolTip": "Key vault prefix custom name.",
-                                    "placeholder": "Example: kv-sec",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,6}$",
-                                        "validationMessage": "Value must be 1-6 characters."
-                                    }
-                                }
-                            ]
-                        },
-                        {
                             "name": "resourceNamingCompute",
                             "type": "Microsoft.Common.Section",
                             "label": "Compute naming:",
                             "visible": "[steps('resourceNaming').resourceNamingSelection]",
                             "elements": [
-                                {
-                                    "name": "computeObjectsRgCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Resource group",
-                                    "toolTip": "Azure Virtual Desktop compute resources (VMs, NICs, Disks, Availability sets) resource group custom name.",
-                                    "placeholder": "Example: rg-avd-app1-dev-use2-pool-compute",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
-                                        "validationMessage": "Value must be 1-90 characters."
-                                    }
-                                },
-                                {
-                                    "name": "applicationSecurityGroupCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Applications security group",
-                                    "toolTip": "Azure Virtual Desktop application security custom name.",
-                                    "placeholder": "Example: asg-app1-dev-use2-001",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,80}$",
-                                        "validationMessage": "Value must be 1-80 characters."
-                                    }
-                                },
                                 {
                                     "name": "sessionHostCustomNamePrefix",
                                     "type": "Microsoft.Common.TextBox",
@@ -1066,313 +902,6 @@
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,9}$",
                                         "validationMessage": "Value must be 1-9 characters."
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "name": "resourceNamingStorage",
-                            "type": "Microsoft.Common.Section",
-                            "label": "Storage naming:",
-                            "visible": "[steps('resourceNaming').resourceNamingSelection]",
-                            "elements": [
-                                {
-                                    "name": "resourceNamingStorageInfo1",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[not(steps('storage').storageFslogix.fslogixDeployment)]",
-                                    "options": {
-                                        "text": "Current deployment configuration is not creating storage resources for FSLogix.",
-                                        "style": "Info"
-                                    }
-                                },
-                                {
-                                    "name": "resourceNamingStorageInfo2",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[not(steps('storage').storageMsix.msixDeployment)]",
-                                    "options": {
-                                        "text": "Current deployment configuration is not creating storage resources for MSIX App Attach.",
-                                        "style": "Info"
-                                    }
-                                },
-                                {
-                                    "name": "resourceNamingStorageInfo3",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[not(steps('sessionHosts').deploySessionHosts)]",
-                                    "options": {
-                                        "text": "Current deployment configuration is not creating storage resources.",
-                                        "style": "Info"
-                                    }
-                                },
-                                {
-                                    "name": "storageObjectsRgCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Resource group",
-                                    "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageMsix.msixDeployment, true))]",
-                                    "toolTip": "Azure Virtual Desktop storage resources (Storage account, file shares, files private endpoints, temporary domain join VM) resource group custom name.",
-                                    "placeholder": "Example: rg-avd-app1-dev-use2-storage",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
-                                        "validationMessage": "Value must be 1-90 characters."
-                                    }
-                                },
-                                {
-                                    "name": "storageAccountPrefixCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Storage account prefix",
-                                    "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageMsix.msixDeployment, true))]",
-                                    "toolTip": "Azure Virtual Desktop storage account prefix custom name.",
-                                    "placeholder": "Example: st",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,2}$",
-                                        "validationMessage": "Value must be 1-2 characters."
-                                    }
-                                },
-                                {
-                                    "name": "fslogixFileShareCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "FSLogix Profile container file share",
-                                    "visible": "[steps('storage').storageFslogix.fslogixDeployment]",
-                                    "toolTip": "Azure Virtual Desktop fslogix storage account profile container file share prefix custom name.",
-                                    "placeholder": "Example: fslogix-pc-app1-dev-use2-001",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
-                                        "validationMessage": "Value must be 1-64 characters."
-                                    }
-                                },
-                                {
-                                    "name": "msixFileShareCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "MSIX App Attach container file share",
-                                    "visible": "[steps('storage').storageMsix.msixDeployment]",
-                                    "toolTip": "Azure Virtual Desktop MSIX App Attach storage account container file share prefix custom name.",
-                                    "placeholder": "Example: msix-app1-dev-use2-001",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
-                                        "validationMessage": "Value must be 1-64 characters."
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "name": "resourceNamingNetwork",
-                            "type": "Microsoft.Common.Section",
-                            "label": "Network naming:",
-                            "visible": "[steps('resourceNaming').resourceNamingSelection]",
-                            "elements": [
-                                {
-                                    "name": "resourceNamingNetworkInfo",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[not(steps('network').createAvdVirtualNetwork)]",
-                                    "options": {
-                                        "text": "Current deployment configuration is not creating network resources.",
-                                        "style": "Info"
-                                    }
-                                },
-                                {
-                                    "name": "networkObjectsRgCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Resource group",
-                                    "visible": "[steps('network').createAvdVirtualNetwork]",
-                                    "toolTip": "Azure Virtual Desktop network resources (vNet, NSG, Route table) resource group custom name.",
-                                    "placeholder": "Example: rg-avd-app1-dev-use2-network",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
-                                        "validationMessage": "Value must be 1-90 characters."
-                                    }
-                                },
-                                {
-                                    "name": "virtualNetworkCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Virtual network",
-                                    "visible": "[steps('network').createAvdVirtualNetwork]",
-                                    "toolTip": "Azure Virtual Desktop virtual network custom name.",
-                                    "placeholder": "Example: vnet-app1-dev-use2-001",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,64}$",
-                                        "validationMessage": "Value must be 1-64 characters."
-                                    }
-                                },
-                                {
-                                    "name": "virtualNetworkAvdSubnetCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Azure Virtual Desktop Subnet",
-                                    "visible": "[steps('network').createAvdVirtualNetwork]",
-                                    "toolTip": "Azure Virtual Desktop virtual network subnet custom name.",
-                                    "placeholder": "Example: snet-avd-app1-dev-use2-001",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,80}$",
-                                        "validationMessage": "Value must be 1-80 characters."
-                                    }
-                                },
-                                {
-                                    "name": "avdNetworkSecurityGroupCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Azure Virtual Desktop Network security group",
-                                    "visible": "[steps('network').createAvdVirtualNetwork]",
-                                    "toolTip": "Azure Virtual Desktop network security group custom name.",
-                                    "placeholder": "Example: nsg-avd-app1-dev-use2-001",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,80}$",
-                                        "validationMessage": "Value must be 1-80 characters."
-                                    }
-                                },
-                                {
-                                    "name": "avdRouteTableCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Azure Virtual Desktop Route table",
-                                    "visible": "[steps('network').createAvdVirtualNetwork]",
-                                    "toolTip": "Azure Virtual Desktop route table custom name.",
-                                    "placeholder": "Example: route-avd-app1-dev-use2-001",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,80}$",
-                                        "validationMessage": "Value must be 1-80 characters."
-                                    }
-                                },
-                                {
-                                    "name": "virtualNetworkPrivateEndpointSubnetCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Private endpoint subnet",
-                                    "visible": "[steps('network').createAvdVirtualNetwork]",
-                                    "toolTip": "Azure Virtual Desktop virtual network subnet custom name.",
-                                    "placeholder": "Example: snet-pe-app1-dev-use2-001",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,80}$",
-                                        "validationMessage": "Value must be 1-80 characters."
-                                    }
-                                },
-                                {
-                                    "name": "privateEndpointNetworkSecurityGroupCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Private endpoint network security group",
-                                    "visible": "[steps('network').createAvdVirtualNetwork]",
-                                    "toolTip": "Private endpoint network security group custom name.",
-                                    "placeholder": "Example: nsg-pe-app1-dev-use2-001",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,80}$",
-                                        "validationMessage": "Value must be 1-80 characters."
-                                    }
-                                },
-                                {
-                                    "name": "privateEndpointRouteTableCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Private endpoint route table",
-                                    "visible": "[steps('network').createAvdVirtualNetwork]",
-                                    "toolTip": "Private endpoint route table custom name.",
-                                    "placeholder": "Example: route-pe-app1-dev-use2-001",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,80}$",
-                                        "validationMessage": "Value must be 1-80 characters."
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "name": "resourceNamingMonitoring",
-                            "type": "Microsoft.Common.Section",
-                            "visible": "[steps('resourceNaming').resourceNamingSelection]",
-                            "label": "Monitoring naming:",
-                            "elements": [
-                                {
-                                    "name": "resourceNamingMonitoringInfo",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[not(steps('monitoring').deployMonitoring)]",
-                                    "options": {
-                                        "text": "Current deployment configuration is not creating monitoring resources.",
-                                        "style": "Info"
-                                    }
-                                },
-                                {
-                                    "name": "monitoringObjectsRgCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Resource group",
-                                    "visible": "[and(equals(steps('resourceNaming').resourceNamingSelection, true), equals(steps('monitoring').deployMonitoring, true))]",
-                                    "toolTip": "Azure Virtual Desktop monitoring resources (log analytics workspace) resource group custom name.",
-                                    "placeholder": "Example: rg-avd-dev-use2-monitoring",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
-                                        "validationMessage": "Value must be 1-90 characters."
-                                    }
-                                },
-                                {
-                                    "name": "monitoringLogAnalyticsWorkspaceName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Log analytics workspace name",
-                                    "visible": "[and(equals(steps('resourceNaming').resourceNamingSelection, true), equals(steps('monitoring').deployMonitoring, true), equals(steps('monitoring').deployMonitoringAlaWorkspace, true))]",
-                                    "toolTip": "Azure Virtual Desktop monitoring log analytics workspace custom name.",
-                                    "placeholder": "Example: log-avd-dev-use2",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,90}$",
-                                        "validationMessage": "Value must be 1-90 characters."
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "name": "resourceNamingZeroTrust",
-                            "type": "Microsoft.Common.Section",
-                            "label": "Zero Trust naming:",
-                            "visible": "[steps('resourceNaming').resourceNamingSelection]",
-                            "elements": [
-                                {
-                                    "name": "resourceNamingZeroTrustInfo",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[not(steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust)]",
-                                    "options": {
-                                        "text": "Current deployment configuration is not creating zero trust resources.",
-                                        "style": "Info"
-                                    }
-                                },
-                                {
-                                    "name": "zeroTrustObjectsDiskEncryptionSetCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Disk encryption set",
-                                    "visible": "[and(steps('resourceNaming').resourceNamingSelection, steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust)]",
-                                    "toolTip": "Disk encryption set resource for double encryption of session host disks.",
-                                    "placeholder": "Example: des-zt",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,6}$",
-                                        "validationMessage": "Value must be 1-90 characters."
-                                    }
-                                },
-                                {
-                                    "name": "zeroTrustObjectsKeyVaultCustomPrefix",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Key vault prefix",
-                                    "visible": "[and(steps('resourceNaming').resourceNamingSelection, steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust)]",
-                                    "toolTip": "Key Vault that stores the encryption key for disk encryption.",
-                                    "placeholder": "Example: kv-key",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,6}$",
-                                        "validationMessage": "Value must be 1-90 characters."
-                                    }
-                                },
-                                {
-                                    "name": "zeroTrustObjectsManagedIdentityCustomName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "User assigned identity",
-                                    "visible": "[and(steps('resourceNaming').resourceNamingSelection, steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust)]",
-                                    "toolTip": "User assigned identity that enables server-side encryption and disables network access.",
-                                    "placeholder": "Example: id-zt",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,5}$",
-                                        "validationMessage": "Value must be 1-90 characters."
                                     }
                                 }
                             ]
