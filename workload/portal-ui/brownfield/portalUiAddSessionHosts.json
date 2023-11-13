@@ -11,42 +11,11 @@
                     "label": "Deployment Basics",
                     "elements": [
                         {
-                            "name": "infoPreReq",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "text": "PREREQUISITES REQUIRED \n\nThere are prerequisites that must be setup in your Azure environment to successfully deploy this Azure Virtual Desktop Landing Zone Accelerator. Click here to review the prerequisites in the Getting Started guide.",
-                                "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started-baseline.md",
-                                "style": "Warning"
-                            }
-                        },
-                        {
-                            "name": "infoPreReqCheckbox",
-                            "type": "Microsoft.Common.CheckBox",
-                            "visible": true,
-                            "label": "I have read and understand the Azure Virtual Desktop LZA deployment pre-requisites",
-                            "defaultValue": false,
-                            "toolTip": "I have read and understand the Azure Virtual Desktop LZA deployment pre-requisites.",
-                            "constraints": {
-                                "required": true
-                            }
-                        },
-                        {
-                            "name": "deploymentInfo",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "style": "Info",
-                                "text": "The subscription selected in the 'Project details' section below will be used to deploy all resources. \n\nThe region selected in 'Instance details' section below will be used to deploy the Azure Virtual Desktop management plane resources (workspace, host pool, and application group, etc.). These resource types are not available in all regions, but they are globally replicated.\n\nThe session hosts do not have to be deployed to the same region, therefore you will have the option to select that region on the 'Session Hosts' blade.",
-                                "uri": "https://docs.microsoft.com/azure/virtual-desktop/data-locations"
-                            }
-                        },
-                        {
                             "name": "resourceScope",
                             "type": "Microsoft.Common.ResourceScope",
                             "location": {
                                 "resourceTypes": [
-                                    "Microsoft.DesktopVirtualization/workspaces"
+                                    "Microsoft.Compute/virtualMachines"
                                 ]
                             }
                         },
