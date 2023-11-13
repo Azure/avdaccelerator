@@ -472,10 +472,10 @@ module sessionHostConfiguration '../../modules/avdSessionHosts/.bicep/configureS
     baseScriptUri: varSessionHostConfigurationScriptUri
     scriptName: varSessionHostConfigurationScript
     fslogix: createAvdFslogixDeployment
-    identityDomainName: createAvdFslogixDeployment ? identityDomainName : 'none'
+    identityDomainName: identityDomainName
     vmSize: vmSize
-    fslogixFileShare: createAvdFslogixDeployment ? varFslogixSharePath : 'none'
-    fslogixStorageFqdn: createAvdFslogixDeployment ? varFslogixStorageFqdn  : 'none'
+    fslogixFileShare: varFslogixSharePath
+    fslogixStorageFqdn: varFslogixStorageFqdn
     identityServiceProvider: identityServiceProvider
   }
   dependsOn: [
