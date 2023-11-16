@@ -11,7 +11,7 @@ module metricAlerts_StorageAcct '../../../../../carml/1.3.0/Microsoft.Insights/m
   name: 'c_${MetricAlertsStorageAcct[i].name}-${split(StorageAccountResourceID, '/')[8]}-${Environment}'
   params: {
     enableDefaultTelemetry: false
-    name: '${MetricAlertsStorageAcct[i].name}-${split(StorageAccountResourceID, '/')[8]}-${Environment}'
+    name: '${MetricAlertsStorageAcct[i].displayName}-${split(StorageAccountResourceID, '/')[8]}-${Environment}'
     criterias: MetricAlertsStorageAcct[i].criteria.allOf
     location: 'global'
     alertDescription: MetricAlertsStorageAcct[i].description
