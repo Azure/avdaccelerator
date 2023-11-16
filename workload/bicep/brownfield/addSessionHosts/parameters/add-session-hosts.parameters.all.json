@@ -14,10 +14,10 @@
         "avsetResourceId": {
             "value": ""
         },
-        "avdImageTemplateDefinitionId": {
+        "customImageDefinitionId": {
             "value": ""
         },
-        "computeRgResourceName": {
+        "computeRgResourceGroupName": {
             "value": "<<Resourece group name>>"
         },
         "count": {
