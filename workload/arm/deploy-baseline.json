@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "8962216308650916273"
+      "templateHash": "11949955480836094458"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -1191,6 +1191,80 @@
         "timeZone": "Mountain Standard Time"
       }
     },
+    "$fxv#1": {
+      "win10_21h2": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "windows-10",
+        "sku": "win10-21h2-avd",
+        "version": "latest"
+      },
+      "win10_21h2_office": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "office-365",
+        "sku": "win10-21h2-avd-m365",
+        "version": "latest"
+      },
+      "win10_22h2_g2": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "windows-10",
+        "sku": "win10-22h2-avd-g2",
+        "version": "latest"
+      },
+      "win10_22h2_office_g2": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "office-365",
+        "sku": "win10-22h2-avd-m365-g2",
+        "version": "latest"
+      },
+      "win11_21h2": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "Windows-11",
+        "sku": "win11-21h2-avd",
+        "version": "latest"
+      },
+      "win11_21h2_office": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "office-365",
+        "sku": "win11-21h2-avd-m365",
+        "version": "latest"
+      },
+      "win11_22h2": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "Windows-11",
+        "sku": "win11-22h2-avd",
+        "version": "latest"
+      },
+      "win11_22h2_office": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "office-365",
+        "sku": "win11-22h2-avd-m365",
+        "version": "latest"
+      },
+      "winServer_2022_Datacenter": {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2022-datacenter-g2",
+        "version": "latest"
+      },
+      "winServer_2022_Datacenter_smalldisk_g2": {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2022-datacenter-smalldisk-g2",
+        "version": "latest"
+      },
+      "winServer_2022_datacenter_core": {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2022-datacenter-core-g2",
+        "version": "latest"
+      },
+      "winServer_2022_Datacenter_core_smalldisk_g2": {
+        "publisher": "MicrosoftWindowsServer",
+        "offer": "WindowsServer",
+        "sku": "2022-datacenter-core-smalldisk-g2",
+        "version": "latest"
+      }
+    },
     "varDeploymentPrefixLowercase": "[toLower(parameters('deploymentPrefix'))]",
     "varDeploymentEnvironmentLowercase": "[toLower(parameters('deploymentEnvironment'))]",
     "varDeploymentEnvironmentComputeStorage": "[if(equals(parameters('deploymentEnvironment'), 'Dev'), 'd', if(equals(parameters('deploymentEnvironment'), 'Test'), 't', if(equals(parameters('deploymentEnvironment'), 'Prod'), 'p', '')))]",
@@ -1383,80 +1457,7 @@
         }
       }
     ],
-    "varMarketPlaceGalleryWindows": {
-      "win10_21h2": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "windows-10",
-        "sku": "win10-21h2-avd",
-        "version": "latest"
-      },
-      "win10_21h2_office": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "office-365",
-        "sku": "win10-21h2-avd-m365",
-        "version": "latest"
-      },
-      "win10_22h2_g2": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "windows-10",
-        "sku": "win10-22h2-avd-g2",
-        "version": "latest"
-      },
-      "win10_22h2_office_g2": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "office-365",
-        "sku": "win10-22h2-avd-m365-g2",
-        "version": "latest"
-      },
-      "win11_21h2": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "Windows-11",
-        "sku": "win11-21h2-avd",
-        "version": "latest"
-      },
-      "win11_21h2_office": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "office-365",
-        "sku": "win11-21h2-avd-m365",
-        "version": "latest"
-      },
-      "win11_22h2": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "Windows-11",
-        "sku": "win11-22h2-avd",
-        "version": "latest"
-      },
-      "win11_22h2_office": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "office-365",
-        "sku": "win11-22h2-avd-m365",
-        "version": "latest"
-      },
-      "winServer_2022_Datacenter": {
-        "publisher": "MicrosoftWindowsServer",
-        "offer": "WindowsServer",
-        "sku": "2022-datacenter-g2",
-        "version": "latest"
-      },
-      "winServer_2022_Datacenter_smalldisk_g2": {
-        "publisher": "MicrosoftWindowsServer",
-        "offer": "WindowsServer",
-        "sku": "2022-datacenter-smalldisk-g2",
-        "version": "latest"
-      },
-      "winServer_2022_datacenter_core": {
-        "publisher": "MicrosoftWindowsServer",
-        "offer": "WindowsServer",
-        "sku": "2022-datacenter-core-g2",
-        "version": "latest"
-      },
-      "winServer_2022_Datacenter_core_smalldisk_g2": {
-        "publisher": "MicrosoftWindowsServer",
-        "offer": "WindowsServer",
-        "sku": "2022-datacenter-core-smalldisk-g2",
-        "version": "latest"
-      }
-    },
+    "varMarketPlaceGalleryWindows": "[variables('$fxv#1')]",
     "varStorageAzureFilesDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/1.0.0/DSCStorageScripts.zip",
     "varStorageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-Storage-Scripts.ps1', variables('varBaseScriptUri'))]",
     "varStorageToDomainScript": "./Manual-DSC-Storage-Scripts.ps1",
@@ -41013,7 +41014,6 @@
           "createAvdFslogixDeployment": {
             "value": "[parameters('createAvdFslogixDeployment')]"
           },
-          "storageManagedIdentityResourceId": "[if(variables('varCreateStorageDeployment'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageResourceId.value), createObject('value', ''))]",
           "fslogixSharePath": {
             "value": "[variables('varFslogixSharePath')]"
           },
@@ -41045,7 +41045,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "6078602552923195855"
+              "templateHash": "8903884659391222527"
             }
           },
           "parameters": {
@@ -41203,12 +41203,6 @@
               "type": "string",
               "metadata": {
                 "description": "Source custom image ID."
-              }
-            },
-            "storageManagedIdentityResourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Storage Managed Identity Resource ID."
               }
             },
             "vmLocalUserName": {
@@ -46291,7 +46285,6 @@
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varComputeObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-Availability-Set-{0}', parameters('time')))]",
         "baselineResourceGroups",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-FSLogix-{0}', parameters('time')))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('AVD-MGMT-Plane-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time')))]",
