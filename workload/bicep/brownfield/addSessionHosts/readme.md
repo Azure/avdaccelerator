@@ -23,14 +23,14 @@ This solution will deploy new session hosts to an existing host pool.
 
 ### Azure portal UI
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployNewSessionHostsToHostPools.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAddSessionHosts.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployNewSessionHostsToHostPools.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAddSessionHosts.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fnew-sh%2Fworkload%2Farm%2Fbrownfield%2FdeployNewSessionHostsToHostPools.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fnew-sh%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAddSessionHosts.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fnew-sh%2Fworkload%2Farm%2Fbrownfield%2FdeployNewSessionHostsToHostPools.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fnew-sh%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAddSessionHosts.json)
 
 ### PowerShell
 
 ```powershell
 New-AzDeployment `
     -Location '<Azure location>' `
-    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/brownfield/startVmOnConnect/solution.json' `
+    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/new-sh/workload/brownfield/startVmOnConnect/solution.json' `
     -AvdObjectId '<Object ID for the AVD / WVD application in Microsoft Entra ID>' `
     -HostPoolResourceId '<Resource ID for the target host pool>' `
     -Verbose
@@ -41,7 +41,7 @@ New-AzDeployment `
 ```azurecli
 az deployment sub create \
     --location '<Azure location>' \
-    --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/brownfield/startVmOnConnect/solution.json' \
+    --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/new-sh/workload/brownfield/startVmOnConnect/solution.json' \
     --parameters \
         AvdObjectId '<Object ID for the AVD / WVD application in Microsoft Entra ID>' \
         HostPoolResourceId '<Resource ID for the target host pool>'
