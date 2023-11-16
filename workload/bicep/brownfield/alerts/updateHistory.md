@@ -2,6 +2,15 @@
 
 [Home](./readme.md) | [PostDeployment](./postDeploy.md) | [How to Change Thresholds](./changeAlertThreshold.md) | [Alert Reference](./alertReference.md) | [Excel List of Alert Rules](./references/alerts.xlsx)
 
+## 11/18/23 - Fix - Query fixes and name changes to Display Name (V2.1.3)
+
+- UI Change to allow custom artifacts location for deployment on airgapped clouds or when Host Pool and Storage Info scripts stored on Blob
+- Alert Rule - Host Pool Capacity - percent load not working on decimal, frequency adjusted, other minor updates for visuals
+- Alert Rule - FSLogix - Added REsource ID to query, aggregation set to 1 day to fix auto resolve too quickly
+- Alert Rule - VM Logical Disk Space - Resouce Id add to query and split by resource Id
+- Script - Host Pool Info - Resource ID output, change how we calculate avaialble sessions to be based on number of hosts that are available and allowing sessions, instead of total number of hosts (Accomodate Scaling Plan)  
+---> Special Thanks to **James Harper** for the feedback and assist on edits!
+
 ## 9/26/23 - Fix - Deployment Name too long and Critical Updates Missing failure (V2.1.2)
 
 - c_AVD-HP-VM-MissingCriticalUpdates deployment would fail due to search syntax incorrectly defined
