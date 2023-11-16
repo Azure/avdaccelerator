@@ -8,17 +8,11 @@
         "alaWorkspaceResourceId": {
             "value": ""
         },
-        "avsetFaultDomainCount": {
-            "value": 2
-        },
-        "avsetUpdateDomainCount": {
-            "value": 5
-        },
         "asgResourceId": {
             "value": ""
         },
-        "avsetCustomNamePrefix": {
-            "value": "avail"
+        "avsetResourceId": {
+            "value": ""
         },
         "avdImageTemplateDefinitionId": {
             "value": ""
@@ -83,8 +77,11 @@
         "identityDomainName": {
             "value": ""
         },  
+        "virtualNetworkResourceId": {
+            "value": "<<Virtual network resource ID>>"
+        },
         "subnetName": {
-            "value": "<<Provide subnet name>>"
+            "value": "<<Subnet name>>"
         }, 
         "location": {
             "value": "<<Provide location for new session hosts>>"
