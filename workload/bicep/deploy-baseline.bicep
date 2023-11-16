@@ -678,80 +678,8 @@ var varScalingPlanSchedules = [
         }
     }
 ]
-var varMarketPlaceGalleryWindows = {
-    win10_21h2: {
-        publisher: 'MicrosoftWindowsDesktop'
-        offer: 'windows-10'
-        sku: 'win10-21h2-avd'
-        version: 'latest'
-    }
-    win10_21h2_office: {
-        publisher: 'MicrosoftWindowsDesktop'
-        offer: 'office-365'
-        sku: 'win10-21h2-avd-m365'
-        version: 'latest'
-    }
-    win10_22h2_g2: {
-        publisher: 'MicrosoftWindowsDesktop'
-        offer: 'windows-10'
-        sku: 'win10-22h2-avd-g2'
-        version: 'latest'
-    }
-    win10_22h2_office_g2: {
-        publisher: 'MicrosoftWindowsDesktop'
-        offer: 'office-365'
-        sku: 'win10-22h2-avd-m365-g2'
-        version: 'latest'
-    }
-    win11_21h2: {
-        publisher: 'MicrosoftWindowsDesktop'
-        offer: 'Windows-11'
-        sku: 'win11-21h2-avd'
-        version: 'latest'
-    }
-    win11_21h2_office: {
-        publisher: 'MicrosoftWindowsDesktop'
-        offer: 'office-365'
-        sku: 'win11-21h2-avd-m365'
-        version: 'latest'
-    }
-    win11_22h2: {
-        publisher: 'MicrosoftWindowsDesktop'
-        offer: 'Windows-11'
-        sku: 'win11-22h2-avd'
-        version: 'latest'
-    }
-    win11_22h2_office: {
-        publisher: 'MicrosoftWindowsDesktop'
-        offer: 'office-365'
-        sku: 'win11-22h2-avd-m365'
-        version: 'latest'
-    }
-    winServer_2022_Datacenter: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2022-datacenter-g2'
-        version: 'latest'
-    }
-    winServer_2022_Datacenter_smalldisk_g2: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2022-datacenter-smalldisk-g2'
-        version: 'latest'
-    }
-    winServer_2022_datacenter_core: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2022-datacenter-core-g2'
-        version: 'latest'
-    }
-    winServer_2022_Datacenter_core_smalldisk_g2: {
-        publisher: 'MicrosoftWindowsServer'
-        offer: 'WindowsServer'
-        sku: '2022-datacenter-core-smalldisk-g2'
-        version: 'latest'
-    }
-}
+
+var varMarketPlaceGalleryWindows = loadJsonContent('../variables/osMarketPlaceImages.json')
 var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/1.0.0/DSCStorageScripts.zip'
 var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
 var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
@@ -1290,7 +1218,6 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         subscriptionId: avdWorkloadSubsId
         encryptionAtHost: diskZeroTrust
         createAvdFslogixDeployment: createAvdFslogixDeployment
-        storageManagedIdentityResourceId: (varCreateStorageDeployment) ? identity.outputs.managedIdentityStorageResourceId : ''
         fslogixSharePath: varFslogixSharePath
         fslogixStorageFqdn: varFslogixStorageFqdn
         sessionHostConfigurationScriptUri: varSessionHostConfigurationScriptUri
