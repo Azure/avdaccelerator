@@ -2,6 +2,9 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "computeSubscriptionId": {
+            "value": "<<Subscription ID>>"
+        },
         "alaWorkspaceResourceId": {
             "value": ""
         },
@@ -20,8 +23,8 @@
         "avdImageTemplateDefinitionId": {
             "value": ""
         },
-        "computeRgResourceID": {
-            "value": "<<Resourece group ID>>"
+        "computeRgResourceName": {
+            "value": "<<Resourece group name>>"
         },
         "count": {
             "value": 1
