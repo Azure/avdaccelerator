@@ -17,13 +17,13 @@ param asgResourceId string = ''
 param avsetResourceId string = ''
 
 @sys.description('Source custom image ID. (Default: "")')
-param avdImageTemplateDefinitionId string = ''
+param customImageDefinitionId string = ''
 
 @sys.description('Subscription ID where to deploy session hosts. (Default: )')
 param computeSubscriptionId string
 
 @sys.description('Resource Group name where to deploy session hosts. (Default: )')
-param computeRgResourceName string
+param computeRgResourceGroupName string
 
 @sys.description('Quantity of session hosts to deploy. (Default: 1)')
 param count int = 1
@@ -284,7 +284,7 @@ resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' exis
 // Session hosts
 @batchSize(3)
 module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(1, count): {
-  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceName}')
+  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
   name: 'SH-${i - 1}-${time}'
   params: {
     name: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
@@ -300,7 +300,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
     securityType: securityType
     secureBootEnabled: secureBootEnabled
     vTpmEnabled: vTpmEnabled
-    imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinitionId}\'}') : varMarketPlaceGalleryWindows[osImage]
+    imageReference: useSharedImage ? json('{\'id\': \'${customImageDefinitionId}\'}') : varMarketPlaceGalleryWindows[osImage]
     osDisk: {
       createOption: 'fromImage'
       deleteOption: 'Delete'
@@ -362,7 +362,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
 
 // Add antimalware extension to session host.
 module sessionHostsAntimalwareExtension '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, count): {
-  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceName}')
+  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
   name: 'SH-Antimal-${i - 1}-${time}'
   params: {
     location: location
@@ -397,7 +397,7 @@ module sessionHostsAntimalwareExtension '../../../../carml/1.3.0/Microsoft.Compu
 
 // Add monitoring extension to session host
 module monitoring '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, count): if (deployMonitoring) {
-  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceName}')
+  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
   name: 'SH-Mon-${i - 1}-${time}'
   params: {
     location: location
@@ -424,7 +424,7 @@ module monitoring '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/ext
 
 // Apply AVD session host configurations
 module sessionHostConfiguration '../../modules/avdSessionHosts/.bicep/configureSessionHost.bicep' = [for i in range(1, count): {
-  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceName}')
+  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
   name: 'SH-Config-${i}-${time}'
   params: {
     location: location
