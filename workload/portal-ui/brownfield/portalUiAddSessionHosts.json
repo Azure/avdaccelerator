@@ -1149,6 +1149,7 @@
                 "deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
                 "identityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
                 "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
+                "identityDomainName": "[if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), steps('storage').fslogixConfiguration), steps('storage').storageFslogix.identityDomainName, '')]",
                 "keyVaultResourceId": "[steps('identity').identityCredentials.secretsKeyvault.id]",
                 "domainJoinUserName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('identity').identityCredentials.identityDomainJoinUserName)]",
                 "domainJoinPasswordSecretName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('identity').identityCredentials.identityDomainJoinUserPassword)]",
