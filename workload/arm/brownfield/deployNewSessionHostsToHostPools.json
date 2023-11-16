@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "14113926143591912424"
+      "templateHash": "14514573749050891438"
     }
   },
   "parameters": {
@@ -59,10 +59,16 @@
         "description": "Source custom image ID. (Default: \"\")"
       }
     },
-    "computeRgResourceID": {
+    "computeSubscriptionId": {
       "type": "string",
       "metadata": {
-        "description": "Resource Group name for the session hosts. (Default: )"
+        "description": "Subscription ID where to deploy session hosts. (Default: )"
+      }
+    },
+    "computeRgResourceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource Group name where to deploy session hosts. (Default: )"
       }
     },
     "count": {
@@ -218,7 +224,7 @@
         "description": "FSLogix file share name. (Default: )"
       }
     },
-    "hostPoolResourceID": {
+    "hostPoolResourceId": {
       "type": "string",
       "metadata": {
         "description": "AVD Host Pool resource ID. (Default: )"
@@ -231,10 +237,16 @@
         "description": "FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: \"\")"
       }
     },
-    "subnetId": {
+    "virtualNetworkResourceId": {
       "type": "string",
       "metadata": {
-        "description": "AVD subnet ID. (Default: )"
+        "description": "AVD virtual network resource ID. (Default: )"
+      }
+    },
+    "subnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "AVD subnet name. (Default: )"
       }
     },
     "location": {
@@ -307,9 +319,8 @@
     },
     "vmLocalUserName": {
       "type": "string",
-      "defaultValue": "avdVmLocalUserName",
       "metadata": {
-        "description": "Local administrator username. (Default: \"\")"
+        "description": "VM local administrator username. (Default: )"
       }
     },
     "keyVaultResourceId": {
@@ -780,14 +791,13 @@
     "varDivisionAvsetValue": "[div(parameters('count'), variables('varMaxAvsetMembersCount'))]",
     "varDivisionAvsetRemainderValue": "[mod(parameters('count'), variables('varMaxAvsetMembersCount'))]",
     "varAvsetCount": "[if(greater(variables('varDivisionAvsetRemainderValue'), 0), add(variables('varDivisionAvsetValue'), 1), variables('varDivisionAvsetValue'))]",
-    "varComputeSubId": "[split(parameters('computeRgResourceID'), '/')[2]]",
-    "varComputeRgName": "[split(parameters('computeRgResourceID'), '/')[4]]",
-    "varHostpoolSubId": "[split(parameters('hostPoolResourceID'), '/')[2]]",
-    "varHostpoolRgName": "[split(parameters('hostPoolResourceID'), '/')[4]]",
-    "varHostPoolName": "[split(parameters('hostPoolResourceID'), '/')[8]]",
+    "varHostpoolSubId": "[split(parameters('hostPoolResourceId'), '/')[2]]",
+    "varHostpoolRgName": "[split(parameters('hostPoolResourceId'), '/')[4]]",
+    "varHostPoolName": "[split(parameters('hostPoolResourceId'), '/')[8]]",
     "varKeyVaultSubId": "[split(parameters('keyVaultResourceId'), '/')[2]]",
     "varKeyVaultRgName": "[split(parameters('keyVaultResourceId'), '/')[4]]",
     "varKeyVaultName": "[split(parameters('keyVaultResourceId'), '/')[8]]",
+    "varSubnetId": "[format('{0}/subnets/{1}', parameters('virtualNetworkResourceId'), parameters('subnetName'))]",
     "varManagedDisk": "[if(empty(parameters('diskEncryptionSetResourceId')), createObject('storageAccountType', parameters('diskType')), createObject('diskEncryptionSet', createObject('id', parameters('diskEncryptionSetResourceId')), 'storageAccountType', parameters('diskType')))]",
     "varFslogixStorageFqdn": "[if(parameters('createAvdFslogixDeployment'), format('{0}.file.{1}', parameters('fslogixStorageAccountName'), environment().suffixes.storage), '')]",
     "varFslogixSharePath": "[if(parameters('createAvdFslogixDeployment'), format('\\\\{0}.file.{1}\\{2}', parameters('fslogixStorageAccountName'), environment().suffixes.storage, parameters('fslogixFileShareName')), '')]",
@@ -796,7 +806,7 @@
     "varSessionHostConfigurationScript": "./Set-SessionHostConfiguration.ps1",
     "varAllAvailabilityZones": "[pickZones('Microsoft.Compute', 'virtualMachines', parameters('location'), 3)]",
     "varAvdDefaultTags": {
-      "cm-resource-parent": "[parameters('hostPoolResourceID')]",
+      "cm-resource-parent": "[parameters('hostPoolResourceId')]",
       "Environment": "[parameters('deploymentEnvironment')]",
       "ServiceWorkload": "AVD",
       "CreationTimeUTC": "[parameters('time')]"
@@ -812,8 +822,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('AVD-Availability-Set-{0}', parameters('time'))]",
-      "subscriptionId": "[format('{0}', variables('varComputeSubId'))]",
-      "resourceGroup": "[format('{0}', variables('varComputeRgName'))]",
+      "subscriptionId": "[format('{0}', parameters('computeSubscriptionId'))]",
+      "resourceGroup": "[format('{0}', parameters('computeRgResourceName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1264,8 +1274,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('SH-{0}-{1}', sub(range(1, parameters('count'))[copyIndex()], 1), parameters('time'))]",
-      "subscriptionId": "[format('{0}', variables('varComputeSubId'))]",
-      "resourceGroup": "[format('{0}', variables('varComputeRgName'))]",
+      "subscriptionId": "[format('{0}', parameters('computeSubscriptionId'))]",
+      "resourceGroup": "[format('{0}', parameters('computeRgResourceName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1286,7 +1296,7 @@
           "encryptionAtHost": {
             "value": "[parameters('diskZeroTrust')]"
           },
-          "availabilitySetResourceId": "[if(parameters('useAvailabilityZones'), createObject('value', ''), createObject('value', format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Compute/availabilitySets/{2}-{3}', variables('varComputeSubId'), variables('varComputeRgName'), variables('varAvsetNamePrefix'), padLeft(add(1, div(add(range(1, parameters('count'))[copyIndex()], parameters('countIndex')), variables('varMaxAvsetMembersCount'))), 3, '0'))))]",
+          "availabilitySetResourceId": "[if(parameters('useAvailabilityZones'), createObject('value', ''), createObject('value', format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Compute/availabilitySets/{2}-{3}', parameters('computeSubscriptionId'), parameters('computeRgResourceName'), variables('varAvsetNamePrefix'), padLeft(add(1, div(add(range(1, parameters('count'))[copyIndex()], parameters('countIndex')), variables('varMaxAvsetMembersCount'))), 3, '0'))))]",
           "osType": {
             "value": "Windows"
           },
@@ -1331,7 +1341,7 @@
                 "nicSuffix": "nic-01-",
                 "deleteOption": "Delete",
                 "enableAcceleratedNetworking": "[parameters('enableAcceleratedNetworking')]",
-                "ipConfigurations": "[if(not(empty(parameters('asgResourceId'))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('subnetId'), 'applicationSecurityGroups', createArray(createObject('id', parameters('asgResourceId'))))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('subnetId'))))]"
+                "ipConfigurations": "[if(not(empty(parameters('asgResourceId'))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', variables('varSubnetId'), 'applicationSecurityGroups', createArray(createObject('id', parameters('asgResourceId'))))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', variables('varSubnetId'))))]"
               }
             ]
           },
@@ -5588,7 +5598,7 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varComputeSubId')), format('{0}', variables('varComputeRgName'))), 'Microsoft.Resources/deployments', format('AVD-Availability-Set-{0}', parameters('time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('computeSubscriptionId')), format('{0}', parameters('computeRgResourceName'))), 'Microsoft.Resources/deployments', format('AVD-Availability-Set-{0}', parameters('time')))]"
       ]
     },
     {
@@ -5599,8 +5609,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('SH-Antimal-{0}-{1}', sub(range(1, parameters('count'))[copyIndex()], 1), parameters('time'))]",
-      "subscriptionId": "[format('{0}', variables('varComputeSubId'))]",
-      "resourceGroup": "[format('{0}', variables('varComputeRgName'))]",
+      "subscriptionId": "[format('{0}', parameters('computeSubscriptionId'))]",
+      "resourceGroup": "[format('{0}', parameters('computeRgResourceName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -5822,8 +5832,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('SH-Mon-{0}-{1}', sub(range(1, parameters('count'))[copyIndex()], 1), parameters('time'))]",
-      "subscriptionId": "[format('{0}', variables('varComputeSubId'))]",
-      "resourceGroup": "[format('{0}', variables('varComputeRgName'))]",
+      "subscriptionId": "[format('{0}', parameters('computeSubscriptionId'))]",
+      "resourceGroup": "[format('{0}', parameters('computeRgResourceName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -6041,8 +6051,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('SH-Config-{0}-{1}', range(1, parameters('count'))[copyIndex()], parameters('time'))]",
-      "subscriptionId": "[format('{0}', variables('varComputeSubId'))]",
-      "resourceGroup": "[format('{0}', variables('varComputeRgName'))]",
+      "subscriptionId": "[format('{0}', parameters('computeSubscriptionId'))]",
+      "resourceGroup": "[format('{0}', parameters('computeRgResourceName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -6090,7 +6100,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "16467384531279284955"
+              "templateHash": "4753285980306081600"
             }
           },
           "parameters": {
@@ -6162,7 +6172,7 @@
             }
           },
           "variables": {
-            "varScriptArguments": "[format('-IdentityDomainName {0} -AmdVmSize {1} -IdentityServiceProvider {2} -Fslogix {3} -FslogixFileShare {4} -FslogixStorageFqdn {5} -HostPoolRegistrationToken {6} -NvidiaVmSize {7} -verbose', parameters('identityDomainName'), variables('varAmdVmSize'), parameters('identityServiceProvider'), parameters('fslogix'), parameters('fslogixFileShare'), parameters('fslogixStorageFqdn'), parameters('hostPoolToken'), variables('varNvidiaVmSize'))]",
+            "varScriptArguments": "[if(parameters('fslogix'), format('-IdentityDomainName {0} -AmdVmSize {1} -IdentityServiceProvider {2} -Fslogix {3} -FslogixFileShare {4} -FslogixStorageFqdn {5} -HostPoolRegistrationToken {6} -NvidiaVmSize {7} -verbose', parameters('identityDomainName'), variables('varAmdVmSize'), parameters('identityServiceProvider'), parameters('fslogix'), parameters('fslogixFileShare'), parameters('fslogixStorageFqdn'), parameters('hostPoolToken'), variables('varNvidiaVmSize')), format('-AmdVmSize {0} -IdentityServiceProvider {1} -Fslogix {2} -HostPoolRegistrationToken {3} -NvidiaVmSize {4} -verbose', variables('varAmdVmSize'), parameters('identityServiceProvider'), parameters('fslogix'), parameters('hostPoolToken'), variables('varNvidiaVmSize')))]",
             "varAmdVmSizes": [
               "Standard_NV4as_v4",
               "Standard_NV8as_v4",
