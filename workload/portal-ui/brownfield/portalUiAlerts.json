@@ -3,8 +3,8 @@
     "view": {
         "kind": "Form",
         "properties": {
-            "title": "Create AVD Alerts",
-            "steps": [
+            "title": "Azure Virtual Desktop LZA: Create AVD Alerts",
+            "steps": [ 
                 {
                     "name": "basics",
                     "label": "Basics",
