@@ -123,6 +123,7 @@ module logAlertStorage '../../../../../carml/1.3.0/Microsoft.Insights/scheduledQ
     scopes: [ LogAnalyticsWorkspaceResourceId ]
     location: Location
     actions: [ actionGroup.outputs.resourceId ]
+    alertDisplayName: LogAlertsStorage[i].displayName
     alertDescription: LogAlertsStorage[i].description
     enabled: false
     evaluationFrequency: LogAlertsStorage[i].evaluationFrequency
