@@ -4,7 +4,7 @@
         "kind": "Form",
         "properties": {
             "isWizard": false,
-            "title": "Azure Virtual Desktop - Landing Zone Accelerator (LZA) - Baseline",
+            "title": "Azure Virtual Desktop LZA: Deploy New Session Hosts",
             "steps": [
                 {
                     "name": "basics",
@@ -231,6 +231,11 @@
                                     "resourceType": "Microsoft.KeyVault/vaults",
                                     "constraints": {
                                         "required": true
+                                    },
+                                    "options": {
+                                        "filter": {
+                                            "subscription": "onBasics"
+                                        }
                                     }
                                 },
                                 {
@@ -277,6 +282,34 @@
                                     "defaultValue": "vmLocalUserPassword",
                                     "constraints": {
                                         "required": true
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "managementPlane",
+                    "label": "Management plane",
+                    "elements": [
+                        {
+                            "name": "managementPlaneSettings",
+                            "type": "Microsoft.Common.Section",
+                            "label": "Settings:",
+                            "elements": [
+                                {
+                                    "name": "fslogixStorageAccountSelector",
+                                    "type": "Microsoft.Solutions.ResourceSelector",
+                                    "label": "Host pool",
+                                    "toolTip": "Select host pool where to add new session hosts.",
+                                    "resourceType": "Microsoft.DesktopVirtualization/hostpools",
+                                    "constraints": {
+                                        "required": true
+                                    },
+                                    "options": {
+                                        "filter": {
+                                            "subscription": "onBasics"
+                                        }
                                     }
                                 }
                             ]
@@ -638,10 +671,16 @@
                                     "name": "fslogixStorageAccountSelector",
                                     "type": "Microsoft.Solutions.ResourceSelector",
                                     "label": "Storage account",
-                                    "toolTip": "The name of the Storage account created and configured to host FSLogix user profile containers.",
+                                    "toolTip": "Select storage account created and configured to host FSLogix user profile containers.",
                                     "resourceType": "Microsoft.Storage/storageAccounts",
                                     "constraints": {
                                         "required": true
+                                    },
+                                    "options": {
+                                        "filter": {
+                                            "subscription": "onBasics",
+                                            "location": "[steps('SessionHosts').SessionHostsRegionSection.SessionHostsRegion.location.name]"
+                                        }
                                     }
                                 },
                                 {
@@ -651,7 +690,9 @@
                                     "toolTip": "The name of the file share created and configured to host FSLogix user profile containers.",
                                     "placeholder": "Example: fslogix-pc-avd1-dev-use2-001",
                                     "constraints": {
-                                        "required": true
+                                        "required": true,
+                                        "subscription":"onBasics",
+                                        "location":"[steps('SessionHosts').SessionHostsRegionSection.SessionHostsRegion.location.name]"
                                     }
                                 }
                             ]
@@ -727,7 +768,6 @@
                                     "name": "virtualNetworkSubnetSelectorName",
                                     "label": "Subnet",
                                     "type": "Microsoft.Common.DropDown",
-                                    "visible": "[not(steps('network').createAvdVirtualNetwork)]",
                                     "defaultValue": "",
                                     "toolTip": "Azure Virtual Desktop subnet.",
                                     "multiselect": false,
@@ -741,9 +781,17 @@
                                     }
                                 },
                                 {
+                                    "name": "applicationSecurityGroup",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "label": "Application Security Group (ASG)",
+                                    "defaultValue": true,
+                                    "toolTip": "Configure session host to use FSLogix."
+                                },
+                                {
                                     "name": "applicationSecurityGroupSelectorId",
                                     "type": "Microsoft.Solutions.ResourceSelector",
-                                    "label": "Application Security Group",
+                                    "visible": "[steps('network').networkSettings.applicationSecurityGroup]",
+                                    "label": "Select ASG",
                                     "resourceType": "Microsoft.Network/applicationSecurityGroups",
                                     "options": {
                                         "filter": {
@@ -1126,7 +1174,7 @@
         },
         "outputs": {
             "parameters": {},
-            "kind": "Subscription",
+            "kind": "resourceGroups",
             "location": "[steps('basics').resourceScope.location.name]",
             "subscriptionId": "[steps('basics').resourceScope.subscription.id]"
         }
