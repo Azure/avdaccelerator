@@ -1218,7 +1218,6 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         subscriptionId: avdWorkloadSubsId
         encryptionAtHost: diskZeroTrust
         createAvdFslogixDeployment: createAvdFslogixDeployment
-        storageManagedIdentityResourceId: (varCreateStorageDeployment) ? identity.outputs.managedIdentityStorageResourceId : ''
         fslogixSharePath: varFslogixSharePath
         fslogixStorageFqdn: varFslogixStorageFqdn
         sessionHostConfigurationScriptUri: varSessionHostConfigurationScriptUri
