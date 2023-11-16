@@ -38,7 +38,7 @@ param customNaming bool = false
 param createIntuneEnrollment bool = false
 
 @sys.description('Deploy Fslogix setup. (Default: false)')
-param createAvdFslogixDeployment bool = false
+param configureFslogix bool = false
 
 @sys.description('Apply tags on resources and resource groups. (Default: false)')
 param createResourceTags bool = false
@@ -105,11 +105,8 @@ param hostPoolResourceId string
 @sys.description('FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")')
 param identityDomainName string = ''
 
-@sys.description('AVD virtual network resource ID. (Default: )')
-param virtualNetworkResourceId string
-
 @sys.description('AVD subnet name. (Default: )')
-param subnetName string
+param subnetResourceId string
 
 @sys.description('Location where to deploy compute services. (Default: )')
 param location string
@@ -223,7 +220,6 @@ var varHostPoolName = split(hostPoolResourceId, '/')[8]
 var varKeyVaultSubId = split(keyVaultResourceId, '/')[2]
 var varKeyVaultRgName = split(keyVaultResourceId, '/')[4]
 var varKeyVaultName = split(keyVaultResourceId, '/')[8]
-var varSubnetId = '${virtualNetworkResourceId}/subnets/${subnetName}'
 var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
   storageAccountType: diskType
 } : {
@@ -232,8 +228,8 @@ var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
   }
   storageAccountType: diskType
 }
-var varFslogixStorageFqdn = createAvdFslogixDeployment ? '${fslogixStorageAccountName}.file.${environment().suffixes.storage}' : ''
-var varFslogixSharePath = createAvdFslogixDeployment ? '\\\\${fslogixStorageAccountName}.file.${environment().suffixes.storage}\\${fslogixFileShareName}' : ''
+var varFslogixStorageFqdn = configureFslogix ? '${fslogixStorageAccountName}.file.${environment().suffixes.storage}' : ''
+var varFslogixSharePath = configureFslogix ? '\\\\${fslogixStorageAccountName}.file.${environment().suffixes.storage}\\${fslogixFileShareName}' : ''
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
@@ -317,7 +313,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
         ipConfigurations: !empty(asgResourceId) ? [
           {
             name: 'ipconfig01'
-            subnetResourceId: varSubnetId
+            subnetResourceId: subnetResourceId
             applicationSecurityGroups: [
               {
                 id: asgResourceId
@@ -327,7 +323,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
         ] : [
           {
             name: 'ipconfig01'
-            subnetResourceId: varSubnetId
+            subnetResourceId: subnetResourceId
           }
         ]
       }
@@ -382,7 +378,7 @@ module sessionHostsAntimalwareExtension '../../../../carml/1.3.0/Microsoft.Compu
         time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
         scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
       }
-      Exclusions: createAvdFslogixDeployment ? {
+      Exclusions: configureFslogix ? {
         Extensions: '*.vhd;*.vhdx'
         Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${varFslogixSharePath}\\*\\*.VHD;${varFslogixSharePath}\\*\\*.VHDX'
         Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
@@ -432,7 +428,7 @@ module sessionHostConfiguration '../../modules/avdSessionHosts/.bicep/configureS
     hostPoolToken: hostPool.properties.registrationInfo.token
     baseScriptUri: varSessionHostConfigurationScriptUri
     scriptName: varSessionHostConfigurationScript
-    fslogix: createAvdFslogixDeployment
+    fslogix: configureFslogix
     identityDomainName: identityDomainName
     vmSize: vmSize
     fslogixFileShare: varFslogixSharePath
