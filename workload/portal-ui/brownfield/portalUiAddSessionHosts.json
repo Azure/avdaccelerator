@@ -1192,7 +1192,8 @@
                 "opsTeamTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOpsTeamTag, 'no')]",
                 "ownerTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOwnerTag, 'no')]",
                 "costCenterTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsCostCenterTag, 'no')]",
-                "diskEncryptionSetResourceId": "['']"
+                "diskEncryptionSetResourceId": "['']",
+                "computeRgResourceGroupName": "[steps('basics').resourceScope.resourceGroup.name]"
             },
             "kind": "resourceGroups",
             "location": "[steps('basics').resourceScope.location.name]",
