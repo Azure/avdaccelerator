@@ -1,0 +1,27 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "computeRgResourceID": {
+      "value": ""
+    },
+    "countIndex": {
+      "value": 0
+    },
+    "hostPoolResourceID": {
+      "value": ""
+    },
+    "subnetId": {
+      "value": ""
+    },
+    "location": {
+      "value": ""
+    },
+    "keyVaultResourceId": {
+      "value": ""
+    },
+    "vmLocalAdminPasswordSecretName": {
+      "value": ""
+    }
+  }
+}
