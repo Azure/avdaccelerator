@@ -1236,7 +1236,7 @@
                             "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false))]",
                             "options": {
                                 "text": "When using private endpoints, creating a new Azure Virtual Desktop vNet, and providing custom DNS servers, existing Azure private DNS Zones MUST be linked to the vNet where the custom DNS servers are located, this is needed for the end-to-end setup of FSLogix and MSIX App Attach file shares to be successful. The DNS resolution requests will be sent to the custom DNS servers and its vNet is the one that needs to resolve private endpoint DNS records.",
-                                "uri": "https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy",
+                                "uri": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns",
                                 "style": "Warning"
                             }
                         },
@@ -1246,7 +1246,7 @@
                             "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, true))]",
                             "options": {
                                 "text": "When using private endpoints and creating a new Azure Virtual Desktop vNet and new private DNS zones, custom DNS servers may NOT be used in the new vNet as this will cause FSLogix and/or MSIX App Attach file shares deployments to fail. This happens because the private DNS zones will be linked to the newly created vNet and only this vNet will be able to resolve the private endpoints DNS records.",
-                                "uri": "https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy",
+                                "uri": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns",
                                 "style": "Warning"
                             }
                         },
@@ -1256,7 +1256,7 @@
                             "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false))]",
                             "options": {
                                 "text": "When using private endpoints and an existing Azure Virtual Desktop vNet with custom DNS servers configured, existing private DNS zones MUST be linked to the vNet containing the custom DNS servers for FSLogix and/or MSIX App Attach file shares deployments to be successful, given DNS name resolution requests will go to custom DNS servers and their vNet will need to resolve private endpoints DNS records.",
-                                "uri": "https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy",
+                                "uri": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns",
                                 "style": "Warning"
                             }
                         },
@@ -1265,8 +1265,8 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, true))]",
                             "options": {
-                                "text": "When using private endpoints, an existing Azure Virtual Desktop vNet, and creating new private DNS zones, custom DNS servers may NOT be used (unless they are connected to the same vNet used for the Azure Virtual Desktop dpeloyment) in order for FSlogix/MSIX App Attach deployment to be successful, given that the private DNS zone will be linked to the existing vNet and this will be the only network able to resolve private endpoint DNS records. <br/> ***Note: selected options (existing vNet and create DNS zones) are only recommended when using Microsoft Entra ID as identity service provider.",
-                                "uri": "https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy",
+                                "text": "When using private endpoints, an existing Azure Virtual Desktop vNet, and creating new private DNS zones, custom DNS servers may NOT be used (unless they are connected to the same vNet used for the Azure Virtual Desktop deployment) in order for FSlogix/MSIX App Attach deployment to be successful, given that the private DNS zone will be linked to the existing vNet and this will be the only network able to resolve private endpoint DNS records. <br/> ***Note: selected options (existing vNet and create DNS zones) are only recommended when using Microsoft Entra ID as identity service provider.",
+                                "uri": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns",
                                 "style": "Warning"
                             }
                         },
