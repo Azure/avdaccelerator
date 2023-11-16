@@ -32,7 +32,7 @@
         "createIntuneEnrollment": {
             "value": false
         },   
-        "createAvdFslogixDeployment": {
+        "configureFslogix": {
             "value": false
         },   
         "createResourceTags": {
@@ -77,12 +77,9 @@
         "identityDomainName": {
             "value": ""
         },  
-        "virtualNetworkResourceId": {
-            "value": "<<Virtual network resource ID>>"
+        "subnetResourceId": {
+            "value": "<<Subnet resource ID>>"
         },
-        "subnetName": {
-            "value": "<<Subnet name>>"
-        }, 
         "location": {
             "value": "<<Provide location for new session hosts>>"
         }, 
