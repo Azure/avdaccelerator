@@ -234,7 +234,7 @@ var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
 }
 var varFslogixStorageFqdn = createAvdFslogixDeployment ? '${fslogixStorageAccountName}.file.${environment().suffixes.storage}' : ''
 var varFslogixSharePath = createAvdFslogixDeployment ? '\\\\${fslogixStorageAccountName}.file.${environment().suffixes.storage}\\${fslogixFileShareName}' : ''
-var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/add-sh/workload/'
+var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
 var varAllAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', location, 3)
