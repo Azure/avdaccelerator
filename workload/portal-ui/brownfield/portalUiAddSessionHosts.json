@@ -346,12 +346,35 @@
                                     }
                                 },
                                 {
-                                    "name": "sessionHostsAvailabilitySettings",
+                                    "name": "sessionHostsAvailabilityZoneSettings",
                                     "type": "Microsoft.Common.CheckBox",
                                     "visible": true,
                                     "label": "Availability zones",
                                     "defaultValue": true,
                                     "toolTip": "Distribute compute resources across availability zones. If 'No' is selected then an availability set will be created to host the VMs."
+                                },
+                                {
+                                    "name": "sessionHostsAvailabilitySetSettings",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "visible": "[not(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings)]",
+                                    "label": "Availability set",
+                                    "defaultValue": true,
+                                    "toolTip": "Use availability sets to distribute session hosts across fault and update domains."
+                                },
+                                {
+                                    "name": "sessionHostsAvailabilitySetResourceId",
+                                    "type": "Microsoft.Solutions.ResourceSelector",
+                                    "label": "Virtual network",
+                                    "resourceType": "Microsoft.Network/virtualNetworks",
+                                    "constraints": {
+                                        "required": true
+                                    },
+                                    "options": {
+                                        "filter": {
+                                            "subscription": "onBasics",
+                                            "location": "[steps('SessionHosts').SessionHostsRegionSection.SessionHostsRegion.location.name]"
+                                        }
+                                    }
                                 },
                                 {
                                     "name": "sessionHostsRegion",
@@ -916,19 +939,6 @@
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,11}$",
                                         "validationMessage": "Value must be 1-11 characters."
-                                    }
-                                },
-                                {
-                                    "name": "availabilitySetCustomNamePrefix",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Availability set prefix",
-                                    "visible": "[not(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings)]",
-                                    "toolTip": "Azure Virtual Desktop availability set custom name.",
-                                    "placeholder": "Example: avail",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,9}$",
-                                        "validationMessage": "Value must be 1-9 characters."
                                     }
                                 }
                             ]
