@@ -71,13 +71,13 @@ param Tags object = {}
 
 var ActionGroupName = 'ag-avdmetrics-${Environment}-${Location}'
 var AlertDescriptionHeader = 'Automated AVD Alert Deployment Solution (v2.1.2)\n'
-var AutomationAccountName = 'aa-avdmetrics-${Environment}-${Location}'
+var AutomationAccountName = 'aa-avdmetrics-${Environment}-${Location}-${AlertNamePrefix}'
 var CloudEnvironment = environment().name
 var ResourceGroupCreate = ResourceGroupStatus == 'New' ? true : false
 var RunbookNameGetStorage = 'AvdStorageLogData'
 var RunbookNameGetHostPool = 'AvdHostPoolLogData'
-var RunbookScriptGetStorage = 'Get-StorAcctInfov2.ps1'
-var RunbookScriptGetHostPool = 'Get-HostPoolInfo.ps1'
+var RunbookScriptGetStorage = 'Get-StorAcctInfov2.ps1${_ArtifactsLocationSasToken}'
+var RunbookScriptGetHostPool = 'Get-HostPoolInfo.ps1${_ArtifactsLocationSasToken}'
 var StorAcctRGsAll = [for item in StorageAccountResourceIds: split(item, '/')[4]]
 var StorAcctRGs = union(StorAcctRGsAll, [])
 // var UsrManagedIdentityName = 'id-ds-avdAlerts-Deployment'
@@ -106,8 +106,8 @@ var LogAlertsHostPool = [
     displayName: '${AlertNamePrefix}-HostPool-Capacity 85% (xHostPoolNamex)'
     description: '${AlertDescriptionHeader}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad'
     severity: 2
-    evaluationFrequency: 'PT1M'
-    windowSize: 'PT5M'
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT30M'
     overrideQueryTimeRange: 'P2D'
     criteria: {
       allOf: [
@@ -127,6 +127,8 @@ var LogAlertsHostPool = [
           | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])
           | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])
           | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])
+          | extend HPResourceId=tostring(split(ResultDescription, '|')[13])
+          | extend ResourceId=tostring(HPResourceId)
           | where HostPoolPercentLoad >= 85 and HostPoolPercentLoad < 95
           | where HostPoolName == 'xHostPoolNamex'
            '''
@@ -175,7 +177,7 @@ var LogAlertsHostPool = [
               ]
             }
           ]
-          resourceIdColumng: '_ResourceId'
+          resourceIdColumn: 'ResourceId'
           operator: 'GreaterThanOrEqual'
           threshold: 1
           failingPeriods: {
@@ -191,8 +193,8 @@ var LogAlertsHostPool = [
     displayName: '${AlertNamePrefix}-HostPool-Capacity 50% (xHostPoolNamex)'
     description: '${AlertDescriptionHeader}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad'
     severity: 3
-    evaluationFrequency: 'PT1M'
-    windowSize: 'PT5M'
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT30M'
     overrideQueryTimeRange: 'P2D'
     criteria: {
       allOf: [
@@ -212,6 +214,8 @@ var LogAlertsHostPool = [
           | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])
           | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])
           | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])
+          | extend HPResourceId=tostring(split(ResultDescription, '|')[13])
+          | extend ResourceId=tostring(HPResourceId)
           | where HostPoolPercentLoad >= 50 and HostPoolPercentLoad < 85
           | where HostPoolName == 'xHostPoolNamex'         
            '''
@@ -260,7 +264,7 @@ var LogAlertsHostPool = [
               ]
             }
           ]
-          resourceIdColumng: '_ResourceId'
+          resourceIdColumn: 'ResourceId'
           operator: 'GreaterThanOrEqual'
           threshold: 1
           failingPeriods: {
@@ -276,8 +280,8 @@ var LogAlertsHostPool = [
     displayName: '${AlertNamePrefix}-HostPool-Capacity 95% (xHostPoolNamex)'
     description: '${AlertDescriptionHeader}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad'
     severity: 1
-    evaluationFrequency: 'PT1M'
-    windowSize: 'PT5M'
+    evaluationFrequency: 'PT5M'
+    windowSize: 'PT30M'
     overrideQueryTimeRange: 'P2D'
     criteria: {
       allOf: [
@@ -297,6 +301,8 @@ var LogAlertsHostPool = [
           | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])
           | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])
           | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])
+          | extend HPResourceId=tostring(split(ResultDescription, '|')[13])
+          | extend ResourceId=tostring(HPResourceId)
           | where HostPoolPercentLoad >= 95 
           | where HostPoolName == 'xHostPoolNamex'        
            '''
@@ -345,7 +351,7 @@ var LogAlertsHostPool = [
               ]
             }
           ]
-          resourceIdColumng: '_ResourceId'
+          resourceIdColumn: 'ResourceId'
           operator: 'GreaterThanOrEqual'
           threshold: 1
           failingPeriods: {
@@ -499,7 +505,7 @@ var LogAlertsHostPool = [
               | where _ResourceId contains "xHostPoolNamex"
               | parse _ResourceId with "/subscriptions/" subscriptionAgentHealth "/resourcegroups/" ResourceGroupAgentHealth "/providers/microsoft.desktopvirtualization/hostpools/" HostPool
               | parse SessionHostResourceId with "/subscriptions/" VMsubscription "/resourceGroups/" VMresourceGroup "/providers/Microsoft.Compute/virtualMachines/" ComputerName
-              | project VMresourceGroup, ComputerName, HostPool
+              | project VMresourceGroup, ComputerName, HostPool, _ResourceId
               ) on ComputerName
           '''
           timeAggregation: 'Count'
@@ -526,6 +532,7 @@ var LogAlertsHostPool = [
               ]
             }
           ]
+          resourceIdColumn: '_ResourceId'
           operator: 'GreaterThanOrEqual'
           threshold: 1
           failingPeriods: {
@@ -562,7 +569,7 @@ var LogAlertsHostPool = [
               | where _ResourceId contains "xHostPoolNamex"
               | parse _ResourceId with "/subscriptions/" subscriptionAgentHealth "/resourcegroups/" ResourceGroupAgentHealth "/providers/microsoft.desktopvirtualization/hostpools/" HostPool
               | parse SessionHostResourceId with "/subscriptions/" VMsubscription "/resourceGroups/" VMresourceGroup "/providers/Microsoft.Compute/virtualMachines/" ComputerName
-              | project VMresourceGroup, ComputerName, HostPool
+              | project VMresourceGroup, ComputerName, HostPool, _ResourceId
               ) on ComputerName
           '''
           timeAggregation: 'Count'
@@ -589,6 +596,7 @@ var LogAlertsHostPool = [
               ]
             }
           ]
+          resourceIdColumn: '_ResourceId'
           operator: 'GreaterThanOrEqual'
           threshold: 1
           failingPeriods: {
@@ -711,12 +719,11 @@ var LogAlertsHostPool = [
     description: '${AlertDescriptionHeader}User Profiles Service logged Event ID 43. Verify network communications between the storage and AVD VM related to xHostPoolNamex.'
     severity: 1
     evaluationFrequency: 'PT5M'
-    windowSize: 'PT5M'
-    overrideQueryTimeRange: 'P2D'
+    windowSize: 'PT1D'
     criteria: {
       allOf: [
         {
-          query: 'Event\n| where EventLog == "Microsoft-FSLogix-Apps/Admin"\n| where EventLevelName == "Error"\n| where EventID == 43\n| where _ResourceId contains "xHostPoolNamex"\n| parse _ResourceId with "/subscriptions/" subscription "/resourcegroups/" ResourceGroup "/providers/microsoft.compute/virtualmachines/" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with "/subscriptions/" subscriptionAgentHealth "/resourcegroups/" ResourceGroupAgentHealth "/providers/microsoft.desktopvirtualization/hostpools/" HostPool\n    | parse SessionHostResourceId with "/subscriptions/" VMsubscription "/resourceGroups/" VMresourceGroup "/providers/Microsoft.Compute/virtualMachines/" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool\n    )\n    on ComputerName\n\n'
+          query: 'Event\n| where EventLog == "Microsoft-FSLogix-Apps/Admin"\n| where EventLevelName == "Error"\n| where EventID == 43\n| where _ResourceId contains "xHostPoolNamex"\n| parse _ResourceId with "/subscriptions/" subscription "/resourcegroups/" ResourceGroup "/providers/microsoft.compute/virtualmachines/" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with "/subscriptions/" subscriptionAgentHealth "/resourcegroups/" ResourceGroupAgentHealth "/providers/microsoft.desktopvirtualization/hostpools/" HostPool\n    | parse SessionHostResourceId with "/subscriptions/" VMsubscription "/resourceGroups/" VMresourceGroup "/providers/Microsoft.Compute/virtualMachines/" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool, _ResourceId\n    )\n    on ComputerName\n\n'
 
           timeAggregation: 'Count'
           dimensions: [
@@ -749,6 +756,7 @@ var LogAlertsHostPool = [
               ]
             }
           ]
+          resourceIdColumn: '_ResourceId'
           operator: 'GreaterThanOrEqual'
           threshold: 1
           failingPeriods: {
@@ -765,12 +773,11 @@ var LogAlertsHostPool = [
     description: '${AlertDescriptionHeader}User Profiles Service logged an Event ID 52 or 40. Investigate error details for reason regarding xHostPoolNamex.'
     severity: 1
     evaluationFrequency: 'PT5M'
-    windowSize: 'PT5M'
-    overrideQueryTimeRange: 'P2D'
+    windowSize: 'P1D'
     criteria: {
       allOf: [
         {
-          query: 'Event\n| where EventLog == "Microsoft-FSLogix-Apps/Admin"\n| where EventLevelName == "Error"\n| where EventID == 52 or EventID == 40\n| where _ResourceId contains "xHostPoolNamex"\n| parse _ResourceId with "/subscriptions/" subscription "/resourcegroups/" ResourceGroup "/providers/microsoft.compute/virtualmachines/" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with "/subscriptions/" subscriptionAgentHealth "/resourcegroups/" ResourceGroupAgentHealth "/providers/microsoft.desktopvirtualization/hostpools/" HostPool\n    | parse SessionHostResourceId with "/subscriptions/" VMsubscription "/resourceGroups/" VMresourceGroup "/providers/Microsoft.Compute/virtualMachines/" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool\n    )\n    on ComputerName\n\n'
+          query: 'Event\n| where EventLog == "Microsoft-FSLogix-Apps/Admin"\n| where EventLevelName == "Error"\n| where EventID == 52 or EventID == 40\n| where _ResourceId contains "xHostPoolNamex"\n| parse _ResourceId with "/subscriptions/" subscription "/resourcegroups/" ResourceGroup "/providers/microsoft.compute/virtualmachines/" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with "/subscriptions/" subscriptionAgentHealth "/resourcegroups/" ResourceGroupAgentHealth "/providers/microsoft.desktopvirtualization/hostpools/" HostPool\n    | parse SessionHostResourceId with "/subscriptions/" VMsubscription "/resourceGroups/" VMresourceGroup "/providers/Microsoft.Compute/virtualMachines/" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool, _ResourceId\n    )\n    on ComputerName\n\n'
           timeAggregation: 'Count'
           dimensions: [
             {
@@ -802,6 +809,7 @@ var LogAlertsHostPool = [
               ]
             }
           ]
+          resourceIdColumn: '_ResourceId'
           operator: 'GreaterThanOrEqual'
           threshold: 1
           failingPeriods: {
@@ -818,12 +826,11 @@ var LogAlertsHostPool = [
     description: '${AlertDescriptionHeader}User Profile Service Disabled. Determine why service was disabled and re-enable / start the FSLogix service. Regarding xHostPoolNamex'
     severity: 1
     evaluationFrequency: 'PT5M'
-    windowSize: 'PT5M'
-    overrideQueryTimeRange: 'P2D'
+    windowSize: 'PT1D'
     criteria: {
       allOf: [
         {
-          query: 'Event\n| where EventLog == "Microsoft-FSLogix-Apps/Admin"\n| where EventLevelName == "Warning"\n| where EventID == 60\n| where _ResourceId contains "xHostPoolNamex"\n| parse _ResourceId with "/subscriptions/" subscription "/resourcegroups/" ResourceGroup "/providers/microsoft.compute/virtualmachines/" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with "/subscriptions/" subscriptionAgentHealth "/resourcegroups/" ResourceGroupAgentHealth "/providers/microsoft.desktopvirtualization/hostpools/" HostPool\n    | parse SessionHostResourceId with "/subscriptions/" VMsubscription "/resourceGroups/" VMresourceGroup "/providers/Microsoft.Compute/virtualMachines/" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool\n    )\n    on ComputerName\n\n'
+          query: 'Event\n| where EventLog == "Microsoft-FSLogix-Apps/Admin"\n| where EventLevelName == "Warning"\n| where EventID == 60\n| where _ResourceId contains "xHostPoolNamex"\n| parse _ResourceId with "/subscriptions/" subscription "/resourcegroups/" ResourceGroup "/providers/microsoft.compute/virtualmachines/" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with "/subscriptions/" subscriptionAgentHealth "/resourcegroups/" ResourceGroupAgentHealth "/providers/microsoft.desktopvirtualization/hostpools/" HostPool\n    | parse SessionHostResourceId with "/subscriptions/" VMsubscription "/resourceGroups/" VMresourceGroup "/providers/Microsoft.Compute/virtualMachines/" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool, _ResourceId\n    )\n    on ComputerName\n\n'
           timeAggregation: 'Count'
           dimensions: [
             {
@@ -855,6 +862,7 @@ var LogAlertsHostPool = [
               ]
             }
           ]
+          resourceIdColumn: '_ResourceId'
           operator: 'GreaterThanOrEqual'
           threshold: 1
           failingPeriods: {
@@ -871,12 +879,11 @@ var LogAlertsHostPool = [
     description: '${AlertDescriptionHeader}User Profile Service logged Event ID 62 or 63. The profile Disk was marked for compaction due to additional white space but failed. See error details for additional information regarding xHostPoolNamex.'
     severity: 2
     evaluationFrequency: 'PT5M'
-    windowSize: 'PT5M'
-    overrideQueryTimeRange: 'P2D'
+    windowSize: 'P1D'
     criteria: {
       allOf: [
         {
-          query: 'Event\n| where EventLog == "Microsoft-FSLogix-Apps/Admin"\n| where EventLevelName == "Error"\n| where EventID == 62 or EventID == 63\n| where _ResourceId contains "xHostPoolNamex"\n| parse _ResourceId with "/subscriptions/" subscription "/resourcegroups/" ResourceGroup "/providers/microsoft.compute/virtualmachines/" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with "/subscriptions/" subscriptionAgentHealth "/resourcegroups/" ResourceGroupAgentHealth "/providers/microsoft.desktopvirtualization/hostpools/" HostPool\n    | parse SessionHostResourceId with "/subscriptions/" VMsubscription "/resourceGroups/" VMresourceGroup "/providers/Microsoft.Compute/virtualMachines/" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool\n    )\n    on ComputerName\n\n'
+          query: 'Event\n| where EventLog == "Microsoft-FSLogix-Apps/Admin"\n| where EventLevelName == "Error"\n| where EventID == 62 or EventID == 63\n| where _ResourceId contains "xHostPoolNamex"\n| parse _ResourceId with "/subscriptions/" subscription "/resourcegroups/" ResourceGroup "/providers/microsoft.compute/virtualmachines/" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with "/subscriptions/" subscriptionAgentHealth "/resourcegroups/" ResourceGroupAgentHealth "/providers/microsoft.desktopvirtualization/hostpools/" HostPool\n    | parse SessionHostResourceId with "/subscriptions/" VMsubscription "/resourceGroups/" VMresourceGroup "/providers/Microsoft.Compute/virtualMachines/" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool, _ResourceId\n)\n on ComputerName\n\n'
           timeAggregation: 'Count'
           dimensions: [
             {
@@ -908,6 +915,7 @@ var LogAlertsHostPool = [
               ]
             }
           ]
+          resourceIdColumn: '_ResourceId'
           operator: 'GreaterThanOrEqual'
           threshold: 1
           failingPeriods: {
@@ -924,12 +932,11 @@ var LogAlertsHostPool = [
     description: '${AlertDescriptionHeader}User Profile Service logged an Event ID 51. This indicates that a user attempted to load their profile disk but it was in use or possibly mapped to another VM. Ensure the user is not connected to another host pool or remote app with the same profile. Regarding xHostPoolNamex.'
     severity: 2
     evaluationFrequency: 'PT5M'
-    windowSize: 'PT5M'
-    overrideQueryTimeRange: 'P2D'
+    windowSize: 'P1D'
     criteria: {
       allOf: [
         {
-          query: 'Event\n| where EventLog == "Microsoft-FSLogix-Apps/Operational"\n| where EventLevelName == "Warning"\n| where EventID == 51\n| where _ResourceId contains "xHostPoolNamex"\n| parse _ResourceId with "/subscriptions/" subscription "/resourcegroups/" ResourceGroup "/providers/microsoft.compute/virtualmachines/" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with "/subscriptions/" subscriptionAgentHealth "/resourcegroups/" ResourceGroupAgentHealth "/providers/microsoft.desktopvirtualization/hostpools/" HostPool\n    | parse SessionHostResourceId with "/subscriptions/" VMsubscription "/resourceGroups/" VMresourceGroup "/providers/Microsoft.Compute/virtualMachines/" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool\n    )\n    on ComputerName\n\n'
+          query: 'Event\n| where EventLog == "Microsoft-FSLogix-Apps/Operational"\n| where EventLevelName == "Warning"\n| where EventID == 51\n| where _ResourceId contains "xHostPoolNamex"\n| parse _ResourceId with "/subscriptions/" subscription "/resourcegroups/" ResourceGroup "/providers/microsoft.compute/virtualmachines/" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with "/subscriptions/" subscriptionAgentHealth "/resourcegroups/" ResourceGroupAgentHealth "/providers/microsoft.desktopvirtualization/hostpools/" HostPool\n    | parse SessionHostResourceId with "/subscriptions/" VMsubscription "/resourceGroups/" VMresourceGroup "/providers/Microsoft.Compute/virtualMachines/" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool, _ResourceId\n    )\n    on ComputerName\n\n'
           timeAggregation: 'Count'
           dimensions: [
             {
@@ -961,6 +968,7 @@ var LogAlertsHostPool = [
               ]
             }
           ]
+          resourceIdColumn: '_ResourceId'
           operator: 'GreaterThanOrEqual'
           threshold: 1
           failingPeriods: {
@@ -1226,29 +1234,39 @@ var LogAlertsStorage = [
           query: '''
           AzureDiagnostics 
           | where Category has "JobStreams" and StreamType_s == "Output" and RunbookName_s == "AvdStorageLogData"
-          | sort by TimeGenerated
+          | where split(ResultDescription, ',')[1] <> ""
           //  StorageType / Subscription / RG / StorAcct / Share / Quota / GB Used / %Available
           | extend StorageType=split(ResultDescription, ',')[0]
           | extend Subscription=split(ResultDescription, ',')[1]
           | extend ResourceGroup=split(ResultDescription, ',')[2]
-          | extend StorageAccount=split(ResultDescription, ',')[3]
+          | extend StorageAccount=tostring(split(ResultDescription, ',')[3])
           | extend Share=split(ResultDescription, ',')[4]
           | extend GBShareQuota=split(ResultDescription, ',')[5]
           | extend GBUsed=split(ResultDescription, ',')[6]
-          | extend PercentAvailable=split(ResultDescription, ',')[7]
-          | where PercentAvailable <= 15.00 and PercentAvailable < 5.00          
+          | extend PercentAvailable=round(toreal(split(ResultDescription, ',')[7]))
+          | extend ResourceId=tostring(split(ResultDescription, ',')[8])
+          | summarize arg_max(TimeGenerated, *) by Share
+          | where PercentAvailable <= 15.00        
+          | project TimeGenerated,ResourceId, StorageAccount, Share, PercentAvailable
            '''
           timeAggregation: 'Count'
           dimensions: [
             {
-              name: 'ResultDescription'
+              name: 'StorageAccount'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+            {
+              name: 'Share'
               operator: 'Include'
               values: [
                 '*'
               ]
             }
           ]
-          resourceIdColumng: '_ResourceId'
+          resourceIdColumn: 'ResourceId'
           operator: 'GreaterThanOrEqual'
           threshold: 1
           failingPeriods: {
@@ -1273,29 +1291,39 @@ var LogAlertsStorage = [
           query: '''
           AzureDiagnostics 
           | where Category has "JobStreams" and StreamType_s == "Output" and RunbookName_s == "AvdStorageLogData"
-          | sort by TimeGenerated
+          | where split(ResultDescription, ',')[1] <> ""
           //  StorageType / Subscription / RG / StorAcct / Share / Quota / GB Used / %Available
           | extend StorageType=split(ResultDescription, ',')[0]
           | extend Subscription=split(ResultDescription, ',')[1]
           | extend ResourceGroup=split(ResultDescription, ',')[2]
-          | extend StorageAccount=split(ResultDescription, ',')[3]
+          | extend StorageAccount=tostring(split(ResultDescription, ',')[3])
           | extend Share=split(ResultDescription, ',')[4]
           | extend GBShareQuota=split(ResultDescription, ',')[5]
           | extend GBUsed=split(ResultDescription, ',')[6]
-          | extend PercentAvailable=split(ResultDescription, ',')[7]
-          | where PercentAvailable <= 5.00          
+          | extend PercentAvailable=round(toreal(split(ResultDescription, ',')[7]))
+          | extend ResourceId=tostring(split(ResultDescription, ',')[8])
+          | summarize arg_max(TimeGenerated, *) by Share
+          | where PercentAvailable <= 5.00        
+          | project TimeGenerated,ResourceId, StorageAccount, Share, PercentAvailable
            '''
           timeAggregation: 'Count'
           dimensions: [
             {
-              name: 'ResultDescription'
+              name: 'StorageAccount'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+            {
+              name: 'Share'
               operator: 'Include'
               values: [
                 '*'
               ]
             }
           ]
-          resourceIdColumng: '_ResourceId'
+          resourceIdColumn: 'ResourceId'
           operator: 'GreaterThanOrEqual'
           threshold: 1
           failingPeriods: {
