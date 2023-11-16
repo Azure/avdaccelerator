@@ -1,19 +1,28 @@
-# Start VM On Connect
+# Deploy New Session Hosts
 
-This solution will deploy Start VM On Connect. The feature allows stopped / deallocated VMs to be started on demand when an end user requests a session host from their assigned application group using the AVD client. For more details, see the Microsoft Learn page for this feature: [Start VM On Connect](https://learn.microsoft.com/azure/virtual-desktop/start-virtual-machine-connect?tabs=azure-portal).
+This solution will deploy new session hosts to an existing host pool.
 
 ## Requirements
 
 - Permissions: below are the minimum required permissions to deploy this solution.
   - User Access Administrator on the target Subscription
   - Desktop Virtualization Host Pool Contributor on the resource group containing the target host pool
-- Resources: this solution assumes a host pool already exists in the target subscription.
+- Resources: this solution assumes the following items already exists:
+  - Resource group where session hosts will be deployed (created by AVD LZA baseline).
+  - Host pool with and active registration token (created by AVD LZA baseline).
+  - Key vault with the following secrets (created by AVD LZA baseline):
+    - VM local admin user password.
+    - Domain join account password.
+  - Virtual network for session hosts (created by AVD LZA baseline).
+  - Optional: application security group for session hosts (created by AVD LZA baseline).
+  - Storage account and file share configured for fslogix (created by AVD LZA baseline).
+  - Optional: log analytics workspace configured with Azure Virtual Desktop insights settings (created by AVD LZA baseline).
 
 ## Deployment Options
 
 ### Azure portal UI
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployStartVmOnConnect.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiStartVmOnConnect.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployStartVmOnConnect.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiStartVmOnConnect.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployNewSessionHostsToHostPools.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAddSessionHosts.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployNewSessionHostsToHostPools.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAddSessionHosts.json)
 
 ### PowerShell
 
