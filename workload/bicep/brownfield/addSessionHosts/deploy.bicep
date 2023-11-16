@@ -26,8 +26,11 @@ param avsetCustomNamePrefix string = 'avail'
 @sys.description('Source custom image ID. (Default: "")')
 param avdImageTemplateDefinitionId string = ''
 
-@sys.description('Resource Group name for the session hosts. (Default: )')
-param computeRgResourceID string
+@sys.description('Subscription ID where to deploy session hosts. (Default: )')
+param computeSubscriptionId string
+
+@sys.description('Resource Group name where to deploy session hosts. (Default: )')
+param computeRgResourceName string
 
 @sys.description('Quantity of session hosts to deploy. (Default: 1)')
 param count int = 1
@@ -228,8 +231,6 @@ var varMaxAvsetMembersCount = 199
 var varDivisionAvsetValue = count / varMaxAvsetMembersCount
 var varDivisionAvsetRemainderValue = count % varMaxAvsetMembersCount
 var varAvsetCount = varDivisionAvsetRemainderValue > 0 ? varDivisionAvsetValue + 1 : varDivisionAvsetValue
-var varComputeSubId = split(computeRgResourceID, '/')[2]
-var varComputeRgName = split(computeRgResourceID, '/')[4]
 var varHostpoolSubId = split(hostPoolResourceId, '/')[2]
 var varHostpoolRgName = split(hostPoolResourceId, '/')[4]
 var varHostPoolName = split(hostPoolResourceId, '/')[8]
@@ -297,7 +298,7 @@ resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' exis
 // Availability set
 module availabilitySet '../../modules/avdSessionHosts/.bicep/availabilitySets.bicep' = if (!useAvailabilityZones) {
   name: 'AVD-Availability-Set-${time}'
-  scope: resourceGroup('${varComputeSubId}', '${varComputeRgName}')
+  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceName}')
   params: {
     namePrefix: varAvsetNamePrefix
     location: location
@@ -312,7 +313,7 @@ module availabilitySet '../../modules/avdSessionHosts/.bicep/availabilitySets.bi
 // Session hosts
 @batchSize(3)
 module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(1, count): {
-  scope: resourceGroup('${varComputeSubId}', '${varComputeRgName}')
+  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceName}')
   name: 'SH-${i - 1}-${time}'
   params: {
     name: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
@@ -321,7 +322,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
     systemAssignedIdentity: (identityServiceProvider == 'AAD') ? true : false
     availabilityZone: useAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
     encryptionAtHost: diskZeroTrust
-    availabilitySetResourceId: useAvailabilityZones ? '' : '/subscriptions/${varComputeSubId}/resourceGroups/${varComputeRgName}/providers/Microsoft.Compute/availabilitySets/${varAvsetNamePrefix}-${padLeft(((1 + (i + countIndex) / varMaxAvsetMembersCount)), 3, '0')}'
+    availabilitySetResourceId: useAvailabilityZones ? '' : '/subscriptions/${computeSubscriptionId}/resourceGroups/${computeRgResourceName}/providers/Microsoft.Compute/availabilitySets/${varAvsetNamePrefix}-${padLeft(((1 + (i + countIndex) / varMaxAvsetMembersCount)), 3, '0')}'
     osType: 'Windows'
     licenseType: 'Windows_Client'
     vmSize: vmSize
@@ -391,7 +392,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
 
 // Add antimalware extension to session host.
 module sessionHostsAntimalwareExtension '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, count): {
-  scope: resourceGroup('${varComputeSubId}', '${varComputeRgName}')
+  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceName}')
   name: 'SH-Antimal-${i - 1}-${time}'
   params: {
     location: location
@@ -426,7 +427,7 @@ module sessionHostsAntimalwareExtension '../../../../carml/1.3.0/Microsoft.Compu
 
 // Add monitoring extension to session host
 module monitoring '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, count): if (deployMonitoring) {
-  scope: resourceGroup('${varComputeSubId}', '${varComputeRgName}')
+  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceName}')
   name: 'SH-Mon-${i - 1}-${time}'
   params: {
     location: location
@@ -453,7 +454,7 @@ module monitoring '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/ext
 
 // Apply AVD session host configurations
 module sessionHostConfiguration '../../modules/avdSessionHosts/.bicep/configureSessionHost.bicep' = [for i in range(1, count): {
-  scope: resourceGroup('${varComputeSubId}', '${varComputeRgName}')
+  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceName}')
   name: 'SH-Config-${i}-${time}'
   params: {
     location: location
