@@ -104,13 +104,16 @@ param fslogixStorageAccountName string = ''
 param fslogixFileShareName string = ''
 
 @sys.description('AVD Host Pool resource ID. (Default: )')
-param hostPoolResourceID string
+param hostPoolResourceId string
 
 @sys.description('FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")')
 param identityDomainName string = ''
 
-@sys.description('AVD subnet ID. (Default: )')
-param subnetId string
+@sys.description('AVD virtual network resource ID. (Default: )')
+param virtualNetworkResourceId string
+
+@sys.description('AVD subnet name. (Default: )')
+param subnetName string
 
 @sys.description('Location where to deploy compute services. (Default: )')
 param location string
@@ -124,7 +127,6 @@ param useAvailabilityZones bool = true
 
 @sys.description('The service providing domain services for Azure Virtual Desktop. (Default: ADDS)')
 param identityServiceProvider string = 'ADDS'
-
 
 @sys.description('Session host VM size. (Default: Standard_D4ads_v5)')
 param vmSize string = 'Standard_D4ads_v5'
@@ -146,8 +148,8 @@ param vTpmEnabled bool = true
 @sys.description('Set to deploy image from Azure Compute Gallery. (Default: false)')
 param useSharedImage bool = false
 
-@sys.description('Local administrator username. (Default: "")')
-param vmLocalUserName string = 'avdVmLocalUserName'
+@sys.description('VM local administrator username. (Default: )')
+param vmLocalUserName string
 
 @sys.description('Resource ID of keyvault that contains credentials. (Default: )')
 param keyVaultResourceId string
@@ -228,12 +230,13 @@ var varDivisionAvsetRemainderValue = count % varMaxAvsetMembersCount
 var varAvsetCount = varDivisionAvsetRemainderValue > 0 ? varDivisionAvsetValue + 1 : varDivisionAvsetValue
 var varComputeSubId = split(computeRgResourceID, '/')[2]
 var varComputeRgName = split(computeRgResourceID, '/')[4]
-var varHostpoolSubId = split(hostPoolResourceID, '/')[2]
-var varHostpoolRgName = split(hostPoolResourceID, '/')[4]
-var varHostPoolName = split(hostPoolResourceID, '/')[8]
+var varHostpoolSubId = split(hostPoolResourceId, '/')[2]
+var varHostpoolRgName = split(hostPoolResourceId, '/')[4]
+var varHostPoolName = split(hostPoolResourceId, '/')[8]
 var varKeyVaultSubId = split(keyVaultResourceId, '/')[2]
 var varKeyVaultRgName = split(keyVaultResourceId, '/')[4]
 var varKeyVaultName = split(keyVaultResourceId, '/')[8]
+var varSubnetId = '${virtualNetworkResourceId}/subnets/${subnetName}'
 var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
   storageAccountType: diskType
 } : {
@@ -249,7 +252,7 @@ var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-Sessi
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
 var varAllAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', location, 3)
 var varAvdDefaultTags = {
-  'cm-resource-parent': hostPoolResourceID
+  'cm-resource-parent': hostPoolResourceId
   Environment: deploymentEnvironment
   ServiceWorkload: 'AVD'
   CreationTimeUTC: time
@@ -342,7 +345,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
         ipConfigurations: !empty(asgResourceId) ? [
           {
             name: 'ipconfig01'
-            subnetResourceId: subnetId
+            subnetResourceId: varSubnetId
             applicationSecurityGroups: [
               {
                 id: asgResourceId
@@ -352,7 +355,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
         ] : [
           {
             name: 'ipconfig01'
-            subnetResourceId: subnetId
+            subnetResourceId: varSubnetId
           }
         ]
       }

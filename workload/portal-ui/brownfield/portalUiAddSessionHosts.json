@@ -425,6 +425,16 @@
                                     }
                                 },
                                 {
+                                    "name": "sessionHostsCountIndex",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "VM count index",
+                                    "toolTip": "Provide the number of the highest sessio host name count, example: if highest session host count is vmavd1duse20005, provide a count index of 5. This number will be use to deploy new session hosts with a naming that continues the current session hosts deployed, example: vmavd1duse20006.",
+                                    "defaultValue": 1,
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
+                                {
                                     "name": "sessionHostsCount",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "VM count",
@@ -647,7 +657,7 @@
                             "name": "fslogixConfiguration",
                             "type": "Microsoft.Common.CheckBox",
                             "label": "Configure FSLogix",
-                            "defaultValue": true,
+                            "defaultValue": false,
                             "toolTip": "Configure session host to use FSLogix."
                         },
                         {
