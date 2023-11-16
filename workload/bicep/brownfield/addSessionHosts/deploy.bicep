@@ -10,18 +10,11 @@ param alaWorkspaceResourceId string = ''
 @sys.description('Details about the application.')
 param applicationNameTag string = 'Contoso-App'
 
-@sys.description('Sets the number of fault domains for the availability set. (Default: 2)')
-param avsetFaultDomainCount int = 2
-
-@sys.description('Sets the number of update domains for the availability set. (Default: 5)')
-param avsetUpdateDomainCount int = 5
-
 @sys.description('Application Security Group (ASG) for the session hosts. (Default: "")')
 param asgResourceId string = ''
 
-@maxLength(9)
-@sys.description('AVD availability set custom name. (Default: avail)')
-param avsetCustomNamePrefix string = 'avail'
+@sys.description('Availability set resource ID. (Default: "")')
+param avsetResourceId string = ''
 
 @sys.description('Source custom image ID. (Default: "")')
 param avdImageTemplateDefinitionId string = ''
@@ -220,17 +213,10 @@ var varDeploymentPrefixLowercase = toLower(deploymentPrefix)
 var varSessionHostLocationAcronym = varLocations[varSessionHostLocationLowercase].acronym
 var varDeploymentEnvironmentComputeStorage = (deploymentEnvironment == 'Dev') ? 'd' : ((deploymentEnvironment == 'Test') ? 't' : ((deploymentEnvironment == 'Prod') ? 'p' : ''))
 var varSessionHostNamePrefix = customNaming ? sessionHostCustomNamePrefix : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
-var varDeploymentEnvironmentLowercase = toLower(deploymentEnvironment)
-var varComputeStorageResourcesNamingStandard = '${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}'
-var varAvsetNamePrefix = customNaming ? '${avsetCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'avail-${varComputeStorageResourcesNamingStandard}'
 var varLocations = loadJsonContent('../../../variables/locations.json')
 var varMarketPlaceGalleryWindows = loadJsonContent('../../../variables/osMarketPlaceImages.json')
 var varTimeZoneSessionHosts = varLocations[varSessionHostLocationLowercase].timeZone
 var varSessionHostLocationLowercase = toLower(replace(location, ' ', ''))
-var varMaxAvsetMembersCount = 199
-var varDivisionAvsetValue = count / varMaxAvsetMembersCount
-var varDivisionAvsetRemainderValue = count % varMaxAvsetMembersCount
-var varAvsetCount = varDivisionAvsetRemainderValue > 0 ? varDivisionAvsetValue + 1 : varDivisionAvsetValue
 var varHostpoolSubId = split(hostPoolResourceId, '/')[2]
 var varHostpoolRgName = split(hostPoolResourceId, '/')[4]
 var varHostPoolName = split(hostPoolResourceId, '/')[8]
@@ -295,21 +281,6 @@ resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' exis
   name: last(split(alaWorkspaceResourceId, '/'))!
 }
 
-// Availability set
-module availabilitySet '../../modules/avdSessionHosts/.bicep/availabilitySets.bicep' = if (!useAvailabilityZones) {
-  name: 'AVD-Availability-Set-${time}'
-  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceName}')
-  params: {
-    namePrefix: varAvsetNamePrefix
-    location: location
-    count: varAvsetCount
-    faultDomainCount: avsetFaultDomainCount
-    updateDomainCount: avsetUpdateDomainCount
-    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-  }
-  dependsOn: []
-}
-
 // Session hosts
 @batchSize(3)
 module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(1, count): {
@@ -322,7 +293,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
     systemAssignedIdentity: (identityServiceProvider == 'AAD') ? true : false
     availabilityZone: useAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
     encryptionAtHost: diskZeroTrust
-    availabilitySetResourceId: useAvailabilityZones ? '' : '/subscriptions/${computeSubscriptionId}/resourceGroups/${computeRgResourceName}/providers/Microsoft.Compute/availabilitySets/${varAvsetNamePrefix}-${padLeft(((1 + (i + countIndex) / varMaxAvsetMembersCount)), 3, '0')}'
+    availabilitySetResourceId: useAvailabilityZones ? '' : avsetResourceId
     osType: 'Windows'
     licenseType: 'Windows_Client'
     vmSize: vmSize
@@ -386,7 +357,6 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
   }
   dependsOn: [
     keyVault
-    availabilitySet
   ]
 }]
 
