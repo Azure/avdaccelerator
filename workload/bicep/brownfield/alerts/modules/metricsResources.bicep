@@ -166,7 +166,7 @@ module logAlertSvcHealth '../../../../../carml/1.3.0/Microsoft.Insights/activity
   name: 'c_${LogAlertsSvcHealth[i].name}'
   params: {
     enableDefaultTelemetry: false
-    name: '${LogAlertsSvcHealth[i].name}-${SubscriptionName}'
+    name: '${LogAlertsSvcHealth[i].displayName}-${SubscriptionName}'
     enabled: false
     location: 'global'
     tags: contains(Tags, 'Microsoft.Insights/activityLogAlerts') ? Tags['Microsoft.Insights/activityLogAlerts'] : {}
