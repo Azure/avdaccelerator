@@ -2,26 +2,32 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "subnetId": {
-            "value": "/subscriptions/a7bc841f-34c0-4214-9469-cd463b66de35/resourceGroups/rg-avd-x036-dev-use-network/providers/Microsoft.Network/virtualNetworks/vnet-x036-dev-use-001/subnets/snet-avd-x036-dev-use-001"
+        "computeSubscriptionId": {
+            "value": "<<Subscription ID>>"
         },
-        "location": {
-            "value": "eastus"
-        },
-        "computeRgResourceID": {
-            "value": "/subscriptions/a7bc841f-34c0-4214-9469-cd463b66de35/resourceGroups/rg-avd-x036-dev-use-pool-compute"
+        "computeRgResourceName": {
+            "value": "<<Resourece group ID>>"
         },
         "countIndex": {
-            "value": 16
-        },
-        "vmLocalAdminPasswordSecretName": {
-            "value": "vmLocalUserPassword"
-        },
-        "keyVaultResourceId": {
-            "value": "/subscriptions/a7bc841f-34c0-4214-9469-cd463b66de35/resourceGroups/rg-avd-x036-dev-use-service-objects/providers/Microsoft.KeyVault/vaults/kv-sec-x036-dev-use-fv"
+            "value": 10
         },
         "hostPoolResourceID": {
-            "value": "/subscriptions/a7bc841f-34c0-4214-9469-cd463b66de35/resourceGroups/rg-avd-x036-dev-use-service-objects/providers/Microsoft.DesktopVirtualization/hostpools/vdpool-x036-dev-use-001"
+            "value": "<<Provide host pool resource ID>>"
+        },  
+        "subnetName": {
+            "value": "<<Provide subnet name>>"
+        }, 
+        "location": {
+            "value": "<<Provide location for new session hosts>>"
+        },
+        "vmLocalUserName": {
+            "value": "<<VM local admin username>>"
+        }, 
+        "keyVaultResourceId": {
+            "value": "<<Key vault resource ID>>"
+        }, 
+        "vmLocalAdminPasswordSecretName": {
+            "value": "<<VM local admin password key vault secret name>>"
         }
     }
 }
