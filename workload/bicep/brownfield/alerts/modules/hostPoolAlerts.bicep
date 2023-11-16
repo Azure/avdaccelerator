@@ -6,7 +6,6 @@ param LogAlertsHostPool array
 param LogAnalyticsWorkspaceResourceId string
 param Location string
 param Tags object
-param Timestamp string = utcNow()
 
 // Help ensure entire deployment name is under 64 characters
 var HostPoolResourceName = length(HostPoolName) < 20 ? HostPoolName : skip(HostPoolName, length(HostPoolName)-20)
