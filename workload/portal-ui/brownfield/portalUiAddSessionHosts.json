@@ -1192,13 +1192,16 @@
                 "opsTeamTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOpsTeamTag, 'no')]",
                 "ownerTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOwnerTag, 'no')]",
                 "costCenterTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsCostCenterTag, 'no')]",
-                "diskEncryptionSetResourceId": "['']",
-                "computeRgResourceGroupName": "[steps('basics').resourceScope.resourceGroup.name]"
+
+
+                "diskEncryptionSetResourceId": "[if(steps('storage').fslogixConfiguration, steps('storage').storageFslogix.fslogixStorageAccountSelector.id, '')]",
+                "computeRgResourceGroupName": "[steps('basics').resourceScope.resourceGroup.name]",
+                "computeSubscriptionId": "[steps('basics').resourceScope.subscription.id]"
             },
             "kind": "resourceGroups",
             "location": "[steps('basics').resourceScope.location.name]",
-            "computeSubscriptionId": "[steps('basics').resourceScope.subscription.id]",
-            "computeRgResourceGroupName": "[steps('basics').resourceScope.resourceGroup.name]"
+            "subscriptionId": "[steps('basics').resourceScope.subscription.id]",
+            "resourceGroupName": "[steps('basics').resourceScope.resourceGroup.name]"
         }
     }
 }
