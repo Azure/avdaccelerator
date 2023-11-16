@@ -323,7 +323,7 @@
                         {
                             "name": "sessionHostsRegionSection",
                             "type": "Microsoft.Common.Section",
-                            "visible": "[steps('sessionHosts').deploySessionHosts]",
+                            "visible": true,
                             "label": "Region Settings",
                             "tooltip": "The section allows you to specify the region where the compute, storage, and key vault resources are deployed.",
                             "elements": [
@@ -351,12 +351,12 @@
                                     "visible": true,
                                     "label": "Availability zones",
                                     "defaultValue": true,
-                                    "toolTip": "Distribute compute resources across availability zones. If 'No' is selected then an availability set will be created to host the VMs."
+                                    "toolTip": "Distribute compute resources across availability zones."
                                 },
                                 {
                                     "name": "sessionHostsAvailabilitySetSettings",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "visible": "[not(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings)]",
+                                    "visible": "[not(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilityZoneSettings)]",
                                     "label": "Availability set",
                                     "defaultValue": true,
                                     "toolTip": "Use availability sets to distribute session hosts across fault and update domains."
@@ -364,8 +364,9 @@
                                 {
                                     "name": "sessionHostsAvailabilitySetResourceId",
                                     "type": "Microsoft.Solutions.ResourceSelector",
-                                    "label": "Virtual network",
-                                    "resourceType": "Microsoft.Network/virtualNetworks",
+                                    "label": "Select availability set",
+                                    "visible": "[and(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySetSettings, not(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilityZoneSettings))]",
+                                    "resourceType": "Microsoft.Network/applicationSecurityGroups",
                                     "constraints": {
                                         "required": true
                                     },
