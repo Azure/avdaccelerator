@@ -82,9 +82,6 @@ param useSharedImage bool
 @sys.description('Source custom image ID.')
 param avdImageTemplateDefinitionId string
 
-@sys.description('Storage Managed Identity Resource ID.')
-param storageManagedIdentityResourceId string
-
 @sys.description('Local administrator username.')
 param vmLocalUserName string
 
