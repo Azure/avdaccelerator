@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.21.1.54444",
-      "templateHash": "14948160623807161929"
+      "version": "0.23.1.45101",
+      "templateHash": "10884357996555298773"
     }
   },
   "parameters": {
@@ -147,14 +147,14 @@
       }
     ],
     "ActionGroupName": "[format('ag-avdmetrics-{0}-{1}', parameters('Environment'), parameters('Location'))]",
-    "AlertDescriptionHeader": "Automated AVD Alert Deployment Solution (v2.1.2)\n",
-    "AutomationAccountName": "[format('aa-avdmetrics-{0}-{1}', parameters('Environment'), parameters('Location'))]",
+    "AlertDescriptionHeader": "Automated AVD Alert Deployment Solution (v2.1.3)\n",
+    "AutomationAccountName": "[format('aa-avdmetrics-{0}-{1}-{2}', parameters('Environment'), parameters('Location'), parameters('AlertNamePrefix'))]",
     "CloudEnvironment": "[environment().name]",
     "ResourceGroupCreate": "[if(equals(parameters('ResourceGroupStatus'), 'New'), true(), false())]",
     "RunbookNameGetStorage": "AvdStorageLogData",
     "RunbookNameGetHostPool": "AvdHostPoolLogData",
-    "RunbookScriptGetStorage": "Get-StorAcctInfov2.ps1",
-    "RunbookScriptGetHostPool": "Get-HostPoolInfo.ps1",
+    "RunbookScriptGetStorage": "[format('Get-StorAcctInfov2.ps1{0}', parameters('_ArtifactsLocationSasToken'))]",
+    "RunbookScriptGetHostPool": "[format('Get-HostPoolInfo.ps1{0}', parameters('_ArtifactsLocationSasToken'))]",
     "StorAcctRGs": "[union(variables('StorAcctRGsAll'), createArray())]",
     "RoleAssignments": {
       "DesktopVirtualizationRead": {
@@ -173,16 +173,16 @@
     "LogAlertsHostPool": [
       {
         "name": "[format('{0}-HP-Cap-85Prcnt-xHostPoolNamex', parameters('AlertNamePrefix'))]",
-        "displayName": "[format('{0}-HostPool-Capacity 85% (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
+        "displayName": "[format('{0}-HostPool-Capacity 85 Percent (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
         "description": "[format('{0}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad', variables('AlertDescriptionHeader'))]",
         "severity": 2,
-        "evaluationFrequency": "PT1M",
-        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "windowSize": "PT30M",
         "overrideQueryTimeRange": "P2D",
         "criteria": {
           "allOf": [
             {
-              "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdHostPoolLogData\"\r\n          | sort by TimeGenerated\r\n          | where TimeGenerated > now() - 5m\r\n          | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\r\n          | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\r\n          | extend Type=tostring(split(ResultDescription, '|')[2])\r\n          | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])\r\n          | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\r\n          | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])\r\n          | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])\r\n          | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\r\n          | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])\r\n          | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])\r\n          | where HostPoolPercentLoad >= 85 and HostPoolPercentLoad < 95\r\n          | where HostPoolName == 'xHostPoolNamex'\r\n           ",
+              "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdHostPoolLogData\"\r\n          | sort by TimeGenerated\r\n          | where TimeGenerated > now() - 5m\r\n          | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\r\n          | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\r\n          | extend Type=tostring(split(ResultDescription, '|')[2])\r\n          | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])\r\n          | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\r\n          | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])\r\n          | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])\r\n          | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\r\n          | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])\r\n          | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])\r\n          | extend HPResourceId=tostring(split(ResultDescription, '|')[13])\r\n          | extend ResourceId=tostring(HPResourceId)\r\n          | where HostPoolPercentLoad >= 85 and HostPoolPercentLoad < 95\r\n          | where HostPoolName == 'xHostPoolNamex'\r\n           ",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -228,7 +228,7 @@
                   ]
                 }
               ],
-              "resourceIdColumng": "_ResourceId",
+              "resourceIdColumn": "ResourceId",
               "operator": "GreaterThanOrEqual",
               "threshold": 1,
               "failingPeriods": {
@@ -241,16 +241,16 @@
       },
       {
         "name": "[format('{0}-HP-Cap-50Prcnt-xHostPoolNamex', parameters('AlertNamePrefix'))]",
-        "displayName": "[format('{0}-HostPool-Capacity 50% (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
+        "displayName": "[format('{0}-HostPool-Capacity 50 Percent (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
         "description": "[format('{0}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad', variables('AlertDescriptionHeader'))]",
         "severity": 3,
-        "evaluationFrequency": "PT1M",
-        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "windowSize": "PT30M",
         "overrideQueryTimeRange": "P2D",
         "criteria": {
           "allOf": [
             {
-              "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdHostPoolLogData\"\r\n          | sort by TimeGenerated\r\n          | where TimeGenerated > now() - 5m\r\n          | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\r\n          | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\r\n          | extend Type=tostring(split(ResultDescription, '|')[2])\r\n          | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])\r\n          | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\r\n          | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])\r\n          | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])\r\n          | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\r\n          | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])\r\n          | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])\r\n          | where HostPoolPercentLoad >= 50 and HostPoolPercentLoad < 85\r\n          | where HostPoolName == 'xHostPoolNamex'         \r\n           ",
+              "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdHostPoolLogData\"\r\n          | sort by TimeGenerated\r\n          | where TimeGenerated > now() - 5m\r\n          | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\r\n          | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\r\n          | extend Type=tostring(split(ResultDescription, '|')[2])\r\n          | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])\r\n          | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\r\n          | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])\r\n          | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])\r\n          | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\r\n          | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])\r\n          | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])\r\n          | extend HPResourceId=tostring(split(ResultDescription, '|')[13])\r\n          | extend ResourceId=tostring(HPResourceId)\r\n          | where HostPoolPercentLoad >= 50 and HostPoolPercentLoad < 85\r\n          | where HostPoolName == 'xHostPoolNamex'         \r\n           ",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -296,7 +296,7 @@
                   ]
                 }
               ],
-              "resourceIdColumng": "_ResourceId",
+              "resourceIdColumn": "ResourceId",
               "operator": "GreaterThanOrEqual",
               "threshold": 1,
               "failingPeriods": {
@@ -309,16 +309,16 @@
       },
       {
         "name": "[format('{0}-HP-Cap-95Prcnt-xHostPoolNamex', parameters('AlertNamePrefix'))]",
-        "displayName": "[format('{0}-HostPool-Capacity 95% (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
+        "displayName": "[format('{0}-HostPool-Capacity 95 Percent (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
         "description": "[format('{0}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad', variables('AlertDescriptionHeader'))]",
         "severity": 1,
-        "evaluationFrequency": "PT1M",
-        "windowSize": "PT5M",
+        "evaluationFrequency": "PT5M",
+        "windowSize": "PT30M",
         "overrideQueryTimeRange": "P2D",
         "criteria": {
           "allOf": [
             {
-              "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdHostPoolLogData\"\r\n          | sort by TimeGenerated\r\n          | where TimeGenerated > now() - 5m\r\n          | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\r\n          | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\r\n          | extend Type=tostring(split(ResultDescription, '|')[2])\r\n          | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])\r\n          | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\r\n          | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])\r\n          | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])\r\n          | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\r\n          | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])\r\n          | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])\r\n          | where HostPoolPercentLoad >= 95 \r\n          | where HostPoolName == 'xHostPoolNamex'        \r\n           ",
+              "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdHostPoolLogData\"\r\n          | sort by TimeGenerated\r\n          | where TimeGenerated > now() - 5m\r\n          | extend HostPoolName=tostring(split(ResultDescription, '|')[0])\r\n          | extend ResourceGroup=tostring(split(ResultDescription, '|')[1])\r\n          | extend Type=tostring(split(ResultDescription, '|')[2])\r\n          | extend MaxSessionLimit=toint(split(ResultDescription, '|')[3])\r\n          | extend NumberSessionHosts=toint(split(ResultDescription, '|')[4])\r\n          | extend UserSessionsTotal=toint(split(ResultDescription, '|')[5])\r\n          | extend UserSessionsDisconnected=toint(split(ResultDescription, '|')[6])\r\n          | extend UserSessionsActive=toint(split(ResultDescription, '|')[7])\r\n          | extend UserSessionsAvailable=toint(split(ResultDescription, '|')[8])\r\n          | extend HostPoolPercentLoad=toint(split(ResultDescription, '|')[9])\r\n          | extend HPResourceId=tostring(split(ResultDescription, '|')[13])\r\n          | extend ResourceId=tostring(HPResourceId)\r\n          | where HostPoolPercentLoad >= 95 \r\n          | where HostPoolName == 'xHostPoolNamex'        \r\n           ",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -364,7 +364,7 @@
                   ]
                 }
               ],
-              "resourceIdColumng": "_ResourceId",
+              "resourceIdColumn": "ResourceId",
               "operator": "GreaterThanOrEqual",
               "threshold": 1,
               "failingPeriods": {
@@ -503,7 +503,7 @@
         "criteria": {
           "allOf": [
             {
-              "query": "          Perf\r\n          | where TimeGenerated > ago(15m)\r\n          | where ObjectName == \"LogicalDisk\" and CounterName == \"% Free Space\"\r\n          | where InstanceName !contains \"D:\"\r\n          | where InstanceName  !contains \"_Total\"| where CounterValue <= 10.00\r\n          | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n          | project ComputerName, CounterValue, subscription, ResourceGroup, TimeGenerated\r\n          | join kind = leftouter\r\n          (\r\n              WVDAgentHealthStatus\r\n              | where TimeGenerated > ago(15m)\r\n              | where _ResourceId contains \"xHostPoolNamex\"\r\n              | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n              | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n              | project VMresourceGroup, ComputerName, HostPool\r\n              ) on ComputerName\r\n          ",
+              "query": "          Perf\r\n          | where TimeGenerated > ago(15m)\r\n          | where ObjectName == \"LogicalDisk\" and CounterName == \"% Free Space\"\r\n          | where InstanceName !contains \"D:\"\r\n          | where InstanceName  !contains \"_Total\"| where CounterValue <= 10.00\r\n          | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n          | project ComputerName, CounterValue, subscription, ResourceGroup, TimeGenerated\r\n          | join kind = leftouter\r\n          (\r\n              WVDAgentHealthStatus\r\n              | where TimeGenerated > ago(15m)\r\n              | where _ResourceId contains \"xHostPoolNamex\"\r\n              | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n              | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n              | project VMresourceGroup, ComputerName, HostPool, _ResourceId\r\n              ) on ComputerName\r\n          ",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -528,6 +528,7 @@
                   ]
                 }
               ],
+              "resourceIdColumn": "_ResourceId",
               "operator": "GreaterThanOrEqual",
               "threshold": 1,
               "failingPeriods": {
@@ -549,7 +550,7 @@
         "criteria": {
           "allOf": [
             {
-              "query": "          Perf\r\n          | where TimeGenerated > ago(15m)\r\n          | where ObjectName == \"LogicalDisk\" and CounterName == \"% Free Space\"\r\n          | where InstanceName !contains \"D:\"\r\n          | where InstanceName  !contains \"_Total\"| where CounterValue <= 5.00\r\n          | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n          | project ComputerName, CounterValue, subscription, ResourceGroup, TimeGenerated\r\n          | join kind = leftouter\r\n          (\r\n              WVDAgentHealthStatus\r\n              | where TimeGenerated > ago(15m)\r\n              | where _ResourceId contains \"xHostPoolNamex\"\r\n              | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n              | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n              | project VMresourceGroup, ComputerName, HostPool\r\n              ) on ComputerName\r\n          ",
+              "query": "          Perf\r\n          | where TimeGenerated > ago(15m)\r\n          | where ObjectName == \"LogicalDisk\" and CounterName == \"% Free Space\"\r\n          | where InstanceName !contains \"D:\"\r\n          | where InstanceName  !contains \"_Total\"| where CounterValue <= 5.00\r\n          | parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\r\n          | project ComputerName, CounterValue, subscription, ResourceGroup, TimeGenerated\r\n          | join kind = leftouter\r\n          (\r\n              WVDAgentHealthStatus\r\n              | where TimeGenerated > ago(15m)\r\n              | where _ResourceId contains \"xHostPoolNamex\"\r\n              | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\r\n              | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\r\n              | project VMresourceGroup, ComputerName, HostPool, _ResourceId\r\n              ) on ComputerName\r\n          ",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -574,6 +575,7 @@
                   ]
                 }
               ],
+              "resourceIdColumn": "_ResourceId",
               "operator": "GreaterThanOrEqual",
               "threshold": 1,
               "failingPeriods": {
@@ -586,7 +588,7 @@
       },
       {
         "name": "[format('{0}-HP-VM-FSLgxProf5PrcntFree-xHostPoolNamex', parameters('AlertNamePrefix'))]",
-        "displayName": "[format('{0}-HostPool-VM-FSLogix Profile Less Than 5% Free Space (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
+        "displayName": "[format('{0}-HostPool-VM-FSLogix Profile Less Than 5 Percent Free Space (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
         "description": "[format('{0}User Profiles Service logged Event ID 33. Expand User''s Virtual Profile Disk and/or clean up user profile data on the VM in xHostPoolNamex.', variables('AlertDescriptionHeader'))]",
         "severity": 2,
         "evaluationFrequency": "PT5M",
@@ -639,7 +641,7 @@
       },
       {
         "name": "[format('{0}-HP-VM-FSLgxProf2PrcntFree-xHostPoolNamex', parameters('AlertNamePrefix'))]",
-        "displayName": "[format('{0}-HostPool-VM-FSLogix Profile Less Than 2% Free Space (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
+        "displayName": "[format('{0}-HostPool-VM-FSLogix Profile Less Than 2 Percent Free Space (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
         "description": "[format('{0}User Profiles Service logged Event ID 34. Expand User''s Virtual Profile Disk and/or clean up user profile data on the VM in xHostPoolNamex.', variables('AlertDescriptionHeader'))]",
         "severity": 1,
         "evaluationFrequency": "PT5M",
@@ -696,12 +698,11 @@
         "description": "[format('{0}User Profiles Service logged Event ID 43. Verify network communications between the storage and AVD VM related to xHostPoolNamex.', variables('AlertDescriptionHeader'))]",
         "severity": 1,
         "evaluationFrequency": "PT5M",
-        "windowSize": "PT5M",
-        "overrideQueryTimeRange": "P2D",
+        "windowSize": "P1D",
         "criteria": {
           "allOf": [
             {
-              "query": "Event\n| where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\n| where EventLevelName == \"Error\"\n| where EventID == 43\n| where _ResourceId contains \"xHostPoolNamex\"\n| parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\n    | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool\n    )\n    on ComputerName\n\n",
+              "query": "Event\n| where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\n| where EventLevelName == \"Error\"\n| where EventID == 43\n| where _ResourceId contains \"xHostPoolNamex\"\n| parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\n    | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool, _ResourceId\n    )\n    on ComputerName\n\n",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -733,6 +734,7 @@
                   ]
                 }
               ],
+              "resourceIdColumn": "_ResourceId",
               "operator": "GreaterThanOrEqual",
               "threshold": 1,
               "failingPeriods": {
@@ -749,12 +751,11 @@
         "description": "[format('{0}User Profiles Service logged an Event ID 52 or 40. Investigate error details for reason regarding xHostPoolNamex.', variables('AlertDescriptionHeader'))]",
         "severity": 1,
         "evaluationFrequency": "PT5M",
-        "windowSize": "PT5M",
-        "overrideQueryTimeRange": "P2D",
+        "windowSize": "P1D",
         "criteria": {
           "allOf": [
             {
-              "query": "Event\n| where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\n| where EventLevelName == \"Error\"\n| where EventID == 52 or EventID == 40\n| where _ResourceId contains \"xHostPoolNamex\"\n| parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\n    | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool\n    )\n    on ComputerName\n\n",
+              "query": "Event\n| where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\n| where EventLevelName == \"Error\"\n| where EventID == 52 or EventID == 40\n| where _ResourceId contains \"xHostPoolNamex\"\n| parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\n    | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool, _ResourceId\n    )\n    on ComputerName\n\n",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -786,6 +787,7 @@
                   ]
                 }
               ],
+              "resourceIdColumn": "_ResourceId",
               "operator": "GreaterThanOrEqual",
               "threshold": 1,
               "failingPeriods": {
@@ -802,12 +804,11 @@
         "description": "[format('{0}User Profile Service Disabled. Determine why service was disabled and re-enable / start the FSLogix service. Regarding xHostPoolNamex', variables('AlertDescriptionHeader'))]",
         "severity": 1,
         "evaluationFrequency": "PT5M",
-        "windowSize": "PT5M",
-        "overrideQueryTimeRange": "P2D",
+        "windowSize": "P1D",
         "criteria": {
           "allOf": [
             {
-              "query": "Event\n| where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\n| where EventLevelName == \"Warning\"\n| where EventID == 60\n| where _ResourceId contains \"xHostPoolNamex\"\n| parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\n    | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool\n    )\n    on ComputerName\n\n",
+              "query": "Event\n| where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\n| where EventLevelName == \"Warning\"\n| where EventID == 60\n| where _ResourceId contains \"xHostPoolNamex\"\n| parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\n    | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool, _ResourceId\n    )\n    on ComputerName\n\n",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -839,6 +840,7 @@
                   ]
                 }
               ],
+              "resourceIdColumn": "_ResourceId",
               "operator": "GreaterThanOrEqual",
               "threshold": 1,
               "failingPeriods": {
@@ -855,12 +857,11 @@
         "description": "[format('{0}User Profile Service logged Event ID 62 or 63. The profile Disk was marked for compaction due to additional white space but failed. See error details for additional information regarding xHostPoolNamex.', variables('AlertDescriptionHeader'))]",
         "severity": 2,
         "evaluationFrequency": "PT5M",
-        "windowSize": "PT5M",
-        "overrideQueryTimeRange": "P2D",
+        "windowSize": "P1D",
         "criteria": {
           "allOf": [
             {
-              "query": "Event\n| where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\n| where EventLevelName == \"Error\"\n| where EventID == 62 or EventID == 63\n| where _ResourceId contains \"xHostPoolNamex\"\n| parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\n    | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool\n    )\n    on ComputerName\n\n",
+              "query": "Event\n| where EventLog == \"Microsoft-FSLogix-Apps/Admin\"\n| where EventLevelName == \"Error\"\n| where EventID == 62 or EventID == 63\n| where _ResourceId contains \"xHostPoolNamex\"\n| parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\n    | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool, _ResourceId\n)\n on ComputerName\n\n",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -892,6 +893,7 @@
                   ]
                 }
               ],
+              "resourceIdColumn": "_ResourceId",
               "operator": "GreaterThanOrEqual",
               "threshold": 1,
               "failingPeriods": {
@@ -908,12 +910,11 @@
         "description": "[format('{0}User Profile Service logged an Event ID 51. This indicates that a user attempted to load their profile disk but it was in use or possibly mapped to another VM. Ensure the user is not connected to another host pool or remote app with the same profile. Regarding xHostPoolNamex.', variables('AlertDescriptionHeader'))]",
         "severity": 2,
         "evaluationFrequency": "PT5M",
-        "windowSize": "PT5M",
-        "overrideQueryTimeRange": "P2D",
+        "windowSize": "P1D",
         "criteria": {
           "allOf": [
             {
-              "query": "Event\n| where EventLog == \"Microsoft-FSLogix-Apps/Operational\"\n| where EventLevelName == \"Warning\"\n| where EventID == 51\n| where _ResourceId contains \"xHostPoolNamex\"\n| parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\n    | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool\n    )\n    on ComputerName\n\n",
+              "query": "Event\n| where EventLog == \"Microsoft-FSLogix-Apps/Operational\"\n| where EventLevelName == \"Warning\"\n| where EventID == 51\n| where _ResourceId contains \"xHostPoolNamex\"\n| parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" ResourceGroup \"/providers/microsoft.compute/virtualmachines/\" ComputerName\n| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated\n| join kind = leftouter\n    (\n    WVDAgentHealthStatus\n   // | where TimeGenerated > ago(15m)\n    | parse _ResourceId with \"/subscriptions/\" subscriptionAgentHealth \"/resourcegroups/\" ResourceGroupAgentHealth \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\n    | parse SessionHostResourceId with \"/subscriptions/\" VMsubscription \"/resourceGroups/\" VMresourceGroup \"/providers/Microsoft.Compute/virtualMachines/\" ComputerName\n    | project VMresourceGroup, ComputerName, HostPool, _ResourceId\n    )\n    on ComputerName\n\n",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -945,6 +946,7 @@
                   ]
                 }
               ],
+              "resourceIdColumn": "_ResourceId",
               "operator": "GreaterThanOrEqual",
               "threshold": 1,
               "failingPeriods": {
@@ -1146,7 +1148,7 @@
     "LogAlertsStorage": [
       {
         "name": "[format('{0}-StorLowSpaceAzFile-15PrcntRem', parameters('AlertNamePrefix'))]",
-        "displayName": "[format('{0}-Storage-Low Space on Azure File Share-15% Remaining', parameters('AlertNamePrefix'))]",
+        "displayName": "[format('{0}-Storage-Low Space on Azure File Share-15 Percent Remaining', parameters('AlertNamePrefix'))]",
         "description": "[format('{0}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution.\nNOTE: The Runbook will FAIL if Networking for the storage account has anything other than \"Enabled from all networks\"\n-->Last Number in the string is the Percentage Remaining for the Share.\nOutput: ResultsDescription\nStorageType,Subscription,ResourceGroup,StorageAccount,ShareName,Quota,GBUsed,PercentRemaining', variables('AlertDescriptionHeader'))]",
         "severity": 2,
         "evaluationFrequency": "PT10M",
@@ -1155,18 +1157,25 @@
         "criteria": {
           "allOf": [
             {
-              "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdStorageLogData\"\r\n          | sort by TimeGenerated\r\n          //  StorageType / Subscription / RG / StorAcct / Share / Quota / GB Used / %Available\r\n          | extend StorageType=split(ResultDescription, ',')[0]\r\n          | extend Subscription=split(ResultDescription, ',')[1]\r\n          | extend ResourceGroup=split(ResultDescription, ',')[2]\r\n          | extend StorageAccount=split(ResultDescription, ',')[3]\r\n          | extend Share=split(ResultDescription, ',')[4]\r\n          | extend GBShareQuota=split(ResultDescription, ',')[5]\r\n          | extend GBUsed=split(ResultDescription, ',')[6]\r\n          | extend PercentAvailable=split(ResultDescription, ',')[7]\r\n          | where PercentAvailable <= 15.00 and PercentAvailable < 5.00          \r\n           ",
+              "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdStorageLogData\"\r\n          | where split(ResultDescription, ',')[1] <> \"\"\r\n          //  StorageType / Subscription / RG / StorAcct / Share / Quota / GB Used / %Available\r\n          | extend StorageType=split(ResultDescription, ',')[0]\r\n          | extend Subscription=split(ResultDescription, ',')[1]\r\n          | extend ResourceGroup=split(ResultDescription, ',')[2]\r\n          | extend StorageAccount=tostring(split(ResultDescription, ',')[3])\r\n          | extend Share=tostring(split(ResultDescription, ',')[4])\r\n          | extend GBShareQuota=split(ResultDescription, ',')[5]\r\n          | extend GBUsed=split(ResultDescription, ',')[6]\r\n          | extend PercentAvailable=round(toreal(split(ResultDescription, ',')[7]))\r\n          | extend ResourceId=tostring(split(ResultDescription, ',')[8])\r\n          | summarize arg_max(TimeGenerated, *) by Share\r\n          | where PercentAvailable <= 15.00        \r\n          | project TimeGenerated,ResourceId, StorageAccount, Share, PercentAvailable\r\n           ",
               "timeAggregation": "Count",
               "dimensions": [
                 {
-                  "name": "ResultDescription",
+                  "name": "StorageAccount",
+                  "operator": "Include",
+                  "values": [
+                    "*"
+                  ]
+                },
+                {
+                  "name": "Share",
                   "operator": "Include",
                   "values": [
                     "*"
                   ]
                 }
               ],
-              "resourceIdColumng": "_ResourceId",
+              "resourceIdColumn": "ResourceId",
               "operator": "GreaterThanOrEqual",
               "threshold": 1,
               "failingPeriods": {
@@ -1179,7 +1188,7 @@
       },
       {
         "name": "[format('{0}-StorLowSpaceAzFile-5PrcntRem', parameters('AlertNamePrefix'))]",
-        "displayName": "[format('{0}-Storage-Low Space on Azure File Share-5% Remaining', parameters('AlertNamePrefix'))]",
+        "displayName": "[format('{0}-Storage-Low Space on Azure File Share-5 Percent Remaining', parameters('AlertNamePrefix'))]",
         "description": "[format('{0}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution.\nNOTE: The Runbook will FAIL if Networking for the storage account has anything other than \"Enabled from all networks\"\n-->Last Number in the string is the Percentage Remaining for the Share.\nOutput: ResultsDescription\nStorageType,Subscription,ResourceGroup,StorageAccount,ShareName,Quota,GBUsed,PercentRemaining', variables('AlertDescriptionHeader'))]",
         "severity": 1,
         "evaluationFrequency": "PT10M",
@@ -1188,18 +1197,25 @@
         "criteria": {
           "allOf": [
             {
-              "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdStorageLogData\"\r\n          | sort by TimeGenerated\r\n          //  StorageType / Subscription / RG / StorAcct / Share / Quota / GB Used / %Available\r\n          | extend StorageType=split(ResultDescription, ',')[0]\r\n          | extend Subscription=split(ResultDescription, ',')[1]\r\n          | extend ResourceGroup=split(ResultDescription, ',')[2]\r\n          | extend StorageAccount=split(ResultDescription, ',')[3]\r\n          | extend Share=split(ResultDescription, ',')[4]\r\n          | extend GBShareQuota=split(ResultDescription, ',')[5]\r\n          | extend GBUsed=split(ResultDescription, ',')[6]\r\n          | extend PercentAvailable=split(ResultDescription, ',')[7]\r\n          | where PercentAvailable <= 5.00          \r\n           ",
+              "query": "          AzureDiagnostics \r\n          | where Category has \"JobStreams\" and StreamType_s == \"Output\" and RunbookName_s == \"AvdStorageLogData\"\r\n          | where split(ResultDescription, ',')[1] <> \"\"\r\n          //  StorageType / Subscription / RG / StorAcct / Share / Quota / GB Used / %Available\r\n          | extend StorageType=split(ResultDescription, ',')[0]\r\n          | extend Subscription=split(ResultDescription, ',')[1]\r\n          | extend ResourceGroup=split(ResultDescription, ',')[2]\r\n          | extend StorageAccount=tostring(split(ResultDescription, ',')[3])\r\n          | extend Share=tostring(split(ResultDescription, ',')[4])\r\n          | extend GBShareQuota=split(ResultDescription, ',')[5]\r\n          | extend GBUsed=split(ResultDescription, ',')[6]\r\n          | extend PercentAvailable=round(toreal(split(ResultDescription, ',')[7]))\r\n          | extend ResourceId=tostring(split(ResultDescription, ',')[8])\r\n          | summarize arg_max(TimeGenerated, *) by Share\r\n          | where PercentAvailable <= 5.00        \r\n          | project TimeGenerated,ResourceId, StorageAccount, Share, PercentAvailable\r\n           ",
               "timeAggregation": "Count",
               "dimensions": [
                 {
-                  "name": "ResultDescription",
+                  "name": "StorageAccount",
+                  "operator": "Include",
+                  "values": [
+                    "*"
+                  ]
+                },
+                {
+                  "name": "Share",
                   "operator": "Include",
                   "values": [
                     "*"
                   ]
                 }
               ],
-              "resourceIdColumng": "_ResourceId",
+              "resourceIdColumn": "ResourceId",
               "operator": "GreaterThanOrEqual",
               "threshold": 1,
               "failingPeriods": {
@@ -1374,7 +1390,7 @@
       "anf": [
         {
           "name": "[format('{0}-StorLowSpcANF-15-PrcntRem', parameters('AlertNamePrefix'))]",
-          "displayName": "[format('{0}-Storage-Low Space on ANF Share-15% Remaining', parameters('AlertNamePrefix'))]",
+          "displayName": "[format('{0}-Storage-Low Space on ANF Share-15 Percent Remaining', parameters('AlertNamePrefix'))]",
           "description": "[format('{0}Storage for the follow Azure NetApp volume is Moderately low. Verify sufficient storage is available and expand when/where needed.', variables('AlertDescriptionHeader'))]",
           "severity": 2,
           "evaluationFrequency": "PT1H",
@@ -1397,7 +1413,7 @@
         },
         {
           "name": "[format('{0}-StorLowSpcANF-5-PrcntRem', parameters('AlertNamePrefix'))]",
-          "displayName": "[format('{0}-Storage-Low Space on ANF Share-5% Remaining', parameters('AlertNamePrefix'))]",
+          "displayName": "[format('{0}-Storage-Low Space on ANF Share-5 Percent Remaining', parameters('AlertNamePrefix'))]",
           "description": "[format('{0}Storage for the follow Azure NetApp volume is Critically low. Verify sufficient storage is available and expand when/where needed.', variables('AlertDescriptionHeader'))]",
           "severity": 1,
           "evaluationFrequency": "PT1H",
@@ -1422,7 +1438,7 @@
       "virtualMachines": [
         {
           "name": "[format('{0}-HP-VM-HighCPU-85-Prcnt-xHostPoolNamex', parameters('AlertNamePrefix'))]",
-          "displayName": "[format('{0}-HostPool-VM-High CPU 85% (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
+          "displayName": "[format('{0}-HostPool-VM-High CPU 85 Percent (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
           "description": "[format('{0}Potential performance issues for users on the same host due to moderately limited CPU (Avarage over 5 mins.) Investigate session host CPU usage per user and/or CPU requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.', variables('AlertDescriptionHeader'))]",
           "severity": 2,
           "evaluationFrequency": "PT5M",
@@ -1445,7 +1461,7 @@
         },
         {
           "name": "[format('{0}-HP-VM-HighCPU-95-Prcnt-xHostPoolNamex', parameters('AlertNamePrefix'))]",
-          "displayName": "[format('{0}-HostPool-VM-High CPU 95% (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
+          "displayName": "[format('{0}-HostPool-VM-High CPU 95 Percent (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
           "description": "[format('{0}Potential performance issues for users on the same host due to critically limited CPU (Avarage over 5 mins.) Investigate session host CPU usage per user and/or CPU requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.', variables('AlertDescriptionHeader'))]",
           "severity": 1,
           "evaluationFrequency": "PT5M",
@@ -1514,7 +1530,7 @@
         },
         {
           "name": "[format('{0}-HP-VM-OSDiskBandwidthAvg85-xHostPoolNamex', parameters('AlertNamePrefix'))]",
-          "displayName": "[format('{0}-HostPool-VM-OS Disk Bandwidth Average Consumed 85% (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
+          "displayName": "[format('{0}-HostPool-VM-OS Disk Bandwidth Average Consumed 85 Percent (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
           "description": "[format('{0}The OS Disk is nearing it''s allowed IO maximum based on the Disk SKU within xHostPoolNamex. Consider review of what applications are possibly causing excessive disk activity and potentially move to a larger or premium disk SKU.', variables('AlertDescriptionHeader'))]",
           "severity": 2,
           "evaluationFrequency": "PT5M",
@@ -1546,7 +1562,7 @@
         },
         {
           "name": "[format('{0}-HP-VM-OSDiskBandwidthAvg95-xHostPoolNamex', parameters('AlertNamePrefix'))]",
-          "displayName": "[format('{0}-HostPool-VM-OS Disk Bandwidth Average Consumed 95% (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
+          "displayName": "[format('{0}-HostPool-VM-OS Disk Bandwidth Average Consumed 95 Percent (xHostPoolNamex)', parameters('AlertNamePrefix'))]",
           "description": "[format('{0}The OS Disk is near it''s allowed IO maximum based on the Disk SKU within xHostPoolNamex. Consider review of what applications are possibly causing excessive disk activity and potentially move to a larger or premium disk SKU.', variables('AlertDescriptionHeader'))]",
           "severity": 1,
           "evaluationFrequency": "PT5M",
@@ -1728,8 +1744,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "16305048561599990873"
+              "version": "0.23.1.45101",
+              "templateHash": "14479610109813008203"
             }
           },
           "parameters": {
@@ -1837,8 +1853,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "6750369994052504038"
+                      "version": "0.23.1.45101",
+                      "templateHash": "727668444186100245"
                     }
                   },
                   "parameters": {
@@ -1967,8 +1983,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "1146156557420886689"
+                      "version": "0.23.1.45101",
+                      "templateHash": "13976546302901379815"
                     }
                   },
                   "parameters": {
@@ -2339,8 +2355,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "8180543197866212981"
+              "version": "0.23.1.45101",
+              "templateHash": "13669706201001327225"
             }
           },
           "parameters": {
@@ -2478,6 +2494,15 @@
                 "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
               }
             },
+            "diagnosticLogsRetentionInDays": {
+              "type": "int",
+              "defaultValue": 365,
+              "minValue": 0,
+              "maxValue": 365,
+              "metadata": {
+                "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
+              }
+            },
             "diagnosticStorageAccountId": {
               "type": "string",
               "defaultValue": "",
@@ -2595,10 +2620,7 @@
                 "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                 "input": {
                   "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                  "enabled": true,
-                  "retentionPolicy": {
-                    "enabled": true
-                  }
+                  "enabled": true
                 }
               },
               {
@@ -2607,15 +2629,12 @@
                 "input": {
                   "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
                   "timeGrain": null,
-                  "enabled": true,
-                  "retentionPolicy": {
-                    "enabled": true
-                  }
+                  "enabled": true
                 }
               }
             ],
             "enableReferencedModulesTelemetry": false,
-            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true()))), variables('diagnosticsLogsSpecified'))]",
+            "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]",
             "identityType": "[if(parameters('systemAssignedIdentity'), if(not(empty(parameters('userAssignedIdentities'))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(parameters('userAssignedIdentities'))), 'UserAssigned', 'None'))]",
             "identity": "[if(not(equals(variables('identityType'), 'None')), createObject('type', variables('identityType'), 'userAssignedIdentities', if(not(empty(parameters('userAssignedIdentities'))), parameters('userAssignedIdentities'), null())), null())]"
           },
@@ -2724,8 +2743,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "17170735581525169641"
+                      "version": "0.23.1.45101",
+                      "templateHash": "9873337138567935156"
                     }
                   },
                   "parameters": {
@@ -2878,8 +2897,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "5479295006707878833"
+                      "version": "0.23.1.45101",
+                      "templateHash": "12742772183632552384"
                     }
                   },
                   "parameters": {
@@ -3071,8 +3090,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "17442703444396836746"
+                      "version": "0.23.1.45101",
+                      "templateHash": "11768955385651742227"
                     }
                   },
                   "parameters": {
@@ -3273,8 +3292,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "16872455273402734811"
+                      "version": "0.23.1.45101",
+                      "templateHash": "5809431067482816549"
                     }
                   },
                   "parameters": {
@@ -3422,8 +3441,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "15739346377207105668"
+                      "version": "0.23.1.45101",
+                      "templateHash": "15421173239527809626"
                     }
                   },
                   "parameters": {
@@ -3557,8 +3576,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "18035599797024630806"
+                      "version": "0.23.1.45101",
+                      "templateHash": "8116463202302820849"
                     }
                   },
                   "parameters": {
@@ -3696,8 +3715,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "15387093705469323985"
+                      "version": "0.23.1.45101",
+                      "templateHash": "10708379588686916495"
                     }
                   },
                   "parameters": {
@@ -3879,8 +3898,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "5587147182178326997"
+                      "version": "0.23.1.45101",
+                      "templateHash": "3765098102914952048"
                     }
                   },
                   "parameters": {
@@ -4350,8 +4369,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "14559775667395480629"
+                      "version": "0.23.1.45101",
+                      "templateHash": "5300610667995634254"
                     }
                   },
                   "parameters": {
@@ -4547,8 +4566,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "10817246518679375966"
+                              "version": "0.23.1.45101",
+                              "templateHash": "4621144128017741284"
                             }
                           },
                           "parameters": {
@@ -4682,8 +4701,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "13032708393704093995"
+                              "version": "0.23.1.45101",
+                              "templateHash": "7828421530828782575"
                             }
                           },
                           "parameters": {
@@ -4896,8 +4915,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "10676519467876912979"
+                      "version": "0.23.1.45101",
+                      "templateHash": "18129760119459600298"
                     }
                   },
                   "parameters": {
@@ -5096,8 +5115,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "17317977123822737513"
+              "version": "0.23.1.45101",
+              "templateHash": "9545798095452579480"
             }
           },
           "parameters": {
@@ -5683,8 +5702,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "17317977123822737513"
+              "version": "0.23.1.45101",
+              "templateHash": "9545798095452579480"
             }
           },
           "parameters": {
@@ -6270,8 +6289,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "17317977123822737513"
+              "version": "0.23.1.45101",
+              "templateHash": "9545798095452579480"
             }
           },
           "parameters": {
@@ -6860,8 +6879,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "17317977123822737513"
+              "version": "0.23.1.45101",
+              "templateHash": "9545798095452579480"
             }
           },
           "parameters": {
@@ -7482,8 +7501,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "12218616716355426556"
+              "version": "0.23.1.45101",
+              "templateHash": "8842080406354769669"
             }
           },
           "parameters": {
@@ -7586,8 +7605,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "6773203042735005838"
+                      "version": "0.23.1.45101",
+                      "templateHash": "14548331241003575945"
                     }
                   },
                   "parameters": {
@@ -7779,8 +7798,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "2628891413283540922"
+                              "version": "0.23.1.45101",
+                              "templateHash": "7497695042150647825"
                             }
                           },
                           "parameters": {
@@ -8104,8 +8123,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "14925154110269491239"
+                      "version": "0.23.1.45101",
+                      "templateHash": "18042637013033247"
                     }
                   },
                   "parameters": {
@@ -8159,7 +8178,7 @@
                             "value": false
                           },
                           "name": {
-                            "value": "[format('{0}-{1}', replace(parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].name, 'xHostPoolNamex', variables('HostPoolResourceName')), parameters('Environment'))]"
+                            "value": "[format('{0}-{1}', replace(parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].displayName, 'xHostPoolNamex', variables('HostPoolResourceName')), parameters('Environment'))]"
                           },
                           "criterias": {
                             "value": "[parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].criteria.allOf]"
@@ -8212,8 +8231,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "16837595634149136893"
+                              "version": "0.23.1.45101",
+                              "templateHash": "4325943649872987644"
                             }
                           },
                           "parameters": {
@@ -8450,8 +8469,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.21.1.54444",
-                                      "templateHash": "8947238026152055709"
+                                      "version": "0.23.1.45101",
+                                      "templateHash": "13865487144333348040"
                                     }
                                   },
                                   "parameters": {
@@ -8784,8 +8803,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "14925154110269491239"
+                      "version": "0.23.1.45101",
+                      "templateHash": "18042637013033247"
                     }
                   },
                   "parameters": {
@@ -8839,7 +8858,7 @@
                             "value": false
                           },
                           "name": {
-                            "value": "[format('{0}-{1}', replace(parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].name, 'xHostPoolNamex', variables('HostPoolResourceName')), parameters('Environment'))]"
+                            "value": "[format('{0}-{1}', replace(parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].displayName, 'xHostPoolNamex', variables('HostPoolResourceName')), parameters('Environment'))]"
                           },
                           "criterias": {
                             "value": "[parameters('MetricAlerts').virtualMachines[range(0, length(parameters('MetricAlerts').virtualMachines))[copyIndex()]].criteria.allOf]"
@@ -8892,8 +8911,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "16837595634149136893"
+                              "version": "0.23.1.45101",
+                              "templateHash": "4325943649872987644"
                             }
                           },
                           "parameters": {
@@ -9130,8 +9149,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.21.1.54444",
-                                      "templateHash": "8947238026152055709"
+                                      "version": "0.23.1.45101",
+                                      "templateHash": "13865487144333348040"
                                     }
                                   },
                                   "parameters": {
@@ -9461,8 +9480,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "9669141266215413947"
+                      "version": "0.23.1.45101",
+                      "templateHash": "13090012199157395091"
                     }
                   },
                   "parameters": {
@@ -9510,7 +9529,7 @@
                             "value": false
                           },
                           "name": {
-                            "value": "[format('{0}-{1}-{2}', parameters('MetricAlertsStorageAcct')[range(0, length(parameters('MetricAlertsStorageAcct')))[copyIndex()]].name, split(parameters('StorageAccountResourceID'), '/')[8], parameters('Environment'))]"
+                            "value": "[format('{0}-{1}-{2}', parameters('MetricAlertsStorageAcct')[range(0, length(parameters('MetricAlertsStorageAcct')))[copyIndex()]].displayName, split(parameters('StorageAccountResourceID'), '/')[8], parameters('Environment'))]"
                           },
                           "criterias": {
                             "value": "[parameters('MetricAlertsStorageAcct')[range(0, length(parameters('MetricAlertsStorageAcct')))[copyIndex()]].criteria.allOf]"
@@ -9562,8 +9581,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "16837595634149136893"
+                              "version": "0.23.1.45101",
+                              "templateHash": "4325943649872987644"
                             }
                           },
                           "parameters": {
@@ -9800,8 +9819,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.21.1.54444",
-                                      "templateHash": "8947238026152055709"
+                                      "version": "0.23.1.45101",
+                                      "templateHash": "13865487144333348040"
                                     }
                                   },
                                   "parameters": {
@@ -10131,8 +10150,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "11647378432031517023"
+                      "version": "0.23.1.45101",
+                      "templateHash": "12335470402732189346"
                     }
                   },
                   "parameters": {
@@ -10180,7 +10199,7 @@
                             "value": false
                           },
                           "name": {
-                            "value": "[format('{0}-{1}-{2}', parameters('MetricAlertsANF')[range(0, length(parameters('MetricAlertsANF')))[copyIndex()]].name, split(parameters('ANFVolumeResourceID'), '/')[12], parameters('Environment'))]"
+                            "value": "[format('{0}-{1}-{2}', parameters('MetricAlertsANF')[range(0, length(parameters('MetricAlertsANF')))[copyIndex()]].displayName, split(parameters('ANFVolumeResourceID'), '/')[12], parameters('Environment'))]"
                           },
                           "criterias": {
                             "value": "[parameters('MetricAlertsANF')[range(0, length(parameters('MetricAlertsANF')))[copyIndex()]].criteria.allOf]"
@@ -10232,8 +10251,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "16837595634149136893"
+                              "version": "0.23.1.45101",
+                              "templateHash": "4325943649872987644"
                             }
                           },
                           "parameters": {
@@ -10470,8 +10489,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.21.1.54444",
-                                      "templateHash": "8947238026152055709"
+                                      "version": "0.23.1.45101",
+                                      "templateHash": "13865487144333348040"
                                     }
                                   },
                                   "parameters": {
@@ -10801,8 +10820,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "8280193789428855405"
+                      "version": "0.23.1.45101",
+                      "templateHash": "12574331042221135071"
                     }
                   },
                   "parameters": {
@@ -10853,7 +10872,7 @@
                             "value": false
                           },
                           "name": {
-                            "value": "[format('{0}-{1}-{2}', parameters('MetricAlertsFileShares')[range(0, length(parameters('MetricAlertsFileShares')))[copyIndex()]].name, split(variables('FileServicesResourceID'), '/')[8], parameters('Environment'))]"
+                            "value": "[format('{0}-{1}-{2}', parameters('MetricAlertsFileShares')[range(0, length(parameters('MetricAlertsFileShares')))[copyIndex()]].displayName, split(variables('FileServicesResourceID'), '/')[8], parameters('Environment'))]"
                           },
                           "criterias": {
                             "value": "[parameters('MetricAlertsFileShares')[range(0, length(parameters('MetricAlertsFileShares')))[copyIndex()]].criteria.allOf]"
@@ -10905,8 +10924,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "16837595634149136893"
+                              "version": "0.23.1.45101",
+                              "templateHash": "4325943649872987644"
                             }
                           },
                           "parameters": {
@@ -11143,8 +11162,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.21.1.54444",
-                                      "templateHash": "8947238026152055709"
+                                      "version": "0.23.1.45101",
+                                      "templateHash": "13865487144333348040"
                                     }
                                   },
                                   "parameters": {
@@ -11467,6 +11486,9 @@
                       "[reference(resourceId('Microsoft.Resources/deployments', parameters('ActionGroupName')), '2022-09-01').outputs.resourceId.value]"
                     ]
                   },
+                  "alertDisplayName": {
+                    "value": "[parameters('LogAlertsStorage')[range(0, length(parameters('LogAlertsStorage')))[copyIndex()]].displayName]"
+                  },
                   "alertDescription": {
                     "value": "[parameters('LogAlertsStorage')[range(0, length(parameters('LogAlertsStorage')))[copyIndex()]].description]"
                   },
@@ -11490,8 +11512,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "3364210327753707174"
+                      "version": "0.23.1.45101",
+                      "templateHash": "87049037068146934"
                     }
                   },
                   "parameters": {
@@ -11506,6 +11528,13 @@
                       "defaultValue": "[resourceGroup().location]",
                       "metadata": {
                         "description": "Optional. Location for all resources."
+                      }
+                    },
+                    "alertDisplayName": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The display name of the scheduled query rule."
                       }
                     },
                     "alertDescription": {
@@ -11667,7 +11696,7 @@
                         "autoMitigate": "[if(equals(parameters('kind'), 'LogAlert'), parameters('autoMitigate'), null())]",
                         "criteria": "[parameters('criterias')]",
                         "description": "[parameters('alertDescription')]",
-                        "displayName": "[parameters('name')]",
+                        "displayName": "[if(not(empty(parameters('alertDisplayName'))), parameters('alertDisplayName'), parameters('name'))]",
                         "enabled": "[parameters('enabled')]",
                         "evaluationFrequency": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('evaluationFrequency')))), parameters('evaluationFrequency'), null())]",
                         "muteActionsDuration": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('suppressForMinutes')))), parameters('suppressForMinutes'), null())]",
@@ -11713,8 +11742,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "15352642791797157407"
+                              "version": "0.23.1.45101",
+                              "templateHash": "697362920563967240"
                             }
                           },
                           "parameters": {
@@ -12040,8 +12069,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "15199209662436001647"
+                      "version": "0.23.1.45101",
+                      "templateHash": "6763740487781585899"
                     }
                   },
                   "parameters": {
@@ -12068,10 +12097,6 @@
                     },
                     "Tags": {
                       "type": "object"
-                    },
-                    "Timestamp": {
-                      "type": "string",
-                      "defaultValue": "[utcNow()]"
                     }
                   },
                   "variables": {
@@ -12128,6 +12153,9 @@
                               "[parameters('ActionGroupId')]"
                             ]
                           },
+                          "alertDisplayName": {
+                            "value": "[format('{0}-{1}', replace(parameters('LogAlertsHostPool')[range(0, length(parameters('LogAlertsHostPool')))[copyIndex()]].displayName, 'xHostPoolNamex', variables('HostPoolResourceName')), parameters('Environment'))]"
+                          },
                           "alertDescription": {
                             "value": "[format('{0}-{1}', replace(parameters('LogAlertsHostPool')[range(0, length(parameters('LogAlertsHostPool')))[copyIndex()]].description, 'xHostPoolNamex', parameters('HostPoolName')), parameters('Environment'))]"
                           },
@@ -12151,8 +12179,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "3364210327753707174"
+                              "version": "0.23.1.45101",
+                              "templateHash": "87049037068146934"
                             }
                           },
                           "parameters": {
@@ -12167,6 +12195,13 @@
                               "defaultValue": "[resourceGroup().location]",
                               "metadata": {
                                 "description": "Optional. Location for all resources."
+                              }
+                            },
+                            "alertDisplayName": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. The display name of the scheduled query rule."
                               }
                             },
                             "alertDescription": {
@@ -12328,7 +12363,7 @@
                                 "autoMitigate": "[if(equals(parameters('kind'), 'LogAlert'), parameters('autoMitigate'), null())]",
                                 "criteria": "[parameters('criterias')]",
                                 "description": "[parameters('alertDescription')]",
-                                "displayName": "[parameters('name')]",
+                                "displayName": "[if(not(empty(parameters('alertDisplayName'))), parameters('alertDisplayName'), parameters('name'))]",
                                 "enabled": "[parameters('enabled')]",
                                 "evaluationFrequency": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('evaluationFrequency')))), parameters('evaluationFrequency'), null())]",
                                 "muteActionsDuration": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('suppressForMinutes')))), parameters('suppressForMinutes'), null())]",
@@ -12374,8 +12409,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.21.1.54444",
-                                      "templateHash": "15352642791797157407"
+                                      "version": "0.23.1.45101",
+                                      "templateHash": "697362920563967240"
                                     }
                                   },
                                   "parameters": {
@@ -12719,8 +12754,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "15199209662436001647"
+                      "version": "0.23.1.45101",
+                      "templateHash": "6763740487781585899"
                     }
                   },
                   "parameters": {
@@ -12747,10 +12782,6 @@
                     },
                     "Tags": {
                       "type": "object"
-                    },
-                    "Timestamp": {
-                      "type": "string",
-                      "defaultValue": "[utcNow()]"
                     }
                   },
                   "variables": {
@@ -12807,6 +12838,9 @@
                               "[parameters('ActionGroupId')]"
                             ]
                           },
+                          "alertDisplayName": {
+                            "value": "[format('{0}-{1}', replace(parameters('LogAlertsHostPool')[range(0, length(parameters('LogAlertsHostPool')))[copyIndex()]].displayName, 'xHostPoolNamex', variables('HostPoolResourceName')), parameters('Environment'))]"
+                          },
                           "alertDescription": {
                             "value": "[format('{0}-{1}', replace(parameters('LogAlertsHostPool')[range(0, length(parameters('LogAlertsHostPool')))[copyIndex()]].description, 'xHostPoolNamex', parameters('HostPoolName')), parameters('Environment'))]"
                           },
@@ -12830,8 +12864,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "3364210327753707174"
+                              "version": "0.23.1.45101",
+                              "templateHash": "87049037068146934"
                             }
                           },
                           "parameters": {
@@ -12846,6 +12880,13 @@
                               "defaultValue": "[resourceGroup().location]",
                               "metadata": {
                                 "description": "Optional. Location for all resources."
+                              }
+                            },
+                            "alertDisplayName": {
+                              "type": "string",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "Optional. The display name of the scheduled query rule."
                               }
                             },
                             "alertDescription": {
@@ -13007,7 +13048,7 @@
                                 "autoMitigate": "[if(equals(parameters('kind'), 'LogAlert'), parameters('autoMitigate'), null())]",
                                 "criteria": "[parameters('criterias')]",
                                 "description": "[parameters('alertDescription')]",
-                                "displayName": "[parameters('name')]",
+                                "displayName": "[if(not(empty(parameters('alertDisplayName'))), parameters('alertDisplayName'), parameters('name'))]",
                                 "enabled": "[parameters('enabled')]",
                                 "evaluationFrequency": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('evaluationFrequency')))), parameters('evaluationFrequency'), null())]",
                                 "muteActionsDuration": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('suppressForMinutes')))), parameters('suppressForMinutes'), null())]",
@@ -13053,8 +13094,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.21.1.54444",
-                                      "templateHash": "15352642791797157407"
+                                      "version": "0.23.1.45101",
+                                      "templateHash": "697362920563967240"
                                     }
                                   },
                                   "parameters": {
@@ -13370,7 +13411,7 @@
                     "value": false
                   },
                   "name": {
-                    "value": "[format('{0}-{1}', parameters('LogAlertsSvcHealth')[range(0, length(parameters('LogAlertsSvcHealth')))[copyIndex()]].name, variables('SubscriptionName'))]"
+                    "value": "[format('{0}-{1}', parameters('LogAlertsSvcHealth')[range(0, length(parameters('LogAlertsSvcHealth')))[copyIndex()]].displayName, variables('SubscriptionName'))]"
                   },
                   "enabled": {
                     "value": false
@@ -13422,8 +13463,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "7340696594332550437"
+                      "version": "0.23.1.45101",
+                      "templateHash": "13713639001813517941"
                     }
                   },
                   "parameters": {
@@ -13577,8 +13618,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "441111163887526316"
+                              "version": "0.23.1.45101",
+                              "templateHash": "8205837903548946509"
                             }
                           },
                           "parameters": {
