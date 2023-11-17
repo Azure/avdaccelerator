@@ -13,7 +13,7 @@ module metricAlerts_FileServices '../../../../../carml/1.3.0/Microsoft.Insights/
   name: 'c_${MetricAlertsFileShares[i].name}-${split(FileServicesResourceID, '/')[8]}-${Environment}'
   params: {
     enableDefaultTelemetry: false
-    name: '${MetricAlertsFileShares[i].name}-${split(FileServicesResourceID, '/')[8]}-${Environment}'
+    name: '${MetricAlertsFileShares[i].displayName}-${split(FileServicesResourceID, '/')[8]}-${Environment}'
     criterias: MetricAlertsFileShares[i].criteria.allOf
     location: 'global'
     alertDescription: MetricAlertsFileShares[i].description

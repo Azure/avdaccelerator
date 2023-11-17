@@ -6,7 +6,7 @@
 
 This solution provides a baseline of alerts for AVD that are disabled by default and for ensuring administrators and staff get meaningful and timely alerts when there are problems related to an AVD deployment. The deployment has been tested in Azure Global and Azure US Government and will incorporate storage alerts for either or both Azure Files and/or Azure Netapp Files.
 
-[**Current Version:**](./updateHistory.md) v2.1.2
+[**Current Version:**](./updateHistory.md) v2.1.3
 
 ## Prerequisites  
 
