@@ -70,7 +70,7 @@ param ANFVolumeResourceIds array = []
 param Tags object = {}
 
 var ActionGroupName = 'ag-avdmetrics-${Environment}-${Location}'
-var AlertDescriptionHeader = 'Automated AVD Alert Deployment Solution (v2.1.2)\n'
+var AlertDescriptionHeader = 'Automated AVD Alert Deployment Solution (v2.1.3)\n'
 var AutomationAccountName = 'aa-avdmetrics-${Environment}-${Location}-${AlertNamePrefix}'
 var CloudEnvironment = environment().name
 var ResourceGroupCreate = ResourceGroupStatus == 'New' ? true : false
@@ -103,7 +103,7 @@ var RoleAssignments = {
 var LogAlertsHostPool = [
   {// Based on Runbook script Output to LAW
     name: '${AlertNamePrefix}-HP-Cap-85Prcnt-xHostPoolNamex'
-    displayName: '${AlertNamePrefix}-HostPool-Capacity 85% (xHostPoolNamex)'
+    displayName: '${AlertNamePrefix}-HostPool-Capacity 85 Percent (xHostPoolNamex)'
     description: '${AlertDescriptionHeader}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad'
     severity: 2
     evaluationFrequency: 'PT5M'
@@ -190,7 +190,7 @@ var LogAlertsHostPool = [
   }
   {// Based on Runbook script Output to LAW
     name: '${AlertNamePrefix}-HP-Cap-50Prcnt-xHostPoolNamex'
-    displayName: '${AlertNamePrefix}-HostPool-Capacity 50% (xHostPoolNamex)'
+    displayName: '${AlertNamePrefix}-HostPool-Capacity 50 Percent (xHostPoolNamex)'
     description: '${AlertDescriptionHeader}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad'
     severity: 3
     evaluationFrequency: 'PT5M'
@@ -277,7 +277,7 @@ var LogAlertsHostPool = [
   }
   {// Based on Runbook script Output to LAW
     name: '${AlertNamePrefix}-HP-Cap-95Prcnt-xHostPoolNamex'
-    displayName: '${AlertNamePrefix}-HostPool-Capacity 95% (xHostPoolNamex)'
+    displayName: '${AlertNamePrefix}-HostPool-Capacity 95 Percent (xHostPoolNamex)'
     description: '${AlertDescriptionHeader}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution for xHostPoolNamex.\n-->Last Number in the string is the Percentage Remaining for the Host Pool\nOutput is:\nHostPoolName|ResourceGroup|Type|MaxSessionLimit|NumberHosts|TotalUsers|DisconnectedUser|ActiveUsers|SessionsAvailable|HostPoolPercentageLoad'
     severity: 1
     evaluationFrequency: 'PT5M'
@@ -609,7 +609,7 @@ var LogAlertsHostPool = [
   }
   {
     name: '${AlertNamePrefix}-HP-VM-FSLgxProf5PrcntFree-xHostPoolNamex'
-    displayName: '${AlertNamePrefix}-HostPool-VM-FSLogix Profile Less Than 5% Free Space (xHostPoolNamex)'
+    displayName: '${AlertNamePrefix}-HostPool-VM-FSLogix Profile Less Than 5 Percent Free Space (xHostPoolNamex)'
     description: '${AlertDescriptionHeader}User Profiles Service logged Event ID 33. Expand User\'s Virtual Profile Disk and/or clean up user profile data on the VM in xHostPoolNamex.'
     severity: 2
     evaluationFrequency: 'PT5M'
@@ -662,7 +662,7 @@ var LogAlertsHostPool = [
   }
   {
     name: '${AlertNamePrefix}-HP-VM-FSLgxProf2PrcntFree-xHostPoolNamex'
-    displayName: '${AlertNamePrefix}-HostPool-VM-FSLogix Profile Less Than 2% Free Space (xHostPoolNamex)'
+    displayName: '${AlertNamePrefix}-HostPool-VM-FSLogix Profile Less Than 2 Percent Free Space (xHostPoolNamex)'
     description: '${AlertDescriptionHeader}User Profiles Service logged Event ID 34. Expand User\'s Virtual Profile Disk and/or clean up user profile data on the VM in xHostPoolNamex.'
     severity: 1
     evaluationFrequency: 'PT5M'
@@ -719,7 +719,7 @@ var LogAlertsHostPool = [
     description: '${AlertDescriptionHeader}User Profiles Service logged Event ID 43. Verify network communications between the storage and AVD VM related to xHostPoolNamex.'
     severity: 1
     evaluationFrequency: 'PT5M'
-    windowSize: 'PT1D'
+    windowSize: 'P1D'
     criteria: {
       allOf: [
         {
@@ -826,7 +826,7 @@ var LogAlertsHostPool = [
     description: '${AlertDescriptionHeader}User Profile Service Disabled. Determine why service was disabled and re-enable / start the FSLogix service. Regarding xHostPoolNamex'
     severity: 1
     evaluationFrequency: 'PT5M'
-    windowSize: 'PT1D'
+    windowSize: 'P1D'
     criteria: {
       allOf: [
         {
@@ -1222,7 +1222,7 @@ var LogAlertsHostPool = [
 var LogAlertsStorage = [
   {// Based on Runbook script Output to LAW
     name: '${AlertNamePrefix}-StorLowSpaceAzFile-15PrcntRem'
-    displayName: '${AlertNamePrefix}-Storage-Low Space on Azure File Share-15% Remaining'
+    displayName: '${AlertNamePrefix}-Storage-Low Space on Azure File Share-15 Percent Remaining'
     description: '${AlertDescriptionHeader}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution.\nNOTE: The Runbook will FAIL if Networking for the storage account has anything other than "Enabled from all networks"\n-->Last Number in the string is the Percentage Remaining for the Share.\nOutput: ResultsDescription\nStorageType,Subscription,ResourceGroup,StorageAccount,ShareName,Quota,GBUsed,PercentRemaining'
     severity: 2
     evaluationFrequency: 'PT10M'
@@ -1240,7 +1240,7 @@ var LogAlertsStorage = [
           | extend Subscription=split(ResultDescription, ',')[1]
           | extend ResourceGroup=split(ResultDescription, ',')[2]
           | extend StorageAccount=tostring(split(ResultDescription, ',')[3])
-          | extend Share=split(ResultDescription, ',')[4]
+          | extend Share=tostring(split(ResultDescription, ',')[4])
           | extend GBShareQuota=split(ResultDescription, ',')[5]
           | extend GBUsed=split(ResultDescription, ',')[6]
           | extend PercentAvailable=round(toreal(split(ResultDescription, ',')[7]))
@@ -1279,7 +1279,7 @@ var LogAlertsStorage = [
   }
   {// Based on Runbook script Output to LAW
     name: '${AlertNamePrefix}-StorLowSpaceAzFile-5PrcntRem'
-    displayName: '${AlertNamePrefix}-Storage-Low Space on Azure File Share-5% Remaining'
+    displayName: '${AlertNamePrefix}-Storage-Low Space on Azure File Share-5 Percent Remaining'
     description: '${AlertDescriptionHeader}This alert is based on the Action Account and Runbook that populates the Log Analytics specificed with the AVD Metrics Deployment Solution.\nNOTE: The Runbook will FAIL if Networking for the storage account has anything other than "Enabled from all networks"\n-->Last Number in the string is the Percentage Remaining for the Share.\nOutput: ResultsDescription\nStorageType,Subscription,ResourceGroup,StorageAccount,ShareName,Quota,GBUsed,PercentRemaining'
     severity: 1
     evaluationFrequency: 'PT10M'
@@ -1297,7 +1297,7 @@ var LogAlertsStorage = [
           | extend Subscription=split(ResultDescription, ',')[1]
           | extend ResourceGroup=split(ResultDescription, ',')[2]
           | extend StorageAccount=tostring(split(ResultDescription, ',')[3])
-          | extend Share=split(ResultDescription, ',')[4]
+          | extend Share=tostring(split(ResultDescription, ',')[4])
           | extend GBShareQuota=split(ResultDescription, ',')[5]
           | extend GBUsed=split(ResultDescription, ',')[6]
           | extend PercentAvailable=round(toreal(split(ResultDescription, ',')[7]))
@@ -1498,7 +1498,7 @@ var MetricAlerts = {
   anf: [
     {
       name: '${AlertNamePrefix}-StorLowSpcANF-15-PrcntRem'
-      displayName: '${AlertNamePrefix}-Storage-Low Space on ANF Share-15% Remaining'
+      displayName: '${AlertNamePrefix}-Storage-Low Space on ANF Share-15 Percent Remaining'
       description: '${AlertDescriptionHeader}Storage for the follow Azure NetApp volume is Moderately low. Verify sufficient storage is available and expand when/where needed.'
       severity: 2
       evaluationFrequency: 'PT1H'
@@ -1521,7 +1521,7 @@ var MetricAlerts = {
     }
     {
       name: '${AlertNamePrefix}-StorLowSpcANF-5-PrcntRem'
-      displayName: '${AlertNamePrefix}-Storage-Low Space on ANF Share-5% Remaining'
+      displayName: '${AlertNamePrefix}-Storage-Low Space on ANF Share-5 Percent Remaining'
       description: '${AlertDescriptionHeader}Storage for the follow Azure NetApp volume is Critically low. Verify sufficient storage is available and expand when/where needed.'
       severity: 1
       evaluationFrequency: 'PT1H'
@@ -1546,7 +1546,7 @@ var MetricAlerts = {
   virtualMachines: [
     {
       name: '${AlertNamePrefix}-HP-VM-HighCPU-85-Prcnt-xHostPoolNamex'
-      displayName: '${AlertNamePrefix}-HostPool-VM-High CPU 85% (xHostPoolNamex)'
+      displayName: '${AlertNamePrefix}-HostPool-VM-High CPU 85 Percent (xHostPoolNamex)'
       description: '${AlertDescriptionHeader}Potential performance issues for users on the same host due to moderately limited CPU (Avarage over 5 mins.) Investigate session host CPU usage per user and/or CPU requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.'
       severity: 2
       evaluationFrequency: 'PT5M'
@@ -1569,7 +1569,7 @@ var MetricAlerts = {
     }
     {
       name: '${AlertNamePrefix}-HP-VM-HighCPU-95-Prcnt-xHostPoolNamex'
-      displayName: '${AlertNamePrefix}-HostPool-VM-High CPU 95% (xHostPoolNamex)'
+      displayName: '${AlertNamePrefix}-HostPool-VM-High CPU 95 Percent (xHostPoolNamex)'
       description: '${AlertDescriptionHeader}Potential performance issues for users on the same host due to critically limited CPU (Avarage over 5 mins.) Investigate session host CPU usage per user and/or CPU requirements and adjust if/as needed for xHostPoolNamex.  Check user active vs. disconnected status.'
       severity: 1
       evaluationFrequency: 'PT5M'
@@ -1638,7 +1638,7 @@ var MetricAlerts = {
     }
     {
       name: '${AlertNamePrefix}-HP-VM-OSDiskBandwidthAvg85-xHostPoolNamex'
-      displayName: '${AlertNamePrefix}-HostPool-VM-OS Disk Bandwidth Average Consumed 85% (xHostPoolNamex)'
+      displayName: '${AlertNamePrefix}-HostPool-VM-OS Disk Bandwidth Average Consumed 85 Percent (xHostPoolNamex)'
       description: '${AlertDescriptionHeader}The OS Disk is nearing it\'s allowed IO maximum based on the Disk SKU within xHostPoolNamex. Consider review of what applications are possibly causing excessive disk activity and potentially move to a larger or premium disk SKU.'
       severity: 2
       evaluationFrequency: 'PT5M'
@@ -1670,7 +1670,7 @@ var MetricAlerts = {
     }
     {
       name: '${AlertNamePrefix}-HP-VM-OSDiskBandwidthAvg95-xHostPoolNamex'
-      displayName: '${AlertNamePrefix}-HostPool-VM-OS Disk Bandwidth Average Consumed 95% (xHostPoolNamex)'
+      displayName: '${AlertNamePrefix}-HostPool-VM-OS Disk Bandwidth Average Consumed 95 Percent (xHostPoolNamex)'
       description: '${AlertDescriptionHeader}The OS Disk is near it\'s allowed IO maximum based on the Disk SKU within xHostPoolNamex. Consider review of what applications are possibly causing excessive disk activity and potentially move to a larger or premium disk SKU.'
       severity: 1
       evaluationFrequency: 'PT5M'
