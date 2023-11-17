@@ -447,8 +447,8 @@
         },
         "outputs": {
             "parameters": {
-                "_ArtifactsLocation": "[steps('AlertsConfig').customScriptInfo._ArtifactsLocation]",
-                "_ArtifactsLocationSasToken": "[steps('AlertsConfig').customScriptInfo._ArtifactsLocationSasToken]",
+                "_ArtifactsLocation": "[steps('AlertsConfig').CustomScriptInfo._ArtifactsLocation]",
+                "_ArtifactsLocationSasToken": "[steps('AlertsConfig').CustomScriptInfo._ArtifactsLocationSasToken]",
                 "AlertNamePrefix": "[steps('AlertsConfig').AlertNamePrefix]",
                 "AllResourcesSameRG": "[if(steps('AlertsConfig').optionVMMetrics, false, true)]",
                 "AutoResolveAlert": "[steps('AlertsConfig').AutoResolveAlert]",

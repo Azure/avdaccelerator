@@ -30,7 +30,7 @@ module logAlertHostPoolQueries '../../../../../carml/1.3.0/Microsoft.Insights/sc
     scopes: [LogAnalyticsWorkspaceResourceId]
     location: Location
     actions: [ActionGroupId]
-    alertDisplayName: LogAlertsHostPool[i].displayName
+    alertDisplayName: '${replace(LogAlertsHostPool[i].displayName, 'xHostPoolNamex', HostPoolResourceName)}-${Environment}'
     alertDescription: '${replace(LogAlertsHostPool[i].description, 'xHostPoolNamex', HostPoolName)}-${Environment}'
     enabled: false
     evaluationFrequency: LogAlertsHostPool[i].evaluationFrequency
