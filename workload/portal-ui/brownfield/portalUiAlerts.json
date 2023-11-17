@@ -58,35 +58,62 @@
                     "label": "Alerts Configuration",
                     "elements": [
                         {
-                            "name": "_ArtifactsLocation",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "_Artifacts Location",
-                            "subLabel": "",
-                            "toolTip": "Location of needed scripts to deploy solution.",
+                            "name": "optionCustomScriptLocation",
+                            "type": "Microsoft.Common.CheckBox",
+                            "label": "Using Custom Script Location",
+                            "toolTip": "Selecting this will provide additional feilds for inputting a Blob Storage URL and Sas Token. Currently the deployment uses the Internet facing GitHub site. This is common when deploying in Air Gapped Clouds.",
                             "constraints": {
                                 "required": false,
-                                "regex": "",
-                                "validationMessage": ""
-                            },
-                            "visible": false
+                                "validationMessage": "Selecting this will provide additional feilds for inputting a Blob Storage URL and Sas Token. Currently the deployment uses the Internet facing GitHub site."
+                            }
                         },
                         {
-                            "name": "_ArtifactsLocationSasToken",
-                            "type": "Microsoft.Common.PasswordBox",
-                            "label": {
-                                "password": "_Artifacts Location Sas Token",
-                                "confirmPassword": "Confirm password"
-                            },
-                            "toolTip": "SaS token if needed for script location.",
-                            "constraints": {
-                                "required": false,
-                                "regex": "",
-                                "validationMessage": ""
-                            },
-                            "options": {
-                                "hideConfirmation": true
-                            },
-                            "visible": false
+                            "name": "CustomScriptInfo",
+                            "type": "Microsoft.Common.Section",
+                            "label": "Custom Script Information",
+                            "elements": [
+                                {
+                                    "name": "_ArtifactsLocation",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Automation Account Scripts Location",
+                                    "subLabel": "",
+                                    "toolTip": "Blob Storage Location/ URL container with Get-HostPoolInfo.ps1 and Get-StorAcctInfov2.ps1 needed for deployment and automation account setup.",
+                                    "constraints": {
+                                        "required": false,
+                                        "regex": "",
+                                        "validationMessage": ""
+                                    },
+                                    "visible": true
+                                },
+                                {
+                                    "name": "_ArtifactsLocationSasToken",
+                                    "type": "Microsoft.Common.PasswordBox",
+                                    "label": {
+                                        "password": "Artifacts Location Sas Token",
+                                        "confirmPassword": "Confirm Sas Token"
+                                    },
+                                    "toolTip": "SaS token if needed for script location. Be sure to include the ?sp= prefix.",
+                                    "constraints": {
+                                        "required": false,
+                                        "regex": "",
+                                        "validationMessage": ""
+                                    },
+                                    "options": {
+                                        "hideConfirmation": true
+                                    },
+                                    "visible": true
+                                },
+                                {
+                                    "name": "infoMessageCustomScriptsLoc",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": true,
+                                    "options": {
+                                        "text": "Be sure that the scripts Get-HostPoolInfo.ps1 and Get-StorAcctInfov2.ps1 are copied to the Selected Storage Location. IF using a Sas Token be sure to include the ?sp= prefix!",
+                                        "style": "Info"
+                                    }
+                                }
+                            ],
+                            "visible": "[equals(steps('AlertsConfig').optionCustomScriptLocation, true)]"
                         },
                         {
                             "name": "ResourceGroupStatus",
@@ -237,8 +264,8 @@
                             "name": "AVDResourceGroupId",
                             "type": "Microsoft.Common.DropDown",
                             "label": "AVD Resource Group",
-							"multiselect": false,
-							"defaultValue": "[]",
+                            "multiselect": false,
+                            "defaultValue": "[]",
                             "selectAll": false,
                             "toolTip": "The Resource Group where all AVD resources are deployed to include VMs.",
                             "filter": true,
@@ -246,7 +273,7 @@
                             "defaultDescription": "A value for selection",
                             "constraints": {
                                 "allowedValues": "[map(steps('basics').ResGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
-                                "required":  "[if(steps('AlertsConfig').optionVMMetrics, false, true)]"
+                                "required": "[if(steps('AlertsConfig').optionVMMetrics, false, true)]"
                             },
                             "visible": "[if(steps('AlertsConfig').optionVMMetrics, false, true)]"
                         },
@@ -263,7 +290,7 @@
                             "defaultDescription": "A value for selection",
                             "constraints": {
                                 "allowedValues": "[map(steps('basics').HostPoolsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
-                                "required":  "[if(steps('AlertsConfig').optionVMMetrics, false, true)]"
+                                "required": "[if(steps('AlertsConfig').optionVMMetrics, false, true)]"
                             },
                             "visible": "[if(steps('AlertsConfig').optionVMMetrics, false, true)]"
                         },
@@ -274,43 +301,43 @@
                             "ariaLabel": "Host Pool to VM Resource Mapping",
                             "label": "HostPool",
                             "constraints": {
-                              "width": "Full",
-                              "rows": {
-                                "count": {
-                                  "min": 1,
-                                  "max": 20
-                                }
-                              },
-                              "columns": [
-                                {
-                                  "id": "colHostPoolName",
-                                  "header": "Host Pool",
-                                  "width": "1fr",
-                                  "element": {
-                                    "type": "Microsoft.Common.DropDown",
-									"placeholder": "",
-                                    "constraints": {
-                                        "allowedValues": "[map(steps('basics').HostPoolsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
-                                        "required": true
+                                "width": "Full",
+                                "rows": {
+                                    "count": {
+                                        "min": 1,
+                                        "max": 20
                                     }
-                                  }
                                 },
-                                {
-                                  "id": "colVMresGroup",
-                                  "header": "VM Resource Group",
-                                  "width": "1fr",
-                                  "element": {
-                                    "type": "Microsoft.Common.DropDown",
-                                    "placeholder": "",
-                                    "constraints": {
-                                        "allowedValues": "[map(steps('basics').ResGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
-                                        "required": true
+                                "columns": [
+                                    {
+                                        "id": "colHostPoolName",
+                                        "header": "Host Pool",
+                                        "width": "1fr",
+                                        "element": {
+                                            "type": "Microsoft.Common.DropDown",
+                                            "placeholder": "",
+                                            "constraints": {
+                                                "allowedValues": "[map(steps('basics').HostPoolsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                                "required": true
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "id": "colVMresGroup",
+                                        "header": "VM Resource Group",
+                                        "width": "1fr",
+                                        "element": {
+                                            "type": "Microsoft.Common.DropDown",
+                                            "placeholder": "",
+                                            "constraints": {
+                                                "allowedValues": "[map(steps('basics').ResGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\"}')))]",
+                                                "required": true
+                                            }
+                                        }
                                     }
-                                  }
-                                }
-                              ]
+                                ]
                             }
-                          },
+                        },
                         {
                             "name": "optionAzFiles",
                             "type": "Microsoft.Common.CheckBox",
@@ -382,7 +409,7 @@
                                     "type": "Microsoft.Common.DropDown",
                                     "label": "ANF Volumes used for AVD",
                                     "multiselect": true,
-									"defaultValue": "[]",
+                                    "defaultValue": "[]",
                                     "selectAll": true,
                                     "toolTip": "The NetApp Volumes that are used for FSLogix or MSIX App attach.",
                                     "filterPlaceholder": "Filter ANF Volumes...",
@@ -420,8 +447,8 @@
         },
         "outputs": {
             "parameters": {
-                "_ArtifactsLocation": "[steps('AlertsConfig')._ArtifactsLocation]",
-                "_ArtifactsLocationSasToken": "[steps('AlertsConfig')._ArtifactsLocationSasToken]",
+                "_ArtifactsLocation": "[steps('AlertsConfig').CustomScriptInfo._ArtifactsLocation]",
+                "_ArtifactsLocationSasToken": "[steps('AlertsConfig').CustomScriptInfo._ArtifactsLocationSasToken]",
                 "AlertNamePrefix": "[steps('AlertsConfig').AlertNamePrefix]",
                 "AllResourcesSameRG": "[if(steps('AlertsConfig').optionVMMetrics, false, true)]",
                 "AutoResolveAlert": "[steps('AlertsConfig').AutoResolveAlert]",

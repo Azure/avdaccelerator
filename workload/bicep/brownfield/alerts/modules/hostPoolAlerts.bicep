@@ -6,7 +6,6 @@ param LogAlertsHostPool array
 param LogAnalyticsWorkspaceResourceId string
 param Location string
 param Tags object
-param Timestamp string = utcNow()
 
 // Help ensure entire deployment name is under 64 characters
 var HostPoolResourceName = length(HostPoolName) < 20 ? HostPoolName : skip(HostPoolName, length(HostPoolName)-20)
@@ -31,6 +30,7 @@ module logAlertHostPoolQueries '../../../../../carml/1.3.0/Microsoft.Insights/sc
     scopes: [LogAnalyticsWorkspaceResourceId]
     location: Location
     actions: [ActionGroupId]
+    alertDisplayName: '${replace(LogAlertsHostPool[i].displayName, 'xHostPoolNamex', HostPoolResourceName)}-${Environment}'
     alertDescription: '${replace(LogAlertsHostPool[i].description, 'xHostPoolNamex', HostPoolName)}-${Environment}'
     enabled: false
     evaluationFrequency: LogAlertsHostPool[i].evaluationFrequency

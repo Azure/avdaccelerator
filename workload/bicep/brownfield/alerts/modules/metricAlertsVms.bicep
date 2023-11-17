@@ -15,7 +15,7 @@ module metricAlerts_VirtualMachines '../../../../../carml/1.3.0/Microsoft.Insigh
   name: 'c_${replace(MetricAlerts.virtualMachines[i].name, 'xHostPoolNamex', HostPoolResourceName)}-${Environment}'
   params: {
     enableDefaultTelemetry: false
-    name: '${replace(MetricAlerts.virtualMachines[i].name, 'xHostPoolNamex', HostPoolResourceName)}-${Environment}'
+    name: '${replace(MetricAlerts.virtualMachines[i].displayName, 'xHostPoolNamex', HostPoolResourceName)}-${Environment}'
     criterias: MetricAlerts.virtualMachines[i].criteria.allOf
     location: 'global'
     alertDescription: replace(MetricAlerts.virtualMachines[i].description, 'xHostPoolNamex', HostPoolName)
