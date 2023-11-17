@@ -11,7 +11,7 @@ module metricAlerts_VirtualMachines '../../../../../carml/1.3.0/Microsoft.Insigh
   name: 'c_${MetricAlertsANF[i].name}-${split(ANFVolumeResourceID, '/')[12]}-${Environment}'
   params: {
     enableDefaultTelemetry: false
-    name: '${MetricAlertsANF[i].name}-${split(ANFVolumeResourceID, '/')[12]}-${Environment}'
+    name: '${MetricAlertsANF[i].displayName}-${split(ANFVolumeResourceID, '/')[12]}-${Environment}'
     criterias: MetricAlertsANF[i].criteria.allOf
     location: 'global'
     alertDescription: MetricAlertsANF[i].description
