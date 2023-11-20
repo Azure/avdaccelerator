@@ -5,7 +5,8 @@
 ## 11/20/23 - Fix - Query fix for HostPool case sensitive issue (V2.1.4)
 
 - Potential for alerts to not fire due to case mismatch with Host Pool Names in query
-  - Revised queries that have == 'xHostPoolNamex' to =~ 'xHostPoolNamex' as these are replaced by actual host pool names during deployment
+  - Revised queries that have == 'xHostPoolNamex' to =~ 'xHostPoolNamex' as these are replaced by actual host pool names during deployment  
+---> Previous issue noted by **James Harper**. Thanks again for the contribution and feedback!  
 
 ## 11/18/23 - Fix - Query fixes and name changes to Display Name (V2.1.3)
 
