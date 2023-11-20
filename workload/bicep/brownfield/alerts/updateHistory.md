@@ -2,6 +2,12 @@
 
 [Home](./readme.md) | [PostDeployment](./postDeploy.md) | [How to Change Thresholds](./changeAlertThreshold.md) | [Alert Reference](./alertReference.md) | [Excel List of Alert Rules](./references/alerts.xlsx)
 
+## 11/20/23 - Fix - Query fix for HostPool case sensitive issue (V2.1.4)
+
+- Potential for alerts to not fire due to case mismatch with Host Pool Names in query
+  - Revised queries that have == 'xHostPoolNamex' to =~ 'xHostPoolNamex' as these are replaced by actual host pool names during deployment  
+---> Previous issue noted by **James Harper**. Thanks again for the contribution and feedback!  
+
 ## 11/18/23 - Fix - Query fixes and name changes to Display Name (V2.1.3)
 
 - UI Change to allow custom artifacts location for deployment on airgapped clouds or when Host Pool and Storage Info scripts stored on Blob
