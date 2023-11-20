@@ -70,7 +70,7 @@ param ANFVolumeResourceIds array = []
 param Tags object = {}
 
 var ActionGroupName = 'ag-avdmetrics-${Environment}-${Location}'
-var AlertDescriptionHeader = 'Automated AVD Alert Deployment Solution (v2.1.3)\n'
+var AlertDescriptionHeader = 'Automated AVD Alert Deployment Solution (v2.1.4)\n'
 var AutomationAccountName = 'aa-avdmetrics-${Environment}-${Location}-${AlertNamePrefix}'
 var CloudEnvironment = environment().name
 var ResourceGroupCreate = ResourceGroupStatus == 'New' ? true : false
@@ -130,7 +130,7 @@ var LogAlertsHostPool = [
           | extend HPResourceId=tostring(split(ResultDescription, '|')[13])
           | extend ResourceId=tostring(HPResourceId)
           | where HostPoolPercentLoad >= 85 and HostPoolPercentLoad < 95
-          | where HostPoolName == 'xHostPoolNamex'
+          | where HostPoolName =~ 'xHostPoolNamex'
            '''
           timeAggregation: 'Count'
           dimensions: [
@@ -217,7 +217,7 @@ var LogAlertsHostPool = [
           | extend HPResourceId=tostring(split(ResultDescription, '|')[13])
           | extend ResourceId=tostring(HPResourceId)
           | where HostPoolPercentLoad >= 50 and HostPoolPercentLoad < 85
-          | where HostPoolName == 'xHostPoolNamex'         
+          | where HostPoolName =~ 'xHostPoolNamex'         
            '''
           timeAggregation: 'Count'
           dimensions: [
@@ -304,7 +304,7 @@ var LogAlertsHostPool = [
           | extend HPResourceId=tostring(split(ResultDescription, '|')[13])
           | extend ResourceId=tostring(HPResourceId)
           | where HostPoolPercentLoad >= 95 
-          | where HostPoolName == 'xHostPoolNamex'        
+          | where HostPoolName =~ 'xHostPoolNamex'        
            '''
           timeAggregation: 'Count'
           dimensions: [
@@ -1059,7 +1059,7 @@ var LogAlertsHostPool = [
           | extend NumPersonalUnhealthy=toint(split(ResultDescription, '|')[10])
           | extend PersonalSessionHost=extract_json("$.SessionHost", tostring(split(ResultDescription, '|')[11]), typeof(string))
           | extend PersonalAssignedUser=extract_json("$.AssignedUser", tostring(split(ResultDescription, '|')[11]), typeof(string))
-          | where HostPoolName == 'xHostPoolNamex'
+          | where HostPoolName =~ 'xHostPoolNamex'
           | where Type == 'Personal'
           | where NumPersonalUnhealthy > 0        
           '''
@@ -1136,7 +1136,7 @@ var LogAlertsHostPool = [
           | where TimeGenerated > ago(15m)
           | extend ResourceGroup=tostring(split(_ResourceId, '/')[4])
           | extend HostPool=tostring(split(_ResourceId, '/')[8])
-          | where HostPool == "xHostPoolNamex"
+          | where HostPool =~ 'xHostPoolNamex'
           | extend ErrorShort=tostring(Errors[0].CodeSymbolic)
           | extend ErrorMessage=tostring(Errors[0].Message)
           | project TimeGenerated, HostPool, ResourceGroup, UserName, ClientOS, ClientVersion, ClientSideIPAddress, ConnectionType, ErrorShort, ErrorMessage      
