@@ -347,10 +347,10 @@
                                     "label": "Session hosts region",
                                     "defaultValue": "[steps('basics').resourceScope.location.displayName]",
                                     "filter": true,
-                                    "toolTip": "Select the region where the session hosts will be deployed.",
+                                    "toolTip": "Select the region where the session hosts and required resources are to be deployed.",
                                     "constraints": {
                                         "required": true,
-                                        "allowedValues": "[if(equals(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilityZoneSettings, false), map(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'virtualMachines')), (item) => item.locations)), (item) => parse(concat('{\"label\":\"', item, '\",\"value\":\"', toLower(replace(item, ' ', '')), '\"}'))), map(filter(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'virtualMachines')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => parse(concat('{\"label\":\"', item.location, '\",\"value\":\"', toLower(replace(item.location, ' ', '')), '\"}'))))]"
+                                        "allowedValues": "[if(equals(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, false), map(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'virtualMachines')), (item) => item.locations)), (item) => parse(concat('{\"label\":\"', item, '\",\"value\":\"', toLower(replace(item, ' ', '')), '\"}'))), map(filter(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'virtualMachines')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => parse(concat('{\"label\":\"', item.location, '\",\"value\":\"', toLower(replace(item.location, ' ', '')), '\"}'))))]"
                                     }
                                 }
                             ]
@@ -453,6 +453,50 @@
                                                 "value": "Premium_LRS"
                                             }
                                         ]
+                                    }
+                                },
+                                {
+                                    "name": "sessionHostDiskZeroTrust",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "label": "Zero trust disk configuration",
+                                    "defaultValue": false,
+                                    "toolTip": "Enables disk encryption and Zero trust settings on management VM and session hosts disks"
+                                },
+                                {
+                                    "name": "zeroTrustKeyvault",
+                                    "type": "Microsoft.Solutions.ResourceSelector",
+                                    "label": "Zero trust key vault",
+                                    "visible": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust]",
+                                    "toolTip": "Select the AVD LZA deployed keyvault that contains the zero trust disk encryption key.",
+                                    "resourceType": "Microsoft.KeyVault/vaults",
+                                    "constraints": {
+                                        "required": true
+                                    },
+                                    "options": {
+                                        "filter": {
+                                            "subscription": "onBasics"
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "zeroTrustKeyvaultEncryptionKeyName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "visible": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust]",
+                                    "label": "Zero trust encryption key name",
+                                    "defaultValue": "DiskEncryptionKey",
+                                    "toolTip": "Provide key vault encryption key name for session hosts disk zero trust setup.",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
+                                {
+                                    "name": "ssessionHostDiskZeroTrustWarning",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust]",
+                                    "options": {
+                                        "text": "Zero trust disk encryption requires feature EncryptionAtHost of resource provider Microsoft.Compute to be registered in the subscription.",
+                                        "uri": "https://learn.microsoft.com/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell",
+                                        "style": "Warning"
                                     }
                                 },
                                 {
@@ -1163,8 +1207,7 @@
                 "countIndex": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCountIndex]",
                 "count": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount]",
                 "diskType": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskType]",
-                "diskZeroTrust": "",
-                "diskEncryptionSetResourceId": "",
+                "diskZeroTrust": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust]",
                 "enableAcceleratedNetworking": "[steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking]",
                 "useSharedImage": "[steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource]",
                 "osImage": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false), steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11_21h2')]",
@@ -1194,6 +1237,8 @@
                 "ownerTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOwnerTag, 'no')]",
                 "costCenterTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsCostCenterTag, 'no')]",
 
+
+                "diskEncryptionSetResourceId": "[if(steps('storage').fslogixConfiguration, steps('storage').storageFslogix.fslogixStorageAccountSelector.id, '')]",
                 "computeRgResourceGroupName": "[steps('basics').resourceScope.resourceGroup.name]",
                 "computeSubscriptionId": "[steps('basics').resourceScope.subscription.id]"
             },
