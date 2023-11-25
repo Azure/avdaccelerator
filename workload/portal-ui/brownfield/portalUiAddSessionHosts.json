@@ -104,16 +104,6 @@
                     "label": "Identity",
                     "elements": [
                         {
-                            "name": "identityInfo",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "text": "Azure Virtual Desktop LZA deployment expects identity service to be already available in the current Azure estate.",
-                                "uri": "https://docs.microsoft.com/azure/virtual-desktop/authentication#identities",
-                                "style": "Info"
-                            }
-                        },
-                        {
                             "name": "identityDomainInformation",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
@@ -157,7 +147,7 @@
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
                                     "options": {
-                                        "text": "Identity service provider must already exist, as they are a prerequisite for the Azure Virtual Desktop LZA deployment.",
+                                        "text": "Identity service provider must already exist, as it is a prerequisite for the Azure Virtual Desktop LZA deployment.",
                                         "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started.md",
                                         "style": "Info"
                                     }
@@ -209,6 +199,15 @@
                                     }
                                 },
                                 {
+                                    "name": "identityDomainJoinInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                                    "options": {
+                                        "text": "By default an AVD LZA deployment creates a key vault in the service objects resource group, the vey vault contains secrets for domain join username (domainJoinUserName) and password (domainJoinUserPassword). If AVD LZA wasn't used to deploy, a key vault will need to be created with a secret for the domain join security principal password that will be used to join session hosts to the domain (AD DS and AAD DS scenarios).",
+                                        "style": "Info"
+                                    }
+                                },
+                                {
                                     "name": "identityLocalUserName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "VM local admin username",
@@ -229,6 +228,14 @@
                                     "defaultValue": "vmLocalUserPassword",
                                     "constraints": {
                                         "required": true
+                                    }
+                                },
+                                {
+                                    "name": "identityLocalUserInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "options": {
+                                        "text": "By default an AVD LZA deployment creates a key vault in the service objects resource group, the vey vault contains secrets for VM local administrator username (vmLocalUserName) and password (vmLocalUserPassword). If AVD LZA wasn't used to deploy, a key vault will need to be created with a secret for the VM local administrator user password.",
+                                        "style": "Info"
                                     }
                                 }
                             ]
