@@ -4,20 +4,21 @@ This solution will deploy new session hosts to an existing host pool.
 
 ## Requirements
 
-- Permissions: below are the minimum required permissions to deploy this solution.
+- Permissions: below are the minimum required permissions to deploy this solution
   - User Access Administrator on the target Subscription
   - Desktop Virtualization Host Pool Contributor on the resource group containing the target host pool
 - Resources: this solution assumes the following items already exists:
-  - Resource group where session hosts will be deployed (created by AVD LZA baseline).
-  - Host pool with and active registration token (created by AVD LZA baseline).
+  - Resource group where session hosts will be deployed (created by AVD LZA baseline)
+  - Host pool with an active registration token (created by AVD LZA baseline)
   - Key vault with the following secrets (created by AVD LZA baseline):
-    - VM local admin user password.
-    - Domain join account password.
-  - Virtual network for session hosts (created by AVD LZA baseline).
-  - Optional: application security group for session hosts (created by AVD LZA baseline).
-  - Storage account and file share configured for fslogix (created by AVD LZA baseline).
-  - Optional: log analytics workspace configured with Azure Virtual Desktop insights settings (created by AVD LZA baseline).
-  - Optional: availability set for the session hosts (created by AVD LZA baseline).
+    - VM local admin user password
+    - Domain join account password
+    - Disk encrpyption key (when enabling zero trust for session hosts)
+  - Virtual network for session hosts (created by AVD LZA baseline)
+  - Optional: application security group for session hosts (created by AVD LZA baseline)
+  - Storage account and file share configured for fslogix (created by AVD LZA baseline)
+  - Optional: log analytics workspace configured with Azure Virtual Desktop insights settings (created by AVD LZA baseline)
+  - Optional: availability set for the session hosts (created by AVD LZA baseline)
 
 ## Deployment Options
 
