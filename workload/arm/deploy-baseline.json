@@ -295,14 +295,14 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Use existing Azure private DNS zone for Azure files privatelink.file.core.windows.net or privatelink.file.core.usgovcloudapi.net. (Default: \"\")"
+        "description": "Use existing Azure private DNS zone for Azure files privatelink.file.core.windows.net or privatelink.file.core.usgovcloudapi.net or privatelink.file.core.chinacloudapi.cn. (Default: \"\")"
       }
     },
     "avdVnetPrivateDnsZoneKeyvaultId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Use existing Azure private DNS zone for key vault privatelink.vaultcore.azure.net or privatelink.vaultcore.usgovcloudapi.net. (Default: \"\")"
+        "description": "Use existing Azure private DNS zone for key vault privatelink.vaultcore.azure.net or privatelink.vaultcore.usgovcloudapi.net or privatelink.vaultcore.azure.cn . (Default: \"\")"
       }
     },
     "vNetworkGatewayOnHub": {
@@ -12235,6 +12235,182 @@
                 "parameters": {
                   "privateDnsZoneName": {
                     "value": "privatelink.vaultcore.azure.net"
+                  },
+                  "virtualNetworkResourceId": "[if(parameters('createVnet'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', variables('varExistingAvdVnetResourceId')))]",
+                  "tags": {
+                    "value": "[parameters('tags')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.23.1.45101",
+                      "templateHash": "15373132827567558553"
+                    }
+                  },
+                  "parameters": {
+                    "privateDnsZoneName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Name space of the private DNS zone"
+                      }
+                    },
+                    "tags": {
+                      "type": "object",
+                      "metadata": {
+                        "description": "Tags to be applied to resources"
+                      }
+                    },
+                    "virtualNetworkResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Virtual network resource ID to link private DNS zone to"
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Network/privateDnsZones",
+                      "apiVersion": "2020-06-01",
+                      "name": "[parameters('privateDnsZoneName')]",
+                      "location": "Global",
+                      "tags": "[parameters('tags')]"
+                    },
+                    {
+                      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+                      "apiVersion": "2020-06-01",
+                      "name": "[format('{0}/{1}', parameters('privateDnsZoneName'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/'))))]",
+                      "location": "Global",
+                      "tags": "[parameters('tags')]",
+                      "properties": {
+                        "registrationEnabled": false,
+                        "virtualNetwork": {
+                          "id": "[parameters('virtualNetworkResourceId')]"
+                        }
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZoneName'))]"
+                      ]
+                    }
+                  ],
+                  "outputs": {
+                    "resourceId": {
+                      "type": "string",
+                      "value": "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZoneName'))]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time')))]"
+              ]
+            },
+            {
+              "condition": "[and(parameters('createPrivateDnsZones'), equals(variables('varAzureCloudName'), 'AzureChinaCloud'))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('Private-DNS-Comm-Files-{0}', parameters('time'))]",
+              "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+              "resourceGroup": "[format('{0}', parameters('networkObjectsRgName'))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "privateDnsZoneName": {
+                    "value": "privatelink.file.core.chinacloudapi.cn"
+                  },
+                  "virtualNetworkResourceId": "[if(parameters('createVnet'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', variables('varExistingAvdVnetResourceId')))]",
+                  "tags": {
+                    "value": "[parameters('tags')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.23.1.45101",
+                      "templateHash": "15373132827567558553"
+                    }
+                  },
+                  "parameters": {
+                    "privateDnsZoneName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Name space of the private DNS zone"
+                      }
+                    },
+                    "tags": {
+                      "type": "object",
+                      "metadata": {
+                        "description": "Tags to be applied to resources"
+                      }
+                    },
+                    "virtualNetworkResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Virtual network resource ID to link private DNS zone to"
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Network/privateDnsZones",
+                      "apiVersion": "2020-06-01",
+                      "name": "[parameters('privateDnsZoneName')]",
+                      "location": "Global",
+                      "tags": "[parameters('tags')]"
+                    },
+                    {
+                      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+                      "apiVersion": "2020-06-01",
+                      "name": "[format('{0}/{1}', parameters('privateDnsZoneName'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/'))))]",
+                      "location": "Global",
+                      "tags": "[parameters('tags')]",
+                      "properties": {
+                        "registrationEnabled": false,
+                        "virtualNetwork": {
+                          "id": "[parameters('virtualNetworkResourceId')]"
+                        }
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZoneName'))]"
+                      ]
+                    }
+                  ],
+                  "outputs": {
+                    "resourceId": {
+                      "type": "string",
+                      "value": "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZoneName'))]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time')))]"
+              ]
+            },
+            {
+              "condition": "[and(parameters('createPrivateDnsZones'), equals(variables('varAzureCloudName'), 'AzureChinaCloud'))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('Private-DNS-Comm-Kv-{0}', parameters('time'))]",
+              "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+              "resourceGroup": "[format('{0}', parameters('networkObjectsRgName'))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "privateDnsZoneName": {
+                    "value": "privatelink.vaultcore.azure.cn"
                   },
                   "virtualNetworkResourceId": "[if(parameters('createVnet'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', variables('varExistingAvdVnetResourceId')))]",
                   "tags": {
