@@ -1275,7 +1275,7 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": "[and(and(steps('network').virtualNetworkPrivateDnsZone, steps('network').createAvdVirtualNetwork), or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment))]",
                             "options": {
-                                "text": "The following private DNS zones will be created and linked to the new Azure Virtual Desktop vNet: <br/> Azure Files: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net",
+                                "text": "The following private DNS zones will be created and linked to the new Azure Virtual Desktop vNet: <br/> Azure Files: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net <br/> - Azure China: privatelink.file.core.chinacloudapi.cn <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net <br/> - Azure China: privatelink.vaultcore.azure.cn",
                                 "style": "info"
                             }
                         },
@@ -1284,7 +1284,7 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": "[and(and(steps('network').virtualNetworkPrivateDnsZone, steps('network').createAvdVirtualNetwork), not(steps('storage').storageFslogix.fslogixDeployment), not(steps('storage').storageMsix.msixDeployment))]",
                             "options": {
-                                "text": "The following private DNS zones will be created and linked to the new Azure Virtual Desktop vNet: <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net",
+                                "text": "The following private DNS zones will be created and linked to the new Azure Virtual Desktop vNet: <br/> Azure Files: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net <br/> - Azure China: privatelink.file.core.chinacloudapi.cn <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net <br/> - Azure China: privatelink.vaultcore.azure.cn",
                                 "style": "info"
                             }
                         },
@@ -1293,7 +1293,7 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": "[and(and(steps('network').virtualNetworkPrivateDnsZone, not(steps('network').createAvdVirtualNetwork)), or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment))]",
                             "options": {
-                                "text": "The following private DNS zones will be created and linked to the existing Azure Virtual Desktop vNet: <br/> Azure Files: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net",
+                                "text": "The following private DNS zones will be created and linked to the new Azure Virtual Desktop vNet: <br/> Azure Files: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net <br/> - Azure China: privatelink.file.core.chinacloudapi.cn <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net <br/> - Azure China: privatelink.vaultcore.azure.cn",
                                 "style": "info"
                             }
                         },
@@ -1302,7 +1302,7 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": "[and(and(steps('network').virtualNetworkPrivateDnsZone, not(steps('network').createAvdVirtualNetwork)), not(steps('storage').storageFslogix.fslogixDeployment), not(steps('storage').storageMsix.msixDeployment))]",
                             "options": {
-                                "text": "The following private DNS zones will be created and linked to the existing Azure Virtual Desktop vNet: <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net",
+                                "text": "The following private DNS zones will be created and linked to the new Azure Virtual Desktop vNet: <br/> Azure Files: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net <br/> - Azure China: privatelink.file.core.chinacloudapi.cn <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net <br/> - Azure China: privatelink.vaultcore.azure.cn",
                                 "style": "info"
                             }
                         },
@@ -1335,7 +1335,7 @@
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageMsix.msixDeployment, true))]",
                                     "options": {
-                                        "text": "Private DNS zone name spaces: <br/> Azure Files <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net",
+                                        "text": "Private DNS zone name spaces: <br/> Azure Files: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net <br/> - Azure China: privatelink.file.core.chinacloudapi.cn <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net <br/> - Azure China: privatelink.vaultcore.azure.cn",
                                         "style": "info"
                                     }
                                 },
@@ -1344,7 +1344,7 @@
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[and(not(steps('storage').storageFslogix.fslogixDeployment), not(steps('storage').storageMsix.msixDeployment))]",
                                     "options": {
-                                        "text": "Private DNS zone name space: <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net",
+                                        "text": "Private DNS zone name spaces: <br/> Azure Files: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net <br/> - Azure China: privatelink.file.core.chinacloudapi.cn <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net <br/> - Azure China: privatelink.vaultcore.azure.cn",
                                         "style": "info"
                                     }
                                 }
