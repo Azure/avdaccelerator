@@ -172,7 +172,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = if (
 // Session hosts
 module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(1, count): {
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-  name: 'SH-${batchId}-${i-1}-${time}'
+  name: 'SH-${batchId}-${i - 1}-${time}'
   params: {
       name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
       location: location
@@ -233,7 +233,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
       }
       // Azure AD (AAD) Join.
       extensionAadJoinConfig: {
-          enabled: (identityServiceProvider == 'AAD') ? true: false
+          enabled: (identityServiceProvider == 'AAD') ? true : false
           settings: createIntuneEnrollment ? {
               mdmId: '0000000a-0000-0000-c000-000000000000'
           } : {}
