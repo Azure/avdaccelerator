@@ -401,6 +401,30 @@ module privateDnsZoneKeyVaultGov '.bicep/privateDnsZones.bicep' = if (createPriv
         tags: tags
     }
 }
+
+
+// Private DNS zones Azure files China
+module privateDnsZoneAzureFilesChina '.bicep/privateDnsZones.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureUSGovernment')) {
+    scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
+    name: 'Private-DNS-Gov-Files-${time}'
+    params: {
+        privateDnsZoneName: 'privatelink.file.core.chinacloudapi.cn'
+        virtualNetworkResourceId: createVnet ? virtualNetwork.outputs.resourceId : varExistingAvdVnetResourceId
+        tags: tags
+    }
+}
+
+// Private DNS zones key vault China
+module privateDnsZoneKeyVaultChina '.bicep/privateDnsZones.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureUSGovernment')) {
+    scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
+    name: 'Private-DNS-Gov-Kv-${time}'
+    params: {
+        privateDnsZoneName: 'privatelink.vaultcore.azure.cn'
+        virtualNetworkResourceId: createVnet ? virtualNetwork.outputs.resourceId : varExistingAvdVnetResourceId
+        tags: tags
+    }
+}
+
 // =========== //
 // Outputs //
 // =========== //
