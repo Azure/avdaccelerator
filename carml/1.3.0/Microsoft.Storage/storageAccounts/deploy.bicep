@@ -58,7 +58,7 @@ param azureFilesIdentityBasedAuthentication object = {}
 @description('Optional. A boolean flag which indicates whether the default authentication is OAuth or not.')
 param defaultToOAuthAuthentication bool = false
 
-@description('Optional. Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Azure Active Directory (Azure AD). The default value is null, which is equivalent to true.')
+@description('Optional. Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. The default value is null, which is equivalent to true.')
 param allowSharedKeyAccess bool = true
 
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')

@@ -49,19 +49,13 @@ param osDiskType string
 @sys.description('Market Place OS image')
 param osImage object
 
-//@sys.description('Set to deploy image from Azure. Compute Gallery')
-//param useSharedImage bool
-
-//@sys.description('Source custom image ID.')
-//param imageTemplateDefinitionId string
-
 @sys.description('Storage Managed Identity Resource ID.')
 param storageManagedIdentityResourceId string
 
 @sys.description('Local administrator username.')
 param vmLocalUserName string
 
-@sys.description('AD domain name.')
+@sys.description('Identity domain name.')
 param identityDomainName string
 
 @sys.description('Keyvault name to get credentials from.')
@@ -182,30 +176,6 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
     dependsOn: [
     ]
 }
-
-// Introduce wait for management VM to be ready.
-module managementVmWait '../../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = {
-    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
-    name: 'MGMT-VM-Wait-${time}'
-    params: {
-        name: 'MGMT-VM-Wait-${time}'
-        location: location
-        azPowerShellVersion: '8.3.0'
-        cleanupPreference: 'Always'
-        timeout: 'PT10M'
-        retentionInterval: 'PT1H'
-        scriptContent: '''
-        Write-Host "Start"
-        Get-Date
-        Start-Sleep -Seconds 120
-        Write-Host "Stop"
-        Get-Date
-        '''
-    }
-    dependsOn: [
-        managementVm
-    ]
-} 
 
 // =========== //
 //   Outputs   //

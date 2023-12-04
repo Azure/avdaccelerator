@@ -30,3 +30,8 @@ variable "rg_avdi" {
   type        = string
   description = "Name of the Resource group in which to deploy avd service objects"
 }
+
+variable "email_address" {
+  type        = string
+  description = "Email address to send alerts to"
+}
