@@ -100,6 +100,7 @@ module deployDiagnosticsAzurePolicyForAvd './.bicep/azurePolicyMonitoring.bicep'
     networkObjectsRgName: networkObjectsRgName
   }
   dependsOn: [
+    alaWorkspace
     baselineMonitoringResourceGroup
   ]
 }
@@ -128,31 +129,8 @@ module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
       tags: tags
   }
   dependsOn: [
+    alaWorkspace
     dcrResourceGroup
-  ]
-}
-
-// Introduce Wait after log analitics workspace creation.
-module dataCollectionRuleWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (deployAlaWorkspace) {
-  scope: resourceGroup('${subscriptionId}', '${varDcrRgName}')
-  name: 'DCR-Wait-${time}'
-  params: {
-      name: 'DCR-Wait-${time}'
-      location: location
-      azPowerShellVersion: '8.3.0'
-      cleanupPreference: 'Always'
-      timeout: 'PT10M'
-      retentionInterval: 'PT1H'
-      scriptContent: '''
-      Write-Host "Start"
-      Get-Date
-      Start-Sleep -Seconds 60
-      Write-Host "Stop"
-      Get-Date
-      '''
-  }
-  dependsOn: [
-    dataCollectionRule
   ]
 }
 
