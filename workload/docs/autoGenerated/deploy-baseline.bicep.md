@@ -17,9 +17,9 @@ avdVmLocalUserName | Yes      | AVD session host local username.
 avdVmLocalUserPassword | Yes      | AVD session host local password.
 avdIdentityServiceProvider | No       | Required, The service providing domain services for Azure Virtual Desktop. (Default: ADDS)
 createIntuneEnrollment | No       | Required, Eronll session hosts on Intune. (Default: false)
-avdApplicationGroupIdentitiesIds | No       | Optional, Identity ID array to grant RBAC role to access AVD application group. (Default: "")
-avdApplicationGroupIdentityType | No       | Optional, Identity type to grant RBAC role to access AVD application group. (Default: Group)
-avdIdentityDomainName | Yes      | AD domain name.
+securityPrincipalId | No       | Optional, Identity ID to grant RBAC role to access AVD application group and NTFS permissions. (Default: "")
+securityPrincipalName | No       | Optional, Identity name to grant RBAC role to access AVD application group and NTFS permissions. (Default: "")
+identityDomainName | No       | FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")
 identityDomainGuid | No       | AD domain GUID. (Default: "")
 avdDomainJoinUserName | No       | AVD session host domain join user principal name. (Default: none)
 avdDomainJoinUserPassword | No       | AVD session host domain join password. (Default: none)
@@ -28,7 +28,7 @@ avdHostPoolType | No       | AVD host pool type. (Default: Pooled)
 hostPoolPreferredAppGroupType | No       | Optional. The type of preferred application group type, default to Desktop Application Group.
 avdPersonalAssignType | No       | AVD host pool type. (Default: Automatic)
 avdHostPoolLoadBalancerType | No       | AVD host pool load balacing type. (Default: BreadthFirst)
-avhHostPoolMaxSessions | No       | AVD host pool maximum number of user sessions per session host. (Default: 8)
+hostPoolMaxSessions | No       | AVD host pool maximum number of user sessions per session host. (Default: 8)
 avdStartVmOnConnect | No       | AVD host pool start VM on Connect. (Default: true)
 avdHostPoolRdpProperties | No       | AVD host pool Custom RDP properties. (Default: audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2)
 avdDeployScalingPlan | No       | AVD deploy scaling plan. (Default: true)
@@ -59,7 +59,7 @@ alaExistingWorkspaceResourceId | No       | Existing Azure log analytics workspa
 avdDeploySessionHostsCount | No       | Quantity of session hosts to deploy. (Default: 1)
 avdSessionHostCountIndex | No       | The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 0)
 availabilityZonesCompute | No       | When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Default: true)
-zoneRedundantStorage | No       | When true, ZOne Redudant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)
+zoneRedundantStorage | No       | When true, Zone Redundant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)
 avsetFaultDomainCount | No       | Sets the number of fault domains for the availability set. (Default: 2)
 avsetUpdateDomainCount | No       | Sets the number of update domains for the availability set. (Default: 5)
 fslogixStoragePerformance | No       | Storage account SKU for FSLogix storage. Recommended tier is Premium (Default: Premium)
@@ -76,7 +76,6 @@ managementVmOsImage | No       | Management VM image SKU (Default: winServer_202
 useSharedImage | No       | Set to deploy image from Azure Compute Gallery. (Default: false)
 avdImageTemplateDefinitionId | No       | Source custom image ID. (Default: "")
 storageOuPath  | No       | OU name for Azure Storage Account. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.  (Default: "")
-createOuForStorage | No       | If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: false)
 avdUseCustomNaming | No       | AVD resources custom naming. (Default: false)
 avdServiceObjectsRgCustomName | No       | AVD service resources resource group custom name. (Default: rg-avd-app1-dev-use2-service-objects)
 avdNetworkObjectsRgCustomName | No       | AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-network)
@@ -104,7 +103,7 @@ avsetCustomNamePrefix | No       | AVD availability set custom name. (Default: a
 storageAccountPrefixCustomName | No       | AVD FSLogix and MSIX app attach storage account prefix custom name. (Default: st)
 fslogixFileShareCustomName | No       | FSLogix file share name. (Default: fslogix-pc-app1-dev-001)
 msixFileShareCustomName | No       | MSIX file share name. (Default: msix-app1-dev-001)
-avdWrklKvPrefixCustomName | No       | AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv)
+avdWrklKvPrefixCustomName | No       | AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv-sec)
 ztDiskEncryptionSetCustomNamePrefix | No       | AVD disk encryption set custom name. (Default: des-zt)
 ztManagedIdentityCustomName | No       | AVD managed identity for zero trust to encrypt managed disks using a customer managed key.  (Default: id-zt)
 ztKvPrefixCustomName | No       | AVD key vault custom name for zero trust and store store disk encryption key (Default: kv-key)
@@ -207,27 +206,23 @@ Required, Eronll session hosts on Intune. (Default: false)
 
 - Default value: `False`
 
-### avdApplicationGroupIdentitiesIds
+### securityPrincipalId
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-Optional, Identity ID array to grant RBAC role to access AVD application group. (Default: "")
+Optional, Identity ID to grant RBAC role to access AVD application group and NTFS permissions. (Default: "")
 
-### avdApplicationGroupIdentityType
+### securityPrincipalName
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-Optional, Identity type to grant RBAC role to access AVD application group. (Default: Group)
+Optional, Identity name to grant RBAC role to access AVD application group and NTFS permissions. (Default: "")
 
-- Default value: `Group`
+### identityDomainName
 
-- Allowed values: `Group`, `ServicePrincipal`, `User`
+![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-### avdIdentityDomainName
-
-![Parameter Setting](https://img.shields.io/badge/parameter-required-orange?style=flat-square)
-
-AD domain name.
+FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")
 
 ### identityDomainGuid
 
@@ -297,7 +292,7 @@ AVD host pool load balacing type. (Default: BreadthFirst)
 
 - Allowed values: `BreadthFirst`, `DepthFirst`
 
-### avhHostPoolMaxSessions
+### hostPoolMaxSessions
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
@@ -535,7 +530,7 @@ When true VMs are distributed across availability zones, when set to false, VMs 
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-When true, ZOne Redudant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)
+When true, Zone Redundant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)
 
 - Default value: `False`
 
@@ -673,14 +668,6 @@ Source custom image ID. (Default: "")
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
 OU name for Azure Storage Account. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.  (Default: "")
-
-### createOuForStorage
-
-![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
-
-If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain. (Default: false)
-
-- Default value: `False`
 
 ### avdUseCustomNaming
 
@@ -902,9 +889,9 @@ MSIX file share name. (Default: msix-app1-dev-001)
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv)
+AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv-sec)
 
-- Default value: `kv`
+- Default value: `kv-sec`
 
 ### ztDiskEncryptionSetCustomNamePrefix
 
@@ -1098,13 +1085,13 @@ Enable usage and telemetry feedback to Microsoft.
         "createIntuneEnrollment": {
             "value": false
         },
-        "avdApplicationGroupIdentitiesIds": {
-            "value": []
+        "securityPrincipalId": {
+            "value": ""
         },
-        "avdApplicationGroupIdentityType": {
-            "value": "Group"
+        "securityPrincipalName": {
+            "value": ""
         },
-        "avdIdentityDomainName": {
+        "identityDomainName": {
             "value": ""
         },
         "identityDomainGuid": {
@@ -1136,7 +1123,7 @@ Enable usage and telemetry feedback to Microsoft.
         "avdHostPoolLoadBalancerType": {
             "value": "BreadthFirst"
         },
-        "avhHostPoolMaxSessions": {
+        "hostPoolMaxSessions": {
             "value": 8
         },
         "avdStartVmOnConnect": {
@@ -1280,9 +1267,6 @@ Enable usage and telemetry feedback to Microsoft.
         "storageOuPath": {
             "value": ""
         },
-        "createOuForStorage": {
-            "value": false
-        },
         "avdUseCustomNaming": {
             "value": false
         },
@@ -1365,7 +1349,7 @@ Enable usage and telemetry feedback to Microsoft.
             "value": "msix-app1-dev-use2-001"
         },
         "avdWrklKvPrefixCustomName": {
-            "value": "kv"
+            "value": "kv-sec"
         },
         "ztDiskEncryptionSetCustomNamePrefix": {
             "value": "des-zt"

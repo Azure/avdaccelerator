@@ -44,13 +44,25 @@ Foreach($AVDHostPool in $AVDHostPools){
         $HPPerHostUnhlthy = $HostList | ConvertTo-Json
         }
    
-    # Max allowed Sessions - Based on Total given unavailable may be on scaling plan
-    $HPSessionsAvail = ($HPMaxSessionLimit * $HPNumSessionHosts)-$HPUsrSession
+    #Adding number of hosts available and allowing sessions, and Host Pool resource ID
+    $HP_ResID = $AVDHostPool.Id
+    $HPNumHostsAllowingSessions = (Get-AzWvdSessionHost -HostPoolName $HPName -ResourceGroupName $HPResGroup | where {$_.AllowNewSession}).count
+    $HPNumHostsAvailable = (Get-AzWvdSessionHost -HostPoolName $HPName -ResourceGroupName $HPResGroup | where {$_.Status -eq "Available"}).count
+    $HPNumHostsAvailableAndAllowingSessions = (Get-AzWvdSessionHost -HostPoolName $HPName -ResourceGroupName $HPResGroup | where {$_.Status -eq "Available" -and $_.AllowNewSession}).count
+    #Changing how we calculate available sessions to be based on number of hosts that are available and allowing sessions, instead of total number of hosts
+
+# Max allowed Sessions - Based on Total given unavailable may be on scaling plan
+    #$HPSessionsAvail = ($HPMaxSessionLimit * $HPNumSessionHosts)-$HPUsrSession
+    #if($HPUsrSession -ne 0)	{
+	#	$HPLoadPercent = ($HPUsrSession/($HPMaxSessionLimit * $HPNumSessionHosts))*100
+	#}
+    $HPSessionsAvail = ($HPMaxSessionLimit * $HPNumHostsAvailableAndAllowingSessions)-$HPUsrSession
     if($HPUsrSession -ne 0)	{
-		$HPLoadPercent = ($HPUsrSession/($HPMaxSessionLimit * $HPNumSessionHosts))*100
+		$HPLoadPercent = ($HPUsrSession/($HPMaxSessionLimit * $HPNumHostsAvailableAndAllowingSessions))*100
 	}
 	Else {$HPLoadPercent = 0}
-	$Output += $HPName + "|" + $HPResGroup + "|" + $HPType + "|" + $HPMaxSessionLimit  + "|" + $HPNumSessionHosts + "|" + $HPUsrSession  + "|" + $HPUsrDisonnected  + "|" + $HPUsrActive + "|" + $HPSessionsAvail + "|" + $HPLoadPercent + "|" + $HPNumPerUnhlthy + "|" + $HPPerHostUnhlthy
+    $Output += $HPName + "|" + $HPResGroup + "|" + $HPType + "|" + $HPMaxSessionLimit  + "|" + $HPNumSessionHosts + "|" + $HPUsrSession  + "|" + $HPUsrDisonnected  + "|" + $HPUsrActive + "|" + $HPSessionsAvail + "|" + $HPLoadPercent + "|" + $HPNumPerUnhlthy + "|" + $HPPerHostUnhlthy  + "|" + $HP_ResID
 }
+
 # $Output = ConvertTo-Json -InputObject $HostPoolInfoObj
 Write-Output $Output

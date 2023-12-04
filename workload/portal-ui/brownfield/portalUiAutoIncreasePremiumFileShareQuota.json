@@ -3,7 +3,7 @@
     "view": {
         "kind": "Form",
         "properties": {
-            "title": "AVD Landing Zone Accelerator: Auto Increase Premium File Share Quota",
+            "title": "Azure Virtual Desktop LZA: Auto Increase Premium File Share Quota",
             "steps": [
                 {
                     "name": "basics",

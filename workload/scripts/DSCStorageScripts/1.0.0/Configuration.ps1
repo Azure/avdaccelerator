@@ -44,13 +44,13 @@ param
     [ValidateNotNullOrEmpty()]
     [string] $ClientId,
 
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory = $false)]
     [ValidateNotNullOrEmpty()]
-    [string] $OUName,
+    [string]$SecurityPrincipalName,
 
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
-    [string] $CreateNewOU,
+    [string] $OUName,
 
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
@@ -58,11 +58,15 @@ param
 
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
-    [string] $DomainAdminUserName,
+    [string] $AdminUserName,
+
+    [Parameter(Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $StorageAccountFqdn,
 	
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
-    [string] $DomainAdminUserPassword
+    [string] $AdminUserPassword
 )
 
 
@@ -106,13 +110,13 @@ Configuration DomainJoinFileShare
         [ValidateNotNullOrEmpty()]
         [string] $ClientId,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
-        [string] $OUName,
+        [string]$SecurityPrincipalName,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $CreateNewOU,
+        [string] $OUName,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -120,17 +124,22 @@ Configuration DomainJoinFileShare
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $DomainAdminUserName,
+        [string] $AdminUserName,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $StorageAccountFqdn,
 	
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $DomainAdminUserPassword
+        [string] $AdminUserPassword
     )
     
     # Import the module that contains the File resource.
     Import-DscResource -ModuleName PsDesiredStateConfiguration
-    $secStringPassword = ConvertTo-SecureString $DomainAdminUserPassword -AsPlainText -Force
-    $DomainAdminCred = New-Object System.Management.Automation.PSCredential ($DomainAdminUserName, $secStringPassword)
+
+    $secStringPassword = ConvertTo-SecureString $AdminUserPassword -AsPlainText -Force
+    $AdminCred = New-Object System.Management.Automation.PSCredential ($AdminUserName, $secStringPassword)
 
     $ErrorActionPreference = 'Stop'
     
@@ -154,7 +163,7 @@ Configuration DomainJoinFileShare
                 . (Join-Path $using:ScriptPath "Logger.ps1")
                 try {
                     Write-Log "DSC DomainJoinStorage SetScript Domain joining storage account $Using:StorageAccountName"
-                    & "$using:ScriptPath\Script-DomainJoinStorage.ps1" -StorageAccountName $Using:StorageAccountName -StorageAccountRG $Using:StorageAccountRG -SubscriptionId $Using:SubscriptionId -ClientId $Using:ClientId -ShareName $Using:ShareName -DomainName $Using:DomainName -IdentityServiceProvider $Using:IdentityServiceProvider -AzureCloudEnvironment $Using:AzureCloudEnvironment -CustomOuPath $Using:CustomOuPath -OUName $Using:OUName -CreateNewOU $Using:CreateNewOU -StoragePurpose $Using:StoragePurpose
+                    & "$using:ScriptPath\Script-DomainJoinStorage.ps1" -StorageAccountName $Using:StorageAccountName -StorageAccountRG $Using:StorageAccountRG -SubscriptionId $Using:SubscriptionId -ClientId $Using:ClientId -SecurityPrincipalName $Using:SecurityPrincipalName -ShareName $Using:ShareName -DomainName $Using:DomainName -IdentityServiceProvider $Using:IdentityServiceProvider -AzureCloudEnvironment $Using:AzureCloudEnvironment -CustomOuPath $Using:CustomOuPath -OUName $Using:OUName -StoragePurpose $Using:StoragePurpose -StorageAccountFqdn $Using:StorageAccountFqdn
 
                     Write-Log "Successfully domain joined and/or NTFS permission set on Storage account"
                 }
@@ -193,7 +202,7 @@ Configuration DomainJoinFileShare
                 }
             }
 		
-            PsDscRunAsCredential = $DomainAdminCred
+            PsDscRunAsCredential = $AdminCred
         }
     }
 }
@@ -208,4 +217,4 @@ $config = @{
     )
 }
 
-DomainJoinFileShare -ConfigurationData $config -StorageAccountName $StorageAccountName -StorageAccountRG $StorageAccountRG -SubscriptionId $SubscriptionId -ShareName $ShareName -DomainName $DomainName -IdentityServiceProvider $IdentityServiceProvider -AzureCloudEnvironment $AzureCloudEnvironment -CustomOuPath $CustomOuPath -OUName $OUName -CreateNewOU $CreateNewOU -DomainAdminUserName $DomainAdminUserName -DomainAdminUserPassword $DomainAdminUserPassword -ClientId $ClientId -StoragePurpose $StoragePurpose -Verbose;
+DomainJoinFileShare -ConfigurationData $config -StorageAccountName $StorageAccountName -StorageAccountRG $StorageAccountRG -SubscriptionId $SubscriptionId -ShareName $ShareName -DomainName $DomainName -IdentityServiceProvider $IdentityServiceProvider -AzureCloudEnvironment $AzureCloudEnvironment -CustomOuPath $CustomOuPath -OUName $OUName -AdminUserName $AdminUserName -AdminUserPassword $AdminUserPassword -ClientId $ClientId -SecurityPrincipalName $SecurityPrincipalName -StoragePurpose $StoragePurpose -StorageAccountFqdn $StorageAccountFqdn -Verbose;

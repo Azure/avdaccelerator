@@ -4,6 +4,9 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
+@description('Optional. The display name of the scheduled query rule.')
+param alertDisplayName string = ''
+
 @description('Optional. The description of the scheduled query rule.')
 param alertDescription string = ''
 
@@ -91,7 +94,7 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2021-02-01-preview' =
     autoMitigate: (kind == 'LogAlert') ? autoMitigate : null
     criteria: criterias
     description: alertDescription
-    displayName: name
+    displayName: !empty(alertDisplayName) ? alertDisplayName : name
     enabled: enabled
     evaluationFrequency: (kind == 'LogAlert' && !empty(evaluationFrequency)) ? evaluationFrequency : null
     muteActionsDuration: (kind == 'LogAlert' && !empty(suppressForMinutes)) ? suppressForMinutes : null

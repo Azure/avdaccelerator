@@ -1,21 +1,39 @@
+/*
+This file contains the variables used in the Packer template for creating a custom image for gaming workloads.
+- image_offer: The offer of the base image used for creating the custom image.
+- image_publisher: The publisher of the base image used for creating the custom image.
+- image_sku: The SKU of the base image used for creating the custom image.
+- image_version: The version of the base image used for creating the custom image.
+- artifact_storage_account: The name of the storage account where the custom image will be stored.
+- artifact_storage_account_container: The name of the container in the storage account where the custom image will be stored.
+- msbuild_path: The path to the MSBuild executable used for building the custom image.
+- winrm_username: The username used for WinRM authentication.
+- region: The Azure region where the custom image will be created.
+- resource_group_name: The name of the resource group where the custom image will be created.
+- temp_resource_group_name: The name of the temporary resource group used for creating the custom image.
+- temp_compute_name: The name of the temporary compute resource used for creating the custom image.
+- vm_size: The size of the virtual machine used for creating the custom image.
+- install_log_file: The path to the log file where the installation details will be stored.
+- dlink_chocolatey: The download link for the Chocolatey package manager.
+- dlink_lgpo_tool: The download link for the LGPO tool used for managing local group policies.
+- dlink_winsdk: The download link for the Windows SDK.
+- dlinks_gdk: The download links for the GDK (Game Development Kit) used for developing games on Windows.
+- dlink_pix: The download link for the PIX (Performance Investigator for Xbox) tool used for profiling and debugging DirectX 12 games.
+*/
 variable "image_offer" {
-  type    = string
-  default = "office-365"
+  type = string
 }
 
 variable "image_publisher" {
-  type    = string
-  default = "MicrosoftWindowsDesktop"
+  type = string
 }
 
 variable "image_sku" {
-  type    = string
-  default = "win10-22h2-avd-m365-g2"
+  type = string
 }
 
 variable "image_version" {
-  type    = string
-  default = "latest"
+  type = string
 }
 
 variable "artifact_storage_account" {
@@ -39,13 +57,11 @@ variable "winrm_username" {
 }
 
 variable "region" {
-  type    = string
-  default = "southcentralus"
+  type = string
 }
 
 variable "resource_group_name" {
-  type    = string
-  default = "rg_gmdv_packer"
+  type = string
 }
 
 variable "temp_resource_group_name" {
