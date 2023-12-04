@@ -86,30 +86,6 @@ module alaWorkspace '../../../../carml/1.3.0/Microsoft.OperationalInsights/works
   ]
 }
 
-// Introduce Wait after log analitics workspace creation.
-module alaWorkspaceWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (deployAlaWorkspace) {
-  scope: resourceGroup('${subscriptionId}', '${monitoringRgName}')
-  name: 'LA-Workspace-Wait-${time}'
-  params: {
-      name: 'LA-Workspace-Wait-${time}'
-      location: location
-      azPowerShellVersion: '8.3.0'
-      cleanupPreference: 'Always'
-      timeout: 'PT10M'
-      retentionInterval: 'PT1H'
-      scriptContent: '''
-      Write-Host "Start"
-      Get-Date
-      Start-Sleep -Seconds 60
-      Write-Host "Stop"
-      Get-Date
-      '''
-  }
-  dependsOn: [
-    alaWorkspace
-  ]
-}
-
 // Policy definitions.
 module deployDiagnosticsAzurePolicyForAvd './.bicep/azurePolicyMonitoring.bicep' = if (deployCustomPolicyMonitoring) {
   scope: subscription('${subscriptionId}')
@@ -124,7 +100,6 @@ module deployDiagnosticsAzurePolicyForAvd './.bicep/azurePolicyMonitoring.bicep'
     networkObjectsRgName: networkObjectsRgName
   }
   dependsOn: [
-    alaWorkspaceWait
     baselineMonitoringResourceGroup
   ]
 }
@@ -153,7 +128,6 @@ module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
       tags: tags
   }
   dependsOn: [
-    alaWorkspaceWait
     dcrResourceGroup
   ]
 }
