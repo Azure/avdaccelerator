@@ -130,6 +130,7 @@ module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
   }
   dependsOn: [
     alaWorkspace
+    dcrResourceGroup
   ]
 }
 
