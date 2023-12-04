@@ -226,30 +226,6 @@ module workspace '../../../../carml/1.3.0/Microsoft.OperationalInsights/workspac
   ]
 }
 
-// Introduce wait after log analitics workspace creation.
-module workspaceWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
-  scope: resourceGroup(sharedServicesSubscriptionId, varResourceGroupName)
-  name: 'LA-Workspace-Wait-${time}'
-  params: {
-      name: 'LA-Workspace-Wait-${time}'
-      location: deploymentLocation
-      azPowerShellVersion: '8.3.0'
-      cleanupPreference: 'Always'
-      timeout: 'PT10M'
-      retentionInterval: 'PT1H'
-      scriptContent: '''
-      Write-Host "Start"
-      Get-Date
-      Start-Sleep -Seconds 60
-      Write-Host "Stop"
-      Get-Date
-      '''
-  }
-  dependsOn: [
-      workspace
-  ]
-}
-
 // Get existing automation account
 module automationAccount_Existing '../autoIncreasePremiumFileShareQuota/modules/existingAutomationAccount.bicep' = if(!(empty(existingAutomationAccountResourceId))) {
   name: 'Existing-AA-${time}'

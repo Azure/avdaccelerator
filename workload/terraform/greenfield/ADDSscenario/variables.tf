@@ -153,7 +153,7 @@ variable "avd_users" {
 
 variable "aad_group_name" {
   type        = string
-  description = "Azure Active Directory Group for AVD users"
+  description = "Microsoft Entra ID Group for AVD users"
 }
 
 variable "rdsh_count" {

@@ -32,6 +32,16 @@
                             }
                         },
                         {
+                            "name": "deploymentInfo",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": true,
+                            "options": {
+                                "style": "Info",
+                                "text": "The subscription selected in the 'Project details' section below will be used to deploy all resources. \n\nThe region selected in 'Instance details' section below will be used to deploy the Azure Virtual Desktop management plane resources (workspace, host pool, and application group, etc.). These resource types are not available in all regions, but they are globally replicated.\n\nThe session hosts do not have to be deployed to the same region, therefore you will have the option to select that region on the 'Session Hosts' blade.",
+                                "uri": "https://docs.microsoft.com/azure/virtual-desktop/data-locations"
+                            }
+                        },
+                        {
                             "name": "resourceScope",
                             "type": "Microsoft.Common.ResourceScope",
                             "location": {
@@ -45,7 +55,7 @@
                             "type": "Microsoft.Common.TextBlock",
                             "visible": true,
                             "options": {
-                                "text": "Azure Azure Virtual Desktop Landing Zones will create the resource group hierarchy under the subscriptions with the prefix provided in this step.",
+                                "text": "Azure Virtual Desktop Landing Zones will create the resource group hierarchy under the subscriptions with the prefix provided in this step.",
                                 "link": {
                                     "label": "Learn more",
                                     "uri": "https://docs.microsoft.com/azure/cloud-adoption-framework/ready/enterprise-scale/management-group-and-subscription-organization"
@@ -95,16 +105,6 @@
                                     }
                                 }
                             ]
-                        },
-                        {
-                            "name": "deploymentInfo",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": true,
-                            "options": {
-                                "style": "Info",
-                                "text": "The subscription selected in the 'Project details' section below will be used to deploy all resources. \n\nThe region selected in 'Instance details' section below will be used to deploy the Azure Virtual Desktop management plane resources (workspace, host pool, and application group, etc.). These resource types are not available in all regions, but they are globally replicated.\n\nThe session hosts do not have to be deployed to the same region, therefore you will have the option to select that region on the 'Session Hosts' blade.",
-                                "uri": "https://docs.microsoft.com/azure/virtual-desktop/data-locations"
-                            }
                         }
                     ]
                 },
@@ -139,7 +139,7 @@
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Azure Active Directory (AAD)",
+                                                "label": "Microsoft Entra ID",
                                                 "value": "AAD"
                                             },
                                             {
@@ -147,21 +147,10 @@
                                                 "value": "ADDS"
                                             },
                                             {
-                                                "label": "Azure AD Domain Services (AAD DS)",
+                                                "label": "Microsoft Entra Domain Services",
                                                 "value": "AADDS"
                                             }
                                         ]
-                                    }
-                                },
-                                {
-                                    "name": "identityDomainName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "visible": true,
-                                    "label": "Domain name",
-                                    "toolTip": "Provide identity service domain name.",
-                                    "placeholder": "Example: contoso.com",
-                                    "constraints": {
-                                        "required": true
                                     }
                                 },
                                 {
@@ -170,14 +159,14 @@
                                     "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
                                     "label": "Intune enrollment",
                                     "defaultValue": false,
-                                    "toolTip": "If Intune is configured in your Azure AD tenant, you can choose to have the VM automatically enrolled during the deployment by selecting this box."
+                                    "toolTip": "If Intune is configured in your Microsoft Entra ID tenant, you can choose to have the VM automatically enrolled during the deployment by selecting this box."
                                 },
                                 {
                                     "name": "identityServiceProviderInfo",
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
                                     "options": {
-                                        "text": "Identity service provider must already exist, as they are a prerequisite for the Azure Virtual Desktop LZA deployment.",
+                                        "text": "Identity service provider must already exist, as it is a prerequisite for the Azure Virtual Desktop LZA deployment.",
                                         "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started.md",
                                         "style": "Info"
                                     }
@@ -199,33 +188,41 @@
                                     }
                                 },
                                 {
-                                    "name": "identityAvdUserAccessGroupsDropDown",
+                                    "name": "identityAvdUserAccessGroupDropDown",
                                     "type": "Microsoft.Common.DropDown",
-                                    "visible": "[not(steps('identity').identityAvdAccess.identityAvdUserAccessGroupsCheckBox)]",
+                                    "visible": "[not(steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox)]",
                                     "label": "Groups",
                                     "defaultValue": "",
                                     "filter": true,
-                                    "toolTip": "Select the desired group(s) to give access to Azure Virtual Desktop resources and if applicable to FSLogix file share.",
-                                    "multiselect": true,
+                                    "toolTip": "Select the desired group to give access to Azure Virtual Desktop resources and if applicable to FSLogix file share",
+                                    "multiselect": false,
                                     "constraints": {
                                         "allowedValues": "[map(steps('identity').identityAvdAccess.groupsApi.value, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\": {\"name\":\"', item.displayName, '\",\"id\":\"', item.id, '\"}}')))]"
                                     }
                                 },
                                 {
-                                    "name": "identityAvdUserAccessGroupsCheckBox",
+                                    "name": "identityAvdUserAccessGroupCheckBox",
                                     "type": "Microsoft.Common.CheckBox",
                                     "visible": true,
-                                    "label": "Provide groups IDs instead",
+                                    "label": "Provide group details",
                                     "defaultValue": false,
-                                    "toolTip": "When the desired groups are not listed in the drop down, selecting this box will allow for entering the group's ObjectIDs."
+                                    "toolTip": "When the desired group is not listed in the drop down, selecting this box will allow for entering the group's ObjectID and name. this information will be used to setup AVD access and FSLogix's file share NTFS permissions."
                                 },
                                 {
-                                    "name": "identityAvdUserAccessGroupsTextBox",
+                                    "name": "identityAvdUserAccessGroupTextBox1",
                                     "type": "Microsoft.Common.TextBox",
-                                    "visible": "[steps('identity').identityAvdAccess.identityAvdUserAccessGroupsCheckBox]",
-                                    "label": "ObjectIDs",
-                                    "toolTip": "Comma separated list of security groups (ObjectIDs) to be granted access to Azure Virtual Desktop published items and to create sessions on VMs and single sign-on (SSO) when using AAD as identity provider.",
-                                    "placeholder": "Example: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX,XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+                                    "visible": "[steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox]",
+                                    "label": "Name",
+                                    "toolTip": "Group name to be granted access to Azure Virtual Desktop published items and FSLogix NTFS permissions.",
+                                    "placeholder": "Example: AVD-users"
+                                },
+                                {
+                                    "name": "identityAvdUserAccessGroupTextBox2",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "visible": "[steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox]",
+                                    "label": "Object ID",
+                                    "toolTip": "Group objectID to be granted access to Azure Virtual Desktop published items and FSLogix NTFS permissions.",
+                                    "placeholder": "Example: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
                                 }
                             ]
                         },
@@ -855,6 +852,17 @@
                             "visible": true,
                             "elements": [
                                 {
+                                    "name": "identityDomainName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "visible": "[or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment)]",
+                                    "label": "AD Domain name",
+                                    "toolTip": "The full qualified domain name of the on-premises domain where the hybrid identities originated from, this information is used for Azure files authentication setup.",
+                                    "placeholder": "Example: contoso.com",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
+                                {
                                     "name": "identityDomainOuPathStorageExisting",
                                     "type": "Microsoft.Common.TextBox",
                                     "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
@@ -996,7 +1004,7 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
                             "options": {
-                                "text": "FSLogix storage for Azure AD joined session hosts is currently only available for hybrid identities.",
+                                "text": "FSLogix storage for Microsoft Entra ID joined session hosts is currently only available for hybrid identities.",
                                 "uri": "https://learn.microsoft.com/azure/virtual-desktop/create-profile-container-azure-ad",
                                 "style": "Warning"
                             }
@@ -1228,7 +1236,7 @@
                             "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false))]",
                             "options": {
                                 "text": "When using private endpoints, creating a new Azure Virtual Desktop vNet, and providing custom DNS servers, existing Azure private DNS Zones MUST be linked to the vNet where the custom DNS servers are located, this is needed for the end-to-end setup of FSLogix and MSIX App Attach file shares to be successful. The DNS resolution requests will be sent to the custom DNS servers and its vNet is the one that needs to resolve private endpoint DNS records.",
-                                "uri": "https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy",
+                                "uri": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns",
                                 "style": "Warning"
                             }
                         },
@@ -1238,7 +1246,7 @@
                             "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, true))]",
                             "options": {
                                 "text": "When using private endpoints and creating a new Azure Virtual Desktop vNet and new private DNS zones, custom DNS servers may NOT be used in the new vNet as this will cause FSLogix and/or MSIX App Attach file shares deployments to fail. This happens because the private DNS zones will be linked to the newly created vNet and only this vNet will be able to resolve the private endpoints DNS records.",
-                                "uri": "https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy",
+                                "uri": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns",
                                 "style": "Warning"
                             }
                         },
@@ -1248,7 +1256,7 @@
                             "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false))]",
                             "options": {
                                 "text": "When using private endpoints and an existing Azure Virtual Desktop vNet with custom DNS servers configured, existing private DNS zones MUST be linked to the vNet containing the custom DNS servers for FSLogix and/or MSIX App Attach file shares deployments to be successful, given DNS name resolution requests will go to custom DNS servers and their vNet will need to resolve private endpoints DNS records.",
-                                "uri": "https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy",
+                                "uri": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns",
                                 "style": "Warning"
                             }
                         },
@@ -1257,8 +1265,8 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, true))]",
                             "options": {
-                                "text": "When using private endpoints, an existing Azure Virtual Desktop vNet, and creating new private DNS zones, custom DNS servers may NOT be used (unless they are connected to the same vNet used for the Azure Virtual Desktop dpeloyment) in order for FSlogix/MSIX App Attach deployment to be successful, given that the private DNS zone will be linked to the existing vNet and this will be the only network able to resolve private endpoint DNS records. <br/> ***Note: selected options (existing vNet and create DNS zones) are only recommended when using Azure AD (AAD) as identity service provider.",
-                                "uri": "https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy",
+                                "text": "When using private endpoints, an existing Azure Virtual Desktop vNet, and creating new private DNS zones, custom DNS servers may NOT be used (unless they are connected to the same vNet used for the Azure Virtual Desktop deployment) in order for FSlogix/MSIX App Attach deployment to be successful, given that the private DNS zone will be linked to the existing vNet and this will be the only network able to resolve private endpoint DNS records. <br/> ***Note: selected options (existing vNet and create DNS zones) are only recommended when using Microsoft Entra ID as identity service provider.",
+                                "uri": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns",
                                 "style": "Warning"
                             }
                         },
@@ -1363,7 +1371,7 @@
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
                                     "options": {
-                                        "text": "vNet peering to identity services is not required when Azure AD (AAD) as identity service provider .",
+                                        "text": "vNet peering to identity services is not required when Microsoft Entra ID as identity service provider .",
                                         "uri": "https://learn.microsoft.com/azure/architecture/example-scenario/wvd/azure-virtual-desktop-azure-active-directory-join",
                                         "style": "info"
                                     }
@@ -1780,7 +1788,7 @@
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,2}$",
-                                        "validationMessage": "Value must be 1-5 characters."
+                                        "validationMessage": "Value must be 1-2 characters."
                                     }
                                 },
                                 {
@@ -2291,11 +2299,11 @@
                 "avdHostPoolType": "[steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType]",
                 "hostPoolPreferredAppGroupType": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneAppGroupOptions.preferredAppGroupType, 'Desktop')]",
                 "avdHostPoolLoadBalancerType": "[steps('managementPlane').managementPlaneHostPoolSettings.loadBalancerType]",
-                "avhHostPoolMaxSessions": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneHostPoolSettings.maxSessions, 1)]",
+                "hostPoolMaxSessions": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneHostPoolSettings.maxSessions, 1)]",
                 "avdPersonalAssignType": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolSettings.assignmentType, 'Automatic')]",
                 "avdIdentityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
                 "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
-                "avdIdentityDomainName": "[steps('identity').identityDomainInformation.identityDomainName]",
+                "identityDomainName": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment), steps('storage').storageGeneralSettings.identityDomainName, '')]",
                 "avdOuPath": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
                 "avdDomainJoinUserName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserName)]",
                 "avdDomainJoinUserPassword": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserPassword)]",
@@ -2375,7 +2383,8 @@
                 "opsTeamTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOpsTeamTag, 'no')]",
                 "ownerTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOwnerTag, 'no')]",
                 "costCenterTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsCostCenterTag, 'no')]",
-                "avdApplicationGroupIdentitiesIds": "[if(equals(steps('identity').identityAvdAccess.identityAvdUserAccessGroupsCheckBox, true), split(steps('identity').identityAvdAccess.identityAvdUserAccessGroupsTextBox, ','), map(steps('identity').identityAvdAccess.identityAvdUserAccessGroupsDropDown, (item) => item.id))]",
+                "securityPrincipalId": "[if(steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox, steps('identity').identityAvdAccess.identityAvdUserAccessGroupTextBox2, steps('identity').identityAvdAccess.identityAvdUserAccessGroupDropDown.id)]",
+                "securityPrincipalName": "[if(steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox, steps('identity').identityAvdAccess.identityAvdUserAccessGroupTextBox1, steps('identity').identityAvdAccess.identityAvdUserAccessGroupDropDown.name)]",
                 "avdDeployMonitoring": "[steps('monitoring').deployMonitoring]",
                 "deployAlaWorkspace": "[if(equals(steps('monitoring').deployMonitoring, true), steps('monitoring').deployMonitoringAlaWorkspace, false)]",
                 "avdAlaWorkspaceDataRetention": "[if(equals(steps('monitoring').deployMonitoringAlaWorkspace, true), steps('monitoring').deployMonitoringNewAlaWorkspaceRetention, 0)]",

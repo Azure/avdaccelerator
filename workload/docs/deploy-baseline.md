@@ -11,13 +11,12 @@
   - **Environment** – Deployment Environment type (Development/Test/Production), will be used for naming and tagging purposes.
 - **Identity provider** blade
   - **Identity Service Provider** - Identity service provider (AD DS, AAD DS, AAD) that already exists and will be used for Azure Virtual Desktop.
-    - Azure Active Directory (AAD).
+    - Microsoft Entra ID.
     - Active Directory (AD DS).
-    - Azure AD Domain Services (AAD DS).
+    - Microsoft Entra Domain Services.
   - **Azure Virtual Desktop access assignment** - These identities will be granted access to Azure Virtual Desktop application groups (role "Desktop Virtualization User").
     - Groups - select from the drop down the groups to be granted access to Azure Virtual Desktop published items and to create sessions on VMs and single sign-on (SSO) when using AAD as identity provider.
     - Note: when using AAD as identity service provider, an additional role (virtual machine user login) will be granted to compute resource group during deployment.
-    - Domain Name- Your Active Directory domain like contoso.com
   - **When selecting AD DS or AAD DS:**
     - Domain join credentials The Username and password with rights to join computers to the domain.
   - **When selecting ADD:**
@@ -47,7 +46,8 @@
   - **OS image source** - Select a marketplace image or an image from Azure Compute Gallery (Custom image build deployment will create images in compute gallery).
   - **OS version or image** - Choose the OS version or desired image from the Azure compute gallery.
 - **Storage** blade
-  - **General Settings**: 
+  - **General Settings**:
+    - **AD Domain name**: The full qualified domain name of the on-premises domain where the hybrid identities originated from, this information is used for Azure files authentication setup, Example: contoso.com.
     - **Custom OU Path (Optional)**: specify an OU path to create domain storage objects.
     - **Zone redundant storage**: Select to replicate storage across availability zones or only use local redundancy.
   - **FSLogix profile management**: Deploys FSLogix containers and session host setup for user's profiles.
@@ -85,6 +85,11 @@
 
 Take a look at the [Naming Standard and Tagging](./resource-naming.md) page for further information.
 
+## Post Deployment Considerations
+
+- When using Microsoft Entra ID as identity provider and deploying FSLogix storage, it is required to grant admin consent to the storage account service principal (your-storage-account-name.file.core.windows.net) created during deployemnt, additional information can be found in the
+[Grant admin consent to the new service principal](https://learn.microsoft.com/azure/storage/files/storage-files-identity-auth-hybrid-identities-enable?tabs=azure-portal#grant-admin-consent-to-the-new-service-principal) guide.
+
 ## Redeployment Considerations
 
 When redeploying the baseline automation with the same deployment prefix value, clean up of previously created resource groups or at least their contained resources will need to be removed before the new deployment is executed, this will prevent the duplication of resources (key vaults and storage accounts) and conflicts of IP range overlap when creating the Azure Virtual Desktop virtual network.
@@ -101,8 +106,7 @@ We have these other options available:
 ## Next Steps
 
 - After successful deployment, you can remove the following temporary resources used only during deployment:
-    - Management virtual machine (`vmmgmt{deploymentPrefix}{DeploymentEnvironment-d/t/p}{AzureRegionAcronym}`) and its associated OS disk and network interface.
-    Note: deployment scripts used to introduce wait times: Management-VM-Wait-{timestamp}, Managed-Identity-Wait-{timestamp}, Antimalware-Extension-Wait-{timestamp}, Session-Hosts-Wait-{timestamp}, SH-Monitoring-Wait-{timestamp} will automatically delete themselves 1 hour after the deployment, no need to trigger a manual delete.
+  - Management virtual machine (`vmmgmt{deploymentPrefix}{DeploymentEnvironment-d/t/p}{AzureRegionAcronym}`) and its associated OS disk and network interface.
 - You should assign specific roles, including [Azure Virtual Desktop - Specific roles](https://learn.microsoft.com/en-us/azure/virtual-desktop/rbac) based on your organization’s policies.
 - Preferably enable NSG Flow logs and Traffic Analytics.
 

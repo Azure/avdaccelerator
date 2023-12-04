@@ -2,6 +2,8 @@
 
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/azure/avdaccelerator.svg)](http://isitmaintained.com/project/azure/avdaccelerator "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/azure/avdaccelerator.svg)](http://isitmaintained.com/project/azure/avdaccelerator "Percentage of issues still open")
 
+[LZA Baseline](#azure-virtual-desktop---lza-baseline) | [Browfield Scenarios](#brownfield-scenarios) | [Custom Image Build](#custom-image-build) | [Architectural Diagram](#architectural-diagram)
+
 ## Overview
 
 Enterprise-scale is an architectural approach and a reference implementation that enables effective construction and operation of landing zones on Azure, at scale. This approach aligns with the Azure roadmap and the Cloud Adoption Framework for Azure.
@@ -33,9 +35,11 @@ As of today, we have a first reference implementation scenario that is one of th
 | Command line (Bicep/ARM) | [![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](./workload/bicep/readme.md#avd-accelerator-baseline) |
 | Terraform | [![Terraform](./workload/docs/icons/terraform.png)](./workload/terraform/greenfield/readme.md) |
 
+If you are having deployment challenges, refer to the [LZA baseline troubleshooting guide](/workload/docs/baseline-troubleshooting-guide.md) for guidance. For additional support please submit a GitHub issue.
+
 ## Azure Virtual Desktop - LZA Optional Deployments
 
-### Brownfield scenarios 
+### Brownfield scenarios
 
 The brownfield section contains templates to deploy additional features for Azure Virtual Desktop when existing infrastructure already exists. These templates can be used individually as required. Here is the list of deployment options available:
 
@@ -43,7 +47,7 @@ The brownfield section contains templates to deploy additional features for Azur
 - [Auto Increase Premium File Share Quota](./workload/bicep/brownfield/autoIncreasePremiumFileShareQuota/readme.md)
 - [Scaling Tool](./workload/bicep/brownfield/scalingTool/readme.md)
 - [Start VM On Connect](./workload/bicep/brownfield/startVmOnConnect/readme.md)
-- [Deploy App Attach Tools VM](./workload/bicep/brownfield/appAttachToolsVM/Readme.md)
+- [App Attach Tools VM](./workload/bicep/brownfield/appAttachToolsVM/Readme.md)
 - [Deep Insights Workbook](./workload/workbooks/deepInsightsWorkbook/readme.md)
 - [Migrate monitoring agent from MMA to AMA](./workload/scripts/Monitoring/readme.md)
 

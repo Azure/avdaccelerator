@@ -31,7 +31,7 @@ param sessionHostLocation string
 @sys.description('File share SMB multichannel.')
 param fileShareMultichannel bool
 
-@sys.description('AD domain name.')
+@sys.description('Identity domain name.')
 param identityDomainName string
 
 @sys.description('AD domain GUID.')
@@ -42,6 +42,9 @@ param wrklKvName string
 
 @sys.description('AVD session host domain join credentials.')
 param domainJoinUserName string
+
+@sys.description('AVD session host local admin credentials.')
+param vmLocalUserName string
 
 @sys.description('Azure Files storage account SKU.')
 param storageSku string
@@ -86,17 +89,19 @@ param storageCustomOuPath string
 @sys.description('OU Storage Path')
 param ouStgPath string
 
-@sys.description('If OU for Azure Storage needs to be created - set to true and ensure the domain join credentials have priviledge to create OU and create computer objects or join to domain.')
-param createOuForStorageString string
-
 @sys.description('Managed Identity Client ID')
 param managedIdentityClientId string
+
+@sys.description('Identity name array to grant RBAC role to access AVD application group and NTFS permissions.')
+param securityPrincipalName string
+
+@sys.description('storage account FDQN.')
+param storageAccountFqdn string
 
 // =========== //
 // Variable declaration //
 // =========== //
 var varAzureCloudName = environment().name
-var varStoragePurposeLower = toLower(storagePurpose)
 var varAvdFileShareLogsDiagnostic = [
     'allLogs'
 ]
@@ -104,8 +109,11 @@ var varAvdFileShareMetricsDiagnostic = [
     'Transaction'
 ]
 var varWrklStoragePrivateEndpointName = 'pe-${storageAccountName}-file'
-var vardirectoryServiceOptions = (identityServiceProvider == 'AADDS') ? 'AADDS': (identityServiceProvider == 'AAD') ? 'AADKERB': 'None'
-var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -DomainAdminUserName ${domainJoinUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -CreateNewOU ${createOuForStorageString} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId}'
+var varDirectoryServiceOptions = (identityServiceProvider == 'AADDS') ? 'AADDS': (identityServiceProvider == 'AAD') ? 'AADKERB': 'None'
+var varSecurityPrincipalName = !empty(securityPrincipalName)? securityPrincipalName : 'none'
+var varAdminUserName = (identityServiceProvider == 'AAD') ? vmLocalUserName : domainJoinUserName
+var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -AdminUserName ${varAdminUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName "${varSecurityPrincipalName}" -StorageAccountFqdn ${storageAccountFqdn} '
+
 // =========== //
 // Deployments //
 // =========== //
@@ -126,13 +134,14 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
         skuName: storageSku
         allowBlobPublicAccess: false
         publicNetworkAccess: deployPrivateEndpoint ? 'Disabled' : 'Enabled'
-        kind: ((storageSku =~ 'Premium_LRS') || (storageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
+        kind: ((storageSku == 'Premium_LRS') || (storageSku == 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
+        largeFileSharesState: (storageSku == 'Standard_LRS') || (storageSku == 'Standard_ZRS') ? 'Enabled': 'Disabled'
         azureFilesIdentityBasedAuthentication: {
-            directoryServiceOptions: vardirectoryServiceOptions
+            directoryServiceOptions: varDirectoryServiceOptions
             activeDirectoryProperties: (identityServiceProvider == 'AAD') ? {
                 domainGuid: identityDomainGuid
                 domainName: identityDomainName
-            }: {}
+            } : {}
         }
         accessTier: 'Hot'
         networkAcls: deployPrivateEndpoint ? {
@@ -168,7 +177,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
                 privateDnsZoneGroup: {
                     privateDNSResourceIds: [
                         vnetPrivateDnsZoneFilesId
-                    ]                    
+                    ]
                 }
             }
         ] : []
@@ -176,12 +185,6 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
         diagnosticWorkspaceId: alaWorkspaceResourceId
     }
 }
-
-// Call on the VM.
-//resource managementVMget 'Microsoft.Compute/virtualMachines@2022-11-01' existing = {
-//    name: managementVmName
-//    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
-//}
 
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
 module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = {
@@ -192,14 +195,10 @@ module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = {
         name: managementVmName
         file: storageToDomainScript
         scriptArguments: varStorageToDomainScriptArgs
-        domainJoinUserPassword: avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
+        adminUserPassword: (identityServiceProvider == 'AAD') ? avdWrklKeyVaultget.getSecret('vmLocalUserPassword') : avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
         baseScriptUri: storageToDomainScriptUri
     }
     dependsOn: [
         storageAndFile
     ]
 }
-
-// =========== //
-//   Outputs   //
-// =========== //
