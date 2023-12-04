@@ -3,7 +3,7 @@
 	"view": {
 		"kind": "Form",
 		"properties": {
-			"title": "Deploy App Attach VM with Tools",
+			"title": "Azure Virtual Desktop LZA: Deploy App Attach VM with Tools",
 			"steps": [
 				{
 					"name": "basics",

@@ -5,7 +5,7 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
-@description('Required. The object ID for the Azure Virtual Desktop application in Azure AD.')
+@description('Required. The object ID for the Azure Virtual Desktop application in Microsoft Entra ID.')
 param avdObjectId string
 
 @description('Required. The resource ID for the host pool to enable Start VM On Connect on.')

@@ -1,4 +1,4 @@
-# Implement Azure Virtual Desktop with Azure Active Directory
+# Implement Azure Virtual Desktop with Microsoft Entra ID
 
 This guide is designed to help you get started with deploying a greenfield Azure Virtual Desktop using the provided Terraform template(s) within this repository. Before you deploy, it is recommended to review the template(s) to understand the resources that will be deployed and the associated costs.
 
@@ -8,7 +8,7 @@ This accelerator is to be used as starter kit and you can expand its functionali
 
 ## Table of contents
 
-- [Implement Azure Virtual Desktop with Azure Active Directory](#implement-azure-virtual-desktop-with-azure-active-directory)
+- [Implement Azure Virtual Desktop with Microsoft Entra ID](#implement-azure-virtual-desktop-with-azure-active-directory)
   - [Table of contents](#table-of-contents)
   - [Scenario Overview](#scenario-overview)
     - [Azure Architecture](#azure-architecture)

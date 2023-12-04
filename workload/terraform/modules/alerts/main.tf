@@ -12,7 +12,7 @@ resource "azurerm_monitor_action_group" "ag" {
   short_name          = "avdactgrp" #  short_name to be in the range (1 - 12)
   email_receiver {
     name          = "sendtoavdadmin"
-    email_address = "jensheerin@microsoft.com"
+    email_address = var.email_address
   }
 }
 
