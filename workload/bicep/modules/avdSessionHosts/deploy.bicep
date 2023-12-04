@@ -49,7 +49,7 @@ param avsetNamePrefix string
 @sys.description('The service providing domain services for Azure Virtual Desktop.')
 param identityServiceProvider string
 
-@sys.description('Eronll session hosts on Intune.')
+@sys.description('Enroll session hosts on Intune.')
 param createIntuneEnrollment bool
 
 @sys.description('This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
@@ -129,6 +129,9 @@ param deployMonitoring bool
 
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
+
+@sys.description('Data collection rule ID.')
+param dataCollectionRuleId string
 
 // =========== //
 // Variable declaration //
@@ -301,6 +304,21 @@ module monitoring '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/ext
         enableDefaultTelemetry: false
     }
     dependsOn: [
+        sessionHostsAntimalwareExtension
+        alaWorkspace
+    ]
+}]
+
+// Data collection rule association
+module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bicep' = [for i in range(1, count): if (deployMonitoring) {
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+    name: 'DCR-Asso-${batchId}-${i - 1}-${time}'
+    params: {
+        virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+        dataCollectionRuleId: dataCollectionRuleId
+    }
+    dependsOn: [
+        monitoring
         sessionHostsAntimalwareExtension
         alaWorkspace
     ]
