@@ -177,16 +177,13 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
       name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
       location: location
       timeZone: timeZone
-      userAssignedIdentities: createAvdFslogixDeployment ? {
-          '${storageManagedIdentityResourceId}': {}
-      } : {}
-      systemAssignedIdentity: (identityServiceProvider == 'AAD' || deployMonitoring) ? true: false
+      systemAssignedIdentity: (identityServiceProvider == 'AAD') ? true : false
       availabilityZone: useAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
       encryptionAtHost: encryptionAtHost
       availabilitySetResourceId: useAvailabilityZones ? '' : '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/availabilitySets/${avsetNamePrefix}-${padLeft(((1 + (i + countIndex) / maxAvsetMembersCount)), 3, '0')}'
       osType: 'Windows'
       licenseType: 'Windows_Client'
-      vmSize: size
+      vmSize: vmSize
       securityType: securityType
       secureBootEnabled: secureBootEnabled
       vTpmEnabled: vTpmEnabled
@@ -225,7 +222,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
       // ADDS or AADDS domain join.
       extensionDomainJoinPassword: keyVault.getSecret('domainJoinUserPassword')
       extensionDomainJoinConfig: {
-          enabled: (identityServiceProvider == 'AAD') ? false: true
+          enabled: (identityServiceProvider == 'AADDS' || identityServiceProvider == 'ADDS') ? true : false
           settings: {
               name: identityDomainName
               ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
@@ -239,7 +236,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
           enabled: (identityServiceProvider == 'AAD') ? true: false
           settings: createIntuneEnrollment ? {
               mdmId: '0000000a-0000-0000-c000-000000000000'
-          }: {}
+          } : {}
       }
       nicdiagnosticMetricsToEnable: deployMonitoring ? varNicDiagnosticMetricsToEnable : []
       diagnosticWorkspaceId: deployMonitoring ? alaWorkspaceResourceId : ''
