@@ -289,12 +289,12 @@ module monitoring '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/ext
     params: {
         location: location
         virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        name: 'MicrosoftMonitoringAgent'
-        publisher: 'Microsoft.EnterpriseCloud.Monitoring'
-        type: 'MicrosoftMonitoringAgent'
+        name: 'AzureMonitorWindowsAgent'
+        publisher: 'Microsoft.Azure.Monitor'
+        type: 'AzureMonitorWindowsAgent'
         typeHandlerVersion: '1.0'
         autoUpgradeMinorVersion: true
-        enableAutomaticUpgrade: false
+        enableAutomaticUpgrade: true
         settings: {
             workspaceId: !empty(alaWorkspaceResourceId) ? reference(alaWorkspace.id, alaWorkspace.apiVersion).customerId : ''
         }
