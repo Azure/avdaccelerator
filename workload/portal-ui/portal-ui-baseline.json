@@ -613,6 +613,7 @@
                                 {
                                     "name": "sessionHostSizeInfobox",
                                     "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[steps('sessionHosts').deploySessionHosts]",
                                     "options": {
                                         "text": "Session host virtual machine sizing guidelines",
                                         "uri": "https://learn.microsoft.com/windows-server/remote/remote-desktop-services/virtual-machine-recs",
