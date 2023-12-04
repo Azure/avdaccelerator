@@ -404,7 +404,7 @@ module privateDnsZoneKeyVaultGov '.bicep/privateDnsZones.bicep' = if (createPriv
 
 
 // Private DNS zones Azure files China
-module privateDnsZoneAzureFilesChina '.bicep/privateDnsZones.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureUSGovernment')) {
+module privateDnsZoneAzureFilesChina '.bicep/privateDnsZones.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureChinaCloud')) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'Private-DNS-Gov-Files-${time}'
     params: {
@@ -415,7 +415,7 @@ module privateDnsZoneAzureFilesChina '.bicep/privateDnsZones.bicep' = if (create
 }
 
 // Private DNS zones key vault China
-module privateDnsZoneKeyVaultChina '.bicep/privateDnsZones.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureUSGovernment')) {
+module privateDnsZoneKeyVaultChina '.bicep/privateDnsZones.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureChinaCloud')) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'Private-DNS-Gov-Kv-${time}'
     params: {
@@ -430,5 +430,5 @@ module privateDnsZoneKeyVaultChina '.bicep/privateDnsZones.bicep' = if (createPr
 // =========== //
 output applicationSecurityGroupResourceId string = deployAsg ? applicationSecurityGroup.outputs.resourceId : ''
 output virtualNetworkResourceId string = createVnet ? virtualNetwork.outputs.resourceId : ''
-output azureFilesDnsZoneResourceId string = createPrivateDnsZones ? ((varAzureCloudName == 'AzureCloud') ? privateDnsZoneAzureFilesCommercial.outputs.resourceId : privateDnsZoneAzureFilesGov.outputs.resourceId) : ''
-output KeyVaultDnsZoneResourceId string = createPrivateDnsZones ? ((varAzureCloudName == 'AzureCloud') ? privateDnsZoneKeyVaultCommercial.outputs.resourceId : privateDnsZoneKeyVaultGov.outputs.resourceId) : ''
+output azureFilesDnsZoneResourceId string = createPrivateDnsZones ? ((varAzureCloudName == 'AzureCloud') ? privateDnsZoneAzureFilesCommercial.outputs.resourceId : ((varAzureCloudName == 'AzureUSGovernment') ? privateDnsZoneAzureFilesGov.outputs.resourceId : ((varAzureCloudName == 'AzureChinaCloud') ? privateDnsZoneAzureFilesChina.outputs.resourceId : ''))) : ''
+output KeyVaultDnsZoneResourceId string = createPrivateDnsZones ? ((varAzureCloudName == 'AzureCloud') ? privateDnsZoneKeyVaultCommercial.outputs.resourceId : ((varAzureCloudName == 'AzureUSGovernment') ? privateDnsZoneKeyVaultGov.outputs.resourceId : ((varAzureCloudName == 'AzureChinaCloud') ? privateDnsZoneKeyVaultChina.outputs.resourceId : ''))) : ''
