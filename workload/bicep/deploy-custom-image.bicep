@@ -503,11 +503,11 @@ var varRemainingCustomizers = [
     }
     {
         type: 'PowerShell'
-        name: 'Sleep for a min'
+        name: 'Sleep for 5 minutes'
         runElevated: true
         runAsSystem: true
         inline: [
-            'Write-Host "Sleep for a 5 min"'
+            'Write-Host "Sleep for 5 min"'
             'Start-Sleep -Seconds 300'
         ]
     }

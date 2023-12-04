@@ -46,6 +46,8 @@ param tags object
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
+@sys.description('Enable purge protection on the key vault')
+param enableKvPurgeProtection bool = true
 // =========== //
 // Variable declaration //
 // =========== //
@@ -62,7 +64,7 @@ module ztKeyVault '../../../../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.b
         name: kvName
         location: location
         enableRbacAuthorization: true
-        enablePurgeProtection: true
+        enablePurgeProtection: enableKvPurgeProtection
         softDeleteRetentionInDays: 7
         publicNetworkAccess: 'Disabled'
         networkAcls: {
