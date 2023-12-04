@@ -41,15 +41,16 @@ Foreach ($storageAcct in $storageAccountResourceIDs) {
         $share = Get-AzRmStorageShare -ResourceGroupName $ResourceGroup -StorageAccountName $storageAcctName -Name $shareName -GetShareUsage
         #Write-Host "Share: " $shareName
         $shareQuota = $share.QuotaGiB #GB
-        $shareUsageInGB = $share.ShareUsageInBytes / 1073741824 # Bytes to GB
+        $shareUsageInGB = $share.ShareUsageBytes / 1073741824 # Bytes to GB
         
         $RemainingPercent = 100 - ($shareUsageInGB / $shareQuota)
         #Write-Host "..." $shareUsageInGB "of" $shareQuota "GB used"
         #Write-Host "..." $RemainingPercent "% Available"
-        
+        # Add file share resource Id
+        $shareResourceId = $share.Id
         # Compile results 
         # AzFiles / Subscription / RG / StorAcct / Share / Quota / GB Used / %Available
-        $Data = @('AzFiles', $SubName, $resourceGroup, $storageAcctName, $shareName, $shareQuota.ToString(), $shareUsageInGB.ToString(), $RemainingPercent.ToString())
+        $Data = @('AzFiles', $SubName, $resourceGroup, $storageAcctName, $shareName, $shareQuota.ToString(), $shareUsageInGB.ToString(), $RemainingPercent.ToString(), $shareResourceId)
         $i = 0
         ForEach ($Item in $Data) {
             If ($i -ne $Data.Length - 1) {
