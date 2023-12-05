@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "4713705254753856751"
+      "templateHash": "15036307530050318786"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -19261,7 +19261,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "10865746163538598377"
+              "templateHash": "15854414862777248316"
             }
           },
           "parameters": {
@@ -22410,7 +22410,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.23.1.45101",
-                      "templateHash": "9816348956723829998"
+                      "templateHash": "8553306537331014367"
                     }
                   },
                   "parameters": {
@@ -22551,7 +22551,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.23.1.45101",
-                              "templateHash": "10047657056248810406"
+                              "templateHash": "11666188731481189718"
                             }
                           },
                           "parameters": {
@@ -22648,7 +22648,7 @@
                             },
                             "vaultSku": {
                               "type": "string",
-                              "defaultValue": "premium",
+                              "defaultValue": "standard",
                               "allowedValues": [
                                 "premium",
                                 "standard"
@@ -25692,7 +25692,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "10047657056248810406"
+              "templateHash": "11666188731481189718"
             }
           },
           "parameters": {
@@ -25789,7 +25789,7 @@
             },
             "vaultSku": {
               "type": "string",
-              "defaultValue": "premium",
+              "defaultValue": "standard",
               "allowedValues": [
                 "premium",
                 "standard"
