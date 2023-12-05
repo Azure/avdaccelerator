@@ -473,6 +473,9 @@ param time string = utcNow()
 @sys.description('Enable usage and telemetry feedback to Microsoft.')
 param enableTelemetry bool = true
 
+@sys.description('Enable purge protection for the keyvaults. (Default: true)')
+param enableKvPurgeProtection bool = true
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -944,6 +947,7 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
         deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
         keyVaultprivateDNSResourceId: createPrivateDnsZones ? networking.outputs.KeyVaultDnsZoneResourceId : avdVnetPrivateDnsZoneKeyvaultId
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+        enableKvPurgeProtection: enableKvPurgeProtection
         kvTags: varZtKeyvaultTag
     }
     dependsOn: [
@@ -962,7 +966,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
         name: varWrklKvName
         location: avdSessionHostLocation
         enableRbacAuthorization: false
-        enablePurgeProtection: true
+        enablePurgeProtection: enableKvPurgeProtection
         softDeleteRetentionInDays: 7
         publicNetworkAccess: deployPrivateEndpointKeyvaultStorage ? 'Disabled' : 'Enabled'
         networkAcls: deployPrivateEndpointKeyvaultStorage ? {
