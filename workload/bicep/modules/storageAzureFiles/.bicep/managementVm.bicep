@@ -167,7 +167,7 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
                 options: '3'
             }
         }
-        // Azure AD (AAD) Join.
+        // Entra ID Join.
         extensionAadJoinConfig: {
             enabled: (identityServiceProvider == 'AAD') ? true: false
         }
