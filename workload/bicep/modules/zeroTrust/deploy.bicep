@@ -55,6 +55,9 @@ param keyVaultprivateDNSResourceId string
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
+@sys.description('Enable purge protection on the key vault')
+param enableKvPurgeProtection bool = true
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -222,6 +225,7 @@ module ztKeyVault './.bicep/zeroTrustKeyVault.bicep' = if (diskZeroTrust) {
         diskEncryptionSetName: diskEncryptionSetName
         ztManagedIdentityResourceId: diskZeroTrust ? ztManagedIdentity.outputs.resourceId : ''
         tags: union(tags, kvTags)
+        enableKvPurgeProtection: enableKvPurgeProtection
     }
 }
 
