@@ -203,6 +203,9 @@
         "diskZeroTrust": {
             "value": false
         },
+        "enableKvPurgeProtection": {
+            "value": true
+        },
         "deployGpuPolicies": {
             "value": true
         }
