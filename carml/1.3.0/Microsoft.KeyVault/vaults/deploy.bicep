@@ -47,7 +47,7 @@ param enablePurgeProtection bool = true
   'premium'
   'standard'
 ])
-param vaultSku string = 'standard'
+param vaultSku string = 'premium'
 
 @description('Optional. Service endpoint object information. For security reasons, it is recommended to set the DefaultAction Deny.')
 param networkAcls object = {}
