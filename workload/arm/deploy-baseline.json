@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "15036307530050318786"
+      "templateHash": "10837367970747705762"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -1271,6 +1271,7 @@
       }
     },
     "varDeploymentPrefixLowercase": "[toLower(parameters('deploymentPrefix'))]",
+    "varAzureCloudName": "[environment().name]",
     "varDeploymentEnvironmentLowercase": "[toLower(parameters('deploymentEnvironment'))]",
     "varDeploymentEnvironmentComputeStorage": "[if(equals(parameters('deploymentEnvironment'), 'Dev'), 'd', if(equals(parameters('deploymentEnvironment'), 'Test'), 't', if(equals(parameters('deploymentEnvironment'), 'Prod'), 'p', '')))]",
     "varNamingUniqueStringThreeChar": "[take(format('{0}', uniqueString(parameters('avdWorkloadSubsId'), variables('varDeploymentPrefixLowercase'), parameters('time'))), 3)]",
@@ -1315,6 +1316,7 @@
     "varScalingPlanWeekendScheduleName": "[format('Weekend-{0}', variables('varManagementPlaneNamingStandard'))]",
     "varWrklKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('avdWrklKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')), format('kv-sec-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')))]",
     "varWrklKvPrivateEndpointName": "[format('pe-{0}-vault', variables('varWrklKvName'))]",
+    "varWrklKeyVaultSku": "[if(or(equals(variables('varAzureCloudName'), 'AzureCloud'), equals(variables('varAzureCloudName'), 'AzureUSGovernment')), 'premium', if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), 'standard', null()))]",
     "varSessionHostNamePrefix": "[if(parameters('avdUseCustomNaming'), parameters('avdSessionHostCustomNamePrefix'), format('vm{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varSessionHostLocationAcronym')))]",
     "varAvsetNamePrefix": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}', parameters('avsetCustomNamePrefix'), variables('varComputeStorageResourcesNamingStandard')), format('avail-{0}', variables('varComputeStorageResourcesNamingStandard')))]",
     "varStorageManagedIdentityName": "[format('id-storage-{0}-001', variables('varComputeStorageResourcesNamingStandard'))]",
@@ -19261,7 +19263,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "15854414862777248316"
+              "templateHash": "10865746163538598377"
             }
           },
           "parameters": {
@@ -22410,7 +22412,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.23.1.45101",
-                      "templateHash": "8553306537331014367"
+                      "templateHash": "9816348956723829998"
                     }
                   },
                   "parameters": {
@@ -22551,7 +22553,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.23.1.45101",
-                              "templateHash": "11666188731481189718"
+                              "templateHash": "10047657056248810406"
                             }
                           },
                           "parameters": {
@@ -22648,7 +22650,7 @@
                             },
                             "vaultSku": {
                               "type": "string",
-                              "defaultValue": "standard",
+                              "defaultValue": "premium",
                               "allowedValues": [
                                 "premium",
                                 "standard"
@@ -25672,6 +25674,9 @@
           "enablePurgeProtection": {
             "value": true
           },
+          "vaultSku": {
+            "value": "[variables('varWrklKeyVaultSku')]"
+          },
           "softDeleteRetentionInDays": {
             "value": 7
           },
@@ -25692,7 +25697,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "11666188731481189718"
+              "templateHash": "10047657056248810406"
             }
           },
           "parameters": {
@@ -25789,7 +25794,7 @@
             },
             "vaultSku": {
               "type": "string",
-              "defaultValue": "standard",
+              "defaultValue": "premium",
               "allowedValues": [
                 "premium",
                 "standard"
