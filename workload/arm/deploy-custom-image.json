@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.21.1.54444",
-      "templateHash": "3143037409032084215"
+      "version": "0.18.4.5664",
+      "templateHash": "3347691348631314453"
     },
     "name": "AVD Accelerator - Baseline Custom Image Deployment",
     "description": "AVD Accelerator - Custom Image Baseline"
@@ -42,13 +42,13 @@
     "buildSchedule": {
       "type": "string",
       "defaultValue": "Recurring",
+      "metadata": {
+        "description": "Determine whether to build the image template one time or check daily for a new marketplace image and auto build when found. (Default: Recurring)"
+      },
       "allowedValues": [
         "OneTime",
         "Recurring"
-      ],
-      "metadata": {
-        "description": "Determine whether to build the image template one time or check daily for a new marketplace image and auto build when found. (Default: Recurring)"
-      }
+      ]
     },
     "costCenterTag": {
       "type": "string",
@@ -67,16 +67,16 @@
     "criticalityTag": {
       "type": "string",
       "defaultValue": "Low",
+      "metadata": {
+        "description": "criticality of each workload. (Default: Low)"
+      },
       "allowedValues": [
         "Low",
         "Medium",
         "High",
         "Mission-critical",
         "Custom"
-      ],
-      "metadata": {
-        "description": "criticality of each workload. (Default: Low)"
-      }
+      ]
     },
     "customNaming": {
       "type": "bool",
@@ -88,16 +88,16 @@
     "dataClassificationTag": {
       "type": "string",
       "defaultValue": "Non-business",
+      "metadata": {
+        "description": "Sensitivity of data hosted (Default: Non-business)"
+      },
       "allowedValues": [
         "Non-business",
         "Public",
         "General",
         "Confidential",
         "Highly Confidential"
-      ],
-      "metadata": {
-        "description": "Sensitivity of data hosted (Default: Non-business)"
-      }
+      ]
     },
     "departmentTag": {
       "type": "string",
@@ -109,6 +109,9 @@
     "deploymentLocation": {
       "type": "string",
       "defaultValue": "eastus",
+      "metadata": {
+        "description": "Location to deploy the resources in this solution, except the image template. (Default: eastus)"
+      },
       "allowedValues": [
         "australiaeast",
         "australiasoutheast",
@@ -144,10 +147,7 @@
         "westus",
         "westus2",
         "westus3"
-      ],
-      "metadata": {
-        "description": "Location to deploy the resources in this solution, except the image template. (Default: eastus)"
-      }
+      ]
     },
     "enableMonitoringAlerts": {
       "type": "bool",
@@ -173,14 +173,14 @@
     "environmentTag": {
       "type": "string",
       "defaultValue": "Dev",
+      "metadata": {
+        "description": "Deployment environment of the application, workload. (Default: Dev)"
+      },
       "allowedValues": [
         "Prod",
         "Dev",
         "Staging"
-      ],
-      "metadata": {
-        "description": "Deployment environment of the application, workload. (Default: Dev)"
-      }
+      ]
     },
     "existingLogAnalyticsWorkspaceResourceId": {
       "type": "string",
@@ -213,10 +213,10 @@
     "imageDefinitionCustomName": {
       "type": "string",
       "defaultValue": "avd-win11-21h2",
-      "maxLength": 64,
       "metadata": {
         "description": "Custom name for Image Definition. (Default: avd-win11-21h2)"
-      }
+      },
+      "maxLength": 64
     },
     "imageDefinitionAcceleratedNetworkSupported": {
       "type": "string",
@@ -243,31 +243,31 @@
     "imageDefinitionSecurityType": {
       "type": "string",
       "defaultValue": "Standard",
+      "metadata": {
+        "description": "Choose the Security Type of the Image Definition. (Default: Standard)"
+      },
       "allowedValues": [
         "Standard",
         "TrustedLaunch",
         "ConfidentialVM",
         "ConfidentialVMSupported"
-      ],
-      "metadata": {
-        "description": "Choose the Security Type of the Image Definition. (Default: Standard)"
-      }
+      ]
     },
     "imageGalleryCustomName": {
       "type": "string",
       "defaultValue": "gal_avd_use2_001",
-      "maxLength": 64,
       "metadata": {
         "description": "Custom name for Image Gallery. (Default: gal_avd_use2_001)"
-      }
+      },
+      "maxLength": 64
     },
     "imageTemplateCustomName": {
       "type": "string",
       "defaultValue": "it-avd-win11-22h2",
-      "maxLength": 260,
       "metadata": {
         "description": "Custom name for Image Template. (Default: it-avd-win11-21h2)"
-      }
+      },
+      "maxLength": 260
     },
     "imageVersionDisasterRecoveryLocation": {
       "type": "string",
@@ -285,13 +285,13 @@
     "imageVersionStorageAccountType": {
       "type": "string",
       "defaultValue": "Standard_LRS",
+      "metadata": {
+        "description": "Determine the Storage Account Type for the Image Version distributed by the Image Template. (Default: Standard_LRS)"
+      },
       "allowedValues": [
         "Standard_LRS",
         "Standard_ZRS"
-      ],
-      "metadata": {
-        "description": "Determine the Storage Account Type for the Image Version distributed by the Image Template. (Default: Standard_LRS)"
-      }
+      ]
     },
     "logAnalyticsWorkspaceCustomName": {
       "type": "string",
@@ -303,15 +303,18 @@
     "logAnalyticsWorkspaceDataRetention": {
       "type": "int",
       "defaultValue": 30,
-      "minValue": 30,
-      "maxValue": 720,
       "metadata": {
         "description": "Set the data retention in the number of days for the Log Analytics Workspace. (Default: 30)"
-      }
+      },
+      "minValue": 30,
+      "maxValue": 720
     },
     "operatingSystemImage": {
       "type": "string",
       "defaultValue": "win11_22h2",
+      "metadata": {
+        "description": "AVD OS image source. (Default: win11-22h2)"
+      },
       "allowedValues": [
         "win10_21h2",
         "win10_21h2_office",
@@ -320,11 +323,10 @@
         "win11_21h2",
         "win11_21h2_office",
         "win11_22h2",
-        "win11_22h2_office"
-      ],
-      "metadata": {
-        "description": "AVD OS image source. (Default: win11-22h2)"
-      }
+        "win11_22h2_office",
+        "win11_22h3",
+        "win11_22h3_office"
+      ]
     },
     "operationsTeamTag": {
       "type": "string",
@@ -350,10 +352,10 @@
     "resourceGroupCustomName": {
       "type": "string",
       "defaultValue": "rg-avd-use2-shared-services",
-      "maxLength": 90,
       "metadata": {
         "description": "Custom name for Resource Group. (Default: rg-avd-use2-shared-services)"
-      }
+      },
+      "maxLength": 90
     },
     "screenCaptureProtection": {
       "type": "bool",
@@ -385,10 +387,10 @@
     "userAssignedManagedIdentityCustomName": {
       "type": "string",
       "defaultValue": "",
-      "maxLength": 128,
       "metadata": {
         "description": "Custom name for User Assigned Identity. (Default: id-avd)"
-      }
+      },
+      "maxLength": 128
     },
     "workloadNameTag": {
       "type": "string",
@@ -467,6 +469,11 @@
       },
       "chinanorth2": {
         "acronym": "cnn2",
+        "timeDifference": "+8:00",
+        "timeZone": "China Standard Time"
+      },
+      "chinanorth3": {
+        "acronym": "cnn3",
         "timeDifference": "+8:00",
         "timeZone": "China Standard Time"
       },
@@ -790,6 +797,24 @@
         "sku": "win11-22h2-avd-m365",
         "hyperVGeneration": "V2",
         "version": "latest"
+      },
+      "win11_22h3": {
+        "osType": "Windows",
+        "osState": "Generalized",
+        "offer": "windows-11",
+        "publisher": "MicrosoftWindowsDesktop",
+        "sku": "win11-22h3-avd",
+        "hyperVGeneration": "V2",
+        "version": "latest"
+      },
+      "win11_22h3_office": {
+        "osType": "Windows",
+        "osState": "Generalized",
+        "offer": "office-365",
+        "publisher": "MicrosoftWindowsDesktop",
+        "sku": "win11-22h3-avd-m365",
+        "hyperVGeneration": "V2",
+        "version": "latest"
       }
     },
     "varRdpShortPathCustomizer": "[if(parameters('rdpShortPathManagedNetworks'), createArray(createObject('type', 'PowerShell', 'name', 'rdpShortPath', 'runElevated', true(), 'runAsSystem', true(), 'scriptUri', format('{0}scripts/Set-RdpShortpath.ps1', variables('varBaseScriptUri')))), createArray())]",
@@ -810,11 +835,11 @@
       },
       {
         "type": "PowerShell",
-        "name": "Sleep for a min",
+        "name": "Sleep for 5 minutes",
         "runElevated": true,
         "runAsSystem": true,
         "inline": [
-          "Write-Host \"Sleep for a 5 min\"",
+          "Write-Host \"Sleep for 5 min\"",
           "Start-Sleep -Seconds 300"
         ]
       },
@@ -900,8 +925,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "16305048561599990873"
+              "version": "0.18.4.5664",
+              "templateHash": "8823794279696588123"
             }
           },
           "parameters": {
@@ -921,14 +946,14 @@
             "lock": {
               "type": "string",
               "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Specify the type of lock."
+              },
               "allowedValues": [
                 "",
                 "CanNotDelete",
                 "ReadOnly"
-              ],
-              "metadata": {
-                "description": "Optional. Specify the type of lock."
-              }
+              ]
             },
             "roleAssignments": {
               "type": "array",
@@ -1009,8 +1034,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "6750369994052504038"
+                      "version": "0.18.4.5664",
+                      "templateHash": "10196623923433376428"
                     }
                   },
                   "parameters": {
@@ -1023,13 +1048,13 @@
                     },
                     "level": {
                       "type": "string",
+                      "metadata": {
+                        "description": "Required. Set lock level."
+                      },
                       "allowedValues": [
                         "CanNotDelete",
                         "ReadOnly"
-                      ],
-                      "metadata": {
-                        "description": "Required. Set lock level."
-                      }
+                      ]
                     },
                     "notes": {
                       "type": "string",
@@ -1139,8 +1164,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "1146156557420886689"
+                      "version": "0.18.4.5664",
+                      "templateHash": "12106659644963784818"
                     }
                   },
                   "parameters": {
@@ -1508,8 +1533,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "7655074658008799048"
+              "version": "0.18.4.5664",
+              "templateHash": "11642303938395689213"
             }
           },
           "parameters": {
@@ -1671,8 +1696,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "7754983815852819350"
+              "version": "0.18.4.5664",
+              "templateHash": "15737913196788172522"
             }
           },
           "parameters": {
@@ -1693,14 +1718,14 @@
             "lock": {
               "type": "string",
               "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Specify the type of lock."
+              },
               "allowedValues": [
                 "",
                 "CanNotDelete",
                 "ReadOnly"
-              ],
-              "metadata": {
-                "description": "Optional. Specify the type of lock."
-              }
+              ]
             },
             "roleAssignments": {
               "type": "array",
@@ -1794,8 +1819,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "5263933546195004806"
+                      "version": "0.18.4.5664",
+                      "templateHash": "943002000979437913"
                     }
                   },
                   "parameters": {
@@ -1993,8 +2018,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "17317977123822737513"
+              "version": "0.18.4.5664",
+              "templateHash": "16771064281561658183"
             }
           },
           "parameters": {
@@ -2576,8 +2601,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "17317977123822737513"
+              "version": "0.18.4.5664",
+              "templateHash": "16771064281561658183"
             }
           },
           "parameters": {
@@ -3158,17 +3183,17 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "2176013930368017643"
+              "version": "0.18.4.5664",
+              "templateHash": "11092596112037938839"
             }
           },
           "parameters": {
             "name": {
               "type": "string",
-              "minLength": 1,
               "metadata": {
                 "description": "Required. Name of the Azure Compute Gallery."
-              }
+              },
+              "minLength": 1
             },
             "location": {
               "type": "string",
@@ -3201,14 +3226,14 @@
             "lock": {
               "type": "string",
               "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Specify the type of lock."
+              },
               "allowedValues": [
                 "",
                 "CanNotDelete",
                 "ReadOnly"
-              ],
-              "metadata": {
-                "description": "Optional. Specify the type of lock."
-              }
+              ]
             },
             "roleAssignments": {
               "type": "array",
@@ -3309,8 +3334,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "11269548480306815930"
+                      "version": "0.18.4.5664",
+                      "templateHash": "1014966362947711679"
                     }
                   },
                   "parameters": {
@@ -3481,8 +3506,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "5744403987653914433"
+                      "version": "0.18.4.5664",
+                      "templateHash": "6616363816775829410"
                     }
                   },
                   "parameters": {
@@ -3646,8 +3671,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "7298669307498418354"
+                              "version": "0.18.4.5664",
+                              "templateHash": "10136020642586052526"
                             }
                           },
                           "parameters": {
@@ -3852,8 +3877,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "6914196563169645116"
+                      "version": "0.18.4.5664",
+                      "templateHash": "10358685782947039492"
                     }
                   },
                   "parameters": {
@@ -3930,8 +3955,8 @@
                     "minRecommendedvCPUs": {
                       "type": "int",
                       "defaultValue": 1,
-                      "minValue": 1,
                       "maxValue": 128,
+                      "minValue": 1,
                       "metadata": {
                         "description": "Optional. The minimum number of the CPU cores recommended for this image."
                       }
@@ -3939,8 +3964,8 @@
                     "maxRecommendedvCPUs": {
                       "type": "int",
                       "defaultValue": 4,
-                      "minValue": 1,
                       "maxValue": 128,
+                      "minValue": 1,
                       "metadata": {
                         "description": "Optional. The maximum number of the CPU cores recommended for this image."
                       }
@@ -3948,8 +3973,8 @@
                     "minRecommendedMemory": {
                       "type": "int",
                       "defaultValue": 4,
-                      "minValue": 1,
                       "maxValue": 4000,
+                      "minValue": 1,
                       "metadata": {
                         "description": "Optional. The minimum amount of RAM in GB recommended for this image."
                       }
@@ -3957,8 +3982,8 @@
                     "maxRecommendedMemory": {
                       "type": "int",
                       "defaultValue": 16,
-                      "minValue": 1,
                       "maxValue": 4000,
+                      "minValue": 1,
                       "metadata": {
                         "description": "Optional. The maximum amount of RAM in GB recommended for this image."
                       }
@@ -4173,8 +4198,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "5638838897264311157"
+                              "version": "0.18.4.5664",
+                              "templateHash": "17996434110861104737"
                             }
                           },
                           "parameters": {
@@ -4436,8 +4461,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "6914196563169645116"
+              "version": "0.18.4.5664",
+              "templateHash": "10358685782947039492"
             }
           },
           "parameters": {
@@ -4514,8 +4539,8 @@
             "minRecommendedvCPUs": {
               "type": "int",
               "defaultValue": 1,
-              "minValue": 1,
               "maxValue": 128,
+              "minValue": 1,
               "metadata": {
                 "description": "Optional. The minimum number of the CPU cores recommended for this image."
               }
@@ -4523,8 +4548,8 @@
             "maxRecommendedvCPUs": {
               "type": "int",
               "defaultValue": 4,
-              "minValue": 1,
               "maxValue": 128,
+              "minValue": 1,
               "metadata": {
                 "description": "Optional. The maximum number of the CPU cores recommended for this image."
               }
@@ -4532,8 +4557,8 @@
             "minRecommendedMemory": {
               "type": "int",
               "defaultValue": 4,
-              "minValue": 1,
               "maxValue": 4000,
+              "minValue": 1,
               "metadata": {
                 "description": "Optional. The minimum amount of RAM in GB recommended for this image."
               }
@@ -4541,8 +4566,8 @@
             "maxRecommendedMemory": {
               "type": "int",
               "defaultValue": 16,
-              "minValue": 1,
               "maxValue": 4000,
+              "minValue": 1,
               "metadata": {
                 "description": "Optional. The maximum amount of RAM in GB recommended for this image."
               }
@@ -4757,8 +4782,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "5638838897264311157"
+                      "version": "0.18.4.5664",
+                      "templateHash": "17996434110861104737"
                     }
                   },
                   "parameters": {
@@ -4985,8 +5010,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "7969033002527129508"
+              "version": "0.18.4.5664",
+              "templateHash": "6694754263575522312"
             }
           },
           "parameters": {
@@ -5019,8 +5044,8 @@
             "buildTimeoutInMinutes": {
               "type": "int",
               "defaultValue": 0,
-              "minValue": 0,
               "maxValue": 960,
+              "minValue": 0,
               "metadata": {
                 "description": "Optional. Image build timeout in minutes. Allowed values: 0-960. 0 means the default 240 minutes."
               }
@@ -5110,13 +5135,13 @@
             "storageAccountType": {
               "type": "string",
               "defaultValue": "Standard_LRS",
+              "metadata": {
+                "description": "Optional. Storage account type to be used to store the image in the Azure Compute Gallery."
+              },
               "allowedValues": [
                 "Standard_LRS",
                 "Standard_ZRS"
-              ],
-              "metadata": {
-                "description": "Optional. Storage account type to be used to store the image in the Azure Compute Gallery."
-              }
+              ]
             },
             "stagingResourceGroup": {
               "type": "string",
@@ -5128,14 +5153,14 @@
             "lock": {
               "type": "string",
               "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Specify the type of lock."
+              },
               "allowedValues": [
                 "",
                 "CanNotDelete",
                 "ReadOnly"
-              ],
-              "metadata": {
-                "description": "Optional. Specify the type of lock."
-              }
+              ]
             },
             "tags": {
               "type": "object",
@@ -5315,8 +5340,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "675387888330318413"
+                      "version": "0.18.4.5664",
+                      "templateHash": "8264411614210174935"
                     }
                   },
                   "parameters": {
@@ -5517,8 +5542,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "1156178304169403377"
+              "version": "0.18.4.5664",
+              "templateHash": "8596842132721557367"
             }
           },
           "parameters": {
@@ -5607,8 +5632,8 @@
             "dataRetention": {
               "type": "int",
               "defaultValue": 365,
-              "minValue": 0,
               "maxValue": 730,
+              "minValue": 0,
               "metadata": {
                 "description": "Optional. Number of days data will be retained for."
               }
@@ -5667,8 +5692,8 @@
             "diagnosticLogsRetentionInDays": {
               "type": "int",
               "defaultValue": 365,
-              "minValue": 0,
               "maxValue": 365,
+              "minValue": 0,
               "metadata": {
                 "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
               }
@@ -5711,14 +5736,14 @@
             "lock": {
               "type": "string",
               "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Specify the type of lock."
+              },
               "allowedValues": [
                 "",
                 "CanNotDelete",
                 "ReadOnly"
-              ],
-              "metadata": {
-                "description": "Optional. Specify the type of lock."
-              }
+              ]
             },
             "roleAssignments": {
               "type": "array",
@@ -5911,8 +5936,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "13379431903908500265"
+                      "version": "0.18.4.5664",
+                      "templateHash": "16114201815220186510"
                     }
                   },
                   "parameters": {
@@ -6055,8 +6080,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "18035599797024630806"
+                      "version": "0.18.4.5664",
+                      "templateHash": "9475182064400951000"
                     }
                   },
                   "parameters": {
@@ -6189,8 +6214,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "15194527127560537713"
+                      "version": "0.18.4.5664",
+                      "templateHash": "4737981453812272169"
                     }
                   },
                   "parameters": {
@@ -6324,8 +6349,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "14867461711977977980"
+                      "version": "0.18.4.5664",
+                      "templateHash": "3112143349780297195"
                     }
                   },
                   "parameters": {
@@ -6496,15 +6521,15 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "1856549003153181310"
+                      "version": "0.18.4.5664",
+                      "templateHash": "123582376075481853"
                     }
                   },
                   "parameters": {
                     "name": {
                       "type": "string",
-                      "minLength": 4,
                       "maxLength": 63,
+                      "minLength": 4,
                       "metadata": {
                         "description": "Required. The data export rule name."
                       }
@@ -6643,8 +6668,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "3069063252346343891"
+                      "version": "0.18.4.5664",
+                      "templateHash": "16949430988646737619"
                     }
                   },
                   "parameters": {
@@ -6870,8 +6895,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "15607599815412583880"
+                      "version": "0.18.4.5664",
+                      "templateHash": "16367350850509170627"
                     }
                   },
                   "parameters": {
@@ -6915,8 +6940,8 @@
                     "retentionInDays": {
                       "type": "int",
                       "defaultValue": -1,
-                      "minValue": -1,
                       "maxValue": 730,
+                      "minValue": -1,
                       "metadata": {
                         "description": "Optional. The table retention in days, between 4 and 730. Setting this property to -1 will default to the workspace retention."
                       }
@@ -6938,8 +6963,8 @@
                     "totalRetentionInDays": {
                       "type": "int",
                       "defaultValue": -1,
-                      "minValue": -1,
                       "maxValue": 2555,
+                      "minValue": -1,
                       "metadata": {
                         "description": "Optional. The table total retention in days, between 4 and 2555. Setting this property to -1 will default to table retention."
                       }
@@ -7039,8 +7064,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "15387093705469323985"
+                      "version": "0.18.4.5664",
+                      "templateHash": "4259405973831985687"
                     }
                   },
                   "parameters": {
@@ -7190,8 +7215,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "3735355062180278453"
+                      "version": "0.18.4.5664",
+                      "templateHash": "8241310064803100775"
                     }
                   },
                   "parameters": {
@@ -7364,317 +7389,6 @@
       ]
     },
     {
-      "condition": "[and(parameters('enableMonitoringAlerts'), empty(parameters('existingLogAnalyticsWorkspaceResourceId')))]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('LA-Workspace-Wait-{0}', parameters('time'))]",
-      "subscriptionId": "[parameters('sharedServicesSubId')]",
-      "resourceGroup": "[variables('varResourceGroupName')]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "name": {
-            "value": "[format('LA-Workspace-Wait-{0}', parameters('time'))]"
-          },
-          "location": {
-            "value": "[parameters('deploymentLocation')]"
-          },
-          "azPowerShellVersion": {
-            "value": "8.3.0"
-          },
-          "cleanupPreference": {
-            "value": "Always"
-          },
-          "timeout": {
-            "value": "PT10M"
-          },
-          "retentionInterval": {
-            "value": "PT1H"
-          },
-          "scriptContent": {
-            "value": "        Write-Host \"Start\"\r\n        Get-Date\r\n        Start-Sleep -Seconds 60\r\n        Write-Host \"Stop\"\r\n        Get-Date\r\n        "
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "8145106657487286483"
-            }
-          },
-          "parameters": {
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. Display name of the script to be run."
-              }
-            },
-            "userAssignedIdentities": {
-              "type": "object",
-              "defaultValue": {},
-              "metadata": {
-                "description": "Optional. The ID(s) to assign to the resource."
-              }
-            },
-            "location": {
-              "type": "string",
-              "defaultValue": "[resourceGroup().location]",
-              "metadata": {
-                "description": "Optional. Location for all resources."
-              }
-            },
-            "kind": {
-              "type": "string",
-              "defaultValue": "AzurePowerShell",
-              "allowedValues": [
-                "AzurePowerShell",
-                "AzureCLI"
-              ],
-              "metadata": {
-                "description": "Optional. Type of the script. AzurePowerShell, AzureCLI."
-              }
-            },
-            "azPowerShellVersion": {
-              "type": "string",
-              "defaultValue": "3.0",
-              "metadata": {
-                "description": "Optional. Azure PowerShell module version to be used."
-              }
-            },
-            "azCliVersion": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. Azure CLI module version to be used."
-              }
-            },
-            "scriptContent": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. Script body. Max length: 32000 characters. To run an external script, use primaryScriptURI instead."
-              }
-            },
-            "primaryScriptUri": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent instead."
-              }
-            },
-            "environmentVariables": {
-              "type": "secureObject",
-              "defaultValue": {},
-              "metadata": {
-                "description": "Optional. The environment variables to pass over to the script. The list is passed as an object with a key name \"secureList\" and the value is the list of environment variables (array). The list must have a 'name' and a 'value' or a 'secretValue' property for each object."
-              }
-            },
-            "supportingScriptUris": {
-              "type": "array",
-              "defaultValue": [],
-              "metadata": {
-                "description": "Optional. List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent)."
-              }
-            },
-            "arguments": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. Command-line arguments to pass to the script. Arguments are separated by spaces."
-              }
-            },
-            "retentionInterval": {
-              "type": "string",
-              "defaultValue": "P1D",
-              "metadata": {
-                "description": "Optional. Interval for which the service retains the script resource after it reaches a terminal state. Resource will be deleted when this duration expires. Duration is based on ISO 8601 pattern (for example P7D means one week)."
-              }
-            },
-            "runOnce": {
-              "type": "bool",
-              "defaultValue": false,
-              "metadata": {
-                "description": "Optional. When set to false, script will run every time the template is deployed. When set to true, the script will only run once."
-              }
-            },
-            "cleanupPreference": {
-              "type": "string",
-              "defaultValue": "Always",
-              "allowedValues": [
-                "Always",
-                "OnSuccess",
-                "OnExpiration"
-              ],
-              "metadata": {
-                "description": "Optional. The clean up preference when the script execution gets in a terminal state. Specify the preference on when to delete the deployment script resources. The default value is Always, which means the deployment script resources are deleted despite the terminal state (Succeeded, Failed, canceled)."
-              }
-            },
-            "containerGroupName": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. Container group name, if not specified then the name will get auto-generated. Not specifying a 'containerGroupName' indicates the system to generate a unique name which might end up flagging an Azure Policy as non-compliant. Use 'containerGroupName' when you have an Azure Policy that expects a specific naming convention or when you want to fully control the name. 'containerGroupName' property must be between 1 and 63 characters long, must contain only lowercase letters, numbers, and dashes and it cannot start or end with a dash and consecutive dashes are not allowed."
-              }
-            },
-            "storageAccountResourceId": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. The resource ID of the storage account to use for this deployment script. If none is provided, the deployment script uses a temporary, managed storage account."
-              }
-            },
-            "timeout": {
-              "type": "string",
-              "defaultValue": "PT1H",
-              "metadata": {
-                "description": "Optional. Maximum allowed script execution time specified in ISO 8601 format. Default value is PT1H - 1 hour; 'PT30M' - 30 minutes; 'P5D' - 5 days; 'P1Y' 1 year."
-              }
-            },
-            "baseTime": {
-              "type": "string",
-              "defaultValue": "[utcNow('yyyy-MM-dd-HH-mm-ss')]",
-              "metadata": {
-                "description": "Generated. Do not provide a value! This date value is used to make sure the script run every time the template is deployed."
-              }
-            },
-            "lock": {
-              "type": "string",
-              "defaultValue": "",
-              "allowedValues": [
-                "",
-                "CanNotDelete",
-                "ReadOnly"
-              ],
-              "metadata": {
-                "description": "Optional. Specify the type of lock."
-              }
-            },
-            "tags": {
-              "type": "object",
-              "defaultValue": {},
-              "metadata": {
-                "description": "Optional. Tags of the resource."
-              }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
-            }
-          },
-          "variables": {
-            "containerSettings": {
-              "containerGroupName": "[parameters('containerGroupName')]"
-            },
-            "identityType": "[if(not(empty(parameters('userAssignedIdentities'))), 'UserAssigned', 'None')]",
-            "identity": "[if(not(equals(variables('identityType'), 'None')), createObject('type', variables('identityType'), 'userAssignedIdentities', if(not(empty(parameters('userAssignedIdentities'))), parameters('userAssignedIdentities'), null())), null())]"
-          },
-          "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
-            {
-              "type": "Microsoft.Resources/deploymentScripts",
-              "apiVersion": "2020-10-01",
-              "name": "[parameters('name')]",
-              "location": "[parameters('location')]",
-              "tags": "[parameters('tags')]",
-              "identity": "[variables('identity')]",
-              "kind": "[parameters('kind')]",
-              "properties": {
-                "azPowerShellVersion": "[if(equals(parameters('kind'), 'AzurePowerShell'), parameters('azPowerShellVersion'), null())]",
-                "azCliVersion": "[if(equals(parameters('kind'), 'AzureCLI'), parameters('azCliVersion'), null())]",
-                "containerSettings": "[if(not(empty(parameters('containerGroupName'))), variables('containerSettings'), null())]",
-                "storageAccountSettings": "[if(not(empty(parameters('storageAccountResourceId'))), if(not(empty(parameters('storageAccountResourceId'))), createObject('storageAccountKey', listKeys(parameters('storageAccountResourceId'), '2019-06-01').keys[0].value, 'storageAccountName', last(split(parameters('storageAccountResourceId'), '/'))), createObject()), null())]",
-                "arguments": "[parameters('arguments')]",
-                "environmentVariables": "[if(not(empty(parameters('environmentVariables'))), parameters('environmentVariables').secureList, createArray())]",
-                "scriptContent": "[if(not(empty(parameters('scriptContent'))), parameters('scriptContent'), null())]",
-                "primaryScriptUri": "[if(not(empty(parameters('primaryScriptUri'))), parameters('primaryScriptUri'), null())]",
-                "supportingScriptUris": "[if(not(empty(parameters('supportingScriptUris'))), parameters('supportingScriptUris'), null())]",
-                "cleanupPreference": "[parameters('cleanupPreference')]",
-                "forceUpdateTag": "[if(parameters('runOnce'), resourceGroup().name, parameters('baseTime'))]",
-                "retentionInterval": "[parameters('retentionInterval')]",
-                "timeout": "[parameters('timeout')]"
-              }
-            },
-            {
-              "condition": "[not(empty(parameters('lock')))]",
-              "type": "Microsoft.Authorization/locks",
-              "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.Resources/deploymentScripts/{0}', parameters('name'))]",
-              "name": "[format('{0}-{1}-lock', parameters('name'), parameters('lock'))]",
-              "properties": {
-                "level": "[parameters('lock')]",
-                "notes": "[if(equals(parameters('lock'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot modify the resource or child resources.')]"
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Resources/deploymentScripts', parameters('name'))]"
-              ]
-            }
-          ],
-          "outputs": {
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource ID of the deployment script."
-              },
-              "value": "[resourceId('Microsoft.Resources/deploymentScripts', parameters('name'))]"
-            },
-            "resourceGroupName": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource group the deployment script was deployed into."
-              },
-              "value": "[resourceGroup().name]"
-            },
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the deployment script."
-              },
-              "value": "[parameters('name')]"
-            },
-            "location": {
-              "type": "string",
-              "metadata": {
-                "description": "The location the resource was deployed into."
-              },
-              "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', parameters('name')), '2020-10-01', 'full').location]"
-            },
-            "outputs": {
-              "type": "object",
-              "metadata": {
-                "description": "The output of the deployment script."
-              },
-              "value": "[if(contains(reference(resourceId('Microsoft.Resources/deploymentScripts', parameters('name')), '2020-10-01'), 'outputs'), reference(resourceId('Microsoft.Resources/deploymentScripts', parameters('name')), '2020-10-01').outputs, createObject())]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-{0}', parameters('time')))]"
-      ]
-    },
-    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('Automation-Account-{0}', parameters('time'))]",
@@ -7764,8 +7478,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "3330372472596925837"
+              "version": "0.18.4.5664",
+              "templateHash": "3252744734547017205"
             }
           },
           "parameters": {
@@ -7906,11 +7620,11 @@
             "diagnosticLogsRetentionInDays": {
               "type": "int",
               "defaultValue": 365,
-              "minValue": 0,
-              "maxValue": 365,
               "metadata": {
                 "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
-              }
+              },
+              "maxValue": 365,
+              "minValue": 0
             },
             "diagnosticStorageAccountId": {
               "type": "string",
@@ -7957,14 +7671,14 @@
             "lock": {
               "type": "string",
               "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Specify the type of lock."
+              },
               "allowedValues": [
                 "",
                 "CanNotDelete",
                 "ReadOnly"
-              ],
-              "metadata": {
-                "description": "Optional. Specify the type of lock."
-              }
+              ]
             },
             "roleAssignments": {
               "type": "array",
@@ -8152,8 +7866,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "17170735581525169641"
+                      "version": "0.18.4.5664",
+                      "templateHash": "15416397756518456448"
                     }
                   },
                   "parameters": {
@@ -8306,8 +8020,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "5479295006707878833"
+                      "version": "0.18.4.5664",
+                      "templateHash": "14604590533696605016"
                     }
                   },
                   "parameters": {
@@ -8350,6 +8064,9 @@
                     "frequency": {
                       "type": "string",
                       "defaultValue": "OneTime",
+                      "metadata": {
+                        "description": "Optional. The frequency of the schedule."
+                      },
                       "allowedValues": [
                         "Day",
                         "Hour",
@@ -8357,10 +8074,7 @@
                         "Month",
                         "OneTime",
                         "Week"
-                      ],
-                      "metadata": {
-                        "description": "Optional. The frequency of the schedule."
-                      }
+                      ]
                     },
                     "interval": {
                       "type": "int",
@@ -8499,8 +8213,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "17442703444396836746"
+                      "version": "0.18.4.5664",
+                      "templateHash": "16051834142336003966"
                     }
                   },
                   "parameters": {
@@ -8518,16 +8232,16 @@
                     },
                     "type": {
                       "type": "string",
+                      "metadata": {
+                        "description": "Required. The type of the runbook."
+                      },
                       "allowedValues": [
                         "Graph",
                         "GraphPowerShell",
                         "GraphPowerShellWorkflow",
                         "PowerShell",
                         "PowerShellWorkflow"
-                      ],
-                      "metadata": {
-                        "description": "Required. The type of the runbook."
-                      }
+                      ]
                     },
                     "description": {
                       "type": "string",
@@ -8701,8 +8415,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "16872455273402734811"
+                      "version": "0.18.4.5664",
+                      "templateHash": "12862110680189461991"
                     }
                   },
                   "parameters": {
@@ -8850,8 +8564,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "15739346377207105668"
+                      "version": "0.18.4.5664",
+                      "templateHash": "8795514551875247591"
                     }
                   },
                   "parameters": {
@@ -8985,8 +8699,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "18035599797024630806"
+                      "version": "0.18.4.5664",
+                      "templateHash": "9475182064400951000"
                     }
                   },
                   "parameters": {
@@ -9124,8 +8838,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "15387093705469323985"
+                      "version": "0.18.4.5664",
+                      "templateHash": "4259405973831985687"
                     }
                   },
                   "parameters": {
@@ -9307,8 +9021,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "5587147182178326997"
+                      "version": "0.18.4.5664",
+                      "templateHash": "12520700622965517694"
                     }
                   },
                   "parameters": {
@@ -9778,8 +9492,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "14559775667395480629"
+                      "version": "0.18.4.5664",
+                      "templateHash": "12991773916541265724"
                     }
                   },
                   "parameters": {
@@ -9845,14 +9559,14 @@
                     "lock": {
                       "type": "string",
                       "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. Specify the type of lock."
+                      },
                       "allowedValues": [
                         "",
                         "CanNotDelete",
                         "ReadOnly"
-                      ],
-                      "metadata": {
-                        "description": "Optional. Specify the type of lock."
-                      }
+                      ]
                     },
                     "roleAssignments": {
                       "type": "array",
@@ -9975,8 +9689,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "10817246518679375966"
+                              "version": "0.18.4.5664",
+                              "templateHash": "3520683536217550590"
                             }
                           },
                           "parameters": {
@@ -9988,8 +9702,8 @@
                             },
                             "privateDNSResourceIds": {
                               "type": "array",
-                              "minLength": 1,
                               "maxLength": 5,
+                              "minLength": 1,
                               "metadata": {
                                 "description": "Required. Array of private DNS zone resource IDs. A DNS zone group can support up to 5 DNS zones."
                               }
@@ -10110,8 +9824,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.21.1.54444",
-                              "templateHash": "13032708393704093995"
+                              "version": "0.18.4.5664",
+                              "templateHash": "11724106538771429164"
                             }
                           },
                           "parameters": {
@@ -10324,8 +10038,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "10676519467876912979"
+                      "version": "0.18.4.5664",
+                      "templateHash": "10816931729941034087"
                     }
                   },
                   "parameters": {
@@ -10485,8 +10199,7 @@
       "dependsOn": [
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Template-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity-{0}', parameters('time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-{0}', parameters('time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('LA-Workspace-Wait-{0}', parameters('time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-{0}', parameters('time')))]"
       ]
     },
     {
@@ -10529,8 +10242,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "17170735581525169641"
+              "version": "0.18.4.5664",
+              "templateHash": "15416397756518456448"
             }
           },
           "parameters": {
@@ -10688,8 +10401,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "6773203042735005838"
+              "version": "0.18.4.5664",
+              "templateHash": "15997073878821839671"
             }
           },
           "parameters": {
@@ -10881,8 +10594,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "2628891413283540922"
+                      "version": "0.18.4.5664",
+                      "templateHash": "5736988143245776958"
                     }
                   },
                   "parameters": {
@@ -11228,8 +10941,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "3364210327753707174"
+              "version": "0.18.4.5664",
+              "templateHash": "16970535758289324772"
             }
           },
           "parameters": {
@@ -11244,6 +10957,13 @@
               "defaultValue": "[resourceGroup().location]",
               "metadata": {
                 "description": "Optional. Location for all resources."
+              }
+            },
+            "alertDisplayName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The display name of the scheduled query rule."
               }
             },
             "alertDescription": {
@@ -11405,7 +11125,7 @@
                 "autoMitigate": "[if(equals(parameters('kind'), 'LogAlert'), parameters('autoMitigate'), null())]",
                 "criteria": "[parameters('criterias')]",
                 "description": "[parameters('alertDescription')]",
-                "displayName": "[parameters('name')]",
+                "displayName": "[if(not(empty(parameters('alertDisplayName'))), parameters('alertDisplayName'), parameters('name'))]",
                 "enabled": "[parameters('enabled')]",
                 "evaluationFrequency": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('evaluationFrequency')))), parameters('evaluationFrequency'), null())]",
                 "muteActionsDuration": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('suppressForMinutes')))), parameters('suppressForMinutes'), null())]",
@@ -11451,8 +11171,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "15352642791797157407"
+                      "version": "0.18.4.5664",
+                      "templateHash": "9864326242210351121"
                     }
                   },
                   "parameters": {
@@ -11730,8 +11450,7 @@
       },
       "dependsOn": [
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Action-Group-{0}', parameters('time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-{0}', parameters('time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('LA-Workspace-Wait-{0}', parameters('time')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-{0}', parameters('time')))]"
       ]
     }
   ]
