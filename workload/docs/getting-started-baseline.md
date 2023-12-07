@@ -46,6 +46,9 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
     - <https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/Manual-DSC-Storage-Scripts.ps1>
     - https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/<version_number>/DSCStorageScripts.zip
     - <https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration_09-08-2022.zip>
+    - <https://go.microsoft.com/fwlink/?LinkID=627338&clcid=0x409>
+    - <https://onegetcdn.azureedge.net/providers/providers.masterList.feed.swidtag>
+    - <https://www.powershellgallery.com>
 - [x]  If using existing Virtual Networks, disable deny private endpoint network policies. The deployment will fail if deny private endpoint network policies are enabled. See the following article on disabling them: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy).
 
 ### Private endpoints DNS requirements and considerations
