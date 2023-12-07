@@ -47,6 +47,18 @@
         "sku": "win11-22h2-avd-m365",
         "version": "latest"
     },
+    "win11_22h3": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "Windows-11",
+        "sku": "win11-22h3-avd",
+        "version": "latest"
+    },
+    "win11_22h3_office": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "office-365",
+        "sku": "win11-22h3-avd-m365",
+        "version": "latest"
+    },
     "winServer_2022_Datacenter": {
         "publisher": "MicrosoftWindowsServer",
         "offer": "WindowsServer",
