@@ -209,8 +209,8 @@ param logAnalyticsWorkspaceDataRetention int = 30
     'win11_23h2'
     'win11_23h2_office'
 ])
-@sys.description('AVD OS image source. (Default: win11-23h2)')
-param operatingSystemImage string = 'win11_23h2'
+@sys.description('AVD OS image source. (Default: win11-22h2)')
+param operatingSystemImage string = 'win11_22h2'
 
 @sys.description('Team accountable for day-to-day operations. (Contoso-Ops)')
 param operationsTeamTag string = 'workload-admins@Contoso.com'
