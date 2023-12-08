@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "3174776039135743066"
+      "templateHash": "11922419804250053477"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -520,10 +520,12 @@
         "win11_21h2",
         "win11_21h2_office",
         "win11_22h2",
-        "win11_22h2_office"
+        "win11_22h2_office",
+        "win11_23h2",
+        "win11_23h2_office"
       ],
       "metadata": {
-        "description": "AVD OS image SKU. (Default: win11-21h2)"
+        "description": "AVD OS image SKU. (Default: win11-22h2)"
       }
     },
     "managementVmOsImage": {
@@ -916,6 +918,13 @@
       "metadata": {
         "description": "Enable usage and telemetry feedback to Microsoft."
       }
+    },
+    "enableKvPurgeProtection": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable purge protection for the keyvaults. (Default: true)"
+      }
     }
   },
   "variables": {
@@ -1243,6 +1252,18 @@
         "publisher": "MicrosoftWindowsDesktop",
         "offer": "office-365",
         "sku": "win11-22h2-avd-m365",
+        "version": "latest"
+      },
+      "win11_23h2": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "Windows-11",
+        "sku": "win11-23h2-avd",
+        "version": "latest"
+      },
+      "win11_23h2_office": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "office-365",
+        "sku": "win11-23h2-avd-m365",
         "version": "latest"
       },
       "winServer_2022_Datacenter": {
@@ -19074,6 +19095,9 @@
           },
           "keyVaultprivateDNSResourceId": "[if(parameters('createPrivateDnsZones'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.KeyVaultDnsZoneResourceId.value), createObject('value', parameters('avdVnetPrivateDnsZoneKeyvaultId')))]",
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]",
+          "enableKvPurgeProtection": {
+            "value": "[parameters('enableKvPurgeProtection')]"
+          },
           "kvTags": {
             "value": "[variables('varZtKeyvaultTag')]"
           }
@@ -19085,7 +19109,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "10865746163538598377"
+              "templateHash": "1028804516785462919"
             }
           },
           "parameters": {
@@ -19190,6 +19214,13 @@
               "defaultValue": "[utcNow()]",
               "metadata": {
                 "description": "Do not modify, used to set unique value for resource deployment."
+              }
+            },
+            "enableKvPurgeProtection": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Enable purge protection on the key vault"
               }
             }
           },
@@ -22225,6 +22256,9 @@
                   "ztManagedIdentityResourceId": "[if(parameters('diskZeroTrust'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('ZT-Managed-ID-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', ''))]",
                   "tags": {
                     "value": "[union(parameters('tags'), parameters('kvTags'))]"
+                  },
+                  "enableKvPurgeProtection": {
+                    "value": "[parameters('enableKvPurgeProtection')]"
                   }
                 },
                 "template": {
@@ -22234,7 +22268,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.23.1.45101",
-                      "templateHash": "9816348956723829998"
+                      "templateHash": "6760011451338634679"
                     }
                   },
                   "parameters": {
@@ -22322,6 +22356,13 @@
                       "metadata": {
                         "description": "Do not modify, used to set unique value for resource deployment."
                       }
+                    },
+                    "enableKvPurgeProtection": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Enable purge protection on the key vault"
+                      }
                     }
                   },
                   "resources": [
@@ -22347,7 +22388,7 @@
                             "value": true
                           },
                           "enablePurgeProtection": {
-                            "value": true
+                            "value": "[parameters('enableKvPurgeProtection')]"
                           },
                           "softDeleteRetentionInDays": {
                             "value": 7
@@ -25494,7 +25535,7 @@
             "value": false
           },
           "enablePurgeProtection": {
-            "value": true
+            "value": "[parameters('enableKvPurgeProtection')]"
           },
           "softDeleteRetentionInDays": {
             "value": 7
@@ -41050,7 +41091,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "8903884659391222527"
+              "templateHash": "3170827786162599560"
             }
           },
           "parameters": {
@@ -41147,7 +41188,7 @@
             "createIntuneEnrollment": {
               "type": "bool",
               "metadata": {
-                "description": "Eronll session hosts on Intune."
+                "description": "Enroll session hosts on Intune."
               }
             },
             "encryptionAtHost": {

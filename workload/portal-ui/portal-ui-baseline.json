@@ -755,6 +755,14 @@
                                             {
                                                 "label": "Windows 11 22H2 - Office 365 (Gen2)",
                                                 "value": "win11_22h2_office"
+                                            },
+                                            {
+                                                "label": "Windows 11 23H2 (Gen2)",
+                                                "value": "win11_23h2"
+                                            },
+                                            {
+                                                "label": "Windows 11 23H2 - Office 365 (Gen2)",
+                                                "value": "win11_23h2_office"
                                             }
                                         ]
                                     }
@@ -854,7 +862,7 @@
                                 {
                                     "name": "identityDomainName",
                                     "type": "Microsoft.Common.TextBox",
-                                    "visible": "[or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment)]",
+                                    "visible": "[and(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AADDS')), or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment))]",
                                     "label": "AD Domain name",
                                     "toolTip": "The full qualified domain name of the on-premises domain where the hybrid identities originated from, this information is used for Azure files authentication setup.",
                                     "placeholder": "Example: contoso.com",
@@ -2303,7 +2311,7 @@
                 "avdPersonalAssignType": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolSettings.assignmentType, 'Automatic')]",
                 "avdIdentityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
                 "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
-                "identityDomainName": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment), steps('storage').storageGeneralSettings.identityDomainName, '')]",
+                "identityDomainName": "[if(and(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AADDS')), or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment)), steps('storage').storageGeneralSettings.identityDomainName, '')]",
                 "avdOuPath": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
                 "avdDomainJoinUserName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserName)]",
                 "avdDomainJoinUserPassword": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserPassword)]",
