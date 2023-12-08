@@ -261,8 +261,10 @@ param vTpmEnabled bool = true
     'win11_21h2_office'
     'win11_22h2'
     'win11_22h2_office'
+    'win11_23h2'
+    'win11_23h2_office'
 ])
-@sys.description('AVD OS image SKU. (Default: win11-21h2)')
+@sys.description('AVD OS image SKU. (Default: win11-22h2)')
 param avdOsImage string = 'win11_22h2'
 
 @sys.description('Management VM image SKU (Default: winServer_2022_Datacenter_smalldisk_g2)')
@@ -681,7 +683,6 @@ var varScalingPlanSchedules = [
         }
     }
 ]
-
 var varMarketPlaceGalleryWindows = loadJsonContent('../variables/osMarketPlaceImages.json')
 var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/1.0.0/DSCStorageScripts.zip'
 var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
