@@ -60,6 +60,10 @@
 									{
 										"label": "Windows 11 Ent (22H2)",
 										"value": "win11-22h2-ent"
+									},
+									{
+										"label": "Windows 11 Ent (23H2)",
+										"value": "win11-23h2-ent"
 									}
 								]
 							},
