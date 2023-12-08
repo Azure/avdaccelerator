@@ -71,7 +71,7 @@ enableAcceleratedNetworking | No       | Enables accelerated Networking on the s
 securityType   | No       | Specifies the securityType of the virtual machine. "ConfidentialVM" and "TrustedLaunch" require a Gen2 Image. (Default: TrustedLaunch)
 secureBootEnabled | No       | Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings. (Default: true)
 vTpmEnabled    | No       | Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings. (Default: true)
-avdOsImage     | No       | AVD OS image SKU. (Default: win11-21h2)
+avdOsImage     | No       | AVD OS image SKU. (Default: win11-22h2)
 managementVmOsImage | No       | Management VM image SKU (Default: winServer_2022_Datacenter_smalldisk_g2)
 useSharedImage | No       | Set to deploy image from Azure Compute Gallery. (Default: false)
 avdImageTemplateDefinitionId | No       | Source custom image ID. (Default: "")
@@ -121,6 +121,7 @@ ownerTag       | No       | Organizational owner of the AVD deployment. (Default
 costCenterTag  | No       | Cost center of owner team. (Default: Contoso-CC)
 time           | No       | Do not modify, used to set unique value for resource deployment.
 enableTelemetry | No       | Enable usage and telemetry feedback to Microsoft.
+enableKvPurgeProtection | No       | Enable purge protection for the keyvaults. (Default: true)
 
 ### deploymentPrefix
 
@@ -635,11 +636,11 @@ Specifies whether vTPM should be enabled on the virtual machine. This parameter 
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-AVD OS image SKU. (Default: win11-21h2)
+AVD OS image SKU. (Default: win11-22h2)
 
 - Default value: `win11_22h2`
 
-- Allowed values: `win10_21h2`, `win10_21h2_office`, `win10_22h2_g2`, `win10_22h2_office_g2`, `win11_21h2`, `win11_21h2_office`, `win11_22h2`, `win11_22h2_office`
+- Allowed values: `win10_21h2`, `win10_21h2_office`, `win10_22h2_g2`, `win10_22h2_office_g2`, `win11_21h2`, `win11_21h2_office`, `win11_22h2`, `win11_22h2_office`, `win11_23h2`, `win11_23h2_office`
 
 ### managementVmOsImage
 
@@ -1035,6 +1036,14 @@ Enable usage and telemetry feedback to Microsoft.
 
 - Default value: `True`
 
+### enableKvPurgeProtection
+
+![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
+
+Enable purge protection for the keyvaults. (Default: true)
+
+- Default value: `True`
+
 ## Snippets
 
 ### Parameter file
@@ -1400,6 +1409,9 @@ Enable usage and telemetry feedback to Microsoft.
             "value": "[utcNow()]"
         },
         "enableTelemetry": {
+            "value": true
+        },
+        "enableKvPurgeProtection": {
             "value": true
         }
     }
