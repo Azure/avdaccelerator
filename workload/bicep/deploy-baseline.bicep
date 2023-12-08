@@ -264,8 +264,8 @@ param vTpmEnabled bool = true
     'win11_23h2'
     'win11_23h2_office'
 ])
-@sys.description('AVD OS image SKU. (Default: win11-23h2)')
-param avdOsImage string = 'win11_23h2'
+@sys.description('AVD OS image SKU. (Default: win11-22h2)')
+param avdOsImage string = 'win11_22h2'
 
 @sys.description('Management VM image SKU (Default: winServer_2022_Datacenter_smalldisk_g2)')
 param managementVmOsImage string = 'winServer_2022_Datacenter_smalldisk_g2'
