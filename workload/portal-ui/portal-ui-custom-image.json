@@ -216,6 +216,14 @@
                                             {
                                                 "label": "Windows 11 22H2 - Office 365 (Gen2)",
                                                 "value": "win11_22h2_office"
+                                            },
+                                            {
+                                                "label": "Windows 11 22H3 (Gen2)",
+                                                "value": "win11_22h3"
+                                            },
+                                            {
+                                                "label": "Windows 11 22H3 - Office 365 (Gen2)",
+                                                "value": "win11_22h3_office"
                                             }
                                         ]
                                     }
