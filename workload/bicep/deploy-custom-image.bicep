@@ -206,8 +206,8 @@ param logAnalyticsWorkspaceDataRetention int = 30
     'win11_21h2_office'
     'win11_22h2'
     'win11_22h2_office'
-    'win11_22h3'
-    'win11_22h3_office'
+    'win11_23h2'
+    'win11_23h2_office'
 ])
 @sys.description('AVD OS image source. (Default: win11-22h2)')
 param operatingSystemImage string = 'win11_22h2'
@@ -478,21 +478,21 @@ var varOperatingSystemImageDefinitions = {
         hyperVGeneration: 'V2'
         version: 'latest'
     }
-    win11_22h3: {
+    win11_23h2: {
         osType: 'Windows'
         osState: 'Generalized'
         offer: 'windows-11'
         publisher: 'MicrosoftWindowsDesktop'
-        sku: 'win11-22h3-avd'
+        sku: 'win11-23h2-avd'
         hyperVGeneration: 'V2'
         version: 'latest'
     }
-    win11_22h3_office: {
+    win11_23h2_office: {
         osType: 'Windows'
         osState: 'Generalized'
         offer: 'office-365'
         publisher: 'MicrosoftWindowsDesktop'
-        sku: 'win11-22h3-avd-m365'
+        sku: 'win11-23h2-avd-m365'
         hyperVGeneration: 'V2'
         version: 'latest'
     }
