@@ -605,7 +605,10 @@
                                         "publisher": "MicrosoftWindowsDesktop",
                                         "offer": "Windows-11",
                                         "sku": "21h2-avd"
-                                    }
+                                    },
+                                    "scope": {
+                                        "location": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]"
+                                    }                              
                                 },
                                 {
                                     "name": "sessionHostSizeInfobox",
