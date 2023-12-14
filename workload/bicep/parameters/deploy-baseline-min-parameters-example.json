@@ -15,7 +15,7 @@
             "value": "<<localUserPassword>>"
         },
         "identityDomainName": {
-            "value": "<<domainName>>"
+            "value": "none"
         },
         "avdDomainJoinUserName": {
             "value": "<<domainJoinUserName>>"
