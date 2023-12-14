@@ -130,6 +130,9 @@ param deployMonitoring bool
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
+@sys.description('Data collection rule ID.')
+param dataCollectionRuleId string
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -286,12 +289,12 @@ module monitoring '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/ext
     params: {
         location: location
         virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        name: 'MicrosoftMonitoringAgent'
-        publisher: 'Microsoft.EnterpriseCloud.Monitoring'
-        type: 'MicrosoftMonitoringAgent'
+        name: 'AzureMonitorWindowsAgent'
+        publisher: 'Microsoft.Azure.Monitor'
+        type: 'AzureMonitorWindowsAgent'
         typeHandlerVersion: '1.0'
         autoUpgradeMinorVersion: true
-        enableAutomaticUpgrade: false
+        enableAutomaticUpgrade: true
         settings: {
             workspaceId: !empty(alaWorkspaceResourceId) ? reference(alaWorkspace.id, alaWorkspace.apiVersion).customerId : ''
         }
@@ -301,6 +304,21 @@ module monitoring '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/ext
         enableDefaultTelemetry: false
     }
     dependsOn: [
+        sessionHostsAntimalwareExtension
+        alaWorkspace
+    ]
+}]
+
+// Data collection rule association
+module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bicep' = [for i in range(1, count): if (deployMonitoring) {
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+    name: 'DCR-Asso-${batchId}-${i - 1}-${time}'
+    params: {
+        virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+        dataCollectionRuleId: dataCollectionRuleId
+    }
+    dependsOn: [
+        monitoring
         sessionHostsAntimalwareExtension
         alaWorkspace
     ]
