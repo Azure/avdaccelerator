@@ -62,7 +62,7 @@ param securityPrincipalId string = ''
 param securityPrincipalName string = ''
 
 @sys.description('FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")')
-param identityDomainName string = ''
+param identityDomainName string = 'none'
 
 @sys.description('AD domain GUID. (Default: "")')
 param identityDomainGuid string = ''
