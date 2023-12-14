@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "6389694329975857878"
+      "templateHash": "9406990619434457184"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -116,7 +116,7 @@
     },
     "identityDomainName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "none",
       "metadata": {
         "description": "FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: \"\")"
       }

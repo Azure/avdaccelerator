@@ -42,7 +42,7 @@
             "value": ""
         },       
         "identityDomainName": {
-            "value": "<<IdentityDomainName>>"
+            "value": "none"
         },
         "avdDomainJoinUserName": {
             "value": "none"
