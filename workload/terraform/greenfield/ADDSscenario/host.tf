@@ -68,23 +68,32 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   }
 
   # To use marketplace image, uncomment the following lines and comment the source_image_id line
-  /*
-  source_image_reference {
-    publisher = var.vm_marketplace_mage.publisher
-    offer     = var.vm_marketplace_image.offer
-    sku       = var.vm_marketplace_image.sku
-    version   = var.vm_marketplace_image.version
-  }
-*/
+  
+  # source_image_reference {
+  #   publisher = var.vm_marketplace_mage.publisher
+  #   offer     = var.vm_marketplace_image.offer
+  #   sku       = var.vm_marketplace_image.sku
+  #   version   = var.vm_marketplace_image.version
+  # }
 
+
+//creado
+   source_image_reference {
+    publisher = "microsoftwindowsdesktop"
+    offer     = "windows-11"
+    sku       = "win11-23h2-avd"
+    version   = "22631.2715.231109"
+  }
+
+//Gerry comentado 
   //source_image_id = data.azurerm_shared_image.avd.id
-  source_image_id = "/subscriptions/${var.avdshared_subscription_id}/resourceGroups/${var.image_rg}/providers/Microsoft.Compute/galleries/${var.gallery_name}/images/${var.image_name}/versions/latest"
-  depends_on = [
-    azurerm_resource_group.shrg,
-    azurerm_network_interface.avd_vm_nic,
-    azurerm_resource_group.rg,
-    azurerm_virtual_desktop_host_pool.hostpool
-  ]
+  # source_image_id = "/subscriptions/${var.avdshared_subscription_id}/resourceGroups/${var.image_rg}/providers/Microsoft.Compute/galleries/${var.gallery_name}/images/${var.image_name}/versions/latest"
+  # depends_on = [
+  #   azurerm_resource_group.shrg,
+  #   azurerm_network_interface.avd_vm_nic,
+  #   azurerm_resource_group.rg,
+  #   azurerm_virtual_desktop_host_pool.hostpool
+  # ]
 
   identity {
     type = "SystemAssigned"

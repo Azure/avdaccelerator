@@ -2,9 +2,11 @@ terraform {
   required_providers {
     azurerm = {
       source = "hashicorp/azurerm"
+      version = ">=3.11.0, <4.0"
     }
     azuread = {
       source = "hashicorp/azuread"
+      version = "~> 2.15.0"
     }
     random = {
       source = "hashicorp/random"
@@ -14,11 +16,16 @@ terraform {
     }
     azapi = {
       source = "Azure/azapi"
+      version = "=1.8.0"
     }
     time = {
       source = "hashicorp/time"
     }
   }
+}
+
+provider "azuread" {
+  tenant_id = "b7b812fe-be8c-4adc-883f-2a3c36d753d7"
 }
 
 provider "azurerm" {
