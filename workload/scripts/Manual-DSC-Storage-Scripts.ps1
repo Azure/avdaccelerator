@@ -66,8 +66,13 @@ param (
 
 Write-Host "Add domain join account as local administrator"
 if ($IdentityServiceProvider -ne 'AAD') {
-        Add-LocalGroupMember -Group "Administrators" -Member "$DomainName\$AdminUserName"
-        Write-Host "Domain join account added to local administrators group"
+        try {
+                Add-LocalGroupMember -Group "Administrators" -Member "$DomainName\$AdminUserName"
+                Write-Host "Domain join account added to local administrators group"
+        }
+        catch [Microsoft.PowerShell.Commands.MemberExistsException] {
+                Write-Warning "$DomainName\$AdminUserName already in group Administrators"
+        }
 }
 else {
         Write-Host "Using AAD, no domain join account to add to local administrators group"
@@ -130,4 +135,4 @@ Set-WSManQuickConfig -Force -Verbose
 Start-DscConfiguration -Path $MofPath -Wait -Verbose -force
 
 Write-Host "DSC extension run clean up"
-Remove-Item -Path $MofPath -Force -Recurse
+#Remove-Item -Path $MofPath -Force -Recurse
