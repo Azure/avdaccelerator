@@ -4,7 +4,7 @@ locals {
   "-StorageAccountName", var.storage_account_name, 
   "-StorageAccountRG", var.storage_account_rg,
   "-SubscriptionId", var.workloadSubsId,
-  "-ClientId", azurerm_user_assigned_identity.stguai.principal_id,
+  "-ClientId", azurerm_user_assigned_identity.stguai.client_id,
   "-SecurityPrincipalName", var.security_principal_name,
   "-ShareName", var.fsshare,
   "-DomainName", var.domain_name,
@@ -14,7 +14,8 @@ locals {
   "-OUName", var.ou_name,
   "-AdminUserName", var.domain_user,
   "-StorageAccountFqdn", "${var.storage_account_name}.file.core.windows.net",
-  "-StoragePurpose", "fslogix"
+  "-StoragePurpose", "fslogix",
+  "-TenantId", var.tenant_id
   )
 
   parameterPassword = format("%s \"%s\" ","-AdminUserPassword", var.domain_password)

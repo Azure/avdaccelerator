@@ -2,7 +2,8 @@ module "management_vm"{
   source = "../../modules/mgmtvm"
 
 
-  workloadSubsId = var.spoke_subscription_id
+    workloadSubsId = var.spoke_subscription_id
+    tenant_id = data.azurerm_client_config.current.tenant_id
     
     publisher = "MicrosoftWindowsServer"
     offer = "WindowsServer"

@@ -61,7 +61,11 @@ param (
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $StoragePurpose
+        [string] $StoragePurpose,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $TenantId
 )
 
 Write-Host "Add domain join account as local administrator"
@@ -121,7 +125,7 @@ function Set-EscapeCharacters {
 $AdminUserPasswordEscaped = Set-EscapeCharacters $AdminUserPassword
 
 
-$DscCompileCommand = "./Configuration.ps1 -StorageAccountName """ + $StorageAccountName + """ -StorageAccountRG """ + $StorageAccountRG + """ -StoragePurpose """ + $StoragePurpose + """ -StorageAccountFqdn """ + $StorageAccountFqdn + """ -ShareName """ + $ShareName + """ -SubscriptionId """ + $SubscriptionId + """ -ClientId """ + $ClientId + """ -SecurityPrincipalName """ + $SecurityPrincipalName + """ -DomainName """ + $DomainName + """ -IdentityServiceProvider """ + $IdentityServiceProvider + """ -AzureCloudEnvironment """ + $AzureCloudEnvironment + """ -CustomOuPath """ + $CustomOuPath + """ -OUName """ + $OUName + """ -AdminUserName """ + $AdminUserName + """ -AdminUserPassword """ + $AdminUserPasswordEscaped + """ -Verbose"
+$DscCompileCommand = "./Configuration.ps1 -StorageAccountName """ + $StorageAccountName + """ -StorageAccountRG """ + $StorageAccountRG + """ -StoragePurpose """ + $StoragePurpose + """ -StorageAccountFqdn """ + $StorageAccountFqdn + """ -ShareName """ + $ShareName + """ -SubscriptionId """ + $SubscriptionId + """ -ClientId """ + $ClientId + """ -SecurityPrincipalName """ + $SecurityPrincipalName + """ -DomainName """ + $DomainName + """ -IdentityServiceProvider """ + $IdentityServiceProvider + """ -AzureCloudEnvironment """ + $AzureCloudEnvironment + """ -CustomOuPath """ + $CustomOuPath + """ -OUName """ + $OUName + """ -AdminUserName """ + $AdminUserName + """ -AdminUserPassword """ + $AdminUserPasswordEscaped + """ -TenantId """ + $TenantId + """ -Verbose"
 
 Write-Host "Executing the commmand $DscCompileCommand" 
 Invoke-Expression -Command $DscCompileCommand

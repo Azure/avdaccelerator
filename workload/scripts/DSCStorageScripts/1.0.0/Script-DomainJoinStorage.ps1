@@ -56,7 +56,11 @@ param(
 
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
-	[string] $AzureCloudEnvironment
+	[string] $AzureCloudEnvironment,
+
+	[Parameter(Mandatory = $true)]
+	[ValidateNotNullOrEmpty()]
+	[string] $TenantId
 )
 
 $ErrorActionPreference = "Stop"
@@ -108,8 +112,10 @@ if ($IdentityServiceProvider -eq 'ADDS') {
 	}
 }
 
+Clear-AzContext -Force
+
 Write-Log "Connecting to managed identity account"
-Connect-AzAccount -Identity -AccountId $ClientId
+Connect-AzAccount -Identity -AccountId $ClientId -Tenant $TenantId
 
 Write-Log "Setting Azure subscription to $SubscriptionId"
 Select-AzSubscription -SubscriptionId $SubscriptionId

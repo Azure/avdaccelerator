@@ -8,6 +8,10 @@ variable "workloadSubsId" {
   type = string
 }
 
+variable "tenant_id" {
+  type = string
+}
+
 variable "deployment_environment" {
   type        = string
   description = "Deployment environment"

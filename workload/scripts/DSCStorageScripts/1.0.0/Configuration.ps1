@@ -132,7 +132,11 @@ Configuration DomainJoinFileShare
 	
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $AdminUserPassword
+        [string] $AdminUserPassword,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $TenantId
     )
     
     # Import the module that contains the File resource.
@@ -163,7 +167,7 @@ Configuration DomainJoinFileShare
                 . (Join-Path $using:ScriptPath "Logger.ps1")
                 try {
                     Write-Log "DSC DomainJoinStorage SetScript Domain joining storage account $Using:StorageAccountName"
-                    & "$using:ScriptPath\Script-DomainJoinStorage.ps1" -StorageAccountName $Using:StorageAccountName -StorageAccountRG $Using:StorageAccountRG -SubscriptionId $Using:SubscriptionId -ClientId $Using:ClientId -SecurityPrincipalName $Using:SecurityPrincipalName -ShareName $Using:ShareName -DomainName $Using:DomainName -IdentityServiceProvider $Using:IdentityServiceProvider -AzureCloudEnvironment $Using:AzureCloudEnvironment -CustomOuPath $Using:CustomOuPath -OUName $Using:OUName -StoragePurpose $Using:StoragePurpose -StorageAccountFqdn $Using:StorageAccountFqdn
+                    & "$using:ScriptPath\Script-DomainJoinStorage.ps1" -StorageAccountName $Using:StorageAccountName -StorageAccountRG $Using:StorageAccountRG -SubscriptionId $Using:SubscriptionId -ClientId $Using:ClientId -SecurityPrincipalName $Using:SecurityPrincipalName -ShareName $Using:ShareName -DomainName $Using:DomainName -IdentityServiceProvider $Using:IdentityServiceProvider -AzureCloudEnvironment $Using:AzureCloudEnvironment -CustomOuPath $Using:CustomOuPath -OUName $Using:OUName -StoragePurpose $Using:StoragePurpose -StorageAccountFqdn $Using:StorageAccountFqdn -TenantId $Using:TenantId
 
                     Write-Log "Successfully domain joined and/or NTFS permission set on Storage account"
                 }
