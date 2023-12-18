@@ -66,7 +66,7 @@ param (
 
 Write-Host "Add domain join account as local administrator"
 if ($IdentityServiceProvider -ne 'AAD') {
-        Add-LocalGroupMember -Group "Administrators" -Member "$DomainName\\$AdminUserName"
+        Add-LocalGroupMember -Group "Administrators" -Member "$DomainName\$AdminUserName"
         Write-Host "Domain join account added to local administrators group"
 }
 else {
