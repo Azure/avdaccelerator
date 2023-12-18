@@ -1,5 +1,5 @@
 locals {
-  parametersWithoutPassword = format("%s %s %s '%s' %s '%s' %s '%s' %s '%s' %s '%s' %s '%s' %s %s %s '%s' %s '%s' %s '%s' %s '%s' %s %s %s '%s' %s %s", 
+  parametersWithoutPassword = format("%s %s %s '%s' %s '%s' %s '%s' %s '%s' %s '%s' %s '%s' %s %s %s '%s' %s '%s' %s '%s' %s '%s' %s %s %s '%s' %s %s %s %s", 
   "-DscPath", var.dsc_storage_path, 
   "-StorageAccountName", var.storage_account_name, 
   "-StorageAccountRG", var.storage_account_rg,

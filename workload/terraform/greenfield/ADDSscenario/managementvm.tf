@@ -34,7 +34,7 @@ module "management_vm"{
 
     #Aun no estoy seguro de estos valores!!!
     baseScriptUri = "https://raw.githubusercontent.com/sihbher/avdaccelerator/main/workload/scripts/Manual-DSC-Storage-Scripts.ps1"
-    dsc_storage_path="https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip"
+    dsc_storage_path="https://github.com/sihbher/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip"
     vfile = "Manual-DSC-Storage-Scripts.ps1"
     security_principal_name= var.aad_group_name
     ou_name = "AvdComputers"
