@@ -80,7 +80,7 @@ resource "azurerm_windows_virtual_machine" "mgmt_vm" {
 }
 
 # Resource block to join the MGMT VM to a domain
-resource "azurerm_virtual_machine_extension" "domain_join" {
+resource "azurerm_virtual_machine_extension" "mngmvm_domain_join" {
   name                       = "${var.prefix}-domainJoin"
   virtual_machine_id         = azurerm_windows_virtual_machine.mgmt_vm.id
   publisher                  = "Microsoft.Compute"
@@ -91,8 +91,8 @@ resource "azurerm_virtual_machine_extension" "domain_join" {
   settings = <<SETTINGS
     {
       "Name": "${var.domain_name}",
-      "OUPath": "${var.ou_path}",
-      "User": "${var.domain_user}@${var.domain_name}",
+      "OUPath": "${var.custom_ou_path}",
+      "User": "${var.domain_name}\\${var.domain_user}",
       "Restart": "true",
       "Options": "3"
     }
@@ -107,10 +107,61 @@ PROTECTED_SETTINGS
   lifecycle {
     ignore_changes = [settings, protected_settings]
   }
+
+  depends_on = [azurerm_windows_virtual_machine.mgmt_vm]
 }
 
+
+
+
+resource "azurerm_virtual_machine_extension" "dscStorageScript" {
+  name                 = "${var.prefix}-AzureFilesDomainJoin"
+  virtual_machine_id   = azurerm_windows_virtual_machine.mgmt_vm.id
+  publisher            = "Microsoft.Compute"
+  type                 = "CustomScriptExtension"
+  type_handler_version = "1.10"
+
+
+  settings = jsonencode({
+    fileUris         = [var.baseScriptUri]
+    commandToExecute = "powershell.exe -ExecutionPolicy Unrestricted -File ${var.vfile} ${local.fullParameters} -verbose"
+  })
+
+  depends_on = [
+    azurerm_user_assigned_identity.stguai
+    ,azurerm_virtual_machine_extension.mngmvm_domain_join
+  ]
+
+  lifecycle {
+    
+  }
+}
+
+
 # resource "azurerm_virtual_machine_extension" "dscStorageScript" {
-#   name                 = "AzureFilesDomainJoin"
+#   name                 = "${var.prefix}-AzureFilesDomainJoin"
+#   virtual_machine_id   = azurerm_windows_virtual_machine.mgmt_vm.id
+#   publisher            = "Microsoft.Compute"
+#   type                 = "CustomScriptExtension"
+#   type_handler_version = "1.9"
+
+
+#     settings = jsonencode({
+#     fileUris         = [var.baseScriptUri]
+#   commandToExecute="powershell.exe -ExecutionPolicy Unrestricted -File ${var.vfile} -DscPath '${var.dsc_storage_path}' -StorageAccountName '${var.storage_account_name}' -StorageAccountRG '${var.storage_account_rg}' -SubscriptionId '${var.workloadSubsId}' -ClientId '${azurerm_user_assigned_identity.stguai.principal_id}' -SecurityPrincipalName '${var.security_principal_name}' -ShareName '${var.fsshare}' -DomainName '${var.domain_name}' -CustomOuPath '${var.custom_ou_path}' -IdentityServiceProvider '${var.IdentityServiceProvider}' -AzureCloudEnvironment '${var.azure_cloud_environment}' -OUName '${var.ou_name}' -AdminUserName '${var.domain_user}' -AdminUserPassword '${var.domain_password}' -StorageAccountFqdn '${var.storage_account_name}.file.core.windows.net' -StoragePurpose 'fslogix' -verbose"
+#   })
+
+#   depends_on = [
+#     azurerm_user_assigned_identity.stguai,
+#     azurerm_virtual_machine_extension.mngmvm_domain_join
+#   ]
+# }
+
+
+
+
+# resource "azurerm_virtual_machine_extension" "dscStorageScript" {
+#   name                 = "${var.prefix}-AzureFilesDomainJoin"
 #   virtual_machine_id   = azurerm_windows_virtual_machine.mgmt_vm.id
 #   publisher            = "Microsoft.Compute"
 #   type                 = "CustomScriptExtension"

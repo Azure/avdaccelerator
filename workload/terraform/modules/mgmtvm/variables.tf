@@ -25,6 +25,7 @@ validation {
 }
 }
 
+#Creo que este no se usa
 variable "create_ou_for_storage_string" {
   type = string
   description = "Specifies whether to create an OU for the storage account. Valid values are true or false."
@@ -69,8 +70,8 @@ variable "vm_size" {
   description = "Size of the machine to deploy"
 }
 
-variable "ou_path" {
-  description = "Distinguished name of the organizational unit for the session host"
+variable "ou_name" {
+  description = "Distinguished name of the organizational unit for the session host. OU where computer account objects for Azure storage accounts will be created."
 }
 
 variable "custom_ou_path" {
@@ -174,4 +175,9 @@ variable "scriptArguments" {
 variable "domainJoinUserPassword" {
   type        = string
   description = "Domain join user password."
+}
+
+variable "security_principal_name"{
+    type        = string
+    description = "Name of the security principal"
 }

@@ -164,6 +164,10 @@ PROTECTED_SETTINGS
     azurerm_virtual_machine_extension.domain_join,
     azurerm_virtual_desktop_host_pool.hostpool
   ]
+
+  lifecycle {
+    ignore_changes = [settings, protected_settings]
+  }
 }
 
 # Virtual Machine Extension for MMA agent
@@ -191,7 +195,9 @@ PROTECTED_SETTINGS
     azurerm_virtual_machine_extension.domain_join,
     azurerm_virtual_machine_extension.vmext_dsc
   ]
-
+lifecycle {
+    ignore_changes = [settings, protected_settings]
+  }
 }
 
 # Virtual Machine Extension for Microsoft Antimalware
@@ -209,4 +215,7 @@ resource "azurerm_virtual_machine_extension" "mal" {
     azurerm_virtual_machine_extension.vmext_dsc,
     azurerm_virtual_machine_extension.mma
   ]
+  lifecycle {
+    ignore_changes = [settings, protected_settings]
+  }
 }

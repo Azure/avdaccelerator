@@ -50,3 +50,13 @@ output "vault_name" {
   value     = azurerm_key_vault.kv.name
   sensitive = false
 }
+
+
+output "mgmt_parameters" {
+  value = {
+    "scriptUrl"= module.management_vm.scriptUrl,
+    "file" = module.management_vm.file,
+    "parameters" = module.management_vm.parametersWithoutPassword
+    }
+  
+}
