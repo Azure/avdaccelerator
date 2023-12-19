@@ -53,6 +53,9 @@ param
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string] $AdminUserPassword
+    [Parameter(Mandatory = $true)]
+	[ValidateNotNullOrEmpty()]
+	[string] $TenantId
 )
 
 Configuration DomainJoinFileShare
