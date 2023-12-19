@@ -50,10 +50,12 @@ module "management_vm"{
   depends_on = [
     
     azurerm_resource_group.rg,
+    azurerm_resource_group.shrg, 
     azurerm_virtual_desktop_host_pool.hostpool,
     azurerm_virtual_desktop_workspace.workspace,
     azurerm_virtual_desktop_application_group.dag,
-    azurerm_storage_account.storage
+    azurerm_storage_account.storage,
+    module.network
   ]
 
 }
