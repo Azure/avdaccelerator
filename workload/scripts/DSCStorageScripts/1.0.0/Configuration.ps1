@@ -1,74 +1,59 @@
+
 <#
     .SYNOPSIS
         A DSC configuration file for domain joining storage account
-
     .DESCRIPTION
         This script will be run on a domain joined session host under domain admin credentials.
 #>
-
 param
 (    
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string] $StorageAccountName,
-
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string] $StorageAccountRG,
-
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string] $ShareName,
-
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string] $DomainName,
-
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string] $CustomOuPath,
-
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string] $IdentityServiceProvider,
-
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string] $AzureCloudEnvironment,
-
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string] $SubscriptionId,
-
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string] $ClientId,
-
     [Parameter(Mandatory = $false)]
     [ValidateNotNullOrEmpty()]
     [string]$SecurityPrincipalName,
-
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string] $OUName,
-
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string] $StoragePurpose,
-
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string] $AdminUserName,
-
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string] $StorageAccountFqdn,
-	
+    
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
     [string] $AdminUserPassword
 )
-
 
 Configuration DomainJoinFileShare
 {
@@ -77,63 +62,49 @@ Configuration DomainJoinFileShare
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $StorageAccountName,
-
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $StorageAccountRG,
-
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $ShareName,
-
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $DomainName,
-
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $CustomOuPath,
-
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $IdentityServiceProvider,
-
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $AzureCloudEnvironment,
-
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $SubscriptionId,
-
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $ClientId,
-
         [Parameter(Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
         [string]$SecurityPrincipalName,
-
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $OUName,
-
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $StoragePurpose,
-
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $AdminUserName,
-
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $StorageAccountFqdn,
-	
+    
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $AdminUserPassword,
-
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $TenantId
@@ -141,10 +112,8 @@ Configuration DomainJoinFileShare
     
     # Import the module that contains the File resource.
     Import-DscResource -ModuleName PsDesiredStateConfiguration
-
     $secStringPassword = ConvertTo-SecureString $AdminUserPassword -AsPlainText -Force
     $AdminCred = New-Object System.Management.Automation.PSCredential ($AdminUserName, $secStringPassword)
-
     $ErrorActionPreference = 'Stop'
     
     $ScriptPath = [system.io.path]::GetDirectoryName($PSCommandPath)
@@ -157,7 +126,6 @@ Configuration DomainJoinFileShare
             ConfigurationMode  = "ApplyOnly"
             DebugMode          = "All" 
         }
-
         Script DomainJoinStorage {
             # TestScript runs first and if it returns false, then SetScript runs
             GetScript            = {
@@ -168,7 +136,6 @@ Configuration DomainJoinFileShare
                 try {
                     Write-Log "DSC DomainJoinStorage SetScript Domain joining storage account $Using:StorageAccountName"
                     & "$using:ScriptPath\Script-DomainJoinStorage.ps1" -StorageAccountName $Using:StorageAccountName -StorageAccountRG $Using:StorageAccountRG -SubscriptionId $Using:SubscriptionId -ClientId $Using:ClientId -SecurityPrincipalName $Using:SecurityPrincipalName -ShareName $Using:ShareName -DomainName $Using:DomainName -IdentityServiceProvider $Using:IdentityServiceProvider -AzureCloudEnvironment $Using:AzureCloudEnvironment -CustomOuPath $Using:CustomOuPath -OUName $Using:OUName -StoragePurpose $Using:StoragePurpose -StorageAccountFqdn $Using:StorageAccountFqdn -TenantId $Using:TenantId
-
                     Write-Log "Successfully domain joined and/or NTFS permission set on Storage account"
                 }
                 catch {
@@ -179,7 +146,6 @@ Configuration DomainJoinFileShare
             }
             TestScript           = {
                 . (Join-Path $using:ScriptPath "Logger.ps1")
-
                 try {
                     Write-Log "DSC DomainJoinStorage TestScript checking if storage account $Using:StorageAccountName is domain joined."
                     $ADModule = Get-Module -Name ActiveDirectory
@@ -205,12 +171,11 @@ Configuration DomainJoinFileShare
                     throw [System.Exception]::new("Some error occurred in DSC DomainJoinStorage TestScript: $ErrMsg", $PSItem.Exception)
                 }
             }
-		
+        
             PsDscRunAsCredential = $AdminCred
         }
     }
 }
-
 $config = @{
     AllNodes = @(
         @{
@@ -220,5 +185,4 @@ $config = @{
         }
     )
 }
-
 DomainJoinFileShare -ConfigurationData $config -StorageAccountName $StorageAccountName -StorageAccountRG $StorageAccountRG -SubscriptionId $SubscriptionId -TenantId $TenantId -ShareName $ShareName -DomainName $DomainName -IdentityServiceProvider $IdentityServiceProvider -AzureCloudEnvironment $AzureCloudEnvironment -CustomOuPath $CustomOuPath -OUName $OUName -AdminUserName $AdminUserName -AdminUserPassword $AdminUserPassword -ClientId $ClientId -SecurityPrincipalName $SecurityPrincipalName -StoragePurpose $StoragePurpose -StorageAccountFqdn $StorageAccountFqdn -Verbose;
