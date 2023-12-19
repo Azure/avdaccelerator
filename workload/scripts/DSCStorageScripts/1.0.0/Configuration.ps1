@@ -52,7 +52,8 @@ param
     
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
-    [string] $AdminUserPassword
+    [string] $AdminUserPassword,
+    
     [Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
 	[string] $TenantId
