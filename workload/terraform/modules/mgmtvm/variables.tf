@@ -1,4 +1,4 @@
-variable "dsc_storage_path"  {
+variable "dsc_storage_path" {
   type        = string
   description = "Path to the DSC script"
   default     = "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip"
@@ -23,35 +23,26 @@ variable "azure_cloud_environment" {
   description = "Azure Cloud Environment"
   default     = "AzureCloud"
 
-validation {
-  condition = contains(["AzureCloud", "AzureChinaCloud", "AzureGermanCloud", "AzureUSGovernment"], var.azure_cloud_environment)
-  error_message = "value must be one of AzureCloud, AzureChinaCloud, AzureGermanCloud, AzureUSGovernment"
-}
-}
-
-#Creo que este no se usa
-variable "create_ou_for_storage_string" {
-  type = string
-  description = "Specifies whether to create an OU for the storage account. Valid values are true or false."
-  default = "false"
   validation {
-    condition = contains(["true", "false"], var.create_ou_for_storage_string)
-    error_message = "value must be one of true or false"
+    condition     = contains(["AzureCloud", "AzureChinaCloud", "AzureGermanCloud", "AzureUSGovernment"], var.azure_cloud_environment)
+    error_message = "value must be one of AzureCloud, AzureChinaCloud, AzureGermanCloud, AzureUSGovernment"
   }
 }
 
-variable "publisher" {
-  type        = string
-  description = "Publisher of the image"
-}
-variable "offer" {
-  type        = string
-  description = "Offer of the image"
-}
-
-variable "sku" {
-  type        = string
-  description = "SKU of the image"
+variable "vm_source_image_reference" {
+  type = object({
+    publisher = string
+    offer     = string
+    sku       = string
+    version   = string
+  })
+  description = "VM Source Image Reference"
+  default = {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2022-datacenter-smalldisk-g2"
+    version   = "latest"
+  }
 }
 
 variable "domain_name" {
@@ -75,7 +66,8 @@ variable "vm_size" {
 }
 
 variable "ou_name" {
-  description = "Distinguished name of the organizational unit for the session host. OU where computer account objects for Azure storage accounts will be created."
+  description = "Distinguished name of the organizational unit for the session host. OU where computer account objects for Azure storage accounts will be created. Example: 'AvdComputers'"
+  default     = "Computers"
 }
 
 variable "custom_ou_path" {
@@ -106,12 +98,13 @@ variable "prefix" {
   description = "Prefix for all resources"
 }
 
-variable "vnet_ID" {
+
+variable "vnet_name" {
   type        = string
   description = "Name of the virtual network"
 }
 
-variable "snet_ID" {
+variable "subnet_name" {
   type        = string
   description = "Name of the subnet"
 }
@@ -152,36 +145,49 @@ variable "IdentityServiceProvider" {
   description = "Identity Service Provider"
 }
 
-# variable "clientid" {
-#   type        = string
-#   description = "Managed Identity Client ID"
-# }
-
 variable "location" {
   type        = string
   description = "Location where to deploy compute services."
 }
 
-variable "baseScriptUri" {
+#Url where the script to be ran is located
+variable "url_powershell_script" {
   type        = string
-  description = "Location for the AVD agent installation package."
+  description = "Location of the powershell script for configuring fslogix."
+  default = ""
 }
 
+variable "localpath_powershell_script" {
+  type        = string
+  description = "Content of the Powershell script for configuring fslogix. Only one of url_powershell_script/content_powershell_script is required."
+  default = "../../../scripts/Manual-DSC-Storage-Scripts.ps1"
+}
+
+#Name of the file to be downloaded from the url. Defualt value is: Manual-DSC-Storage-Scripts.ps1. It is required if url_powershell_script is provided
+#It is also used as the name of the local file if localpath_powershell_script is provided, but is not required
 variable "vfile" {
   type = string
+  description = "Name of the file to be downloaded from the url. Defualt value is: Manual-DSC-Storage-Scripts.ps1. It is required if url_powershell_script is provided. It is also used as the name of the local file if localpath_powershell_script is provided, but is not required"
+  default = "Manual-DSC-Storage-Scripts.ps1"
 }
 
-variable "scriptArguments" {
-  type        = string
-  description = "Arguments for domain join script."
-}
 
 variable "domainJoinUserPassword" {
   type        = string
   description = "Domain join user password."
 }
 
-variable "security_principal_name"{
-    type        = string
-    description = "Name of the security principal"
+variable "security_principal_name" {
+  type        = string
+  description = "Name of the security principal"
+}
+
+variable "log_analytics_workspace" {
+  type = object({
+    workspace_id       = string
+    workspace_key = string
+
+  })
+  description = "Log Analytics Workspace Details"
+  default     = null
 }

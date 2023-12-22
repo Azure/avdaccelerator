@@ -27,7 +27,7 @@ resource "azurerm_role_assignment" "assign_stguai_sar" {
   principal_id         = azurerm_user_assigned_identity.stguai.principal_id
 }
 
-# Resource block to create a network interface for the AVD VM
+# Resource block to create a network interface for the Management VM
 resource "azurerm_network_interface" "avd_vm_nic" {
   name                          = "${var.prefix}-nic"
   resource_group_name           = data.azurerm_resource_group.rg.name
@@ -36,7 +36,7 @@ resource "azurerm_network_interface" "avd_vm_nic" {
 
   ip_configuration {
     name                          = "nic_config"
-    subnet_id                     = var.snet_ID
+    subnet_id                     = data.azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
   }
 
@@ -45,7 +45,7 @@ resource "azurerm_network_interface" "avd_vm_nic" {
   ]
 }
 
-# Resource block to create an MGMT VM
+# Resource block to create the Management VM
 resource "azurerm_windows_virtual_machine" "mgmt_vm" {
   name                       = "vm-mgmt-${var.prefix}"
   resource_group_name        = data.azurerm_resource_group.rg.name
@@ -66,10 +66,10 @@ resource "azurerm_windows_virtual_machine" "mgmt_vm" {
   }
   # To use marketplace image, uncomment the following lines and comment the source_image_id line
   source_image_reference {
-    publisher = var.publisher
-    offer     = var.offer
-    sku       = var.sku
-    version   = "latest"
+    publisher = var.vm_source_image_reference.publisher
+    offer     = var.vm_source_image_reference.offer
+    sku       = var.vm_source_image_reference.sku
+    version   = var.vm_source_image_reference.version
   }
   identity {
     type = "UserAssigned"
@@ -79,7 +79,7 @@ resource "azurerm_windows_virtual_machine" "mgmt_vm" {
   }
 }
 
-# Resource block to join the MGMT VM to a domain
+# Resource block to join the Management VM to a domain
 resource "azurerm_virtual_machine_extension" "mngmvm_domain_join" {
   name                       = "${var.prefix}-domainJoin"
   virtual_machine_id         = azurerm_windows_virtual_machine.mgmt_vm.id
@@ -112,10 +112,10 @@ PROTECTED_SETTINGS
 }
 
 
-
-
-resource "azurerm_virtual_machine_extension" "dscStorageScript" {
-  name                 = "${var.prefix}-AzureFilesDomainJoin"
+# Resource block to run Custom Script Extension on the Management VM for FSLogix configuration if an url is provided
+resource "azurerm_virtual_machine_extension" "dscStorageScript_urlfile" {
+  count                = var.url_powershell_script != "" ? 1 : 0
+  name                 = "${var.prefix}-AzureFilesDomainJoin-Url"
   virtual_machine_id   = azurerm_windows_virtual_machine.mgmt_vm.id
   publisher            = "Microsoft.Compute"
   type                 = "CustomScriptExtension"
@@ -123,73 +123,88 @@ resource "azurerm_virtual_machine_extension" "dscStorageScript" {
 
 
   settings = jsonencode({
-    fileUris         = [var.baseScriptUri]
-    commandToExecute = "powershell.exe -ExecutionPolicy Unrestricted -File ${var.vfile} ${local.fullParameters} -verbose"
+    fileUris         = [var.url_powershell_script]
+    commandToExecute = local.commandToExecute_UrlFile
   })
+
+  lifecycle {
+    ignore_changes = [settings, protected_settings]
+  }
 
   depends_on = [
     azurerm_user_assigned_identity.stguai
-    ,azurerm_virtual_machine_extension.mngmvm_domain_join
+    , azurerm_virtual_machine_extension.mngmvm_domain_join
   ]
+}
+
+# Resource block to run Custom Script Extension on the Management VM for FSLogix configuration if the local file is provided
+resource "azurerm_virtual_machine_extension" "dscStorageScript_localfile" {
+  count                = var.url_powershell_script == "" && var.localpath_powershell_script != "" ? 1 : 0
+  name                 = "${var.prefix}-AzureFilesDomainJoin-Local"
+  virtual_machine_id   = azurerm_windows_virtual_machine.mgmt_vm.id
+  publisher            = "Microsoft.Compute"
+  type                 = "CustomScriptExtension"
+  type_handler_version = "1.9"
+
+  settings = jsonencode({
+    commandToExecute = local.commandToExecute_LocalFile
+  })
 
   lifecycle {
-    
+    ignore_changes = [settings, protected_settings]
+  }
+
+  depends_on = [
+    azurerm_user_assigned_identity.stguai
+    , azurerm_virtual_machine_extension.mngmvm_domain_join
+  ]
+}
+
+# Resource block to intall Extension for MMA agent on the Management VM
+resource "azurerm_virtual_machine_extension" "mma" {
+  count                       = var.log_analytics_workspace == null ? 0 : 1
+  name                        = "MicrosoftMonitoringAgent"
+  virtual_machine_id          = azurerm_windows_virtual_machine.mgmt_vm.id
+  publisher                   = "Microsoft.EnterpriseCloud.Monitoring"
+  type                        = "MicrosoftMonitoringAgent"
+  type_handler_version        = "1.0"
+  auto_upgrade_minor_version  = true
+  failure_suppression_enabled = true
+  settings                    = <<SETTINGS
+    {
+      "workspaceId": "${var.log_analytics_workspace.workspace_id}"
+    }
+      SETTINGS
+
+  protected_settings = <<PROTECTED_SETTINGS
+  {
+   "workspaceKey": "${var.log_analytics_workspace.workspace_key}"
+  }
+PROTECTED_SETTINGS
+
+  depends_on = [
+    azurerm_virtual_machine_extension.mngmvm_domain_join
+  ]
+  lifecycle {
+    ignore_changes = [settings, protected_settings]
   }
 }
 
-
-# resource "azurerm_virtual_machine_extension" "dscStorageScript" {
-#   name                 = "${var.prefix}-AzureFilesDomainJoin"
-#   virtual_machine_id   = azurerm_windows_virtual_machine.mgmt_vm.id
-#   publisher            = "Microsoft.Compute"
-#   type                 = "CustomScriptExtension"
-#   type_handler_version = "1.9"
-
-
-#     settings = jsonencode({
-#     fileUris         = [var.baseScriptUri]
-#   commandToExecute="powershell.exe -ExecutionPolicy Unrestricted -File ${var.vfile} -DscPath '${var.dsc_storage_path}' -StorageAccountName '${var.storage_account_name}' -StorageAccountRG '${var.storage_account_rg}' -SubscriptionId '${var.workloadSubsId}' -ClientId '${azurerm_user_assigned_identity.stguai.principal_id}' -SecurityPrincipalName '${var.security_principal_name}' -ShareName '${var.fsshare}' -DomainName '${var.domain_name}' -CustomOuPath '${var.custom_ou_path}' -IdentityServiceProvider '${var.IdentityServiceProvider}' -AzureCloudEnvironment '${var.azure_cloud_environment}' -OUName '${var.ou_name}' -AdminUserName '${var.domain_user}' -AdminUserPassword '${var.domain_password}' -StorageAccountFqdn '${var.storage_account_name}.file.core.windows.net' -StoragePurpose 'fslogix' -verbose"
-#   })
-
-#   depends_on = [
-#     azurerm_user_assigned_identity.stguai,
-#     azurerm_virtual_machine_extension.mngmvm_domain_join
-#   ]
-# }
-
-
-
-
-# resource "azurerm_virtual_machine_extension" "dscStorageScript" {
-#   name                 = "${var.prefix}-AzureFilesDomainJoin"
-#   virtual_machine_id   = azurerm_windows_virtual_machine.mgmt_vm.id
-#   publisher            = "Microsoft.Compute"
-#   type                 = "CustomScriptExtension"
-#   type_handler_version = "1.10"
-
-#     settings = jsonencode({
-#     fileUris         = [var.baseScriptUri]
-#     commandToExecute = "powershell.exe -ExecutionPolicy Unrestricted -File ${var.vfile} -DscPath ${var.dsc_storage_path} -StorageAccountName ${var.storage_account_name} -StorageAccountRG ${var.storage_account_rg} -StoragePurpose fslogix -DomainName ${var.domain_name} -IdentityServiceProvider ${var.IdentityServiceProvider} -AzureCloudEnvironment ${var.azure_cloud_environment} -SubscriptionId ${var.workloadSubsId} -DomainAdminUserName ${var.domain_user}@${var.domain_name} -CustomOuPath ${var.ou_path} -OUName ${var.ou_path} -CreateNewOU ${var.create_ou_for_storage_string} -ShareName ${var.fsshare} -ClientId ${azurerm_user_assigned_identity.stguai.principal_id} -DomainAdminUserPassword ${var.domain_password} -verbose"
-#   })
-
-#   depends_on = [
-#     azurerm_virtual_machine_extension.domain_join
-#   ]
-# }
-
-/*
-# Resource block to install Microsoft Antimalware on the MGMT VM
+# Virtual Machine Extension for Microsoft Antimalware
 resource "azurerm_virtual_machine_extension" "mal" {
-  name                       = "IaaSAntimalware"
-  virtual_machine_id         = azurerm_windows_virtual_machine.mgmt_vm.id
-  publisher                  = "Microsoft.Azure.Security"
-  type                       = "IaaSAntimalware"
-  type_handler_version       = "1.3"
-  auto_upgrade_minor_version = "true"
+  name                        = "IaaSAntimalware"
+  virtual_machine_id          = azurerm_windows_virtual_machine.mgmt_vm.id
+  publisher                   = "Microsoft.Azure.Security"
+  type                        = "IaaSAntimalware"
+  type_handler_version        = "1.3"
+  auto_upgrade_minor_version  = "true"
+  failure_suppression_enabled = true
 
+  
   depends_on = [
-    azurerm_virtual_machine_extension.domain_join,
-    azurerm_virtual_machine_extension.dsc-stor
+    azurerm_virtual_machine_extension.mngmvm_domain_join
   ]
+  lifecycle {
+    ignore_changes = [settings, protected_settings]
+  }
 }
-*/

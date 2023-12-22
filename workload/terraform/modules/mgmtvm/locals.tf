@@ -1,61 +1,33 @@
 locals {
-  parametersWithoutPassword = format("%s %s %s '%s' %s '%s' %s '%s' %s '%s' %s '%s' %s '%s' %s %s %s '%s' %s '%s' %s '%s' %s '%s' %s %s %s '%s' %s %s %s %s", 
-  "-DscPath", var.dsc_storage_path, 
-  "-StorageAccountName", var.storage_account_name, 
-  "-StorageAccountRG", var.storage_account_rg,
-  "-SubscriptionId", var.workloadSubsId,
-  "-ClientId", azurerm_user_assigned_identity.stguai.client_id,
-  "-SecurityPrincipalName", var.security_principal_name,
-  "-ShareName", var.fsshare,
-  "-DomainName", var.domain_name,
-  "-CustomOuPath", var.custom_ou_path,
-  "-IdentityServiceProvider", var.IdentityServiceProvider,
-  "-AzureCloudEnvironment", var.azure_cloud_environment,
-  "-OUName", var.ou_name,
-  "-AdminUserName", var.domain_user,
-  "-StorageAccountFqdn", "${var.storage_account_name}.file.core.windows.net",
-  "-StoragePurpose", "fslogix",
-  "-TenantId", var.tenant_id
+  parametersWithoutPassword = format("-DscPath %s -StorageAccountName %s -StorageAccountRG %s -SubscriptionId %s -ClientId %s -SecurityPrincipalName %s -ShareName %s -DomainName %s -CustomOuPath \"%s\" -IdentityServiceProvider %s -AzureCloudEnvironment %s -OUName %s -AdminUserName %s -StorageAccountFqdn \"%s\" -StoragePurpose %s -TenantId %s",
+    var.dsc_storage_path,
+    var.storage_account_name,
+    var.storage_account_rg,
+    var.workloadSubsId,
+    azurerm_user_assigned_identity.stguai.client_id,
+    var.security_principal_name,
+    var.fsshare,
+    var.domain_name,
+    var.custom_ou_path,
+    var.IdentityServiceProvider,
+    var.azure_cloud_environment,
+    var.ou_name,
+    var.domain_user,
+    "${var.storage_account_name}.file.core.windows.net",
+    "fslogix",
+    var.tenant_id
   )
 
-  parameterPassword = format("%s \"%s\" ","-AdminUserPassword", var.domain_password)
-  fullParameters = format("%s %s",local.parametersWithoutPassword,local.parameterPassword)
+  parameterPassword = format("%s \"%s\" ", "-AdminUserPassword", var.domain_password)
+  fullParameters    = format("%s %s", local.parametersWithoutPassword, local.parameterPassword)
+
+
+  #This is the command to execute when the script is downloaded from an url
+  commandToExecute_UrlFile = "powershell.exe -ExecutionPolicy Unrestricted -File ${var.vfile} ${local.fullParameters} -verbose"
+
+
+  #If the script is provided locally, we need to encode it in base64 to be able to pass it to the VM
+  powershell_filename        = var.vfile
+  powershell_script_rendered = filebase64(var.localpath_powershell_script)
+  commandToExecute_LocalFile = "powershell.exe -command \"[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('${local.powershell_script_rendered}')) | Out-File -filepath ${local.powershell_filename}\" && powershell -ExecutionPolicy Unrestricted -File ${local.powershell_filename} ${local.fullParameters} -verbose"
 }
-
-#15
-
-
-
-output "scriptUrl" {
-  value = var.baseScriptUri
-}
-
-output "file" {
-  value = var.vfile
-}
-
-output "parametersWithoutPassword" {
-    value = local.parametersWithoutPassword
-}
-
-
-
-#  commandToExecute="powershell.exe -ExecutionPolicy Unrestricted -File ${var.vfile} 
-# -DscPath '${var.dsc_storage_path}' 
-# -StorageAccountName '${var.storage_account_name}' 
-# -StorageAccountRG '${var.storage_account_rg}' 
-# -SubscriptionId '${var.workloadSubsId}' 
-# -ClientId '${azurerm_user_assigned_identity.stguai.principal_id}' 
-# -SecurityPrincipalName '${var.security_principal_name}' 
-# -ShareName '${var.fsshare}' 
-# -DomainName '${var.domain_name}' 
-# -CustomOuPath '${var.custom_ou_path}' 
-# -IdentityServiceProvider '${var.IdentityServiceProvider}' 
-# -AzureCloudEnvironment '${var.azure_cloud_environment}' 
-# -OUName '${var.ou_name}' 
-# -AdminUserName '${var.domain_user}' 
-# -AdminUserPassword '${var.domain_password}' 
-# -StorageAccountFqdn '${var.storage_account_name}.file.core.windows.net' 
-# -StoragePurpose 'fslogix' 
-# -verbose"
-#  
