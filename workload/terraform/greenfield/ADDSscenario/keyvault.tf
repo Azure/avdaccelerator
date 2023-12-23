@@ -77,6 +77,26 @@ resource "azurerm_key_vault_secret" "localpassword" {
   ]
 }
 
+# Resource block to generate a random string for the local admin password
+resource "random_password" "mgmt_vm_local_password" {
+  length           = 20
+  special          = true
+}
+
+# Create Key Vault Secret
+resource "azurerm_key_vault_secret" "localpassword_mgmtvm" {
+  name         = "mgmtvmlocalpassword"
+  value        = random_password.mgmt_vm_local_password.result
+  key_vault_id = azurerm_key_vault.kv.id
+  content_type = "Password"
+
+  lifecycle { ignore_changes = [tags] }
+
+  depends_on = [
+    azurerm_role_assignment.keystor
+  ]
+}
+
 # Linking DNS Zone to the existing DNS Zone in the Hub VNET
 resource "azurerm_private_dns_zone_virtual_network_link" "vaultlink" {
   name                  = "keydnsvnet_link-${var.prefix}"

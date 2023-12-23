@@ -79,6 +79,12 @@ variable "local_admin_username" {
   description = "local admin username"
 }
 
+variable "local_admin_password" {
+  type        = string
+  description = "Local admin password"
+  sensitive   = true
+}
+
 variable "avdLocation" {
   type        = string
   description = "Location of the AVD deployment"
@@ -114,11 +120,7 @@ variable "rg_network" {
   description = "Name of the network resource group"
 }
 
-variable "localpassword" {
-  type        = string
-  description = "Local admin password"
-  sensitive   = true
-}
+
 
 variable "spoke_subscription_id" {
   type        = string
@@ -154,21 +156,21 @@ variable "location" {
 variable "url_powershell_script" {
   type        = string
   description = "Location of the powershell script for configuring fslogix."
-  default = ""
+  default     = ""
 }
 
 variable "localpath_powershell_script" {
   type        = string
   description = "Content of the Powershell script for configuring fslogix. Only one of url_powershell_script/content_powershell_script is required."
-  default = "../../../scripts/Manual-DSC-Storage-Scripts.ps1"
+  default     = "../../../scripts/Manual-DSC-Storage-Scripts.ps1"
 }
 
 #Name of the file to be downloaded from the url. Defualt value is: Manual-DSC-Storage-Scripts.ps1. It is required if url_powershell_script is provided
 #It is also used as the name of the local file if localpath_powershell_script is provided, but is not required
 variable "vfile" {
-  type = string
+  type        = string
   description = "Name of the file to be downloaded from the url. Defualt value is: Manual-DSC-Storage-Scripts.ps1. It is required if url_powershell_script is provided. It is also used as the name of the local file if localpath_powershell_script is provided, but is not required"
-  default = "Manual-DSC-Storage-Scripts.ps1"
+  default     = "Manual-DSC-Storage-Scripts.ps1"
 }
 
 
@@ -184,7 +186,7 @@ variable "security_principal_name" {
 
 variable "log_analytics_workspace" {
   type = object({
-    workspace_id       = string
+    workspace_id  = string
     workspace_key = string
 
   })

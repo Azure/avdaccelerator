@@ -1,11 +1,3 @@
-# Resource block to generate a random string for the local admin password
-resource "random_string" "AVD_local_password" {
-  length           = 16
-  special          = true
-  min_special      = 2
-  override_special = "*!@#?"
-}
-
 # User Assigned Managed Identity for the MGMT VM to join storage accounts to the domain
 resource "azurerm_user_assigned_identity" "stguai" {
   name                = "id-storage-${var.prefix}-${var.deployment_environment}-001"
@@ -55,7 +47,7 @@ resource "azurerm_windows_virtual_machine" "mgmt_vm" {
   network_interface_ids      = ["${azurerm_network_interface.avd_vm_nic.id}"]
   provision_vm_agent         = true
   admin_username             = var.local_admin_username
-  admin_password             = var.localpassword
+  admin_password             = var.local_admin_password
   encryption_at_host_enabled = true //'Microsoft.Compute/EncryptionAtHost' feature is must be enabled in the subscription for this setting to work https://learn.microsoft.com/en-us/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell
   secure_boot_enabled        = true
   vtpm_enabled               = true
@@ -200,7 +192,7 @@ resource "azurerm_virtual_machine_extension" "mal" {
   auto_upgrade_minor_version  = "true"
   failure_suppression_enabled = true
 
-  
+
   depends_on = [
     azurerm_virtual_machine_extension.mngmvm_domain_join
   ]

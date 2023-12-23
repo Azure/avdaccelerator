@@ -1,4 +1,6 @@
 locals {
+
+  #These are the parameters that will be passed to the script, without the password
   parametersWithoutPassword = format("-DscPath %s -StorageAccountName %s -StorageAccountRG %s -SubscriptionId %s -ClientId %s -SecurityPrincipalName %s -ShareName %s -DomainName %s -CustomOuPath \"%s\" -IdentityServiceProvider %s -AzureCloudEnvironment %s -OUName %s -AdminUserName %s -StorageAccountFqdn \"%s\" -StoragePurpose %s -TenantId %s",
     var.dsc_storage_path,
     var.storage_account_name,
@@ -18,7 +20,10 @@ locals {
     var.tenant_id
   )
 
+  #This is the parameter that will be passed to the script, with the password
   parameterPassword = format("%s \"%s\" ", "-AdminUserPassword", var.domain_password)
+
+  #This is the full parameter list
   fullParameters    = format("%s %s", local.parametersWithoutPassword, local.parameterPassword)
 
 
