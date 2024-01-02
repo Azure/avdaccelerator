@@ -10,7 +10,7 @@ Follow the steps below to troubleshoot and resolve the issue:
 
 ### Validate environment and account configuration
 
-- **Check Configuration**: Review your Azure Virtual Desktop (AVD) virtual network configuration and ensure that DNS is properly configured and the virtual network is peered to the network Hub or Identity Services virtual network. When using AD DS or AAD DS commonly the virtual network will need to be setup with custom DNS servers settings that point to the domain controllers IPs.
+- **Check Configuration**: Review your Azure Virtual Desktop (AVD) virtual network configuration and ensure that DNS is properly configured and the virtual network is peered to the network Hub or Identity Services virtual network. When using AD DS or Microsoft Entra Domain Services commonly the virtual network will need to be setup with custom DNS servers settings that point to the domain controllers IPs.
     - Resources:
         - [Name resolution for resources in Azure virtual networks](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-networks-name-resolution-for-vms-and-role-instances?tabs=redhat)
 
