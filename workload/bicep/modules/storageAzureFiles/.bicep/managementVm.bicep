@@ -158,7 +158,7 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
         allowExtensionOperations: true
         extensionDomainJoinPassword: avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
         extensionDomainJoinConfig: {
-            enabled: (identityServiceProvider == 'AAD') ? false: true
+            enabled: (identityServiceProvider == 'EntraID') ? false: true
             settings: {
                 name: identityDomainName
                 ouPath: !empty(ouPath) ? ouPath : null
@@ -169,7 +169,7 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
         }
         // Entra ID Join.
         extensionAadJoinConfig: {
-            enabled: (identityServiceProvider == 'AAD') ? true: false
+            enabled: (identityServiceProvider == 'EntraID') ? true: false
         }
         tags: tags
     }

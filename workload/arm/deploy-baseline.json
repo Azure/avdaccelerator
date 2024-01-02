@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "9406990619434457184"
+      "templateHash": "1588493415579051487"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -87,7 +87,7 @@
       "allowedValues": [
         "ADDS",
         "AADDS",
-        "AAD"
+        "EntraID"
       ],
       "metadata": {
         "description": "Required, The service providing domain services for Azure Virtual Desktop. (Default: ADDS)"
@@ -11871,7 +11871,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "7326746777556089250"
+              "templateHash": "4804750058584801750"
             }
           },
           "parameters": {
@@ -12072,7 +12072,7 @@
                 "applicationGroupType": "[if(equals(parameters('preferredAppGroupType'), 'Desktop'), 'Desktop', 'RemoteApp')]"
               }
             ],
-            "varHostPoolRdpPropertiesDomainServiceCheck": "[if(equals(parameters('identityServiceProvider'), 'AAD'), format('{0};targetisaadjoined:i:1;enablerdsaadauth:i:1', parameters('hostPoolRdpProperties')), parameters('hostPoolRdpProperties'))]",
+            "varHostPoolRdpPropertiesDomainServiceCheck": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), format('{0};targetisaadjoined:i:1;enablerdsaadauth:i:1', parameters('hostPoolRdpProperties')), parameters('hostPoolRdpProperties'))]",
             "varRAppApplicationGroupsStandardApps": "[if(equals(parameters('preferredAppGroupType'), 'RailApplications'), createArray(createObject('name', 'Task Manager', 'description', 'Task Manager', 'friendlyName', 'Task Manager', 'showInPortal', true(), 'filePath', 'C:\\Windows\\system32\\taskmgr.exe'), createObject('name', 'WordPad', 'description', 'WordPad', 'friendlyName', 'WordPad', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Windows NT\\Accessories\\wordpad.exe'), createObject('name', 'Microsoft Edge', 'description', 'Microsoft Edge', 'friendlyName', 'Edge', 'showInPortal', true(), 'filePath', 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'), createObject('name', 'Remote Desktop Connection', 'description', 'Remote Desktop Connection', 'friendlyName', 'Remote Desktop', 'showInPortal', true(), 'filePath', 'C:\\WINDOWS\\system32\\mtsc.exe')), createArray())]",
             "varRAppApplicationGroupsOfficeApps": "[if(equals(parameters('preferredAppGroupType'), 'RailApplications'), createArray(createObject('name', 'Microsoft Excel', 'description', 'Microsoft Excel', 'friendlyName', 'Excel', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE'), createObject('name', 'Microsoft PowerPoint', 'description', 'Microsoft PowerPoint', 'friendlyName', 'PowerPoint', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Microsoft Office\\root\\Office16\\POWERPNT.EXE'), createObject('name', 'Microsoft Word', 'description', 'Microsoft Word', 'friendlyName', 'Outlook', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE'), createObject('name', 'Microsoft Outlook', 'description', 'Microsoft Word', 'friendlyName', 'Word', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE')), createArray())]",
             "varRAppApplicationGroupsApps": "[if(equals(parameters('preferredAppGroupType'), 'RailApplications'), if(contains(parameters('osImage'), 'office'), union(variables('varRAppApplicationGroupsStandardApps'), variables('varRAppApplicationGroupsOfficeApps')), variables('varRAppApplicationGroupsStandardApps')), createArray())]",
@@ -14345,7 +14345,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "12068153438455870485"
+              "templateHash": "17207869172967484978"
             }
           },
           "parameters": {
@@ -17118,7 +17118,7 @@
                 "name": "aadIdentityLoginRoleAssign",
                 "count": "[length(parameters('securityPrincipalIds'))]"
               },
-              "condition": "[and(equals(parameters('identityServiceProvider'), 'AAD'), not(empty(parameters('securityPrincipalIds'))))]",
+              "condition": "[and(equals(parameters('identityServiceProvider'), 'EntraID'), not(empty(parameters('securityPrincipalIds'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('VM-Login-Comp-{0}-{1}', take(format('{0}', parameters('securityPrincipalIds')[copyIndex()]), 6), parameters('time'))]",
@@ -17698,7 +17698,7 @@
                 "name": "aadIdentityLoginAccessServiceObjects",
                 "count": "[length(parameters('securityPrincipalIds'))]"
               },
-              "condition": "[and(equals(parameters('identityServiceProvider'), 'AAD'), not(empty(parameters('securityPrincipalIds'))))]",
+              "condition": "[and(equals(parameters('identityServiceProvider'), 'EntraID'), not(empty(parameters('securityPrincipalIds'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('VM-Login-Serv-{0}-{1}', take(format('{0}', parameters('securityPrincipalIds')[copyIndex()]), 6), parameters('time'))]",
@@ -24794,7 +24794,7 @@
           "privateEndpoints": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), createObject('value', createArray(createObject('name', variables('varWrklKvPrivateEndpointName'), 'subnetResourceId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetPrivateEndpointSubnetName')), parameters('existingVnetPrivateEndpointSubnetResourceId')), 'customNetworkInterfaceName', format('nic-01-{0}', variables('varWrklKvPrivateEndpointName')), 'service', 'vault', 'privateDnsZoneGroup', createObject('privateDNSResourceIds', createArray(if(parameters('createPrivateDnsZones'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.KeyVaultDnsZoneResourceId.value, parameters('avdVnetPrivateDnsZoneKeyvaultId'))))))), createObject('value', createArray()))]",
           "secrets": {
             "value": {
-              "secureList": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createArray(createObject('name', 'vmLocalUserPassword', 'value', parameters('avdVmLocalUserPassword'), 'contentType', 'Session host local user credentials'), createObject('name', 'vmLocalUserName', 'value', parameters('avdVmLocalUserName'), 'contentType', 'Session host local user credentials'), createObject('name', 'domainJoinUserName', 'value', parameters('avdDomainJoinUserName'), 'contentType', 'Domain join credentials'), createObject('name', 'domainJoinUserPassword', 'value', parameters('avdDomainJoinUserPassword'), 'contentType', 'Domain join credentials')), createArray(createObject('name', 'vmLocalUserPassword', 'value', parameters('avdVmLocalUserPassword'), 'contentType', 'Session host local user credentials'), createObject('name', 'vmLocalUserName', 'value', parameters('avdVmLocalUserName'), 'contentType', 'Session host local user credentials'), createObject('name', 'domainJoinUserName', 'value', 'NoUsername', 'contentType', 'Domain join credentials'), createObject('name', 'domainJoinUserPassword', 'value', 'NoPassword', 'contentType', 'Domain join credentials')))]"
+              "secureList": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'EntraID')), createArray(createObject('name', 'vmLocalUserPassword', 'value', parameters('avdVmLocalUserPassword'), 'contentType', 'Session host local user credentials'), createObject('name', 'vmLocalUserName', 'value', parameters('avdVmLocalUserName'), 'contentType', 'Session host local user credentials'), createObject('name', 'domainJoinUserName', 'value', parameters('avdDomainJoinUserName'), 'contentType', 'Domain join credentials'), createObject('name', 'domainJoinUserPassword', 'value', parameters('avdDomainJoinUserPassword'), 'contentType', 'Domain join credentials')), createArray(createObject('name', 'vmLocalUserPassword', 'value', parameters('avdVmLocalUserPassword'), 'contentType', 'Session host local user credentials'), createObject('name', 'vmLocalUserName', 'value', parameters('avdVmLocalUserName'), 'contentType', 'Session host local user credentials'), createObject('name', 'domainJoinUserName', 'value', 'NoUsername', 'contentType', 'Domain join credentials'), createObject('name', 'domainJoinUserPassword', 'value', 'NoPassword', 'contentType', 'Domain join credentials')))]"
             }
           },
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'), variables('varWorkloadKeyvaultTag'))), createObject('value', union(variables('varAvdDefaultTags'), variables('varWorkloadKeyvaultTag'))))]"
@@ -26824,7 +26824,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "16306650625703107232"
+              "templateHash": "15817715667928545822"
             }
           },
           "parameters": {
@@ -27079,7 +27079,7 @@
                   },
                   "extensionDomainJoinConfig": {
                     "value": {
-                      "enabled": "[if(equals(parameters('identityServiceProvider'), 'AAD'), false(), true())]",
+                      "enabled": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), false(), true())]",
                       "settings": {
                         "name": "[parameters('identityDomainName')]",
                         "ouPath": "[if(not(empty(parameters('ouPath'))), parameters('ouPath'), null())]",
@@ -27091,7 +27091,7 @@
                   },
                   "extensionAadJoinConfig": {
                     "value": {
-                      "enabled": "[if(equals(parameters('identityServiceProvider'), 'AAD'), true(), false())]"
+                      "enabled": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), true(), false())]"
                     }
                   },
                   "tags": {
@@ -27105,7 +27105,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.23.1.45101",
-                      "templateHash": "3205620537307637582"
+                      "templateHash": "15426531948771861029"
                     }
                   },
                   "parameters": {
@@ -27439,7 +27439,7 @@
                         "enabled": false
                       },
                       "metadata": {
-                        "description": "Optional. The configuration for the [AAD Join] extension. Must at least contain the [\"enabled\": true] property to be executed."
+                        "description": "Optional. The configuration for the [EntraID Join] extension. Must at least contain the [\"enabled\": true] property to be executed."
                       }
                     },
                     "extensionAntiMalwareConfig": {
@@ -31435,7 +31435,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "13591692348976261694"
+              "templateHash": "506522898706212102"
             }
           },
           "parameters": {
@@ -31636,9 +31636,9 @@
               "Transaction"
             ],
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', parameters('storageAccountName'))]",
-            "varDirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'AADDS'), 'AADDS', if(equals(parameters('identityServiceProvider'), 'AAD'), 'AADKERB', 'None'))]",
+            "varDirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'AADDS'), 'AADDS', if(equals(parameters('identityServiceProvider'), 'EntraID'), 'AADKERB', 'None'))]",
             "varSecurityPrincipalName": "[if(not(empty(parameters('securityPrincipalName'))), parameters('securityPrincipalName'), 'none')]",
-            "varAdminUserName": "[if(equals(parameters('identityServiceProvider'), 'AAD'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
+            "varAdminUserName": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
             "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -AdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12} -SecurityPrincipalName \"{13}\" -StorageAccountFqdn {14} ', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), variables('varAdminUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'), variables('varSecurityPrincipalName'), parameters('storageAccountFqdn'))]"
           },
           "resources": [
@@ -31672,7 +31672,7 @@
                   "azureFilesIdentityBasedAuthentication": {
                     "value": {
                       "directoryServiceOptions": "[variables('varDirectoryServiceOptions')]",
-                      "activeDirectoryProperties": "[if(equals(parameters('identityServiceProvider'), 'AAD'), createObject('domainGuid', parameters('identityDomainGuid'), 'domainName', parameters('identityDomainName')), createObject())]"
+                      "activeDirectoryProperties": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('domainGuid', parameters('identityDomainGuid'), 'domainName', parameters('identityDomainName')), createObject())]"
                     }
                   },
                   "accessTier": {
@@ -31708,7 +31708,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.23.1.45101",
-                      "templateHash": "14398504551168498076"
+                      "templateHash": "6856542299042751588"
                     }
                   },
                   "parameters": {
@@ -31854,7 +31854,7 @@
                       "type": "bool",
                       "defaultValue": true,
                       "metadata": {
-                        "description": "Optional. Allow or disallow cross AAD tenant object replication."
+                        "description": "Optional. Allow or disallow cross EntraID tenant object replication."
                       }
                     },
                     "customDomainName": {
@@ -32028,7 +32028,7 @@
                         "PrivateLink"
                       ],
                       "metadata": {
-                        "description": "Optional. Restrict copy to and from Storage Accounts within an AAD tenant or with Private Links to the same VNet."
+                        "description": "Optional. Restrict copy to and from Storage Accounts within an EntraID tenant or with Private Links to the same VNet."
                       }
                     },
                     "publicNetworkAccess": {
@@ -35460,7 +35460,7 @@
                   "scriptArguments": {
                     "value": "[variables('varStorageToDomainScriptArgs')]"
                   },
-                  "adminUserPassword": "[if(equals(parameters('identityServiceProvider'), 'AAD'), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'vmLocalUserPassword')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'domainJoinUserPassword')))]",
+                  "adminUserPassword": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'vmLocalUserPassword')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'domainJoinUserPassword')))]",
                   "baseScriptUri": {
                     "value": "[parameters('storageToDomainScriptUri')]"
                   }
@@ -35643,7 +35643,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "13591692348976261694"
+              "templateHash": "506522898706212102"
             }
           },
           "parameters": {
@@ -35844,9 +35844,9 @@
               "Transaction"
             ],
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', parameters('storageAccountName'))]",
-            "varDirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'AADDS'), 'AADDS', if(equals(parameters('identityServiceProvider'), 'AAD'), 'AADKERB', 'None'))]",
+            "varDirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'AADDS'), 'AADDS', if(equals(parameters('identityServiceProvider'), 'EntraID'), 'AADKERB', 'None'))]",
             "varSecurityPrincipalName": "[if(not(empty(parameters('securityPrincipalName'))), parameters('securityPrincipalName'), 'none')]",
-            "varAdminUserName": "[if(equals(parameters('identityServiceProvider'), 'AAD'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
+            "varAdminUserName": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
             "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -AdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12} -SecurityPrincipalName \"{13}\" -StorageAccountFqdn {14} ', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), variables('varAdminUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'), variables('varSecurityPrincipalName'), parameters('storageAccountFqdn'))]"
           },
           "resources": [
@@ -35880,7 +35880,7 @@
                   "azureFilesIdentityBasedAuthentication": {
                     "value": {
                       "directoryServiceOptions": "[variables('varDirectoryServiceOptions')]",
-                      "activeDirectoryProperties": "[if(equals(parameters('identityServiceProvider'), 'AAD'), createObject('domainGuid', parameters('identityDomainGuid'), 'domainName', parameters('identityDomainName')), createObject())]"
+                      "activeDirectoryProperties": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('domainGuid', parameters('identityDomainGuid'), 'domainName', parameters('identityDomainName')), createObject())]"
                     }
                   },
                   "accessTier": {
@@ -35916,7 +35916,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.23.1.45101",
-                      "templateHash": "14398504551168498076"
+                      "templateHash": "6856542299042751588"
                     }
                   },
                   "parameters": {
@@ -36062,7 +36062,7 @@
                       "type": "bool",
                       "defaultValue": true,
                       "metadata": {
-                        "description": "Optional. Allow or disallow cross AAD tenant object replication."
+                        "description": "Optional. Allow or disallow cross EntraID tenant object replication."
                       }
                     },
                     "customDomainName": {
@@ -36236,7 +36236,7 @@
                         "PrivateLink"
                       ],
                       "metadata": {
-                        "description": "Optional. Restrict copy to and from Storage Accounts within an AAD tenant or with Private Links to the same VNet."
+                        "description": "Optional. Restrict copy to and from Storage Accounts within an EntraID tenant or with Private Links to the same VNet."
                       }
                     },
                     "publicNetworkAccess": {
@@ -39668,7 +39668,7 @@
                   "scriptArguments": {
                     "value": "[variables('varStorageToDomainScriptArgs')]"
                   },
-                  "adminUserPassword": "[if(equals(parameters('identityServiceProvider'), 'AAD'), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'vmLocalUserPassword')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'domainJoinUserPassword')))]",
+                  "adminUserPassword": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'vmLocalUserPassword')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'domainJoinUserPassword')))]",
                   "baseScriptUri": {
                     "value": "[parameters('storageToDomainScriptUri')]"
                   }
@@ -40341,7 +40341,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "14294076350463870661"
+              "templateHash": "148150929077879236"
             }
           },
           "parameters": {
@@ -40638,7 +40638,7 @@
                   "timeZone": {
                     "value": "[parameters('timeZone')]"
                   },
-                  "systemAssignedIdentity": "[if(equals(parameters('identityServiceProvider'), 'AAD'), createObject('value', true()), createObject('value', false()))]",
+                  "systemAssignedIdentity": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('value', true()), createObject('value', false()))]",
                   "availabilityZone": "[if(parameters('useAvailabilityZones'), createObject('value', take(skip(variables('varAllAvailabilityZones'), mod(range(1, parameters('count'))[copyIndex()], length(variables('varAllAvailabilityZones')))), 1)), createObject('value', createArray()))]",
                   "encryptionAtHost": {
                     "value": "[parameters('encryptionAtHost')]"
@@ -40714,7 +40714,7 @@
                   },
                   "extensionAadJoinConfig": {
                     "value": {
-                      "enabled": "[if(equals(parameters('identityServiceProvider'), 'AAD'), true(), false())]",
+                      "enabled": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), true(), false())]",
                       "settings": "[if(parameters('createIntuneEnrollment'), createObject('mdmId', '0000000a-0000-0000-c000-000000000000'), createObject())]"
                     }
                   },
@@ -40731,7 +40731,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.23.1.45101",
-                      "templateHash": "3205620537307637582"
+                      "templateHash": "15426531948771861029"
                     }
                   },
                   "parameters": {
@@ -41065,7 +41065,7 @@
                         "enabled": false
                       },
                       "metadata": {
-                        "description": "Optional. The configuration for the [AAD Join] extension. Must at least contain the [\"enabled\": true] property to be executed."
+                        "description": "Optional. The configuration for the [EntraID Join] extension. Must at least contain the [\"enabled\": true] property to be executed."
                       }
                     },
                     "extensionAntiMalwareConfig": {
