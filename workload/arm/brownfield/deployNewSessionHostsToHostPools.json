@@ -1335,10 +1335,10 @@
               }
             ]
           },
-          "extensionDomainJoinPassword": "[if(or(equals(parameters('identityServiceProvider'), 'ADDS'), equals(parameters('identityServiceProvider'), 'AADDS')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varKeyVaultSubId')), format('{0}', variables('varKeyVaultRgName'))), 'Microsoft.KeyVault/vaults', variables('varKeyVaultName'))), 'secretName', parameters('domainJoinPasswordSecretName'))), createObject('value', 'domainJoinUserPassword'))]",
+          "extensionDomainJoinPassword": "[if(or(equals(parameters('identityServiceProvider'), 'ADDS'), equals(parameters('identityServiceProvider'), 'EntraDS')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varKeyVaultSubId')), format('{0}', variables('varKeyVaultRgName'))), 'Microsoft.KeyVault/vaults', variables('varKeyVaultName'))), 'secretName', parameters('domainJoinPasswordSecretName'))), createObject('value', 'domainJoinUserPassword'))]",
           "extensionDomainJoinConfig": {
             "value": {
-              "enabled": "[if(or(equals(parameters('identityServiceProvider'), 'ADDS'), equals(parameters('identityServiceProvider'), 'AADDS')), true(), false())]",
+              "enabled": "[if(or(equals(parameters('identityServiceProvider'), 'ADDS'), equals(parameters('identityServiceProvider'), 'EntraDS')), true(), false())]",
               "settings": {
                 "name": "[parameters('identityDomainName')]",
                 "ouPath": "[if(not(empty(parameters('sessionHostOuPath'))), parameters('sessionHostOuPath'), null())]",
