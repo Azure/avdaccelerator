@@ -213,10 +213,10 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
                 ]
             }
         ]
-        // ADDS or AADDS domain join.
+        // ADDS or EntraDS domain join.
         extensionDomainJoinPassword: keyVault.getSecret('domainJoinUserPassword')
         extensionDomainJoinConfig: {
-            enabled: (identityServiceProvider == 'AADDS' || identityServiceProvider == 'ADDS') ? true : false
+            enabled: (identityServiceProvider == 'EntraDS' || identityServiceProvider == 'ADDS') ? true : false
             settings: {
                 name: identityDomainName
                 ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
