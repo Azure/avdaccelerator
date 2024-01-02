@@ -80,7 +80,7 @@ Azure Virtual Desktop resources and dependent services for establishing the base
   - 1 Session host VMs domain join (using marketplace image)
   - AVD Insights fully configured with a new log analytics workspace
   - AVD Scaling plan
-- Azure Files Storage with FSLogix share joined to Azure AD, RBAC role assignment and private endpoint
+- Azure Files Storage with FSLogix share joined to Microsoft Entra ID, RBAC role assignment and private endpoint
   - Session host resources:
   - Application Security group
   - Availability set

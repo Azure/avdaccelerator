@@ -274,7 +274,7 @@ try {
         }
 
         ##############################################################
-        #  Add Azure AD Join Setting
+        #  Add Microsoft Entra ID Join Setting
         ##############################################################
         if ($IdentityServiceProvider -eq "AAD") {
                 $Settings += @(
