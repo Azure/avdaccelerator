@@ -1281,7 +1281,7 @@
           "timeZone": {
             "value": "[variables('varTimeZoneSessionHosts')]"
           },
-          "systemAssignedIdentity": "[if(equals(parameters('identityServiceProvider'), 'AAD'), createObject('value', true()), createObject('value', false()))]",
+          "systemAssignedIdentity": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('value', true()), createObject('value', false()))]",
           "availabilityZone": "[if(parameters('useAvailabilityZones'), createObject('value', take(skip(variables('varAllAvailabilityZones'), mod(range(1, parameters('count'))[copyIndex()], length(variables('varAllAvailabilityZones')))), 1)), createObject('value', createArray()))]",
           "encryptionAtHost": {
             "value": "[parameters('diskZeroTrust')]"
@@ -1350,7 +1350,7 @@
           },
           "extensionAadJoinConfig": {
             "value": {
-              "enabled": "[if(equals(parameters('identityServiceProvider'), 'AAD'), true(), false())]",
+              "enabled": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), true(), false())]",
               "settings": "[if(parameters('createIntuneEnrollment'), createObject('mdmId', '0000000a-0000-0000-c000-000000000000'), createObject())]"
             }
           },
@@ -1699,7 +1699,7 @@
                 "enabled": false
               },
               "metadata": {
-                "description": "Optional. The configuration for the [AAD Join] extension. Must at least contain the [\"enabled\": true] property to be executed."
+                "description": "Optional. The configuration for the [EntraID Join] extension. Must at least contain the [\"enabled\": true] property to be executed."
               }
             },
             "extensionAntiMalwareConfig": {

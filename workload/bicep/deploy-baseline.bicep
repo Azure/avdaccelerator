@@ -47,7 +47,7 @@ param avdVmLocalUserPassword string
 @allowed([
     'ADDS' // Active Directory Domain Services
     'AADDS' // Microsoft Entra Domain Services
-    'AAD' // Microsoft Entra ID Join
+    'EntraID' // Microsoft Entra ID Join
 ])
 @sys.description('Required, The service providing domain services for Azure Virtual Desktop. (Default: ADDS)')
 param avdIdentityServiceProvider string = 'ADDS'
@@ -992,7 +992,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
             }
         ] : []
         secrets: {
-            secureList: (avdIdentityServiceProvider != 'AAD') ? [
+            secureList: (avdIdentityServiceProvider != 'EntraID') ? [
                 {
                     name: 'vmLocalUserPassword'
                     value: avdVmLocalUserPassword

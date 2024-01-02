@@ -10,16 +10,16 @@
   - **Prefix** – A prefix of maximum 4 characters that will be appended to the names of Resource Groups and Azure resources within the Resource Groups.
   - **Environment** – Deployment Environment type (Development/Test/Production), will be used for naming and tagging purposes.
 - **Identity provider** blade
-  - **Identity Service Provider** - Identity service provider (AD DS, AAD DS, AAD) that already exists and will be used for Azure Virtual Desktop.
+  - **Identity Service Provider** - Identity service provider (AD DS, EntraID DS, EntraID) that already exists and will be used for Azure Virtual Desktop.
     - Microsoft Entra ID.
     - Active Directory (AD DS).
     - Microsoft Entra Domain Services.
   - **Azure Virtual Desktop access assignment** - These identities will be granted access to Azure Virtual Desktop application groups (role "Desktop Virtualization User").
-    - Groups - select from the drop down the groups to be granted access to Azure Virtual Desktop published items and to create sessions on VMs and single sign-on (SSO) when using AAD as identity provider.
-    - Note: when using AAD as identity service provider, an additional role (virtual machine user login) will be granted to compute resource group during deployment.
-  - **When selecting AD DS or AAD DS:**
+    - Groups - select from the drop down the groups to be granted access to Azure Virtual Desktop published items and to create sessions on VMs and single sign-on (SSO) when using EntraID as identity provider.
+    - Note: when using EntraID as identity service provider, an additional role (virtual machine user login) will be granted to compute resource group during deployment.
+  - **When selecting AD DS or Microsoft Entra DS:**
     - Domain join credentials The Username and password with rights to join computers to the domain.
-  - **When selecting ADD:**
+  - **When selecting EntraID:**
     - Enroll VM with Intune: check the box to enroll session hosts on tenant's.
   - **Session host local admin credentials** The Username and password to set for local administrator.
 - **Management plane** blade
