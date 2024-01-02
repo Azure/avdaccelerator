@@ -86,7 +86,7 @@
       "defaultValue": "ADDS",
       "allowedValues": [
         "ADDS",
-        "AADDS",
+        "EntraDS",
         "EntraID"
       ],
       "metadata": {
@@ -1489,7 +1489,7 @@
     "varStorageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-Storage-Scripts.ps1', variables('varBaseScriptUri'))]",
     "varStorageToDomainScript": "./Manual-DSC-Storage-Scripts.ps1",
     "varOuStgPath": "[if(not(empty(parameters('storageOuPath'))), format('\"{0}\"', parameters('storageOuPath')), format('\"{0}\"', variables('varDefaultStorageOuPath')))]",
-    "varDefaultStorageOuPath": "[if(equals(parameters('avdIdentityServiceProvider'), 'AADDS'), 'AADDC Computers', 'Computers')]",
+    "varDefaultStorageOuPath": "[if(equals(parameters('avdIdentityServiceProvider'), 'EntraDS'), 'AADDC Computers', 'Computers')]",
     "varStorageCustomOuPath": "[if(not(empty(parameters('storageOuPath'))), 'true', 'false')]",
     "varAllDnsServers": "[format('{0},168.63.129.16', parameters('customDnsIps'))]",
     "varDnsServers": "[if(empty(parameters('customDnsIps')), createArray(), split(variables('varAllDnsServers'), ','))]",
@@ -31636,7 +31636,7 @@
               "Transaction"
             ],
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', parameters('storageAccountName'))]",
-            "varDirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'AADDS'), 'AADDS', if(equals(parameters('identityServiceProvider'), 'EntraID'), 'AADKERB', 'None'))]",
+            "varDirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'EntraDS'), 'EntraDS', if(equals(parameters('identityServiceProvider'), 'EntraID'), 'AADKERB', 'None'))]",
             "varSecurityPrincipalName": "[if(not(empty(parameters('securityPrincipalName'))), parameters('securityPrincipalName'), 'none')]",
             "varAdminUserName": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
             "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -AdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12} -SecurityPrincipalName \"{13}\" -StorageAccountFqdn {14} ', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), variables('varAdminUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'), variables('varSecurityPrincipalName'), parameters('storageAccountFqdn'))]"
@@ -35844,7 +35844,7 @@
               "Transaction"
             ],
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', parameters('storageAccountName'))]",
-            "varDirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'AADDS'), 'AADDS', if(equals(parameters('identityServiceProvider'), 'EntraID'), 'AADKERB', 'None'))]",
+            "varDirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'EntraDS'), 'EntraDS', if(equals(parameters('identityServiceProvider'), 'EntraID'), 'AADKERB', 'None'))]",
             "varSecurityPrincipalName": "[if(not(empty(parameters('securityPrincipalName'))), parameters('securityPrincipalName'), 'none')]",
             "varAdminUserName": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
             "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -AdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12} -SecurityPrincipalName \"{13}\" -StorageAccountFqdn {14} ', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), variables('varAdminUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'), variables('varSecurityPrincipalName'), parameters('storageAccountFqdn'))]"
@@ -40702,7 +40702,7 @@
                   },
                   "extensionDomainJoinConfig": {
                     "value": {
-                      "enabled": "[if(or(equals(parameters('identityServiceProvider'), 'AADDS'), equals(parameters('identityServiceProvider'), 'ADDS')), true(), false())]",
+                      "enabled": "[if(or(equals(parameters('identityServiceProvider'), 'EntraDS'), equals(parameters('identityServiceProvider'), 'ADDS')), true(), false())]",
                       "settings": {
                         "name": "[parameters('identityDomainName')]",
                         "ouPath": "[if(not(empty(parameters('sessionHostOuPath'))), parameters('sessionHostOuPath'), null())]",
