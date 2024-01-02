@@ -9,7 +9,7 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
 ### Azure Environment Setup
 
 - [x]  Deploy an ALZ architecture (recommended but not mandatory) from a template reference implementation available at [Deploying Enterprise-Scale Architecture in your own environment](https://github.com/Azure/Enterprise-Scale#deploying-enterprise-scale-architecture-in-your-own-environment).
-- [x]  Configure Azure AD Connect and ensure users are synchronized from AD DS to Azure AD, unless session hosts are joining Azure AD and FSLogix is not in use.
+- [x]  Configure Microsoft Entra ID Connect and ensure users are synchronized from AD DS to Microsoft Entra ID, unless session hosts are joining Microsoft Entra ID  and FSLogix is not in use.
 
 ### Subscription requirements
 
@@ -75,8 +75,8 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
 ### Other requirements
 
 - [x]  If implementing Zero Trust, ensure the prerequisites for encryption at host have been implemented: [Prerequisites](https://learn.microsoft.com/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell#prerequisites).
-- [x]  If enabling Start VM on Connect or Scaling Plans features, it is required to provide the ObjectID for the enterprise application Azure Virtual Desktop (Name can also be displayed as 'Windows Virtual Desktops'). To get the ObjectID got to Azure AD > Enterprise applications, remove all filters and search for 'Virtual Desktops' and copy the ObjectID that is paired with the Application ID: 9cdead84-a844-4324-93f2-b2e6bb768d07.
-- [x]  Account used for portal UI deployment, needs to be able to query Azure AD tenant and get the ObjectID of the Azure Virtual Desktop enterprise app, query will be executed by the automation using the user context.
+- [x]  If enabling Start VM on Connect or Scaling Plans features, it is required to provide the ObjectID for the enterprise application Azure Virtual Desktop (Name can also be displayed as 'Windows Virtual Desktops'). To get the ObjectID got to Microsoft Entra ID > Enterprise applications, remove all filters and search for 'Virtual Desktops' and copy the ObjectID that is paired with the Application ID: 9cdead84-a844-4324-93f2-b2e6bb768d07.
+- [x]  Account used for portal UI deployment, needs to be able to query Microsoft Entra ID tenant and get the ObjectID of the Azure Virtual Desktop enterprise app, query will be executed by the automation using the user context.
 
 ## Planning
 

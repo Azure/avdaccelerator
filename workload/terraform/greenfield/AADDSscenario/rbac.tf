@@ -13,7 +13,7 @@ resource "azurerm_role_assignment" "role" {
   principal_id       = data.azuread_group.adds_group.id
 }
 
-# Grant users access to Azure AD-joined VMs
+# Grant users access to Microsoft Entra ID-joined VMs
 #https://learn.microsoft.com/en-us/azure/virtual-desktop/deploy-azure-ad-joined-vm#assign-user-access-to-host-pools
 data "azurerm_role_definition" "vm_useraad" {
   name = "Virtual Machine User Login"
