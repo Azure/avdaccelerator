@@ -61,7 +61,7 @@ Other known issues:
 
 ## Storage account domain join
 
-When attempting to join an [Azure Storage account to a domain](https://learn.microsoft.com/en-us/azure/storage/files/storage-files-identity-ad-ds-enable), whether it's Azure AD DS or an on-premises Active Directory, several common issues can arise. Here are some of the most common problems:
+When attempting to join an [Azure Storage account to a domain](https://learn.microsoft.com/en-us/azure/storage/files/storage-files-identity-ad-ds-enable), whether it's Microsoft Entra Domain Services or an on-premises Active Directory, several common issues can arise. Here are some of the most common problems:
 
 | Issue  |  Description |
 | ------------ | ------------ |
