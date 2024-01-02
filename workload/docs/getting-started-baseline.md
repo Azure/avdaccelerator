@@ -32,7 +32,7 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
     - Change Password
     - Validate Write to DNS hostname
     - Validate Write to Service Principal Name
-- [x]  The Domain Controllers used for AD join purposes should be standard writable Domain Controllers, not Read Only Domain Controllers (when using AD DS or AAD DS).
+- [x]  The Domain Controllers used for AD join purposes should be standard writable Domain Controllers, not Read Only Domain Controllers (when using AD DS or Microsoft Entra DS).
 - [x]  Ensure you have the appropriate [licenses](https://docs.microsoft.com/azure/virtual-desktop/prerequisites#operating-systems-and-licenses) for proper Azure Virtual Desktop entitlement.
 
 ### Networking requirements
