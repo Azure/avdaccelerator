@@ -45,7 +45,7 @@ param VNet object = {
 @description('Subnet to use for MSIX VM Tools VM.')
 param SubnetName string
 
-var PostDeployScriptURI = 'https://github.com/Azure/avdaccelerator/blob/main/workload/scripts/appAttachToolsVM/'
+var PostDeployScriptURI = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/appAttachToolsVM/'
 var VNetSub = split(VNet.id, '/')[2]
 var VNetRG = split(VNet.id, '/')[4]  
 var VNetName = VNet.name
