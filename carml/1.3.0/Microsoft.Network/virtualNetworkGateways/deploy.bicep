@@ -166,7 +166,7 @@ param virtualNetworkGatewaydiagnosticLogCategoriesToEnable array = [
   'allLogs'
 ]
 
-@description('Optional. Configuration for AAD Authentication for P2S Tunnel Type, Cannot be configured if clientRootCertData is provided.')
+@description('Optional. Configuration for EntraID Authentication for P2S Tunnel Type, Cannot be configured if clientRootCertData is provided.')
 param vpnClientAadConfiguration object = {}
 
 @description('Optional. The name of metrics that will be streamed.')
