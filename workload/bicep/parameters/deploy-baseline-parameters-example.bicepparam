@@ -67,4 +67,4 @@ param avdAlaWorkspaceDataRetention = 90
 param enableAcceleratedNetworking = true
 param diskEncryptionKeyExpirationInDays = 60
 param diskZeroTrust = false
-param deployGpuPolicies = true
+param deployGpuPolicies = false
