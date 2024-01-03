@@ -172,7 +172,7 @@ param msixFileShareQuotaSize int = 1
 param avdDeploySessionHosts bool = true
 
 @sys.description('Deploy VM GPU extension policies. (Default: true)')
-param deployGpuPolicies bool = true
+param deployGpuPolicies bool = false
 
 @sys.description('Deploy AVD monitoring resources and setings. (Default: false)')
 param avdDeployMonitoring bool = false
