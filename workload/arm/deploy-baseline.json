@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "9406990619434457184"
+      "templateHash": "1335511400418834573"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -349,7 +349,7 @@
     },
     "deployGpuPolicies": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Deploy VM GPU extension policies. (Default: true)"
       }

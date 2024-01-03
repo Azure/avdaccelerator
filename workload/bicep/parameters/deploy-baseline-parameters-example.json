@@ -207,7 +207,7 @@
             "value": true
         },
         "deployGpuPolicies": {
-            "value": true
+            "value": false
         }
     }
 }
