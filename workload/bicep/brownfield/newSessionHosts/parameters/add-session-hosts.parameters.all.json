@@ -57,7 +57,7 @@
             "value": "NoUsername"
         },  
         "diskType": {
-            "value": "Standard_LRS"
+            "value": "Premium_LRS"
         },  
         "domainJoinPasswordSecretName": {
             "value": "domainJoinUserPassword"

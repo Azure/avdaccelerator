@@ -84,8 +84,8 @@ param deploymentPrefix string = 'AVD1'
 @sys.description('AVD session host domain join user principal name. (Default: NoUsername)')
 param domainJoinUserName string = 'NoUsername'
 
-@sys.description('OS disk type for session host. (Default: Standard_LRS)')
-param diskType string = 'Standard_LRS'
+@sys.description('OS disk type for session host. (Default: Premium_LRS)')
+param diskType string = 'Premium_LRS'
 
 @sys.description('Domain join user password keyvault secret name. (Default: domainJoinUserPassword)')
 param domainJoinPasswordSecretName string = 'domainJoinUserPassword'
