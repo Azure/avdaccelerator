@@ -1180,7 +1180,6 @@
                 "computeRgResourceGroupName": "[steps('basics').resourceScope.resourceGroup.name]",
                 "computeSubscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]",
                 "location": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]",
-
                 "diskZeroTrust": "false",
                 "diskEncryptionSetResourceId": ""
             },
