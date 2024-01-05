@@ -115,13 +115,13 @@
                                     "visible": true,
                                     "label": "Identity service provider",
                                     "defaultValue": "Active Directory (AD DS)",
-                                    "toolTip": "Identity service provider (ADDS or AADDS) that already exist and will be used for Azure Virtual Desktop.",
+                                    "toolTip": "Identity service provider (ADDS or EntraDS) that already exist and will be used for Azure Virtual Desktop.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
                                                 "label": "Microsoft Entra ID",
-                                                "value": "AAD"
+                                                "value": "EntraID"
                                             },
                                             {
                                                 "label": "Active Directory (AD DS)",
@@ -129,7 +129,7 @@
                                             },
                                             {
                                                 "label": "Microsoft Entra Domain Services",
-                                                "value": "AADDS"
+                                                "value": "EntraDS"
                                             }
                                         ]
                                     }
@@ -137,7 +137,7 @@
                                 {
                                     "name": "identityServiceProviderIntuneEnrollment",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
+                                    "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')]",
                                     "label": "Intune enrollment",
                                     "defaultValue": false,
                                     "toolTip": "If Intune is configured in your Microsoft Entra ID tenant, you can choose to have the VM automatically enrolled during the deployment by selecting this box."
@@ -145,7 +145,7 @@
                                 {
                                     "name": "identityServiceProviderInfo",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
                                     "options": {
                                         "text": "Identity service provider must already exist, as it is a prerequisite for the Azure Virtual Desktop LZA deployment.",
                                         "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started.md",
@@ -178,7 +178,7 @@
                                 {
                                     "name": "identityDomainJoinUserName",
                                     "type": "Microsoft.Common.TextBox",
-                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
                                     "label": "Domain join principal name",
                                     "placeholder": "Example: '***REMOVED***'@contoso.com",
                                     "defaultValue": "",
@@ -190,7 +190,7 @@
                                 {
                                     "name": "identityDomainJoinUserPassword",
                                     "type": "Microsoft.Common.TextBox",
-                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
                                     "label": "Domain Join Password secret name",
                                     "toolTip": "Provide keyvault secret name for domain join password.",
                                     "defaultValue": "domainJoinUserPassword",
@@ -201,9 +201,9 @@
                                 {
                                     "name": "identityDomainJoinInfo",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
                                     "options": {
-                                        "text": "By default an AVD LZA deployment creates a key vault in the service objects resource group, the vey vault contains secrets for domain join username (domainJoinUserName) and password (domainJoinUserPassword). If AVD LZA wasn't used to deploy, a key vault will need to be created with a secret for the domain join security principal password that will be used to join session hosts to the domain (AD DS and AAD DS scenarios).",
+                                        "text": "By default an AVD LZA deployment creates a key vault in the service objects resource group, the vey vault contains secrets for domain join username (domainJoinUserName) and password (domainJoinUserPassword). If AVD LZA wasn't used to deploy, a key vault will need to be created with a secret for the domain join security principal password that will be used to join session hosts to the domain (AD DS and Entra DS scenarios).",
                                         "style": "Info"
                                     }
                                 },
@@ -365,7 +365,7 @@
                                 {
                                     "name": "identityDomainOuPath",
                                     "type": "Microsoft.Common.TextBox",
-                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
                                     "label": "Custom OU path (Optional)",
                                     "toolTip": "Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU.",
                                     "placeholder": "Example: OU=session-hosts,OU=avd,DC=contoso,DC=com",
@@ -646,7 +646,7 @@
                                     "name": "identityDomainName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "AD Domain name",
-                                    "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
+                                    "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')]",
                                     "toolTip": "The full qualified domain name of the on-premises domain where the hybrid identities originated from, this information is used for Azure files authentication setup.",
                                     "placeholder": "Example: contoso.com",
                                     "constraints": {
@@ -684,7 +684,7 @@
                         {
                             "name": "StorageConfigurationRequirements1",
                             "type": "Microsoft.Common.InfoBox",
-                            "visible": "[and(steps('storage').fslogixConfiguration, not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')))]",
+                            "visible": "[and(steps('storage').fslogixConfiguration, not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')))]",
                             "options": {
                                 "text": "FSLogix configuration requires the storage account and file share to be already configured for authentication with ADDS or Microsoft Entra Domain Services.",
                                 "uri": "https://learn.microsoft.com/azure/virtual-desktop/fslogix-profile-container-configure-azure-files-active-directory?tabs=adds",
@@ -694,7 +694,7 @@
                         {
                             "name": "StorageConfigurationRequirements2",
                             "type": "Microsoft.Common.InfoBox",
-                            "visible": "[and(steps('storage').fslogixConfiguration, equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                            "visible": "[and(steps('storage').fslogixConfiguration, equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
                             "options": {
                                 "text": "FSLogix configuration requires the storage account and file share to be already configured for authentication with Microsoft Entra ID.",
                                 "uri": "https://learn.microsoft.com/azure/virtual-desktop/create-profile-container-azure-ad",
@@ -702,9 +702,9 @@
                             }
                         },
                         {
-                            "name": "StorageConfigurationAad",
+                            "name": "StorageConfigurationEntraID",
                             "type": "Microsoft.Common.InfoBox",
-                            "visible": "[and(steps('storage').fslogixConfiguration, equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                            "visible": "[and(steps('storage').fslogixConfiguration, equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
                             "options": {
                                 "text": "FSLogix storage for Microsoft Entra ID joined session hosts is currently only available for hybrid identities.",
                                 "uri": "https://learn.microsoft.com/azure/virtual-desktop/create-profile-container-azure-ad",
@@ -924,7 +924,7 @@
                             "name": "resourceTaggingParentCostInfo",
                             "type": "Microsoft.Common.InfoBox",
                             "options": {
-                                "text": "By default, the following tags will be created: <br/> - Parent resource cost management tag (cm-resource-parent): reports all resources cost to the host pool (ResourceID). <br/> - Environment (Environment): environment selected during deployment (Dev/Test/prod). <br/> - Service Workload (ServiceWorkload): defaults to Azure Virtual Desktop. <br/> - Creation time (CreationTimeUTC): deployment time in UTC. <br/> - Domain Name (DomainName): identity service domain name (applied only to compute and storage). <br/> - Identity service provider (IdentityServiceProvider): identity provider selected (ADDS/AADDS/AAD).",
+                                "text": "By default, the following tags will be created: <br/> - Parent resource cost management tag (cm-resource-parent): reports all resources cost to the host pool (ResourceID). <br/> - Environment (Environment): environment selected during deployment (Dev/Test/prod). <br/> - Service Workload (ServiceWorkload): defaults to Azure Virtual Desktop. <br/> - Creation time (CreationTimeUTC): deployment time in UTC. <br/> - Domain Name (DomainName): identity service domain name (applied only to compute and storage). <br/> - Identity service provider (IdentityServiceProvider): identity provider selected (ADDS/EntraDS/EntraID).",
                                 "uri": "https://learn.microsoft.com/azure/virtual-desktop/tag-virtual-desktop-resources#use-the-cm-resource-parent-tag-to-automatically-group-costs-by-host-pool",
                                 "style": "Info"
                             }
@@ -1148,17 +1148,17 @@
                 "deploymentPrefix": "[steps('basics').deploymentSpecs.deploymentPrefix]",
                 "deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
                 "identityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
-                "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
-                "identityDomainName": "[if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), steps('storage').fslogixConfiguration), steps('storage').storageFslogix.identityDomainName, '')]",
+                "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
+                "identityDomainName": "[if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').fslogixConfiguration), steps('storage').storageFslogix.identityDomainName, '')]",
                 "keyVaultResourceId": "[steps('identity').identityCredentials.secretsKeyvault.id]",
-                "domainJoinUserName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('identity').identityCredentials.identityDomainJoinUserName)]",
-                "domainJoinPasswordSecretName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('identity').identityCredentials.identityDomainJoinUserPassword)]",
+                "domainJoinUserName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityCredentials.identityDomainJoinUserName)]",
+                "domainJoinPasswordSecretName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityCredentials.identityDomainJoinUserPassword)]",
                 "vmLocalUserName": "[steps('identity').identityCredentials.identityLocalUserName]",
                 "vmLocalAdminPasswordSecretName": "[steps('identity').identityCredentials.identityLocalUserPassword]",
-                "hostPoolResourceID": "[steps('managementPlane').managementPlaneSettings.hostPoolSelector.id]",
+                "hostPoolResourceId": "[steps('managementPlane').managementPlaneSettings.hostPoolSelector.id]",
                 "useAvailabilityZones": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilityZoneSettings]",
                 "avsetResourceId": "[if(and(not(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilityZoneSettings), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySetSettings), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySetResourceId.id, false)]",
-                "sessionHostOuPath": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
+                "sessionHostOuPath": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
                 "vmSize": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize]",
                 "countIndex": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCountIndex]",
                 "count": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount]",
