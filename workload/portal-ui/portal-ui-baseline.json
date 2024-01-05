@@ -634,7 +634,7 @@
                                     "type": "Microsoft.Common.DropDown",
                                     "label": "OS Disk type",
                                     "filter": true,
-                                    "defaultValue": "Standard",
+                                    "defaultValue": "Premium",
                                     "toolTip": "Select session host disk type to host the OS.",
                                     "constraints": {
                                         "required": true,
