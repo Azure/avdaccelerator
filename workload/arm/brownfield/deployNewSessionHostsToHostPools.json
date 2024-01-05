@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "12070809555776971282"
+      "templateHash": "18330981183305722997"
     }
   },
   "parameters": {
@@ -176,9 +176,9 @@
     },
     "diskType": {
       "type": "string",
-      "defaultValue": "Standard_LRS",
+      "defaultValue": "Premium_LRS",
       "metadata": {
-        "description": "OS disk type for session host. (Default: Standard_LRS)"
+        "description": "OS disk type for session host. (Default: Premium_LRS)"
       }
     },
     "domainJoinPasswordSecretName": {
