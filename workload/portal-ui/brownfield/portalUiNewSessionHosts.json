@@ -632,7 +632,7 @@
                                     "name": "identityDomainName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "AD Domain name",
-                                    "visible": "[and(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AADDS')), or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment))]",
+                                    "visible": "[and(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS')), steps('storage').fslogixConfiguration)]",
                                     "toolTip": "The full qualified domain name of the on-premises domain where the hybrid identities originated from, this information is used for Azure files authentication setup.",
                                     "placeholder": "Example: contoso.com",
                                     "constraints": {
@@ -1135,7 +1135,11 @@
                 "deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
                 "identityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
                 "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
-                "identityDomainName": "[if(and(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS')), or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment)), steps('storage').storageGeneralSettings.identityDomainName, 'none')]",
+
+
+                "identityDomainName": "[if(and(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS')), steps('storage').fslogixConfiguration), steps('storage').storageFslogix.identityDomainName, 'none')]",
+                
+                
                 "keyVaultResourceId": "[steps('identity').identityCredentials.secretsKeyvault.id]",
                 "domainJoinUserName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityCredentials.identityDomainJoinUserName)]",
                 "domainJoinPasswordSecretName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityCredentials.identityDomainJoinUserPassword)]",
