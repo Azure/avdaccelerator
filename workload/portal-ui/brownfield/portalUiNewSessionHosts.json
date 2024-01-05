@@ -1135,11 +1135,7 @@
                 "deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
                 "identityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
                 "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
-
-
                 "identityDomainName": "[if(and(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS')), steps('storage').fslogixConfiguration), steps('storage').storageFslogix.identityDomainName, 'none')]",
-                
-                
                 "keyVaultResourceId": "[steps('identity').identityCredentials.secretsKeyvault.id]",
                 "domainJoinUserName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityCredentials.identityDomainJoinUserName)]",
                 "domainJoinPasswordSecretName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityCredentials.identityDomainJoinUserPassword)]",
@@ -1147,7 +1143,7 @@
                 "vmLocalAdminPasswordSecretName": "[steps('identity').identityCredentials.identityLocalUserPassword]",
                 "hostPoolResourceId": "[steps('managementPlane').managementPlaneSettings.hostPoolSelector.id]",
                 "useAvailabilityZones": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilityZoneSettings]",
-                "avsetResourceId": "[if(and(not(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilityZoneSettings), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySetSettings), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySetResourceId.id, false)]",
+                "avsetResourceId": "[if(and(not(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilityZoneSettings), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySetSettings), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySetResourceId.id, 'false')]",
                 "sessionHostOuPath": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
                 "vmSize": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize]",
                 "countIndex": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCountIndex]",
