@@ -286,7 +286,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
     name: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
     location: location
     timeZone: varTimeZoneSessionHosts
-    systemAssignedIdentity: (identityServiceProvider == 'AAD') ? true : false
+    systemAssignedIdentity: (identityServiceProvider == 'EntraID') ? true : false
     availabilityZone: useAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
     encryptionAtHost: diskZeroTrust
     availabilitySetResourceId: useAvailabilityZones ? '' : avsetResourceId
@@ -328,10 +328,10 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
         ]
       }
     ]
-    // ADDS or AADDS domain join.
-    extensionDomainJoinPassword: (identityServiceProvider == 'ADDS' || identityServiceProvider == 'AADDS') ? keyVault.getSecret(domainJoinPasswordSecretName) : 'domainJoinUserPassword'
+    // ADDS or EntraDS domain join.
+    extensionDomainJoinPassword: (identityServiceProvider == 'ADDS' || identityServiceProvider == 'EntraDS') ? keyVault.getSecret(domainJoinPasswordSecretName) : 'domainJoinUserPassword'
     extensionDomainJoinConfig: {
-      enabled: (identityServiceProvider == 'ADDS' || identityServiceProvider == 'AADDS') ? true : false
+      enabled: (identityServiceProvider == 'ADDS' || identityServiceProvider == 'EntraDS') ? true : false
       settings: {
         name: identityDomainName
         ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
@@ -342,7 +342,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
     }
     // Microsoft Entra ID Join.
     extensionAadJoinConfig: {
-      enabled: (identityServiceProvider == 'AAD') ? true : false
+      enabled: (identityServiceProvider == 'EntraID') ? true : false
       settings: createIntuneEnrollment ? {
         mdmId: '0000000a-0000-0000-c000-000000000000'
       } : {}
