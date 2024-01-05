@@ -1,0 +1,1131 @@
+{
+    "$schema": "<relative path to dx.schema.json>",
+    "view": {
+        "kind": "Form",
+        "properties": {
+            "title": "Test Form View",
+            "steps": [
+                {
+                    "name": "basics",
+                    "label": "Basics",
+                    "elements": [
+                        {
+                            "name": "resourceScope",
+                            "type": "Microsoft.Common.ResourceScope",
+                            "location": {
+                                "resourceTypes": [
+                                    "microsoft.resources/resourcegroups"
+                                ]
+                            }
+                        },
+                        {
+                            "name": "alaWorkspaceResourceId",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Ala Workspace Resource Id",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "Log analytics workspace for diagnostic logs. (Default: \"\")",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "applicationNameTag",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Application Name Tag",
+                            "subLabel": "",
+                            "defaultValue": "Contoso-App",
+                            "toolTip": "Details about the application.",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "asgResourceId",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Asg Resource Id",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "Application Security Group (ASG) for the session hosts. (Default: \"\")",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "avsetResourceId",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Avset Resource Id",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "Availability set resource ID. (Default: \"\")",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "customImageDefinitionId",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Custom Image Definition Id",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "Source custom image ID. (Default: \"\")",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "computeSubscriptionId",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Compute Subscription Id",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "Subscription ID where to deploy session hosts. (Default: )",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "computeRgResourceGroupName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Compute Rg Resource Group Name",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "Resource Group name where to deploy session hosts. (Default: )",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "count",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Count",
+                            "subLabel": "",
+                            "defaultValue": "1",
+                            "toolTip": "Quantity of session hosts to deploy. (Default: 1)",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "countIndex",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Count Index",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "The session host number to begin with for the deployment. (Default: )",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "customNaming",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Custom Naming",
+                            "subLabel": "",
+                            "defaultValue": "false",
+                            "toolTip": "AVD resources custom naming. (Default: false)",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "createIntuneEnrollment",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Create Intune Enrollment",
+                            "subLabel": "",
+                            "defaultValue": "false",
+                            "toolTip": "Required, Eronll session hosts on Intune. (Default: false)",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "configureFslogix",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Configure Fslogix",
+                            "subLabel": "",
+                            "defaultValue": "false",
+                            "toolTip": "Deploy Fslogix setup. (Default: false)",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "createResourceTags",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Create Resource Tags",
+                            "subLabel": "",
+                            "defaultValue": "false",
+                            "toolTip": "Apply tags on resources and resource groups. (Default: false)",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "costCenterTag",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Cost Center Tag",
+                            "subLabel": "",
+                            "defaultValue": "Contoso-CC",
+                            "toolTip": "Cost center of owner team. (Default: Contoso-CC)",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "diskEncryptionSetResourceId",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Disk Encryption Set Resource Id",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "AVD disk encryption set resource ID to enable server side encyption. (Default: \"\")",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "departmentTag",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Department Tag",
+                            "subLabel": "",
+                            "defaultValue": "Contoso-AVD",
+                            "toolTip": "Department that owns the deployment, (Dafult: Contoso-AVD)",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "dataClassificationTag",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Data Classification Tag",
+                            "subLabel": "",
+                            "defaultValue": "Non-business",
+                            "toolTip": "Sensitivity of data hosted (Default: Non-business)",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "Non-business",
+                                        "value": "Non-business"
+                                    },
+                                    {
+                                        "label": "Public",
+                                        "value": "Public"
+                                    },
+                                    {
+                                        "label": "General",
+                                        "value": "General"
+                                    },
+                                    {
+                                        "label": "Confidential",
+                                        "value": "Confidential"
+                                    },
+                                    {
+                                        "label": "Highly-confidential",
+                                        "value": "Highly-confidential"
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "diskZeroTrust",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Disk Zero Trust",
+                            "subLabel": "",
+                            "defaultValue": "false",
+                            "toolTip": "Enables a zero trust configuration on the session host disks. (Default: false)",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "deployMonitoring",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Deploy Monitoring",
+                            "subLabel": "",
+                            "defaultValue": "false",
+                            "toolTip": "Deploy AVD monitoring resources and setings. (Default: false)",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "deploymentEnvironment",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Deployment Environment",
+                            "subLabel": "",
+                            "defaultValue": "Dev",
+                            "toolTip": "The name of the resource group to deploy. (Default: Dev)",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "Dev",
+                                        "value": "Dev"
+                                    },
+                                    {
+                                        "label": "Test",
+                                        "value": "Test"
+                                    },
+                                    {
+                                        "label": "Prod",
+                                        "value": "Prod"
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "deploymentPrefix",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Deployment Prefix",
+                            "subLabel": "",
+                            "defaultValue": "AVD1",
+                            "toolTip": "The name of the resource group to deploy. (Default: AVD1)",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": [
+                                    {
+                                        "isValid": "[or(or(empty(steps('basics').deploymentPrefix),and(not(startsWith(steps('basics').deploymentPrefix,'[[')),startsWith(steps('basics').deploymentPrefix,'['),endsWith(steps('basics').deploymentPrefix,']'),greater(indexOf(steps('basics').deploymentPrefix,'('),-1),greater(indexOf(steps('basics').deploymentPrefix,')'),-1))),greaterOrEquals(length(steps('basics').deploymentPrefix),2))]",
+                                        "message": "The value must have a length of at least 2."
+                                    },
+                                    {
+                                        "isValid": "[or(or(empty(steps('basics').deploymentPrefix),and(not(startsWith(steps('basics').deploymentPrefix,'[[')),startsWith(steps('basics').deploymentPrefix,'['),endsWith(steps('basics').deploymentPrefix,']'),greater(indexOf(steps('basics').deploymentPrefix,'('),-1),greater(indexOf(steps('basics').deploymentPrefix,')'),-1))),lessOrEquals(length(steps('basics').deploymentPrefix),4))]",
+                                        "message": "The value must have a length of at most 4."
+                                    }
+                                ]
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "domainJoinUserName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Domain Join User Name",
+                            "subLabel": "",
+                            "defaultValue": "NoUsername",
+                            "toolTip": "AVD session host domain join user principal name. (Default: NoUsername)",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "diskType",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Disk Type",
+                            "subLabel": "",
+                            "defaultValue": "Standard_LRS",
+                            "toolTip": "OS disk type for session host. (Default: Standard_LRS)",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "domainJoinPasswordSecretName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Domain Join Password Secret Name",
+                            "subLabel": "",
+                            "defaultValue": "domainJoinUserPassword",
+                            "toolTip": "Domain join user password keyvault secret name. (Default: domainJoinUserPassword)",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "enableAcceleratedNetworking",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Enable Accelerated Networking",
+                            "subLabel": "",
+                            "defaultValue": "true",
+                            "toolTip": "Enables accelerated Networking on the session hosts. (Default: true)",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "fslogixStorageAccountName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Fslogix Storage Account Name",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "FSLogix storage resource ID. (Default: )",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "fslogixFileShareName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Fslogix File Share Name",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "FSLogix file share name. (Default: )",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "hostPoolResourceId",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Host Pool Resource Id",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "AVD Host Pool resource ID. (Default: )",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "identityDomainName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Identity Domain Name",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: \"\")",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "subnetResourceId",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Subnet Resource Id",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "AVD subnet name. (Default: )",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "location",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Location",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "Location where to deploy compute services. (Default: )",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "sessionHostCustomNamePrefix",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Session Host Custom Name Prefix",
+                            "subLabel": "",
+                            "defaultValue": "vmapp1duse2",
+                            "toolTip": "AVD session host prefix custom name. (Default: vmapp1duse2)",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": [
+                                    {
+                                        "isValid": "[or(or(empty(steps('basics').sessionHostCustomNamePrefix),and(not(startsWith(steps('basics').sessionHostCustomNamePrefix,'[[')),startsWith(steps('basics').sessionHostCustomNamePrefix,'['),endsWith(steps('basics').sessionHostCustomNamePrefix,']'),greater(indexOf(steps('basics').sessionHostCustomNamePrefix,'('),-1),greater(indexOf(steps('basics').sessionHostCustomNamePrefix,')'),-1))),lessOrEquals(length(steps('basics').sessionHostCustomNamePrefix),11))]",
+                                        "message": "The value must have a length of at most 11."
+                                    }
+                                ]
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "useAvailabilityZones",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Use Availability Zones",
+                            "subLabel": "",
+                            "defaultValue": "true",
+                            "toolTip": "Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Default: true)",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "identityServiceProvider",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Identity Service Provider",
+                            "subLabel": "",
+                            "defaultValue": "ADDS",
+                            "toolTip": "The service providing domain services for Azure Virtual Desktop. (Default: ADDS)",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "vmSize",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Vm Size",
+                            "subLabel": "",
+                            "defaultValue": "Standard_D4ads_v5",
+                            "toolTip": "Session host VM size. (Default: Standard_D4ads_v5)",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "securityType",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Security Type",
+                            "subLabel": "",
+                            "defaultValue": "TrustedLaunch",
+                            "toolTip": "Specifies the securityType of the virtual machine. \"ConfidentialVM\" and \"TrustedLaunch\" require a Gen2 Image. (Default: TrustedLaunch)",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "Standard",
+                                        "value": "Standard"
+                                    },
+                                    {
+                                        "label": "TrustedLaunch",
+                                        "value": "TrustedLaunch"
+                                    },
+                                    {
+                                        "label": "ConfidentialVM",
+                                        "value": "ConfidentialVM"
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "secureBootEnabled",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Secure Boot Enabled",
+                            "subLabel": "",
+                            "defaultValue": "true",
+                            "toolTip": "Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings. (Default: true)",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "vTpmEnabled",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "V Tpm Enabled",
+                            "subLabel": "",
+                            "defaultValue": "true",
+                            "toolTip": "Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings. (Default: true)",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "useSharedImage",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Use Shared Image",
+                            "subLabel": "",
+                            "defaultValue": "false",
+                            "toolTip": "Set to deploy image from Azure Compute Gallery. (Default: false)",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "true",
+                                        "value": true
+                                    },
+                                    {
+                                        "label": "false",
+                                        "value": false
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "vmLocalUserName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Vm Local User Name",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "VM local administrator username. (Default: )",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "keyVaultResourceId",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Key Vault Resource Id",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "Resource ID of keyvault that contains credentials. (Default: )",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "vmLocalAdminPasswordSecretName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Vm Local Admin Password Secret Name",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "VM local admin keyvault secret name. (Default: )",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "sessionHostOuPath",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Session Host Ou Path",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "OU path to join AVd VMs. (Default: \"\")",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "osImage",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Os Image",
+                            "subLabel": "",
+                            "defaultValue": "win11_22h2",
+                            "toolTip": "AVD OS image SKU. (Default: win11-21h2)",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "win10_21h2",
+                                        "value": "win10_21h2"
+                                    },
+                                    {
+                                        "label": "win10_21h2_office",
+                                        "value": "win10_21h2_office"
+                                    },
+                                    {
+                                        "label": "win10_22h2_g2",
+                                        "value": "win10_22h2_g2"
+                                    },
+                                    {
+                                        "label": "win10_22h2_office_g2",
+                                        "value": "win10_22h2_office_g2"
+                                    },
+                                    {
+                                        "label": "win11_21h2",
+                                        "value": "win11_21h2"
+                                    },
+                                    {
+                                        "label": "win11_21h2_office",
+                                        "value": "win11_21h2_office"
+                                    },
+                                    {
+                                        "label": "win11_22h2",
+                                        "value": "win11_22h2"
+                                    },
+                                    {
+                                        "label": "win11_22h2_office",
+                                        "value": "win11_22h2_office"
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "time",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Time",
+                            "subLabel": "",
+                            "defaultValue": "[[utcNow()]",
+                            "toolTip": "Do not modify, used to set unique value for resource deployment.",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "workloadNameTag",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Workload Name Tag",
+                            "subLabel": "",
+                            "defaultValue": "Contoso-Workload",
+                            "toolTip": "The name of workload for tagging purposes. (Default: Contoso-Workload)",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "workloadTypeTag",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Workload Type Tag",
+                            "subLabel": "",
+                            "defaultValue": "Light",
+                            "toolTip": "Reference to the size of the VM for your workloads (Default: Light)",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "Light",
+                                        "value": "Light"
+                                    },
+                                    {
+                                        "label": "Medium",
+                                        "value": "Medium"
+                                    },
+                                    {
+                                        "label": "High",
+                                        "value": "High"
+                                    },
+                                    {
+                                        "label": "Power",
+                                        "value": "Power"
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "workloadCriticalityTag",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Workload Criticality Tag",
+                            "subLabel": "",
+                            "defaultValue": "Low",
+                            "toolTip": "Criticality of the workload. (Default: Low)",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "Low",
+                                        "value": "Low"
+                                    },
+                                    {
+                                        "label": "Medium",
+                                        "value": "Medium"
+                                    },
+                                    {
+                                        "label": "High",
+                                        "value": "High"
+                                    },
+                                    {
+                                        "label": "Mission-critical",
+                                        "value": "Mission-critical"
+                                    },
+                                    {
+                                        "label": "Custom",
+                                        "value": "Custom"
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "workloadCriticalityCustomValueTag",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Workload Criticality Custom Value Tag",
+                            "subLabel": "",
+                            "defaultValue": "Contoso-Critical",
+                            "toolTip": "Tag value for custom criticality value. (Default: Contoso-Critical)",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "workloadSlaTag",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Workload Sla Tag",
+                            "subLabel": "",
+                            "defaultValue": "Contoso-SLA",
+                            "toolTip": "Service level agreement level of the worload. (Contoso-SLA)",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "opsTeamTag",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Ops Team Tag",
+                            "subLabel": "",
+                            "defaultValue": "workload-admins@Contoso.com",
+                            "toolTip": "Team accountable for day-to-day operations. (workload-admins@Contoso.com)",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "ownerTag",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Owner Tag",
+                            "subLabel": "",
+                            "defaultValue": "workload-owner@Contoso.com",
+                            "toolTip": "Organizational owner of the AVD deployment. (Default: workload-owner@Contoso.com)",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        }
+                    ]
+                }
+            ],
+            "deployment": {
+                "kind": "ResourceGroup",
+                "location": "[steps('basics').resourceScope.location.name]",
+                "resourceGroupId": "[steps('basics').resourceScope.resourceGroup.id]",
+                "parameters": {
+                    "alaWorkspaceResourceId": "[steps('basics').alaWorkspaceResourceId]",
+                    "applicationNameTag": "[steps('basics').applicationNameTag]",
+                    "asgResourceId": "[steps('basics').asgResourceId]",
+                    "avsetResourceId": "[steps('basics').avsetResourceId]",
+                    "customImageDefinitionId": "[steps('basics').customImageDefinitionId]",
+                    "computeSubscriptionId": "[steps('basics').computeSubscriptionId]",
+                    "computeRgResourceGroupName": "[steps('basics').computeRgResourceGroupName]",
+                    "count": "[steps('basics').count]",
+                    "countIndex": "[steps('basics').countIndex]",
+                    "customNaming": "[steps('basics').customNaming]",
+                    "createIntuneEnrollment": "[steps('basics').createIntuneEnrollment]",
+                    "configureFslogix": "[steps('basics').configureFslogix]",
+                    "createResourceTags": "[steps('basics').createResourceTags]",
+                    "costCenterTag": "[steps('basics').costCenterTag]",
+                    "diskEncryptionSetResourceId": "[steps('basics').diskEncryptionSetResourceId]",
+                    "departmentTag": "[steps('basics').departmentTag]",
+                    "dataClassificationTag": "[steps('basics').dataClassificationTag]",
+                    "diskZeroTrust": "[steps('basics').diskZeroTrust]",
+                    "deployMonitoring": "[steps('basics').deployMonitoring]",
+                    "deploymentEnvironment": "[steps('basics').deploymentEnvironment]",
+                    "deploymentPrefix": "[steps('basics').deploymentPrefix]",
+                    "domainJoinUserName": "[steps('basics').domainJoinUserName]",
+                    "diskType": "[steps('basics').diskType]",
+                    "domainJoinPasswordSecretName": "[steps('basics').domainJoinPasswordSecretName]",
+                    "enableAcceleratedNetworking": "[steps('basics').enableAcceleratedNetworking]",
+                    "fslogixStorageAccountName": "[steps('basics').fslogixStorageAccountName]",
+                    "fslogixFileShareName": "[steps('basics').fslogixFileShareName]",
+                    "hostPoolResourceId": "[steps('basics').hostPoolResourceId]",
+                    "identityDomainName": "[steps('basics').identityDomainName]",
+                    "subnetResourceId": "[steps('basics').subnetResourceId]",
+                    "location": "[steps('basics').location]",
+                    "sessionHostCustomNamePrefix": "[steps('basics').sessionHostCustomNamePrefix]",
+                    "useAvailabilityZones": "[steps('basics').useAvailabilityZones]",
+                    "identityServiceProvider": "[steps('basics').identityServiceProvider]",
+                    "vmSize": "[steps('basics').vmSize]",
+                    "securityType": "[steps('basics').securityType]",
+                    "secureBootEnabled": "[steps('basics').secureBootEnabled]",
+                    "vTpmEnabled": "[steps('basics').vTpmEnabled]",
+                    "useSharedImage": "[steps('basics').useSharedImage]",
+                    "vmLocalUserName": "[steps('basics').vmLocalUserName]",
+                    "keyVaultResourceId": "[steps('basics').keyVaultResourceId]",
+                    "vmLocalAdminPasswordSecretName": "[steps('basics').vmLocalAdminPasswordSecretName]",
+                    "sessionHostOuPath": "[steps('basics').sessionHostOuPath]",
+                    "osImage": "[steps('basics').osImage]",
+                    "time": "[steps('basics').time]",
+                    "workloadNameTag": "[steps('basics').workloadNameTag]",
+                    "workloadTypeTag": "[steps('basics').workloadTypeTag]",
+                    "workloadCriticalityTag": "[steps('basics').workloadCriticalityTag]",
+                    "workloadCriticalityCustomValueTag": "[steps('basics').workloadCriticalityCustomValueTag]",
+                    "workloadSlaTag": "[steps('basics').workloadSlaTag]",
+                    "opsTeamTag": "[steps('basics').opsTeamTag]",
+                    "ownerTag": "[steps('basics').ownerTag]"
+                }
+            }
+        }
+    }
+}
