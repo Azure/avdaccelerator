@@ -32,9 +32,18 @@ This solution will deploy new session hosts to an existing host pool.
 New-AzDeployment `
     -Location '<Azure location>' `
     -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/new-sh/workload/brownfield/deployNewSessionHostsToHostPools.json' `
-    -AvdObjectId '<Object ID for the AVD / WVD application in Microsoft Entra ID>' `
-    -HostPoolResourceId '<Resource ID for the target host pool>' `
+    -computeSubscriptionId '<Subscription ID>' `
+    -computeRgResourceGroupName '<AVD pool compute resource group>' `
+    -countIndex '<Current count of session hosts in the host pool>' `
+    -count '<Number of new session hosts to deploy>' `
+    -hostPoolResourceId '<Existing host pool resource ID>' `
+    -subnetResourceId '<Resource ID of subnet to use for the new session hosts>' `
+    -location '<Azure region to deploy new session hosts to>' `
+    -vmLocalUserName '<Local admin user name>' `
+    -keyVaultResourceId '<Resource ID of the key vault that contains the local admin password secret>' `
     -Verbose
+
+
 ```
 
 ### Azure CLI
@@ -44,6 +53,14 @@ az deployment sub create \
     --location '<Azure location>' \
     --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/new-sh/workload/brownfield/deployNewSessionHostsToHostPools.json' \
     --parameters \
-        AvdObjectId '<Object ID for the AVD / WVD application in Microsoft Entra ID>' \
+        computeSubscriptionId '<Subscription ID>' \
+        computeRgResourceGroupName '<AVD pool compute resource group>' \
+        countIndex '<Current count of session hosts in the host pool>' \
+        count '<Number of new session hosts to deploy>' \
+        hostPoolResourceId '<Existing host pool resource ID>' \
+        subnetResourceId '<Resource ID of subnet to use for the new session hosts>' \
+        location '<Azure region to deploy new session hosts to>' \
+        vmLocalUserName '<Local admin user name>' \
+        keyVaultResourceId '<Resource ID of the key vault that contains the local admin password secret>' \
         HostPoolResourceId '<Resource ID for the target host pool>'
 ```

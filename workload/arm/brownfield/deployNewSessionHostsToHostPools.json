@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "18330981183305722997"
+      "templateHash": "14901142605443866038"
     }
   },
   "parameters": {
@@ -310,8 +310,9 @@
     },
     "vmLocalAdminPasswordSecretName": {
       "type": "string",
+      "defaultValue": "vmLocalUserPassword",
       "metadata": {
-        "description": "VM local admin keyvault secret name. (Default: )"
+        "description": "VM local admin keyvault secret name. (Default: vmLocalUserPassword )"
       }
     },
     "sessionHostOuPath": {
