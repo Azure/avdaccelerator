@@ -28,20 +28,6 @@
                             }
                         },
                         {
-                            "name": "ComputeResourceGroup",
-                            "type": "Microsoft.Common.DropDown",
-                            "label": "Pool compute resource group",
-                            "multiselect": false,
-                            "defaultValue": "",
-                            "toolTip": "Select the name of the existing resource group where the host pool compute resources will be deployed.",
-                            "constraints": {
-                                "allowedValues": "[map(steps('basics').resourceGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.name, '\"}')))]",
-                                "required": true
-                            },
-                            "infoMessages": [],
-                            "visible": true
-                        },
-                        {
                             "name": "infoResourceGroupNaming",
                             "type": "Microsoft.Common.TextBlock",
                             "visible": true,
