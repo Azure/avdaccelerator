@@ -1197,10 +1197,9 @@
                 "diskZeroTrust": "false",
                 "diskEncryptionSetResourceId": "no"
             },
-            "kind": "resourceGroup",
+            "kind": "ResourceGroup",
             "location": "[steps('basics').resourceScope.location.name]",
-            "subscriptionId": "[steps('basics').resourceScope.subscription.id]",
-            "resourceGroupName": "[steps('basics').resourceScope.resourceGroup.name]"
+            "resourceGroupId": "[steps('basics').resourceScope.resourceGroup.id]"
         }
     }
 }
