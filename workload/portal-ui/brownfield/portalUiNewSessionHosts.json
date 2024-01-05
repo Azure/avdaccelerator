@@ -1163,8 +1163,6 @@
                 "countIndex": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCountIndex]",
                 "count": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount]",
                 "diskType": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskType]",
-                "diskZeroTrust": "false",
-                "diskEncryptionSetResourceId": "no",
                 "enableAcceleratedNetworking": "[steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking]",
                 "useSharedImage": "[steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource]",
                 "osImage": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false), steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11_21h2')]",
@@ -1193,11 +1191,13 @@
                 "opsTeamTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOpsTeamTag, 'no')]",
                 "ownerTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOwnerTag, 'no')]",
                 "costCenterTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsCostCenterTag, 'no')]",
-
                 "computeRgResourceGroupName": "[steps('basics').resourceScope.resourceGroup.name]",
-                "computeSubscriptionId": "[steps('basics').resourceScope.subscription.id]"
+                "computeSubscriptionId": "[steps('basics').resourceScope.subscription.id]",
+
+                "diskZeroTrust": "false",
+                "diskEncryptionSetResourceId": "no"
             },
-            "kind": "resourceGroups",
+            "kind": "ResourceGroup",
             "location": "[steps('basics').resourceScope.location.name]",
             "subscriptionId": "[steps('basics').resourceScope.subscription.id]",
             "resourceGroupName": "[steps('basics').resourceScope.resourceGroup.name]"
