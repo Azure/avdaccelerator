@@ -147,8 +147,8 @@ param vmLocalUserName string
 @sys.description('Resource ID of keyvault that contains credentials. (Default: )')
 param keyVaultResourceId string
 
-@sys.description('VM local admin keyvault secret name. (Default: )')
-param vmLocalAdminPasswordSecretName string
+@sys.description('VM local admin keyvault secret name. (Default: vmLocalUserPassword )')
+param vmLocalAdminPasswordSecretName string = 'vmLocalUserPassword'
 
 @sys.description('OU path to join AVd VMs. (Default: "")')
 param sessionHostOuPath string = ''
