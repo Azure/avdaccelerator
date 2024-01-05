@@ -1182,7 +1182,7 @@
                 "location": "[steps('basics').resourceScope.location.name]",
 
                 "diskZeroTrust": "false",
-                "diskEncryptionSetResourceId": "no"
+                "diskEncryptionSetResourceId": ""
             },
             "kind": "ResourceGroup",
             "location": "[steps('basics').resourceScope.location.name]",
