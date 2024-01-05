@@ -31,7 +31,7 @@ This solution will deploy new session hosts to an existing host pool.
 ```powershell
 New-AzDeployment `
     -Location '<Azure location>' `
-    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/new-sh/workload/brownfield/startVmOnConnect/solution.json' `
+    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/new-sh/workload/brownfield/deployNewSessionHostsToHostPools.json' `
     -AvdObjectId '<Object ID for the AVD / WVD application in Microsoft Entra ID>' `
     -HostPoolResourceId '<Resource ID for the target host pool>' `
     -Verbose
@@ -42,7 +42,7 @@ New-AzDeployment `
 ```azurecli
 az deployment sub create \
     --location '<Azure location>' \
-    --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/new-sh/workload/brownfield/startVmOnConnect/solution.json' \
+    --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/new-sh/workload/brownfield/deployNewSessionHostsToHostPools.json' \
     --parameters \
         AvdObjectId '<Object ID for the AVD / WVD application in Microsoft Entra ID>' \
         HostPoolResourceId '<Resource ID for the target host pool>'
