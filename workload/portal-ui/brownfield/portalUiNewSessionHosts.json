@@ -1179,7 +1179,7 @@
                 "costCenterTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsCostCenterTag, 'no')]",
                 "computeRgResourceGroupName": "[steps('basics').resourceScope.resourceGroup.name]",
                 "computeSubscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]",
-                "location": "[steps('basics').resourceScope.location.name]",
+                "location": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]",
 
                 "diskZeroTrust": "false",
                 "diskEncryptionSetResourceId": ""
