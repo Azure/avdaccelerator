@@ -725,10 +725,12 @@
                                     },
                                     "options": {
                                         "filter": {
-                                            "subscription": "onBasics",
-                                            "location": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]"
+                                            "subscription": "onBasics"
                                         }
-                                    }
+                                    },
+                                    "scope": {
+                                        "location": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]"
+                                    }   
                                 },
                                 {
                                     "name": "subnetApi",
