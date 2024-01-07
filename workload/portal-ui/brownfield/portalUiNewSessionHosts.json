@@ -386,7 +386,11 @@
                                         "publisher": "MicrosoftWindowsDesktop",
                                         "offer": "Windows-11",
                                         "sku": "21h2-avd"
-                                    }
+                                    },
+                                    "scope": {
+                                        "location": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]",
+                                        "subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]"
+                                    }   
                                 },
                                 {
                                     "name": "sessionHostSizeInfobox",
@@ -722,7 +726,7 @@
                                     "options": {
                                         "filter": {
                                             "subscription": "onBasics",
-                                            "location": "[steps('SessionHosts').SessionHostsRegionSection.SessionHostsRegion.location.name]"
+                                            "location": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]"
                                         }
                                     }
                                 },
