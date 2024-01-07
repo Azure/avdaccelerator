@@ -1119,10 +1119,12 @@
                             },
                             "options": {
                                 "filter": {
-                                    "subscription": "onBasics",
-                                    "location": "[steps('SessionHosts').SessionHostsRegionSection.SessionHostsRegion.location.name]"
+                                    "subscription": "onBasics"
                                 }
-                            }
+                            },
+                            "scope": {
+                                "location": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]"
+                            }   
                         },
                         {
                             "name": "avdSubnetApi",
