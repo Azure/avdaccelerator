@@ -50,7 +50,7 @@ createMsixDeployment | No       | Deploy MSIX App Attach setup. (Default: false)
 fslogixFileShareQuotaSize | No       | Fslogix file share size. (Default: 1)
 msixFileShareQuotaSize | No       | MSIX file share size. (Default: 1)
 avdDeploySessionHosts | No       | Deploy new session hosts. (Default: true)
-deployGpuPolicies | No       | Deploy VM GPU extension policies. (Default: true)
+deployGpuPolicies | No       | Deploy VM GPU extension policies. (Default: false)
 avdDeployMonitoring | No       | Deploy AVD monitoring resources and setings. (Default: false)
 deployAlaWorkspace | No       | Deploy AVD Azure log analytics workspace. (Default: true)
 deployCustomPolicyMonitoring | No       | Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace. (Default: false)
@@ -66,7 +66,7 @@ fslogixStoragePerformance | No       | Storage account SKU for FSLogix storage. 
 msixStoragePerformance | No       | Storage account SKU for MSIX storage. Recommended tier is Premium. (Default: Premium)
 diskZeroTrust  | No       | Enables a zero trust configuration on the session host disks. (Default: false)
 avdSessionHostsSize | No       | Session host VM size. (Default: Standard_D4ads_v5)
-avdSessionHostDiskType | No       | OS disk type for session host. (Default: Standard_LRS)
+avdSessionHostDiskType | No       | OS disk type for session host. (Default: Premium_LRS)
 enableAcceleratedNetworking | No       | Enables accelerated Networking on the session hosts. If using a Azure Compute Gallery Image, the Image Definition must have been configured with the \'isAcceleratedNetworkSupported\' property set to \'true\'. 
 securityType   | No       | Specifies the securityType of the virtual machine. "ConfidentialVM" and "TrustedLaunch" require a Gen2 Image. (Default: TrustedLaunch)
 secureBootEnabled | No       | Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings. (Default: true)
@@ -463,9 +463,9 @@ Deploy new session hosts. (Default: true)
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-Deploy VM GPU extension policies. (Default: true)
+Deploy VM GPU extension policies. (Default: false)
 
-- Default value: `True`
+- Default value: `False`
 
 ### avdDeployMonitoring
 
@@ -593,9 +593,9 @@ Session host VM size. (Default: Standard_D4ads_v5)
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-OS disk type for session host. (Default: Standard_LRS)
+OS disk type for session host. (Default: Premium_LRS)
 
-- Default value: `Standard_LRS`
+- Default value: `Premium_LRS`
 
 ### enableAcceleratedNetworking
 
@@ -1201,7 +1201,7 @@ Enable purge protection for the keyvaults. (Default: true)
             "value": true
         },
         "deployGpuPolicies": {
-            "value": true
+            "value": false
         },
         "avdDeployMonitoring": {
             "value": false
@@ -1249,7 +1249,7 @@ Enable purge protection for the keyvaults. (Default: true)
             "value": "Standard_D4ads_v5"
         },
         "avdSessionHostDiskType": {
-            "value": "Standard_LRS"
+            "value": "Premium_LRS"
         },
         "enableAcceleratedNetworking": {
             "value": true
