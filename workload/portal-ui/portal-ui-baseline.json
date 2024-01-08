@@ -679,6 +679,13 @@
                                     "toolTip": "Enables low latency and high throughput on the network interface."
                                 },
                                 {
+                                    "name": "gpuExtensionPolicy",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "label": "Deploy GPU extension policies (AMD and Nvidia)",
+                                    "defaultValue": false,
+                                    "toolTip": "Deploy policies and assign policies at pool compute resource group to automatically apply GPU extension policies for AMD and/or Nvidia SKUs."
+                                },
+                                {
                                     "name": "warningAcceleratedNetworkingSupport",
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource]",
@@ -2408,7 +2415,8 @@
                 "avdAlaWorkspaceCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingMonitoring.monitoringLogAnalyticsWorkspaceName, 'no')]",
                 "ztDiskEncryptionSetCustomNamePrefix": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsDiskEncryptionSetCustomName]",
                 "ztKvPrefixCustomName ": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsKeyVaultCustomPrefix]",
-                "ztManagedIdentityCustomName": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsManagedIdentityCustomName]"
+                "ztManagedIdentityCustomName": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsManagedIdentityCustomName]",
+                "deployGpuPolicies": "[steps('sessionHosts').sessionHostsSettingsSection.gpuExtensionPolicy]"
             },
             "kind": "Subscription",
             "location": "[steps('basics').resourceScope.location.name]",
