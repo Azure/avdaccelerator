@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "10837367970747705762"
+      "templateHash": "17317389638206747409"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -1310,6 +1310,7 @@
     "varHostPoolPreferredAppGroupType": "[toLower(parameters('hostPoolPreferredAppGroupType'))]",
     "varApplicationGroupName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomName'), format('vdag-{0}-{1}-001', variables('varHostPoolPreferredAppGroupType'), variables('varManagementPlaneNamingStandard')))]",
     "varApplicationGroupFriendlyName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomFriendlyName'), format('{0} {1} {2} {3} 001', variables('varHostPoolPreferredAppGroupType'), parameters('deploymentPrefix'), parameters('deploymentEnvironment'), parameters('avdManagementPlaneLocation')))]",
+    "varDeployScalingPlan": "[if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), false(), parameters('avdDeployScalingPlan'))]",
     "varScalingPlanName": "[if(parameters('avdUseCustomNaming'), parameters('avdScalingPlanCustomName'), format('vdscaling-{0}-001', variables('varManagementPlaneNamingStandard')))]",
     "varScalingPlanExclusionTag": "[format('exclude-{0}', variables('varScalingPlanName'))]",
     "varScalingPlanWeekdaysScheduleName": "[format('Weekdays-{0}', variables('varManagementPlaneNamingStandard'))]",
@@ -12735,7 +12736,7 @@
           },
           "preferredAppGroupType": "[if(equals(parameters('hostPoolPreferredAppGroupType'), 'RemoteApp'), createObject('value', 'RailApplications'), createObject('value', 'Desktop'))]",
           "deployScalingPlan": {
-            "value": "[parameters('avdDeployScalingPlan')]"
+            "value": "[variables('varDeployScalingPlan')]"
           },
           "scalingPlanExclusionTag": {
             "value": "[variables('varScalingPlanExclusionTag')]"
@@ -12758,7 +12759,7 @@
           "serviceObjectsRgName": {
             "value": "[variables('varServiceObjectsRgName')]"
           },
-          "startVmOnConnect": "[if(equals(parameters('avdHostPoolType'), 'Pooled'), createObject('value', parameters('avdDeployScalingPlan')), createObject('value', parameters('avdStartVmOnConnect')))]",
+          "startVmOnConnect": "[if(equals(parameters('avdHostPoolType'), 'Pooled'), createObject('value', variables('varDeployScalingPlan')), createObject('value', parameters('avdStartVmOnConnect')))]",
           "workloadSubsId": {
             "value": "[parameters('avdWorkloadSubsId')]"
           },
@@ -15229,7 +15230,7 @@
             "value": "[parameters('avdEnterpriseAppObjectId')]"
           },
           "deployScalingPlan": {
-            "value": "[parameters('avdDeployScalingPlan')]"
+            "value": "[variables('varDeployScalingPlan')]"
           },
           "storageManagedIdentityName": {
             "value": "[variables('varStorageManagedIdentityName')]"
@@ -36439,7 +36440,7 @@
       ]
     },
     {
-      "condition": "[parameters('createMsixDeployment')]",
+      "condition": "[and(parameters('createMsixDeployment'), not(equals(variables('varAzureCloudName'), 'AzureChinaCloud')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('Storage-MSIX-{0}', parameters('time'))]",
