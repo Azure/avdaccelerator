@@ -496,6 +496,15 @@
                                         "uri": "https://docs.microsoft.com/azure/virtual-desktop/autoscale-scenarios#scenario-4-how-do-exclusion-tags-work",
                                         "style": "Info"
                                     }
+                                },
+                                {
+                                    "name": "scalingPlanInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan]",
+                                    "options": {
+                                        "text": "Scaling Plan is NOT SUPPORTED in Azure China Cloud",
+                                        "style": "Info"
+                                    }
                                 }
                             ]
                         }
