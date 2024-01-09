@@ -137,6 +137,17 @@
                                         "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started.md",
                                         "style": "Info"
                                     }
+                                },
+                                {
+                                    "name": "identityDomainName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "AD Domain name",
+                                    "visible": "[or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS'))]",
+                                    "toolTip": "The full qualified domain name of the ADDS or AADDS domain, this information is used for VMs and storage accounts domain join. It is additionally used to set NTFS permissions when deploying/configuring FSLogix",
+                                    "placeholder": "Example: contoso.com",
+                                    "constraints": {
+                                        "required": true
+                                    }
                                 }
                             ]
                         },
@@ -632,17 +643,6 @@
                             "label": "Settings:",
                             "visible": "[steps('storage').fslogixConfiguration]",
                             "elements": [
-                                {
-                                    "name": "identityDomainName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "AD Domain name",
-                                    "visible": "[and(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS')), steps('storage').fslogixConfiguration)]",
-                                    "toolTip": "The full qualified domain name of the on-premises domain where the hybrid identities originated from, this information is used for Azure files authentication setup.",
-                                    "placeholder": "Example: contoso.com",
-                                    "constraints": {
-                                        "required": true
-                                    }
-                                },
                                 {
                                     "name": "fslogixStorageAccountSelector",
                                     "type": "Microsoft.Solutions.ResourceSelector",
@@ -1143,7 +1143,7 @@
                 "deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
                 "identityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
                 "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
-                "identityDomainName": "[if(and(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS')), steps('storage').fslogixConfiguration), steps('storage').storageFslogix.identityDomainName, 'none')]",
+                "identityDomainName": "[if(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS')), steps('identity').identityDomainInformation.identityDomainName, 'none')]",
                 "keyVaultResourceId": "[steps('identity').identityCredentials.secretsKeyvault.id]",
                 "domainJoinUserName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityCredentials.identityDomainJoinUserName)]",
                 "domainJoinPasswordSecretName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityCredentials.identityDomainJoinUserPassword)]",
