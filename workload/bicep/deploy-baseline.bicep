@@ -517,6 +517,7 @@ var varHostFriendlyName = avdUseCustomNaming ? avdHostPoolCustomFriendlyName : '
 var varHostPoolPreferredAppGroupType = toLower(hostPoolPreferredAppGroupType)
 var varApplicationGroupName = avdUseCustomNaming ? avdApplicationGroupCustomName : 'vdag-${varHostPoolPreferredAppGroupType}-${varManagementPlaneNamingStandard}-001'
 var varApplicationGroupFriendlyName = avdUseCustomNaming ? avdApplicationGroupCustomFriendlyName : '${varHostPoolPreferredAppGroupType} ${deploymentPrefix} ${deploymentEnvironment} ${avdManagementPlaneLocation} 001'
+var varDeployScalingPlan = (varAzureCloudName == 'AzureChinaCloud') ? false : avdDeployScalingPlan
 var varScalingPlanName = avdUseCustomNaming ? avdScalingPlanCustomName : 'vdscaling-${varManagementPlaneNamingStandard}-001'
 var varScalingPlanExclusionTag = 'exclude-${varScalingPlanName}'
 var varScalingPlanWeekdaysScheduleName = 'Weekdays-${varManagementPlaneNamingStandard}'
@@ -878,7 +879,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
         hostPoolLoadBalancerType: avdHostPoolLoadBalancerType
         hostPoolType: avdHostPoolType
         preferredAppGroupType: (hostPoolPreferredAppGroupType == 'RemoteApp') ? 'RailApplications' : 'Desktop'
-        deployScalingPlan: avdDeployScalingPlan
+        deployScalingPlan: varDeployScalingPlan
         scalingPlanExclusionTag: varScalingPlanExclusionTag
         scalingPlanSchedules: varScalingPlanSchedules
         scalingPlanName: varScalingPlanName
@@ -886,7 +887,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
         personalAssignType: avdPersonalAssignType
         managementPlaneLocation: avdManagementPlaneLocation
         serviceObjectsRgName: varServiceObjectsRgName
-        startVmOnConnect: (avdHostPoolType == 'Pooled') ? avdDeployScalingPlan : avdStartVmOnConnect
+        startVmOnConnect: (avdHostPoolType == 'Pooled') ? varDeployScalingPlan : avdStartVmOnConnect
         workloadSubsId: avdWorkloadSubsId
         identityServiceProvider: avdIdentityServiceProvider
         securityPrincipalIds: !empty(securityPrincipalId)? array(securityPrincipalId): []
@@ -911,7 +912,7 @@ module identity './modules/identity/deploy.bicep' = {
         serviceObjectsRgName: varServiceObjectsRgName
         storageObjectsRgName: varStorageObjectsRgName
         avdEnterpriseObjectId: avdEnterpriseAppObjectId
-        deployScalingPlan: avdDeployScalingPlan
+        deployScalingPlan: varDeployScalingPlan
         storageManagedIdentityName: varStorageManagedIdentityName
         enableStartVmOnConnect: avdStartVmOnConnect
         identityServiceProvider: avdIdentityServiceProvider
@@ -1122,7 +1123,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
 }
 
 // MSIX storage
-module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (createMsixDeployment) {
+module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (createMsixDeployment && varAzureCloudName!='AzureChinaCloud') {
     name: 'Storage-MSIX-${time}'
     params: {
         storagePurpose: 'msix'
