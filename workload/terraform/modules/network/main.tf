@@ -52,21 +52,21 @@ resource "azurerm_virtual_network_peering" "peer1" {
 
 }
 
-# resource "azurerm_virtual_network_peering" "peer4" {
-#   name                         = "peer_${var.prefix}_avdspoke_identity"
-#   resource_group_name          = azurerm_resource_group.net.name
-#   virtual_network_name         = azurerm_virtual_network.vnet.name
-#   remote_virtual_network_id    = data.azurerm_virtual_network.identity.id
-#   allow_virtual_network_access = true
-#   allow_forwarded_traffic      = true
-#   allow_gateway_transit        = true
-#   use_remote_gateways          = false
-#   provider                     = azurerm.spoke
+resource "azurerm_virtual_network_peering" "peer4" {
+  name                         = "peer_${var.prefix}_avdspoke_identity"
+  resource_group_name          = azurerm_resource_group.net.name
+  virtual_network_name         = azurerm_virtual_network.vnet.name
+  remote_virtual_network_id    = data.azurerm_virtual_network.identity.id
+  allow_virtual_network_access = true
+  allow_forwarded_traffic      = true
+  allow_gateway_transit        = true
+  use_remote_gateways          = false
+  provider                     = azurerm.spoke
 
-#   depends_on = [
-#     azurerm_virtual_network_peering.peer1
-#   ]
-# }
+  depends_on = [
+    azurerm_virtual_network_peering.peer1
+  ]
+}
 resource "azurerm_virtual_network_peering" "peer2" {
   name                         = "peer_${var.prefix}_hub_avdspoke"
   resource_group_name          = var.hub_connectivity_rg
@@ -83,21 +83,21 @@ resource "azurerm_virtual_network_peering" "peer2" {
   ]
 }
 
-# resource "azurerm_virtual_network_peering" "peer3" {
-#   name                         = "peer_${var.prefix}_identity_avdspoke"
-#   resource_group_name          = var.identity_rg
-#   virtual_network_name         = var.identity_vnet
-#   remote_virtual_network_id    = azurerm_virtual_network.vnet.id
-#   allow_virtual_network_access = true
-#   allow_forwarded_traffic      = true
-#   allow_gateway_transit        = true
-#   use_remote_gateways          = false
-#   provider                     = azurerm.identity
+resource "azurerm_virtual_network_peering" "peer3" {
+  name                         = "peer_${var.prefix}_identity_avdspoke"
+  resource_group_name          = var.identity_rg
+  virtual_network_name         = var.identity_vnet
+  remote_virtual_network_id    = azurerm_virtual_network.vnet.id
+  allow_virtual_network_access = true
+  allow_forwarded_traffic      = true
+  allow_gateway_transit        = true
+  use_remote_gateways          = false
+  provider                     = azurerm.identity
 
-#   depends_on = [
-#     azurerm_virtual_network_peering.peer2
-#   ]
-# }
+  depends_on = [
+    azurerm_virtual_network_peering.peer2
+  ]
+}
 
 # optional - Creates the Azure Virtual Desktop Firewall Rules assuming you have a firewall in the hub
 /*
