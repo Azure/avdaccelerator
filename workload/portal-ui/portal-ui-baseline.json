@@ -767,12 +767,6 @@
                                     "resourceType": "Microsoft.Compute/galleries/images",
                                     "constraints": {
                                         "required": true
-                                    },
-                                    "options": {
-                                        "filter": {
-                                            "subscription": "onBasics",
-                                            "location": "[steps('SessionHosts').SessionHostsRegionSection.SessionHostsRegion.location.name]"
-                                        }
                                     }
                                 }
                             ]
