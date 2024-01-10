@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "9406990619434457184"
+      "templateHash": "6617389939059997782"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -349,9 +349,9 @@
     },
     "deployGpuPolicies": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
-        "description": "Deploy VM GPU extension policies. (Default: true)"
+        "description": "Deploy VM GPU extension policies. (Default: false)"
       }
     },
     "avdDeployMonitoring": {
@@ -471,9 +471,9 @@
     },
     "avdSessionHostDiskType": {
       "type": "string",
-      "defaultValue": "Standard_LRS",
+      "defaultValue": "Premium_LRS",
       "metadata": {
-        "description": "OS disk type for session host. (Default: Standard_LRS)"
+        "description": "OS disk type for session host. (Default: Premium_LRS)"
       }
     },
     "enableAcceleratedNetworking": {

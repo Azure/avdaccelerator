@@ -1,0 +1,35 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "computeSubscriptionId": {
+            "value": "a7bc841f-34c0-4214-9469-cd463b66de35"
+        },
+        "computeRgResourceGroupName": {
+            "value": "rg-avd-x056-dev-ussc-pool-compute"
+        },
+        "countIndex": {
+            "value": 99
+        },
+        "hostPoolResourceID": {
+            "value": "/subscriptions/a7bc841f-34c0-4214-9469-cd463b66de35/resourceGroups/rg-avd-x056-dev-ussc-service-objects/providers/Microsoft.DesktopVirtualization/hostpools/vdpool-x056-dev-ussc-001"
+        },  
+        "subnetResourceId": {
+            "value": "/subscriptions/a7bc841f-34c0-4214-9469-cd463b66de35/resourceGroups/rg-avd-x056-dev-ussc-network/providers/Microsoft.Network/virtualNetworks/vnet-x056-dev-ussc-001/subnets/snet-avd-x056-dev-ussc-001"
+        },
+        "location": {
+            "value": "south central us"
+        },
+        "vmLocalUserName": {
+            "value": "d2lsolutions"
+        }, 
+        "keyVaultResourceId": {
+            "value": "/subscriptions/a7bc841f-34c0-4214-9469-cd463b66de35/resourceGroups/rg-avd-x056-dev-ussc-service-objects/providers/Microsoft.KeyVault/vaults/kv-sec-x056-dev-ussc-2f"
+        }, 
+        "vmLocalAdminPasswordSecretName": {
+            "value": "vmLocalUserPassword"
+        }
+    }
+}
+
+

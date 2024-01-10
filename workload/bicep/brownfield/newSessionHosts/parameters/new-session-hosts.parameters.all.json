@@ -1,0 +1,126 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "computeSubscriptionId": {
+            "value": "<<Subscription ID>>"
+        },
+        "alaWorkspaceResourceId": {
+            "value": ""
+        },
+        "asgResourceId": {
+            "value": ""
+        },
+        "avsetResourceId": {
+            "value": ""
+        },
+        "customImageDefinitionId": {
+            "value": ""
+        },
+        "computeRgResourceGroupName": {
+            "value": "<<Resourece group name>>"
+        },
+        "count": {
+            "value": 1
+        },
+        "countIndex": {
+            "value": "<<Provide session host count index>>"
+        },
+        "customNaming": {
+            "value": false
+        },        
+        "createIntuneEnrollment": {
+            "value": false
+        },   
+        "configureFslogix": {
+            "value": false
+        },   
+        "createResourceTags": {
+            "value": false
+        },   
+        "diskEncryptionSetResourceId": {
+            "value": ""
+        },  
+        "diskZeroTrust": {
+            "value": false
+        },  
+        "deployMonitoring": {
+            "value": false
+        },  
+        "deploymentEnvironment": {
+            "value": "Dev"
+        },  
+        "deploymentPrefix": {
+            "value": "AVD1"
+        },  
+        "domainJoinUserName": {
+            "value": "NoUsername"
+        },  
+        "diskType": {
+            "value": "Premium_LRS"
+        },  
+        "domainJoinPasswordSecretName": {
+            "value": "domainJoinUserPassword"
+        },  
+        "enableAcceleratedNetworking": {
+            "value": true
+        },  
+        "fslogixStorageAccountName": {
+            "value": ""
+        },  
+        "fslogixFileShareName": {
+            "value": ""
+        },  
+        "hostPoolResourceID": {
+            "value": "<<Provide host pool resource ID>>"
+        },  
+        "identityDomainName": {
+            "value": ""
+        },  
+        "subnetResourceId": {
+            "value": "<<Subnet resource ID>>"
+        },
+        "location": {
+            "value": "<<Provide location for new session hosts>>"
+        }, 
+        "sessionHostCustomNamePrefix": {
+            "value": "vmapp1duse2"
+        }, 
+        "useAvailabilityZones": {
+            "value": true
+        }, 
+        "identityServiceProvider": {
+            "value": "ADDS"
+        }, 
+        "vmSize": {
+            "value": "Standard_D4ads_v5"
+        }, 
+        "securityType": {
+            "value": "TrustedLaunch"
+        }, 
+        "secureBootEnabled": {
+            "value": true
+        }, 
+        "vTpmEnabled": {
+            "value": true
+        }, 
+        "useSharedImage": {
+            "value": false
+        }, 
+        "vmLocalUserName": {
+            "value": "<<VM local admin username>>"
+        }, 
+        "keyVaultResourceId": {
+            "value": "<<Key vault resource ID>>"
+        }, 
+        "vmLocalAdminPasswordSecretName": {
+            "value": "<<VM local admin password key vault secret name>>"
+        }, 
+        "sessionHostOuPath": {
+            "value": ""
+        }, 
+        "osImage": {
+            "value": "win11_22h2"
+        }
+    }
+}

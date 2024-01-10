@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.20.4.51522",
-      "templateHash": "14593526494285772558"
+      "version": "0.24.24.22086",
+      "templateHash": "3383356883435806717"
     }
   },
   "parameters": {
@@ -107,7 +107,7 @@
     }
   },
   "variables": {
-    "PostDeployScriptURI": "https://github.com/Azure/avdaccelerator/blob/main/workload/scripts/appAttachToolsVM/",
+    "PostDeployScriptURI": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/appAttachToolsVM/",
     "VNetSub": "[split(parameters('VNet').id, '/')[2]]",
     "VNetRG": "[split(parameters('VNet').id, '/')[4]]",
     "VNetName": "[parameters('VNet').name]",
@@ -163,8 +163,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "15372279674001258519"
+              "version": "0.24.24.22086",
+              "templateHash": "15812124690518480060"
             }
           },
           "parameters": {
@@ -297,8 +297,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "1253319411655473766"
+                      "version": "0.24.24.22086",
+                      "templateHash": "16312835383302959746"
                     }
                   },
                   "parameters": {
@@ -720,15 +720,6 @@
                         "description": "Optional. Location for all resources."
                       }
                     },
-                    "diagnosticLogsRetentionInDays": {
-                      "type": "int",
-                      "defaultValue": 365,
-                      "minValue": 0,
-                      "maxValue": 365,
-                      "metadata": {
-                        "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
-                      }
-                    },
                     "diagnosticStorageAccountId": {
                       "type": "string",
                       "defaultValue": "",
@@ -1110,9 +1101,6 @@
                           "diagnosticStorageAccountId": {
                             "value": "[parameters('diagnosticStorageAccountId')]"
                           },
-                          "diagnosticLogsRetentionInDays": {
-                            "value": "[parameters('diagnosticLogsRetentionInDays')]"
-                          },
                           "diagnosticWorkspaceId": {
                             "value": "[parameters('diagnosticWorkspaceId')]"
                           },
@@ -1145,8 +1133,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "14647474702270197476"
+                              "version": "0.24.24.22086",
+                              "templateHash": "1063750606576410026"
                             }
                           },
                           "parameters": {
@@ -1190,9 +1178,6 @@
                             },
                             "diagnosticStorageAccountId": {
                               "type": "string"
-                            },
-                            "diagnosticLogsRetentionInDays": {
-                              "type": "int"
                             },
                             "diagnosticWorkspaceId": {
                               "type": "string"
@@ -1265,9 +1250,6 @@
                                   "diagnosticLogCategoriesToEnable": {
                                     "value": "[parameters('pipdiagnosticLogCategoriesToEnable')]"
                                   },
-                                  "diagnosticLogsRetentionInDays": {
-                                    "value": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  },
                                   "diagnosticMetricsToEnable": {
                                     "value": "[parameters('pipdiagnosticMetricsToEnable')]"
                                   },
@@ -1306,8 +1288,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.20.4.51522",
-                                      "templateHash": "18395782528227461356"
+                                      "version": "0.24.24.22086",
+                                      "templateHash": "9414577766029056313"
                                     }
                                   },
                                   "parameters": {
@@ -1373,15 +1355,6 @@
                                       ],
                                       "metadata": {
                                         "description": "Optional. IP address version."
-                                      }
-                                    },
-                                    "diagnosticLogsRetentionInDays": {
-                                      "type": "int",
-                                      "defaultValue": 365,
-                                      "minValue": 0,
-                                      "maxValue": 365,
-                                      "metadata": {
-                                        "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
                                       }
                                     },
                                     "diagnosticStorageAccountId": {
@@ -1515,11 +1488,7 @@
                                         "count": "[length(filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs')))))]",
                                         "input": {
                                           "category": "[filter(parameters('diagnosticLogCategoriesToEnable'), lambda('item', not(equals(lambdaVariables('item'), 'allLogs'))))[copyIndex('diagnosticsLogsSpecified')]]",
-                                          "enabled": true,
-                                          "retentionPolicy": {
-                                            "enabled": true,
-                                            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                          }
+                                          "enabled": true
                                         }
                                       },
                                       {
@@ -1528,15 +1497,11 @@
                                         "input": {
                                           "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
                                           "timeGrain": null,
-                                          "enabled": true,
-                                          "retentionPolicy": {
-                                            "enabled": true,
-                                            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                          }
+                                          "enabled": true
                                         }
                                       }
                                     ],
-                                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true(), 'retentionPolicy', createObject('enabled', true(), 'days', parameters('diagnosticLogsRetentionInDays')))), variables('diagnosticsLogsSpecified'))]"
+                                    "diagnosticsLogs": "[if(contains(parameters('diagnosticLogCategoriesToEnable'), 'allLogs'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())), variables('diagnosticsLogsSpecified'))]"
                                   },
                                   "resources": [
                                     {
@@ -1639,8 +1604,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.20.4.51522",
-                                              "templateHash": "11249227806125160411"
+                                              "version": "0.24.24.22086",
+                                              "templateHash": "10254776496318105172"
                                             }
                                           },
                                           "parameters": {
@@ -1857,9 +1822,6 @@
                                   "diagnosticEventHubName": {
                                     "value": "[parameters('diagnosticEventHubName')]"
                                   },
-                                  "diagnosticLogsRetentionInDays": {
-                                    "value": "[parameters('diagnosticLogsRetentionInDays')]"
-                                  },
                                   "diagnosticStorageAccountId": {
                                     "value": "[parameters('diagnosticStorageAccountId')]"
                                   },
@@ -1894,8 +1856,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.20.4.51522",
-                                      "templateHash": "17418930732786956710"
+                                      "version": "0.24.24.22086",
+                                      "templateHash": "15654479489258886138"
                                     }
                                   },
                                   "parameters": {
@@ -1998,15 +1960,6 @@
                                         "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                                       }
                                     },
-                                    "diagnosticLogsRetentionInDays": {
-                                      "type": "int",
-                                      "defaultValue": 365,
-                                      "minValue": 0,
-                                      "maxValue": 365,
-                                      "metadata": {
-                                        "description": "Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
-                                      }
-                                    },
                                     "diagnosticStorageAccountId": {
                                       "type": "string",
                                       "defaultValue": "",
@@ -2063,11 +2016,7 @@
                                         "input": {
                                           "category": "[parameters('diagnosticMetricsToEnable')[copyIndex('diagnosticsMetrics')]]",
                                           "timeGrain": null,
-                                          "enabled": true,
-                                          "retentionPolicy": {
-                                            "enabled": true,
-                                            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-                                          }
+                                          "enabled": true
                                         }
                                       }
                                     ]
@@ -2192,8 +2141,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.20.4.51522",
-                                              "templateHash": "12768288729117926344"
+                                              "version": "0.24.24.22086",
+                                              "templateHash": "16966422285057288924"
                                             }
                                           },
                                           "parameters": {
@@ -2393,6 +2342,9 @@
                           "name": {
                             "value": "AADLogin"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "publisher": {
                             "value": "Microsoft.Azure.ActiveDirectory"
                           },
@@ -2408,8 +2360,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "13430172728355935351"
+                              "version": "0.24.24.22086",
+                              "templateHash": "15417543601715333142"
                             }
                           },
                           "parameters": {
@@ -2584,6 +2536,9 @@
                           "name": {
                             "value": "DomainJoin"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "publisher": {
                             "value": "Microsoft.Compute"
                           },
@@ -2611,8 +2566,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "13430172728355935351"
+                              "version": "0.24.24.22086",
+                              "templateHash": "15417543601715333142"
                             }
                           },
                           "parameters": {
@@ -2787,6 +2742,9 @@
                           "name": {
                             "value": "MicrosoftAntiMalware"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "publisher": {
                             "value": "Microsoft.Azure.Security"
                           },
@@ -2809,8 +2767,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "13430172728355935351"
+                              "version": "0.24.24.22086",
+                              "templateHash": "15417543601715333142"
                             }
                           },
                           "parameters": {
@@ -2985,6 +2943,9 @@
                           "name": {
                             "value": "MicrosoftMonitoringAgent"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "publisher": {
                             "value": "Microsoft.EnterpriseCloud.Monitoring"
                           },
@@ -3012,8 +2973,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "13430172728355935351"
+                              "version": "0.24.24.22086",
+                              "templateHash": "15417543601715333142"
                             }
                           },
                           "parameters": {
@@ -3188,6 +3149,9 @@
                           "name": {
                             "value": "DependencyAgent"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "publisher": {
                             "value": "Microsoft.Azure.Monitoring.DependencyAgent"
                           },
@@ -3205,8 +3169,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "13430172728355935351"
+                              "version": "0.24.24.22086",
+                              "templateHash": "15417543601715333142"
                             }
                           },
                           "parameters": {
@@ -3381,6 +3345,9 @@
                           "name": {
                             "value": "NetworkWatcherAgent"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "publisher": {
                             "value": "Microsoft.Azure.NetworkWatcher"
                           },
@@ -3398,8 +3365,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "13430172728355935351"
+                              "version": "0.24.24.22086",
+                              "templateHash": "15417543601715333142"
                             }
                           },
                           "parameters": {
@@ -3574,6 +3541,9 @@
                           "name": {
                             "value": "DesiredStateConfiguration"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "publisher": {
                             "value": "Microsoft.Powershell"
                           },
@@ -3595,8 +3565,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "13430172728355935351"
+                              "version": "0.24.24.22086",
+                              "templateHash": "15417543601715333142"
                             }
                           },
                           "parameters": {
@@ -3771,6 +3741,9 @@
                           "name": {
                             "value": "CustomScriptExtension"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "publisher": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'Microsoft.Compute'), createObject('value', 'Microsoft.Azure.Extensions'))]",
                           "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'CustomScriptExtension'), createObject('value', 'CustomScript'))]",
                           "typeHandlerVersion": "[if(contains(parameters('extensionCustomScriptConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionCustomScriptConfig').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '1.10'), createObject('value', '2.1')))]",
@@ -3800,8 +3773,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "13430172728355935351"
+                              "version": "0.24.24.22086",
+                              "templateHash": "15417543601715333142"
                             }
                           },
                           "parameters": {
@@ -3977,6 +3950,9 @@
                           "name": {
                             "value": "AzureDiskEncryption"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "publisher": {
                             "value": "Microsoft.Azure.Security"
                           },
@@ -3998,8 +3974,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "13430172728355935351"
+                              "version": "0.24.24.22086",
+                              "templateHash": "15417543601715333142"
                             }
                           },
                           "parameters": {
@@ -4174,6 +4150,9 @@
                           "name": {
                             "value": "[format('vm;iaasvmcontainerv2;{0};{1}', resourceGroup().name, parameters('name'))]"
                           },
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
                           "policyId": {
                             "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', parameters('backupVaultName'), parameters('backupPolicyName'))]"
                           },
@@ -4199,8 +4178,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "10936395871082409190"
+                              "version": "0.24.24.22086",
+                              "templateHash": "11525054918559098128"
                             }
                           },
                           "parameters": {
@@ -4365,8 +4344,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.20.4.51522",
-                              "templateHash": "5187922792757343332"
+                              "version": "0.24.24.22086",
+                              "templateHash": "17481608944836963488"
                             }
                           },
                           "parameters": {

@@ -171,8 +171,8 @@ param msixFileShareQuotaSize int = 1
 @sys.description('Deploy new session hosts. (Default: true)')
 param avdDeploySessionHosts bool = true
 
-@sys.description('Deploy VM GPU extension policies. (Default: true)')
-param deployGpuPolicies bool = true
+@sys.description('Deploy VM GPU extension policies. (Default: false)')
+param deployGpuPolicies bool = false
 
 @sys.description('Deploy AVD monitoring resources and setings. (Default: false)')
 param avdDeployMonitoring bool = false
@@ -229,8 +229,8 @@ param diskZeroTrust bool = false
 @sys.description('Session host VM size. (Default: Standard_D4ads_v5)')
 param avdSessionHostsSize string = 'Standard_D4ads_v5'
 
-@sys.description('OS disk type for session host. (Default: Standard_LRS)')
-param avdSessionHostDiskType string = 'Standard_LRS'
+@sys.description('OS disk type for session host. (Default: Premium_LRS)')
+param avdSessionHostDiskType string = 'Premium_LRS'
 
 @sys.description('''Enables accelerated Networking on the session hosts.
 If using a Azure Compute Gallery Image, the Image Definition must have been configured with
