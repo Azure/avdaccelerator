@@ -49,7 +49,6 @@ The brownfield section contains templates to deploy additional features for Azur
 - [Start VM On Connect](./workload/bicep/brownfield/startVmOnConnect/readme.md)
 - [App Attach Tools VM](./workload/bicep/brownfield/appAttachToolsVM/Readme.md)
 - [Deep Insights Workbook](./workload/workbooks/deepInsightsWorkbook/readme.md)
-- [Add New Session Hosts](./workload/bicep/brownfield/newSessionHosts/readme.md)
 
 ### Custom image build
 
