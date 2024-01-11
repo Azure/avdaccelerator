@@ -46,6 +46,9 @@ param tags object
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
+@description('Specifies the SKU for the vault.')
+param vaultSku string
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -64,6 +67,7 @@ module ztKeyVault '../../../../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.b
         enableRbacAuthorization: true
         enablePurgeProtection: true
         softDeleteRetentionInDays: 7
+        vaultSku: vaultSku
         publicNetworkAccess: 'Disabled'
         networkAcls: {
             bypass: 'AzureServices'
