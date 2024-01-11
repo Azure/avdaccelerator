@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "17317389638206747409"
+      "templateHash": "4038637595294295771"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -1311,6 +1311,7 @@
     "varApplicationGroupName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomName'), format('vdag-{0}-{1}-001', variables('varHostPoolPreferredAppGroupType'), variables('varManagementPlaneNamingStandard')))]",
     "varApplicationGroupFriendlyName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomFriendlyName'), format('{0} {1} {2} {3} 001', variables('varHostPoolPreferredAppGroupType'), parameters('deploymentPrefix'), parameters('deploymentEnvironment'), parameters('avdManagementPlaneLocation')))]",
     "varDeployScalingPlan": "[if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), false(), parameters('avdDeployScalingPlan'))]",
+    "varCreateMsixDeployment": "[if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), false(), parameters('createMsixDeployment'))]",
     "varScalingPlanName": "[if(parameters('avdUseCustomNaming'), parameters('avdScalingPlanCustomName'), format('vdscaling-{0}-001', variables('varManagementPlaneNamingStandard')))]",
     "varScalingPlanExclusionTag": "[format('exclude-{0}', variables('varScalingPlanName'))]",
     "varScalingPlanWeekdaysScheduleName": "[format('Weekdays-{0}', variables('varManagementPlaneNamingStandard'))]",
@@ -1336,7 +1337,7 @@
     "varSessionHostConfigurationScriptUri": "[format('{0}scripts/Set-SessionHostConfiguration.ps1', variables('varBaseScriptUri'))]",
     "varSessionHostConfigurationScript": "./Set-SessionHostConfiguration.ps1",
     "varDiskEncryptionKeyExpirationInEpoch": "[dateTimeToEpoch(dateTimeAdd(parameters('time'), format('P{0}D', string(parameters('diskEncryptionKeyExpirationInDays')))))]",
-    "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(parameters('createMsixDeployment'), true())), true(), false())]",
+    "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(variables('varCreateMsixDeployment'), true())), true(), false())]",
     "varFslogixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('fslogixStoragePerformance')), format('{0}_LRS', parameters('fslogixStoragePerformance')))]",
     "varMsixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('msixStoragePerformance')), format('{0}_LRS', parameters('msixStoragePerformance')))]",
     "varMaxSessionHostsPerTemplate": 10,
@@ -3340,7 +3341,7 @@
           "serviceObjectsRgName": {
             "value": "[variables('varServiceObjectsRgName')]"
           },
-          "storageObjectsRgName": "[if(or(parameters('createAvdFslogixDeployment'), parameters('createMsixDeployment')), createObject('value', variables('varStorageObjectsRgName')), createObject('value', ''))]",
+          "storageObjectsRgName": "[if(or(parameters('createAvdFslogixDeployment'), variables('varCreateMsixDeployment')), createObject('value', variables('varStorageObjectsRgName')), createObject('value', ''))]",
           "networkObjectsRgName": "[if(parameters('createAvdVnet'), createObject('value', variables('varNetworkObjectsRgName')), createObject('value', ''))]",
           "monitoringRgName": {
             "value": "[variables('varMonitoringRgName')]"
@@ -7939,7 +7940,7 @@
       ]
     },
     {
-      "condition": "[or(or(or(or(parameters('createAvdVnet'), parameters('createPrivateDnsZones')), parameters('avdDeploySessionHosts')), parameters('createAvdFslogixDeployment')), parameters('createMsixDeployment'))]",
+      "condition": "[or(or(or(or(parameters('createAvdVnet'), parameters('createPrivateDnsZones')), parameters('avdDeploySessionHosts')), parameters('createAvdFslogixDeployment')), variables('varCreateMsixDeployment'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('Networking-{0}', parameters('time'))]",
@@ -7953,7 +7954,7 @@
           "createVnet": {
             "value": "[parameters('createAvdVnet')]"
           },
-          "deployAsg": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), parameters('createMsixDeployment')), createObject('value', true()), createObject('value', false()))]",
+          "deployAsg": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), variables('varCreateMsixDeployment')), createObject('value', true()), createObject('value', false()))]",
           "existingAvdSubnetResourceId": {
             "value": "[parameters('existingVnetAvdSubnetResourceId')]"
           },
@@ -19232,6 +19233,9 @@
           "managedIdentityName": {
             "value": "[variables('varZtManagedIdentityName')]"
           },
+          "vaultSku": {
+            "value": "[variables('varWrklKeyVaultSku')]"
+          },
           "diskEncryptionKeyExpirationInDays": {
             "value": "[parameters('diskEncryptionKeyExpirationInDays')]"
           },
@@ -19264,7 +19268,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "10865746163538598377"
+              "templateHash": "2381843154333209660"
             }
           },
           "parameters": {
@@ -19369,6 +19373,12 @@
               "defaultValue": "[utcNow()]",
               "metadata": {
                 "description": "Do not modify, used to set unique value for resource deployment."
+              }
+            },
+            "vaultSku": {
+              "type": "string",
+              "metadata": {
+                "description": "Specifies the SKU for the vault."
               }
             }
           },
@@ -22380,6 +22390,9 @@
                   "kvName": {
                     "value": "[parameters('ztKvName')]"
                   },
+                  "vaultSku": {
+                    "value": "[parameters('vaultSku')]"
+                  },
                   "deployPrivateEndpointKeyvaultStorage": {
                     "value": "[parameters('deployPrivateEndpointKeyvaultStorage')]"
                   },
@@ -22413,7 +22426,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.23.1.45101",
-                      "templateHash": "9816348956723829998"
+                      "templateHash": "1897539446074951917"
                     }
                   },
                   "parameters": {
@@ -22501,6 +22514,12 @@
                       "metadata": {
                         "description": "Do not modify, used to set unique value for resource deployment."
                       }
+                    },
+                    "vaultSku": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Specifies the SKU for the vault."
+                      }
                     }
                   },
                   "resources": [
@@ -22530,6 +22549,9 @@
                           },
                           "softDeleteRetentionInDays": {
                             "value": 7
+                          },
+                          "vaultSku": {
+                            "value": "[parameters('vaultSku')]"
                           },
                           "publicNetworkAccess": {
                             "value": "Disabled"
@@ -27635,7 +27657,7 @@
       ]
     },
     {
-      "condition": "[or(parameters('createAvdFslogixDeployment'), parameters('createMsixDeployment'))]",
+      "condition": "[or(parameters('createAvdFslogixDeployment'), variables('varCreateMsixDeployment'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('Storage-MGMT-VM-{0}', parameters('time'))]",
@@ -27656,7 +27678,7 @@
           "computeTimeZone": {
             "value": "[variables('varTimeZoneSessionHosts')]"
           },
-          "applicationSecurityGroupResourceId": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), parameters('createMsixDeployment')), createObject('value', format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.applicationSecurityGroupResourceId.value)), createObject('value', ''))]",
+          "applicationSecurityGroupResourceId": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), variables('varCreateMsixDeployment')), createObject('value', format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.applicationSecurityGroupResourceId.value)), createObject('value', ''))]",
           "domainJoinUserName": {
             "value": "[parameters('avdDomainJoinUserName')]"
           },
@@ -36440,7 +36462,7 @@
       ]
     },
     {
-      "condition": "[and(parameters('createMsixDeployment'), not(equals(variables('varAzureCloudName'), 'AzureChinaCloud')))]",
+      "condition": "[variables('varCreateMsixDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('Storage-MSIX-{0}', parameters('time'))]",
@@ -41121,7 +41143,7 @@
           "timeZone": {
             "value": "[variables('varTimeZoneSessionHosts')]"
           },
-          "asgResourceId": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), parameters('createMsixDeployment')), createObject('value', format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.applicationSecurityGroupResourceId.value)), createObject('value', ''))]",
+          "asgResourceId": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), variables('varCreateMsixDeployment')), createObject('value', format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.applicationSecurityGroupResourceId.value)), createObject('value', ''))]",
           "identityServiceProvider": {
             "value": "[parameters('avdIdentityServiceProvider')]"
           },

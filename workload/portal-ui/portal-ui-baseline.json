@@ -498,11 +498,12 @@
                                     }
                                 },
                                 {
-                                    "name": "scalingPlanInfo",
+                                    "name": "scalingPlanInfo2",
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan]",
                                     "options": {
                                         "text": "Scaling Plan is NOT SUPPORTED in Azure China Cloud",
+                                        "uri": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/?products=all&regions=china-non-regional%2Cchina-east%2Cchina-east-2%2Cchina-east-3%2Cchina-north%2Cchina-north-2%2Cchina-north-3&rar=true",
                                         "style": "Info"
                                     }
                                 }
@@ -1004,6 +1005,15 @@
                                     "showStepMarkers": true,
                                     "constraints": {
                                         "required": true
+                                    }
+                                },
+                                {
+                                    "name": "MsixStorageInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[steps('storage').storageMsix.msixDeployment]",
+                                    "options": {
+                                        "text": "Msix App Attach is currently NOT SUPPORTED in Azure China Cloud",
+                                        "style": "Info"
                                     }
                                 }
                             ]
@@ -1528,6 +1538,16 @@
                             "options": {
                                 "text": "Deployment will configured all required settings to use the Azure Virtual Desktop insights workbook.",
                                 "uri": "https://learn.microsoft.com/azure/virtual-desktop/azure-monitor?WT.mc_id=Portal-AppInsightsExtension",
+                                "style": "Info"
+                            }
+                        },
+                        {
+                            "name": "deployMonitoringInfo3",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[steps('monitoring').deployMonitoring]",
+                            "options": {
+                                "text": "For Azure China deployment, Monitoring and Diagnostics is only supported in Chinaeast2 and Chinanorth3 regions",
+                                "uri": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/?products=all&regions=china-non-regional%2Cchina-east%2Cchina-east-2%2Cchina-east-3%2Cchina-north%2Cchina-north-2%2Cchina-north-3&rar=true",
                                 "style": "Info"
                             }
                         }
