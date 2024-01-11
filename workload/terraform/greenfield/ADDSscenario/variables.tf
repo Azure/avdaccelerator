@@ -283,3 +283,11 @@ variable "fw_policy" {
   type        = string
   description = "Name of the firewall policy"
 }
+
+#OU name for FSLogix
+variable "ou_name_for_fslogix" {
+  type        = string
+  description = "Name of the OU for FSLogix"
+  default = "Computers"
+  
+}
