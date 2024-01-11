@@ -170,6 +170,17 @@
                                         "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started.md",
                                         "style": "Info"
                                     }
+                                },
+                                {
+                                    "name": "identityDomainName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "AD Domain name",
+                                    "visible": "[or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AADDS'))]",
+                                    "toolTip": "The full qualified domain name of the ADDS or AADDS domain, this information is used for VMs and storage accounts domain join. It is additionally used to set NTFS permissions when deploying/configuring FSLogix",
+                                    "placeholder": "Example: contoso.com",
+                                    "constraints": {
+                                        "required": true
+                                    }
                                 }
                             ]
                         },
@@ -679,6 +690,13 @@
                                     "toolTip": "Enables low latency and high throughput on the network interface."
                                 },
                                 {
+                                    "name": "gpuExtensionPolicy",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "label": "Deploy GPU extension policies (AMD and Nvidia)",
+                                    "defaultValue": false,
+                                    "toolTip": "Deploy policies and assign policies at pool compute resource group to automatically apply GPU extension policies for AMD and/or Nvidia SKUs."
+                                },
+                                {
                                     "name": "warningAcceleratedNetworkingSupport",
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource]",
@@ -861,19 +879,8 @@
                             "name": "storageGeneralSettings",
                             "type": "Microsoft.Common.Section",
                             "label": "General settings:",
-                            "visible": true,
+                            "visible": "[or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment)]",
                             "elements": [
-                                {
-                                    "name": "identityDomainName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "visible": "[and(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AADDS')), or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment))]",
-                                    "label": "AD Domain name",
-                                    "toolTip": "The full qualified domain name of the on-premises domain where the hybrid identities originated from, this information is used for Azure files authentication setup.",
-                                    "placeholder": "Example: contoso.com",
-                                    "constraints": {
-                                        "required": true
-                                    }
-                                },
                                 {
                                     "name": "identityDomainOuPathStorageExisting",
                                     "type": "Microsoft.Common.TextBox",
@@ -886,7 +893,6 @@
                                 {
                                     "name": "storageGeneralSettingsZoneRedundancy",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "visible": true,
                                     "label": "Zone redundant storage",
                                     "defaultValue": false,
                                     "toolTip": "Select to replicate storage across availability zones or only use local redundancy."
@@ -1119,10 +1125,12 @@
                             },
                             "options": {
                                 "filter": {
-                                    "subscription": "onBasics",
-                                    "location": "[steps('SessionHosts').SessionHostsRegionSection.SessionHostsRegion.location.name]"
+                                    "subscription": "onBasics"
                                 }
-                            }
+                            },
+                            "scope": {
+                                "location": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]"
+                            }   
                         },
                         {
                             "name": "avdSubnetApi",
@@ -2315,7 +2323,7 @@
                 "avdPersonalAssignType": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolSettings.assignmentType, 'Automatic')]",
                 "avdIdentityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
                 "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
-                "identityDomainName": "[if(and(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AADDS')), or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment)), steps('storage').storageGeneralSettings.identityDomainName, 'none')]",
+                "identityDomainName": "[if(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AADDS')), steps('identity').identityDomainInformation.identityDomainName, 'none')]",
                 "avdOuPath": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
                 "avdDomainJoinUserName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserName)]",
                 "avdDomainJoinUserPassword": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserPassword)]",
@@ -2335,7 +2343,7 @@
                 "avdDeployScalingPlan": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, false)]",
                 "avdEnterpriseAppObjectId": "[first(map(steps('managementPlane').managementPlaneHostPoolScaling.avdEnterpriseApplication.value, (item) => item.id))]",
                 "availabilityZonesCompute": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings]",
-                "zoneRedundantStorage": "[steps('storage').storageGeneralSettings.storageGeneralSettingsZoneRedundancy]",
+                "zoneRedundantStorage": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment), steps('storage').storageGeneralSettings.storageGeneralSettingsZoneRedundancy, false)]",
                 "avdDeploySessionHostsCount": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
                 "useSharedImage": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false)]",
                 "avdOsImage": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false), steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11_21h2')]",
@@ -2356,7 +2364,7 @@
                 "createMsixDeployment": "[steps('storage').storageMsix.msixDeployment]",
                 "msixStoragePerformance": "[if(equals(steps('storage').storageMsix.msixDeployment, true), steps('storage').storageMsix.msixStorageAccountSku, 'Premium')]",
                 "msixFileShareQuotaSize": "[if(equals(steps('storage').storageMsix.msixDeployment, true), steps('storage').storageMsix.sessionHostsMsixFileShareQuota, 1 )]",
-                "storageOuPath": "[steps('storage').storageGeneralSettings.identityDomainOuPathStorageExisting]",
+                "storageOuPath": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment), steps('storage').storageGeneralSettings.identityDomainOuPathStorageExisting, '')]",
                 "avdUseCustomNaming": "[steps('resourceNaming').resourceNamingSelection]",
                 "avdServiceObjectsRgCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.serviceObjectsRgCustomName, 'no')]",
                 "avdNetworkObjectsRgCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingNetwork.networkObjectsRgCustomName, 'no')]",
@@ -2406,7 +2414,8 @@
                 "avdAlaWorkspaceCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingMonitoring.monitoringLogAnalyticsWorkspaceName, 'no')]",
                 "ztDiskEncryptionSetCustomNamePrefix": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsDiskEncryptionSetCustomName]",
                 "ztKvPrefixCustomName ": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsKeyVaultCustomPrefix]",
-                "ztManagedIdentityCustomName": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsManagedIdentityCustomName]"
+                "ztManagedIdentityCustomName": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsManagedIdentityCustomName]",
+                "deployGpuPolicies": "[steps('sessionHosts').sessionHostsSettingsSection.gpuExtensionPolicy]"
             },
             "kind": "Subscription",
             "location": "[steps('basics').resourceScope.location.name]",
