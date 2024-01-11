@@ -55,6 +55,9 @@ param keyVaultprivateDNSResourceId string
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
+@sys.description('Specifies the SKU for the vault.')
+param vaultSku string
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -213,6 +216,7 @@ module ztKeyVault './.bicep/zeroTrustKeyVault.bicep' = if (diskZeroTrust) {
         subscriptionId: subscriptionId
         rgName: serviceObjectsRgName
         kvName: ztKvName
+        vaultSku: vaultSku
         deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
         ztKvPrivateEndpointName: ztKvPrivateEndpointName
         privateEndpointsubnetResourceId: privateEndpointsubnetResourceId
