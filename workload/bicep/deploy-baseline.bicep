@@ -518,13 +518,14 @@ var varHostPoolPreferredAppGroupType = toLower(hostPoolPreferredAppGroupType)
 var varApplicationGroupName = avdUseCustomNaming ? avdApplicationGroupCustomName : 'vdag-${varHostPoolPreferredAppGroupType}-${varManagementPlaneNamingStandard}-001'
 var varApplicationGroupFriendlyName = avdUseCustomNaming ? avdApplicationGroupCustomFriendlyName : '${varHostPoolPreferredAppGroupType} ${deploymentPrefix} ${deploymentEnvironment} ${avdManagementPlaneLocation} 001'
 var varDeployScalingPlan = (varAzureCloudName == 'AzureChinaCloud') ? false : avdDeployScalingPlan
+var varCreateMsixDeployment = (varAzureCloudName == 'AzureChinaCloud') ? false : createMsixDeployment
 var varScalingPlanName = avdUseCustomNaming ? avdScalingPlanCustomName : 'vdscaling-${varManagementPlaneNamingStandard}-001'
 var varScalingPlanExclusionTag = 'exclude-${varScalingPlanName}'
 var varScalingPlanWeekdaysScheduleName = 'Weekdays-${varManagementPlaneNamingStandard}'
 var varScalingPlanWeekendScheduleName = 'Weekend-${varManagementPlaneNamingStandard}'
 var varWrklKvName = avdUseCustomNaming ? '${avdWrklKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' : 'kv-sec-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters
 var varWrklKvPrivateEndpointName = 'pe-${varWrklKvName}-vault'
-var varWrklKeyVaultSku = (varAzureCloudName == 'AzureCloud' || varAzureCloudName == 'AzureUSGovernment') ? 'premium' : (varAzureCloudName == 'AzureChinaCloud' ? 'standard' : null)
+var varWrklKeyVaultSku = (varAzureCloudName == 'AzureCloud' || varAzureCloudName == 'AzureUSGovernment') ? 'premium' : (varAzureCloudName == 'AzureChinaCloud' ? 'standard': null)
 var varSessionHostNamePrefix = avdUseCustomNaming ? avdSessionHostCustomNamePrefix : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
 var varAvsetNamePrefix = avdUseCustomNaming ? '${avsetCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'avail-${varComputeStorageResourcesNamingStandard}'
 var varStorageManagedIdentityName = 'id-storage-${varComputeStorageResourcesNamingStandard}-001'
@@ -544,7 +545,7 @@ var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/m
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
 var varDiskEncryptionKeyExpirationInEpoch = dateTimeToEpoch(dateTimeAdd(time, 'P${string(diskEncryptionKeyExpirationInDays)}D'))
-var varCreateStorageDeployment = (createAvdFslogixDeployment || createMsixDeployment == true) ? true : false
+var varCreateStorageDeployment = (createAvdFslogixDeployment || varCreateMsixDeployment == true) ? true : false
 var varFslogixStorageSku = zoneRedundantStorage ? '${fslogixStoragePerformance}_ZRS' : '${fslogixStoragePerformance}_LRS'
 var varMsixStorageSku = zoneRedundantStorage ? '${msixStoragePerformance}_ZRS' : '${msixStoragePerformance}_LRS'
 var varMgmtVmSpecs = {
@@ -805,7 +806,7 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
         deployAlaWorkspace: deployAlaWorkspace
         computeObjectsRgName: varComputeObjectsRgName
         serviceObjectsRgName: varServiceObjectsRgName
-        storageObjectsRgName: (createAvdFslogixDeployment || createMsixDeployment) ? varStorageObjectsRgName : ''
+        storageObjectsRgName: (createAvdFslogixDeployment || varCreateMsixDeployment) ? varStorageObjectsRgName : ''
         networkObjectsRgName: (createAvdVnet) ? varNetworkObjectsRgName : ''
         monitoringRgName: varMonitoringRgName
         deployCustomPolicyMonitoring: deployCustomPolicyMonitoring
@@ -824,11 +825,11 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
 }
 
 // Networking
-module networking './modules/networking/deploy.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts || createAvdFslogixDeployment || createMsixDeployment) {
+module networking './modules/networking/deploy.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) {
     name: 'Networking-${time}'
     params: {
         createVnet: createAvdVnet
-        deployAsg: (avdDeploySessionHosts || createAvdFslogixDeployment || createMsixDeployment) ? true : false
+        deployAsg: (avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) ? true : false
         existingAvdSubnetResourceId: existingVnetAvdSubnetResourceId
         createPrivateDnsZones: deployPrivateEndpointKeyvaultStorage ? createPrivateDnsZones : false
         applicationSecurityGroupName: varApplicationSecurityGroupName
@@ -938,6 +939,7 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
         serviceObjectsRgName: varServiceObjectsRgName
         computeObjectsRgName: varComputeObjectsRgName
         managedIdentityName: varZtManagedIdentityName
+        vaultSku: varWrklKeyVaultSku
         diskEncryptionKeyExpirationInDays: diskEncryptionKeyExpirationInDays
         diskEncryptionKeyExpirationInEpoch: varDiskEncryptionKeyExpirationInEpoch
         diskEncryptionSetName: varDiskEncryptionSetName
@@ -1043,14 +1045,14 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
 }
 
 // Management VM deployment
-module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if (createAvdFslogixDeployment || createMsixDeployment) {
+module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if (createAvdFslogixDeployment || varCreateMsixDeployment) {
     name: 'Storage-MGMT-VM-${time}'
     params: {
         diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
         identityServiceProvider: avdIdentityServiceProvider
         managementVmName: varManagementVmName
         computeTimeZone: varTimeZoneSessionHosts
-        applicationSecurityGroupResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment || createMsixDeployment) ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
+        applicationSecurityGroupResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
@@ -1123,7 +1125,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
 }
 
 // MSIX storage
-module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (createMsixDeployment && varAzureCloudName!='AzureChinaCloud') {
+module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (varCreateMsixDeployment) {
     name: 'Storage-MSIX-${time}'
     params: {
         storagePurpose: 'msix'
@@ -1192,7 +1194,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
     params: {
         diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
         timeZone: varTimeZoneSessionHosts
-        asgResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment || createMsixDeployment) ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
+        asgResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
         identityServiceProvider: avdIdentityServiceProvider
         createIntuneEnrollment: createIntuneEnrollment
         maxAvsetMembersCount: varMaxAvsetMembersCount
