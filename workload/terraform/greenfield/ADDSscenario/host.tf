@@ -178,9 +178,9 @@ resource "azurerm_virtual_machine_extension" "setsessionhostconfig_script" {
     commandToExecute = local.commandToExecute_UrlFile
   })
 
-  # lifecycle {
-  #   ignore_changes = [settings, protected_settings]
-  # }
+  lifecycle {
+    ignore_changes = [settings, protected_settings]
+  }
 
   depends_on = [
     azurerm_virtual_machine_extension.domain_join,
