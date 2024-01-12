@@ -504,7 +504,7 @@
                                     "options": {
                                         "text": "Scaling Plan is NOT SUPPORTED in Azure China Cloud",
                                         "uri": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/?products=all&regions=china-non-regional%2Cchina-east%2Cchina-east-2%2Cchina-east-3%2Cchina-north%2Cchina-north-2%2Cchina-north-3&rar=true",
-                                        "style": "Info"
+                                        "style": "Warning"
                                     }
                                 }
                             ]
@@ -1013,7 +1013,7 @@
                                     "visible": "[steps('storage').storageMsix.msixDeployment]",
                                     "options": {
                                         "text": "Msix App Attach is currently NOT SUPPORTED in Azure China Cloud",
-                                        "style": "Info"
+                                        "style": "Warning"
                                     }
                                 }
                             ]
@@ -1548,7 +1548,7 @@
                             "options": {
                                 "text": "For Azure China deployment, Monitoring and Diagnostics is only supported in Chinaeast2 and Chinanorth3 regions",
                                 "uri": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/?products=all&regions=china-non-regional%2Cchina-east%2Cchina-east-2%2Cchina-east-3%2Cchina-north%2Cchina-north-2%2Cchina-north-3&rar=true",
-                                "style": "Info"
+                                "style": "Warning"
                             }
                         }
                     ]
