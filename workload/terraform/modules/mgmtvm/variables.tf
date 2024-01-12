@@ -1,3 +1,4 @@
+#Url of the zip file containing the DSCs scripts, by default it is the one in the github repo in the main branch
 variable "dsc_storage_path" {
   type        = string
   description = "Path to the DSC script"
@@ -29,6 +30,7 @@ variable "azure_cloud_environment" {
   }
 }
 
+#Details of the VM Source Image, by default it is the latest Windows Server 2022 image
 variable "vm_source_image_reference" {
   type = object({
     publisher = string
@@ -120,8 +122,6 @@ variable "rg_network" {
   description = "Name of the network resource group"
 }
 
-
-
 variable "spoke_subscription_id" {
   type        = string
   description = "Subscription ID of the spoke"
@@ -152,17 +152,18 @@ variable "location" {
   description = "Location where to deploy compute services."
 }
 
+#Content of the Powershell script for configuring fslogix. Only one of url_powershell_script/localpath_powershell_script is required."
+variable "localpath_powershell_script" {
+  type        = string
+  description = "Content of the Powershell script for configuring fslogix. Only one of url_powershell_script/localpath_powershell_script is required."
+  default     = "../../../scripts/Manual-DSC-Storage-Scripts.ps1"
+}
+
 #Url where the script to be ran is located
 variable "url_powershell_script" {
   type        = string
   description = "Location of the powershell script for configuring fslogix."
   default     = ""
-}
-
-variable "localpath_powershell_script" {
-  type        = string
-  description = "Content of the Powershell script for configuring fslogix. Only one of url_powershell_script/content_powershell_script is required."
-  default     = "../../../scripts/Manual-DSC-Storage-Scripts.ps1"
 }
 
 #Name of the file to be downloaded from the url. Defualt value is: Manual-DSC-Storage-Scripts.ps1. It is required if url_powershell_script is provided

@@ -162,6 +162,35 @@ PROTECTED_SETTINGS
   }
 }
 
+
+# Custom extension for FSLogix
+# Resource block to run Custom Script Extension on the Management VM for FSLogix configuration if the local file is provided
+resource "azurerm_virtual_machine_extension" "setsessionhostconfig_script" {
+  count                = var.rdsh_count
+  name                 = "${var.prefix}${count.index + 1}-fslogix-config"
+  virtual_machine_id   = azurerm_windows_virtual_machine.avd_vm.*.id[count.index]
+  publisher            = "Microsoft.Compute"
+  type                 = "CustomScriptExtension"
+  type_handler_version = "1.9"
+
+  settings = jsonencode({
+    fileUris = [local.setSessionHostConfigurationUrl]
+    commandToExecute = local.commandToExecute_UrlFile
+  })
+
+  # lifecycle {
+  #   ignore_changes = [settings, protected_settings]
+  # }
+
+  depends_on = [
+    azurerm_virtual_machine_extension.domain_join,
+    azurerm_virtual_desktop_host_pool.hostpool
+  ]
+}
+
+
+
+
 # Virtual Machine Extension for MMA agent
 resource "azurerm_virtual_machine_extension" "mma" {
   name                       = "MicrosoftMonitoringAgent"
