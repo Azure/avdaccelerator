@@ -61,13 +61,22 @@ param (
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $StoragePurpose
+        [string] $StoragePurpose,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $TenantId
 )
 
 Write-Host "Add domain join account as local administrator"
 if ($IdentityServiceProvider -ne 'AAD') {
-        Add-LocalGroupMember -Group "Administrators" -Member $AdminUserName
-        Write-Host "Domain join account added to local administrators group"
+        try {
+                Add-LocalGroupMember -Group "Administrators" -Member "$DomainName\$AdminUserName"
+                Write-Host "Domain join account added to local administrators group"
+        }
+        catch [Microsoft.PowerShell.Commands.MemberExistsException] {
+                Write-Warning "$DomainName\$AdminUserName already in group Administrators"
+        }
 }
 else {
         Write-Host "Using AAD, no domain join account to add to local administrators group"
@@ -116,7 +125,7 @@ function Set-EscapeCharacters {
 $AdminUserPasswordEscaped = Set-EscapeCharacters $AdminUserPassword
 
 
-$DscCompileCommand = "./Configuration.ps1 -StorageAccountName """ + $StorageAccountName + """ -StorageAccountRG """ + $StorageAccountRG + """ -StoragePurpose """ + $StoragePurpose + """ -StorageAccountFqdn """ + $StorageAccountFqdn + """ -ShareName """ + $ShareName + """ -SubscriptionId """ + $SubscriptionId + """ -ClientId """ + $ClientId + """ -SecurityPrincipalName """ + $SecurityPrincipalName + """ -DomainName """ + $DomainName + """ -IdentityServiceProvider """ + $IdentityServiceProvider + """ -AzureCloudEnvironment """ + $AzureCloudEnvironment + """ -CustomOuPath " + $CustomOuPath + " -OUName """ + $OUName + """ -AdminUserName """ + $AdminUserName + """ -AdminUserPassword """ + $AdminUserPasswordEscaped + """ -Verbose"
+$DscCompileCommand = "./Configuration.ps1 -StorageAccountName """ + $StorageAccountName + """ -StorageAccountRG """ + $StorageAccountRG + """ -StoragePurpose """ + $StoragePurpose + """ -StorageAccountFqdn """ + $StorageAccountFqdn + """ -ShareName """ + $ShareName + """ -SubscriptionId """ + $SubscriptionId + """ -ClientId """ + $ClientId + """ -SecurityPrincipalName """ + $SecurityPrincipalName + """ -DomainName """ + $DomainName + """ -IdentityServiceProvider """ + $IdentityServiceProvider + """ -AzureCloudEnvironment """ + $AzureCloudEnvironment + """ -CustomOuPath """ + $CustomOuPath + """ -OUName """ + $OUName + """ -AdminUserName """ + $AdminUserName + """ -AdminUserPassword """ + $AdminUserPasswordEscaped + """ -TenantId """ + $TenantId + """ -Verbose"
 
 Write-Host "Executing the commmand $DscCompileCommand" 
 Invoke-Expression -Command $DscCompileCommand
@@ -130,4 +139,4 @@ Set-WSManQuickConfig -Force -Verbose
 Start-DscConfiguration -Path $MofPath -Wait -Verbose -force
 
 Write-Host "DSC extension run clean up"
-Remove-Item -Path $MofPath -Force -Recurse
+#Remove-Item -Path $MofPath -Force -Recurse

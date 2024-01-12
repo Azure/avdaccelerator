@@ -203,10 +203,28 @@ variable "image_name" {
   description = "Name of the custome image to use"
 }
 
+variable "marketplace_image_details"{
+  type = map(string)
+  default = {
+    publisher = "microsoftwindowsdesktop"
+    offer     = "windows-11"
+    sku       = "win11-23h2-avd"
+    version   = "22631.2715.231109"
+  }
+  description = "Marketplace image details"
+}
+
 variable "gallery_name" {
   type        = string
   description = "Name of the shared image gallery name"
 }
+
+variable "use_gallery_image"{
+  type = bool
+  description = "value to use gallery image or not"
+  default = true
+}
+
 variable "image_rg" {
   type        = string
   description = "Image Gallery resource group"
@@ -264,4 +282,12 @@ variable "next_hop_ip" {
 variable "fw_policy" {
   type        = string
   description = "Name of the firewall policy"
+}
+
+#OU name for FSLogix
+variable "ou_name_for_fslogix" {
+  type        = string
+  description = "Name of the OU for FSLogix"
+  default = "Computers"
+  
 }

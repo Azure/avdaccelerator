@@ -20,6 +20,22 @@ resource "azurerm_storage_account" "storage" {
   identity {
     type = "SystemAssigned"
   }
+
+  # Enabling Multi-channel for SMB
+  dynamic "share_properties" {
+    for_each =  ["enabled"]
+    content {
+
+      dynamic "smb" {
+        for_each= ["enabled"]
+        content {
+          multichannel_enabled = true
+        }
+      }
+    
+    
+    }
+  }
 }
 
 resource "azurerm_storage_share" "FSShare" {

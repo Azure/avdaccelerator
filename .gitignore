@@ -57,3 +57,10 @@ workload/bicep/parameters/deploy-baseline-parameters-MSA.json
 # local test files
 localTest
 
+# VSCode
+.vscode
+
+**/.DS_Store
+.DS_Store
+
+.env

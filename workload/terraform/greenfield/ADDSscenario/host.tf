@@ -67,18 +67,19 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
     storage_account_type = "Standard_LRS"
   }
 
-  # To use marketplace image, uncomment the following lines and comment the source_image_id line
-  /*
-  source_image_reference {
-    publisher = var.vm_marketplace_mage.publisher
-    offer     = var.vm_marketplace_image.offer
-    sku       = var.vm_marketplace_image.sku
-    version   = var.vm_marketplace_image.version
-  }
-*/
 
-  //source_image_id = data.azurerm_shared_image.avd.id
-  source_image_id = "/subscriptions/${var.avdshared_subscription_id}/resourceGroups/${var.image_rg}/providers/Microsoft.Compute/galleries/${var.gallery_name}/images/${var.image_name}/versions/latest"
+  #To use a custom gallery image
+  source_image_id = var.use_gallery_image ? "/subscriptions/${var.avdshared_subscription_id}/resourceGroups/${var.image_rg}/providers/Microsoft.Compute/galleries/${var.gallery_name}/images/${var.image_name}/versions/latest" : null
+
+
+  #To use a marketplace image
+  source_image_reference {
+    publisher = var.use_gallery_image == false && var.marketplace_image_details != null ? var.marketplace_image_details.publisher : ""
+    offer     = var.use_gallery_image == false && var.marketplace_image_details != null ? var.marketplace_image_details.offer : ""
+    sku       = var.use_gallery_image == false && var.marketplace_image_details != null ? var.marketplace_image_details.sku : ""
+    version   = var.use_gallery_image == false && var.marketplace_image_details != null ? var.marketplace_image_details.version : ""
+  }
+
   depends_on = [
     azurerm_resource_group.shrg,
     azurerm_network_interface.avd_vm_nic,
@@ -155,7 +156,40 @@ PROTECTED_SETTINGS
     azurerm_virtual_machine_extension.domain_join,
     azurerm_virtual_desktop_host_pool.hostpool
   ]
+
+  lifecycle {
+    ignore_changes = [settings, protected_settings]
+  }
 }
+
+
+# Custom extension for FSLogix
+# Resource block to run Custom Script Extension on the Management VM for FSLogix configuration if the local file is provided
+resource "azurerm_virtual_machine_extension" "setsessionhostconfig_script" {
+  count                = var.rdsh_count
+  name                 = "${var.prefix}${count.index + 1}-fslogix-config"
+  virtual_machine_id   = azurerm_windows_virtual_machine.avd_vm.*.id[count.index]
+  publisher            = "Microsoft.Compute"
+  type                 = "CustomScriptExtension"
+  type_handler_version = "1.9"
+
+  settings = jsonencode({
+    fileUris = [local.setSessionHostConfigurationUrl]
+    commandToExecute = local.commandToExecute_UrlFile
+  })
+
+  lifecycle {
+    ignore_changes = [settings, protected_settings]
+  }
+
+  depends_on = [
+    azurerm_virtual_machine_extension.domain_join,
+    azurerm_virtual_desktop_host_pool.hostpool
+  ]
+}
+
+
+
 
 # Virtual Machine Extension for MMA agent
 resource "azurerm_virtual_machine_extension" "mma" {
@@ -182,7 +216,9 @@ PROTECTED_SETTINGS
     azurerm_virtual_machine_extension.domain_join,
     azurerm_virtual_machine_extension.vmext_dsc
   ]
-
+  lifecycle {
+    ignore_changes = [settings, protected_settings]
+  }
 }
 
 # Virtual Machine Extension for Microsoft Antimalware
@@ -200,4 +236,7 @@ resource "azurerm_virtual_machine_extension" "mal" {
     azurerm_virtual_machine_extension.vmext_dsc,
     azurerm_virtual_machine_extension.mma
   ]
+  lifecycle {
+    ignore_changes = [settings, protected_settings]
+  }
 }

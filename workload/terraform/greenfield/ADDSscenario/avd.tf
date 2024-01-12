@@ -33,17 +33,20 @@ resource "azurerm_virtual_desktop_host_pool" "hostpool" {
 
 #Autoscale is currently only available in the public cloud.
 data "azurerm_role_definition" "power_role" {
-  name = "Desktop Virtualization Power On Off Contributor"
+  role_definition_id   = "40c5ff49-9181-41f8-ae61-143b0e78555e"
+  #role_definition_name           = "Desktop Virtualization Power On Off Contributor" 
+  scope                = data.azurerm_subscription.current.id
 }
 
 data "azuread_service_principal" "spn" {
-  application_id = "9cdead84-a844-4324-93f2-b2e6bb768d07"
+  #https://learn.microsoft.com/en-us/azure/virtual-desktop/set-up-mfa
+  application_id = "9cdead84-a844-4324-93f2-b2e6bb768d07" #Azure Virtual Desktop (app ID 9cdead84-a844-4324-93f2-b2e6bb768d07), which applies when the user subscribes to Azure Virtual Desktop, authenticates to the Azure Virtual Desktop Gateway during a connection, and when diagnostics information is sent to the service from the user's local device.
 }
 
 resource "azurerm_role_assignment" "power" {
   name                             = random_uuid.example.result
   scope                            = azurerm_resource_group.rg.id
-  role_definition_id               = data.azurerm_role_definition.power_role.role_definition_id
+  role_definition_id               = data.azurerm_role_definition.power_role.id
   principal_id                     = data.azuread_service_principal.spn.application_id
   skip_service_principal_aad_check = true
   depends_on                       = [data.azurerm_role_definition.power_role]
