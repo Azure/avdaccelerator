@@ -155,7 +155,7 @@ module aadIdentityLoginRoleAssign '../../../../carml/1.3.0/Microsoft.Authorizati
   }
 }]
 
-// VM EntraID access roles service objects RG
+// Virtual machine Microsoft Entra ID access roles on the service objects resource group
 module aadIdentityLoginAccessServiceObjects '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for appGroupIdentitiesId in securityPrincipalIds: if (identityServiceProvider == 'EntraID' && !empty(securityPrincipalIds)) {
   name: 'VM-Login-Serv-${take('${appGroupIdentitiesId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
