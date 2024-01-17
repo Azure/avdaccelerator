@@ -4,7 +4,7 @@ This guide is designed to help you get started with deploying a greenfield Azure
 
 This accelerator is to be used as starter kit and you can expand its functionality by developing your own deployments. This scenario deploys a new Azure Virtual Desktop workload with Microsoft Entra ID joined session host using a custom image, so it cannot be used to maintain, modify or add resources to an existing or already deployed Azure Virtual Desktop workload from this accelerator.
 
-***Note*** This terraform accelerator requires the Custom Image Build before deploying the Baseline. If you prefer to use the marketplace image with no customization [see](https://docs.microsoft.com/en-us/azure/developer/terraform/create-avd-session-host)
+***Note*** This Terraform accelerator requires the custom image build before deploying the baseline. If you prefer to use the marketplace image with no customization, see [Configure Azure Virtual Desktop session hosts using Terraform](https://learn.microsoft.com/azure/developer/terraform/create-avd-session-host).
 
 ## Table of contents
 
