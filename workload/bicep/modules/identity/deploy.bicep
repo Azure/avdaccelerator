@@ -145,7 +145,7 @@ module storageSmbShareContributorRoleAssign '../../../../carml/1.3.0/Microsoft.A
   }
 }]
 
-// VM EntraID access roles compute RG
+// Virtual machine Microsoft Entra ID access roles on the compute resource group
 module aadIdentityLoginRoleAssign '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for appGroupIdentitiesId in securityPrincipalIds: if (identityServiceProvider == 'EntraID' && !empty(securityPrincipalIds)) {
   name: 'VM-Login-Comp-${take('${appGroupIdentitiesId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
