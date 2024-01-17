@@ -159,7 +159,7 @@ param tags object = {}
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
 param enableDefaultTelemetry bool = true
 
-@description('Optional. Restrict copy to and from Storage Accounts within an EntraID tenant or with Private Links to the same VNet.')
+@description('Optional. Restrict copy to and from Azure Storage accounts within a Microsoft Entra tenant or with Private Links to the same virtual network.')
 @allowed([
   ''
   'AAD'
