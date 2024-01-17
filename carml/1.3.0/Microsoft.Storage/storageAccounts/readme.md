@@ -56,7 +56,7 @@ This module is used to deploy a storage account, with the ability to deploy 1 or
 | :-- | :-- | :-- | :-- | :-- |
 | `allowBlobPublicAccess` | bool | `False` |  | Indicates whether public access is enabled for all blobs or containers in the storage account. For security reasons, it is recommended to set it to false. |
 | `allowCrossTenantReplication` | bool | `True` |  | Allow or disallow cross Microsoft Entra tenant object replication. |
-| `allowedCopyScope` | string | `''` | `['', EntraID, PrivateLink]` | Restrict copy to and from Storage Accounts within an EntraID tenant or with Private Links to the same VNet. |
+| `allowedCopyScope` | string | `''` | `['', EntraID, PrivateLink]` | Restrict copy to and from Azure Storage accounts within a Microsoft Entra tenant or with Private Links to the same virtual network. |
 | `allowSharedKeyAccess` | bool | `True` |  | Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Microsoft Entra ID. The default value is null, which is equivalent to true. |
 | `azureFilesIdentityBasedAuthentication` | object | `{object}` |  | Provides the identity based authentication settings for Azure Files. |
 | `blobServices` | _[blobServices](blobServices/readme.md)_ object | `{object}` |  | Blob service and containers to deploy. |
