@@ -73,7 +73,7 @@ param networkAcls object = {}
 @description('Optional. A Boolean indicating whether or not the service applies a secondary layer of encryption with platform managed keys for data at rest. For security reasons, it is recommended to set it to true.')
 param requireInfrastructureEncryption bool = true
 
-@description('Optional. Allow or disallow cross EntraID tenant object replication.')
+@description('Optional. Allow or disallow cross Microsoft Entra tenant object replication.')
 param allowCrossTenantReplication bool = true
 
 @description('Optional. Sets the custom domain name assigned to the storage account. Name is the CNAME source.')
