@@ -44,7 +44,7 @@ This folder is laid out hierarchically so that different levels of modules may b
 | ------------------- | ------------------------------------------------------------ |
 | [modules](../modules)            | This folder contains re-usable modules that create infrastructure components that are used to compose more complex scenarios |
 | [ADDS scenarios](./ADDSscenario/readme.md)  | This folder contains scenario root modules that deploy AVD with ADDS join session host. |
-| [EntraID scenarios](./AADscenario/readme.md)  | This folder contains scenario root modules that deploy AVD with Microsoft Entra ID join session host. |
+| [Microsoft Entra ID scenarios](./AADscenario/readme.md)  | This folder contains scenario root modules that deploy AVD with Microsoft Entra ID join session host. |
 | [EntraID Zero Trust scenarios](./zerotrust/readme.md)  | This folder contains scenario root modules that deploy AVD with Microsoft Entra ID join session host following zero trust principles. |
 
 <details>
