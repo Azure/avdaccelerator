@@ -197,7 +197,11 @@ Required, The service providing domain services for Azure Virtual Desktop. (Defa
 
 - Default value: `ADDS`
 
+<<<<<<< HEAD
 - Allowed values: `ADDS`, `AADDS`, `AAD`
+=======
+- Allowed values: `ADDS`, `EntraDS`, `EntraID`
+>>>>>>> 9ef9701eb11965c93e771a10ca3f4f6f1fe85914
 
 ### createIntuneEnrollment
 
@@ -593,9 +597,15 @@ Session host VM size. (Default: Standard_D4ads_v5)
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
+<<<<<<< HEAD
 OS disk type for session host. (Default: Premium_LRS)
 
 - Default value: `Premium_LRS`
+=======
+OS disk type for session host. (Default: Standard_LRS)
+
+- Default value: `Standard_LRS`
+>>>>>>> 9ef9701eb11965c93e771a10ca3f4f6f1fe85914
 
 ### enableAcceleratedNetworking
 
@@ -1249,7 +1259,11 @@ Enable purge protection for the keyvaults. (Default: true)
             "value": "Standard_D4ads_v5"
         },
         "avdSessionHostDiskType": {
+<<<<<<< HEAD
             "value": "Premium_LRS"
+=======
+            "value": "Standard_LRS"
+>>>>>>> 9ef9701eb11965c93e771a10ca3f4f6f1fe85914
         },
         "enableAcceleratedNetworking": {
             "value": true
