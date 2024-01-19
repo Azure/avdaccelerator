@@ -1055,7 +1055,7 @@ Enable purge protection for the keyvaults. (Default: true)
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "metadata": {
-        "template": "workload/bicep/deploy-baseline.json"
+        "template": "workload/arm/deploy-baseline.json"
     },
     "parameters": {
         "deploymentPrefix": {
