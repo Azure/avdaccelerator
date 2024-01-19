@@ -25,8 +25,8 @@ env:
   github_user_name: 'github-actions'
   github_email: '41898282+github-actions[bot]@users.noreply.github.com'
   github_commit_message: 'Generate Parameter Markdowns'
-  github_pr_number: ${{ github.event.number }}
-  github_pr_repo: ${{ github.event.pull_request.head.repo.full_name }}
+  # github_pr_number: ${{ github.event.number }}
+  # github_pr_repo: ${{ github.event.pull_request.head.repo.full_name }}
 
 permissions:
   contents: write
@@ -134,8 +134,8 @@ jobs:
               echo "==> Commit changes..."
               git commit --message "$github_commit_message [$GITHUB_ACTOR/${GITHUB_SHA::8}]"
               echo "==> Push changes..."
-              echo "Pushing changes to: $github_pr_repo"
-              git push "https://$GITHUB_TOKEN@github.com/$github_pr_repo.git"
+              echo "Pushing changes to: $main"
+              git push "https://$GITHUB_TOKEN@github.com/main"
           else
               echo "No changes found."
           fi
