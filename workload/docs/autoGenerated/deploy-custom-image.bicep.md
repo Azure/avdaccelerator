@@ -402,7 +402,7 @@ Reference to the size of the VM for your workloads (Default: Contoso-Workload)
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "metadata": {
-        "template": "workload/bicep/deploy-custom-image.json"
+        "template": "workload/arm/deploy-custom-image.json"
     },
     "parameters": {
         "alertsActionGroupCustomName": {
