@@ -363,7 +363,7 @@ Here is the JSON description of the Citrix Host Role with the minimum permission
 }	
 ```
 	
-The Citrix_Hosting_Connection custom role should be assigned to the Citrix_Infrastructure resource group(s) that have the Cloud Connector, Master Image or Virtual Network resources in them. This JSON role can be copied and pasted directly into your custom Microsoft Entra ID role.
+The Citrix_Hosting_Connection custom role should be assigned to the Citrix_Infrastructure resource group(s) that have the Cloud Connector, Master Image or Virtual Network resources in them. This JSON role can be copied and pasted directly into your custom Microsoft Entra role.
  
 **Citrix Machine Catalog Role**
 	
