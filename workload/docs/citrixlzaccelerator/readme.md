@@ -305,7 +305,7 @@ You will need both the Application (client) ID and the Client SecretKey value fr
  
 **Enterprise Applications**
 	
-Depending on how your Citrix Cloud and Microsoft Entra ID are configured, one or more Enterprise Applications may be created in your Microsoft Entra ID tenant. These accounts allow Citrix Cloud to access data stored in your Microsoft Entra ID tenant. Table 3 Citrix Cloud Enterprise Applications in Microsoft Entra ID lists the Application IDs and their purpose. 
+Depending on how your Citrix Cloud and Microsoft Entra ID are configured, one or more Enterprise Applications may be created in your Microsoft Entra tenant. These accounts allow Citrix Cloud to access data stored in your Microsoft Entra tenant. Table 3 Citrix Cloud Enterprise Applications in Microsoft Entra ID lists the Application IDs and their purpose.
 
 | Enterprise Applications ID | Purpose |
 |----|----|
