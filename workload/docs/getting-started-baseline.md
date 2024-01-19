@@ -9,7 +9,7 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
 ### Azure Environment Setup
 
 - [x]  Deploy an ALZ architecture (recommended but not mandatory) from a template reference implementation available at [Deploying Enterprise-Scale Architecture in your own environment](https://github.com/Azure/Enterprise-Scale#deploying-enterprise-scale-architecture-in-your-own-environment).
-- [x]  Configure Microsoft Entra ID Connect and ensure users are synchronized from AD DS to Microsoft Entra ID, unless session hosts are joining Microsoft Entra ID  and FSLogix is not in use.
+- [x]  Configure Microsoft Entra Connect and ensure users are synchronized from AD DS to Microsoft Entra ID, unless session hosts are joining Microsoft Entra ID and FSLogix is not in use.
 
 ### Subscription requirements
 
