@@ -63,7 +63,7 @@ $ErrorActionPreference = "Stop"
 
 . (Join-Path $ScriptPath "Logger.ps1")
 
-if ($IdentityServiceProvider -ne 'AAD') {
+if ($IdentityServiceProvider -ne 'EntraID') {
 	Write-Log "Forcing group policy updates"
 	gpupdate /force
 
@@ -171,7 +171,7 @@ Try {
 	icacls ${DriveLetter}: /remove "BUILTIN\Users"
 	Write-Log "ACLs set"
 	#AVD group permissions
-	if ($SecurityPrincipalName -eq 'none' -or $IdentityServiceProvider -eq 'AAD') {
+	if ($SecurityPrincipalName -eq 'none' -or $IdentityServiceProvider -eq 'EntraID') {
 		Write-Log "AD group not provided or using Microsoft Entra ID joined session hosts, ACLs for AD group not set"
 	}
 	else {

@@ -109,9 +109,9 @@ var varAvdFileShareMetricsDiagnostic = [
     'Transaction'
 ]
 var varWrklStoragePrivateEndpointName = 'pe-${storageAccountName}-file'
-var varDirectoryServiceOptions = (identityServiceProvider == 'AADDS') ? 'AADDS': (identityServiceProvider == 'AAD') ? 'AADKERB': 'None'
+var varDirectoryServiceOptions = (identityServiceProvider == 'EntraDS') ? 'EntraDS': (identityServiceProvider == 'EntraID') ? 'AADKERB': 'None'
 var varSecurityPrincipalName = !empty(securityPrincipalName)? securityPrincipalName : 'none'
-var varAdminUserName = (identityServiceProvider == 'AAD') ? vmLocalUserName : domainJoinUserName
+var varAdminUserName = (identityServiceProvider == 'EntraID') ? vmLocalUserName : domainJoinUserName
 var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -AdminUserName ${varAdminUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName "${varSecurityPrincipalName}" -StorageAccountFqdn ${storageAccountFqdn} '
 
 // =========== //
@@ -138,7 +138,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
         largeFileSharesState: (storageSku == 'Standard_LRS') || (storageSku == 'Standard_ZRS') ? 'Enabled': 'Disabled'
         azureFilesIdentityBasedAuthentication: {
             directoryServiceOptions: varDirectoryServiceOptions
-            activeDirectoryProperties: (identityServiceProvider == 'AAD') ? {
+            activeDirectoryProperties: (identityServiceProvider == 'EntraID') ? {
                 domainGuid: identityDomainGuid
                 domainName: identityDomainName
             } : {}
@@ -195,7 +195,7 @@ module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = {
         name: managementVmName
         file: storageToDomainScript
         scriptArguments: varStorageToDomainScriptArgs
-        adminUserPassword: (identityServiceProvider == 'AAD') ? avdWrklKeyVaultget.getSecret('vmLocalUserPassword') : avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
+        adminUserPassword: (identityServiceProvider == 'EntraID') ? avdWrklKeyVaultget.getSecret('vmLocalUserPassword') : avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
         baseScriptUri: storageToDomainScriptUri
     }
     dependsOn: [

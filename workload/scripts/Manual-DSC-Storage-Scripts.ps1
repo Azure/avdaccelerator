@@ -65,12 +65,12 @@ param (
 )
 
 Write-Host "Add domain join account as local administrator"
-if ($IdentityServiceProvider -ne 'AAD') {
+if ($IdentityServiceProvider -ne 'EntraID') {
         Add-LocalGroupMember -Group "Administrators" -Member $AdminUserName
         Write-Host "Domain join account added to local administrators group"
 }
 else {
-        Write-Host "Using AAD, no domain join account to add to local administrators group"
+        Write-Host "Using EntraID, no domain join account to add to local administrators group"
 }
 
 Write-Host "Downloading the DSCStorageScripts.zip from $DscPath"
