@@ -117,27 +117,19 @@ jobs:
         run: |
           echo "==> Stage changes..."
           mapfile -t STATUS_LOG < <(git status --short | grep .)
-          if [ ${#STATUS_LOG[@]} -gt 0 ]; then
               echo "Found changes to the following files:"
               printf "%s\n" "${STATUS_LOG[@]}"
               git add --all
-          else
-              echo "No changes to add."
-          fi
 
       - name: Push changes
         run: |
           echo "==> Check git diff..."
           mapfile -t GIT_DIFF < <(git diff --cached)
           printf "%s\n" "${GIT_DIFF[@]}"
-          if [ ${#GIT_DIFF[@]} -gt 0 ]; then
               echo "==> Commit changes..."
               git commit --message "$github_commit_message [$GITHUB_ACTOR/${GITHUB_SHA::8}]"
               echo "==> Push changes..."
               echo "Pushing changes to: $main"
               git push "https://$GITHUB_TOKEN@github.com/main"
-          else
-              echo "No changes found."
-          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
