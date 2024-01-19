@@ -171,7 +171,7 @@ param extensionDomainJoinConfig object = {
   enabled: false
 }
 
-@description('Optional. The configuration for the [AAD Join] extension. Must at least contain the ["enabled": true] property to be executed.')
+@description('Optional. The configuration for the [EntraID Join] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionAadJoinConfig object = {
   enabled: false
 }

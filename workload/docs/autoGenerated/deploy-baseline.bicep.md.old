@@ -197,7 +197,7 @@ Required, The service providing domain services for Azure Virtual Desktop. (Defa
 
 - Default value: `ADDS`
 
-- Allowed values: `ADDS`, `EntraDS`, `EntraID`
+- Allowed values: `ADDS`, `AADDS`, `AAD`
 
 ### createIntuneEnrollment
 

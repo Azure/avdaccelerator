@@ -46,8 +46,8 @@ param avdVmLocalUserPassword string
 
 @allowed([
     'ADDS' // Active Directory Domain Services
-    'AADDS' // Microsoft Entra Domain Services
-    'AAD' // Microsoft Entra ID Join
+    'EntraDS' // Microsoft Entra Domain Services
+    'EntraID' // Microsoft Entra ID Join
 ])
 @sys.description('Required, The service providing domain services for Azure Virtual Desktop. (Default: ADDS)')
 param avdIdentityServiceProvider string = 'ADDS'
@@ -689,7 +689,7 @@ var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avda
 var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
 var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
 var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
-var varDefaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers' : 'Computers'
+var varDefaultStorageOuPath = (avdIdentityServiceProvider == 'EntraDS') ? 'AADDC Computers' : 'Computers'
 var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
 var varAllDnsServers = '${customDnsIps},168.63.129.16'
 var varDnsServers = empty(customDnsIps) ? [] : (split(varAllDnsServers, ','))
@@ -992,7 +992,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
             }
         ] : []
         secrets: {
-            secureList: (avdIdentityServiceProvider != 'AAD') ? [
+            secureList: (avdIdentityServiceProvider != 'EntraID') ? [
                 {
                     name: 'vmLocalUserPassword'
                     value: avdVmLocalUserPassword

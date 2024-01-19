@@ -60,15 +60,15 @@ Download the [Visio file](../diagrams/Citrix-accelerator-enterprise-scale-alz-ar
 
 ** Design considatation **
 
--	Like an Azure subscription, a Citrix Cloud tenant only supports [a single Azure AD tenant for user or admin authentication](https://docs.citrix.com/en-us/citrix-workspace/secure.html#azure-active-directory). If development and production Azure AD tenant isolation is required for your operational processes, similar isolation should be established for your Citrix Cloud tenants. 
--	Citrix supports Azure B2B or guest accounts using SAML authentication in Workspace or Citrix Gateway and Citrix Federated Authentication Service. For more information, see [How to configure Azure AD and SAML for Guest Accounts](https://support.citrix.com/article/CTX312151/how-to-configure-azure-ad-and-saml-tech-preview-for-guest-accounts).
+-	Like an Azure subscription, a Citrix Cloud tenant only supports [a single Microsoft Entra tenant for user or admin authentication](https://docs.citrix.com/en-us/citrix-workspace/secure.html#azure-active-directory). If development and production Microsoft Entra tenant isolation is required for your operational processes, similar isolation should be established for your Citrix Cloud tenants.
+-	Citrix supports Azure B2B or guest accounts using SAML authentication in Workspace or Citrix Gateway and Citrix Federated Authentication Service. For more information, see [How to configure Microsoft Entra ID and SAML for Guest Accounts](https://support.citrix.com/article/CTX312151/how-to-configure-azure-ad-and-saml-tech-preview-for-guest-accounts).
 -	Citrix includes built-in RBAC capabilities for core administration and monitoring of the associated Citrix virtual apps and desktops. For more information, see [Delegated administration](https://docs.citrix.com/en-us/citrix-daas/manage-deployment/delegated-administration.html) and [Monitor](https://docs.citrix.com/en-us/citrix-daas/monitor.html).
--	The majority of enterprise customers today leverage full domain services in Azure, typically deployed in an [Identity Subscription](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/architecture). In this scenario, Azure AD can still be used as an identity provider for user authentication directly with [Citrix Workspace](https://docs.citrix.com/en-us/citrix-workspace/secure.html#azure-active-directory) to leverage capabilities such as [Azure Multi-Factor Authentication](https://docs.microsoft.com/en-us/azure/active-directory/authentication/concept-mfa-howitworks) and [Conditional Access](https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/overview.). 
--	Single sign-on is supported using [Citrix Federated Authentication Service](https://docs.citrix.com/en-us/federated-authentication-service/deployment-architectures/azure-ad.html) when using Azure AD or other SAML based identity providers for authentication.
--	Azure AD only environments are possible with support for [Azure AD joined and non-domain joined workloads](https://docs.citrix.com/en-us/citrix-daas/install-configure/azure-joined-ndj-vda-configuration.html).
+-	The majority of enterprise customers today leverage full domain services in Azure, typically deployed in an [Identity Subscription](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/enterprise-scale/architecture). In this scenario, Microsoft Entra ID can still be used as an identity provider for user authentication directly with [Citrix Workspace](https://docs.citrix.com/en-us/citrix-workspace/secure.html#azure-active-directory) to leverage capabilities such as [Azure Multi-Factor Authentication](https://docs.microsoft.com/en-us/azure/active-directory/authentication/concept-mfa-howitworks) and [Conditional Access](https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/overview.). 
+-	Single sign-on is supported using [Citrix Federated Authentication Service](https://docs.citrix.com/en-us/federated-authentication-service/deployment-architectures/azure-ad.html) when using Microsoft Entra ID or other SAML based identity providers for authentication.
+-	Microsoft Entra ID only environments are possible with support for [Microsoft Entra ID joined and non-domain joined workloads](https://docs.citrix.com/en-us/citrix-daas/install-configure/azure-joined-ndj-vda-configuration.html).
 -	The below table summarizes key Citrix functionality based on each Azure hosting strategy for domain services. If you are currently in the planning stages of your Azure deployment, review [the comparison of each of these services](https://docs.microsoft.com/en-us/azure/active-directory-domain-services/compare-identity-solutions) with your identity team, and understand their requirements and timelines. Identity is a critical path prerequisite for deployment on Azure.
 
-| Functionality | Azure AD | Azure AD DS | Active Directory Domain Services | No Domain Services |
+| Functionality | Microsoft Entra ID | Microsoft Entra Domain Services | Active Directory Domain Services | No Domain Services |
 |----|----|----|----|----|
 | Delegated Admin in Citrix Cloud | ✓ | ✓ | ✓ | ✓ |	
 | Machine Creation Services | ✓ | ✓ | ✓ | ✓ |		
@@ -305,23 +305,23 @@ You will need both the Application (client) ID and the Client SecretKey value fr
  
 **Enterprise Applications**
 	
-Depending on how your Citrix Cloud and Azure AD are configured, one or more Enterprise Applications may be created in your Azure AD tenant. These accounts allow Citrix Cloud to access data stored in your Azure AD tenant. Table 3 Citrix Cloud Enterprise Applications in Azure AD lists the Application IDs and their purpose. 
+Depending on how your Citrix Cloud and Microsoft Entra ID are configured, one or more Enterprise Applications may be created in your Microsoft Entra tenant. These accounts allow Citrix Cloud to access data stored in your Microsoft Entra tenant. Table 3 Citrix Cloud Enterprise Applications in Microsoft Entra ID lists the Application IDs and their purpose.
 
 | Enterprise Applications ID | Purpose |
 |----|----|
-| f9c0e999-22e7-409f-bb5e-956986abdf02 | Default connection between Azure AD and Citrix Cloud |
+| f9c0e999-22e7-409f-bb5e-956986abdf02 | Default connection between Microsoft Entra ID and Citrix Cloud |
 | 1b32f261-b20c-4399-8368-c8f0092b4470 | Administrator invitations and logins |
 | e95c4605-aeab-48d9-9c36-1a262ef8048e | Workspace subscriber login |
-| 5c913119-2257-4316-9994-5e8f3832265b | Default connection between Azure AD and Citrix Cloud with Citrix Endpoint Management |
-| e067934c-b52d-4e92-b1ca-70700bd1124e | Legacy connection between Azure AD and Citrix Cloud with Citrix Endpoint Management | 
+| 5c913119-2257-4316-9994-5e8f3832265b | Default connection between Microsoft Entra ID and Citrix Cloud with Citrix Endpoint Management |
+| e067934c-b52d-4e92-b1ca-70700bd1124e | Legacy connection between Microsoft Entra ID and Citrix Cloud with Citrix Endpoint Management | 
 
 Each Enterprise application grants Citrix Cloud specific permissions to either the Microsoft Graph or the Windows Microsoft Entra ID API. For instance, the Workspace subscriber login grants User.Read permissions to both APIs so that users can sign-in and read their profile. More information about the permissions granted can be found [here](https://docs.citrix.com/en-us/citrix-cloud/citrix-cloud-management/identity-access-management/azure-ad-permissions.html). 
 
 **Using Built-in Roles**
 	
-The contributor built-in role contains the broadest permission set and will work well when assigned to service principal accounts at the subscription level. Granting contributor permissions at the subscription level requires an Azure AD global administrator account. Once granted, Azure will prompt for the required permissions during the initial connection from Citrix Cloud to Azure AD. Any accounts used for authentication during the host-connection creation must also be at least co-administrators on the subscription. This level of permissions will allow Citrix Cloud to create any objects necessary without restriction. Typically, this approach is used when the entire subscription is dedicated to Citrix resources.
+The contributor built-in role contains the broadest permission set and will work well when assigned to service principal accounts at the subscription level. Granting contributor permissions at the subscription level requires a Microsoft Entra ID global administrator account. Once granted, Azure will prompt for the required permissions during the initial connection from Citrix Cloud to Microsoft Entra ID. Any accounts used for authentication during the host-connection creation must also be at least co-administrators on the subscription. This level of permissions will allow Citrix Cloud to create any objects necessary without restriction. Typically, this approach is used when the entire subscription is dedicated to Citrix resources.
  
-Some environments do not allow service principals to have contributor permissions at a subscription level, so Citrix has provided an alternative solution referred to as a Narrow Scope service principal. With a narrow scope service principal, an application registration is completed manually by an Azure AD global administrator and then a subscription administrator manually grants the service principal account the appropriate permissions. Narrow-scoped service principals do not have contributor permissions on the entire subscription, but rather their contributor permissions are scoped to just the resource groups, networks, and images that are required to create and manage the Machine Catalogs. The narrow-scoped service principal requires the following contributor permissions.
+Some environments do not allow service principals to have contributor permissions at a subscription level, so Citrix has provided an alternative solution referred to as a Narrow Scope service principal. With a narrow scope service principal, an application registration is completed manually by a Microsoft Entra ID global administrator and then a subscription administrator manually grants the service principal account the appropriate permissions. Narrow-scoped service principals do not have contributor permissions on the entire subscription, but rather their contributor permissions are scoped to just the resource groups, networks, and images that are required to create and manage the Machine Catalogs. The narrow-scoped service principal requires the following contributor permissions.
 - Pre-Created Resource Group: Virtual machine contributor, Storage account contributor, and Disk snapshot contributor
 - Virtual Network: Virtual machine contributor
 - Storage Account: Virtual machine contributor
@@ -363,7 +363,7 @@ Here is the JSON description of the Citrix Host Role with the minimum permission
 }	
 ```
 	
-The Citrix_Hosting_Connection custom role should be assigned to the Citrix_Infrastructure resource group(s) that have the Cloud Connector, Master Image or Virtual Network resources in them. This JSON role can be copied and pasted directly into your custom Azure AD role.
+The Citrix_Hosting_Connection custom role should be assigned to the Citrix_Infrastructure resource group(s) that have the Cloud Connector, Master Image or Virtual Network resources in them. This JSON role can be copied and pasted directly into your custom Microsoft Entra role.
  
 **Citrix Machine Catalog Role**
 	
