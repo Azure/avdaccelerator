@@ -19,7 +19,7 @@
     - Note: when using Microsoft Entra ID as the identity service provider, an additional role (virtual machine user login) will be granted to compute resource group during deployment.
   - **When selecting AD DS or Microsoft Entra DS:**
     - Domain join credentials The Username and password with rights to join computers to the domain.
-  - **When selecting EntraID:**
+  - **When selecting Microsoft Entra ID:**
     - Enroll VM with Intune: check the box to enroll session hosts on tenant's.
   - **Session host local admin credentials** The Username and password to set for local administrator.
 - **Management plane** blade
