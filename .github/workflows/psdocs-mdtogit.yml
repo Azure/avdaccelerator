@@ -8,16 +8,16 @@ on:
     paths:
       - 'workload/bicep/deploy-baseline.bicep'
       - 'workload/bicep/deploy-custom-image.bicep'
-  # pull_request:
-  #   branches: [ main ]
-  #   types:
-  #     - edited
-  #     - opened
-  #     - reopened
-  #     - synchronize
-  #   paths:
-  #     - 'workload/bicep/deploy-baseline.bicep'
-  #     - 'workload/bicep/deploy-custom-image.bicep'
+  pull_request:
+    branches: [ main ]
+    types:
+      - edited
+      - opened
+      - reopened
+      - synchronize
+    paths:
+      - 'workload/bicep/deploy-baseline.bicep'
+      - 'workload/bicep/deploy-custom-image.bicep'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -45,7 +45,7 @@ jobs:
       - name: Check out PR
         run: |
           echo "==> Check out PR..."
-          gh pr checkout "$github_pr_number"
+#          gh pr checkout "$github_pr_number"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Configure local git
