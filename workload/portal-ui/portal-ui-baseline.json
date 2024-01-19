@@ -864,17 +864,6 @@
                             "visible": true,
                             "elements": [
                                 {
-                                    "name": "identityDomainName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "visible": "[and(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS')), or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment))]",
-                                    "label": "AD Domain name",
-                                    "toolTip": "The full qualified domain name of the on-premises domain where the hybrid identities originated from, this information is used for Azure files authentication setup.",
-                                    "placeholder": "Example: contoso.com",
-                                    "constraints": {
-                                        "required": true
-                                    }
-                                },
-                                {
                                     "name": "identityDomainOuPathStorageExisting",
                                     "type": "Microsoft.Common.TextBox",
                                     "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
