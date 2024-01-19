@@ -16,7 +16,7 @@
     - Microsoft Entra Domain Services.
   - **Azure Virtual Desktop access assignment** - These identities will be granted access to Azure Virtual Desktop application groups (role "Desktop Virtualization User").
     - Groups - select from the drop down the groups to be granted access to Azure Virtual Desktop published items and to create sessions on VMs and single sign-on (SSO) when using Microsoft Entra ID as the identity provider.
-    - Note: when using EntraID as identity service provider, an additional role (virtual machine user login) will be granted to compute resource group during deployment.
+    - Note: when using Microsoft Entra ID as the identity service provider, an additional role (virtual machine user login) will be granted to compute resource group during deployment.
   - **When selecting AD DS or Microsoft Entra DS:**
     - Domain join credentials The Username and password with rights to join computers to the domain.
   - **When selecting EntraID:**
