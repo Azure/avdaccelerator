@@ -10,7 +10,7 @@
   - **Prefix** – A prefix of maximum 4 characters that will be appended to the names of Resource Groups and Azure resources within the Resource Groups.
   - **Environment** – Deployment Environment type (Development/Test/Production), will be used for naming and tagging purposes.
 - **Identity provider** blade
-  - **Identity Service Provider** - Identity service provider (AD DS, Entra DS, EntraID) that already exists and will be used for Azure Virtual Desktop.
+  - **Identity Service Provider** - Identity service provider (AD DS, Entra DS, Microsoft Entra ID) that already exists and will be used for Azure Virtual Desktop.
     - Microsoft Entra ID.
     - Active Directory (AD DS).
     - Microsoft Entra Domain Services.
