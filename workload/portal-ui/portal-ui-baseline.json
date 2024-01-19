@@ -134,13 +134,13 @@
                                     "visible": true,
                                     "label": "Identity service provider",
                                     "defaultValue": "Active Directory (AD DS)",
-                                    "toolTip": "Identity service provider (ADDS or AADDS) that already exist and will be used for Azure Virtual Desktop.",
+                                    "toolTip": "Identity service provider (ADDS or EntraDS) that already exist and will be used for Azure Virtual Desktop.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
                                             {
                                                 "label": "Microsoft Entra ID",
-                                                "value": "AAD"
+                                                "value": "EntraID"
                                             },
                                             {
                                                 "label": "Active Directory (AD DS)",
@@ -148,7 +148,7 @@
                                             },
                                             {
                                                 "label": "Microsoft Entra Domain Services",
-                                                "value": "AADDS"
+                                                "value": "EntraDS"
                                             }
                                         ]
                                     }
@@ -156,7 +156,7 @@
                                 {
                                     "name": "identityServiceProviderIntuneEnrollment",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
+                                    "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')]",
                                     "label": "Intune enrollment",
                                     "defaultValue": false,
                                     "toolTip": "If Intune is configured in your Microsoft Entra ID tenant, you can choose to have the VM automatically enrolled during the deployment by selecting this box."
@@ -164,7 +164,7 @@
                                 {
                                     "name": "identityServiceProviderInfo",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
                                     "options": {
                                         "text": "Identity service provider must already exist, as it is a prerequisite for the Azure Virtual Desktop LZA deployment.",
                                         "uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started.md",
@@ -175,8 +175,8 @@
                                     "name": "identityDomainName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "AD Domain name",
-                                    "visible": "[or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AADDS'))]",
-                                    "toolTip": "The full qualified domain name of the ADDS or AADDS domain, this information is used for VMs and storage accounts domain join. It is additionally used to set NTFS permissions when deploying/configuring FSLogix",
+                                    "visible": "[or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS'))]",
+                                    "toolTip": "The full qualified domain name of the ADDS or EntraDS domain, this information is used for VMs and storage accounts domain join. It is additionally used to set NTFS permissions when deploying/configuring FSLogix",
                                     "placeholder": "Example: contoso.com",
                                     "constraints": {
                                         "required": true
@@ -240,7 +240,7 @@
                         {
                             "name": "identityDomainCredentials",
                             "type": "Microsoft.Common.Section",
-                            "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                            "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
                             "label": "Domain join credentials",
                             "elements": [
                                 {
@@ -581,7 +581,7 @@
                                 {
                                     "name": "identityDomainOuPath",
                                     "type": "Microsoft.Common.TextBox",
-                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
                                     "label": "Custom OU path (Optional)",
                                     "toolTip": "Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU.",
                                     "placeholder": "Example: OU=session-hosts,OU=avd,DC=contoso,DC=com",
@@ -884,7 +884,7 @@
                                 {
                                     "name": "identityDomainOuPathStorageExisting",
                                     "type": "Microsoft.Common.TextBox",
-                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
                                     "label": "Custom OU path (Optional)",
                                     "toolTip": "Provide OU where to locate storage account file share. If not provided, file share will be placed on the default (computers) OU.",
                                     "placeholder": "Example: OU=storage,OU=avd,DC=contoso,DC=com",
@@ -952,9 +952,9 @@
                                     }
                                 },
                                 {
-                                    "name": "StorageDeploymentDisabledAad",
+                                    "name": "StorageDeploymentDisabledEntraId1",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
+                                    "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')]",
                                     "options": {
                                         "text": "Granting admin consent to the storage account service principal (your-storage-account-name.file.core.windows.net) is a requirememt, the link in this box contains the steps to grant the consent.",
                                         "uri": "https://learn.microsoft.com/azure/storage/files/storage-files-identity-auth-azure-active-directory-enable?tabs=azure-portal#grant-admin-consent-to-the-new-service-principal",
@@ -1018,9 +1018,9 @@
                             ]
                         },
                         {
-                            "name": "StorageDeploymentDisabledAad",
+                            "name": "StorageDeploymentDisabledEntraId2",
                             "type": "Microsoft.Common.InfoBox",
-                            "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
+                            "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')]",
                             "options": {
                                 "text": "FSLogix storage for Microsoft Entra ID joined session hosts is currently only available for hybrid identities.",
                                 "uri": "https://learn.microsoft.com/azure/virtual-desktop/create-profile-container-azure-ad",
@@ -1038,9 +1038,9 @@
                         {
                             "name": "virtualNetworklInfoBox",
                             "type": "Microsoft.Common.InfoBox",
-                            "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                            "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
                             "options": {
-                                "text": "Azure Virtual Desktop LZA requires connectivity to identity services (ADDS, AADDS or AAD).",
+                                "text": "Azure Virtual Desktop LZA requires connectivity to identity services (ADDS, EntraDS or EntraID).",
                                 "uri": "https://docs.microsoft.com/azure/virtual-desktop/authentication",
                                 "style": "info"
                             }
@@ -1379,7 +1379,7 @@
                                 {
                                     "name": "virtualNetworkPeeringInfoBox1",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true),not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')))]",
+                                    "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true),not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')))]",
                                     "options": {
                                         "text": "vNet peering will be created to existing vNet hub with access to identity and DNS services .",
                                         "uri": "https://docs.microsoft.com/azure/architecture/example-scenario/wvd/windows-virtual-desktop?context=/azure/virtual-desktop/context/context",
@@ -1389,7 +1389,7 @@
                                 {
                                     "name": "hubVirtualNetworkPeeringInfoBox2",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD')]",
+                                    "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')]",
                                     "options": {
                                         "text": "vNet peering to identity services is not required when Microsoft Entra ID as identity service provider .",
                                         "uri": "https://learn.microsoft.com/azure/architecture/example-scenario/wvd/azure-virtual-desktop-azure-active-directory-join",
@@ -1407,7 +1407,7 @@
                                 {
                                     "name": "hubVirtualNetworkSub",
                                     "type": "Microsoft.Common.DropDown",
-                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
                                     "label": "Hub vNet Subscription",
                                     "toolTip": "",
                                     "multiselect": false,
@@ -1431,7 +1431,7 @@
                                 {
                                     "name": "existingHubVirtualNetwork",
                                     "type": "Microsoft.Common.DropDown",
-                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
                                     "label": "Hub vNet",
                                     "toolTip": "",
                                     "multiselect": false,
@@ -1447,7 +1447,7 @@
                                 {
                                     "name": "hubVirtualNetworkGateway",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'))]",
+                                    "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
                                     "label": "Gateway on hub",
                                     "defaultValue": false,
                                     "toolTip": "This information will be used to set remote gateway settings on vNet peering."
@@ -2089,7 +2089,7 @@
                             "name": "resourceTaggingParentCostInfo",
                             "type": "Microsoft.Common.InfoBox",
                             "options": {
-                                "text": "By default, the following tags will be created: <br/> - Parent resource cost management tag (cm-resource-parent): reports all resources cost to the host pool (ResourceID). <br/> - Environment (Environment): environment selected during deployment (Dev/Test/prod). <br/> - Service Workload (ServiceWorkload): defaults to Azure Virtual Desktop. <br/> - Creation time (CreationTimeUTC): deployment time in UTC. <br/> - Domain Name (DomainName): identity service domain name (applied only to compute and storage). <br/> - Identity service provider (IdentityServiceProvider): identity provider selected (ADDS/AADDS/AAD).",
+                                "text": "By default, the following tags will be created: <br/> - Parent resource cost management tag (cm-resource-parent): reports all resources cost to the host pool (ResourceID). <br/> - Environment (Environment): environment selected during deployment (Dev/Test/prod). <br/> - Service Workload (ServiceWorkload): defaults to Azure Virtual Desktop. <br/> - Creation time (CreationTimeUTC): deployment time in UTC. <br/> - Domain Name (DomainName): identity service domain name (applied only to compute and storage). <br/> - Identity service provider (IdentityServiceProvider): identity provider selected (ADDS/EntraDS/EntraID).",
                                 "uri": "https://learn.microsoft.com/azure/virtual-desktop/tag-virtual-desktop-resources#use-the-cm-resource-parent-tag-to-automatically-group-costs-by-host-pool",
                                 "style": "Info"
                             }
@@ -2322,11 +2322,11 @@
                 "hostPoolMaxSessions": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneHostPoolSettings.maxSessions, 1)]",
                 "avdPersonalAssignType": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolSettings.assignmentType, 'Automatic')]",
                 "avdIdentityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
-                "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
-                "identityDomainName": "[if(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AADDS')), steps('identity').identityDomainInformation.identityDomainName, 'none')]",
-                "avdOuPath": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
-                "avdDomainJoinUserName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserName)]",
-                "avdDomainJoinUserPassword": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'AAD'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserPassword)]",
+                "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
+                "identityDomainName": "[if(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS')), steps('identity').identityDomainInformation.identityDomainName, 'none')]",
+                "avdOuPath": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
+                "avdDomainJoinUserName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserName)]",
+                "avdDomainJoinUserPassword": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserPassword)]",
                 "avdVmLocalUserName": "[steps('identity').identityLocalCredentials.identityLocalUserName]",
                 "avdVmLocalUserPassword": "[steps('identity').identityLocalCredentials.identityLocalUserPassword.password]",
                 "createAvdVnet": "[steps('network').createAvdVirtualNetwork]",
