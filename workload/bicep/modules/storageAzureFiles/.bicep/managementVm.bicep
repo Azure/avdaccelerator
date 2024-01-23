@@ -126,7 +126,6 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
         osDisk: {
             createOption: 'fromImage'
             deleteOption: 'Delete'
-            diskSizeGB: 128
             managedDisk: varManagedDisk
         }
         adminUsername: vmLocalUserName
