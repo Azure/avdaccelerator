@@ -229,9 +229,6 @@ param diskZeroTrust bool = false
 @sys.description('Session host VM size. (Default: Standard_D4ads_v5)')
 param avdSessionHostsSize string = 'Standard_D4ads_v5'
 
-@sys.description('Optional. Session host custom OS disk size, by default uses image disk size. (Default: )')
-param osDiskSize string = ''
-
 @sys.description('OS disk type for session host. (Default: Premium_LRS)')
 param avdSessionHostDiskType string = 'Premium_LRS'
 
@@ -1218,7 +1215,6 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         location: avdSessionHostLocation
         namePrefix: varSessionHostNamePrefix
         vmSize: avdSessionHostsSize
-        osDiskSize: osDiskSize
         enableAcceleratedNetworking: enableAcceleratedNetworking
         securityType: securityType == 'Standard' ? '' : securityType
         secureBootEnabled: secureBootEnabled

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "6923927714580933274"
+      "templateHash": "10484050774671966838"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -467,13 +467,6 @@
       "defaultValue": "Standard_D4ads_v5",
       "metadata": {
         "description": "Session host VM size. (Default: Standard_D4ads_v5)"
-      }
-    },
-    "osDiskSize": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Session host custom OS disk size, by default uses image disk size. (Default: )"
       }
     },
     "avdSessionHostDiskType": {
@@ -26831,7 +26824,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "14228742322757464644"
+              "templateHash": "10300973853316233310"
             }
           },
           "parameters": {
@@ -27048,8 +27041,7 @@
                     "value": {
                       "createOption": "fromImage",
                       "deleteOption": "Delete",
-                      "managedDisk": "[variables('varManagedDisk')]",
-                      "diskSizeGB": ""
+                      "managedDisk": "[variables('varManagedDisk')]"
                     }
                   },
                   "adminUsername": {
@@ -27112,7 +27104,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.24.24.22086",
-                      "templateHash": "2796951454152271299"
+                      "templateHash": "15547223459257060092"
                     }
                   },
                   "parameters": {
@@ -27795,7 +27787,7 @@
                             "name": "[format('osdisk-01-{0}', parameters('name'))]",
                             "createOption": "[if(contains(parameters('osDisk'), 'createOption'), parameters('osDisk').createOption, 'FromImage')]",
                             "deleteOption": "[if(contains(parameters('osDisk'), 'deleteOption'), parameters('osDisk').deleteOption, 'Delete')]",
-                            "diskSizeGB": "[if(not(empty(parameters('osDisk').diskSizeGB)), parameters('osDisk').diskSizeGB, null())]",
+                            "diskSizeGB": "[if(contains(parameters('osDisk'), 'diskSizeGB'), parameters('osDisk').diskSizeGB, null())]",
                             "caching": "[if(contains(parameters('osDisk'), 'caching'), parameters('osDisk').caching, 'ReadOnly')]",
                             "managedDisk": {
                               "storageAccountType": "[parameters('osDisk').managedDisk.storageAccountType]",
@@ -40290,9 +40282,6 @@
           "vmSize": {
             "value": "[parameters('avdSessionHostsSize')]"
           },
-          "osDiskSize": {
-            "value": "[parameters('osDiskSize')]"
-          },
           "enableAcceleratedNetworking": {
             "value": "[parameters('enableAcceleratedNetworking')]"
           },
@@ -40351,7 +40340,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "7065624616706323250"
+              "templateHash": "6677064023154297046"
             }
           },
           "parameters": {
@@ -40461,12 +40450,6 @@
               "type": "string",
               "metadata": {
                 "description": "Session host VM size."
-              }
-            },
-            "osDiskSize": {
-              "type": "string",
-              "metadata": {
-                "description": "Session host custom OS disk size. Default automatically uses image disk size."
               }
             },
             "enableAcceleratedNetworking": {
@@ -40683,7 +40666,6 @@
                     "value": {
                       "createOption": "fromImage",
                       "deleteOption": "Delete",
-                      "diskSizeGB": "[parameters('osDiskSize')]",
                       "managedDisk": "[variables('varManagedDisk')]"
                     }
                   },
@@ -40747,7 +40729,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.24.24.22086",
-                      "templateHash": "2796951454152271299"
+                      "templateHash": "15547223459257060092"
                     }
                   },
                   "parameters": {
@@ -41430,7 +41412,7 @@
                             "name": "[format('osdisk-01-{0}', parameters('name'))]",
                             "createOption": "[if(contains(parameters('osDisk'), 'createOption'), parameters('osDisk').createOption, 'FromImage')]",
                             "deleteOption": "[if(contains(parameters('osDisk'), 'deleteOption'), parameters('osDisk').deleteOption, 'Delete')]",
-                            "diskSizeGB": "[if(not(empty(parameters('osDisk').diskSizeGB)), parameters('osDisk').diskSizeGB, null())]",
+                            "diskSizeGB": "[if(contains(parameters('osDisk'), 'diskSizeGB'), parameters('osDisk').diskSizeGB, null())]",
                             "caching": "[if(contains(parameters('osDisk'), 'caching'), parameters('osDisk').caching, 'ReadOnly')]",
                             "managedDisk": {
                               "storageAccountType": "[parameters('osDisk').managedDisk.storageAccountType]",
