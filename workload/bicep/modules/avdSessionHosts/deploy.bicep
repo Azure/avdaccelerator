@@ -58,6 +58,9 @@ param encryptionAtHost bool
 @sys.description('Session host VM size.')
 param vmSize string
 
+@sys.description('Session host custom OS disk size. Default automatically uses image disk size.')
+param osDiskSize string
+
 @sys.description('Enables accelerated Networking on the session hosts.')
 param enableAcceleratedNetworking bool
 
@@ -185,7 +188,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
         osDisk: {
             createOption: 'fromImage'
             deleteOption: 'Delete'
-            diskSizeGB: 128
+            diskSizeGB: osDiskSize
             managedDisk: varManagedDisk
         }
         adminUsername: vmLocalUserName
