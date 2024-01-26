@@ -127,7 +127,6 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
             createOption: 'fromImage'
             deleteOption: 'Delete'
             managedDisk: varManagedDisk
-            diskSizeGB: ''
         }
         adminUsername: vmLocalUserName
         adminPassword: avdWrklKeyVaultget.getSecret('vmLocalUserPassword')

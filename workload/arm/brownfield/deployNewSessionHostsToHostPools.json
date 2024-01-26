@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "14901142605443866038"
+      "templateHash": "4242105607175068069"
     }
   },
   "parameters": {
@@ -736,6 +736,18 @@
         "sku": "win11-22h2-avd-m365",
         "version": "latest"
       },
+      "win11_23h2": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "Windows-11",
+        "sku": "win11-23h2-avd",
+        "version": "latest"
+      },
+      "win11_23h2_office": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "office-365",
+        "sku": "win11-23h2-avd-m365",
+        "version": "latest"
+      },
       "winServer_2022_Datacenter": {
         "publisher": "MicrosoftWindowsServer",
         "offer": "WindowsServer",
@@ -850,7 +862,6 @@
             "value": {
               "createOption": "fromImage",
               "deleteOption": "Delete",
-              "diskSizeGB": 128,
               "managedDisk": "[variables('varManagedDisk')]"
             }
           },
@@ -905,7 +916,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "16312835383302959746"
+              "templateHash": "15547223459257060092"
             }
           },
           "parameters": {
@@ -1588,7 +1599,7 @@
                     "name": "[format('osdisk-01-{0}', parameters('name'))]",
                     "createOption": "[if(contains(parameters('osDisk'), 'createOption'), parameters('osDisk').createOption, 'FromImage')]",
                     "deleteOption": "[if(contains(parameters('osDisk'), 'deleteOption'), parameters('osDisk').deleteOption, 'Delete')]",
-                    "diskSizeGB": "[parameters('osDisk').diskSizeGB]",
+                    "diskSizeGB": "[if(contains(parameters('osDisk'), 'diskSizeGB'), parameters('osDisk').diskSizeGB, null())]",
                     "caching": "[if(contains(parameters('osDisk'), 'caching'), parameters('osDisk').caching, 'ReadOnly')]",
                     "managedDisk": {
                       "storageAccountType": "[parameters('osDisk').managedDisk.storageAccountType]",
