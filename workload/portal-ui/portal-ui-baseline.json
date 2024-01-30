@@ -2353,7 +2353,7 @@
                 
                 
                 
-                "avdDeployScalingPlan": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), (not(contains(steps('basics').resourceScope.location.name, 'china'), steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, false)), false)]",
+                "avdDeployScalingPlan": "[if(and(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), (not(contains(steps('basics').resourceScope.location.name, 'china')), steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, false)]",
 
 
 
