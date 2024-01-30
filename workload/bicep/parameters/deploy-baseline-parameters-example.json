@@ -90,13 +90,13 @@
             "value": ""
         },
         "avdVnetworkAddressPrefixes": {
-            "value": "10.10.0.0/23"
+            "value": "10.5.0.0/23"
         },
         "vNetworkAvdSubnetAddressPrefix": {
-            "value": "10.10.0.0/24"
+            "value": "10.5.0.0/24"
         },
         "vNetworkPrivateEndpointSubnetAddressPrefix": {
-            "value": "10.10.1.0/27"
+            "value": "10.5.1.0/27"
         },
         "customDnsIps": {
             "value": ""
