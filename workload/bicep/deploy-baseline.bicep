@@ -229,11 +229,11 @@ param diskZeroTrust bool = false
 @sys.description('Session host VM size. (Default: Standard_D4ads_v5)')
 param avdSessionHostsSize string = 'Standard_D4ads_v5'
 
-@sys.description('Optional. Session host custom OS disk size, by default uses image disk size. (Default: )')
-param osDiskSize string = ''
-
 @sys.description('OS disk type for session host. (Default: Premium_LRS)')
 param avdSessionHostDiskType string = 'Premium_LRS'
+
+@sys.description('Optional. Custom OS Disk Size.')
+param customOsDiskSizeGb string = ''
 
 @sys.description('''Enables accelerated Networking on the session hosts.
 If using a Azure Compute Gallery Image, the Image Definition must have been configured with
@@ -1215,10 +1215,10 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
         sessionHostOuPath: avdOuPath
         diskType: avdSessionHostDiskType
+        customOsDiskSizeGB: customOsDiskSizeGb
         location: avdSessionHostLocation
         namePrefix: varSessionHostNamePrefix
         vmSize: avdSessionHostsSize
-        osDiskSize: osDiskSize
         enableAcceleratedNetworking: enableAcceleratedNetworking
         securityType: securityType == 'Standard' ? '' : securityType
         secureBootEnabled: secureBootEnabled
