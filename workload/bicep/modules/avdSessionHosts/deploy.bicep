@@ -58,9 +58,6 @@ param encryptionAtHost bool
 @sys.description('Session host VM size.')
 param vmSize string
 
-@sys.description('Session host custom OS disk size. Default automatically uses image disk size.')
-param osDiskSize string
-
 @sys.description('Enables accelerated Networking on the session hosts.')
 param enableAcceleratedNetworking bool
 
@@ -75,6 +72,9 @@ param vTpmEnabled bool
 
 @sys.description('OS disk type for session host.')
 param diskType string
+
+@sys.description('Optional. Define custom OS disk size if larger than image size.')
+param customOsDiskSizeGB string = ''
 
 @sys.description('Market Place OS image.')
 param marketPlaceGalleryWindows object
@@ -151,6 +151,20 @@ var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
     }
     storageAccountType: diskType
 }
+
+var varOsDiskProperties = {
+    createOption: 'fromImage'
+    deleteOption: 'Delete'
+    managedDisk: varManagedDisk
+}
+
+var varCustomOsDiskProperties = {
+    createOption: 'fromImage'
+    deleteOption: 'Delete'
+    managedDisk: varManagedDisk
+    diskSizeGB: !empty(customOsDiskSizeGB ) ? customOsDiskSizeGB : null
+}
+
 // =========== //
 // Deployments //
 // =========== //
@@ -185,12 +199,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
         secureBootEnabled: secureBootEnabled
         vTpmEnabled: vTpmEnabled
         imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinitionId}\'}') : marketPlaceGalleryWindows
-        osDisk: {
-            createOption: 'fromImage'
-            deleteOption: 'Delete'
-            diskSizeGB: osDiskSize
-            managedDisk: varManagedDisk
-        }
+        osDisk: !empty(customOsDiskSizeGB ) ? varCustomOsDiskProperties : varOsDiskProperties
         adminUsername: vmLocalUserName
         adminPassword: keyVault.getSecret('vmLocalUserPassword')
         nicConfigurations: [
