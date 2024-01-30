@@ -446,7 +446,7 @@
                                 {
                                     "name": "scalingPlan",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "visible": "[equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
+                                    "visible": "[and(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), not(contains(steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion, 'china'))]",
                                     "label": "Scaling plan",
                                     "defaultValue": true,
                                     "toolTip": "Will automatically manage session host power state based on usage and schedules (weekdays and weekend schedules will be created)."
@@ -500,7 +500,7 @@
                                 {
                                     "name": "scalingPlanInfo2",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan]",
+                                    "visible": "[contains(steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion, 'china')]",
                                     "options": {
                                         "text": "Scaling Plan is NOT SUPPORTED in Azure China Cloud",
                                         "uri": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/?products=all&regions=china-non-regional%2Cchina-east%2Cchina-east-2%2Cchina-east-3%2Cchina-north%2Cchina-north-2%2Cchina-north-3&rar=true",
