@@ -73,10 +73,7 @@ param vTpmEnabled bool
 @sys.description('OS disk type for session host.')
 param diskType string
 
-// @sys.description('Optional. Use custom OS Disk Size. Default is false.')
-// param useCustomOsDiskSize bool = false
-
-@sys.description('Optional. Define custom OS disk size if using useCustomOsDiskSize parameter.')
+@sys.description('Optional. Define custom OS disk size if larger than image size.')
 param customOsDiskSizeGB string = ''
 
 @sys.description('Market Place OS image.')

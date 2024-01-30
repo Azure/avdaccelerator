@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "13359110071746626959"
+      "templateHash": "60091488083705092"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -478,9 +478,9 @@
     },
     "customOsDiskSizeGb": {
       "type": "string",
-      "defaultValue": "128",
+      "defaultValue": "",
       "metadata": {
-        "description": "Optional. Custom OS Disk Size. Default is 128 GB."
+        "description": "Optional. Custom OS Disk Size."
       }
     },
     "enableAcceleratedNetworking": {
@@ -40350,7 +40350,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "17339469244643293043"
+              "templateHash": "16697429411268505163"
             }
           },
           "parameters": {
@@ -40496,7 +40496,7 @@
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "Optional. Define custom OS disk size if using useCustomOsDiskSize parameter."
+                "description": "Optional. Define custom OS disk size if larger than image size."
               }
             },
             "marketPlaceGalleryWindows": {

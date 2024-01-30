@@ -232,8 +232,8 @@ param avdSessionHostsSize string = 'Standard_D4ads_v5'
 @sys.description('OS disk type for session host. (Default: Premium_LRS)')
 param avdSessionHostDiskType string = 'Premium_LRS'
 
-@sys.description('Optional. Custom OS Disk Size. Default is 128 GB.')
-param customOsDiskSizeGb string = '128'
+@sys.description('Optional. Custom OS Disk Size.')
+param customOsDiskSizeGb string = ''
 
 @sys.description('''Enables accelerated Networking on the session hosts.
 If using a Azure Compute Gallery Image, the Image Definition must have been configured with
@@ -1215,7 +1215,6 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
         sessionHostOuPath: avdOuPath
         diskType: avdSessionHostDiskType
-        //useCustomOsDiskSize: useCustomOsDiskSize
         customOsDiskSizeGB: customOsDiskSizeGb
         location: avdSessionHostLocation
         namePrefix: varSessionHostNamePrefix
