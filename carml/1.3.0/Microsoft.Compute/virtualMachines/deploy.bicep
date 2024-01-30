@@ -439,8 +439,8 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
         name: 'osdisk-01-${name}'
         createOption: contains(osDisk, 'createOption') ? osDisk.createOption : 'FromImage'
         deleteOption: contains(osDisk, 'deleteOption') ? osDisk.deleteOption : 'Delete'
-        diskSizeGB: !empty(osDisk.diskSizeGB) ? osDisk.diskSizeGB : null
         caching: contains(osDisk, 'caching') ? osDisk.caching : 'ReadOnly'
+        diskSizeGB: contains(osDisk, 'diskSizeGB') ? osDisk.diskSizeGB : null
         managedDisk: {
           storageAccountType: osDisk.managedDisk.storageAccountType
           diskEncryptionSet: contains(osDisk.managedDisk, 'diskEncryptionSet') ? {
