@@ -232,9 +232,6 @@ param avdSessionHostsSize string = 'Standard_D4ads_v5'
 @sys.description('OS disk type for session host. (Default: Premium_LRS)')
 param avdSessionHostDiskType string = 'Premium_LRS'
 
-// @sys.description('Optional. Use Custom OS Disk Size.')
-// param useCustomOsDiskSize bool = false
-
 @sys.description('Optional. Custom OS Disk Size. Default is 128 GB.')
 param customOsDiskSizeGb string = '128'
 
