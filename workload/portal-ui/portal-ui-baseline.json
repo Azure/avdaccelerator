@@ -964,6 +964,7 @@
                                 {
                                     "name": "msixDeployment",
                                     "type": "Microsoft.Common.CheckBox",
+                                    "visible": "[not(contains(steps('basics').resourceScope.location.name, 'china'))]",
                                     "label": "Create MSIX App Attach storage",
                                     "defaultValue": false,
                                     "toolTip": "Deploys MSIX App Attach containers and permissions setup."
@@ -971,7 +972,7 @@
                                 {
                                     "name": "msixStorageAccountSku",
                                     "type": "Microsoft.Common.DropDown",
-                                    "visible": "[steps('storage').storageMsix.msixDeployment]",
+                                    "visible": "[and(equals(steps('storage').storageMsix.msixDeployment, true), not(contains(steps('basics').resourceScope.location.name, 'china')))]",
                                     "label": "File share performance",
                                     "filter": true,
                                     "defaultValue": "Premium",
@@ -995,7 +996,7 @@
                                 {
                                     "name": "sessionHostsMsixFileShareQuota",
                                     "type": "Microsoft.Common.Slider",
-                                    "visible": "[steps('storage').storageMsix.msixDeployment]",
+                                    "visible": "[and(equals(steps('storage').storageMsix.msixDeployment, true), not(contains(steps('basics').resourceScope.location.name, 'china')))]",
                                     "label": "File share size",
                                     "subLabel": "x 100GB",
                                     "toolTip": "Size of Azure File share quota, the maximum sizes are 5TB for standard SKU and 100TB for premium SKU",
@@ -1010,7 +1011,7 @@
                                 {
                                     "name": "MsixStorageInfo",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[steps('storage').storageMsix.msixDeployment]",
+                                    "visible": "[contains(steps('basics').resourceScope.location.name, 'china')]",
                                     "options": {
                                         "text": "Msix App Attach is currently NOT SUPPORTED in Azure China Cloud",
                                         "style": "Warning"
@@ -2349,16 +2350,7 @@
                 "existingVnetPrivateEndpointSubnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, false), steps('network').virtualNetworkPrivateEndpointSubnetSelectorName, 'no')]",
                 "avdDeploySessionHosts": "[steps('sessionHosts').deploySessionHosts]",
                 "avdStartVmOnConnect": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, false)]",
-                
-                
-                
-                
-                "avdDeployScalingPlan": "[if(and(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), (not(contains(steps('basics').resourceScope.location.name, 'china')), steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, false)]",
-
-
-
-
-
+                "avdDeployScalingPlan": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), if(contains(steps('basics').resourceScope.location.name, 'china'), false, steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan), false)]",
                 "avdEnterpriseAppObjectId": "[first(map(steps('managementPlane').managementPlaneHostPoolScaling.avdEnterpriseApplication.value, (item) => item.id))]",
                 "availabilityZonesCompute": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings]",
                 "zoneRedundantStorage": "[steps('storage').storageGeneralSettings.storageGeneralSettingsZoneRedundancy]",
@@ -2379,7 +2371,7 @@
                 "createAvdFslogixDeployment": "[steps('storage').storageFslogix.fslogixDeployment]",
                 "fslogixStoragePerformance": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.fslogixStorageAccountSku, 'Premium')]",
                 "fslogixFileShareQuotaSize": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.sessionHostsFslogixFileShareQuota, 1 )]",
-                "createMsixDeployment": "[steps('storage').storageMsix.msixDeployment]",
+                "createMsixDeployment": "[if(equals(steps('storage').storageMsix.msixDeployment, true), if(contains(steps('basics').resourceScope.location.name, 'china'), false, steps('storage').storageMsix.msixDeployment), false)]",
                 "msixStoragePerformance": "[if(equals(steps('storage').storageMsix.msixDeployment, true), steps('storage').storageMsix.msixStorageAccountSku, 'Premium')]",
                 "msixFileShareQuotaSize": "[if(equals(steps('storage').storageMsix.msixDeployment, true), steps('storage').storageMsix.sessionHostsMsixFileShareQuota, 1 )]",
                 "storageOuPath": "[steps('storage').storageGeneralSettings.identityDomainOuPathStorageExisting]",
