@@ -142,11 +142,9 @@ module ztDiskEncryptionSet '../../../../../carml/1.3.0/Microsoft.Compute/diskEnc
         location: location
         name: diskEncryptionSetName
         rotationToLatestKeyVersionEnabled: true
-        systemAssignedIdentity: false
+        systemAssignedIdentity: true
         tags: tags
-        userAssignedIdentities: {
-            '${ztManagedIdentityResourceId}': {}
-        }
+        userAssignedIdentities: {}
     }
 }
 
