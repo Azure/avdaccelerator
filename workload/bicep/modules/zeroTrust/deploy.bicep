@@ -185,23 +185,23 @@ module ztRoleAssignmentServObj '../../../../carml/1.3.0/Microsoft.Authorization/
 }]
 
 // User Assigned Identity for Zero Trust.
-module ztManagedIdentity '../../../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
-    scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
-    name: 'ZT-Managed-ID-${time}'
-    params: {
-        location: location
-        name: managedIdentityName
-        tags: tags
-    }
-    dependsOn: []
-}
+//module ztManagedIdentity '../../../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
+//    scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+//    name: 'ZT-Managed-ID-${time}'
+//    params: {
+//        location: location
+//        name: managedIdentityName
+//        tags: tags
+//    }
+//    dependsOn: []
+//}
 
 // Role Assignment for Zero Trust.
 module ztRoleAssignment '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (diskZeroTrust) {
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
     name: 'ZT-RoleAssign-${time}'
     params: {
-        principalId: diskZeroTrust ? ztManagedIdentity.outputs.principalId : ''
+        principalId: diskZeroTrust ? ztKeyVault.outputs.ztDiskEncryptionSetResourceId : ''
         roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
         principalType: 'ServicePrincipal'
     }
@@ -224,7 +224,7 @@ module ztKeyVault './.bicep/zeroTrustKeyVault.bicep' = if (diskZeroTrust) {
         diskEncryptionKeyExpirationInDays: diskEncryptionKeyExpirationInDays
         diskEncryptionKeyExpirationInEpoch: diskEncryptionKeyExpirationInEpoch
         diskEncryptionSetName: diskEncryptionSetName
-        ztManagedIdentityResourceId: diskZeroTrust ? ztManagedIdentity.outputs.resourceId : ''
+//        ztManagedIdentityResourceId: diskZeroTrust ? ztManagedIdentity.outputs.resourceId : ''
         tags: union(tags, kvTags)
     }
 }
