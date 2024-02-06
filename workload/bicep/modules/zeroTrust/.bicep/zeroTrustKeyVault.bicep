@@ -144,7 +144,7 @@ module ztDiskEncryptionSet '../../../../../carml/1.3.0/Microsoft.Compute/diskEnc
         rotationToLatestKeyVersionEnabled: true
         systemAssignedIdentity: true
         tags: tags
-        userAssignedIdentities: {}
+    //    userAssignedIdentities: {}
     }
 }
 
@@ -153,3 +153,4 @@ module ztDiskEncryptionSet '../../../../../carml/1.3.0/Microsoft.Compute/diskEnc
 // =========== //
 
 output ztDiskEncryptionSetResourceId string = ztDiskEncryptionSet.outputs.resourceId
+output ztDiskEncryptionSetPrincipalId string = ztDiskEncryptionSet.outputs.principalId
