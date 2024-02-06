@@ -201,7 +201,7 @@ module ztRoleAssignment '../../../../carml/1.3.0/Microsoft.Authorization/roleAss
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
     name: 'ZT-RoleAssign-${time}'
     params: {
-        principalId: diskZeroTrust ? ztKeyVault.outputs.ztDiskEncryptionSetResourceId : ''
+        principalId: diskZeroTrust ? ztKeyVault.outputs.ztDiskEncryptionSetPrincipalId : ''
         roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
         principalType: 'ServicePrincipal'
     }
