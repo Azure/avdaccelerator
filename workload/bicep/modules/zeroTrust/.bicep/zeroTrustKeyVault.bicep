@@ -37,8 +37,8 @@ param diskEncryptionKeyExpirationInEpoch int
 @sys.description('Encryption set name')
 param diskEncryptionSetName string
 
-@sys.description('Zero trust managed identity')
-param ztManagedIdentityResourceId string
+//@sys.description('Zero trust managed identity')
+//param ztManagedIdentityResourceId string
 
 @sys.description('Tags to be applied to resources')
 param tags object
