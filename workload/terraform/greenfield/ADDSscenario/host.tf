@@ -105,7 +105,7 @@ resource "azurerm_virtual_machine_extension" "domain_join" {
   settings = <<SETTINGS
     {
       "Name": "${var.domain_name}",
-      "OUPath": "${var.ou_path}",
+      "OUPath": "${var.ou_for_session_hosts}",
       "User": "${var.domain_user}@${var.domain_name}",
       "Restart": "true",
       "Options": "3"
@@ -136,7 +136,7 @@ resource "azurerm_virtual_machine_extension" "vmext_dsc" {
 
   settings = <<-SETTINGS
     {
-      "modulesUrl": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration_09-08-2022.zip",
+      "modulesUrl": "https://raw.githubusercontent.com/Azure/RDS-Templates/master/ARM-wvd-templates/DSC/Configuration.zip",
       "configurationFunction": "Configuration.ps1\\AddSessionHost",
       "properties": {
         "HostPoolName":"${azurerm_virtual_desktop_host_pool.hostpool.name}"

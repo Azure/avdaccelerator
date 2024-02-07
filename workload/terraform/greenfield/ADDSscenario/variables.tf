@@ -189,8 +189,20 @@ variable "vm_size" {
   description = "Size of the machine to deploy"
 }
 
-variable "ou_path" {
+
+variable "ou_for_session_hosts" {
   description = "Distinguished name of the organizational unit for the session host"
+}
+
+variable "ou_for_fslogix_storage" {
+  description = "Distinguished name of the organizational unit for the FSLogix"
+}
+
+#OU name for FSLogix
+variable "ou_name_for_fslogix_storage" {
+  type        = string
+  description = "Name of the OU for FSLogix"
+  default = "Computers"
 }
 
 variable "local_admin_username" {
@@ -284,10 +296,4 @@ variable "fw_policy" {
   description = "Name of the firewall policy"
 }
 
-#OU name for FSLogix
-variable "ou_name_for_fslogix" {
-  type        = string
-  description = "Name of the OU for FSLogix"
-  default = "Computers"
-  
-}
+

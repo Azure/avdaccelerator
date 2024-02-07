@@ -39,8 +39,9 @@ hub_subscription_id       = "#######-####-####-acbc-##########"   # subscription
 identity_subscription_id  = "#######-####-####-acbc-##########"   # subscription where identity resources are deployed (If you are using a single subscription for hub and spoke, use the same subscription id as spoke_subscription_id)
 avdshared_subscription_id = "#######-####-####-acbc-##########"   # optional subscription where shared resources are deployed (If you are using a single subscription for hub and spoke, use the same subscription id as spoke_subscription_id)
 
-use_gallery_image         = false                                 # set to true if you want to use a gallery image for the management VM
-ou_name_for_fslogix       = "AvdComputers"                        # optional if you want to use a different OU for FSLogix containers, by default is 'Computers'
+use_gallery_image = false                                           # set to true if you want to use a gallery image for the management VM
+ou_for_fslogix_storage = "OU=AvdStorage,DC=avd,DC=local"            # If you want to use a different OU for FSLogix storage     
+ou_name_for_fslogix_storage = "AvdStorage"                          # Name of the OU for FSLogix storage
 
 
 ############## Do not modify below this line unless you want to change naming convention#####################

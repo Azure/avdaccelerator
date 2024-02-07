@@ -130,6 +130,7 @@ resource "azurerm_virtual_machine_extension" "dscStorageScript_urlfile" {
 }
 
 # Resource block to run Custom Script Extension on the Management VM for FSLogix configuration if the local file is provided
+#this is the deafult option if url_powershell_script variable is not provided
 resource "azurerm_virtual_machine_extension" "dscStorageScript_localfile" {
   count                = var.url_powershell_script == "" && var.localpath_powershell_script != "" ? 1 : 0
   name                 = "${var.prefix}-AzureFilesDomainJoin-Local"

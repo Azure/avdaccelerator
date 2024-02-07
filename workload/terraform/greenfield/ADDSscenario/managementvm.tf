@@ -44,8 +44,8 @@ module "management_vm" {
   dsc_storage_path            = "https://github.com/sihbher/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip"
 
   security_principal_name = var.aad_group_name
-  ou_name                 = var.ou_name_for_fslogix
-  custom_ou_path          = var.ou_path
+  ou_name                 = var.ou_name_for_fslogix_storage
+  custom_ou_path          = var.ou_for_fslogix_storage
 
 
   vm_size = "Standard_B2ms"
