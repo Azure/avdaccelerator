@@ -1318,7 +1318,7 @@
           "targetResourceType": "Microsoft.Storage/storageAccounts"
         },
         {
-          "name": "[format('{0}-StorAzFilesAvailBlw-99-Prcnt', parameters('AlertNamePrefix'))]",
+          "name": "[format('{0}-StorAzFilesAvailBlw-99.99-Prcnt', parameters('AlertNamePrefix'))]",
           "displayName": "[format('{0}-Storage-Azure Files Availability', parameters('AlertNamePrefix'))]",
           "description": "[format('{0}\nThis could indicate storage is unavailable for user Profiles or Apps using MSIX App Attach.', variables('AlertDescriptionHeader'))]",
           "severity": 1,
@@ -1327,7 +1327,7 @@
           "criteria": {
             "allOf": [
               {
-                "threshold": 99,
+                "threshold": 99.99,
                 "name": "Metric1",
                 "metricName": "Availability",
                 "operator": "LessThanOrEqual",
