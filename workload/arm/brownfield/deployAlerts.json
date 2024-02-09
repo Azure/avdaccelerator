@@ -968,7 +968,7 @@
         "criteria": {
           "allOf": [
             {
-              "query": "// HealthChecks of SessionHost \n// Renders a summary of SessionHost health status. \nlet MapToDesc = (idx: long) {\n    case(idx == 0, \"DomainJoin\",\n    idx == 1, \"DomainTrust\",\n    idx == 2, \"FSLogix\",\n    idx == 3, \"SxSStack\",\n    idx == 4, \"URLCheck\",\n    idx == 5, \"GenevaAgent\",\n    idx == 6, \"DomainReachable\",\n    idx == 7, \"WebRTCRedirector\",\n    idx == 8, \"SxSStackEncryption\",\n    idx == 9, \"IMDSReachable\",\n    idx == 10, \"MSIXPackageStaging\",\n    \"InvalidIndex\")\n};\nWVDAgentHealthStatus\n| where TimeGenerated > ago(10m)\n| where Status != 'Available'\n| where AllowNewSessions = True\n| extend CheckFailed = parse_json(SessionHostHealthCheckResult)\n| mv-expand CheckFailed\n| where CheckFailed.AdditionalFailureDetails.ErrorCode != 0\n| extend HealthCheckName = tolong(CheckFailed.HealthCheckName)\n| extend HealthCheckResult = tolong(CheckFailed.HealthCheckResult)\n| extend HealthCheckDesc = MapToDesc(HealthCheckName)\n| where HealthCheckDesc != 'InvalidIndex'\n| where _ResourceId contains \"xHostPoolNamex\"\n| parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" HostPoolResourceGroup \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\n| parse SessionHostResourceId with \"/subscriptions/\" HostSubscription \"/resourceGroups/\" SessionHostRG \" /providers/Microsoft.Compute/virtualMachines/\" SessionHostName\n",
+              "query": "// HealthChecks of SessionHost \n// Renders a summary of SessionHost health status. \nlet MapToDesc = (idx: long) {\n    case(idx == 0, \"DomainJoin\",\n    idx == 1, \"DomainTrust\",\n    idx == 2, \"FSLogix\",\n    idx == 3, \"SxSStack\",\n    idx == 4, \"URLCheck\",\n    idx == 5, \"GenevaAgent\",\n    idx == 6, \"DomainReachable\",\n    idx == 7, \"WebRTCRedirector\",\n    idx == 8, \"SxSStackEncryption\",\n    idx == 9, \"IMDSReachable\",\n    idx == 10, \"MSIXPackageStaging\",\n    \"InvalidIndex\")\n};\nWVDAgentHealthStatus\n| where TimeGenerated > ago(10m)\n| where Status != 'Available'\n| where AllowNewSessions = True\n| extend CheckFailed = parse_json(SessionHostHealthCheckResult)\n| mv-expand CheckFailed\n| where CheckFailed.AdditionalFailureDetails.ErrorCode != 0\n| extend HealthCheckName = tolong(CheckFailed.HealthCheckName)\n| extend HealthCheckResult = tolong(CheckFailed.HealthCheckResult)\n| extend HealthCheckDesc = MapToDesc(HealthCheckName)\n| where HealthCheckDesc != 'InvalidIndex'\n| where _ResourceId contains \"xHostPoolNamex\"\n| parse _ResourceId with \"/subscriptions/\" subscription \"/resourcegroups/\" HostPoolResourceGroup \"/providers/microsoft.desktopvirtualization/hostpools/\" HostPool\n| parse SessionHostResourceId with \"/subscriptions/\" HostSubscription \"/resourceGroups/\" SessionHostRG \"/providers/Microsoft.Compute/virtualMachines/\" SessionHostName\n",
               "timeAggregation": "Count",
               "dimensions": [
                 {
@@ -1318,7 +1318,7 @@
           "targetResourceType": "Microsoft.Storage/storageAccounts"
         },
         {
-          "name": "[format('{0}-StorAzFilesAvailBlw-99-Prcnt', parameters('AlertNamePrefix'))]",
+          "name": "[format('{0}-StorAzFilesAvailBlw-99.99-Prcnt', parameters('AlertNamePrefix'))]",
           "displayName": "[format('{0}-Storage-Azure Files Availability', parameters('AlertNamePrefix'))]",
           "description": "[format('{0}\nThis could indicate storage is unavailable for user Profiles or Apps using MSIX App Attach.', variables('AlertDescriptionHeader'))]",
           "severity": 1,
@@ -1327,7 +1327,7 @@
           "criteria": {
             "allOf": [
               {
-                "threshold": 99,
+                "threshold": 99.99,
                 "name": "Metric1",
                 "metricName": "Availability",
                 "operator": "LessThanOrEqual",
