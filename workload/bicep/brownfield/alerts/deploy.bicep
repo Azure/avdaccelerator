@@ -1557,7 +1557,7 @@ var MetricAlerts = {
       targetResourceType: 'Microsoft.Storage/storageAccounts'
     }
     {
-      name: '${AlertNamePrefix}-StorAzFilesAvailBlw-99-Prcnt'
+      name: '${AlertNamePrefix}-StorAzFilesAvailBlw-99.99-Prcnt'
       displayName: '${AlertNamePrefix}-Storage-Azure Files Availability'
       description: '${AlertDescriptionHeader}\nThis could indicate storage is unavailable for user Profiles or Apps using MSIX App Attach.'
       severity: 1
@@ -1566,7 +1566,7 @@ var MetricAlerts = {
       criteria: {
         allOf: [
           {
-            threshold: 99
+            threshold: 99.99
             name: 'Metric1'
             metricName: 'Availability'
             operator: 'LessThanOrEqual'
