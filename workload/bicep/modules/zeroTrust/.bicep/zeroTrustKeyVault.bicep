@@ -137,6 +137,7 @@ module ztDiskEncryptionSet '../../../../../carml/1.3.0/Microsoft.Compute/diskEnc
     name: 'ZT-DiskEncryptionSet-${time}'
     params: {
         accessPolicy: false
+        federatedClientId: ''
         keyName: ztKeyVaultKey.outputs.name
         keyVaultResourceId: ztKeyVault.outputs.resourceId
         location: location
