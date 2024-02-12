@@ -24,7 +24,7 @@ locals {
   parameterPassword = format("%s \"%s\" ", "-AdminUserPassword", var.domain_password)
 
   #This is the full parameter list
-  fullParameters    = format("%s %s", local.parametersWithoutPassword, local.parameterPassword)
+  fullParameters = format("%s %s", local.parametersWithoutPassword, local.parameterPassword)
 
 
   #This is the command to execute when the script is downloaded from an url

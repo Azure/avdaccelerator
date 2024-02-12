@@ -54,9 +54,9 @@ output "vault_name" {
 
 output "mgmt_parameters" {
   value = {
-    "scriptUrl"= module.management_vm.scriptUrl,
-    "file" = module.management_vm.file,
+    "scriptUrl"  = module.management_vm.scriptUrl,
+    "file"       = module.management_vm.file,
     "parameters" = module.management_vm.parametersWithoutPassword
-    }
-  
+  }
+
 }

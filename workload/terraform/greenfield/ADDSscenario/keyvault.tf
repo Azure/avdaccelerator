@@ -79,8 +79,8 @@ resource "azurerm_key_vault_secret" "localpassword" {
 
 # Resource block to generate a random string for the local admin password
 resource "random_password" "mgmt_vm_local_password" {
-  length           = 20
-  special          = true
+  length  = 20
+  special = true
 }
 
 # Create Key Vault Secret

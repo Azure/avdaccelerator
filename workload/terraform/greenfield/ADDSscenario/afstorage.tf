@@ -23,17 +23,17 @@ resource "azurerm_storage_account" "storage" {
 
   # Enabling Multi-channel for SMB
   dynamic "share_properties" {
-    for_each =  ["enabled"]
+    for_each = ["enabled"]
     content {
 
       dynamic "smb" {
-        for_each= ["enabled"]
+        for_each = ["enabled"]
         content {
           multichannel_enabled = true
         }
       }
-    
-    
+
+
     }
   }
 }

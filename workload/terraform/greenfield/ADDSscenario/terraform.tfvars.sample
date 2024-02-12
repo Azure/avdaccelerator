@@ -13,7 +13,7 @@ on windows_amd64
 avdLocation               = "eastus"                              # change to your Azure region
 prefix                    = "poc1"                                # change to your prefix 4 characters (letters and numbers only)
 local_admin_username      = "localadmin"                          # Your AVD VM local Windows administrator login username (administrator is not allowed)
-ou_path                   = "OU=AVD,OU=ADDS,DC=contoso,DC=net"     # optional 
+ou_for_session_hosts      = "OU=AVD,OU=ADDS,DC=contoso,DC=net"    # optional 
 vm_size                   = "Standard_D2s_v5"                     # Session host compute 
 vnet_range                = ["10.13.1.0/24"]                      # change to your cidr for the avd spoke vnet to be created
 subnet_range              = ["10.13.1.0/26"]                      # change to your cidr for the avd spoke subnet to be created

@@ -36,12 +36,12 @@ module "management_vm" {
 
   # Or you can use url_powershell_script to point to a url
   # url_powershell_script   = "https://raw.githubusercontent.com/sihbher/avdaccelerator/main/workload/scripts/Manual-DSC-Storage-Scripts.ps1"
-  
+
   # This is the name of the file to be downloaded from the url. Defualt value is: Manual-DSC-Storage-Scripts.ps1. It is required if url_powershell_script is provided. It is also used as the name of the local file if localpath_powershell_script is provided, but is not required
   # vfile = "Manual-DSC-Storage-Scripts.ps1"
 
   # This should point to the url of zip file containing the DSC scripts
-  dsc_storage_path            = "https://github.com/sihbher/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip"
+  dsc_storage_path = "https://github.com/sihbher/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip"
 
   security_principal_name = var.aad_group_name
   ou_name                 = var.ou_name_for_fslogix_storage

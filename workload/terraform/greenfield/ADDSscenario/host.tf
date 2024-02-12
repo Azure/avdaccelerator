@@ -174,7 +174,7 @@ resource "azurerm_virtual_machine_extension" "setsessionhostconfig_script" {
   type_handler_version = "1.9"
 
   settings = jsonencode({
-    fileUris = [local.setSessionHostConfigurationUrl]
+    fileUris         = [local.setSessionHostConfigurationUrl]
     commandToExecute = local.commandToExecute_UrlFile
   })
 

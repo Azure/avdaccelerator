@@ -11,7 +11,7 @@ output "file" {
 
 #Command to execute for Custom Script Extension for configuring FSLogix. It depends on the source of the script, if local file path or url was provided
 output "commandToExecute" {
-  value = var.url_powershell_script!= "" ? local.commandToExecute_UrlFile : local.commandToExecute_LocalFile
+  value = var.url_powershell_script != "" ? local.commandToExecute_UrlFile : local.commandToExecute_LocalFile
 }
 
 #Parameters to pass to the script, without the password

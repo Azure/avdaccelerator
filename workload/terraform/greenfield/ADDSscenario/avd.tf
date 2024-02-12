@@ -33,9 +33,9 @@ resource "azurerm_virtual_desktop_host_pool" "hostpool" {
 
 #Autoscale is currently only available in the public cloud.
 data "azurerm_role_definition" "power_role" {
-  role_definition_id   = "40c5ff49-9181-41f8-ae61-143b0e78555e"
+  role_definition_id = "40c5ff49-9181-41f8-ae61-143b0e78555e"
   #role_definition_name           = "Desktop Virtualization Power On Off Contributor" 
-  scope                = data.azurerm_subscription.current.id
+  scope = data.azurerm_subscription.current.id
 }
 
 data "azuread_service_principal" "spn" {

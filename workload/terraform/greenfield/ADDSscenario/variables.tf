@@ -202,7 +202,7 @@ variable "ou_for_fslogix_storage" {
 variable "ou_name_for_fslogix_storage" {
   type        = string
   description = "Name of the OU for FSLogix"
-  default = "Computers"
+  default     = "Computers"
 }
 
 variable "local_admin_username" {
@@ -215,7 +215,7 @@ variable "image_name" {
   description = "Name of the custome image to use"
 }
 
-variable "marketplace_image_details"{
+variable "marketplace_image_details" {
   type = map(string)
   default = {
     publisher = "microsoftwindowsdesktop"
@@ -231,10 +231,10 @@ variable "gallery_name" {
   description = "Name of the shared image gallery name"
 }
 
-variable "use_gallery_image"{
-  type = bool
+variable "use_gallery_image" {
+  type        = bool
   description = "value to use gallery image or not"
-  default = true
+  default     = true
 }
 
 variable "image_rg" {
