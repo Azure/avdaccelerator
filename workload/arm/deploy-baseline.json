@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "2869496443102717290"
+      "templateHash": "501936805434858455"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -19268,7 +19268,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "5433950148784776417"
+              "templateHash": "18378952774543784688"
             }
           },
           "parameters": {
@@ -22110,7 +22110,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.24.24.22086",
-                      "templateHash": "16099982270314811985"
+                      "templateHash": "10448320786162567638"
                     }
                   },
                   "parameters": {
@@ -24602,6 +24602,9 @@
                         "parameters": {
                           "accessPolicy": {
                             "value": false
+                          },
+                          "federatedClientId": {
+                            "value": ""
                           },
                           "keyName": {
                             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('rgName'))), 'Microsoft.Resources/deployments', format('ZT-KeyVaultKey-{0}', parameters('time'))), '2022-09-01').outputs.name.value]"
