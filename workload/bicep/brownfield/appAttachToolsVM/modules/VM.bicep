@@ -55,7 +55,6 @@ module virtualMachine '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachi
       managedDisk: {
         storageAccountType: VMDiskType
       }
-      diskSizeGB: 127
     }
     osType: 'Windows'
     vmSize: VMSize

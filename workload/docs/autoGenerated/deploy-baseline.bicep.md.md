@@ -50,7 +50,7 @@ createMsixDeployment | No       | Deploy MSIX App Attach setup. (Default: false)
 fslogixFileShareQuotaSize | No       | Fslogix file share size. (Default: 1)
 msixFileShareQuotaSize | No       | MSIX file share size. (Default: 1)
 avdDeploySessionHosts | No       | Deploy new session hosts. (Default: true)
-deployGpuPolicies | No       | Deploy VM GPU extension policies. (Default: true)
+deployGpuPolicies | No       | Deploy VM GPU extension policies. (Default: false)
 avdDeployMonitoring | No       | Deploy AVD monitoring resources and setings. (Default: false)
 deployAlaWorkspace | No       | Deploy AVD Azure log analytics workspace. (Default: true)
 deployCustomPolicyMonitoring | No       | Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace. (Default: false)
@@ -66,12 +66,12 @@ fslogixStoragePerformance | No       | Storage account SKU for FSLogix storage. 
 msixStoragePerformance | No       | Storage account SKU for MSIX storage. Recommended tier is Premium. (Default: Premium)
 diskZeroTrust  | No       | Enables a zero trust configuration on the session host disks. (Default: false)
 avdSessionHostsSize | No       | Session host VM size. (Default: Standard_D4ads_v5)
-avdSessionHostDiskType | No       | OS disk type for session host. (Default: Standard_LRS)
+avdSessionHostDiskType | No       | OS disk type for session host. (Default: Premium_LRS)
 enableAcceleratedNetworking | No       | Enables accelerated Networking on the session hosts. If using a Azure Compute Gallery Image, the Image Definition must have been configured with the \'isAcceleratedNetworkSupported\' property set to \'true\'. 
 securityType   | No       | Specifies the securityType of the virtual machine. "ConfidentialVM" and "TrustedLaunch" require a Gen2 Image. (Default: TrustedLaunch)
 secureBootEnabled | No       | Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings. (Default: true)
 vTpmEnabled    | No       | Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings. (Default: true)
-avdOsImage     | No       | AVD OS image SKU. (Default: win11-21h2)
+avdOsImage     | No       | AVD OS image SKU. (Default: win11-22h2)
 managementVmOsImage | No       | Management VM image SKU (Default: winServer_2022_Datacenter_smalldisk_g2)
 useSharedImage | No       | Set to deploy image from Azure Compute Gallery. (Default: false)
 avdImageTemplateDefinitionId | No       | Source custom image ID. (Default: "")
@@ -121,6 +121,7 @@ ownerTag       | No       | Organizational owner of the AVD deployment. (Default
 costCenterTag  | No       | Cost center of owner team. (Default: Contoso-CC)
 time           | No       | Do not modify, used to set unique value for resource deployment.
 enableTelemetry | No       | Enable usage and telemetry feedback to Microsoft.
+enableKvPurgeProtection | No       | Enable purge protection for the keyvaults. (Default: true)
 
 ### deploymentPrefix
 
@@ -196,7 +197,7 @@ Required, The service providing domain services for Azure Virtual Desktop. (Defa
 
 - Default value: `ADDS`
 
-- Allowed values: `ADDS`, `AADDS`, `AAD`
+- Allowed values: `ADDS`, `EntraDS`, `EntraID`
 
 ### createIntuneEnrollment
 
@@ -223,6 +224,8 @@ Optional, Identity name to grant RBAC role to access AVD application group and N
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
 FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")
+
+- Default value: `none`
 
 ### identityDomainGuid
 
@@ -460,9 +463,9 @@ Deploy new session hosts. (Default: true)
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-Deploy VM GPU extension policies. (Default: true)
+Deploy VM GPU extension policies. (Default: false)
 
-- Default value: `True`
+- Default value: `False`
 
 ### avdDeployMonitoring
 
@@ -590,9 +593,9 @@ Session host VM size. (Default: Standard_D4ads_v5)
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-OS disk type for session host. (Default: Standard_LRS)
+OS disk type for session host. (Default: Premium_LRS)
 
-- Default value: `Standard_LRS`
+- Default value: `Premium_LRS`
 
 ### enableAcceleratedNetworking
 
@@ -635,11 +638,11 @@ Specifies whether vTPM should be enabled on the virtual machine. This parameter 
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-AVD OS image SKU. (Default: win11-21h2)
+AVD OS image SKU. (Default: win11-22h2)
 
 - Default value: `win11_22h2`
 
-- Allowed values: `win10_21h2`, `win10_21h2_office`, `win10_22h2_g2`, `win10_22h2_office_g2`, `win11_21h2`, `win11_21h2_office`, `win11_22h2`, `win11_22h2_office`
+- Allowed values: `win10_21h2`, `win10_21h2_office`, `win10_22h2_g2`, `win10_22h2_office_g2`, `win11_21h2`, `win11_21h2_office`, `win11_22h2`, `win11_22h2_office`, `win11_23h2`, `win11_23h2_office`
 
 ### managementVmOsImage
 
@@ -1035,6 +1038,14 @@ Enable usage and telemetry feedback to Microsoft.
 
 - Default value: `True`
 
+### enableKvPurgeProtection
+
+![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
+
+Enable purge protection for the keyvaults. (Default: true)
+
+- Default value: `True`
+
 ## Snippets
 
 ### Parameter file
@@ -1044,7 +1055,7 @@ Enable usage and telemetry feedback to Microsoft.
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "metadata": {
-        "template": "workload/bicep/deploy-baseline.json"
+        "template": "workload/arm/deploy-baseline.json"
     },
     "parameters": {
         "deploymentPrefix": {
@@ -1092,7 +1103,7 @@ Enable usage and telemetry feedback to Microsoft.
             "value": ""
         },
         "identityDomainName": {
-            "value": ""
+            "value": "none"
         },
         "identityDomainGuid": {
             "value": ""
@@ -1190,7 +1201,7 @@ Enable usage and telemetry feedback to Microsoft.
             "value": true
         },
         "deployGpuPolicies": {
-            "value": true
+            "value": false
         },
         "avdDeployMonitoring": {
             "value": false
@@ -1238,7 +1249,7 @@ Enable usage and telemetry feedback to Microsoft.
             "value": "Standard_D4ads_v5"
         },
         "avdSessionHostDiskType": {
-            "value": "Standard_LRS"
+            "value": "Premium_LRS"
         },
         "enableAcceleratedNetworking": {
             "value": true
@@ -1400,6 +1411,9 @@ Enable usage and telemetry feedback to Microsoft.
             "value": "[utcNow()]"
         },
         "enableTelemetry": {
+            "value": true
+        },
+        "enableKvPurgeProtection": {
             "value": true
         }
     }

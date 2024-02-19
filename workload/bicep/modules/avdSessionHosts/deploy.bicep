@@ -49,7 +49,7 @@ param avsetNamePrefix string
 @sys.description('The service providing domain services for Azure Virtual Desktop.')
 param identityServiceProvider string
 
-@sys.description('Eronll session hosts on Intune.')
+@sys.description('Enroll session hosts on Intune.')
 param createIntuneEnrollment bool
 
 @sys.description('This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
@@ -72,6 +72,9 @@ param vTpmEnabled bool
 
 @sys.description('OS disk type for session host.')
 param diskType string
+
+@sys.description('Optional. Define custom OS disk size if larger than image size.')
+param customOsDiskSizeGB string = ''
 
 @sys.description('Market Place OS image.')
 param marketPlaceGalleryWindows object
@@ -130,6 +133,9 @@ param deployMonitoring bool
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
 
+@sys.description('Data collection rule ID.')
+param dataCollectionRuleId string
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -145,6 +151,20 @@ var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
     }
     storageAccountType: diskType
 }
+
+var varOsDiskProperties = {
+    createOption: 'fromImage'
+    deleteOption: 'Delete'
+    managedDisk: varManagedDisk
+}
+
+var varCustomOsDiskProperties = {
+    createOption: 'fromImage'
+    deleteOption: 'Delete'
+    managedDisk: varManagedDisk
+    diskSizeGB: !empty(customOsDiskSizeGB ) ? customOsDiskSizeGB : null
+}
+
 // =========== //
 // Deployments //
 // =========== //
@@ -155,7 +175,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2019-12-10-preview'
 }
 
 // call on the keyvault
-resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = if (identityServiceProvider != 'AAD') {
+resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = if (identityServiceProvider != 'EntraID') {
     name: wrklKvName
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
 }
@@ -168,7 +188,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         location: location
         timeZone: timeZone
-        systemAssignedIdentity: (identityServiceProvider == 'AAD') ? true : false
+        systemAssignedIdentity: (identityServiceProvider == 'EntraID') ? true : false
         availabilityZone: useAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
         encryptionAtHost: encryptionAtHost
         availabilitySetResourceId: useAvailabilityZones ? '' : '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/availabilitySets/${avsetNamePrefix}-${padLeft(((1 + (i + countIndex) / maxAvsetMembersCount)), 3, '0')}'
@@ -179,12 +199,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
         secureBootEnabled: secureBootEnabled
         vTpmEnabled: vTpmEnabled
         imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinitionId}\'}') : marketPlaceGalleryWindows
-        osDisk: {
-            createOption: 'fromImage'
-            deleteOption: 'Delete'
-            diskSizeGB: 128
-            managedDisk: varManagedDisk
-        }
+        osDisk: !empty(customOsDiskSizeGB ) ? varCustomOsDiskProperties : varOsDiskProperties
         adminUsername: vmLocalUserName
         adminPassword: keyVault.getSecret('vmLocalUserPassword')
         nicConfigurations: [
@@ -210,10 +225,10 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
                 ]
             }
         ]
-        // ADDS or AADDS domain join.
+        // ADDS or EntraDS domain join.
         extensionDomainJoinPassword: keyVault.getSecret('domainJoinUserPassword')
         extensionDomainJoinConfig: {
-            enabled: (identityServiceProvider == 'AADDS' || identityServiceProvider == 'ADDS') ? true : false
+            enabled: (identityServiceProvider == 'EntraDS' || identityServiceProvider == 'ADDS') ? true : false
             settings: {
                 name: identityDomainName
                 ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
@@ -224,7 +239,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
         }
         // Microsoft Entra ID Join.
         extensionAadJoinConfig: {
-            enabled: (identityServiceProvider == 'AAD') ? true : false
+            enabled: (identityServiceProvider == 'EntraID') ? true : false
             settings: createIntuneEnrollment ? {
                 mdmId: '0000000a-0000-0000-c000-000000000000'
             } : {}
@@ -286,12 +301,12 @@ module monitoring '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/ext
     params: {
         location: location
         virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        name: 'MicrosoftMonitoringAgent'
-        publisher: 'Microsoft.EnterpriseCloud.Monitoring'
-        type: 'MicrosoftMonitoringAgent'
+        name: 'AzureMonitorWindowsAgent'
+        publisher: 'Microsoft.Azure.Monitor'
+        type: 'AzureMonitorWindowsAgent'
         typeHandlerVersion: '1.0'
         autoUpgradeMinorVersion: true
-        enableAutomaticUpgrade: false
+        enableAutomaticUpgrade: true
         settings: {
             workspaceId: !empty(alaWorkspaceResourceId) ? reference(alaWorkspace.id, alaWorkspace.apiVersion).customerId : ''
         }
@@ -301,6 +316,21 @@ module monitoring '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/ext
         enableDefaultTelemetry: false
     }
     dependsOn: [
+        sessionHostsAntimalwareExtension
+        alaWorkspace
+    ]
+}]
+
+// Data collection rule association
+module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bicep' = [for i in range(1, count): if (deployMonitoring) {
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+    name: 'DCR-Asso-${batchId}-${i - 1}-${time}'
+    params: {
+        virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+        dataCollectionRuleId: dataCollectionRuleId
+    }
+    dependsOn: [
+        monitoring
         sessionHostsAntimalwareExtension
         alaWorkspace
     ]

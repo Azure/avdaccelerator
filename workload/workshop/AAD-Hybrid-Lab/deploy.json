@@ -1,0 +1,350 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "assetLocation": {
+      "type": "string",
+      "defaultValue": "https://raw.githubusercontent.com/PeterR-msft/M365AVDWS/master/AAD-Hybrid-Lab/",
+      "metadata": {
+        "description": "This is the location in which all the linked templates are stored."
+      }
+    },
+    "adminUsername": {
+      "type": "string",
+      "defaultValue": "ADAdmin",
+      "metadata": {
+        "description": "Username to set for the local User. Cannot be \"Administrator\", \"root\" and possibly other such common account names. "
+      }
+    },
+    "deploymentNumber": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "metadata": {
+        "description": "When deploying the stack N times simultaneously, define the instance - this will be appended to some resource names to avoid collisions."
+      }
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Password for the local administrator account. Cannot be \"P@ssw0rd\" and possibly other such common passwords. Must be 8 characters long and three of the following complexity requirements: uppercase, lowercase, number, special character"
+      }
+    },
+    "adDomainName": {
+      "type": "string",
+      "metadata": {
+        "description": "IMPORTANT: Two-part internal AD name - short/NB name will be first part ('contoso'). The short name will be reused and should be unique when deploying this template in your selected region. If a name is reused, DNS name collisions may occur."
+      }
+    },
+    "usersArray": {
+      "type": "array",
+      "defaultValue": [
+        {
+          "FName": "Bob",
+          "LName": "Jones",
+          "SAM": "bjones"
+        },
+        {
+          "FName": "Bill",
+          "LName": "Smith",
+          "SAM": "bsmith"
+        },
+        {
+          "FName": "Mary",
+          "LName": "Phillips",
+          "SAM": "mphillips"
+        },
+        {
+          "FName": "Sue",
+          "LName": "Jackson",
+          "SAM": "sjackson"
+        },
+        {
+          "FName": "Jack",
+          "LName": "Petersen",
+          "SAM": "jpetersen"
+        },
+        {
+          "FName": "Julia",
+          "LName": "Williams",
+          "SAM": "jwilliams"
+        }
+      ],
+      "metadata": {
+        "description": "JSON object array of users that will be loaded into AD once the domain is established."
+      }
+    },
+    "customupnsuffix": {
+      "type": "string",
+      "metadata": {
+        "description": "This needs to be specified in order to have a uniform logon experience within WVD"
+      }
+    },
+    "defaultUserPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Enter the password that will be applied to each user account to be created in AD."
+      }
+    },
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_D2s_v4",
+      "allowedValues": [
+        "Standard_DS2_v2",
+        "Standard_D2_v3",
+        "Standard_D2_v4",
+        "Standard_D2s_v3",
+        "Standard_D2s_v4",
+        "Standard_D4_v4",
+        "Standard_D4s_v4"
+      ],
+      "metadata": {
+        "description": "Select a VM SKU (please ensure the SKU is available in your selected region)."
+      }
+    },
+    "virtualNetworkAddressRange": {
+      "type": "string",
+      "metadata": {
+        "description": "The address range of the new virtual network in CIDR format"
+      },
+      "defaultValue": "10.0.0.0/16"
+    },
+    "adSubnetAddressRange": {
+      "type": "string",
+      "metadata": {
+        "description": "The address range of the desired subnet for Active Directory."
+      },
+      "defaultValue": "10.0.1.0/24"
+    },
+    "adIP": {
+      "type": "string",
+      "metadata": {
+        "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.0.0.0/16 reserves 10.0.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail."
+      },
+      "defaultValue": "10.0.1.4"
+    }
+  },
+  "variables": {
+    "networkInterfaceName": "NIC",
+    "addcVMNameSuffix": "dc",
+    "location": "[resourceGroup().location]",
+    "companyNamePrefix": "[split(parameters('adDomainName'),'.')[0]]",
+    "adVMName": "[toupper(concat(variables('companyNamePrefix'), variables('addcVMNameSuffix')))]",
+    "adNSGName": "[concat('INT-AD', parameters('deploymentNumber'))]",
+    "virtualNetworkName": "[concat(variables('companyNamePrefix'), parameters('deploymentNumber'), '-vnet')]",
+    "adSubnetName": "[concat('adSubnet', parameters('deploymentNumber'))]",
+    "adTemplateURI": "[concat(parameters('assetLocation'),'Templates/adDeploy.json')]",
+    "nsgTemplateURI": "[concat(parameters('assetLocation'),'Templates/NSGs.json')]",
+    "vnetTemplateURI": "[concat(parameters('assetLocation'),'Templates/deployVNet.json')]",
+    "vnetDNSTemplateURI": "[concat(parameters('assetLocation'),'Templates/deployVNetDNS.json')]",
+    "adDSCTemplate": "[concat(parameters('assetLocation'),'DSC/adDSC.zip')]",
+    "adDSCConfigurationFunction": "adDSCConfiguration.ps1\\DomainController",
+    "subnets": [
+      {
+        "name": "[variables('adSubnetName')]",
+        "properties": {
+          "addressprefix": "[parameters('adSubnetAddressRange')]",
+          "networkSecurityGroup": {
+            "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('adNSGName'))]"
+          }
+        }
+      }
+    ]
+  },
+  "resources": [
+    {
+      "name": "NSGs",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('nsgTemplateURI')]"
+        },
+        "parameters": {
+          "subnets": {
+            "value": "[ variables('subnets') ]"
+          },
+          "deploymentNumber": {
+            "value": "[parameters('deploymentNumber')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "virtualNetwork",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "dependsOn": [
+        "Microsoft.Resources/Deployments/NSGs"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('vnetTemplateURI')]"
+        },
+        "parameters": {
+          "virtualNetworkName": {
+            "value": "[variables('virtualNetworkName')]"
+          },
+          "subnets": {
+            "value": "[ variables('subnets') ]"
+          },
+          "virtualNetworkAddressRange": {
+            "value": "[parameters('virtualNetworkAddressRange')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "adVMs",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "dependsOn": [
+        "Microsoft.Resources/Deployments/virtualNetwork"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('adTemplateURI')]"
+        },
+        "parameters": {
+          "adIP": {
+            "value": "[parameters('adIP')]"
+          },
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
+          },
+          "adminUsername": {
+            "value": "[parameters('adminUsername')]"
+          },
+          "adSubnetName": {
+            "value": "[variables('adSubnetName')]"
+          },
+          "adVMName": {
+            "value": "[variables('adVMName')]"
+          },
+          "location": {
+            "value": "[variables('location')]"
+          },
+          "networkInterfaceName": {
+            "value": "[variables('NetworkInterfaceName')]"
+          },
+          "virtualNetworkName": {
+            "value": "[variables('virtualNetworkName')]"
+          },
+          "vmSize": {
+            "value": "[parameters('vmSize')]"
+          },
+          "deploymentNumber": {
+            "value": "[parameters('deploymentNumber')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "[concat(variables('adVMName'),'/Microsoft.Powershell.DSC')]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "[variables('location')]",
+      "apiVersion": "2019-07-01",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/adVMs"
+      ],
+      "tags": {
+        "displayName": "adDSC"
+      },
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.21",
+        "forceUpdateTag": "1.02",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "modulesUrl": "[variables('adDSCTemplate')]",
+          "configurationFunction": "[variables('adDSCConfigurationFunction')]",
+          "properties": [
+            {
+              "Name": "adDomainName",
+              "Value": "[parameters('adDomainName')]",
+              "TypeName": "System.Object"
+            },
+            {
+              "Name": "customupnsuffix",
+              "Value": "[parameters('customupnsuffix')]",
+              "TypeName": "System.Object"
+            },
+            {
+              "Name": "AdminCreds",
+              "Value": {
+                "UserName": "[parameters('adminUsername')]",
+                "Password": "PrivateSettingsRef:AdminPassword"
+              },
+              "TypeName": "System.Management.Automation.PSCredential"
+            },
+            {
+              "Name": "usersArray",
+              "Value": "[parameters('usersArray')]",
+              "TypeName": "System.Object"
+            },
+            {
+              "Name": "UserCreds",
+              "Value": {
+                "UserName": "user",
+                "Password": "PrivateSettingsRef:UserPassword"
+              },
+              "TypeName": "System.Management.Automation.PSCredential"
+            }
+          ]
+        },
+        "protectedSettings": {
+          "Items": {
+            "AdminPassword": "[parameters('adminPassword')]",
+            "UserPassword": "[parameters('defaultUserPassword')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "virtualNetworkDNSUpdate",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2019-10-01",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', variables('adVMName'),'/extensions/Microsoft.Powershell.DSC')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('vnetDNSTemplateURI')]"
+        },
+        "parameters": {
+          "virtualNetworkName": {
+            "value": "[variables('virtualNetworkName')]"
+          },
+          "virtualNetworkAddressRange": {
+            "value": "[parameters('virtualNetworkAddressRange')]"
+          },
+          "subnets": {
+            "value": "[ variables('subnets') ]"
+          },
+          "dnsIP": {
+            "value": "[parameters('adIP')]"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+
+  }
+}

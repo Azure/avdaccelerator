@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "14113926143591912424"
+      "version": "0.24.24.22086",
+      "templateHash": "4242105607175068069"
     }
   },
   "parameters": {
@@ -23,20 +23,6 @@
         "description": "Details about the application."
       }
     },
-    "avsetFaultDomainCount": {
-      "type": "int",
-      "defaultValue": 2,
-      "metadata": {
-        "description": "Sets the number of fault domains for the availability set. (Default: 2)"
-      }
-    },
-    "avsetUpdateDomainCount": {
-      "type": "int",
-      "defaultValue": 5,
-      "metadata": {
-        "description": "Sets the number of update domains for the availability set. (Default: 5)"
-      }
-    },
     "asgResourceId": {
       "type": "string",
       "defaultValue": "",
@@ -44,25 +30,30 @@
         "description": "Application Security Group (ASG) for the session hosts. (Default: \"\")"
       }
     },
-    "avsetCustomNamePrefix": {
+    "avsetResourceId": {
       "type": "string",
-      "defaultValue": "avail",
-      "maxLength": 9,
+      "defaultValue": "",
       "metadata": {
-        "description": "AVD availability set custom name. (Default: avail)"
+        "description": "Availability set resource ID. (Default: \"\")"
       }
     },
-    "avdImageTemplateDefinitionId": {
+    "customImageDefinitionId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
         "description": "Source custom image ID. (Default: \"\")"
       }
     },
-    "computeRgResourceID": {
+    "computeSubscriptionId": {
       "type": "string",
       "metadata": {
-        "description": "Resource Group name for the session hosts. (Default: )"
+        "description": "Subscription ID where to deploy session hosts. (Default: )"
+      }
+    },
+    "computeRgResourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource Group name where to deploy session hosts. (Default: )"
       }
     },
     "count": {
@@ -92,7 +83,7 @@
         "description": "Required, Eronll session hosts on Intune. (Default: false)"
       }
     },
-    "createAvdFslogixDeployment": {
+    "configureFslogix": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
@@ -185,9 +176,9 @@
     },
     "diskType": {
       "type": "string",
-      "defaultValue": "Standard_LRS",
+      "defaultValue": "Premium_LRS",
       "metadata": {
-        "description": "OS disk type for session host. (Default: Standard_LRS)"
+        "description": "OS disk type for session host. (Default: Premium_LRS)"
       }
     },
     "domainJoinPasswordSecretName": {
@@ -218,7 +209,7 @@
         "description": "FSLogix file share name. (Default: )"
       }
     },
-    "hostPoolResourceID": {
+    "hostPoolResourceId": {
       "type": "string",
       "metadata": {
         "description": "AVD Host Pool resource ID. (Default: )"
@@ -231,10 +222,10 @@
         "description": "FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: \"\")"
       }
     },
-    "subnetId": {
+    "subnetResourceId": {
       "type": "string",
       "metadata": {
-        "description": "AVD subnet ID. (Default: )"
+        "description": "AVD subnet name. (Default: )"
       }
     },
     "location": {
@@ -307,9 +298,8 @@
     },
     "vmLocalUserName": {
       "type": "string",
-      "defaultValue": "avdVmLocalUserName",
       "metadata": {
-        "description": "Local administrator username. (Default: \"\")"
+        "description": "VM local administrator username. (Default: )"
       }
     },
     "keyVaultResourceId": {
@@ -320,8 +310,9 @@
     },
     "vmLocalAdminPasswordSecretName": {
       "type": "string",
+      "defaultValue": "vmLocalUserPassword",
       "metadata": {
-        "description": "VM local admin keyvault secret name. (Default: )"
+        "description": "VM local admin keyvault secret name. (Default: vmLocalUserPassword )"
       }
     },
     "sessionHostOuPath": {
@@ -487,6 +478,11 @@
       },
       "chinanorth2": {
         "acronym": "cnn2",
+        "timeDifference": "+8:00",
+        "timeZone": "China Standard Time"
+      },
+      "chinanorth3": {
+        "acronym": "cnn3",
         "timeDifference": "+8:00",
         "timeZone": "China Standard Time"
       },
@@ -740,6 +736,18 @@
         "sku": "win11-22h2-avd-m365",
         "version": "latest"
       },
+      "win11_23h2": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "Windows-11",
+        "sku": "win11-23h2-avd",
+        "version": "latest"
+      },
+      "win11_23h2_office": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "office-365",
+        "sku": "win11-23h2-avd-m365",
+        "version": "latest"
+      },
       "winServer_2022_Datacenter": {
         "publisher": "MicrosoftWindowsServer",
         "offer": "WindowsServer",
@@ -769,34 +777,25 @@
     "varSessionHostLocationAcronym": "[variables('varLocations')[variables('varSessionHostLocationLowercase')].acronym]",
     "varDeploymentEnvironmentComputeStorage": "[if(equals(parameters('deploymentEnvironment'), 'Dev'), 'd', if(equals(parameters('deploymentEnvironment'), 'Test'), 't', if(equals(parameters('deploymentEnvironment'), 'Prod'), 'p', '')))]",
     "varSessionHostNamePrefix": "[if(parameters('customNaming'), parameters('sessionHostCustomNamePrefix'), format('vm{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varSessionHostLocationAcronym')))]",
-    "varDeploymentEnvironmentLowercase": "[toLower(parameters('deploymentEnvironment'))]",
-    "varComputeStorageResourcesNamingStandard": "[format('{0}-{1}-{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym'))]",
-    "varAvsetNamePrefix": "[if(parameters('customNaming'), format('{0}-{1}', parameters('avsetCustomNamePrefix'), variables('varComputeStorageResourcesNamingStandard')), format('avail-{0}', variables('varComputeStorageResourcesNamingStandard')))]",
     "varLocations": "[variables('$fxv#0')]",
     "varMarketPlaceGalleryWindows": "[variables('$fxv#1')]",
     "varTimeZoneSessionHosts": "[variables('varLocations')[variables('varSessionHostLocationLowercase')].timeZone]",
     "varSessionHostLocationLowercase": "[toLower(replace(parameters('location'), ' ', ''))]",
-    "varMaxAvsetMembersCount": 199,
-    "varDivisionAvsetValue": "[div(parameters('count'), variables('varMaxAvsetMembersCount'))]",
-    "varDivisionAvsetRemainderValue": "[mod(parameters('count'), variables('varMaxAvsetMembersCount'))]",
-    "varAvsetCount": "[if(greater(variables('varDivisionAvsetRemainderValue'), 0), add(variables('varDivisionAvsetValue'), 1), variables('varDivisionAvsetValue'))]",
-    "varComputeSubId": "[split(parameters('computeRgResourceID'), '/')[2]]",
-    "varComputeRgName": "[split(parameters('computeRgResourceID'), '/')[4]]",
-    "varHostpoolSubId": "[split(parameters('hostPoolResourceID'), '/')[2]]",
-    "varHostpoolRgName": "[split(parameters('hostPoolResourceID'), '/')[4]]",
-    "varHostPoolName": "[split(parameters('hostPoolResourceID'), '/')[8]]",
+    "varHostpoolSubId": "[split(parameters('hostPoolResourceId'), '/')[2]]",
+    "varHostpoolRgName": "[split(parameters('hostPoolResourceId'), '/')[4]]",
+    "varHostPoolName": "[split(parameters('hostPoolResourceId'), '/')[8]]",
     "varKeyVaultSubId": "[split(parameters('keyVaultResourceId'), '/')[2]]",
     "varKeyVaultRgName": "[split(parameters('keyVaultResourceId'), '/')[4]]",
     "varKeyVaultName": "[split(parameters('keyVaultResourceId'), '/')[8]]",
     "varManagedDisk": "[if(empty(parameters('diskEncryptionSetResourceId')), createObject('storageAccountType', parameters('diskType')), createObject('diskEncryptionSet', createObject('id', parameters('diskEncryptionSetResourceId')), 'storageAccountType', parameters('diskType')))]",
-    "varFslogixStorageFqdn": "[if(parameters('createAvdFslogixDeployment'), format('{0}.file.{1}', parameters('fslogixStorageAccountName'), environment().suffixes.storage), '')]",
-    "varFslogixSharePath": "[if(parameters('createAvdFslogixDeployment'), format('\\\\{0}.file.{1}\\{2}', parameters('fslogixStorageAccountName'), environment().suffixes.storage, parameters('fslogixFileShareName')), '')]",
-    "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/add-sh/workload/",
+    "varFslogixStorageFqdn": "[if(parameters('configureFslogix'), format('{0}.file.{1}', parameters('fslogixStorageAccountName'), environment().suffixes.storage), '')]",
+    "varFslogixSharePath": "[if(parameters('configureFslogix'), format('\\\\{0}.file.{1}\\{2}', parameters('fslogixStorageAccountName'), environment().suffixes.storage, parameters('fslogixFileShareName')), '')]",
+    "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
     "varSessionHostConfigurationScriptUri": "[format('{0}scripts/Set-SessionHostConfiguration.ps1', variables('varBaseScriptUri'))]",
     "varSessionHostConfigurationScript": "./Set-SessionHostConfiguration.ps1",
     "varAllAvailabilityZones": "[pickZones('Microsoft.Compute', 'virtualMachines', parameters('location'), 3)]",
     "varAvdDefaultTags": {
-      "cm-resource-parent": "[parameters('hostPoolResourceID')]",
+      "cm-resource-parent": "[parameters('hostPoolResourceId')]",
       "Environment": "[parameters('deploymentEnvironment')]",
       "ServiceWorkload": "AVD",
       "CreationTimeUTC": "[parameters('time')]"
@@ -808,453 +807,6 @@
   },
   "resources": [
     {
-      "condition": "[not(parameters('useAvailabilityZones'))]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('AVD-Availability-Set-{0}', parameters('time'))]",
-      "subscriptionId": "[format('{0}', variables('varComputeSubId'))]",
-      "resourceGroup": "[format('{0}', variables('varComputeRgName'))]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "namePrefix": {
-            "value": "[variables('varAvsetNamePrefix')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "count": {
-            "value": "[variables('varAvsetCount')]"
-          },
-          "faultDomainCount": {
-            "value": "[parameters('avsetFaultDomainCount')]"
-          },
-          "updateDomainCount": {
-            "value": "[parameters('avsetUpdateDomainCount')]"
-          },
-          "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]"
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "1483242996907610497"
-            }
-          },
-          "parameters": {
-            "location": {
-              "type": "string",
-              "metadata": {
-                "description": "Location where to deploy compute services."
-              }
-            },
-            "namePrefix": {
-              "type": "string",
-              "metadata": {
-                "description": "Availablity Set name."
-              }
-            },
-            "count": {
-              "type": "int",
-              "metadata": {
-                "description": "Availablity Set count."
-              }
-            },
-            "faultDomainCount": {
-              "type": "int",
-              "metadata": {
-                "description": "Sets the number of fault domains for the availability set."
-              }
-            },
-            "updateDomainCount": {
-              "type": "int",
-              "metadata": {
-                "description": "Sets the number of update domains for the availability set."
-              }
-            },
-            "tags": {
-              "type": "object",
-              "metadata": {
-                "description": "Tags to be applied to resources"
-              }
-            }
-          },
-          "resources": [
-            {
-              "copy": {
-                "name": "availabilitySet",
-                "count": "[length(range(1, parameters('count')))]"
-              },
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-{1}', parameters('namePrefix'), padLeft(range(1, parameters('count'))[copyIndex()], 3, '0'))]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "name": {
-                    "value": "[format('{0}-{1}', parameters('namePrefix'), padLeft(range(1, parameters('count'))[copyIndex()], 3, '0'))]"
-                  },
-                  "location": {
-                    "value": "[parameters('location')]"
-                  },
-                  "availabilitySetFaultDomain": {
-                    "value": "[parameters('faultDomainCount')]"
-                  },
-                  "availabilitySetUpdateDomain": {
-                    "value": "[parameters('updateDomainCount')]"
-                  },
-                  "tags": {
-                    "value": "[parameters('tags')]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "9592547259644072861"
-                    }
-                  },
-                  "parameters": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The name of the availability set that is being created."
-                      }
-                    },
-                    "availabilitySetFaultDomain": {
-                      "type": "int",
-                      "defaultValue": 2,
-                      "metadata": {
-                        "description": "Optional. The number of fault domains to use."
-                      }
-                    },
-                    "availabilitySetUpdateDomain": {
-                      "type": "int",
-                      "defaultValue": 5,
-                      "metadata": {
-                        "description": "Optional. The number of update domains to use."
-                      }
-                    },
-                    "availabilitySetSku": {
-                      "type": "string",
-                      "defaultValue": "Aligned",
-                      "metadata": {
-                        "description": "Optional. SKU of the availability set.\r\n- Use \\'Aligned\\' for virtual machines with managed disks.\r\n- Use \\'Classic\\' for virtual machines with unmanaged disks.\r\n"
-                      }
-                    },
-                    "proximityPlacementGroupId": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "metadata": {
-                        "description": "Optional. Resource ID of a proximity placement group."
-                      }
-                    },
-                    "location": {
-                      "type": "string",
-                      "defaultValue": "[resourceGroup().location]",
-                      "metadata": {
-                        "description": "Optional. Resource location."
-                      }
-                    },
-                    "lock": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "allowedValues": [
-                        "",
-                        "CanNotDelete",
-                        "ReadOnly"
-                      ],
-                      "metadata": {
-                        "description": "Optional. Specify the type of lock."
-                      }
-                    },
-                    "roleAssignments": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                      }
-                    },
-                    "tags": {
-                      "type": "object",
-                      "defaultValue": {},
-                      "metadata": {
-                        "description": "Optional. Tags of the availability set resource."
-                      }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-                      }
-                    }
-                  },
-                  "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
-                    },
-                    {
-                      "type": "Microsoft.Compute/availabilitySets",
-                      "apiVersion": "2022-11-01",
-                      "name": "[parameters('name')]",
-                      "location": "[parameters('location')]",
-                      "tags": "[parameters('tags')]",
-                      "properties": {
-                        "platformFaultDomainCount": "[parameters('availabilitySetFaultDomain')]",
-                        "platformUpdateDomainCount": "[parameters('availabilitySetUpdateDomain')]",
-                        "proximityPlacementGroup": "[if(not(empty(parameters('proximityPlacementGroupId'))), createObject('id', parameters('proximityPlacementGroupId')), null())]"
-                      },
-                      "sku": {
-                        "name": "[parameters('availabilitySetSku')]"
-                      }
-                    },
-                    {
-                      "condition": "[not(empty(parameters('lock')))]",
-                      "type": "Microsoft.Authorization/locks",
-                      "apiVersion": "2020-05-01",
-                      "scope": "[format('Microsoft.Compute/availabilitySets/{0}', parameters('name'))]",
-                      "name": "[format('{0}-{1}-lock', parameters('name'), parameters('lock'))]",
-                      "properties": {
-                        "level": "[parameters('lock')]",
-                        "notes": "[if(equals(parameters('lock'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot modify the resource or child resources.')]"
-                      },
-                      "dependsOn": [
-                        "[resourceId('Microsoft.Compute/availabilitySets', parameters('name'))]"
-                      ]
-                    },
-                    {
-                      "copy": {
-                        "name": "availabilitySet_roleAssignments",
-                        "count": "[length(parameters('roleAssignments'))]"
-                      },
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-AvSet-Rbac-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-                      "properties": {
-                        "expressionEvaluationOptions": {
-                          "scope": "inner"
-                        },
-                        "mode": "Incremental",
-                        "parameters": {
-                          "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
-                          "principalIds": {
-                            "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
-                          },
-                          "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
-                          "roleDefinitionIdOrName": {
-                            "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
-                          },
-                          "condition": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), createObject('value', parameters('roleAssignments')[copyIndex()].condition), createObject('value', ''))]",
-                          "delegatedManagedIdentityResourceId": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), createObject('value', parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId), createObject('value', ''))]",
-                          "resourceId": {
-                            "value": "[resourceId('Microsoft.Compute/availabilitySets', parameters('name'))]"
-                          }
-                        },
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "metadata": {
-                            "_generator": {
-                              "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "5076096840451227372"
-                            }
-                          },
-                          "parameters": {
-                            "principalIds": {
-                              "type": "array",
-                              "metadata": {
-                                "description": "Required. The IDs of the principals to assign the role to."
-                              }
-                            },
-                            "roleDefinitionIdOrName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
-                              }
-                            },
-                            "resourceId": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. The resource ID of the resource to apply the role assignment to."
-                              }
-                            },
-                            "principalType": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "allowedValues": [
-                                "ServicePrincipal",
-                                "Group",
-                                "User",
-                                "ForeignGroup",
-                                "Device",
-                                ""
-                              ],
-                              "metadata": {
-                                "description": "Optional. The principal type of the assigned principal ID."
-                              }
-                            },
-                            "description": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. The description of the role assignment."
-                              }
-                            },
-                            "condition": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                              }
-                            },
-                            "conditionVersion": {
-                              "type": "string",
-                              "defaultValue": "2.0",
-                              "allowedValues": [
-                                "2.0"
-                              ],
-                              "metadata": {
-                                "description": "Optional. Version of the condition."
-                              }
-                            },
-                            "delegatedManagedIdentityResourceId": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. Id of the delegated managed identity resource."
-                              }
-                            }
-                          },
-                          "variables": {
-                            "builtInRoleNames": {
-                              "Avere Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f8fab4f-1852-4a58-a46a-8eaf358af14a')]",
-                              "Avere Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c025889f-8102-4ebf-b32c-fc0c6f0c6bd9')]",
-                              "Azure Center for SAP solutions administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7b0c7e81-271f-4c71-90bf-e30bdfdbc2f7')]",
-                              "Azure Center for SAP solutions reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '05352d14-a920-4328-a0de-4cbe7430e26b')]",
-                              "Azure Center for SAP solutions service role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'aabbc5dd-1af0-458b-a942-81af88f9c138')]",
-                              "Azure Kubernetes Service Policy Add-on Deployment": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18ed5180-3e48-46fd-8541-4ea054d57064')]",
-                              "Compute Gallery Sharing Admin": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1ef6a3be-d0ac-425d-8c01-acb62866290b')]",
-                              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-                              "Data Operator for Managed Disks": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '959f8984-c045-4866-89c7-12bf9737be2e')]",
-                              "Desktop Virtualization Power On Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '489581de-a3bd-480d-9518-53dea7416b33')]",
-                              "Desktop Virtualization Power On Off Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '40c5ff49-9181-41f8-ae61-143b0e78555e')]",
-                              "Desktop Virtualization Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a959dbd1-f747-45e3-8ba6-dd80f235f97c')]",
-                              "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
-                              "Disk Backup Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3e5e47e6-65f7-47ef-90b5-e5dd4d455f24')]",
-                              "Disk Pool Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '60fc6e62-5479-42d4-8bf4-67625fcc2840')]",
-                              "Disk Restore Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b50d9833-a0cb-478e-945f-707fcc997c13')]",
-                              "Disk Snapshot Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
-                              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
-                              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
-                              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
-                              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
-                              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
-                              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
-                              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
-                              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
-                              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                              "Reservation Purchaser": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f7b75c60-3036-4b75-91c3-6b41c27c1689')]",
-                              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
-                              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
-                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
-                              "Virtual Machine Administrator Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c0163c0-47e6-4577-8991-ea5c82e286e4')]",
-                              "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]",
-                              "Virtual Machine User Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fb879df8-f326-4884-b1cf-06f3ad86be52')]",
-                              "VM Scanner Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'd24ecba3-c1f4-40fa-a7bb-4588a071e8fd')]",
-                              "Windows Admin Center Administrator Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a6333a3e-0164-44c3-b281-7a577aff287f')]"
-                            }
-                          },
-                          "resources": [
-                            {
-                              "copy": {
-                                "name": "roleAssignment",
-                                "count": "[length(parameters('principalIds'))]"
-                              },
-                              "type": "Microsoft.Authorization/roleAssignments",
-                              "apiVersion": "2022-04-01",
-                              "scope": "[format('Microsoft.Compute/availabilitySets/{0}', last(split(parameters('resourceId'), '/')))]",
-                              "name": "[guid(resourceId('Microsoft.Compute/availabilitySets', last(split(parameters('resourceId'), '/'))), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
-                              "properties": {
-                                "description": "[parameters('description')]",
-                                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
-                                "principalId": "[parameters('principalIds')[copyIndex()]]",
-                                "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]",
-                                "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]",
-                                "conditionVersion": "[if(and(not(empty(parameters('conditionVersion'))), not(empty(parameters('condition')))), parameters('conditionVersion'), null())]",
-                                "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), null())]"
-                              }
-                            }
-                          ]
-                        }
-                      },
-                      "dependsOn": [
-                        "[resourceId('Microsoft.Compute/availabilitySets', parameters('name'))]"
-                      ]
-                    }
-                  ],
-                  "outputs": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The name of the availability set."
-                      },
-                      "value": "[parameters('name')]"
-                    },
-                    "resourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource ID of the availability set."
-                      },
-                      "value": "[resourceId('Microsoft.Compute/availabilitySets', parameters('name'))]"
-                    },
-                    "resourceGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource group the availability set was deployed into."
-                      },
-                      "value": "[resourceGroup().name]"
-                    },
-                    "location": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The location the resource was deployed into."
-                      },
-                      "value": "[reference(resourceId('Microsoft.Compute/availabilitySets', parameters('name')), '2022-11-01', 'full').location]"
-                    }
-                  }
-                }
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
       "copy": {
         "name": "sessionHosts",
         "count": "[length(range(1, parameters('count')))]",
@@ -1264,8 +816,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('SH-{0}-{1}', sub(range(1, parameters('count'))[copyIndex()], 1), parameters('time'))]",
-      "subscriptionId": "[format('{0}', variables('varComputeSubId'))]",
-      "resourceGroup": "[format('{0}', variables('varComputeRgName'))]",
+      "subscriptionId": "[format('{0}', parameters('computeSubscriptionId'))]",
+      "resourceGroup": "[format('{0}', parameters('computeRgResourceGroupName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1281,12 +833,12 @@
           "timeZone": {
             "value": "[variables('varTimeZoneSessionHosts')]"
           },
-          "systemAssignedIdentity": "[if(equals(parameters('identityServiceProvider'), 'AAD'), createObject('value', true()), createObject('value', false()))]",
+          "systemAssignedIdentity": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('value', true()), createObject('value', false()))]",
           "availabilityZone": "[if(parameters('useAvailabilityZones'), createObject('value', take(skip(variables('varAllAvailabilityZones'), mod(range(1, parameters('count'))[copyIndex()], length(variables('varAllAvailabilityZones')))), 1)), createObject('value', createArray()))]",
           "encryptionAtHost": {
             "value": "[parameters('diskZeroTrust')]"
           },
-          "availabilitySetResourceId": "[if(parameters('useAvailabilityZones'), createObject('value', ''), createObject('value', format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Compute/availabilitySets/{2}-{3}', variables('varComputeSubId'), variables('varComputeRgName'), variables('varAvsetNamePrefix'), padLeft(add(1, div(add(range(1, parameters('count'))[copyIndex()], parameters('countIndex')), variables('varMaxAvsetMembersCount'))), 3, '0'))))]",
+          "availabilitySetResourceId": "[if(parameters('useAvailabilityZones'), createObject('value', ''), createObject('value', parameters('avsetResourceId')))]",
           "osType": {
             "value": "Windows"
           },
@@ -1305,12 +857,11 @@
           "vTpmEnabled": {
             "value": "[parameters('vTpmEnabled')]"
           },
-          "imageReference": "[if(parameters('useSharedImage'), createObject('value', json(format('{{''id'': ''{0}''}}', parameters('avdImageTemplateDefinitionId')))), createObject('value', variables('varMarketPlaceGalleryWindows')[parameters('osImage')]))]",
+          "imageReference": "[if(parameters('useSharedImage'), createObject('value', json(format('{{''id'': ''{0}''}}', parameters('customImageDefinitionId')))), createObject('value', variables('varMarketPlaceGalleryWindows')[parameters('osImage')]))]",
           "osDisk": {
             "value": {
               "createOption": "fromImage",
               "deleteOption": "Delete",
-              "diskSizeGB": 128,
               "managedDisk": "[variables('varManagedDisk')]"
             }
           },
@@ -1331,14 +882,14 @@
                 "nicSuffix": "nic-01-",
                 "deleteOption": "Delete",
                 "enableAcceleratedNetworking": "[parameters('enableAcceleratedNetworking')]",
-                "ipConfigurations": "[if(not(empty(parameters('asgResourceId'))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('subnetId'), 'applicationSecurityGroups', createArray(createObject('id', parameters('asgResourceId'))))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('subnetId'))))]"
+                "ipConfigurations": "[if(not(empty(parameters('asgResourceId'))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('subnetResourceId'), 'applicationSecurityGroups', createArray(createObject('id', parameters('asgResourceId'))))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('subnetResourceId'))))]"
               }
             ]
           },
-          "extensionDomainJoinPassword": "[if(or(equals(parameters('identityServiceProvider'), 'ADDS'), equals(parameters('identityServiceProvider'), 'AADDS')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varKeyVaultSubId')), format('{0}', variables('varKeyVaultRgName'))), 'Microsoft.KeyVault/vaults', variables('varKeyVaultName'))), 'secretName', parameters('domainJoinPasswordSecretName'))), createObject('value', 'domainJoinUserPassword'))]",
+          "extensionDomainJoinPassword": "[if(or(equals(parameters('identityServiceProvider'), 'ADDS'), equals(parameters('identityServiceProvider'), 'EntraDS')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varKeyVaultSubId')), format('{0}', variables('varKeyVaultRgName'))), 'Microsoft.KeyVault/vaults', variables('varKeyVaultName'))), 'secretName', parameters('domainJoinPasswordSecretName'))), createObject('value', 'domainJoinUserPassword'))]",
           "extensionDomainJoinConfig": {
             "value": {
-              "enabled": "[if(or(equals(parameters('identityServiceProvider'), 'ADDS'), equals(parameters('identityServiceProvider'), 'AADDS')), true(), false())]",
+              "enabled": "[if(or(equals(parameters('identityServiceProvider'), 'ADDS'), equals(parameters('identityServiceProvider'), 'EntraDS')), true(), false())]",
               "settings": {
                 "name": "[parameters('identityDomainName')]",
                 "ouPath": "[if(not(empty(parameters('sessionHostOuPath'))), parameters('sessionHostOuPath'), null())]",
@@ -1350,7 +901,7 @@
           },
           "extensionAadJoinConfig": {
             "value": {
-              "enabled": "[if(equals(parameters('identityServiceProvider'), 'AAD'), true(), false())]",
+              "enabled": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), true(), false())]",
               "settings": "[if(parameters('createIntuneEnrollment'), createObject('mdmId', '0000000a-0000-0000-c000-000000000000'), createObject())]"
             }
           },
@@ -1364,8 +915,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "3205620537307637582"
+              "version": "0.24.24.22086",
+              "templateHash": "15547223459257060092"
             }
           },
           "parameters": {
@@ -1699,7 +1250,7 @@
                 "enabled": false
               },
               "metadata": {
-                "description": "Optional. The configuration for the [AAD Join] extension. Must at least contain the [\"enabled\": true] property to be executed."
+                "description": "Optional. The configuration for the [EntraID Join] extension. Must at least contain the [\"enabled\": true] property to be executed."
               }
             },
             "extensionAntiMalwareConfig": {
@@ -2048,7 +1599,7 @@
                     "name": "[format('osdisk-01-{0}', parameters('name'))]",
                     "createOption": "[if(contains(parameters('osDisk'), 'createOption'), parameters('osDisk').createOption, 'FromImage')]",
                     "deleteOption": "[if(contains(parameters('osDisk'), 'deleteOption'), parameters('osDisk').deleteOption, 'Delete')]",
-                    "diskSizeGB": "[parameters('osDisk').diskSizeGB]",
+                    "diskSizeGB": "[if(contains(parameters('osDisk'), 'diskSizeGB'), parameters('osDisk').diskSizeGB, null())]",
                     "caching": "[if(contains(parameters('osDisk'), 'caching'), parameters('osDisk').caching, 'ReadOnly')]",
                     "managedDisk": {
                       "storageAccountType": "[parameters('osDisk').managedDisk.storageAccountType]",
@@ -2200,8 +1751,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "16578501272871551398"
+                      "version": "0.24.24.22086",
+                      "templateHash": "1063750606576410026"
                     }
                   },
                   "parameters": {
@@ -2355,8 +1906,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "14697279465996570029"
+                              "version": "0.24.24.22086",
+                              "templateHash": "9414577766029056313"
                             }
                           },
                           "parameters": {
@@ -2671,8 +2222,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.23.1.45101",
-                                      "templateHash": "15781585805590730053"
+                                      "version": "0.24.24.22086",
+                                      "templateHash": "10254776496318105172"
                                     }
                                   },
                                   "parameters": {
@@ -2923,8 +2474,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.23.1.45101",
-                              "templateHash": "17125191375440227612"
+                              "version": "0.24.24.22086",
+                              "templateHash": "15654479489258886138"
                             }
                           },
                           "parameters": {
@@ -3208,8 +2759,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.23.1.45101",
-                                      "templateHash": "14837312545510225155"
+                                      "version": "0.24.24.22086",
+                                      "templateHash": "16966422285057288924"
                                     }
                                   },
                                   "parameters": {
@@ -3427,8 +2978,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "18224849399427196214"
+                      "version": "0.24.24.22086",
+                      "templateHash": "15417543601715333142"
                     }
                   },
                   "parameters": {
@@ -3633,8 +3184,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "18224849399427196214"
+                      "version": "0.24.24.22086",
+                      "templateHash": "15417543601715333142"
                     }
                   },
                   "parameters": {
@@ -3834,8 +3385,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "18224849399427196214"
+                      "version": "0.24.24.22086",
+                      "templateHash": "15417543601715333142"
                     }
                   },
                   "parameters": {
@@ -4040,8 +3591,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "18224849399427196214"
+                      "version": "0.24.24.22086",
+                      "templateHash": "15417543601715333142"
                     }
                   },
                   "parameters": {
@@ -4236,8 +3787,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "18224849399427196214"
+                      "version": "0.24.24.22086",
+                      "templateHash": "15417543601715333142"
                     }
                   },
                   "parameters": {
@@ -4432,8 +3983,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "18224849399427196214"
+                      "version": "0.24.24.22086",
+                      "templateHash": "15417543601715333142"
                     }
                   },
                   "parameters": {
@@ -4632,8 +4183,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "18224849399427196214"
+                      "version": "0.24.24.22086",
+                      "templateHash": "15417543601715333142"
                     }
                   },
                   "parameters": {
@@ -4840,8 +4391,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "18224849399427196214"
+                      "version": "0.24.24.22086",
+                      "templateHash": "15417543601715333142"
                     }
                   },
                   "parameters": {
@@ -5041,8 +4592,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "18224849399427196214"
+                      "version": "0.24.24.22086",
+                      "templateHash": "15417543601715333142"
                     }
                   },
                   "parameters": {
@@ -5245,8 +4796,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "15242592157036190831"
+                      "version": "0.24.24.22086",
+                      "templateHash": "11525054918559098128"
                     }
                   },
                   "parameters": {
@@ -5411,8 +4962,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "9607326914801692122"
+                      "version": "0.24.24.22086",
+                      "templateHash": "17481608944836963488"
                     }
                   },
                   "parameters": {
@@ -5586,10 +5137,7 @@
             }
           }
         }
-      },
-      "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varComputeSubId')), format('{0}', variables('varComputeRgName'))), 'Microsoft.Resources/deployments', format('AVD-Availability-Set-{0}', parameters('time')))]"
-      ]
+      }
     },
     {
       "copy": {
@@ -5599,8 +5147,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('SH-Antimal-{0}-{1}', sub(range(1, parameters('count'))[copyIndex()], 1), parameters('time'))]",
-      "subscriptionId": "[format('{0}', variables('varComputeSubId'))]",
-      "resourceGroup": "[format('{0}', variables('varComputeRgName'))]",
+      "subscriptionId": "[format('{0}', parameters('computeSubscriptionId'))]",
+      "resourceGroup": "[format('{0}', parameters('computeRgResourceGroupName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -5641,7 +5189,7 @@
                 "time": "120",
                 "scanType": "Quick"
               },
-              "Exclusions": "[if(parameters('createAvdFslogixDeployment'), createObject('Extensions', '*.vhd;*.vhdx', 'Paths', format('\"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;{0}\\*\\*.VHD;{1}\\*\\*.VHDX', variables('varFslogixSharePath'), variables('varFslogixSharePath')), 'Processes', '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'), createObject())]"
+              "Exclusions": "[if(parameters('configureFslogix'), createObject('Extensions', '*.vhd;*.vhdx', 'Paths', format('\"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;{0}\\*\\*.VHD;{1}\\*\\*.VHDX', variables('varFslogixSharePath'), variables('varFslogixSharePath')), 'Processes', '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'), createObject())]"
             }
           },
           "enableDefaultTelemetry": {
@@ -5654,8 +5202,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "18224849399427196214"
+              "version": "0.24.24.22086",
+              "templateHash": "15417543601715333142"
             }
           },
           "parameters": {
@@ -5822,8 +5370,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('SH-Mon-{0}-{1}', sub(range(1, parameters('count'))[copyIndex()], 1), parameters('time'))]",
-      "subscriptionId": "[format('{0}', variables('varComputeSubId'))]",
-      "resourceGroup": "[format('{0}', variables('varComputeRgName'))]",
+      "subscriptionId": "[format('{0}', parameters('computeSubscriptionId'))]",
+      "resourceGroup": "[format('{0}', parameters('computeRgResourceGroupName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -5874,8 +5422,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "18224849399427196214"
+              "version": "0.24.24.22086",
+              "templateHash": "15417543601715333142"
             }
           },
           "parameters": {
@@ -6041,8 +5589,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('SH-Config-{0}-{1}', range(1, parameters('count'))[copyIndex()], parameters('time'))]",
-      "subscriptionId": "[format('{0}', variables('varComputeSubId'))]",
-      "resourceGroup": "[format('{0}', variables('varComputeRgName'))]",
+      "subscriptionId": "[format('{0}', parameters('computeSubscriptionId'))]",
+      "resourceGroup": "[format('{0}', parameters('computeRgResourceGroupName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -6065,7 +5613,7 @@
             "value": "[variables('varSessionHostConfigurationScript')]"
           },
           "fslogix": {
-            "value": "[parameters('createAvdFslogixDeployment')]"
+            "value": "[parameters('configureFslogix')]"
           },
           "identityDomainName": {
             "value": "[parameters('identityDomainName')]"
@@ -6089,8 +5637,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "16467384531279284955"
+              "version": "0.24.24.22086",
+              "templateHash": "6272958380443997213"
             }
           },
           "parameters": {
@@ -6162,7 +5710,7 @@
             }
           },
           "variables": {
-            "varScriptArguments": "[format('-IdentityDomainName {0} -AmdVmSize {1} -IdentityServiceProvider {2} -Fslogix {3} -FslogixFileShare {4} -FslogixStorageFqdn {5} -HostPoolRegistrationToken {6} -NvidiaVmSize {7} -verbose', parameters('identityDomainName'), variables('varAmdVmSize'), parameters('identityServiceProvider'), parameters('fslogix'), parameters('fslogixFileShare'), parameters('fslogixStorageFqdn'), parameters('hostPoolToken'), variables('varNvidiaVmSize'))]",
+            "varScriptArguments": "[if(parameters('fslogix'), format('-IdentityDomainName {0} -AmdVmSize {1} -IdentityServiceProvider {2} -Fslogix {3} -FslogixFileShare {4} -FslogixStorageFqdn {5} -HostPoolRegistrationToken {6} -NvidiaVmSize {7} -verbose', parameters('identityDomainName'), variables('varAmdVmSize'), parameters('identityServiceProvider'), parameters('fslogix'), parameters('fslogixFileShare'), parameters('fslogixStorageFqdn'), parameters('hostPoolToken'), variables('varNvidiaVmSize')), format('-AmdVmSize {0} -IdentityServiceProvider {1} -Fslogix {2} -HostPoolRegistrationToken {3} -NvidiaVmSize {4} -verbose', variables('varAmdVmSize'), parameters('identityServiceProvider'), parameters('fslogix'), parameters('hostPoolToken'), variables('varNvidiaVmSize')))]",
             "varAmdVmSizes": [
               "Standard_NV4as_v4",
               "Standard_NV8as_v4",
