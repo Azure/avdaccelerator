@@ -49,6 +49,8 @@ param time string = utcNow()
 @description('Specifies the SKU for the vault.')
 param vaultSku string
 
+@sys.description('Enable purge protection on the key vault')
+param enableKvPurgeProtection bool = true
 // =========== //
 // Variable declaration //
 // =========== //
@@ -65,7 +67,7 @@ module ztKeyVault '../../../../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.b
         name: kvName
         location: location
         enableRbacAuthorization: true
-        enablePurgeProtection: true
+        enablePurgeProtection: enableKvPurgeProtection
         softDeleteRetentionInDays: 7
         vaultSku: vaultSku
         publicNetworkAccess: 'Disabled'

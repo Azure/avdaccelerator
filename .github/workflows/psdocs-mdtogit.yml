@@ -25,8 +25,8 @@ env:
   github_user_name: 'github-actions'
   github_email: '41898282+github-actions[bot]@users.noreply.github.com'
   github_commit_message: 'Generate Parameter Markdowns'
-  github_pr_number: ${{ github.event.number }}
-  github_pr_repo: ${{ github.event.pull_request.head.repo.full_name }}
+  # github_pr_number: ${{ github.event.number }}
+  # github_pr_repo: ${{ github.event.pull_request.head.repo.full_name }}
 
 permissions:
   contents: write
@@ -42,12 +42,12 @@ jobs:
       - name: Show env
         run: env | sort
 
-      - name: Check out PR
-        run: |
-          echo "==> Check out PR..."
-          gh pr checkout "$github_pr_number"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#       - name: Check out PR
+#         run: |
+#           echo "==> Check out PR..."
+#           gh pr checkout "$github_pr_number"
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Configure local git
         run: |
           echo "git user name  : $github_user_name"
@@ -117,27 +117,19 @@ jobs:
         run: |
           echo "==> Stage changes..."
           mapfile -t STATUS_LOG < <(git status --short | grep .)
-          if [ ${#STATUS_LOG[@]} -gt 0 ]; then
               echo "Found changes to the following files:"
               printf "%s\n" "${STATUS_LOG[@]}"
               git add --all
-          else
-              echo "No changes to add."
-          fi
 
       - name: Push changes
         run: |
           echo "==> Check git diff..."
           mapfile -t GIT_DIFF < <(git diff --cached)
           printf "%s\n" "${GIT_DIFF[@]}"
-          if [ ${#GIT_DIFF[@]} -gt 0 ]; then
               echo "==> Commit changes..."
               git commit --message "$github_commit_message [$GITHUB_ACTOR/${GITHUB_SHA::8}]"
               echo "==> Push changes..."
-              echo "Pushing changes to: $github_pr_repo"
-              git push "https://$GITHUB_TOKEN@github.com/$github_pr_repo.git"
-          else
-              echo "No changes found."
-          fi
+              echo "Pushing changes to: $main"
+              git push "https://$GITHUB_TOKEN@github.com/Azure/avdaccelerator/tree/main"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

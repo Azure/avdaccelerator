@@ -1,14 +1,14 @@
-# Implement Azure Virtual Desktop with Microsoft Entra ID
+# Implement Azure Virtual Desktop with Microsoft Entra Domain Services
 
 This guide is designed to help you get started with deploying a greenfield Azure Virtual Desktop using the provided Terraform template(s) within this repository. Before you deploy, it is recommended to review the template(s) to understand the resources that will be deployed and the associated costs.
 
-This accelerator is to be used as starter kit and you can expand its functionality by developing your own deployments. This scenario deploys a new Azure Virtual Desktop workload with Azure AD joined session host using a custom image, so it cannot be used to maintain, modify or add resources to an existing or already deployed Azure Virtual Desktop workload from this accelerator.
+This accelerator is to be used as starter kit and you can expand its functionality by developing your own deployments. This scenario deploys a new Azure Virtual Desktop workload with Microsoft Entra Domain Services joined session host using a custom image, so it cannot be used to maintain, modify or add resources to an existing or already deployed Azure Virtual Desktop workload from this accelerator.
 
-***Note*** This terraform accelerator requires the Custom Image Build before deploying the Baseline. If you prefer to use the marketplace image with no customization [see](https://docs.microsoft.com/en-us/azure/developer/terraform/create-avd-session-host)
+***Note*** This Terraform accelerator requires the custom image build before deploying the baseline. If you prefer to use the marketplace image with no customization, see [Configure Azure Virtual Desktop session hosts using Terraform](https://learn.microsoft.com/azure/developer/terraform/create-avd-session-host).
 
 ## Table of contents
 
-- [Implement Azure Virtual Desktop with Microsoft Entra ID](#implement-azure-virtual-desktop-with-azure-active-directory)
+- [Implement Azure Virtual Desktop with Microsoft Entra Domain Services](#implement-azure-virtual-desktop-with-azure-active-directory)
   - [Table of contents](#table-of-contents)
   - [Scenario Overview](#scenario-overview)
     - [Azure Architecture](#azure-architecture)
@@ -26,7 +26,7 @@ This accelerator is to be used as starter kit and you can expand its functionali
 
 ### Azure Architecture
 
-This scenario is a greenfield Azure Virtual Desktop deployment using Azure AD joined session host and a pre-existing custom image.
+This scenario is a greenfield Azure Virtual Desktop deployment using Microsoft Entra Domain Services joined session host and a pre-existing custom image.
 The solution implements a new:
 
 - Azure Virtual Desktop resources:
@@ -43,7 +43,7 @@ The solution implements a new:
   - NSG
   - DNS Zone
   - Route table
-- 2 Session host VMs Azure AD join using custom image
+- 2 Session host VMs Microsoft Entra Domain Services join using custom image
   - Application Security Group  
 
 AVD Landing Zone concepts can be explored in more detail via the [official documentation page](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/wvd/).
@@ -113,7 +113,7 @@ Azure platform landing zone has already been deployed in accordance with the [CA
 - vnet_range           = ["your.ip.address.range/16"]
 - subnet_range         = ["your.ip.address.range/24"]
 - allow_list_ip        = ["your.ip.address.range/23"]
-- aad_group_name       = "Desktop Virtualization User"  #user group must pre-created in Azure AD
+- aad_group_name       = "Desktop Virtualization User"  #user group must pre-created in Microsoft Entra Domain Services
 - rdsh_count           = 2
 - image_name           = "yourimagename-microsoftwindowsdesktop-office-365-win11-21h2-avd-m365"
 - image_rg             = "yourimageresourcegroup-WestEurope-avd-AIBdemo-shared-resources"

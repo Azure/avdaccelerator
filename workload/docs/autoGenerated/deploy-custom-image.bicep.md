@@ -315,7 +315,7 @@ AVD OS image source. (Default: win11-22h2)
 
 - Default value: `win11_22h2`
 
-- Allowed values: `win10_21h2`, `win10_21h2_office`, `win10_22h2_g2`, `win10_22h2_office_g2`, `win11_21h2`, `win11_21h2_office`, `win11_22h2`, `win11_22h2_office`
+- Allowed values: `win10_21h2`, `win10_21h2_office`, `win10_22h2_g2`, `win10_22h2_office_g2`, `win11_21h2`, `win11_21h2_office`, `win11_22h2`, `win11_22h2_office`, `win11_23h2`, `win11_23h2_office`
 
 ### operationsTeamTag
 
@@ -402,7 +402,7 @@ Reference to the size of the VM for your workloads (Default: Contoso-Workload)
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "metadata": {
-        "template": "workload/bicep/deploy-custom-image.json"
+        "template": "workload/arm/deploy-custom-image.json"
     },
     "parameters": {
         "alertsActionGroupCustomName": {

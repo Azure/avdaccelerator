@@ -44,7 +44,7 @@ resource "azurerm_role_assignment" "power" {
   name                             = random_uuid.example.result
   scope                            = azurerm_resource_group.rg.id
   role_definition_id               = data.azurerm_role_definition.power_role.role_definition_id
-  principal_id                     = data.azuread_service_principal.spn.application_id
+  principal_id                     = data.azuread_service_principal.spn.object_id
   skip_service_principal_aad_check = true
   depends_on                       = [data.azurerm_role_definition.power_role]
 }

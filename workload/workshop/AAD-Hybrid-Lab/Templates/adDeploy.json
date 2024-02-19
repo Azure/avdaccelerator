@@ -1,0 +1,142 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adIP": {
+      "type": "string",
+      "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.0.0.0/16 reserves 10.0.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail.s" },
+      "defaultValue": "10.0.1.4"
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": { "description": "Admin password" }
+    },
+    "adminUsername": {
+      "type": "string",
+      "metadata": { "description": "Admin username" }
+    },
+    "deploymentNumber": {
+      "type": "string",
+      "defaultValue": "1",
+      "metadata": { "description": "When deploying the stack N times, define the instance - this will be appended to some resource names to avoid collisions." }
+    },
+    "adSubnetName": {
+      "type": "string",
+      "defaultValue": "[concat('adSubnet', parameters('deploymentNumber'))]"
+    },
+    "adVMName": {
+      "type": "string",
+      "defaultValue": "AZAD"
+    },
+    "location": {
+      "type": "string",
+      "metadata": { "Description": "The region to deploy the resources into" }
+    },
+    "NetworkInterfaceName": {
+      "type": "string",
+      "defaultValue": "NIC",
+      "metadata": { "description": "This is the prefix name of the Network interfaces" }
+    },
+    "virtualNetworkName": {
+      "type": "string",
+      "defaultValue": "vnet"
+    },
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_D2s_v4",
+      "metadata": { "description": "This is the allowed list of VM sizes" }
+    }
+  },
+  "variables": {
+    "adSubnetID": "[concat(variables('vnetID'),'/subnets/', parameters('adSubnetName'))]",
+    "imageOffer": "WindowsServer",
+    "imagePublisher": "MicrosoftWindowsServer",
+    "imageSKU": "2019-Datacenter",
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+    "adPubIPName": "[concat('adPubIP', parameters('deploymentNumber'))]",
+    "adNicName": "[concat('ad-',parameters('NetworkInterfaceName'), parameters('deploymentNumber'))]"
+  },
+  "resources": [
+    {
+      "name": "[variables('adPubIPName')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "location": "[parameters('location')]",
+      "apiVersion": "2019-12-01",
+      "tags": {
+        "displayName": "adPubIP"
+      },
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic"
+      }
+    },
+    {
+      "apiVersion": "2019-12-01",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('adNicName')]",
+      "location": "[parameters('location')]",
+      "tags": { "displayName": "adNIC" },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('adPubIPName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "[concat('ipconfig', parameters('deploymentNumber'))]",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "subnet": {
+                "id": "[variables('adSubnetID')]"
+              },
+              "privateIPAddress": "[parameters('adIP')]",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('adPubIPName'))]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2019-07-01",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[parameters('adVMName')]",
+      "location": "[parameters('location')]",
+      "tags": { "displayName": "adVM" },
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkInterfaces/', variables('adNicName'))]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[parameters('adVMName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[variables('imageSKU')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceid('Microsoft.Network/networkInterfaces', variables('adNicName'))]"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "outputs": {
+    
+  }
+}
