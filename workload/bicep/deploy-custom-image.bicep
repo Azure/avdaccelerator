@@ -206,6 +206,8 @@ param logAnalyticsWorkspaceDataRetention int = 30
     'win11_21h2_office'
     'win11_22h2'
     'win11_22h2_office'
+    'win11_23h2'
+    'win11_23h2_office'
 ])
 @sys.description('AVD OS image source. (Default: win11-22h2)')
 param operatingSystemImage string = 'win11_22h2'
@@ -476,6 +478,24 @@ var varOperatingSystemImageDefinitions = {
         hyperVGeneration: 'V2'
         version: 'latest'
     }
+    win11_23h2: {
+        osType: 'Windows'
+        osState: 'Generalized'
+        offer: 'windows-11'
+        publisher: 'MicrosoftWindowsDesktop'
+        sku: 'win11-23h2-avd'
+        hyperVGeneration: 'V2'
+        version: 'latest'
+    }
+    win11_23h2_office: {
+        osType: 'Windows'
+        osState: 'Generalized'
+        offer: 'office-365'
+        publisher: 'MicrosoftWindowsDesktop'
+        sku: 'win11-23h2-avd-m365'
+        hyperVGeneration: 'V2'
+        version: 'latest'
+    }
 }
 var varRdpShortPathCustomizer = rdpShortPathManagedNetworks ? [
     {
@@ -503,11 +523,11 @@ var varRemainingCustomizers = [
     }
     {
         type: 'PowerShell'
-        name: 'Sleep for a min'
+        name: 'Sleep for 5 minutes'
         runElevated: true
         runAsSystem: true
         inline: [
-            'Write-Host "Sleep for a 5 min"'
+            'Write-Host "Sleep for 5 min"'
             'Start-Sleep -Seconds 300'
         ]
     }

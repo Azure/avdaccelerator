@@ -249,7 +249,7 @@ try {
                         }
                 )
         }
-        if ($IdentityServiceProvider -eq "AAD" -and $Fslogix -eq 'true') {
+        if ($IdentityServiceProvider -eq "EntraID" -and $Fslogix -eq 'true') {
                 $Settings += @(
                         [PSCustomObject]@{
                                 Name         = 'CloudKerberosTicketRetrievalEnabled'
@@ -274,9 +274,9 @@ try {
         }
 
         ##############################################################
-        #  Add Azure AD Join Setting
+        #  Add Microsoft Entra ID Join Setting
         ##############################################################
-        if ($IdentityServiceProvider -eq "AAD") {
+        if ($IdentityServiceProvider -eq "EntraID") {
                 $Settings += @(
 
                         # Enable PKU2U: https://docs.microsoft.com/en-us/azure/virtual-desktop/troubleshoot-azure-ad-connections#windows-desktop-client
@@ -357,7 +357,7 @@ try {
         ##############################################################
         #  Install the AVD Agent
         ##############################################################
-        # Disabling this method for installing the AVD agent until AAD Join can completed successfully
+        # Disabling this method for installing the AVD agent until EntraID Join can completed successfully
         $BootInstaller = 'AVD-Bootloader.msi'
         Get-WebFile -FileName $BootInstaller -URL 'https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RWrxrH'
         Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $BootInstaller /quiet /qn /norestart /passive" -Wait -Passthru
@@ -373,7 +373,7 @@ try {
         ##############################################################
         #  Restart VM
         ##############################################################
-        if ($IdentityServiceProvider -eq "AAD" -and $AmdVmSize -eq 'false' -and $NvidiaVmSize -eq 'false') {
+        if ($IdentityServiceProvider -eq "EntraID" -and $AmdVmSize -eq 'false' -and $NvidiaVmSize -eq 'false') {
                 Start-Process -FilePath 'shutdown' -ArgumentList '/r /t 30'
         }
         }

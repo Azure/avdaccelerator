@@ -73,7 +73,7 @@ param networkAcls object = {}
 @description('Optional. A Boolean indicating whether or not the service applies a secondary layer of encryption with platform managed keys for data at rest. For security reasons, it is recommended to set it to true.')
 param requireInfrastructureEncryption bool = true
 
-@description('Optional. Allow or disallow cross AAD tenant object replication.')
+@description('Optional. Allow or disallow cross Microsoft Entra tenant object replication.')
 param allowCrossTenantReplication bool = true
 
 @description('Optional. Sets the custom domain name assigned to the storage account. Name is the CNAME source.')
@@ -159,7 +159,7 @@ param tags object = {}
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
 param enableDefaultTelemetry bool = true
 
-@description('Optional. Restrict copy to and from Storage Accounts within an AAD tenant or with Private Links to the same VNet.')
+@description('Optional. Restrict copy to and from Azure Storage accounts within a Microsoft Entra tenant or with Private Links to the same virtual network.')
 @allowed([
   ''
   'AAD'

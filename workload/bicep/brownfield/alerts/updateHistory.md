@@ -2,6 +2,58 @@
 
 [Home](./readme.md) | [PostDeployment](./postDeploy.md) | [How to Change Thresholds](./changeAlertThreshold.md) | [Alert Reference](./alertReference.md) | [Excel List of Alert Rules](./references/alerts.xlsx)
 
+## 12/5/23 - More Query Updates FSLogix Events and Local Disk Space (V2.1.5)
+
+-	Move the “| where _ResourceId contains "xHostPoolNamex"” line from the Event query to the WVDAgentHealthStatus query. The Host Pool name won’t be in the Resource ID of the event (that will be the computer ID), so no rows will be returned.
+-	Add “| extend ComputerName=tolower(ComputerName)” to both queries to ensure ComputerName is lower case in both. Otherwise it may be lower in one and upper in the other and the join will not work.
+-	Add “| summarize arg_max(TimeGenerated,*) by ComputerName” to the WVDAgentHealthStatus query to limit it to one row per host. Otherwise the join will result in a lot of rows/alerts.  
+---> Updates Compliments of **James Harper**  
+
+### FSLogix Queries Updated
+```k
+Event
+| where EventLog == "Microsoft-FSLogix-Apps/Admin"
+| where EventLevelName == "-------"
+| where EventID == xx
+//| where _ResourceId contains "xHostPoolNamex"   // REMOVED
+| parse _ResourceId with "/subscriptions/" subscription "/resourcegroups/" ResourceGroup "/providers/microsoft.compute/virtualmachines/" ComputerName
+| extend ComputerName=tolower(ComputerName)   // NEW LINE ADDED  
+| project ComputerName, RenderedDescription, subscription, ResourceGroup, TimeGenerated
+| join kind = leftouter
+    (
+    WVDAgentHealthStatus
+   // | where TimeGenerated > ago(15m)
+   | where _ResourceId contains "xHostPoolNamex"   // NEW LINE ADDED  
+    | parse _ResourceId with "/subscriptions/" subscriptionAgentHealth "/resourcegroups/" ResourceGroupAgentHealth "/providers/microsoft.desktopvirtualization/hostpools/" HostPool
+    | parse SessionHostResourceId with "/subscriptions/" VMsubscription "/resourceGroups/" VMresourceGroup "/providers/Microsoft.Compute/virtualMachines/" ComputerName
+    | extend ComputerName=tolower(ComputerName)   // NEW LINE ADDED  
+    | summarize arg_max(TimeGenerated,*) by ComputerName  // NEW LINE ADDED  
+    | project VMresourceGroup, ComputerName, HostPool, _ResourceId
+) on ComputerName
+```  
+### Local Disk Free Space Queries Updated
+```k
+Perf
+          | where TimeGenerated > ago(15m)
+          | where ObjectName == "LogicalDisk" and CounterName == "% Free Space"
+          | where InstanceName !contains "D:"
+          | where InstanceName  !contains "_Total"| where CounterValue <= xx.00
+          | parse _ResourceId with "/subscriptions/" subscription "/resourcegroups/" ResourceGroup "/providers/microsoft.compute/virtualmachines/" ComputerName
+          | extend ComputerName=tolower(ComputerName) // NEW LINE ADDED  
+          | project ComputerName, CounterValue, subscription, ResourceGroup, TimeGenerated
+          | join kind = leftouter
+          (
+              WVDAgentHealthStatus
+              | where TimeGenerated > ago(15m)
+              | where _ResourceId contains " xHostPoolNamex"
+              | parse _ResourceId with "/subscriptions/" subscriptionAgentHealth "/resourcegroups/" ResourceGroupAgentHealth "/providers/microsoft.desktopvirtualization/hostpools/" HostPool
+              | parse SessionHostResourceId with "/subscriptions/" VMsubscription "/resourceGroups/" VMresourceGroup "/providers/Microsoft.Compute/virtualMachines/" ComputerName
+              | extend ComputerName=tolower(ComputerName)    // NEW LINE ADDED  
+              | summarize arg_max(TimeGenerated,*) by ComputerName  // NEW LINE ADDED  
+              | project VMresourceGroup, ComputerName, HostPool, _ResourceId
+              ) on ComputerName
+```
+
 ## 11/20/23 - Fix - Query fix for HostPool case sensitive issue (V2.1.4)
 
 - Potential for alerts to not fire due to case mismatch with Host Pool Names in query

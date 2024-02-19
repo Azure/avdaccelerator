@@ -46,8 +46,8 @@ param avdVmLocalUserPassword string
 
 @allowed([
     'ADDS' // Active Directory Domain Services
-    'AADDS' // Microsoft Entra Domain Services
-    'AAD' // Microsoft Entra ID Join
+    'EntraDS' // Microsoft Entra Domain Services
+    'EntraID' // Microsoft Entra ID Join
 ])
 @sys.description('Required, The service providing domain services for Azure Virtual Desktop. (Default: ADDS)')
 param avdIdentityServiceProvider string = 'ADDS'
@@ -62,7 +62,7 @@ param securityPrincipalId string = ''
 param securityPrincipalName string = ''
 
 @sys.description('FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")')
-param identityDomainName string = ''
+param identityDomainName string = 'none'
 
 @sys.description('AD domain GUID. (Default: "")')
 param identityDomainGuid string = ''
@@ -171,8 +171,8 @@ param msixFileShareQuotaSize int = 1
 @sys.description('Deploy new session hosts. (Default: true)')
 param avdDeploySessionHosts bool = true
 
-@sys.description('Deploy VM GPU extension policies. (Default: true)')
-param deployGpuPolicies bool = true
+@sys.description('Deploy VM GPU extension policies. (Default: false)')
+param deployGpuPolicies bool = false
 
 @sys.description('Deploy AVD monitoring resources and setings. (Default: false)')
 param avdDeployMonitoring bool = false
@@ -229,8 +229,11 @@ param diskZeroTrust bool = false
 @sys.description('Session host VM size. (Default: Standard_D4ads_v5)')
 param avdSessionHostsSize string = 'Standard_D4ads_v5'
 
-@sys.description('OS disk type for session host. (Default: Standard_LRS)')
-param avdSessionHostDiskType string = 'Standard_LRS'
+@sys.description('OS disk type for session host. (Default: Premium_LRS)')
+param avdSessionHostDiskType string = 'Premium_LRS'
+
+@sys.description('Optional. Custom OS Disk Size.')
+param customOsDiskSizeGb string = ''
 
 @sys.description('''Enables accelerated Networking on the session hosts.
 If using a Azure Compute Gallery Image, the Image Definition must have been configured with
@@ -261,8 +264,10 @@ param vTpmEnabled bool = true
     'win11_21h2_office'
     'win11_22h2'
     'win11_22h2_office'
+    'win11_23h2'
+    'win11_23h2_office'
 ])
-@sys.description('AVD OS image SKU. (Default: win11-21h2)')
+@sys.description('AVD OS image SKU. (Default: win11-22h2)')
 param avdOsImage string = 'win11_22h2'
 
 @sys.description('Management VM image SKU (Default: winServer_2022_Datacenter_smalldisk_g2)')
@@ -473,6 +478,9 @@ param time string = utcNow()
 @sys.description('Enable usage and telemetry feedback to Microsoft.')
 param enableTelemetry bool = true
 
+@sys.description('Enable purge protection for the keyvaults. (Default: true)')
+param enableKvPurgeProtection bool = true
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -536,7 +544,8 @@ var varFslogixStorageFqdn = createAvdFslogixDeployment ? '${varFslogixStorageNam
 var varMsixStorageFqdn = '${varMsixStorageName}.file.${environment().suffixes.storage}'
 var varMsixStorageName = avdUseCustomNaming ? '${storageAccountPrefixCustomName}msx${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}' : 'stmsx${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
 var varManagementVmName = 'vmmgmt${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
-var varAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}' //'log-avd-${varAvdComputeStorageResourcesNamingStandard}-${varAvdNamingUniqueStringSixChar}'
+var varAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}'
+var varDataCollectionRulesName = 'microsoft-avdi-${varSessionHostLocationLowercase}' // 'dcr-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}'
 var varZtKvName = avdUseCustomNaming ? '${ztKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' : 'kv-key-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters
 var varZtKvPrivateEndpointName = 'pe-${varZtKvName}-vault'
 //
@@ -682,13 +691,12 @@ var varScalingPlanSchedules = [
         }
     }
 ]
-
 var varMarketPlaceGalleryWindows = loadJsonContent('../variables/osMarketPlaceImages.json')
 var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/1.0.0/DSCStorageScripts.zip'
 var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
 var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
 var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
-var varDefaultStorageOuPath = (avdIdentityServiceProvider == 'AADDS') ? 'AADDC Computers' : 'Computers'
+var varDefaultStorageOuPath = (avdIdentityServiceProvider == 'EntraDS') ? 'AADDC Computers' : 'Computers'
 var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
 var varAllDnsServers = '${customDnsIps},168.63.129.16'
 var varDnsServers = empty(customDnsIps) ? [] : (split(varAllDnsServers, ','))
@@ -806,7 +814,8 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
         deployAlaWorkspace: deployAlaWorkspace
         computeObjectsRgName: varComputeObjectsRgName
         serviceObjectsRgName: varServiceObjectsRgName
-        storageObjectsRgName: (createAvdFslogixDeployment || varCreateMsixDeployment) ? varStorageObjectsRgName : ''
+        dataCollectionRulesName: varDataCollectionRulesName
+        storageObjectsRgName: (createAvdFslogixDeployment || createMsixDeployment) ? varStorageObjectsRgName : ''
         networkObjectsRgName: (createAvdVnet) ? varNetworkObjectsRgName : ''
         monitoringRgName: varMonitoringRgName
         deployCustomPolicyMonitoring: deployCustomPolicyMonitoring
@@ -949,6 +958,7 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
         deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
         keyVaultprivateDNSResourceId: createPrivateDnsZones ? networking.outputs.KeyVaultDnsZoneResourceId : avdVnetPrivateDnsZoneKeyvaultId
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+        enableKvPurgeProtection: enableKvPurgeProtection
         kvTags: varZtKeyvaultTag
     }
     dependsOn: [
@@ -967,7 +977,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
         name: varWrklKvName
         location: avdSessionHostLocation
         enableRbacAuthorization: false
-        enablePurgeProtection: true
+        enablePurgeProtection: enableKvPurgeProtection
         vaultSku: varWrklKeyVaultSku
         softDeleteRetentionInDays: 7
         publicNetworkAccess: deployPrivateEndpointKeyvaultStorage ? 'Disabled' : 'Enabled'
@@ -991,7 +1001,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
             }
         ] : []
         secrets: {
-            secureList: (avdIdentityServiceProvider != 'AAD') ? [
+            secureList: (avdIdentityServiceProvider != 'EntraID') ? [
                 {
                     name: 'vmLocalUserPassword'
                     value: avdVmLocalUserPassword
@@ -1211,6 +1221,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
         sessionHostOuPath: avdOuPath
         diskType: avdSessionHostDiskType
+        customOsDiskSizeGB: customOsDiskSizeGb
         location: avdSessionHostLocation
         namePrefix: varSessionHostNamePrefix
         vmSize: avdSessionHostsSize
@@ -1233,6 +1244,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         deployMonitoring: avdDeployMonitoring
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
+        dataCollectionRuleId: avdDeployMonitoring ? monitoringDiagnosticSettings.outputs.dataCollectionRuleId: ''
     }
     dependsOn: [
         fslogixAzureFilesStorage
