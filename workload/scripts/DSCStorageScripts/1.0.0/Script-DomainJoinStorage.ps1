@@ -63,12 +63,13 @@ $ErrorActionPreference = "Stop"
 
 . (Join-Path $ScriptPath "Logger.ps1")
 
-Write-Log "Forcing group policy updates"
-gpupdate /force
+if ($IdentityServiceProvider -ne 'AAD') {
+	Write-Log "Forcing group policy updates"
+	gpupdate /force
 
-Write-Log "Waiting for domain policies to be applied (1 minute)"
-Start-Sleep -Seconds 60
-
+	Write-Log "Waiting for domain policies to be applied (1 minute)"
+	Start-Sleep -Seconds 60
+}
 
 Write-Log "Turning off Windows firewall. "
 Set-NetFirewallProfile -Profile Domain, Public, Private -Enabled False
@@ -127,7 +128,6 @@ if ($IdentityServiceProvider -eq 'ADDS') {
 	}
 }
 
-# Remove Administrators from full control
 if ($StoragePurpose -eq 'fslogix') {
 	$DriveLetter = 'Y'
 }
@@ -164,29 +164,29 @@ Catch {
 }
 
 Try {
-	Write-Log "setting up NTFS permission for FSLogix"
+	Write-Log "setting up NTFS permission for FSLogix or App attach"
+	icacls ${DriveLetter}: /inheritance:r
 	icacls ${DriveLetter}: /remove "BUILTIN\Administrators"
 	icacls ${DriveLetter}: /grant "Creator Owner:(OI)(CI)(IO)(M)"
-	icacls ${DriveLetter}: /remove "Authenticated Users"
-	icacls ${DriveLetter}: /remove "Builtin\Users"
+	icacls ${DriveLetter}: /remove "BUILTIN\Users"
 	Write-Log "ACLs set"
-	# AVD group permissions
+	#AVD group permissions
 	if ($SecurityPrincipalName -eq 'none' -or $IdentityServiceProvider -eq 'AAD') {
 		Write-Log "AD group not provided or using Microsoft Entra ID joined session hosts, ACLs for AD group not set"
 	}
 	else {
+		icacls ${DriveLetter}: /remove "Authenticated Users"
 		$Group = $DomainName + '\' + $SecurityPrincipalName
 		icacls ${DriveLetter}: /grant "${Group}:(M)"
 		Write-Log "AD group $Group ACLs set"
 	}
-
-	Write-Log "Unmounting drive"
-	# Remove-PSDrive -Name $DriveLetter -Force
-	net use ${DriveLetter} /delete
-	Write-Log "Drive unmounted"
+	# Write-Log "Unmounting drive"
+	# # Remove-PSDrive -Name $DriveLetter -Force
+	# net use ${DriveLetter} /delete
+	# Write-Log "Drive unmounted"
 }
 Catch {
-	Write-Log -Err "Error while setting up NTFS permission for FSLogix"
+	Write-Log -Err "Error while setting up NTFS permission for FSLogix or App attach"
 	Write-Log -Err $_.Exception.Message
 	Throw $_
 }

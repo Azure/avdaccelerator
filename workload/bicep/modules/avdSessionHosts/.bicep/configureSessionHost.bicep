@@ -40,7 +40,8 @@ param hostPoolToken string
 // Variable declaration //
 // =========== //
 // var ScreenCaptureProtection = true
-var varScriptArguments = '-IdentityDomainName ${identityDomainName} -AmdVmSize ${varAmdVmSize} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -FslogixFileShare ${fslogixFileShare} -FslogixStorageFqdn ${fslogixStorageFqdn} -HostPoolRegistrationToken ${hostPoolToken} -NvidiaVmSize ${varNvidiaVmSize} -verbose' // -ScreenCaptureProtection ${ScreenCaptureProtection} -verbose'
+// Additional parameter for screen capture functionallity -ScreenCaptureProtection ${ScreenCaptureProtection} -verbose' powershell script will need to be updated too
+var varScriptArguments = fslogix ? '-IdentityDomainName ${identityDomainName} -AmdVmSize ${varAmdVmSize} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -FslogixFileShare ${fslogixFileShare} -FslogixStorageFqdn ${fslogixStorageFqdn} -HostPoolRegistrationToken ${hostPoolToken} -NvidiaVmSize ${varNvidiaVmSize} -verbose' : '-AmdVmSize ${varAmdVmSize} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -HostPoolRegistrationToken ${hostPoolToken} -NvidiaVmSize ${varNvidiaVmSize} -verbose'
 var varAmdVmSizes = [
   'Standard_NV4as_v4'
   'Standard_NV8as_v4'

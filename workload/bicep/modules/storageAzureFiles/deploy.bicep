@@ -43,6 +43,9 @@ param wrklKvName string
 @sys.description('AVD session host domain join credentials.')
 param domainJoinUserName string
 
+@sys.description('AVD session host local admin credentials.')
+param vmLocalUserName string
+
 @sys.description('Azure Files storage account SKU.')
 param storageSku string
 
@@ -99,7 +102,6 @@ param storageAccountFqdn string
 // Variable declaration //
 // =========== //
 var varAzureCloudName = environment().name
-var varStoragePurposeLower = toLower(storagePurpose)
 var varAvdFileShareLogsDiagnostic = [
     'allLogs'
 ]
@@ -109,7 +111,9 @@ var varAvdFileShareMetricsDiagnostic = [
 var varWrklStoragePrivateEndpointName = 'pe-${storageAccountName}-file'
 var varDirectoryServiceOptions = (identityServiceProvider == 'AADDS') ? 'AADDS': (identityServiceProvider == 'AAD') ? 'AADKERB': 'None'
 var varSecurityPrincipalName = !empty(securityPrincipalName)? securityPrincipalName : 'none'
-var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -DomainAdminUserName ${domainJoinUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName ${varSecurityPrincipalName} -StorageAccountFqdn ${storageAccountFqdn} '
+var varAdminUserName = (identityServiceProvider == 'AAD') ? vmLocalUserName : domainJoinUserName
+var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -AdminUserName ${varAdminUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName "${varSecurityPrincipalName}" -StorageAccountFqdn ${storageAccountFqdn} '
+
 // =========== //
 // Deployments //
 // =========== //
@@ -130,13 +134,14 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
         skuName: storageSku
         allowBlobPublicAccess: false
         publicNetworkAccess: deployPrivateEndpoint ? 'Disabled' : 'Enabled'
-        kind: ((storageSku =~ 'Premium_LRS') || (storageSku =~ 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
+        kind: ((storageSku == 'Premium_LRS') || (storageSku == 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
+        largeFileSharesState: (storageSku == 'Standard_LRS') || (storageSku == 'Standard_ZRS') ? 'Enabled': 'Disabled'
         azureFilesIdentityBasedAuthentication: {
             directoryServiceOptions: varDirectoryServiceOptions
             activeDirectoryProperties: (identityServiceProvider == 'AAD') ? {
                 domainGuid: identityDomainGuid
                 domainName: identityDomainName
-            }: {}
+            } : {}
         }
         accessTier: 'Hot'
         networkAcls: deployPrivateEndpoint ? {
@@ -172,7 +177,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
                 privateDnsZoneGroup: {
                     privateDNSResourceIds: [
                         vnetPrivateDnsZoneFilesId
-                    ]                    
+                    ]
                 }
             }
         ] : []
@@ -190,7 +195,7 @@ module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = {
         name: managementVmName
         file: storageToDomainScript
         scriptArguments: varStorageToDomainScriptArgs
-        domainJoinUserPassword: avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
+        adminUserPassword: (identityServiceProvider == 'AAD') ? avdWrklKeyVaultget.getSecret('vmLocalUserPassword') : avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
         baseScriptUri: storageToDomainScriptUri
     }
     dependsOn: [

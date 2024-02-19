@@ -58,7 +58,7 @@ param
 
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
-    [string] $DomainAdminUserName,
+    [string] $AdminUserName,
 
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
@@ -66,7 +66,7 @@ param
 	
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
-    [string] $DomainAdminUserPassword
+    [string] $AdminUserPassword
 )
 
 
@@ -124,7 +124,7 @@ Configuration DomainJoinFileShare
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $DomainAdminUserName,
+        [string] $AdminUserName,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -132,13 +132,14 @@ Configuration DomainJoinFileShare
 	
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $DomainAdminUserPassword
+        [string] $AdminUserPassword
     )
     
     # Import the module that contains the File resource.
     Import-DscResource -ModuleName PsDesiredStateConfiguration
-    $secStringPassword = ConvertTo-SecureString $DomainAdminUserPassword -AsPlainText -Force
-    $DomainAdminCred = New-Object System.Management.Automation.PSCredential ($DomainAdminUserName, $secStringPassword)
+
+    $secStringPassword = ConvertTo-SecureString $AdminUserPassword -AsPlainText -Force
+    $AdminCred = New-Object System.Management.Automation.PSCredential ($AdminUserName, $secStringPassword)
 
     $ErrorActionPreference = 'Stop'
     
@@ -201,7 +202,7 @@ Configuration DomainJoinFileShare
                 }
             }
 		
-            PsDscRunAsCredential = $DomainAdminCred
+            PsDscRunAsCredential = $AdminCred
         }
     }
 }
@@ -216,4 +217,4 @@ $config = @{
     )
 }
 
-DomainJoinFileShare -ConfigurationData $config -StorageAccountName $StorageAccountName -StorageAccountRG $StorageAccountRG -SubscriptionId $SubscriptionId -ShareName $ShareName -DomainName $DomainName -IdentityServiceProvider $IdentityServiceProvider -AzureCloudEnvironment $AzureCloudEnvironment -CustomOuPath $CustomOuPath -OUName $OUName -DomainAdminUserName $DomainAdminUserName -DomainAdminUserPassword $DomainAdminUserPassword -ClientId $ClientId -SecurityPrincipalName $SecurityPrincipalName -StoragePurpose $StoragePurpose -StorageAccountFqdn $StorageAccountFqdn -Verbose;
+DomainJoinFileShare -ConfigurationData $config -StorageAccountName $StorageAccountName -StorageAccountRG $StorageAccountRG -SubscriptionId $SubscriptionId -ShareName $ShareName -DomainName $DomainName -IdentityServiceProvider $IdentityServiceProvider -AzureCloudEnvironment $AzureCloudEnvironment -CustomOuPath $CustomOuPath -OUName $OUName -AdminUserName $AdminUserName -AdminUserPassword $AdminUserPassword -ClientId $ClientId -SecurityPrincipalName $SecurityPrincipalName -StoragePurpose $StoragePurpose -StorageAccountFqdn $StorageAccountFqdn -Verbose;

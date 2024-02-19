@@ -50,11 +50,12 @@ param virtualHubId string = ''
 param threatIntelMode string = 'Deny'
 
 @description('Optional. Zone numbers e.g. 1,2,3.')
-param zones array = [
-  '1'
-  '2'
-  '3'
-]
+param zones array = []
+// param zones array = [
+//   '1'
+//   '2'
+//   '3'
+// ]
 
 @description('Optional. Diagnostic Storage Account resource identifier.')
 param diagnosticStorageAccountId string = ''
@@ -222,7 +223,7 @@ module publicIPAddress '../../Microsoft.Network/publicIPAddresses/deploy.bicep' 
     ]
     location: location
     diagnosticStorageAccountId: diagnosticStorageAccountId
-    diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
+    //diagnosticLogsRetentionInDays: diagnosticLogsRetentionInDays
     diagnosticWorkspaceId: diagnosticWorkspaceId
     diagnosticEventHubAuthorizationRuleId: diagnosticEventHubAuthorizationRuleId
     diagnosticEventHubName: diagnosticEventHubName

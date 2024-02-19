@@ -123,6 +123,9 @@ param createAvdVnet bool = true
 @sys.description('Existing virtual network subnet for AVD. (Default: "")')
 param existingVnetAvdSubnetResourceId string = ''
 
+@sys.description('Existing virtual network address prefixes for AVD. (Default: "")')
+param existingVnetAvdAddressPrefixes string = ''
+
 @sys.description('Existing virtual network subnet for private endpoints. (Default: "")')
 param existingVnetPrivateEndpointSubnetResourceId string = ''
 
@@ -155,6 +158,18 @@ param avdVnetPrivateDnsZoneKeyvaultId string = ''
 
 @sys.description('Does the hub contains a virtual network gateway. (Default: false)')
 param vNetworkGatewayOnHub bool = false
+
+@sys.description('Create Azure Firewall and Azure Firewall Policy. (Default: false)')
+param deployFirewall bool = false
+
+@sys.description('Create Azure Firewall and Azure Firewall Policy in hub virtual network. (Default: false)')
+param deployFirewallInHubVirtualNetwork bool = false
+
+@sys.description('Azure firewall virtual network. (Default: "")')
+param firewallVnetResourceId string = ''
+
+@sys.description('AzureFirewallSubnet prefixes. (Default: 10.0.2.0/24)')
+param firewallSubnetAddressPrefix string = ''
 
 @sys.description('Deploy Fslogix setup. (Default: true)')
 param createAvdFslogixDeployment bool = true
@@ -509,6 +524,16 @@ var varPrivateEndpointNetworksecurityGroupName = avdUseCustomNaming ? privateEnd
 var varAvdRouteTableName = avdUseCustomNaming ? avdRouteTableCustomName : 'route-avd-${varComputeStorageResourcesNamingStandard}-001'
 var varPrivateEndpointRouteTableName = avdUseCustomNaming ? privateEndpointRouteTableCustomName : 'route-pe-${varComputeStorageResourcesNamingStandard}-001'
 var varApplicationSecurityGroupName = avdUseCustomNaming ? avdApplicationSecurityGroupCustomName : 'asg-${varComputeStorageResourcesNamingStandard}-001'
+var varFirewallVnetName = (deployFirewall) ? split(firewallVnetResourceId, '/')[8] : ''
+var varFirewallVnetPeeringName = 'peer-${varFirewallVnetName}'
+var varFirewallRemoteVnetPeeringName = (createAvdVnet) ? 'peer-${varVnetName}' : 'peer-${split(existingVnetAvdSubnetResourceId, '/')[8]}'
+var varFiwewallName = 'fw-avd-${varFirewallVnetName}'
+var varFiwewallPolicyName = 'fwpol-avd-${varFirewallVnetName}'
+var varFiwewallPolicyRuleCollectionGroupName = '${varFiwewallPolicyName}-rcg'
+var varFiwewallPolicyNetworkRuleCollectionName = '${varFiwewallPolicyName}-nw-rule-collection'
+var varFiwewallPolicyOptionalRuleCollectionGroupName = '${varFiwewallPolicyName}-rcg-optional'
+var varFiwewallPolicyOptionalNetworkRuleCollectionName = '${varFiwewallPolicyName}-nw-rule-collection-optional'
+var varFiwewallPolicyOptionalApplicationRuleCollectionName = '${varFiwewallPolicyName}-app-rule-collection-optional'
 var varWorkSpaceName = avdUseCustomNaming ? avdWorkSpaceCustomName : 'vdws-${varManagementPlaneNamingStandard}-001'
 var varWorkSpaceFriendlyName = avdUseCustomNaming ? avdWorkSpaceCustomFriendlyName : 'Workspace ${deploymentPrefix} ${deploymentEnvironment} ${avdManagementPlaneLocation} 001'
 var varHostPoolName = avdUseCustomNaming ? avdHostPoolCustomName : 'vdpool-${varManagementPlaneNamingStandard}-001'
@@ -528,7 +553,7 @@ var varStorageManagedIdentityName = 'id-storage-${varComputeStorageResourcesNami
 var varFslogixFileShareName = avdUseCustomNaming ? fslogixFileShareCustomName : 'fslogix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
 var varMsixFileShareName = avdUseCustomNaming ? msixFileShareCustomName : 'msix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
 var varFslogixStorageName = avdUseCustomNaming ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}' : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
-var varFslogixStorageFqdn = '${varFslogixStorageName}.file.${environment().suffixes.storage}'
+var varFslogixStorageFqdn = createAvdFslogixDeployment ? '${varFslogixStorageName}.file.${environment().suffixes.storage}' : ''
 var varMsixStorageFqdn = '${varMsixStorageName}.file.${environment().suffixes.storage}'
 var varMsixStorageName = avdUseCustomNaming ? '${storageAccountPrefixCustomName}msx${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}' : 'stmsx${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
 var varManagementVmName = 'vmmgmt${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
@@ -536,12 +561,11 @@ var varAlaWorkspaceName = avdUseCustomNaming ? avdAlaWorkspaceCustomName : 'log-
 var varZtKvName = avdUseCustomNaming ? '${ztKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' : 'kv-key-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters
 var varZtKvPrivateEndpointName = 'pe-${varZtKvName}-vault'
 //
-var varFslogixSharePath = '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
+var varFslogixSharePath = createAvdFslogixDeployment ? '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}' : ''
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
 var varDiskEncryptionKeyExpirationInEpoch = dateTimeToEpoch(dateTimeAdd(time, 'P${string(diskEncryptionKeyExpirationInDays)}D'))
-var varAvdAgentPackageLocation = 'https://wvdportalstorageblob.blob.${environment().suffixes.storage}/galleryartifacts/Configuration_09-08-2022.zip'
 var varCreateStorageDeployment = (createAvdFslogixDeployment || createMsixDeployment == true) ? true : false
 var varFslogixStorageSku = zoneRedundantStorage ? '${fslogixStoragePerformance}_ZRS' : '${fslogixStoragePerformance}_LRS'
 var varMsixStorageSku = zoneRedundantStorage ? '${msixStoragePerformance}_ZRS' : '${msixStoragePerformance}_LRS'
@@ -753,7 +777,7 @@ var varMarketPlaceGalleryWindows = {
         version: 'latest'
     }
 }
-var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts.zip'
+var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/1.0.0/DSCStorageScripts.zip'
 var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
 var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
 var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
@@ -900,6 +924,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
         createVnet: createAvdVnet
         deployAsg: (avdDeploySessionHosts || createAvdFslogixDeployment || createMsixDeployment) ? true : false
         existingAvdSubnetResourceId: existingVnetAvdSubnetResourceId
+        existingAvdVnetAddressPrefixes: existingVnetAvdAddressPrefixes
         createPrivateDnsZones: deployPrivateEndpointKeyvaultStorage ? createPrivateDnsZones : false
         applicationSecurityGroupName: varApplicationSecurityGroupName
         computeObjectsRgName: varComputeObjectsRgName
@@ -925,6 +950,19 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
         dnsServers: varDnsServers
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
+        deployFirewall: deployFirewall
+        deployFirewallInHubVirtualNetwork: deployFirewallInHubVirtualNetwork
+        firewallVnetResourceId: firewallVnetResourceId
+        firewallVnetPeeringName: varFirewallVnetPeeringName
+        firewallRemoteVnetPeeringName: varFirewallRemoteVnetPeeringName
+        firewallName: varFiwewallName
+        firewallPolicyName: varFiwewallPolicyName
+        firewallPolicyRuleCollectionGroupName: varFiwewallPolicyRuleCollectionGroupName
+        firewallPolicyNetworkRuleCollectionName: varFiwewallPolicyNetworkRuleCollectionName
+        firewallPolicyOptionalRuleCollectionGroupName: varFiwewallPolicyOptionalRuleCollectionGroupName
+        firewallPolicyOptionalNetworkRuleCollectionName: varFiwewallPolicyOptionalNetworkRuleCollectionName
+        firewallPolicyOptionalApplicationRuleCollectionName: varFiwewallPolicyOptionalApplicationRuleCollectionName
+        firewallSubnetAddressPrefix: firewallSubnetAddressPrefix
     }
     dependsOn: [
         baselineNetworkResourceGroup
@@ -1092,12 +1130,12 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
                 }
                 {
                     name: 'domainJoinUserName'
-                    value: 'AAD-Joined-Deployment-No-Domain-Credentials'
+                    value: 'NoUsername'
                     contentType: 'Domain join credentials'
                 }
                 {
                     name: 'domainJoinUserPassword'
-                    value: 'AAD-Joined-Deployment-No-Domain-Credentials'
+                    value: 'NoPassword'
                     contentType: 'Domain join credentials'
                 }
             ]
@@ -1152,6 +1190,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
     name: 'Storage-FSLogix-${time}'
     params: {
         storagePurpose: 'fslogix'
+        vmLocalUserName: avdVmLocalUserName
         fileShareName: varFslogixFileShareName
         fileShareMultichannel: (fslogixStoragePerformance == 'Premium') ? true : false
         storageSku: varFslogixStorageSku
@@ -1195,6 +1234,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (cr
     name: 'Storage-MSIX-${time}'
     params: {
         storagePurpose: 'msix'
+        vmLocalUserName: avdVmLocalUserName
         fileShareName: varMsixFileShareName
         fileShareMultichannel: (msixStoragePerformance == 'Premium') ? true : false
         storageSku: varMsixStorageSku
