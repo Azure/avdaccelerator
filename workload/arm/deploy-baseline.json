@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "501936805434858455"
+      "templateHash": "9748035616520442138"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -86,8 +86,8 @@
       "defaultValue": "ADDS",
       "allowedValues": [
         "ADDS",
-        "AADDS",
-        "AAD"
+        "EntraDS",
+        "EntraID"
       ],
       "metadata": {
         "description": "Required, The service providing domain services for Azure Virtual Desktop. (Default: ADDS)"
@@ -116,7 +116,7 @@
     },
     "identityDomainName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "none",
       "metadata": {
         "description": "FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: \"\")"
       }
@@ -349,9 +349,9 @@
     },
     "deployGpuPolicies": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
-        "description": "Deploy VM GPU extension policies. (Default: true)"
+        "description": "Deploy VM GPU extension policies. (Default: false)"
       }
     },
     "avdDeployMonitoring": {
@@ -471,9 +471,16 @@
     },
     "avdSessionHostDiskType": {
       "type": "string",
-      "defaultValue": "Standard_LRS",
+      "defaultValue": "Premium_LRS",
       "metadata": {
-        "description": "OS disk type for session host. (Default: Standard_LRS)"
+        "description": "OS disk type for session host. (Default: Premium_LRS)"
+      }
+    },
+    "customOsDiskSizeGb": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Custom OS Disk Size."
       }
     },
     "enableAcceleratedNetworking": {
@@ -520,10 +527,12 @@
         "win11_21h2",
         "win11_21h2_office",
         "win11_22h2",
-        "win11_22h2_office"
+        "win11_22h2_office",
+        "win11_23h2",
+        "win11_23h2_office"
       ],
       "metadata": {
-        "description": "AVD OS image SKU. (Default: win11-21h2)"
+        "description": "AVD OS image SKU. (Default: win11-22h2)"
       }
     },
     "managementVmOsImage": {
@@ -916,6 +925,13 @@
       "metadata": {
         "description": "Enable usage and telemetry feedback to Microsoft."
       }
+    },
+    "enableKvPurgeProtection": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable purge protection for the keyvaults. (Default: true)"
+      }
     }
   },
   "variables": {
@@ -1245,6 +1261,18 @@
         "sku": "win11-22h2-avd-m365",
         "version": "latest"
       },
+      "win11_23h2": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "Windows-11",
+        "sku": "win11-23h2-avd",
+        "version": "latest"
+      },
+      "win11_23h2_office": {
+        "publisher": "MicrosoftWindowsDesktop",
+        "offer": "office-365",
+        "sku": "win11-23h2-avd-m365",
+        "version": "latest"
+      },
       "winServer_2022_Datacenter": {
         "publisher": "MicrosoftWindowsServer",
         "offer": "WindowsServer",
@@ -1330,6 +1358,7 @@
     "varMsixStorageName": "[if(parameters('avdUseCustomNaming'), format('{0}msx{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')), format('stmsx{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')))]",
     "varManagementVmName": "[format('vmmgmt{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varSessionHostLocationAcronym'))]",
     "varAlaWorkspaceName": "[if(parameters('avdUseCustomNaming'), parameters('avdAlaWorkspaceCustomName'), format('log-avd-{0}-{1}', variables('varDeploymentEnvironmentLowercase'), variables('varManagementPlaneLocationAcronym')))]",
+    "varDataCollectionRulesName": "[format('microsoft-avdi-{0}', variables('varSessionHostLocationLowercase'))]",
     "varZtKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('ztKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')), format('kv-key-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')))]",
     "varZtKvPrivateEndpointName": "[format('pe-{0}-vault', variables('varZtKvName'))]",
     "varFslogixSharePath": "[if(parameters('createAvdFslogixDeployment'), format('\\\\{0}.file.{1}\\{2}', variables('varFslogixStorageName'), environment().suffixes.storage, variables('varFslogixFileShareName')), '')]",
@@ -1471,7 +1500,7 @@
     "varStorageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-Storage-Scripts.ps1', variables('varBaseScriptUri'))]",
     "varStorageToDomainScript": "./Manual-DSC-Storage-Scripts.ps1",
     "varOuStgPath": "[if(not(empty(parameters('storageOuPath'))), format('\"{0}\"', parameters('storageOuPath')), format('\"{0}\"', variables('varDefaultStorageOuPath')))]",
-    "varDefaultStorageOuPath": "[if(equals(parameters('avdIdentityServiceProvider'), 'AADDS'), 'AADDC Computers', 'Computers')]",
+    "varDefaultStorageOuPath": "[if(equals(parameters('avdIdentityServiceProvider'), 'EntraDS'), 'AADDC Computers', 'Computers')]",
     "varStorageCustomOuPath": "[if(not(empty(parameters('storageOuPath'))), 'true', 'false')]",
     "varAllDnsServers": "[format('{0},168.63.129.16', parameters('customDnsIps'))]",
     "varDnsServers": "[if(empty(parameters('customDnsIps')), createArray(), split(variables('varAllDnsServers'), ','))]",
@@ -3341,7 +3370,10 @@
           "serviceObjectsRgName": {
             "value": "[variables('varServiceObjectsRgName')]"
           },
-          "storageObjectsRgName": "[if(or(parameters('createAvdFslogixDeployment'), variables('varCreateMsixDeployment')), createObject('value', variables('varStorageObjectsRgName')), createObject('value', ''))]",
+          "dataCollectionRulesName": {
+            "value": "[variables('varDataCollectionRulesName')]"
+          },
+          "storageObjectsRgName": "[if(or(parameters('createAvdFslogixDeployment'), parameters('createMsixDeployment')), createObject('value', variables('varStorageObjectsRgName')), createObject('value', ''))]",
           "networkObjectsRgName": "[if(parameters('createAvdVnet'), createObject('value', variables('varNetworkObjectsRgName')), createObject('value', ''))]",
           "monitoringRgName": {
             "value": "[variables('varMonitoringRgName')]"
@@ -3366,7 +3398,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "3799883154990972414"
+              "templateHash": "2150717287589574494"
             }
           },
           "parameters": {
@@ -3433,7 +3465,13 @@
             "alaWorkspaceName": {
               "type": "string",
               "metadata": {
-                "description": " Azure log analytics workspace name."
+                "description": "Azure log analytics workspace name."
+              }
+            },
+            "dataCollectionRulesName": {
+              "type": "string",
+              "metadata": {
+                "description": "Data collection rules name."
               }
             },
             "alaWorkspaceDataRetention": {
@@ -3455,6 +3493,9 @@
                 "description": "Do not modify, used to set unique value for resource deployment."
               }
             }
+          },
+          "variables": {
+            "varDcrRgName": "AzureMonitor-DataCollectionRules"
           },
           "resources": [
             {
@@ -6985,53 +7026,49 @@
               ]
             },
             {
-              "condition": "[parameters('deployAlaWorkspace')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('Events-Performance-{0}', parameters('time'))]",
-              "location": "[deployment().location]",
+              "name": "[format('DCR-{0}', parameters('time'))]",
+              "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
+              "resourceGroup": "[if(parameters('deployAlaWorkspace'), format('{0}', parameters('monitoringRgName')), format('{0}', parameters('serviceObjectsRgName')))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "deployAlaWorkspace": {
-                    "value": "[parameters('deployAlaWorkspace')]"
+                  "location": {
+                    "value": "[parameters('location')]"
                   },
-                  "alaWorkspaceId": "[if(parameters('deployAlaWorkspace'), createObject('value', ''), createObject('value', parameters('alaWorkspaceId')))]",
-                  "monitoringRgName": {
-                    "value": "[parameters('monitoringRgName')]"
+                  "name": {
+                    "value": "[parameters('dataCollectionRulesName')]"
                   },
-                  "alaWorkspaceName": "[if(parameters('deployAlaWorkspace'), createObject('value', parameters('alaWorkspaceName')), createObject('value', ''))]",
-                  "subscriptionId": {
-                    "value": "[parameters('subscriptionId')]"
-                  },
+                  "alaWorkspaceId": "[if(parameters('deployAlaWorkspace'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', parameters('alaWorkspaceId')))]",
                   "tags": {
                     "value": "[parameters('tags')]"
                   }
                 },
                 "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.24.24.22086",
-                      "templateHash": "8530746724060931167"
+                      "templateHash": "10714596913778460692"
                     }
                   },
                   "parameters": {
-                    "subscriptionId": {
+                    "name": {
                       "type": "string",
                       "metadata": {
-                        "description": "AVD workload subscription ID, multiple subscriptions scenario."
+                        "description": "Data colleciton rule name."
                       }
                     },
-                    "deployAlaWorkspace": {
-                      "type": "bool",
+                    "location": {
+                      "type": "string",
                       "metadata": {
-                        "description": "create new Azure log analytics workspace."
+                        "description": "Location where to deploy resources."
                       }
                     },
                     "alaWorkspaceId": {
@@ -7040,880 +7077,116 @@
                         "description": "Exisintg Azure log analytics workspace."
                       }
                     },
-                    "monitoringRgName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "AVD Resource Group Name for monitoring resources."
-                      }
-                    },
-                    "alaWorkspaceName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": " Azure log analytics workspace name."
-                      }
-                    },
                     "tags": {
                       "type": "object",
                       "metadata": {
                         "description": "Tags to be applied to resources"
                       }
-                    },
-                    "time": {
-                      "type": "string",
-                      "defaultValue": "[utcNow()]",
-                      "metadata": {
-                        "description": "Do not modify, used to set unique value for resource deployment."
-                      }
                     }
                   },
                   "variables": {
-                    "varExistingAlaWorkspaceName": "[if(parameters('deployAlaWorkspace'), '', split(parameters('alaWorkspaceId'), '/')[8])]",
-                    "varExistingAlaWorkspaceRgName": "[if(parameters('deployAlaWorkspace'), '', split(parameters('alaWorkspaceId'), '/')[4])]",
-                    "varExistingAlaWorkspaceSubID": "[if(parameters('deployAlaWorkspace'), '', split(parameters('alaWorkspaceId'), '/')[2])]",
-                    "varOsSettingsAlaWorkspaceRgName": "[if(parameters('deployAlaWorkspace'), parameters('monitoringRgName'), variables('varExistingAlaWorkspaceRgName'))]",
-                    "varOsSettingsAlaWorkspaceSubId": "[if(parameters('deployAlaWorkspace'), parameters('subscriptionId'), variables('varExistingAlaWorkspaceSubID'))]",
-                    "varWindowsEvents": [
-                      {
-                        "name": "Microsoft-FSLogix-Apps/Operational",
-                        "types": [
-                          {
-                            "eventType": "Error"
-                          },
-                          {
-                            "eventType": "Warning"
-                          },
-                          {
-                            "eventType": "Information"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "Microsoft-Windows-TerminalServices-LocalSessionManager/Operational",
-                        "types": [
-                          {
-                            "eventType": "Error"
-                          },
-                          {
-                            "eventType": "Warning"
-                          },
-                          {
-                            "eventType": "Information"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "System",
-                        "types": [
-                          {
-                            "eventType": "Error"
-                          },
-                          {
-                            "eventType": "Warning"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "Microsoft-Windows-TerminalServices-RemoteConnectionManager/Admin",
-                        "types": [
-                          {
-                            "eventType": "Error"
-                          },
-                          {
-                            "eventType": "Warning"
-                          },
-                          {
-                            "eventType": "Information"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "Microsoft-FSLogix-Apps/Admin",
-                        "types": [
-                          {
-                            "eventType": "Error"
-                          },
-                          {
-                            "eventType": "Warning"
-                          },
-                          {
-                            "eventType": "Information"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "Application",
-                        "types": [
-                          {
-                            "eventType": "Error"
-                          },
-                          {
-                            "eventType": "Warning"
-                          }
-                        ]
-                      }
-                    ],
-                    "varWindowsPerformanceCounters": [
-                      {
-                        "objectName": "LogicalDisk",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Disk Transfers/sec"
-                      },
-                      {
-                        "objectName": "LogicalDisk",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Current Disk Queue Length"
-                      },
-                      {
-                        "objectName": "LogicalDisk",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Disk Reads/sec"
-                      },
-                      {
-                        "objectName": "LogicalDisk",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "% Free Space"
-                      },
-                      {
-                        "objectName": "LogicalDisk",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Avg. Disk sec/Read"
-                      },
-                      {
-                        "objectName": "LogicalDisk",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Disk Writes/sec"
-                      },
-                      {
-                        "objectName": "LogicalDisk",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Avg. Disk sec/Write"
-                      },
-                      {
-                        "objectName": "LogicalDisk",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Free Megabytes"
-                      },
-                      {
-                        "objectName": "LogicalDisk",
-                        "instanceName": "C:",
-                        "intervalSeconds": 60,
-                        "counterName": "% Free Space"
-                      },
-                      {
-                        "objectName": "LogicalDisk",
-                        "instanceName": "C:",
-                        "intervalSeconds": 30,
-                        "counterName": "Avg. Disk Queue Length"
-                      },
-                      {
-                        "objectName": "LogicalDisk",
-                        "instanceName": "C:",
-                        "intervalSeconds": 60,
-                        "counterName": "Avg. Disk sec/Transfer"
-                      },
-                      {
-                        "objectName": "LogicalDisk",
-                        "instanceName": "C:",
-                        "intervalSeconds": 30,
-                        "counterName": "Current Disk Queue Length"
-                      },
-                      {
-                        "objectName": "Memory",
-                        "instanceName": "*",
-                        "intervalSeconds": 30,
-                        "counterName": "% Committed Bytes In Use"
-                      },
-                      {
-                        "objectName": "Memory",
-                        "instanceName": "*",
-                        "intervalSeconds": 30,
-                        "counterName": "Available Mbytes"
-                      },
-                      {
-                        "objectName": "Memory",
-                        "instanceName": "*",
-                        "intervalSeconds": 30,
-                        "counterName": "Page Faults/sec"
-                      },
-                      {
-                        "objectName": "Memory",
-                        "instanceName": "*",
-                        "intervalSeconds": 30,
-                        "counterName": "Pages/sec"
-                      },
-                      {
-                        "objectName": "Network Adapter",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Bytes Sent/sec"
-                      },
-                      {
-                        "objectName": "Network Adapter",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Bytes Received/sec"
-                      },
-                      {
-                        "objectName": "Network Interface",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Bytes Total/sec"
-                      },
-                      {
-                        "objectName": "PhysicalDisk",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Avg. Disk Bytes/Transfer"
-                      },
-                      {
-                        "objectName": "PhysicalDisk",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Avg. Disk Bytes/Read"
-                      },
-                      {
-                        "objectName": "PhysicalDisk",
-                        "instanceName": "*",
-                        "intervalSeconds": 30,
-                        "counterName": "Avg. Disk sec/Write"
-                      },
-                      {
-                        "objectName": "PhysicalDisk",
-                        "instanceName": "*",
-                        "intervalSeconds": 30,
-                        "counterName": "Avg. Disk sec/Read"
-                      },
-                      {
-                        "objectName": "PhysicalDisk",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Avg. Disk Bytes/Write"
-                      },
-                      {
-                        "objectName": "PhysicalDisk",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Avg. Disk sec/Transfer"
-                      },
-                      {
-                        "objectName": "PhysicalDisk",
-                        "instanceName": "*",
-                        "intervalSeconds": 30,
-                        "counterName": "Avg. Disk Queue Length"
-                      },
-                      {
-                        "objectName": "Process",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "IO Write Operations/sec"
-                      },
-                      {
-                        "objectName": "Process",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "IO Read Operations/sec"
-                      },
-                      {
-                        "objectName": "Process",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Thread Count"
-                      },
-                      {
-                        "objectName": "Process",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "% User Time"
-                      },
-                      {
-                        "objectName": "Process",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Working Set"
-                      },
-                      {
-                        "objectName": "Process",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "% Processor Time"
-                      },
-                      {
-                        "objectName": "Processor",
-                        "instanceName": "_Total",
-                        "intervalSeconds": 30,
-                        "counterName": "% Processor Time"
-                      },
-                      {
-                        "objectName": "Processor Information",
-                        "instanceName": "_Total",
-                        "intervalSeconds": 30,
-                        "counterName": "% Processor Time"
-                      },
-                      {
-                        "objectName": "RemoteFX Graphics",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Frames Skipped/Second - Insufficient Server Resources"
-                      },
-                      {
-                        "objectName": "RemoteFX Graphics",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Average Encoding Time"
-                      },
-                      {
-                        "objectName": "RemoteFX Graphics",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Frames Skipped/Second - Insufficient Client Resources"
-                      },
-                      {
-                        "objectName": "RemoteFX Graphics",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Frames Skipped/Second - Insufficient Network Resources"
-                      },
-                      {
-                        "objectName": "RemoteFX Network",
-                        "instanceName": "*",
-                        "intervalSeconds": 30,
-                        "counterName": "Current UDP Bandwidth"
-                      },
-                      {
-                        "objectName": "RemoteFX Network",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Current TCP Bandwidth"
-                      },
-                      {
-                        "objectName": "RemoteFX Network",
-                        "instanceName": "*",
-                        "intervalSeconds": 30,
-                        "counterName": "Current TCP RTT"
-                      },
-                      {
-                        "objectName": "RemoteFX Network",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Current UDP RTT"
-                      },
-                      {
-                        "objectName": "System",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Processor Queue Length"
-                      },
-                      {
-                        "objectName": "Terminal Services",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Inactive Sessions"
-                      },
-                      {
-                        "objectName": "Terminal Services",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Total Sessions"
-                      },
-                      {
-                        "objectName": "Terminal Services",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "Active Sessions"
-                      },
-                      {
-                        "objectName": "Terminal Services Session",
-                        "instanceName": "*",
-                        "intervalSeconds": 60,
-                        "counterName": "% Processor Time"
-                      },
-                      {
-                        "objectName": "User Input Delay per Process",
-                        "instanceName": "*",
-                        "intervalSeconds": 30,
-                        "counterName": "Max Input Delay"
-                      },
-                      {
-                        "objectName": "User Input Delay per Session",
-                        "instanceName": "*",
-                        "intervalSeconds": 30,
-                        "counterName": "Max Input Delay"
-                      }
-                    ]
+                    "varAlaWorkspaceName": "[split(parameters('alaWorkspaceId'), '/')[8]]"
                   },
                   "resources": [
                     {
-                      "copy": {
-                        "name": "osEvents",
-                        "count": "[length(variables('varWindowsEvents'))]"
+                      "type": "Microsoft.Insights/dataCollectionRules",
+                      "apiVersion": "2022-06-01",
+                      "name": "[parameters('name')]",
+                      "location": "[parameters('location')]",
+                      "tags": "[parameters('tags')]",
+                      "kind": "Windows",
+                      "identity": {
+                        "type": "systemassigned"
                       },
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('Mon-OS-Events-{0}-{1}', copyIndex(), parameters('time'))]",
-                      "subscriptionId": "[format('{0}', variables('varOsSettingsAlaWorkspaceSubId'))]",
-                      "resourceGroup": "[format('{0}', variables('varOsSettingsAlaWorkspaceRgName'))]",
                       "properties": {
-                        "expressionEvaluationOptions": {
-                          "scope": "inner"
-                        },
-                        "mode": "Incremental",
-                        "parameters": {
-                          "name": {
-                            "value": "[format('WindowsEvent{0}', copyIndex())]"
-                          },
-                          "kind": {
-                            "value": "WindowsEvent"
-                          },
-                          "logAnalyticsWorkspaceName": "[if(parameters('deployAlaWorkspace'), createObject('value', parameters('alaWorkspaceName')), createObject('value', variables('varExistingAlaWorkspaceName')))]",
-                          "eventLogName": {
-                            "value": "[variables('varWindowsEvents')[copyIndex()].name]"
-                          },
-                          "eventTypes": {
-                            "value": "[variables('varWindowsEvents')[copyIndex()].types]"
-                          },
-                          "tags": {
-                            "value": "[parameters('tags')]"
+                        "dataFlows": [
+                          {
+                            "streams": [
+                              "Microsoft-Perf",
+                              "Microsoft-Event"
+                            ],
+                            "destinations": [
+                              "[variables('varAlaWorkspaceName')]"
+                            ]
                           }
-                        },
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "metadata": {
-                            "_generator": {
-                              "name": "bicep",
-                              "version": "0.24.24.22086",
-                              "templateHash": "8345784985264509742"
-                            }
-                          },
-                          "parameters": {
-                            "logAnalyticsWorkspaceName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Conditional. The name of the parent Log Analytics workspace. Required if the template is used in a standalone deployment."
-                              }
-                            },
-                            "name": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. Name of the solution."
-                              }
-                            },
-                            "kind": {
-                              "type": "string",
-                              "defaultValue": "AzureActivityLog",
-                              "allowedValues": [
-                                "AzureActivityLog",
-                                "WindowsEvent",
-                                "WindowsPerformanceCounter",
-                                "IISLogs",
-                                "LinuxSyslog",
-                                "LinuxSyslogCollection",
-                                "LinuxPerformanceObject",
-                                "LinuxPerformanceCollection"
+                        ],
+                        "dataSources": {
+                          "performanceCounters": [
+                            {
+                              "streams": [
+                                "Microsoft-Perf"
                               ],
-                              "metadata": {
-                                "description": "Required. The kind of the DataSource."
-                              }
-                            },
-                            "tags": {
-                              "type": "object",
-                              "defaultValue": {},
-                              "metadata": {
-                                "description": "Optional. Tags to configure in the resource."
-                              }
-                            },
-                            "linkedResourceId": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. Resource ID of the resource to be linked."
-                              }
-                            },
-                            "eventLogName": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. Windows event log name to configure when kind is WindowsEvent."
-                              }
-                            },
-                            "eventTypes": {
-                              "type": "array",
-                              "defaultValue": [],
-                              "metadata": {
-                                "description": "Optional. Windows event types to configure when kind is WindowsEvent."
-                              }
-                            },
-                            "objectName": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. Name of the object to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject."
-                              }
-                            },
-                            "instanceName": {
-                              "type": "string",
-                              "defaultValue": "*",
-                              "metadata": {
-                                "description": "Optional. Name of the instance to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject."
-                              }
-                            },
-                            "intervalSeconds": {
-                              "type": "int",
-                              "defaultValue": 60,
-                              "metadata": {
-                                "description": "Optional. Interval in seconds to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject."
-                              }
-                            },
-                            "performanceCounters": {
-                              "type": "array",
-                              "defaultValue": [],
-                              "metadata": {
-                                "description": "Optional. List of counters to configure when the kind is LinuxPerformanceObject."
-                              }
-                            },
-                            "counterName": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. Counter name to configure when kind is WindowsPerformanceCounter."
-                              }
-                            },
-                            "state": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. State to configure when kind is IISLogs or LinuxSyslogCollection or LinuxPerformanceCollection."
-                              }
-                            },
-                            "syslogName": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. System log to configure when kind is LinuxSyslog."
-                              }
-                            },
-                            "syslogSeverities": {
-                              "type": "array",
-                              "defaultValue": [],
-                              "metadata": {
-                                "description": "Optional. Severities to configure when kind is LinuxSyslog."
-                              }
-                            },
-                            "enableDefaultTelemetry": {
-                              "type": "bool",
-                              "defaultValue": true,
-                              "metadata": {
-                                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-                              }
-                            }
-                          },
-                          "resources": [
-                            {
-                              "condition": "[parameters('enableDefaultTelemetry')]",
-                              "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2021-04-01",
-                              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                              "properties": {
-                                "mode": "Incremental",
-                                "template": {
-                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                                  "contentVersion": "1.0.0.0",
-                                  "resources": []
-                                }
-                              }
+                              "samplingFrequencyInSeconds": 30,
+                              "counterSpecifiers": [
+                                "\\LogicalDisk(C:)\\Avg. Disk Queue Length",
+                                "\\LogicalDisk(C:)\\Current Disk Queue Length",
+                                "\\Memory\\Available Mbytes",
+                                "\\Memory\\Page Faults/sec",
+                                "\\Memory\\Pages/sec",
+                                "\\Memory\\% Committed Bytes In Use",
+                                "\\PhysicalDisk(*)\\Avg. Disk Queue Length",
+                                "\\PhysicalDisk(*)\\Avg. Disk sec/Read",
+                                "\\PhysicalDisk(*)\\Avg. Disk sec/Transfer",
+                                "\\PhysicalDisk(*)\\Avg. Disk sec/Write",
+                                "\\Processor Information(_Total)\\% Processor Time",
+                                "\\User Input Delay per Process(*)\\Max Input Delay",
+                                "\\User Input Delay per Session(*)\\Max Input Delay",
+                                "\\RemoteFX Network(*)\\Current TCP RTT",
+                                "\\RemoteFX Network(*)\\Current UDP Bandwidth"
+                              ],
+                              "name": "perfCounterDataSource10"
                             },
                             {
-                              "type": "Microsoft.OperationalInsights/workspaces/dataSources",
-                              "apiVersion": "2020-08-01",
-                              "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
-                              "kind": "[parameters('kind')]",
-                              "tags": "[parameters('tags')]",
-                              "properties": {
-                                "linkedResourceId": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'AzureActivityLog')), parameters('linkedResourceId'), null())]",
-                                "eventLogName": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'WindowsEvent')), parameters('eventLogName'), null())]",
-                                "eventTypes": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'WindowsEvent')), parameters('eventTypes'), null())]",
-                                "objectName": "[if(and(not(empty(parameters('kind'))), or(equals(parameters('kind'), 'WindowsPerformanceCounter'), equals(parameters('kind'), 'LinuxPerformanceObject'))), parameters('objectName'), null())]",
-                                "instanceName": "[if(and(not(empty(parameters('kind'))), or(equals(parameters('kind'), 'WindowsPerformanceCounter'), equals(parameters('kind'), 'LinuxPerformanceObject'))), parameters('instanceName'), null())]",
-                                "intervalSeconds": "[if(and(not(empty(parameters('kind'))), or(equals(parameters('kind'), 'WindowsPerformanceCounter'), equals(parameters('kind'), 'LinuxPerformanceObject'))), parameters('intervalSeconds'), null())]",
-                                "counterName": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'WindowsPerformanceCounter')), parameters('counterName'), null())]",
-                                "state": "[if(and(not(empty(parameters('kind'))), or(or(equals(parameters('kind'), 'IISLogs'), equals(parameters('kind'), 'LinuxSyslogCollection')), equals(parameters('kind'), 'LinuxPerformanceCollection'))), parameters('state'), null())]",
-                                "syslogName": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'LinuxSyslog')), parameters('syslogName'), null())]",
-                                "syslogSeverities": "[if(and(not(empty(parameters('kind'))), or(equals(parameters('kind'), 'LinuxSyslog'), equals(parameters('kind'), 'LinuxPerformanceObject'))), parameters('syslogSeverities'), null())]",
-                                "performanceCounters": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'LinuxPerformanceObject')), parameters('performanceCounters'), null())]"
-                              }
+                              "streams": [
+                                "Microsoft-Perf"
+                              ],
+                              "samplingFrequencyInSeconds": 60,
+                              "counterSpecifiers": [
+                                "\\LogicalDisk(C:)\\% Free Space",
+                                "\\LogicalDisk(C:)\\Avg. Disk sec/Transfer",
+                                "\\Terminal Services(*)\\Active Sessions",
+                                "\\Terminal Services(*)\\Inactive Sessions",
+                                "\\Terminal Services(*)\\Total Sessions"
+                              ],
+                              "name": "perfCounterDataSource30"
                             }
                           ],
-                          "outputs": {
-                            "resourceId": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The resource ID of the deployed data source."
-                              },
-                              "value": "[resourceId('Microsoft.OperationalInsights/workspaces/dataSources', parameters('logAnalyticsWorkspaceName'), parameters('name'))]"
-                            },
-                            "resourceGroupName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The resource group where the data source is deployed."
-                              },
-                              "value": "[resourceGroup().name]"
-                            },
-                            "name": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The name of the deployed data source."
-                              },
-                              "value": "[parameters('name')]"
+                          "windowsEventLogs": [
+                            {
+                              "streams": [
+                                "Microsoft-Event"
+                              ],
+                              "xPathQueries": [
+                                "Microsoft-Windows-TerminalServices-RemoteConnectionManager/Admin!*[System[(Level=2 or Level=3 or Level=4 or Level=0) ]]",
+                                "Microsoft-Windows-TerminalServices-LocalSessionManager/Operational!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]",
+                                "System!*",
+                                "Microsoft-FSLogix-Apps/Operational!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]",
+                                "Application!*[System[(Level=2 or Level=3)]]",
+                                "Microsoft-FSLogix-Apps/Admin!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]"
+                              ],
+                              "name": "eventLogsDataSource"
                             }
-                          }
-                        }
+                          ]
+                        },
+                        "description": "AVD Insights settings",
+                        "destinations": {
+                          "logAnalytics": [
+                            {
+                              "name": "[variables('varAlaWorkspaceName')]",
+                              "workspaceResourceId": "[parameters('alaWorkspaceId')]"
+                            }
+                          ]
+                        },
+                        "streamDeclarations": {}
                       }
-                    },
-                    {
-                      "copy": {
-                        "name": "avdOsPerformanceCounters",
-                        "count": "[length(variables('varWindowsPerformanceCounters'))]"
-                      },
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('Mon-OS-Perf-Counters-{0}-{1}', copyIndex(), parameters('time'))]",
-                      "subscriptionId": "[format('{0}', variables('varOsSettingsAlaWorkspaceSubId'))]",
-                      "resourceGroup": "[format('{0}', variables('varOsSettingsAlaWorkspaceRgName'))]",
-                      "properties": {
-                        "expressionEvaluationOptions": {
-                          "scope": "inner"
-                        },
-                        "mode": "Incremental",
-                        "parameters": {
-                          "name": {
-                            "value": "[format('WindowsPerformanceCounter{0}', copyIndex())]"
-                          },
-                          "kind": {
-                            "value": "WindowsPerformanceCounter"
-                          },
-                          "logAnalyticsWorkspaceName": "[if(parameters('deployAlaWorkspace'), createObject('value', parameters('alaWorkspaceName')), createObject('value', variables('varExistingAlaWorkspaceName')))]",
-                          "objectName": {
-                            "value": "[variables('varWindowsPerformanceCounters')[copyIndex()].objectName]"
-                          },
-                          "instanceName": {
-                            "value": "[variables('varWindowsPerformanceCounters')[copyIndex()].instanceName]"
-                          },
-                          "intervalSeconds": {
-                            "value": "[variables('varWindowsPerformanceCounters')[copyIndex()].intervalSeconds]"
-                          },
-                          "counterName": {
-                            "value": "[variables('varWindowsPerformanceCounters')[copyIndex()].counterName]"
-                          },
-                          "tags": {
-                            "value": "[parameters('tags')]"
-                          }
-                        },
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "metadata": {
-                            "_generator": {
-                              "name": "bicep",
-                              "version": "0.24.24.22086",
-                              "templateHash": "8345784985264509742"
-                            }
-                          },
-                          "parameters": {
-                            "logAnalyticsWorkspaceName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Conditional. The name of the parent Log Analytics workspace. Required if the template is used in a standalone deployment."
-                              }
-                            },
-                            "name": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. Name of the solution."
-                              }
-                            },
-                            "kind": {
-                              "type": "string",
-                              "defaultValue": "AzureActivityLog",
-                              "allowedValues": [
-                                "AzureActivityLog",
-                                "WindowsEvent",
-                                "WindowsPerformanceCounter",
-                                "IISLogs",
-                                "LinuxSyslog",
-                                "LinuxSyslogCollection",
-                                "LinuxPerformanceObject",
-                                "LinuxPerformanceCollection"
-                              ],
-                              "metadata": {
-                                "description": "Required. The kind of the DataSource."
-                              }
-                            },
-                            "tags": {
-                              "type": "object",
-                              "defaultValue": {},
-                              "metadata": {
-                                "description": "Optional. Tags to configure in the resource."
-                              }
-                            },
-                            "linkedResourceId": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. Resource ID of the resource to be linked."
-                              }
-                            },
-                            "eventLogName": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. Windows event log name to configure when kind is WindowsEvent."
-                              }
-                            },
-                            "eventTypes": {
-                              "type": "array",
-                              "defaultValue": [],
-                              "metadata": {
-                                "description": "Optional. Windows event types to configure when kind is WindowsEvent."
-                              }
-                            },
-                            "objectName": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. Name of the object to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject."
-                              }
-                            },
-                            "instanceName": {
-                              "type": "string",
-                              "defaultValue": "*",
-                              "metadata": {
-                                "description": "Optional. Name of the instance to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject."
-                              }
-                            },
-                            "intervalSeconds": {
-                              "type": "int",
-                              "defaultValue": 60,
-                              "metadata": {
-                                "description": "Optional. Interval in seconds to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject."
-                              }
-                            },
-                            "performanceCounters": {
-                              "type": "array",
-                              "defaultValue": [],
-                              "metadata": {
-                                "description": "Optional. List of counters to configure when the kind is LinuxPerformanceObject."
-                              }
-                            },
-                            "counterName": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. Counter name to configure when kind is WindowsPerformanceCounter."
-                              }
-                            },
-                            "state": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. State to configure when kind is IISLogs or LinuxSyslogCollection or LinuxPerformanceCollection."
-                              }
-                            },
-                            "syslogName": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. System log to configure when kind is LinuxSyslog."
-                              }
-                            },
-                            "syslogSeverities": {
-                              "type": "array",
-                              "defaultValue": [],
-                              "metadata": {
-                                "description": "Optional. Severities to configure when kind is LinuxSyslog."
-                              }
-                            },
-                            "enableDefaultTelemetry": {
-                              "type": "bool",
-                              "defaultValue": true,
-                              "metadata": {
-                                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-                              }
-                            }
-                          },
-                          "resources": [
-                            {
-                              "condition": "[parameters('enableDefaultTelemetry')]",
-                              "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2021-04-01",
-                              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                              "properties": {
-                                "mode": "Incremental",
-                                "template": {
-                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                                  "contentVersion": "1.0.0.0",
-                                  "resources": []
-                                }
-                              }
-                            },
-                            {
-                              "type": "Microsoft.OperationalInsights/workspaces/dataSources",
-                              "apiVersion": "2020-08-01",
-                              "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
-                              "kind": "[parameters('kind')]",
-                              "tags": "[parameters('tags')]",
-                              "properties": {
-                                "linkedResourceId": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'AzureActivityLog')), parameters('linkedResourceId'), null())]",
-                                "eventLogName": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'WindowsEvent')), parameters('eventLogName'), null())]",
-                                "eventTypes": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'WindowsEvent')), parameters('eventTypes'), null())]",
-                                "objectName": "[if(and(not(empty(parameters('kind'))), or(equals(parameters('kind'), 'WindowsPerformanceCounter'), equals(parameters('kind'), 'LinuxPerformanceObject'))), parameters('objectName'), null())]",
-                                "instanceName": "[if(and(not(empty(parameters('kind'))), or(equals(parameters('kind'), 'WindowsPerformanceCounter'), equals(parameters('kind'), 'LinuxPerformanceObject'))), parameters('instanceName'), null())]",
-                                "intervalSeconds": "[if(and(not(empty(parameters('kind'))), or(equals(parameters('kind'), 'WindowsPerformanceCounter'), equals(parameters('kind'), 'LinuxPerformanceObject'))), parameters('intervalSeconds'), null())]",
-                                "counterName": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'WindowsPerformanceCounter')), parameters('counterName'), null())]",
-                                "state": "[if(and(not(empty(parameters('kind'))), or(or(equals(parameters('kind'), 'IISLogs'), equals(parameters('kind'), 'LinuxSyslogCollection')), equals(parameters('kind'), 'LinuxPerformanceCollection'))), parameters('state'), null())]",
-                                "syslogName": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'LinuxSyslog')), parameters('syslogName'), null())]",
-                                "syslogSeverities": "[if(and(not(empty(parameters('kind'))), or(equals(parameters('kind'), 'LinuxSyslog'), equals(parameters('kind'), 'LinuxPerformanceObject'))), parameters('syslogSeverities'), null())]",
-                                "performanceCounters": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'LinuxPerformanceObject')), parameters('performanceCounters'), null())]"
-                              }
-                            }
-                          ],
-                          "outputs": {
-                            "resourceId": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The resource ID of the deployed data source."
-                              },
-                              "value": "[resourceId('Microsoft.OperationalInsights/workspaces/dataSources', parameters('logAnalyticsWorkspaceName'), parameters('name'))]"
-                            },
-                            "resourceGroupName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The resource group where the data source is deployed."
-                              },
-                              "value": "[resourceGroup().name]"
-                            },
-                            "name": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The name of the deployed data source."
-                              },
-                              "value": "[parameters('name')]"
-                            }
-                          }
-                        }
-                      },
-                      "dependsOn": [
-                        "osEvents"
-                      ]
                     }
-                  ]
+                  ],
+                  "outputs": {
+                    "dataCollectionRulesId": {
+                      "type": "string",
+                      "value": "[resourceId('Microsoft.Insights/dataCollectionRules', parameters('name'))]"
+                    }
+                  }
                 }
               },
               "dependsOn": [
@@ -7929,6 +7202,10 @@
             "avdAlaWorkspaceId": {
               "type": "string",
               "value": "[if(parameters('deployAlaWorkspace'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.logAnalyticsWorkspaceId.value, parameters('alaWorkspaceId'))]"
+            },
+            "dataCollectionRuleId": {
+              "type": "string",
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), if(parameters('deployAlaWorkspace'), format('{0}', parameters('monitoringRgName')), format('{0}', parameters('serviceObjectsRgName')))), 'Microsoft.Resources/deployments', format('DCR-{0}', parameters('time'))), '2022-09-01').outputs.dataCollectionRulesId.value]"
             }
           }
         }
@@ -12781,7 +12058,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "8107657986455794101"
+              "templateHash": "2339636176134911878"
             }
           },
           "parameters": {
@@ -12982,7 +12259,7 @@
                 "applicationGroupType": "[if(equals(parameters('preferredAppGroupType'), 'Desktop'), 'Desktop', 'RemoteApp')]"
               }
             ],
-            "varHostPoolRdpPropertiesDomainServiceCheck": "[if(equals(parameters('identityServiceProvider'), 'AAD'), format('{0};targetisaadjoined:i:1;enablerdsaadauth:i:1', parameters('hostPoolRdpProperties')), parameters('hostPoolRdpProperties'))]",
+            "varHostPoolRdpPropertiesDomainServiceCheck": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), format('{0};targetisaadjoined:i:1;enablerdsaadauth:i:1', parameters('hostPoolRdpProperties')), parameters('hostPoolRdpProperties'))]",
             "varRAppApplicationGroupsStandardApps": "[if(equals(parameters('preferredAppGroupType'), 'RailApplications'), createArray(createObject('name', 'Task Manager', 'description', 'Task Manager', 'friendlyName', 'Task Manager', 'showInPortal', true(), 'filePath', 'C:\\Windows\\system32\\taskmgr.exe'), createObject('name', 'WordPad', 'description', 'WordPad', 'friendlyName', 'WordPad', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Windows NT\\Accessories\\wordpad.exe'), createObject('name', 'Microsoft Edge', 'description', 'Microsoft Edge', 'friendlyName', 'Edge', 'showInPortal', true(), 'filePath', 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'), createObject('name', 'Remote Desktop Connection', 'description', 'Remote Desktop Connection', 'friendlyName', 'Remote Desktop', 'showInPortal', true(), 'filePath', 'C:\\WINDOWS\\system32\\mtsc.exe')), createArray())]",
             "varRAppApplicationGroupsOfficeApps": "[if(equals(parameters('preferredAppGroupType'), 'RailApplications'), createArray(createObject('name', 'Microsoft Excel', 'description', 'Microsoft Excel', 'friendlyName', 'Excel', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE'), createObject('name', 'Microsoft PowerPoint', 'description', 'Microsoft PowerPoint', 'friendlyName', 'PowerPoint', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Microsoft Office\\root\\Office16\\POWERPNT.EXE'), createObject('name', 'Microsoft Word', 'description', 'Microsoft Word', 'friendlyName', 'Outlook', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE'), createObject('name', 'Microsoft Outlook', 'description', 'Microsoft Word', 'friendlyName', 'Word', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE')), createArray())]",
             "varRAppApplicationGroupsApps": "[if(equals(parameters('preferredAppGroupType'), 'RailApplications'), if(contains(parameters('osImage'), 'office'), union(variables('varRAppApplicationGroupsStandardApps'), variables('varRAppApplicationGroupsOfficeApps')), variables('varRAppApplicationGroupsStandardApps')), createArray())]",
@@ -15255,7 +14532,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "11148544851418427635"
+              "templateHash": "6366951646271182484"
             }
           },
           "parameters": {
@@ -18028,7 +17305,7 @@
                 "name": "aadIdentityLoginRoleAssign",
                 "count": "[length(parameters('securityPrincipalIds'))]"
               },
-              "condition": "[and(equals(parameters('identityServiceProvider'), 'AAD'), not(empty(parameters('securityPrincipalIds'))))]",
+              "condition": "[and(equals(parameters('identityServiceProvider'), 'EntraID'), not(empty(parameters('securityPrincipalIds'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('VM-Login-Comp-{0}-{1}', take(format('{0}', parameters('securityPrincipalIds')[copyIndex()]), 6), parameters('time'))]",
@@ -18608,7 +17885,7 @@
                 "name": "aadIdentityLoginAccessServiceObjects",
                 "count": "[length(parameters('securityPrincipalIds'))]"
               },
-              "condition": "[and(equals(parameters('identityServiceProvider'), 'AAD'), not(empty(parameters('securityPrincipalIds'))))]",
+              "condition": "[and(equals(parameters('identityServiceProvider'), 'EntraID'), not(empty(parameters('securityPrincipalIds'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('VM-Login-Serv-{0}-{1}', take(format('{0}', parameters('securityPrincipalIds')[copyIndex()]), 6), parameters('time'))]",
@@ -19257,6 +18534,9 @@
           },
           "keyVaultprivateDNSResourceId": "[if(parameters('createPrivateDnsZones'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.KeyVaultDnsZoneResourceId.value), createObject('value', parameters('avdVnetPrivateDnsZoneKeyvaultId')))]",
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]",
+          "enableKvPurgeProtection": {
+            "value": "[parameters('enableKvPurgeProtection')]"
+          },
           "kvTags": {
             "value": "[variables('varZtKeyvaultTag')]"
           }
@@ -19268,7 +18548,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "18378952774543784688"
+              "templateHash": "13543905426187088426"
             }
           },
           "parameters": {
@@ -19373,6 +18653,13 @@
               "defaultValue": "[utcNow()]",
               "metadata": {
                 "description": "Do not modify, used to set unique value for resource deployment."
+              }
+            },
+            "enableKvPurgeProtection": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Enable purge protection on the key vault"
               }
             },
             "vaultSku": {
@@ -22101,6 +21388,9 @@
                   },
                   "tags": {
                     "value": "[union(parameters('tags'), parameters('kvTags'))]"
+                  },
+                  "enableKvPurgeProtection": {
+                    "value": "[parameters('enableKvPurgeProtection')]"
                   }
                 },
                 "template": {
@@ -22110,7 +21400,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.24.24.22086",
-                      "templateHash": "10448320786162567638"
+                      "templateHash": "10475040819654084397"
                     }
                   },
                   "parameters": {
@@ -22198,6 +21488,13 @@
                       "metadata": {
                         "description": "Specifies the SKU for the vault."
                       }
+                    },
+                    "enableKvPurgeProtection": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Enable purge protection on the key vault"
+                      }
                     }
                   },
                   "resources": [
@@ -22223,7 +21520,7 @@
                             "value": true
                           },
                           "enablePurgeProtection": {
-                            "value": true
+                            "value": "[parameters('enableKvPurgeProtection')]"
                           },
                           "softDeleteRetentionInDays": {
                             "value": 7
@@ -25372,7 +24669,7 @@
             "value": false
           },
           "enablePurgeProtection": {
-            "value": true
+            "value": "[parameters('enableKvPurgeProtection')]"
           },
           "vaultSku": {
             "value": "[variables('varWrklKeyVaultSku')]"
@@ -25385,7 +24682,7 @@
           "privateEndpoints": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), createObject('value', createArray(createObject('name', variables('varWrklKvPrivateEndpointName'), 'subnetResourceId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetPrivateEndpointSubnetName')), parameters('existingVnetPrivateEndpointSubnetResourceId')), 'customNetworkInterfaceName', format('nic-01-{0}', variables('varWrklKvPrivateEndpointName')), 'service', 'vault', 'privateDnsZoneGroup', createObject('privateDNSResourceIds', createArray(if(parameters('createPrivateDnsZones'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.KeyVaultDnsZoneResourceId.value, parameters('avdVnetPrivateDnsZoneKeyvaultId'))))))), createObject('value', createArray()))]",
           "secrets": {
             "value": {
-              "secureList": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'AAD')), createArray(createObject('name', 'vmLocalUserPassword', 'value', parameters('avdVmLocalUserPassword'), 'contentType', 'Session host local user credentials'), createObject('name', 'vmLocalUserName', 'value', parameters('avdVmLocalUserName'), 'contentType', 'Session host local user credentials'), createObject('name', 'domainJoinUserName', 'value', parameters('avdDomainJoinUserName'), 'contentType', 'Domain join credentials'), createObject('name', 'domainJoinUserPassword', 'value', parameters('avdDomainJoinUserPassword'), 'contentType', 'Domain join credentials')), createArray(createObject('name', 'vmLocalUserPassword', 'value', parameters('avdVmLocalUserPassword'), 'contentType', 'Session host local user credentials'), createObject('name', 'vmLocalUserName', 'value', parameters('avdVmLocalUserName'), 'contentType', 'Session host local user credentials'), createObject('name', 'domainJoinUserName', 'value', 'NoUsername', 'contentType', 'Domain join credentials'), createObject('name', 'domainJoinUserPassword', 'value', 'NoPassword', 'contentType', 'Domain join credentials')))]"
+              "secureList": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'EntraID')), createArray(createObject('name', 'vmLocalUserPassword', 'value', parameters('avdVmLocalUserPassword'), 'contentType', 'Session host local user credentials'), createObject('name', 'vmLocalUserName', 'value', parameters('avdVmLocalUserName'), 'contentType', 'Session host local user credentials'), createObject('name', 'domainJoinUserName', 'value', parameters('avdDomainJoinUserName'), 'contentType', 'Domain join credentials'), createObject('name', 'domainJoinUserPassword', 'value', parameters('avdDomainJoinUserPassword'), 'contentType', 'Domain join credentials')), createArray(createObject('name', 'vmLocalUserPassword', 'value', parameters('avdVmLocalUserPassword'), 'contentType', 'Session host local user credentials'), createObject('name', 'vmLocalUserName', 'value', parameters('avdVmLocalUserName'), 'contentType', 'Session host local user credentials'), createObject('name', 'domainJoinUserName', 'value', 'NoUsername', 'contentType', 'Domain join credentials'), createObject('name', 'domainJoinUserPassword', 'value', 'NoPassword', 'contentType', 'Domain join credentials')))]"
             }
           },
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'), variables('varWorkloadKeyvaultTag'))), createObject('value', union(variables('varAvdDefaultTags'), variables('varWorkloadKeyvaultTag'))))]"
@@ -27415,7 +26712,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "9297638532596174292"
+              "templateHash": "5154378274771455666"
             }
           },
           "parameters": {
@@ -27632,7 +26929,6 @@
                     "value": {
                       "createOption": "fromImage",
                       "deleteOption": "Delete",
-                      "diskSizeGB": 128,
                       "managedDisk": "[variables('varManagedDisk')]"
                     }
                   },
@@ -27670,7 +26966,7 @@
                   },
                   "extensionDomainJoinConfig": {
                     "value": {
-                      "enabled": "[if(equals(parameters('identityServiceProvider'), 'AAD'), false(), true())]",
+                      "enabled": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), false(), true())]",
                       "settings": {
                         "name": "[parameters('identityDomainName')]",
                         "ouPath": "[if(not(empty(parameters('ouPath'))), parameters('ouPath'), null())]",
@@ -27682,7 +26978,7 @@
                   },
                   "extensionAadJoinConfig": {
                     "value": {
-                      "enabled": "[if(equals(parameters('identityServiceProvider'), 'AAD'), true(), false())]"
+                      "enabled": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), true(), false())]"
                     }
                   },
                   "tags": {
@@ -27696,7 +26992,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.24.24.22086",
-                      "templateHash": "16312835383302959746"
+                      "templateHash": "3813721439662824287"
                     }
                   },
                   "parameters": {
@@ -28030,7 +27326,7 @@
                         "enabled": false
                       },
                       "metadata": {
-                        "description": "Optional. The configuration for the [AAD Join] extension. Must at least contain the [\"enabled\": true] property to be executed."
+                        "description": "Optional. The configuration for the [EntraID Join] extension. Must at least contain the [\"enabled\": true] property to be executed."
                       }
                     },
                     "extensionAntiMalwareConfig": {
@@ -28379,8 +27675,8 @@
                             "name": "[format('osdisk-01-{0}', parameters('name'))]",
                             "createOption": "[if(contains(parameters('osDisk'), 'createOption'), parameters('osDisk').createOption, 'FromImage')]",
                             "deleteOption": "[if(contains(parameters('osDisk'), 'deleteOption'), parameters('osDisk').deleteOption, 'Delete')]",
-                            "diskSizeGB": "[parameters('osDisk').diskSizeGB]",
                             "caching": "[if(contains(parameters('osDisk'), 'caching'), parameters('osDisk').caching, 'ReadOnly')]",
+                            "diskSizeGB": "[if(contains(parameters('osDisk'), 'diskSizeGB'), parameters('osDisk').diskSizeGB, null())]",
                             "managedDisk": {
                               "storageAccountType": "[parameters('osDisk').managedDisk.storageAccountType]",
                               "diskEncryptionSet": "[if(contains(parameters('osDisk').managedDisk, 'diskEncryptionSet'), createObject('id', parameters('osDisk').managedDisk.diskEncryptionSet.id), null())]"
@@ -32026,7 +31322,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "10178540586997188960"
+              "templateHash": "15630070129150156859"
             }
           },
           "parameters": {
@@ -32227,9 +31523,9 @@
               "Transaction"
             ],
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', parameters('storageAccountName'))]",
-            "varDirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'AADDS'), 'AADDS', if(equals(parameters('identityServiceProvider'), 'AAD'), 'AADKERB', 'None'))]",
+            "varDirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'EntraDS'), 'EntraDS', if(equals(parameters('identityServiceProvider'), 'EntraID'), 'AADKERB', 'None'))]",
             "varSecurityPrincipalName": "[if(not(empty(parameters('securityPrincipalName'))), parameters('securityPrincipalName'), 'none')]",
-            "varAdminUserName": "[if(equals(parameters('identityServiceProvider'), 'AAD'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
+            "varAdminUserName": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
             "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -AdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12} -SecurityPrincipalName \"{13}\" -StorageAccountFqdn {14} ', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), variables('varAdminUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'), variables('varSecurityPrincipalName'), parameters('storageAccountFqdn'))]"
           },
           "resources": [
@@ -32263,7 +31559,7 @@
                   "azureFilesIdentityBasedAuthentication": {
                     "value": {
                       "directoryServiceOptions": "[variables('varDirectoryServiceOptions')]",
-                      "activeDirectoryProperties": "[if(equals(parameters('identityServiceProvider'), 'AAD'), createObject('domainGuid', parameters('identityDomainGuid'), 'domainName', parameters('identityDomainName')), createObject())]"
+                      "activeDirectoryProperties": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('domainGuid', parameters('identityDomainGuid'), 'domainName', parameters('identityDomainName')), createObject())]"
                     }
                   },
                   "accessTier": {
@@ -32299,7 +31595,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.24.24.22086",
-                      "templateHash": "12415790862062173742"
+                      "templateHash": "3337147685980009745"
                     }
                   },
                   "parameters": {
@@ -32445,7 +31741,7 @@
                       "type": "bool",
                       "defaultValue": true,
                       "metadata": {
-                        "description": "Optional. Allow or disallow cross AAD tenant object replication."
+                        "description": "Optional. Allow or disallow cross Microsoft Entra tenant object replication."
                       }
                     },
                     "customDomainName": {
@@ -32619,7 +31915,7 @@
                         "PrivateLink"
                       ],
                       "metadata": {
-                        "description": "Optional. Restrict copy to and from Storage Accounts within an AAD tenant or with Private Links to the same VNet."
+                        "description": "Optional. Restrict copy to and from Azure Storage accounts within a Microsoft Entra tenant or with Private Links to the same virtual network."
                       }
                     },
                     "publicNetworkAccess": {
@@ -36051,7 +35347,7 @@
                   "scriptArguments": {
                     "value": "[variables('varStorageToDomainScriptArgs')]"
                   },
-                  "adminUserPassword": "[if(equals(parameters('identityServiceProvider'), 'AAD'), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'vmLocalUserPassword')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'domainJoinUserPassword')))]",
+                  "adminUserPassword": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'vmLocalUserPassword')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'domainJoinUserPassword')))]",
                   "baseScriptUri": {
                     "value": "[parameters('storageToDomainScriptUri')]"
                   }
@@ -36234,7 +35530,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "10178540586997188960"
+              "templateHash": "15630070129150156859"
             }
           },
           "parameters": {
@@ -36435,9 +35731,9 @@
               "Transaction"
             ],
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', parameters('storageAccountName'))]",
-            "varDirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'AADDS'), 'AADDS', if(equals(parameters('identityServiceProvider'), 'AAD'), 'AADKERB', 'None'))]",
+            "varDirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'EntraDS'), 'EntraDS', if(equals(parameters('identityServiceProvider'), 'EntraID'), 'AADKERB', 'None'))]",
             "varSecurityPrincipalName": "[if(not(empty(parameters('securityPrincipalName'))), parameters('securityPrincipalName'), 'none')]",
-            "varAdminUserName": "[if(equals(parameters('identityServiceProvider'), 'AAD'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
+            "varAdminUserName": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
             "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -AdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12} -SecurityPrincipalName \"{13}\" -StorageAccountFqdn {14} ', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), variables('varAdminUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'), variables('varSecurityPrincipalName'), parameters('storageAccountFqdn'))]"
           },
           "resources": [
@@ -36471,7 +35767,7 @@
                   "azureFilesIdentityBasedAuthentication": {
                     "value": {
                       "directoryServiceOptions": "[variables('varDirectoryServiceOptions')]",
-                      "activeDirectoryProperties": "[if(equals(parameters('identityServiceProvider'), 'AAD'), createObject('domainGuid', parameters('identityDomainGuid'), 'domainName', parameters('identityDomainName')), createObject())]"
+                      "activeDirectoryProperties": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('domainGuid', parameters('identityDomainGuid'), 'domainName', parameters('identityDomainName')), createObject())]"
                     }
                   },
                   "accessTier": {
@@ -36507,7 +35803,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.24.24.22086",
-                      "templateHash": "12415790862062173742"
+                      "templateHash": "3337147685980009745"
                     }
                   },
                   "parameters": {
@@ -36653,7 +35949,7 @@
                       "type": "bool",
                       "defaultValue": true,
                       "metadata": {
-                        "description": "Optional. Allow or disallow cross AAD tenant object replication."
+                        "description": "Optional. Allow or disallow cross Microsoft Entra tenant object replication."
                       }
                     },
                     "customDomainName": {
@@ -36827,7 +36123,7 @@
                         "PrivateLink"
                       ],
                       "metadata": {
-                        "description": "Optional. Restrict copy to and from Storage Accounts within an AAD tenant or with Private Links to the same VNet."
+                        "description": "Optional. Restrict copy to and from Azure Storage accounts within a Microsoft Entra tenant or with Private Links to the same virtual network."
                       }
                     },
                     "publicNetworkAccess": {
@@ -40259,7 +39555,7 @@
                   "scriptArguments": {
                     "value": "[variables('varStorageToDomainScriptArgs')]"
                   },
-                  "adminUserPassword": "[if(equals(parameters('identityServiceProvider'), 'AAD'), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'vmLocalUserPassword')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'domainJoinUserPassword')))]",
+                  "adminUserPassword": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'vmLocalUserPassword')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'domainJoinUserPassword')))]",
                   "baseScriptUri": {
                     "value": "[parameters('storageToDomainScriptUri')]"
                   }
@@ -40865,6 +40161,9 @@
           "diskType": {
             "value": "[parameters('avdSessionHostDiskType')]"
           },
+          "customOsDiskSizeGB": {
+            "value": "[parameters('customOsDiskSizeGb')]"
+          },
           "location": {
             "value": "[parameters('avdSessionHostLocation')]"
           },
@@ -40922,7 +40221,8 @@
           "deployMonitoring": {
             "value": "[parameters('avdDeployMonitoring')]"
           },
-          "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]"
+          "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]",
+          "dataCollectionRuleId": "[if(parameters('avdDeployMonitoring'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.dataCollectionRuleId.value), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
@@ -40931,7 +40231,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "14416378687306012633"
+              "templateHash": "16697429411268505163"
             }
           },
           "parameters": {
@@ -41028,7 +40328,7 @@
             "createIntuneEnrollment": {
               "type": "bool",
               "metadata": {
-                "description": "Eronll session hosts on Intune."
+                "description": "Enroll session hosts on Intune."
               }
             },
             "encryptionAtHost": {
@@ -41071,6 +40371,13 @@
               "type": "string",
               "metadata": {
                 "description": "OS disk type for session host."
+              }
+            },
+            "customOsDiskSizeGB": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Define custom OS disk size if larger than image size."
               }
             },
             "marketPlaceGalleryWindows": {
@@ -41187,6 +40494,12 @@
               "metadata": {
                 "description": "Do not modify, used to set unique value for resource deployment."
               }
+            },
+            "dataCollectionRuleId": {
+              "type": "string",
+              "metadata": {
+                "description": "Data collection rule ID."
+              }
             }
           },
           "variables": {
@@ -41194,7 +40507,18 @@
             "varNicDiagnosticMetricsToEnable": [
               "AllMetrics"
             ],
-            "varManagedDisk": "[if(empty(parameters('diskEncryptionSetResourceId')), createObject('storageAccountType', parameters('diskType')), createObject('diskEncryptionSet', createObject('id', parameters('diskEncryptionSetResourceId')), 'storageAccountType', parameters('diskType')))]"
+            "varManagedDisk": "[if(empty(parameters('diskEncryptionSetResourceId')), createObject('storageAccountType', parameters('diskType')), createObject('diskEncryptionSet', createObject('id', parameters('diskEncryptionSetResourceId')), 'storageAccountType', parameters('diskType')))]",
+            "varOsDiskProperties": {
+              "createOption": "fromImage",
+              "deleteOption": "Delete",
+              "managedDisk": "[variables('varManagedDisk')]"
+            },
+            "varCustomOsDiskProperties": {
+              "createOption": "fromImage",
+              "deleteOption": "Delete",
+              "managedDisk": "[variables('varManagedDisk')]",
+              "diskSizeGB": "[if(not(empty(parameters('customOsDiskSizeGB'))), parameters('customOsDiskSizeGB'), null())]"
+            }
           },
           "resources": [
             {
@@ -41222,7 +40546,7 @@
                   "timeZone": {
                     "value": "[parameters('timeZone')]"
                   },
-                  "systemAssignedIdentity": "[if(equals(parameters('identityServiceProvider'), 'AAD'), createObject('value', true()), createObject('value', false()))]",
+                  "systemAssignedIdentity": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('value', true()), createObject('value', false()))]",
                   "availabilityZone": "[if(parameters('useAvailabilityZones'), createObject('value', take(skip(variables('varAllAvailabilityZones'), mod(range(1, parameters('count'))[copyIndex()], length(variables('varAllAvailabilityZones')))), 1)), createObject('value', createArray()))]",
                   "encryptionAtHost": {
                     "value": "[parameters('encryptionAtHost')]"
@@ -41247,14 +40571,7 @@
                     "value": "[parameters('vTpmEnabled')]"
                   },
                   "imageReference": "[if(parameters('useSharedImage'), createObject('value', json(format('{{''id'': ''{0}''}}', parameters('avdImageTemplateDefinitionId')))), createObject('value', parameters('marketPlaceGalleryWindows')))]",
-                  "osDisk": {
-                    "value": {
-                      "createOption": "fromImage",
-                      "deleteOption": "Delete",
-                      "diskSizeGB": 128,
-                      "managedDisk": "[variables('varManagedDisk')]"
-                    }
-                  },
+                  "osDisk": "[if(not(empty(parameters('customOsDiskSizeGB'))), createObject('value', variables('varCustomOsDiskProperties')), createObject('value', variables('varOsDiskProperties')))]",
                   "adminUsername": {
                     "value": "[parameters('vmLocalUserName')]"
                   },
@@ -41286,7 +40603,7 @@
                   },
                   "extensionDomainJoinConfig": {
                     "value": {
-                      "enabled": "[if(or(equals(parameters('identityServiceProvider'), 'AADDS'), equals(parameters('identityServiceProvider'), 'ADDS')), true(), false())]",
+                      "enabled": "[if(or(equals(parameters('identityServiceProvider'), 'EntraDS'), equals(parameters('identityServiceProvider'), 'ADDS')), true(), false())]",
                       "settings": {
                         "name": "[parameters('identityDomainName')]",
                         "ouPath": "[if(not(empty(parameters('sessionHostOuPath'))), parameters('sessionHostOuPath'), null())]",
@@ -41298,7 +40615,7 @@
                   },
                   "extensionAadJoinConfig": {
                     "value": {
-                      "enabled": "[if(equals(parameters('identityServiceProvider'), 'AAD'), true(), false())]",
+                      "enabled": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), true(), false())]",
                       "settings": "[if(parameters('createIntuneEnrollment'), createObject('mdmId', '0000000a-0000-0000-c000-000000000000'), createObject())]"
                     }
                   },
@@ -41315,7 +40632,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.24.24.22086",
-                      "templateHash": "16312835383302959746"
+                      "templateHash": "3813721439662824287"
                     }
                   },
                   "parameters": {
@@ -41649,7 +40966,7 @@
                         "enabled": false
                       },
                       "metadata": {
-                        "description": "Optional. The configuration for the [AAD Join] extension. Must at least contain the [\"enabled\": true] property to be executed."
+                        "description": "Optional. The configuration for the [EntraID Join] extension. Must at least contain the [\"enabled\": true] property to be executed."
                       }
                     },
                     "extensionAntiMalwareConfig": {
@@ -41998,8 +41315,8 @@
                             "name": "[format('osdisk-01-{0}', parameters('name'))]",
                             "createOption": "[if(contains(parameters('osDisk'), 'createOption'), parameters('osDisk').createOption, 'FromImage')]",
                             "deleteOption": "[if(contains(parameters('osDisk'), 'deleteOption'), parameters('osDisk').deleteOption, 'Delete')]",
-                            "diskSizeGB": "[parameters('osDisk').diskSizeGB]",
                             "caching": "[if(contains(parameters('osDisk'), 'caching'), parameters('osDisk').caching, 'ReadOnly')]",
+                            "diskSizeGB": "[if(contains(parameters('osDisk'), 'diskSizeGB'), parameters('osDisk').diskSizeGB, null())]",
                             "managedDisk": {
                               "storageAccountType": "[parameters('osDisk').managedDisk.storageAccountType]",
                               "diskEncryptionSet": "[if(contains(parameters('osDisk').managedDisk, 'diskEncryptionSet'), createObject('id', parameters('osDisk').managedDisk.diskEncryptionSet.id), null())]"
@@ -45784,13 +45101,13 @@
                     "value": "[format('{0}{1}', parameters('namePrefix'), padLeft(add(range(1, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]"
                   },
                   "name": {
-                    "value": "MicrosoftMonitoringAgent"
+                    "value": "AzureMonitorWindowsAgent"
                   },
                   "publisher": {
-                    "value": "Microsoft.EnterpriseCloud.Monitoring"
+                    "value": "Microsoft.Azure.Monitor"
                   },
                   "type": {
-                    "value": "MicrosoftMonitoringAgent"
+                    "value": "AzureMonitorWindowsAgent"
                   },
                   "typeHandlerVersion": {
                     "value": "1.0"
@@ -45799,7 +45116,7 @@
                     "value": true
                   },
                   "enableAutomaticUpgrade": {
-                    "value": false
+                    "value": true
                   },
                   "settings": {
                     "value": {
@@ -45977,6 +45294,73 @@
                 }
               },
               "dependsOn": [
+                "sessionHostsAntimalwareExtension"
+              ]
+            },
+            {
+              "copy": {
+                "name": "dataCollectionRuleAssociation",
+                "count": "[length(range(1, parameters('count')))]"
+              },
+              "condition": "[parameters('deployMonitoring')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('DCR-Asso-{0}-{1}-{2}', parameters('batchId'), sub(range(1, parameters('count'))[copyIndex()], 1), parameters('time'))]",
+              "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
+              "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "virtualMachineName": {
+                    "value": "[format('{0}{1}', parameters('namePrefix'), padLeft(add(range(1, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]"
+                  },
+                  "dataCollectionRuleId": {
+                    "value": "[parameters('dataCollectionRuleId')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.24.24.22086",
+                      "templateHash": "16009858420351021188"
+                    }
+                  },
+                  "parameters": {
+                    "virtualMachineName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "VM name."
+                      }
+                    },
+                    "dataCollectionRuleId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Data collection rule ID."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Insights/dataCollectionRuleAssociations",
+                      "apiVersion": "2022-06-01",
+                      "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('virtualMachineName'))]",
+                      "name": "[parameters('virtualMachineName')]",
+                      "properties": {
+                        "dataCollectionRuleId": "[parameters('dataCollectionRuleId')]",
+                        "description": "AVD Insights data collection rule association"
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "monitoring",
                 "sessionHostsAntimalwareExtension"
               ]
             },

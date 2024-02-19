@@ -126,7 +126,6 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
         osDisk: {
             createOption: 'fromImage'
             deleteOption: 'Delete'
-            diskSizeGB: 128
             managedDisk: varManagedDisk
         }
         adminUsername: vmLocalUserName
@@ -158,7 +157,7 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
         allowExtensionOperations: true
         extensionDomainJoinPassword: avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
         extensionDomainJoinConfig: {
-            enabled: (identityServiceProvider == 'AAD') ? false: true
+            enabled: (identityServiceProvider == 'EntraID') ? false: true
             settings: {
                 name: identityDomainName
                 ouPath: !empty(ouPath) ? ouPath : null
@@ -167,9 +166,9 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
                 options: '3'
             }
         }
-        // Azure AD (AAD) Join.
+        // Entra ID Join.
         extensionAadJoinConfig: {
-            enabled: (identityServiceProvider == 'AAD') ? true: false
+            enabled: (identityServiceProvider == 'EntraID') ? true: false
         }
         tags: tags
     }

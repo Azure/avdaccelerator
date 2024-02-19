@@ -145,8 +145,8 @@ module storageSmbShareContributorRoleAssign '../../../../carml/1.3.0/Microsoft.A
   }
 }]
 
-// VM AAD access roles compute RG
-module aadIdentityLoginRoleAssign '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for appGroupIdentitiesId in securityPrincipalIds: if (identityServiceProvider == 'AAD' && !empty(securityPrincipalIds)) {
+// Virtual machine Microsoft Entra ID access roles on the compute resource group
+module aadIdentityLoginRoleAssign '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for appGroupIdentitiesId in securityPrincipalIds: if (identityServiceProvider == 'EntraID' && !empty(securityPrincipalIds)) {
   name: 'VM-Login-Comp-${take('${appGroupIdentitiesId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
   params: {
@@ -155,8 +155,8 @@ module aadIdentityLoginRoleAssign '../../../../carml/1.3.0/Microsoft.Authorizati
   }
 }]
 
-// VM AAD access roles service objects RG
-module aadIdentityLoginAccessServiceObjects '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for appGroupIdentitiesId in securityPrincipalIds: if (identityServiceProvider == 'AAD' && !empty(securityPrincipalIds)) {
+// Virtual machine Microsoft Entra ID access roles on the service objects resource group
+module aadIdentityLoginAccessServiceObjects '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for appGroupIdentitiesId in securityPrincipalIds: if (identityServiceProvider == 'EntraID' && !empty(securityPrincipalIds)) {
   name: 'VM-Login-Serv-${take('${appGroupIdentitiesId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   params: {

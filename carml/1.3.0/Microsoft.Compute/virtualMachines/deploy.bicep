@@ -171,7 +171,7 @@ param extensionDomainJoinConfig object = {
   enabled: false
 }
 
-@description('Optional. The configuration for the [AAD Join] extension. Must at least contain the ["enabled": true] property to be executed.')
+@description('Optional. The configuration for the [EntraID Join] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionAadJoinConfig object = {
   enabled: false
 }
@@ -439,8 +439,8 @@ resource vm 'Microsoft.Compute/virtualMachines@2022-11-01' = {
         name: 'osdisk-01-${name}'
         createOption: contains(osDisk, 'createOption') ? osDisk.createOption : 'FromImage'
         deleteOption: contains(osDisk, 'deleteOption') ? osDisk.deleteOption : 'Delete'
-        diskSizeGB: osDisk.diskSizeGB
         caching: contains(osDisk, 'caching') ? osDisk.caching : 'ReadOnly'
+        diskSizeGB: contains(osDisk, 'diskSizeGB') ? osDisk.diskSizeGB : null
         managedDisk: {
           storageAccountType: osDisk.managedDisk.storageAccountType
           diskEncryptionSet: contains(osDisk.managedDisk, 'diskEncryptionSet') ? {
