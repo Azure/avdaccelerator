@@ -33,8 +33,11 @@ param storageObjectsRgName string
 @sys.description('AVD Resource Group Name for the network resources.')
 param networkObjectsRgName string
 
-@sys.description(' Azure log analytics workspace name.')
+@sys.description('Azure log analytics workspace name.')
 param alaWorkspaceName string
+
+@sys.description('Data collection rules name.')
+param dataCollectionRulesName string
 
 @sys.description(' Azure log analytics workspace name data retention.')
 param alaWorkspaceDataRetention int
@@ -44,6 +47,12 @@ param tags object
 
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
+
+// =========== //
+// Variable declaration //
+// =========== //
+
+var varDcrRgName = 'AzureMonitor-DataCollectionRules'
 
 // =========== //
 // Deployments //
@@ -96,15 +105,14 @@ module deployDiagnosticsAzurePolicyForAvd './.bicep/azurePolicyMonitoring.bicep'
   ]
 }
 
-// Performance counters
-module deployMonitoringEventsPerformanceSettings './.bicep/monitoringEventsPerformanceCounters.bicep' = if (deployAlaWorkspace) {
-  name: 'Events-Performance-${time}'
+// data collection rules
+module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
+  scope: resourceGroup('${subscriptionId}', (deployAlaWorkspace ? '${monitoringRgName}': '${serviceObjectsRgName}'))
+  name: 'DCR-${time}'
   params: {
-      deployAlaWorkspace: deployAlaWorkspace
-      alaWorkspaceId: deployAlaWorkspace ? '' : alaWorkspaceId
-      monitoringRgName: monitoringRgName
-      alaWorkspaceName: deployAlaWorkspace ? alaWorkspaceName: ''
-      subscriptionId: subscriptionId
+      location: location
+      name: dataCollectionRulesName
+      alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
       tags: tags
   }
   dependsOn: [
@@ -117,3 +125,4 @@ module deployMonitoringEventsPerformanceSettings './.bicep/monitoringEventsPerfo
 // =========== //
 output avdAlaWorkspaceResourceId string = deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
 output avdAlaWorkspaceId string = deployAlaWorkspace ? alaWorkspace.outputs.logAnalyticsWorkspaceId : alaWorkspaceId // may need to call on existing LGA to get workspace guid // We should be safe to remove this one as CARML modules use the resource ID instead
+output dataCollectionRuleId string = dataCollectionRule.outputs.dataCollectionRulesId

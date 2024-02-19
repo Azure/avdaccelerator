@@ -42,7 +42,7 @@
             "value": ""
         },       
         "identityDomainName": {
-            "value": "<<IdentityDomainName>>"
+            "value": "none"
         },
         "avdDomainJoinUserName": {
             "value": "none"
@@ -156,7 +156,7 @@
             "value": "Standard_D2s_v3"
         },
         "avdSessionHostDiskType": {
-            "value": "Standard_LRS"
+            "value": "Premium_LRS"
         },
         "avdOsImage": {
             "value": "win11_21h2"
@@ -203,8 +203,11 @@
         "diskZeroTrust": {
             "value": false
         },
-        "deployGpuPolicies": {
+        "enableKvPurgeProtection": {
             "value": true
+        },
+        "deployGpuPolicies": {
+            "value": false
         }
     }
 }

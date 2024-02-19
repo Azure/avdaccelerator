@@ -12,7 +12,7 @@
     "avdObjectId": {
       "type": "string",
       "metadata": {
-        "description": "Required. The object ID for the Azure Virtual Desktop application in Azure AD."
+        "description": "Required. The object ID for the Azure Virtual Desktop application in Microsoft Entra ID."
       }
     },
     "hostPoolResourceId": {
