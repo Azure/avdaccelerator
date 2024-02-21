@@ -37,14 +37,17 @@ param diskEncryptionKeyExpirationInEpoch int
 @sys.description('Encryption set name')
 param diskEncryptionSetName string
 
-@sys.description('Zero trust managed identity')
-param ztManagedIdentityResourceId string
+//@sys.description('Zero trust managed identity')
+//param ztManagedIdentityResourceId string
 
 @sys.description('Tags to be applied to resources')
 param tags object
 
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
+
+@description('Specifies the SKU for the vault.')
+param vaultSku string
 
 @sys.description('Enable purge protection on the key vault')
 param enableKvPurgeProtection bool = true
@@ -66,6 +69,7 @@ module ztKeyVault '../../../../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.b
         enableRbacAuthorization: true
         enablePurgeProtection: enableKvPurgeProtection
         softDeleteRetentionInDays: 7
+        vaultSku: vaultSku
         publicNetworkAccess: 'Disabled'
         networkAcls: {
             bypass: 'AzureServices'
@@ -141,11 +145,9 @@ module ztDiskEncryptionSet '../../../../../carml/1.3.0/Microsoft.Compute/diskEnc
         location: location
         name: diskEncryptionSetName
         rotationToLatestKeyVersionEnabled: true
-        systemAssignedIdentity: false
+        systemAssignedIdentity: true
         tags: tags
-        userAssignedIdentities: {
-            '${ztManagedIdentityResourceId}': {}
-        }
+    //    userAssignedIdentities: {}
     }
 }
 
@@ -154,3 +156,4 @@ module ztDiskEncryptionSet '../../../../../carml/1.3.0/Microsoft.Compute/diskEnc
 // =========== //
 
 output ztDiskEncryptionSetResourceId string = ztDiskEncryptionSet.outputs.resourceId
+output ztDiskEncryptionSetPrincipalId string = ztDiskEncryptionSet.outputs.principalId
