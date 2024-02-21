@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "2832415167746473563"
+      "templateHash": "9748035616520442138"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -1299,6 +1299,7 @@
       }
     },
     "varDeploymentPrefixLowercase": "[toLower(parameters('deploymentPrefix'))]",
+    "varAzureCloudName": "[environment().name]",
     "varDeploymentEnvironmentLowercase": "[toLower(parameters('deploymentEnvironment'))]",
     "varDeploymentEnvironmentComputeStorage": "[if(equals(parameters('deploymentEnvironment'), 'Dev'), 'd', if(equals(parameters('deploymentEnvironment'), 'Test'), 't', if(equals(parameters('deploymentEnvironment'), 'Prod'), 'p', '')))]",
     "varNamingUniqueStringThreeChar": "[take(format('{0}', uniqueString(parameters('avdWorkloadSubsId'), variables('varDeploymentPrefixLowercase'), parameters('time'))), 3)]",
@@ -1337,12 +1338,15 @@
     "varHostPoolPreferredAppGroupType": "[toLower(parameters('hostPoolPreferredAppGroupType'))]",
     "varApplicationGroupName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomName'), format('vdag-{0}-{1}-001', variables('varHostPoolPreferredAppGroupType'), variables('varManagementPlaneNamingStandard')))]",
     "varApplicationGroupFriendlyName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomFriendlyName'), format('{0} {1} {2} {3} 001', variables('varHostPoolPreferredAppGroupType'), parameters('deploymentPrefix'), parameters('deploymentEnvironment'), parameters('avdManagementPlaneLocation')))]",
+    "varDeployScalingPlan": "[if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), false(), parameters('avdDeployScalingPlan'))]",
+    "varCreateMsixDeployment": "[if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), false(), parameters('createMsixDeployment'))]",
     "varScalingPlanName": "[if(parameters('avdUseCustomNaming'), parameters('avdScalingPlanCustomName'), format('vdscaling-{0}-001', variables('varManagementPlaneNamingStandard')))]",
     "varScalingPlanExclusionTag": "[format('exclude-{0}', variables('varScalingPlanName'))]",
     "varScalingPlanWeekdaysScheduleName": "[format('Weekdays-{0}', variables('varManagementPlaneNamingStandard'))]",
     "varScalingPlanWeekendScheduleName": "[format('Weekend-{0}', variables('varManagementPlaneNamingStandard'))]",
     "varWrklKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('avdWrklKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')), format('kv-sec-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')))]",
     "varWrklKvPrivateEndpointName": "[format('pe-{0}-vault', variables('varWrklKvName'))]",
+    "varWrklKeyVaultSku": "[if(or(equals(variables('varAzureCloudName'), 'AzureCloud'), equals(variables('varAzureCloudName'), 'AzureUSGovernment')), 'premium', if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), 'standard', null()))]",
     "varSessionHostNamePrefix": "[if(parameters('avdUseCustomNaming'), parameters('avdSessionHostCustomNamePrefix'), format('vm{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varSessionHostLocationAcronym')))]",
     "varAvsetNamePrefix": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}', parameters('avsetCustomNamePrefix'), variables('varComputeStorageResourcesNamingStandard')), format('avail-{0}', variables('varComputeStorageResourcesNamingStandard')))]",
     "varStorageManagedIdentityName": "[format('id-storage-{0}-001', variables('varComputeStorageResourcesNamingStandard'))]",
@@ -1362,7 +1366,7 @@
     "varSessionHostConfigurationScriptUri": "[format('{0}scripts/Set-SessionHostConfiguration.ps1', variables('varBaseScriptUri'))]",
     "varSessionHostConfigurationScript": "./Set-SessionHostConfiguration.ps1",
     "varDiskEncryptionKeyExpirationInEpoch": "[dateTimeToEpoch(dateTimeAdd(parameters('time'), format('P{0}D', string(parameters('diskEncryptionKeyExpirationInDays')))))]",
-    "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(parameters('createMsixDeployment'), true())), true(), false())]",
+    "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(variables('varCreateMsixDeployment'), true())), true(), false())]",
     "varFslogixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('fslogixStoragePerformance')), format('{0}_LRS', parameters('fslogixStoragePerformance')))]",
     "varMsixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('msixStoragePerformance')), format('{0}_LRS', parameters('msixStoragePerformance')))]",
     "varMaxSessionHostsPerTemplate": 10,
@@ -7213,7 +7217,7 @@
       ]
     },
     {
-      "condition": "[or(or(or(or(parameters('createAvdVnet'), parameters('createPrivateDnsZones')), parameters('avdDeploySessionHosts')), parameters('createAvdFslogixDeployment')), parameters('createMsixDeployment'))]",
+      "condition": "[or(or(or(or(parameters('createAvdVnet'), parameters('createPrivateDnsZones')), parameters('avdDeploySessionHosts')), parameters('createAvdFslogixDeployment')), variables('varCreateMsixDeployment'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('Networking-{0}', parameters('time'))]",
@@ -7227,7 +7231,7 @@
           "createVnet": {
             "value": "[parameters('createAvdVnet')]"
           },
-          "deployAsg": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), parameters('createMsixDeployment')), createObject('value', true()), createObject('value', false()))]",
+          "deployAsg": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), variables('varCreateMsixDeployment')), createObject('value', true()), createObject('value', false()))]",
           "existingAvdSubnetResourceId": {
             "value": "[parameters('existingVnetAvdSubnetResourceId')]"
           },
@@ -7306,7 +7310,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "3863102228711352151"
+              "templateHash": "13602309789993996371"
             }
           },
           "parameters": {
@@ -11760,6 +11764,182 @@
               "dependsOn": [
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time')))]"
               ]
+            },
+            {
+              "condition": "[and(parameters('createPrivateDnsZones'), equals(variables('varAzureCloudName'), 'AzureChinaCloud'))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('Private-DNS-Gov-Files-{0}', parameters('time'))]",
+              "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+              "resourceGroup": "[format('{0}', parameters('networkObjectsRgName'))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "privateDnsZoneName": {
+                    "value": "privatelink.file.core.chinacloudapi.cn"
+                  },
+                  "virtualNetworkResourceId": "[if(parameters('createVnet'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', variables('varExistingAvdVnetResourceId')))]",
+                  "tags": {
+                    "value": "[parameters('tags')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.24.24.22086",
+                      "templateHash": "8379798746548034463"
+                    }
+                  },
+                  "parameters": {
+                    "privateDnsZoneName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Name space of the private DNS zone"
+                      }
+                    },
+                    "tags": {
+                      "type": "object",
+                      "metadata": {
+                        "description": "Tags to be applied to resources"
+                      }
+                    },
+                    "virtualNetworkResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Virtual network resource ID to link private DNS zone to"
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Network/privateDnsZones",
+                      "apiVersion": "2020-06-01",
+                      "name": "[parameters('privateDnsZoneName')]",
+                      "location": "Global",
+                      "tags": "[parameters('tags')]"
+                    },
+                    {
+                      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+                      "apiVersion": "2020-06-01",
+                      "name": "[format('{0}/{1}', parameters('privateDnsZoneName'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/'))))]",
+                      "location": "Global",
+                      "tags": "[parameters('tags')]",
+                      "properties": {
+                        "registrationEnabled": false,
+                        "virtualNetwork": {
+                          "id": "[parameters('virtualNetworkResourceId')]"
+                        }
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZoneName'))]"
+                      ]
+                    }
+                  ],
+                  "outputs": {
+                    "resourceId": {
+                      "type": "string",
+                      "value": "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZoneName'))]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time')))]"
+              ]
+            },
+            {
+              "condition": "[and(parameters('createPrivateDnsZones'), equals(variables('varAzureCloudName'), 'AzureChinaCloud'))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('Private-DNS-Gov-Kv-{0}', parameters('time'))]",
+              "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+              "resourceGroup": "[format('{0}', parameters('networkObjectsRgName'))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "privateDnsZoneName": {
+                    "value": "privatelink.vaultcore.azure.cn"
+                  },
+                  "virtualNetworkResourceId": "[if(parameters('createVnet'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', variables('varExistingAvdVnetResourceId')))]",
+                  "tags": {
+                    "value": "[parameters('tags')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.24.24.22086",
+                      "templateHash": "8379798746548034463"
+                    }
+                  },
+                  "parameters": {
+                    "privateDnsZoneName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Name space of the private DNS zone"
+                      }
+                    },
+                    "tags": {
+                      "type": "object",
+                      "metadata": {
+                        "description": "Tags to be applied to resources"
+                      }
+                    },
+                    "virtualNetworkResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Virtual network resource ID to link private DNS zone to"
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Network/privateDnsZones",
+                      "apiVersion": "2020-06-01",
+                      "name": "[parameters('privateDnsZoneName')]",
+                      "location": "Global",
+                      "tags": "[parameters('tags')]"
+                    },
+                    {
+                      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+                      "apiVersion": "2020-06-01",
+                      "name": "[format('{0}/{1}', parameters('privateDnsZoneName'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/'))))]",
+                      "location": "Global",
+                      "tags": "[parameters('tags')]",
+                      "properties": {
+                        "registrationEnabled": false,
+                        "virtualNetwork": {
+                          "id": "[parameters('virtualNetworkResourceId')]"
+                        }
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZoneName'))]"
+                      ]
+                    }
+                  ],
+                  "outputs": {
+                    "resourceId": {
+                      "type": "string",
+                      "value": "[resourceId('Microsoft.Network/privateDnsZones', parameters('privateDnsZoneName'))]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('vNet-{0}', parameters('time')))]"
+              ]
             }
           ],
           "outputs": {
@@ -11773,11 +11953,11 @@
             },
             "azureFilesDnsZoneResourceId": {
               "type": "string",
-              "value": "[if(parameters('createPrivateDnsZones'), if(equals(variables('varAzureCloudName'), 'AzureCloud'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Comm-Files-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Gov-Files-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), '')]"
+              "value": "[if(parameters('createPrivateDnsZones'), if(equals(variables('varAzureCloudName'), 'AzureCloud'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Comm-Files-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, if(equals(variables('varAzureCloudName'), 'AzureUSGovernment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Gov-Files-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Gov-Files-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, ''))), '')]"
             },
             "KeyVaultDnsZoneResourceId": {
               "type": "string",
-              "value": "[if(parameters('createPrivateDnsZones'), if(equals(variables('varAzureCloudName'), 'AzureCloud'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Comm-Kv-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Gov-Kv-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), '')]"
+              "value": "[if(parameters('createPrivateDnsZones'), if(equals(variables('varAzureCloudName'), 'AzureCloud'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Comm-Kv-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, if(equals(variables('varAzureCloudName'), 'AzureUSGovernment'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Gov-Kv-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-Gov-Kv-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, ''))), '')]"
             }
           }
         }
@@ -11834,7 +12014,7 @@
           },
           "preferredAppGroupType": "[if(equals(parameters('hostPoolPreferredAppGroupType'), 'RemoteApp'), createObject('value', 'RailApplications'), createObject('value', 'Desktop'))]",
           "deployScalingPlan": {
-            "value": "[parameters('avdDeployScalingPlan')]"
+            "value": "[variables('varDeployScalingPlan')]"
           },
           "scalingPlanExclusionTag": {
             "value": "[variables('varScalingPlanExclusionTag')]"
@@ -11857,7 +12037,7 @@
           "serviceObjectsRgName": {
             "value": "[variables('varServiceObjectsRgName')]"
           },
-          "startVmOnConnect": "[if(equals(parameters('avdHostPoolType'), 'Pooled'), createObject('value', parameters('avdDeployScalingPlan')), createObject('value', parameters('avdStartVmOnConnect')))]",
+          "startVmOnConnect": "[if(equals(parameters('avdHostPoolType'), 'Pooled'), createObject('value', variables('varDeployScalingPlan')), createObject('value', parameters('avdStartVmOnConnect')))]",
           "workloadSubsId": {
             "value": "[parameters('avdWorkloadSubsId')]"
           },
@@ -14328,7 +14508,7 @@
             "value": "[parameters('avdEnterpriseAppObjectId')]"
           },
           "deployScalingPlan": {
-            "value": "[parameters('avdDeployScalingPlan')]"
+            "value": "[variables('varDeployScalingPlan')]"
           },
           "storageManagedIdentityName": {
             "value": "[variables('varStorageManagedIdentityName')]"
@@ -18330,6 +18510,9 @@
           "managedIdentityName": {
             "value": "[variables('varZtManagedIdentityName')]"
           },
+          "vaultSku": {
+            "value": "[variables('varWrklKeyVaultSku')]"
+          },
           "diskEncryptionKeyExpirationInDays": {
             "value": "[parameters('diskEncryptionKeyExpirationInDays')]"
           },
@@ -18365,7 +18548,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "5399984776207341540"
+              "templateHash": "13543905426187088426"
             }
           },
           "parameters": {
@@ -18477,6 +18660,12 @@
               "defaultValue": true,
               "metadata": {
                 "description": "Enable purge protection on the key vault"
+              }
+            },
+            "vaultSku": {
+              "type": "string",
+              "metadata": {
+                "description": "Specifies the SKU for the vault."
               }
             }
           },
@@ -20569,321 +20758,6 @@
               ]
             },
             {
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('ZT-Managed-ID-{0}', parameters('time'))]",
-              "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
-              "resourceGroup": "[format('{0}', parameters('serviceObjectsRgName'))]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "location": {
-                    "value": "[parameters('location')]"
-                  },
-                  "name": {
-                    "value": "[parameters('managedIdentityName')]"
-                  },
-                  "tags": {
-                    "value": "[parameters('tags')]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.24.24.22086",
-                      "templateHash": "1209128013382695969"
-                    }
-                  },
-                  "parameters": {
-                    "name": {
-                      "type": "string",
-                      "defaultValue": "[guid(resourceGroup().id)]",
-                      "metadata": {
-                        "description": "Optional. Name of the User Assigned Identity."
-                      }
-                    },
-                    "location": {
-                      "type": "string",
-                      "defaultValue": "[resourceGroup().location]",
-                      "metadata": {
-                        "description": "Optional. Location for all resources."
-                      }
-                    },
-                    "lock": {
-                      "type": "string",
-                      "defaultValue": "",
-                      "allowedValues": [
-                        "",
-                        "CanNotDelete",
-                        "ReadOnly"
-                      ],
-                      "metadata": {
-                        "description": "Optional. Specify the type of lock."
-                      }
-                    },
-                    "roleAssignments": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                      }
-                    },
-                    "tags": {
-                      "type": "object",
-                      "defaultValue": {},
-                      "metadata": {
-                        "description": "Optional. Tags of the resource."
-                      }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-                      }
-                    }
-                  },
-                  "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
-                    },
-                    {
-                      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-                      "apiVersion": "2018-11-30",
-                      "name": "[parameters('name')]",
-                      "location": "[parameters('location')]",
-                      "tags": "[parameters('tags')]"
-                    },
-                    {
-                      "condition": "[not(empty(parameters('lock')))]",
-                      "type": "Microsoft.Authorization/locks",
-                      "apiVersion": "2020-05-01",
-                      "scope": "[format('Microsoft.ManagedIdentity/userAssignedIdentities/{0}', parameters('name'))]",
-                      "name": "[format('{0}-{1}-lock', parameters('name'), parameters('lock'))]",
-                      "properties": {
-                        "level": "[parameters('lock')]",
-                        "notes": "[if(equals(parameters('lock'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot modify the resource or child resources.')]"
-                      },
-                      "dependsOn": [
-                        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]"
-                      ]
-                    },
-                    {
-                      "copy": {
-                        "name": "userMsi_roleAssignments",
-                        "count": "[length(parameters('roleAssignments'))]"
-                      },
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-UserMSI-Rbac-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-                      "properties": {
-                        "expressionEvaluationOptions": {
-                          "scope": "inner"
-                        },
-                        "mode": "Incremental",
-                        "parameters": {
-                          "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
-                          "principalIds": {
-                            "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
-                          },
-                          "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
-                          "roleDefinitionIdOrName": {
-                            "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
-                          },
-                          "condition": "[if(contains(parameters('roleAssignments')[copyIndex()], 'condition'), createObject('value', parameters('roleAssignments')[copyIndex()].condition), createObject('value', ''))]",
-                          "delegatedManagedIdentityResourceId": "[if(contains(parameters('roleAssignments')[copyIndex()], 'delegatedManagedIdentityResourceId'), createObject('value', parameters('roleAssignments')[copyIndex()].delegatedManagedIdentityResourceId), createObject('value', ''))]",
-                          "resourceId": {
-                            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]"
-                          }
-                        },
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "metadata": {
-                            "_generator": {
-                              "name": "bicep",
-                              "version": "0.24.24.22086",
-                              "templateHash": "17889767664939482865"
-                            }
-                          },
-                          "parameters": {
-                            "principalIds": {
-                              "type": "array",
-                              "metadata": {
-                                "description": "Required. The IDs of the principals to assign the role to."
-                              }
-                            },
-                            "roleDefinitionIdOrName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
-                              }
-                            },
-                            "resourceId": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. The resource ID of the resource to apply the role assignment to."
-                              }
-                            },
-                            "principalType": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "allowedValues": [
-                                "ServicePrincipal",
-                                "Group",
-                                "User",
-                                "ForeignGroup",
-                                "Device",
-                                ""
-                              ],
-                              "metadata": {
-                                "description": "Optional. The principal type of the assigned principal ID."
-                              }
-                            },
-                            "description": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. The description of the role assignment."
-                              }
-                            },
-                            "condition": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                              }
-                            },
-                            "conditionVersion": {
-                              "type": "string",
-                              "defaultValue": "2.0",
-                              "allowedValues": [
-                                "2.0"
-                              ],
-                              "metadata": {
-                                "description": "Optional. Version of the condition."
-                              }
-                            },
-                            "delegatedManagedIdentityResourceId": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. Id of the delegated managed identity resource."
-                              }
-                            }
-                          },
-                          "variables": {
-                            "builtInRoleNames": {
-                              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-                              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
-                              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
-                              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
-                              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
-                              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
-                              "Managed Identity Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e40ec5ca-96e0-45a2-b4ff-59039f2c2b59')]",
-                              "Managed Identity Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f1a07417-d97a-45cb-824c-7a7467783830')]",
-                              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
-                              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
-                              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
-                              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
-                              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
-                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-                            }
-                          },
-                          "resources": [
-                            {
-                              "copy": {
-                                "name": "roleAssignment",
-                                "count": "[length(parameters('principalIds'))]"
-                              },
-                              "type": "Microsoft.Authorization/roleAssignments",
-                              "apiVersion": "2022-04-01",
-                              "scope": "[format('Microsoft.ManagedIdentity/userAssignedIdentities/{0}', last(split(parameters('resourceId'), '/')))]",
-                              "name": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', last(split(parameters('resourceId'), '/'))), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
-                              "properties": {
-                                "description": "[parameters('description')]",
-                                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
-                                "principalId": "[parameters('principalIds')[copyIndex()]]",
-                                "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]",
-                                "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]",
-                                "conditionVersion": "[if(and(not(empty(parameters('conditionVersion'))), not(empty(parameters('condition')))), parameters('conditionVersion'), null())]",
-                                "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), null())]"
-                              }
-                            }
-                          ]
-                        }
-                      },
-                      "dependsOn": [
-                        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]"
-                      ]
-                    }
-                  ],
-                  "outputs": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The name of the user assigned identity."
-                      },
-                      "value": "[parameters('name')]"
-                    },
-                    "resourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource ID of the user assigned identity."
-                      },
-                      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]"
-                    },
-                    "principalId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The principal ID of the user assigned identity."
-                      },
-                      "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), '2018-11-30').principalId]"
-                    },
-                    "clientId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource ID of the user assigned identity"
-                      },
-                      "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), '2018-11-30').clientId]"
-                    },
-                    "resourceGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource group the user assigned identity was deployed into."
-                      },
-                      "value": "[resourceGroup().name]"
-                    },
-                    "location": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The location the resource was deployed into."
-                      },
-                      "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), '2018-11-30', 'full').location]"
-                    }
-                  }
-                }
-              }
-            },
-            {
               "condition": "[parameters('diskZeroTrust')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -20896,7 +20770,7 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "principalId": "[if(parameters('diskZeroTrust'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('ZT-Managed-ID-{0}', parameters('time'))), '2022-09-01').outputs.principalId.value), createObject('value', ''))]",
+                  "principalId": "[if(parameters('diskZeroTrust'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('ZT-Key-Vault-{0}', parameters('time'))), '2022-09-01').outputs.ztDiskEncryptionSetPrincipalId.value), createObject('value', ''))]",
                   "roleDefinitionIdOrName": {
                     "value": "Key Vault Crypto Service Encryption User"
                   },
@@ -21460,7 +21334,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('ZT-Managed-ID-{0}', parameters('time')))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('ZT-Key-Vault-{0}', parameters('time')))]"
               ]
             },
             {
@@ -21488,6 +21362,9 @@
                   "kvName": {
                     "value": "[parameters('ztKvName')]"
                   },
+                  "vaultSku": {
+                    "value": "[parameters('vaultSku')]"
+                  },
                   "deployPrivateEndpointKeyvaultStorage": {
                     "value": "[parameters('deployPrivateEndpointKeyvaultStorage')]"
                   },
@@ -21509,7 +21386,6 @@
                   "diskEncryptionSetName": {
                     "value": "[parameters('diskEncryptionSetName')]"
                   },
-                  "ztManagedIdentityResourceId": "[if(parameters('diskZeroTrust'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('ZT-Managed-ID-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', ''))]",
                   "tags": {
                     "value": "[union(parameters('tags'), parameters('kvTags'))]"
                   },
@@ -21524,7 +21400,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.24.24.22086",
-                      "templateHash": "16926484622498611414"
+                      "templateHash": "10475040819654084397"
                     }
                   },
                   "parameters": {
@@ -21594,12 +21470,6 @@
                         "description": "Encryption set name"
                       }
                     },
-                    "ztManagedIdentityResourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Zero trust managed identity"
-                      }
-                    },
                     "tags": {
                       "type": "object",
                       "metadata": {
@@ -21611,6 +21481,12 @@
                       "defaultValue": "[utcNow()]",
                       "metadata": {
                         "description": "Do not modify, used to set unique value for resource deployment."
+                      }
+                    },
+                    "vaultSku": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Specifies the SKU for the vault."
                       }
                     },
                     "enableKvPurgeProtection": {
@@ -21648,6 +21524,9 @@
                           },
                           "softDeleteRetentionInDays": {
                             "value": 7
+                          },
+                          "vaultSku": {
+                            "value": "[parameters('vaultSku')]"
                           },
                           "publicNetworkAccess": {
                             "value": "Disabled"
@@ -24040,15 +23919,10 @@
                             "value": true
                           },
                           "systemAssignedIdentity": {
-                            "value": false
+                            "value": true
                           },
                           "tags": {
                             "value": "[parameters('tags')]"
-                          },
-                          "userAssignedIdentities": {
-                            "value": {
-                              "[format('{0}', parameters('ztManagedIdentityResourceId'))]": {}
-                            }
                           }
                         },
                         "template": {
@@ -24747,13 +24621,14 @@
                     "ztDiskEncryptionSetResourceId": {
                       "type": "string",
                       "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('rgName'))), 'Microsoft.Resources/deployments', format('ZT-DiskEncryptionSet-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]"
+                    },
+                    "ztDiskEncryptionSetPrincipalId": {
+                      "type": "string",
+                      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('rgName'))), 'Microsoft.Resources/deployments', format('ZT-DiskEncryptionSet-{0}', parameters('time'))), '2022-09-01').outputs.principalId.value]"
                     }
                   }
                 }
-              },
-              "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('ZT-Managed-ID-{0}', parameters('time')))]"
-              ]
+              }
             }
           ],
           "outputs": {
@@ -24795,6 +24670,9 @@
           },
           "enablePurgeProtection": {
             "value": "[parameters('enableKvPurgeProtection')]"
+          },
+          "vaultSku": {
+            "value": "[variables('varWrklKeyVaultSku')]"
           },
           "softDeleteRetentionInDays": {
             "value": 7
@@ -26753,7 +26631,7 @@
       ]
     },
     {
-      "condition": "[or(parameters('createAvdFslogixDeployment'), parameters('createMsixDeployment'))]",
+      "condition": "[or(parameters('createAvdFslogixDeployment'), variables('varCreateMsixDeployment'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('Storage-MGMT-VM-{0}', parameters('time'))]",
@@ -26774,7 +26652,7 @@
           "computeTimeZone": {
             "value": "[variables('varTimeZoneSessionHosts')]"
           },
-          "applicationSecurityGroupResourceId": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), parameters('createMsixDeployment')), createObject('value', format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.applicationSecurityGroupResourceId.value)), createObject('value', ''))]",
+          "applicationSecurityGroupResourceId": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), variables('varCreateMsixDeployment')), createObject('value', format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.applicationSecurityGroupResourceId.value)), createObject('value', ''))]",
           "domainJoinUserName": {
             "value": "[parameters('avdDomainJoinUserName')]"
           },
@@ -35557,7 +35435,7 @@
       ]
     },
     {
-      "condition": "[parameters('createMsixDeployment')]",
+      "condition": "[variables('varCreateMsixDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('Storage-MSIX-{0}', parameters('time'))]",
@@ -40238,7 +40116,7 @@
           "timeZone": {
             "value": "[variables('varTimeZoneSessionHosts')]"
           },
-          "asgResourceId": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), parameters('createMsixDeployment')), createObject('value', format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.applicationSecurityGroupResourceId.value)), createObject('value', ''))]",
+          "asgResourceId": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), variables('varCreateMsixDeployment')), createObject('value', format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.applicationSecurityGroupResourceId.value)), createObject('value', ''))]",
           "identityServiceProvider": {
             "value": "[parameters('avdIdentityServiceProvider')]"
           },
