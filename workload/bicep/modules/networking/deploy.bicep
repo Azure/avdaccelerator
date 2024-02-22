@@ -272,6 +272,14 @@ module routeTableAvd '../../../../carml/1.3.0/Microsoft.Network/routeTables/depl
                     nextHopType: 'Internet'
                 }
             }
+            {
+                name: 'AVDStunTurnTraffic'
+                properties: {
+                    addressPrefix: '20.202.0.0/16'
+                    hasBgpOverride: true
+                    nextHopType: 'Internet'
+                }
+            }
         ] : []
     }
     dependsOn: []
