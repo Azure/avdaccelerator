@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "18402078529000201790"
+      "templateHash": "4258897336129595394"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -7310,7 +7310,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "17875855700729829866"
+              "templateHash": "7208426384568881318"
             }
           },
           "parameters": {
@@ -9406,7 +9406,7 @@
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
-                  "routes": "[if(variables('varCreateAvdStaicRoute'), createObject('value', createArray(createObject('name', 'AVDServiceTraffic', 'properties', createObject('addressPrefix', 'WindowsVirtualDesktop', 'hasBgpOverride', true(), 'nextHopType', 'Internet')))), createObject('value', createArray()))]"
+                  "routes": "[if(variables('varCreateAvdStaicRoute'), createObject('value', createArray(createObject('name', 'AVDServiceTraffic', 'properties', createObject('addressPrefix', 'WindowsVirtualDesktop', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'AVDStunTurnTraffic', 'properties', createObject('addressPrefix', '20.202.0.0/16', 'hasBgpOverride', true(), 'nextHopType', 'Internet')))), createObject('value', createArray()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
