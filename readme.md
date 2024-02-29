@@ -48,9 +48,11 @@ The brownfield section contains templates to deploy additional features for Azur
 - [Scaling Tool](./workload/bicep/brownfield/scalingTool/readme.md)
 - [Start VM On Connect](./workload/bicep/brownfield/startVmOnConnect/readme.md)
 - [App Attach Tools VM](./workload/bicep/brownfield/appAttachToolsVM/Readme.md)
-- [Deep Insights Workbook](./workload/workbooks/deepInsightsWorkbook/readme.md)
 - [Migrate monitoring agent from MMA to AMA](./workload/scripts/Monitoring/readme.md)
 - [Add New Session Hosts](./workload/bicep/brownfield/newSessionHosts/readme.md)
+- [Deep Insights Workbook](./workload/workbooks/deepInsightsWorkbook/readme.md)
+- [Error Reporting Workbook](./workload/workbooks/errorReporting/readme.md)
+- [Error Tracking Workbook](./workload/workbooks/errorTracking/readme.md)
 
 ### Custom image build
 
