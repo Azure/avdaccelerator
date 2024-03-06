@@ -294,8 +294,7 @@
                     "queryType": 0,
                     "resourceType": "microsoft.operationalinsights/workspaces",
                     "crossComponentResources": [
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/Chevron/providers/microsoft.operationalinsights/workspaces/chevron",
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw"
+                      "{Workspaces}"
                     ],
                     "visualization": "table",
                     "gridSettings": {
@@ -429,8 +428,7 @@
                     "queryType": 0,
                     "resourceType": "microsoft.operationalinsights/workspaces",
                     "crossComponentResources": [
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw",
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/Chevron/providers/microsoft.operationalinsights/workspaces/chevron"
+                      "{Workspaces}"
                     ],
                     "visualization": "table",
                     "gridSettings": {
@@ -517,14 +515,13 @@
                   "type": 3,
                   "content": {
                     "version": "KqlItem/1.0",
-                    "query": "WVDConnections\r\n| where State == \"Completed\" \r\n| where GatewayRegion != \"<>\"\r\n| join kind=leftouter(WVDErrors) on CorrelationId \r\n    | join kind =leftouter(SigninLogs\r\n    | extend Company = case(\r\n       Identity has \"LTI\", \"LTI\",\r\n       Identity has \"WiPro\", \"WiPro\",\r\n       Identity has \"Deloitte\", \"Deliotte\",\r\n       Identity has \"GEP\", \"GEP\",\r\n       Identity has \"Accenture\", \"Accenture\",\r\n       Identity has \"KPMG\", \"KPMG\",\r\n       Identity has \"HCL\", \"HCL\",\r\n       Identity has \"L&T Infotech\", \"L&T Infotech\",\r\n       Identity has \"Tech Mahindra\", \"Tech Mahindra\",\r\n       Identity has \"Chevron\", \"Chevron\",\r\n       Identity !has @'[', \"Chevron\",\r\n        \"Unknown\")\r\n        | summarize arg_max(UserDisplayName, UserName = UserPrincipalName, Company) by TimeGenerated\r\n        | distinct UserDisplayName, UserName, Company) \r\n    on UserName\r\n| where Company in ({Company}) or '*' in ({Company})\r\n| where GatewayRegion == '{gw}'\r\n| where isnotempty(CodeSymbolic)\r\n| summarize Errors=count(), byCompany=dcountif(Company, isnotempty(CodeSymbolic)) by Hostpool=_ResourceId, CodeSymbolic, ClientOS, ClientVersion\r\n//| evaluate pivot(Company)",
+                    "query": "WVDConnections\r\n| where State == \"Completed\" \r\n| where GatewayRegion != \"<>\"\r\n| where GatewayRegion == '{gw}'\r\n| where isnotempty(CodeSymbolic)\r\n| summarize Errors=count(), byCompany=dcountif(Company, isnotempty(CodeSymbolic)) by Hostpool=_ResourceId, CodeSymbolic, ClientOS, ClientVersion\r\n//| evaluate pivot(Company)",
                     "size": 0,
                     "timeContextFromParameter": "TimeRange",
                     "queryType": 0,
                     "resourceType": "microsoft.operationalinsights/workspaces",
                     "crossComponentResources": [
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/Chevron/providers/microsoft.operationalinsights/workspaces/chevron",
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw"
+                      "{Workspaces}"
                     ],
                     "gridSettings": {
                       "sortBy": [
@@ -570,8 +567,7 @@
                     "queryType": 0,
                     "resourceType": "microsoft.operationalinsights/workspaces",
                     "crossComponentResources": [
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/Chevron/providers/microsoft.operationalinsights/workspaces/chevron",
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw"
+                      "{Workspaces}"
                     ],
                     "visualization": "table",
                     "gridSettings": {
@@ -681,8 +677,7 @@
                     "queryType": 0,
                     "resourceType": "microsoft.operationalinsights/workspaces",
                     "crossComponentResources": [
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/Chevron/providers/microsoft.operationalinsights/workspaces/chevron",
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw"
+                      "{Workspaces}"
                     ],
                     "visualization": "table",
                     "gridSettings": {
@@ -907,8 +902,7 @@
                     "queryType": 0,
                     "resourceType": "microsoft.operationalinsights/workspaces",
                     "crossComponentResources": [
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw",
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/Chevron/providers/microsoft.operationalinsights/workspaces/chevron"
+                      "{Workspaces}"
                     ],
                     "visualization": "table",
                     "gridSettings": {
@@ -1327,8 +1321,7 @@
                     "queryType": 0,
                     "resourceType": "microsoft.operationalinsights/workspaces",
                     "crossComponentResources": [
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw",
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/Chevron/providers/microsoft.operationalinsights/workspaces/chevron"
+                      "{Workspaces}"
                     ],
                     "visualization": "table",
                     "gridSettings": {
@@ -1747,8 +1740,7 @@
                     "queryType": 0,
                     "resourceType": "microsoft.operationalinsights/workspaces",
                     "crossComponentResources": [
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/Chevron/providers/microsoft.operationalinsights/workspaces/chevron",
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw"
+                      "{Workspaces}"
                     ],
                     "visualization": "table",
                     "gridSettings": {
@@ -2157,8 +2149,7 @@
                     "queryType": 0,
                     "resourceType": "microsoft.operationalinsights/workspaces",
                     "crossComponentResources": [
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/Chevron/providers/microsoft.operationalinsights/workspaces/chevron",
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw"
+                      "{Workspaces}"
                     ],
                     "visualization": "table",
                     "gridSettings": {
@@ -2549,6 +2540,6 @@
   "fallbackResourceIds": [
     "Azure Monitor"
   ],
-   "fromTemplateId": "community-Workbooks/byork/avderrorreporting",
+  "fromTemplateId": "community-Workbooks/byork/avderrorreporting",
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
