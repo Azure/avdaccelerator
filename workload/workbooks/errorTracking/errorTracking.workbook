@@ -123,8 +123,7 @@
             "queryType": 1,
             "resourceType": "microsoft.resourcegraph/resources",
             "value": [
-              "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw",
-              "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron/providers/microsoft.operationalinsights/workspaces/chevron"
+              "value::all"
             ]
           },
           {
@@ -264,7 +263,7 @@
             "timeContext": {
               "durationMs": 86400000
             },
-            "value": "guided"
+            "value": "event"
           }
         ],
         "style": "above",
@@ -327,7 +326,7 @@
                   "timeContext": {
                     "durationMs": 86400000
                   },
-                  "value": "billy.york@chevron.com"
+                  "value": ""
                 },
                 {
                   "id": "7150044f-7ed1-4121-9867-5710f7a0cac1",
@@ -585,26 +584,6 @@
             "styleSettings": {
               "showBorder": true
             }
-          },
-          {
-            "type": 3,
-            "content": {
-              "version": "KqlItem/1.0",
-              "query": "WVDConnections\r\n| where UserName =~ 'billy.york@chevron.com'\r\n| join kind = leftouter(WVDErrors) on CorrelationId\r\n| summarize Errors=countif(isnotempty(CodeSymbolic)) by ClientOS, ClientVersion, ClientType",
-              "size": 4,
-              "timeContextFromParameter": "TimeRange",
-              "queryType": 0,
-              "resourceType": "microsoft.operationalinsights/workspaces",
-              "crossComponentResources": [
-                "{Workspaces}"
-              ]
-            },
-            "customWidth": "50",
-            "conditionalVisibility": {
-              "parameterName": "asdfasdfasdf",
-              "comparison": "isNotEqualTo"
-            },
-            "name": "query - 4"
           },
           {
             "type": 3,
@@ -1874,7 +1853,7 @@
                   "delimiter": ",",
                   "query": "Event\r\n| where EventLog == \"Microsoft-Windows-TerminalServices-LocalSessionManager/Operational\" \r\n    or EventLog == \"Microsoft-FSLogix-Apps/Admin\"\r\n    or EventLog == \"Application\" and EventLevelName == \"Error\" or EventLevelName == \"Warning\"\r\n    or EventLog == \"Microsoft-Windows-TerminalServices-RemoteConnectionManager/Admin\"\r\n    or EventLog == \"System\" and EventLevelName == \"Error\" or EventLevelName == \"Warning\"\r\n    or EventLog == \"Microsoft-FSLogix-Apps/Operational\"\r\n| distinct EventLog",
                   "crossComponentResources": [
-                    "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw"
+                    "{Workspaces}"
                   ],
                   "typeSettings": {
                     "additionalResourceOptions": [
@@ -1925,7 +1904,7 @@
                   "delimiter": ",",
                   "query": "Event | distinct EventLevelName",
                   "crossComponentResources": [
-                    "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw"
+                    "{Workspaces}"
                   ],
                   "typeSettings": {
                     "additionalResourceOptions": [
@@ -1947,7 +1926,7 @@
                   "type": 1,
                   "query": "WVDErrors\r\n| where UserName == '{user}'\r\n| distinct UserName",
                   "crossComponentResources": [
-                    "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw"
+                    "{Workspaces}"
                   ],
                   "isHiddenWhenLocked": true,
                   "timeContext": {
@@ -1964,7 +1943,7 @@
                   "type": 2,
                   "query": "WVDConnections\r\n| where CorrelationId == \"{correlationid}\"\r\n| summarize min(TimeGenerated)",
                   "crossComponentResources": [
-                    "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw"
+                    "{Workspaces}"
                   ],
                   "isHiddenWhenLocked": true,
                   "typeSettings": {
@@ -1988,7 +1967,7 @@
                   "type": 1,
                   "query": "WVDConnections\r\n| where CorrelationId == \"{correlationid}\"\r\n| summarize max(TimeGenerated)",
                   "crossComponentResources": [
-                    "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw"
+                    "{Workspaces}"
                   ],
                   "isHiddenWhenLocked": true,
                   "timeContext": {
@@ -2119,7 +2098,8 @@
                   "jsonData": "[{\"value\":\"load\",\"label\":\"Profile Load Time\",\"selected\":true},\r\n{\"value\":\"storage\",\"label\":\"Profile Size\"}]",
                   "timeContext": {
                     "durationMs": 86400000
-                  }
+                  },
+                  "value": "storage"
                 }
               ],
               "style": "pills",
@@ -2512,8 +2492,7 @@
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
-                "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/Chevron/providers/microsoft.operationalinsights/workspaces/chevron",
-                "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw"
+                "{Workspaces}"
               ],
               "visualization": "tiles",
               "tileSettings": {
@@ -2586,8 +2565,7 @@
               "queryType": 0,
               "resourceType": "microsoft.operationalinsights/workspaces",
               "crossComponentResources": [
-                "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw",
-                "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/Chevron/providers/microsoft.operationalinsights/workspaces/chevron"
+                "{Workspaces}"
               ],
               "visualization": "tiles",
               "tileSettings": {
@@ -2660,11 +2638,11 @@
                   "type": 1,
                   "query": "WVDConnections\r\n| distinct GatewayRegion\r\n| where GatewayRegion == \"{logongate}\"",
                   "crossComponentResources": [
-                    "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw"
+                    "{Workspaces}"
                   ],
                   "isHiddenWhenLocked": true,
                   "timeContext": {
-                    "durationMs": 86400000
+                    "durationMs": 0
                   },
                   "timeContextFromParameter": "TimeRange",
                   "queryType": 0,
@@ -2803,8 +2781,7 @@
                     "queryType": 0,
                     "resourceType": "microsoft.operationalinsights/workspaces",
                     "crossComponentResources": [
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/Chevron/providers/microsoft.operationalinsights/workspaces/chevron",
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw"
+                      "{Workspaces}"
                     ],
                     "visualization": "tiles",
                     "tileSettings": {
@@ -2872,8 +2849,7 @@
                     "queryType": 0,
                     "resourceType": "microsoft.operationalinsights/workspaces",
                     "crossComponentResources": [
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/Chevron/providers/microsoft.operationalinsights/workspaces/chevron",
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw"
+                      "{Workspaces}"
                     ],
                     "visualization": "tiles",
                     "tileSettings": {
@@ -2965,11 +2941,11 @@
                         "type": 1,
                         "query": "WVDConnections\r\n| where GatewayRegion in ('{fsGateway}') or '*' in ('{fsGateway}')\r\n| distinct GatewayRegion",
                         "crossComponentResources": [
-                          "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw"
+                          "{Workspaces}"
                         ],
                         "isHiddenWhenLocked": true,
                         "timeContext": {
-                          "durationMs": 86400000
+                          "durationMs": 0
                         },
                         "timeContextFromParameter": "TimeRange",
                         "queryType": 0,
@@ -2993,8 +2969,7 @@
                     "queryType": 0,
                     "resourceType": "microsoft.operationalinsights/workspaces",
                     "crossComponentResources": [
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/chevron-cvw/providers/Microsoft.OperationalInsights/workspaces/chevron-cvw",
-                      "/subscriptions/a9be02cb-3a66-4e56-98a3-734b0d140b27/resourceGroups/Chevron/providers/microsoft.operationalinsights/workspaces/chevron"
+                      "{Workspaces}"
                     ],
                     "gridSettings": {
                       "formatters": [
@@ -3111,7 +3086,7 @@
                     "durationMs": 0
                   },
                   "timeContextFromParameter": "TimeRange",
-                  "value": "billy.york@chevron.com"
+                  "value": ""
                 },
                 {
                   "id": "3303d516-bb39-4dfd-9707-4ccebb6c444c",
@@ -3129,7 +3104,8 @@
                     "durationMs": 86400000
                   },
                   "queryType": 0,
-                  "resourceType": "microsoft.operationalinsights/workspaces"
+                  "resourceType": "microsoft.operationalinsights/workspaces",
+                  "value": null
                 },
                 {
                   "id": "9079923b-1a18-4186-892e-66452e45a838",
@@ -3268,10 +3244,7 @@
                   "timeContextFromParameter": "TimeRange",
                   "defaultValue": "value::all",
                   "queryType": 0,
-                  "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": [
-                    "value::all"
-                  ]
+                  "resourceType": "microsoft.operationalinsights/workspaces"
                 }
               ],
               "style": "above",
@@ -3304,17 +3277,15 @@
                   "typeSettings": {
                     "additionalResourceOptions": [
                       "value::all"
-                    ]
+                    ],
+                    "showDefault": false
                   },
                   "timeContext": {
                     "durationMs": 86400000
                   },
                   "defaultValue": "value::all",
                   "queryType": 0,
-                  "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": [
-                    "value::all"
-                  ]
+                  "resourceType": "microsoft.operationalinsights/workspaces"
                 },
                 {
                   "id": "fff48d01-0037-43f3-a584-000e385ba90f",
@@ -3340,14 +3311,7 @@
                   },
                   "defaultValue": "value::all",
                   "queryType": 0,
-                  "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": [
-                    "Microsoft-Windows-TerminalServices-LocalSessionManager",
-                    "Microsoft-Windows-TerminalServices-RemoteConnectionManager",
-                    "Microsoft-FSLogix-Apps",
-                    "Microsoft-Windows-Kernel-PnP",
-                    "Microsoft-Windows-Kernel-Power"
-                  ]
+                  "resourceType": "microsoft.operationalinsights/workspaces"
                 },
                 {
                   "id": "0051f2b1-7d49-4bec-b8f3-05a910cc5ff3",
@@ -3365,18 +3329,15 @@
                   "typeSettings": {
                     "additionalResourceOptions": [
                       "value::all"
-                    ]
+                    ],
+                    "showDefault": false
                   },
                   "timeContext": {
                     "durationMs": 86400000
                   },
                   "defaultValue": "value::all",
                   "queryType": 0,
-                  "resourceType": "microsoft.operationalinsights/workspaces",
-                  "value": [
-                    "Warning",
-                    "Error"
-                  ]
+                  "resourceType": "microsoft.operationalinsights/workspaces"
                 }
               ],
               "style": "pills",
