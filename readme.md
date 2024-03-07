@@ -43,13 +43,15 @@ If you are having deployment challenges, refer to the [LZA baseline troubleshoot
 
 The brownfield section contains templates to deploy additional features for Azure Virtual Desktop when existing infrastructure already exists. These templates can be used individually as required. Here is the list of deployment options available:
 
+- [Add New Session Hosts](./workload/bicep/brownfield/newSessionHosts/readme.md)
 - [Alerts](./workload/bicep/brownfield/alerts/readme.md)
+- [App Attach Tools VM](./workload/bicep/brownfield/appAttachToolsVM/Readme.md)
 - [Auto Increase Premium File Share Quota](./workload/bicep/brownfield/autoIncreasePremiumFileShareQuota/readme.md)
+- [AVD Session Host Replacer](https://github.com/Azure/AVDSessionHostReplacer)
+- [Migrate monitoring agent from MMA to AMA](./workload/scripts/Monitoring/readme.md)
 - [Scaling Tool](./workload/bicep/brownfield/scalingTool/readme.md)
 - [Start VM On Connect](./workload/bicep/brownfield/startVmOnConnect/readme.md)
-- [App Attach Tools VM](./workload/bicep/brownfield/appAttachToolsVM/Readme.md)
-- [Migrate monitoring agent from MMA to AMA](./workload/scripts/Monitoring/readme.md)
-- [Add New Session Hosts](./workload/bicep/brownfield/newSessionHosts/readme.md)
+
 
 ### Monitoring workbooks
 
@@ -59,7 +61,7 @@ The brownfield section contains templates to deploy additional features for Azur
 
 ### Custom image build
 
-[Getting Started](/workload/docs/getting-started-custom-image-build.md) deploying a custom image based on the latest version of the Azure marketplace image to an Azure Compute Gallery. The following images are offered: 
+[Getting Started](/workload/docs/getting-started-custom-image-build.md) deploying a custom image based on the latest version of the Azure marketplace image to an Azure Compute Gallery. The following images are offered:
  - Windows 10 21H2
  - Windows 10 22H2 (Gen 2)
  - Windows 11 21H2 (Gen 2)
