@@ -10,7 +10,7 @@ targetScope = 'subscription'
 @minLength(2)
 @maxLength(4)
 @sys.description('The name of the resource group to deploy. (Default: AVD1)')
-param deploymentPrefix string = 'AVD1'
+param deploymentPrefix string = 'AVDX'
 
 @allowed([
     'Dev' // Development
@@ -18,7 +18,7 @@ param deploymentPrefix string = 'AVD1'
     'Prod' // Production
 ])
 @sys.description('The name of the resource group to deploy. (Default: Dev)')
-param deploymentEnvironment string = 'Dev'
+param deploymentEnvironment string = 'Test'
 
 @maxValue(730)
 @minValue(30)
@@ -142,10 +142,10 @@ param vNetworkPrivateEndpointSubnetAddressPrefix string = '10.10.1.0/27'
 param customDnsIps string = ''
 
 @sys.description('Deploy private endpoints for key vault and storage. (Default: true)')
-param deployPrivateEndpointKeyvaultStorage bool = true
+param deployPrivateEndpointKeyvaultStorage bool = false
 
 @sys.description('Create new  Azure private DNS zones for private endpoints. (Default: true)')
-param createPrivateDnsZones bool = true
+param createPrivateDnsZones bool = false
 
 @sys.description('Use existing Azure private DNS zone for Azure files privatelink.file.core.windows.net or privatelink.file.core.usgovcloudapi.net. (Default: "")')
 param avdVnetPrivateDnsZoneFilesId string = ''
