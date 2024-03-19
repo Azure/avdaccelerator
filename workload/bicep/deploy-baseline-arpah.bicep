@@ -285,91 +285,91 @@ param storageOuPath string = ''
 // Custom Naming
 // Input must followe resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
 @sys.description('AVD resources custom naming. (Default: false)')
-param avdUseCustomNaming bool = false
+param avdUseCustomNaming bool = true
 
 @maxLength(90)
 @sys.description('AVD service resources resource group custom name. (Default: rg-avd-app1-dev-use2-service-objects)')
-param avdServiceObjectsRgCustomName string = 'rg-avd-app1-dev-use2-service-objects'
+param avdServiceObjectsRgCustomName string = 'avd-nih-arpah-test-use2-service-objects'
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-network)')
-param avdNetworkObjectsRgCustomName string = 'rg-avd-app1-dev-use2-network'
+param avdNetworkObjectsRgCustomName string = 'avd-nih-arpah-test-use2-network'
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-pool-compute)')
-param avdComputeObjectsRgCustomName string = 'rg-avd-app1-dev-use2-pool-compute'
+param avdComputeObjectsRgCustomName string = 'avd-nih-arpah-test-use2-pool-compute'
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-storage)')
-param avdStorageObjectsRgCustomName string = 'rg-avd-app1-dev-use2-storage'
+param avdStorageObjectsRgCustomName string = 'avd-nih-arpah-test-use2-storage'
 
 @maxLength(90)
 @sys.description('AVD monitoring resource group custom name. (Default: rg-avd-dev-use2-monitoring)')
-param avdMonitoringRgCustomName string = 'rg-avd-dev-use2-monitoring'
+param avdMonitoringRgCustomName string = 'avd-nih-arpah-test-use2-monitoring'
 
 @maxLength(64)
 @sys.description('AVD virtual network custom name. (Default: vnet-app1-dev-use2-001)')
-param avdVnetworkCustomName string = 'vnet-app1-dev-use2-001'
+param avdVnetworkCustomName string = 'vnet-app1-test-use2-001'
 
 @maxLength(64)
 @sys.description('AVD Azure log analytics workspace custom name. (Default: log-avd-app1-dev-use2)')
-param avdAlaWorkspaceCustomName string = 'log-avd-app1-dev-use2'
+param avdAlaWorkspaceCustomName string = 'log-avd-app1-test-use2'
 
 @maxLength(80)
 @sys.description('AVD virtual network subnet custom name. (Default: snet-avd-app1-dev-use2-001)')
-param avdVnetworkSubnetCustomName string = 'snet-avd-app1-dev-use2-001'
+param avdVnetworkSubnetCustomName string = 'snet-avd-app1-test-use2-001'
 
 @maxLength(80)
 @sys.description('private endpoints virtual network subnet custom name. (Default: snet-pe-app1-dev-use2-001)')
-param privateEndpointVnetworkSubnetCustomName string = 'snet-pe-app1-dev-use2-001'
+param privateEndpointVnetworkSubnetCustomName string = 'snet-pe-app1-test-use2-001'
 
 @maxLength(80)
 @sys.description('AVD network security group custom name. (Default: nsg-avd-app1-dev-use2-001)')
-param avdNetworksecurityGroupCustomName string = 'nsg-avd-app1-dev-use2-001'
+param avdNetworksecurityGroupCustomName string = 'nsg-avd-app1-test-use2-001'
 
 @maxLength(80)
 @sys.description('Private endpoint network security group custom name. (Default: nsg-pe-app1-dev-use2-001)')
-param privateEndpointNetworksecurityGroupCustomName string = 'nsg-pe-app1-dev-use2-001'
+param privateEndpointNetworksecurityGroupCustomName string = 'nsg-pe-app1-test-use2-001'
 
 @maxLength(80)
 @sys.description('AVD route table custom name. (Default: route-avd-app1-dev-use2-001)')
-param avdRouteTableCustomName string = 'route-avd-app1-dev-use2-001'
+param avdRouteTableCustomName string = 'route-avd-app1-test-use2-001'
 
 @maxLength(80)
 @sys.description('Private endpoint route table custom name. (Default: route-avd-app1-dev-use2-001)')
-param privateEndpointRouteTableCustomName string = 'route-pe-app1-dev-use2-001'
+param privateEndpointRouteTableCustomName string = 'route-pe-app1-test-use2-001'
 
 @maxLength(80)
 @sys.description('AVD application security custom name. (Default: asg-app1-dev-use2-001)')
-param avdApplicationSecurityGroupCustomName string = 'asg-app1-dev-use2-001'
+param avdApplicationSecurityGroupCustomName string = 'asg-app1-test-use2-001'
 
 @maxLength(64)
 @sys.description('AVD workspace custom name. (Default: vdws-app1-dev-use2-001)')
-param avdWorkSpaceCustomName string = 'vdws-app1-dev-use2-001'
+param avdWorkSpaceCustomName string = 'vdws-app1-test-use2-001'
 
 @maxLength(64)
 @sys.description('AVD workspace custom friendly (Display) name. (Default: App1 - Dev - East US 2 - 001)')
-param avdWorkSpaceCustomFriendlyName string = 'App1 - Dev - East US 2 - 001'
+param avdWorkSpaceCustomFriendlyName string = 'App1 - test - East US 2 - 001'
 
 @maxLength(64)
 @sys.description('AVD host pool custom name. (Default: vdpool-app1-dev-use2-001)')
-param avdHostPoolCustomName string = 'vdpool-app1-dev-use2-001'
+param avdHostPoolCustomName string = 'vdpool-app1-test-use2-001'
 
 @maxLength(64)
 @sys.description('AVD host pool custom friendly (Display) name. (Default: App1 - East US - Dev - 001)')
-param avdHostPoolCustomFriendlyName string = 'App1 - Dev - East US 2 - 001'
+param avdHostPoolCustomFriendlyName string = 'App1 - test - East US 2 - 001'
 
 @maxLength(64)
 @sys.description('AVD scaling plan custom name. (Default: vdscaling-app1-dev-use2-001)')
-param avdScalingPlanCustomName string = 'vdscaling-app1-dev-use2-001'
+param avdScalingPlanCustomName string = 'vdscaling-app1-test-use2-001'
 
 @maxLength(64)
 @sys.description('AVD desktop application group custom name. (Default: vdag-desktop-app1-dev-use2-001)')
-param avdApplicationGroupCustomName string = 'vdag-desktop-app1-dev-use2-001'
+param avdApplicationGroupCustomName string = 'vdag-desktop-app1-test-use2-001'
 
 @maxLength(64)
 @sys.description('AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - Dev - 001)')
-param avdApplicationGroupCustomFriendlyName string = 'Desktops - App1 - Dev - East US 2 - 001'
+param avdApplicationGroupCustomFriendlyName string = 'Desktops - App1 - test - East US 2 - 001'
 
 @maxLength(11)
 @sys.description('AVD session host prefix custom name. (Default: vmapp1duse2)')
@@ -384,14 +384,14 @@ param avsetCustomNamePrefix string = 'avail'
 param storageAccountPrefixCustomName string = 'st'
 
 @sys.description('FSLogix file share name. (Default: fslogix-pc-app1-dev-001)')
-param fslogixFileShareCustomName string = 'fslogix-pc-app1-dev-use2-001'
+param fslogixFileShareCustomName string = 'fslogix-pc-app1-test-use2-001'
 
 @sys.description('MSIX file share name. (Default: msix-app1-dev-001)')
-param msixFileShareCustomName string = 'msix-app1-dev-use2-001'
+param msixFileShareCustomName string = 'msix-app1-test-use2-001'
 
 //@maxLength(64)
 //@sys.description('AVD fslogix storage account office container file share prefix custom name. (Default: fslogix-oc-app1-dev-001)')
-//param avdFslogixOfficeContainerFileShareCustomName string = 'fslogix-oc-app1-dev-001'
+//param avdFslogixOfficeContainerFileShareCustomName string = 'fslogix-oc-app1-test-001'
 
 @maxLength(6)
 @sys.description('AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv-sec)')
