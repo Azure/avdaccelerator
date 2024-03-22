@@ -6,7 +6,7 @@
             "value": "AVD1"
         },
         "avdUseCustomNaming": {
-            "value": false
+            "value": true
         },
         "avdSessionHostLocation": {
             "value": "eastus2"
