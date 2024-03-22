@@ -3,25 +3,25 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "deploymentPrefix": {
-            "value": "AVDx"
+            "value": "AVD1"
         },
         "avdUseCustomNaming": {
             "value": false
         },
         "avdSessionHostLocation": {
-            "value": "eastus"
+            "value": "eastus2"
         },
         "avdManagementPlaneLocation": {
-            "value": "eastus"
+            "value": "eastus2"
         },
         "avdDeployMonitoring": {
             "value": false
         },   
         "avdWorkloadSubsId": {
-            "value": ""
+            "value": "<<subscriptionId>>"
         },
         "avdEnterpriseAppObjectId": {
-            "value": ""
+            "value": false
         },
         "avdVmLocalUserName": {
             "value": "<<localUserName>>"
@@ -75,28 +75,28 @@
             "value": "audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2"
         },
         "avdDeployScalingPlan": {
-            "value": false
+            "value": true
         },
         "createAvdVnet": {
             "value": true
         },
         "existingVnetAvdSubnetResourceId": {
-            "value": "/subscriptions/0f07e41f-4fbd-45c4-b9a0-3f83193ba03b/resourceGroups/rg_ServerLabCentral/providers/Microsoft.Network/virtualNetworks/vnetProd01/subnets/default"
+            "value": ""
         },
         "existingVnetPrivateEndpointSubnetResourceId": {
             "value": ""
         },
         "existingHubVnetResourceId": {
-            "value": "/subscriptions/0f07e41f-4fbd-45c4-b9a0-3f83193ba03b/resourceGroups/rg_ServerLabCentral/providers/Microsoft.Network/virtualNetworks/vnetProd01"
+            "value": ""
         },
         "avdVnetworkAddressPrefixes": {
-            "value": "10.2.0.0/16"
+            "value": "10.10.0.0/23"
         },
         "vNetworkAvdSubnetAddressPrefix": {
-            "value": "10.2.1.0/24"
+            "value": "10.10.0.0/24"
         },
         "vNetworkPrivateEndpointSubnetAddressPrefix": {
-            "value": ""
+            "value": "10.10.1.0/27"
         },
         "customDnsIps": {
             "value": ""
