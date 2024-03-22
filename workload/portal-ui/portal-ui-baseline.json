@@ -904,7 +904,7 @@
                                     "name": "storageGeneralSettingsZoneRedundancy",
                                     "type": "Microsoft.Common.CheckBox",
                                     "label": "Zone redundant storage",
-                                    "defaultValue": false,
+                                    "defaultValue": true,
                                     "toolTip": "Select to replicate storage across availability zones or only use local redundancy."
                                 }
                             ]
@@ -1487,7 +1487,7 @@
                             "type": "Microsoft.Common.CheckBox",
                             "visible": true,
                             "label": "Deploy monitoring",
-                            "defaultValue": false,
+                            "defaultValue": true,
                             "toolTip": "Deploy monitoring settings and if selected deploy Azure log analytics workspace."
                         },
                         {
