@@ -554,7 +554,7 @@
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": true,
                                     "options": {
-                                        "text": "If you select 'Use availability zones' below, some regions may not be available for deployment of session hosts because not all regions support Availability Zones. \n\nThe 'Session hosts region' drop down will automatically update based on this selection. If the value changes to blank, select an alternate region or set 'Use availability zones' to 'No'.",
+                                        "text": "If you select 'Use availability zones' below and/or select 'Use zone redundant storage' on the Storage section, some regions may not be available for deployment of session hosts because not all regions support Availability Zones. \n\nThe 'Session hosts region' drop down will automatically update based on these selections. If the value changes to blank, select an alternate region or set 'Use availability zones' and 'Use zone redundant storage' to 'No'.",
                                         "uri": "https://learn.microsoft.com/azure/reliability/availability-zones-service-support#azure-regions-with-availability-zone-support",
                                         "style": "Info"
                                     }
@@ -576,7 +576,7 @@
                                     "toolTip": "Select the region where the session hosts and required resources are to be deployed.",
                                     "constraints": {
                                         "required": true,
-                                        "allowedValues": "[if(equals(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, false), map(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'virtualMachines')), (item) => item.locations)), (item) => parse(concat('{\"label\":\"', item, '\",\"value\":\"', toLower(replace(item, ' ', '')), '\"}'))), map(filter(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'virtualMachines')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => parse(concat('{\"label\":\"', item.location, '\",\"value\":\"', toLower(replace(item.location, ' ', '')), '\"}'))))]"
+                                        "allowedValues": "[if(and(equals(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, false), equals(steps('storage').storageGeneralSettings.storageGeneralSettingsZoneRedundancy, false)), map(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'virtualMachines')), (item) => item.locations)), (item) => parse(concat('{\"label\":\"', item, '\",\"value\":\"', toLower(replace(item, ' ', '')), '\"}'))), map(filter(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'virtualMachines')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => parse(concat('{\"label\":\"', item.location, '\",\"value\":\"', toLower(replace(item.location, ' ', '')), '\"}'))))]"
                                     }
                                 }
                             ]
@@ -881,7 +881,8 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
                             "options": {
-                                "text": "Storage resources will be deployed on the same location on the Session Hosts section.",
+                                "text": "Storage resources will be deployed on the same location on the Session Hosts section. \n\nIf you select 'Use zone redundant storage' below, some regions may not be available for deployment of storage accounts because not all regions support Availability Zones. \n\nThe 'Session hosts region' drop down on the Session Hosts section will automatically update based on this selection. If the value changes to blank, select an alternate region or set 'Use zone redundant storage' to 'No'.",
+                                "uri": "https://learn.microsoft.com/azure/reliability/availability-zones-service-support#azure-regions-with-availability-zone-support",
                                 "style": "Info"
                             }
                         },
