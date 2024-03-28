@@ -882,6 +882,7 @@
                             "visible": true,
                             "options": {
                                 "text": "Storage resources will be deployed on the same location on the Session Hosts section.",
+                                "uri": "https://learn.microsoft.com/azure/reliability/availability-zones-service-support#azure-regions-with-availability-zone-support",
                                 "style": "Info"
                             }
                         },
@@ -1487,7 +1488,7 @@
                             "type": "Microsoft.Common.CheckBox",
                             "visible": true,
                             "label": "Deploy monitoring",
-                            "defaultValue": false,
+                            "defaultValue": true,
                             "toolTip": "Deploy monitoring settings and if selected deploy Azure log analytics workspace."
                         },
                         {
