@@ -10,7 +10,7 @@ targetScope = 'subscription'
 @minLength(2)
 @maxLength(4)
 @sys.description('The name of the resource group to deploy. (Default: AVD1)')
-param deploymentPrefix string = 'AVDX'
+param deploymentPrefix string = 'AVDN'
 
 @allowed([
     'Dev' // Development
@@ -268,7 +268,7 @@ param vTpmEnabled bool = true
     'win11_23h2_office'
 ])
 @sys.description('AVD OS image SKU. (Default: win11-22h2)')
-param avdOsImage string = 'win11_22h2'
+param avdOsImage string = 'win11_23h2_office'
 
 @sys.description('Management VM image SKU (Default: winServer_2022_Datacenter_smalldisk_g2)')
 param managementVmOsImage string = 'winServer_2022_Datacenter_smalldisk_g2'
@@ -349,7 +349,7 @@ param avdWorkSpaceCustomName string = 'vdws-app1-test-use2-001'
 
 @maxLength(64)
 @sys.description('AVD workspace custom friendly (Display) name. (Default: App1 - Dev - East US 2 - 001)')
-param avdWorkSpaceCustomFriendlyName string = 'App1 - test - East US 2 - 001'
+param avdWorkSpaceCustomFriendlyName string = 'ARPA-H Azure Virtual Desktop on NIH Network (Test)'
 
 @maxLength(64)
 @sys.description('AVD host pool custom name. (Default: vdpool-app1-dev-use2-001)')
