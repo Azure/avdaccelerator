@@ -107,7 +107,7 @@
                                     "name": "storageAccountType",
                                     "type": "Microsoft.Common.DropDown",
                                     "label": "Storage account type",
-                                    "defaultValue": "Standard Locally-Redundant Storage",
+                                    "defaultValue": "Standard Zone-Redundant Storage",
                                     "toolTip": "Determine the performance and redundancy for the Image Version.",
                                     "constraints": {
                                         "required": true,
@@ -151,7 +151,7 @@
                                     "type": "Microsoft.Common.CheckBox",
                                     "visible": true,
                                     "label": "Enable replication to disaster recovery location",
-                                    "defaultValue": false,
+                                    "defaultValue": true,
                                     "toolTip": "Determine whether to replicate the Image Version to your disaster recovery location."
                                 },
                                 {
