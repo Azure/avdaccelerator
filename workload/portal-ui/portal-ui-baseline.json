@@ -925,7 +925,7 @@
                                     "toolTip": "Select to replicate storage across availability zones or only use local redundancy.",
                                     "constraints": {
                                         "required": true,
-                                        "allowedValues": "[if(not(empty(filter(filter(first(map(filter(steps('storage').storageGeneralSettings.storageApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'storageAccounts')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => equals(toLower(replace(item.location, ' ', '')), steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion)))), parse('{\"label\":\"Locally Redundant Storage\",\"value\":\"false\"},{\"label\":\"Zone-Redundant Storage\",\"value\":\"true\"}'), parse('{\"label\":\"Locally Redundant Storage\",\"value\":\"false\"}'))]"
+                                        "allowedValues": ["[if(not(empty(filter(filter(first(map(filter(steps('storage').storageGeneralSettings.storageApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'storageAccounts')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => equals(toLower(replace(item.location, ' ', '')), steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion)))), parse('{\"label\":\"Locally Redundant Storage\",\"value\":\"false\"},{\"label\":\"Zone-Redundant Storage\",\"value\":\"true\"}'), parse('{\"label\":\"Locally Redundant Storage\",\"value\":\"false\"}'))]"]
                                     }
                                 },
                                 {
@@ -936,7 +936,7 @@
                                     "toolTip": "Select to replicate storage across availability zones or only use local redundancy.",
                                     "constraints": {
                                         "required": true,
-                                        "allowedValues": "[if(equals(42, mul(6, 7)), parse('{\"label\":\"Zone-Redundant Storage\",\"value\":\"false\"}'))]"
+                                        "allowedValues": ["[if(equals(42, mul(6, 7)), parse('{\"label\":\"Zone-Redundant Storage\",\"value\":\"false\"}'))]"]
                                     }
                                 },
                                 {
