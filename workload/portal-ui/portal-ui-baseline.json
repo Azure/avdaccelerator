@@ -936,7 +936,7 @@
                                     "toolTip": "Select to replicate storage across availability zones or only use local redundancy.",
                                     "constraints": {
                                         "required": true,
-                                        "allowedValues": ["[if(equals(42, mul(6, 7)), parse('{\"label\":\"Zone-Redundant Storage\",\"value\":\"false\"}'))]"]
+                                        "allowedValues": ["[if(equals(42, mul(6, 7)), parse('{\"label\":\"Zone-Redundant Storage\",\"value\":\"false\"}'), parse('{\"label\":\"Zone-Redundant Storage\",\"value\":\"false\"}'))]"]
                                     }
                                 },
                                 {
