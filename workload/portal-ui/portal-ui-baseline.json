@@ -914,8 +914,19 @@
                                     "type": "Microsoft.Common.CheckBox",
                                     "visible": "[not(empty(filter(filter(first(map(filter(steps('storage').storageGeneralSettings.storageApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'storageAccounts')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => equals(toLower(replace(item.location, ' ', '')), steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion))))]",
                                     "label": "Zone redundant storage",
-                                    "defaultValue": false,
+                                    "defaultValue": true,
                                     "toolTip": "Select to replicate storage across availability zones or only use local redundancy."
+                                },
+                                {
+                                    "name": "storageAccountType",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "Storage account type",
+                                    "defaultValue": "Zone-Redundant Storage",
+                                    "toolTip": "Select to replicate storage across availability zones or only use local redundancy.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": "[if(not(empty(filter(filter(first(map(filter(steps('storage').storageGeneralSettings.storageApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'storageAccounts')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => equals(toLower(replace(item.location, ' ', '')), steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion)))), [{\"label\":\"Local redundant storage\",\"value\":\"false\"},{\"label\":\"Zone-redundant storage\",\"value\":\"true\"}], [{\"label\":\"Local redundant storage\",\"value\":\"false\"}])]"
+                                    }
                                 }
                             ]
                         },
