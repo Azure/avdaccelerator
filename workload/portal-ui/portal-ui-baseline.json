@@ -902,11 +902,28 @@
                                     "constraints": {}
                                 },
                                 {
+                                    "name": "storageApi",
+                                    "type": "Microsoft.Solutions.ArmApiControl",
+                                    "request": {
+                                        "method": "GET",
+                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Storage/resourceTypes?api-version=2021-04-01')]"
+                                    }
+                                },
+                                {
                                     "name": "storageGeneralSettingsZoneRedundancy",
                                     "type": "Microsoft.Common.CheckBox",
+                                    "visible": true,
                                     "label": "Zone redundant storage",
                                     "defaultValue": false,
                                     "toolTip": "Select to replicate storage across availability zones or only use local redundancy."
+                                },
+                                {
+                                    "name": "test",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": "[map(filter(first(map(filter(steps('storage').storageGeneralSettings.storageApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'storageAccounts')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => equals(item.location, steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion.location))]"
+                                    }
                                 }
                             ]
                         },
