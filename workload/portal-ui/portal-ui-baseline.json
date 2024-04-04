@@ -936,29 +936,7 @@
                                     "toolTip": "Select to replicate storage across availability zones or only use local redundancy.",
                                     "constraints": {
                                         "required": true,
-                                        "allowedValues": "[if(equals(true, true), parse('[{\"label\":\"Zone-Redundant Storage\",\"value\":\"false\"}]'), parse('[{\"label\":\"Zone-Redundant Storage\",\"value\":\"false\"}]'))]"
-                                    }
-                                },
-                                {
-                                    "name": "storageAccountType3",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "label": "Storage account type3",
-                                    "defaultValue": "Zone-Redundant Storage",
-                                    "toolTip": "Select to replicate storage across availability zones or only use local redundancy.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": ["[parse('{\"label\":\"Zone-Redundant Storage\",\"value\":\"false\"}')]"]
-                                    }
-                                },
-                                {
-                                    "name": "storageAccountType4",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "label": "Storage account type4",
-                                    "defaultValue": "Zone-Redundant Storage",
-                                    "toolTip": "Select to replicate storage across availability zones or only use local redundancy.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [{"label":"Zone-Redundant Storage","value":"false"}]
+                                        "allowedValues": "[if(equals(true, true), parse('[{\"label\":\"Locally Redundant Storage\",\"value\":\"false\"}]'), parse('[{\"label\":\"Zone-Redundant Storage\",\"value\":\"false\"}]'))]"
                                     }
                                 }
                             ]
