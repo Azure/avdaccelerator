@@ -919,6 +919,8 @@
                                 },
                                 {
                                     "name": "test",
+                                    "label": "test",
+                                    "filter": true,
                                     "type": "Microsoft.Common.DropDown",
                                     "constraints": {
                                         "required": true,
