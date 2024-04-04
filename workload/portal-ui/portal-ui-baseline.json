@@ -927,6 +927,17 @@
                                         "required": true,
                                         "allowedValues": "[if(not(empty(filter(filter(first(map(filter(steps('storage').storageGeneralSettings.storageApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'storageAccounts')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => equals(toLower(replace(item.location, ' ', '')), steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion)))), [parse('{\"label\":\"Locally redundant storage\",\"value\":\"false\"},{\"label\":\"Zone-redundant storage\",\"value\":\"true\"}')], [parse('{\"label\":\"Locally redundant storage\",\"value\":\"false\"}')])]"
                                     }
+                                },
+                                {
+                                    "name": "storageAccountType2",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "Storage account type2",
+                                    "defaultValue": "Zone-Redundant Storage",
+                                    "toolTip": "Select to replicate storage across availability zones or only use local redundancy.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": "[if(equals(42, mul(6, 7)), [parse('{\"label\":\"Locally redundant storage\",\"value\":\"false\"},{\"label\":\"Zone-redundant storage\",\"value\":\"true\"}')], [parse('{\"label\":\"Locally redundant storage\",\"value\":\"false\"}')])]"
+                                    }
                                 }
                             ]
                         },
