@@ -922,7 +922,7 @@
                                     "type": "Microsoft.Common.DropDown",
                                     "constraints": {
                                         "required": true,
-                                        "allowedValues": "[map(filter(first(map(filter(steps('storage').storageGeneralSettings.storageApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'storageAccounts')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => equals(item.location, steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion.location.displayName))]"
+                                        "allowedValues": "[filter(filter(first(map(filter(steps('storage').storageGeneralSettings.storageApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'storageAccounts')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => equals(item.location, steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion))]"
                                     }
                                 }
                             ]
