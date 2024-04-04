@@ -912,7 +912,7 @@
                                 {
                                     "name": "storageGeneralSettingsZoneRedundancy",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "visible": "[not(empty(filter(filter(first(map(filter(steps('storage').storageGeneralSettings.storageApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'storageAccounts')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => equals(toLower(replace(item.location, ' ', '')), steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion))))]",
+                                    "visible": true,
                                     "label": "Zone redundant storage",
                                     "defaultValue": false,
                                     "toolTip": "Select to replicate storage across availability zones or only use local redundancy."
