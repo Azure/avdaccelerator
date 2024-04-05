@@ -1,0 +1,316 @@
+﻿{
+    "$schema": "<relative path to dx.schema.json>",
+    "view": {
+        "kind": "Form",
+        "properties": {
+            "title": "Test Form View",
+            "steps": [
+                {
+                    "name": "basics",
+                    "label": "Basics",
+                    "elements": [
+                        {
+                            "name": "resourceScope",
+                            "type": "Microsoft.Common.ResourceScope",
+                            "location": {
+                                "resourceTypes": [
+                                    "microsoft.resources/resourcegroups"
+                                ]
+                            }
+                        },
+                        {
+                            "name": "assetLocation",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Asset Location",
+                            "subLabel": "",
+                            "defaultValue": "https://raw.githubusercontent.com/PeterR-msft/M365AVDWS/master/AAD-Hybrid-Lab/",
+                            "toolTip": "This is the location in which all the linked templates are stored.",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "adminUsername",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Admin Username",
+                            "subLabel": "",
+                            "defaultValue": "ADAdmin",
+                            "toolTip": "Username to set for the local User. Cannot be \"Administrator\", \"root\" and possibly other such common account names. ",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "deploymentNumber",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Deployment Number",
+                            "subLabel": "",
+                            "defaultValue": "1",
+                            "toolTip": "When deploying the stack N times simultaneously, define the instance - this will be appended to some resource names to avoid collisions.",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "0",
+                                        "value": "0"
+                                    },
+                                    {
+                                        "label": "1",
+                                        "value": "1"
+                                    },
+                                    {
+                                        "label": "2",
+                                        "value": "2"
+                                    },
+                                    {
+                                        "label": "3",
+                                        "value": "3"
+                                    },
+                                    {
+                                        "label": "4",
+                                        "value": "4"
+                                    },
+                                    {
+                                        "label": "5",
+                                        "value": "5"
+                                    },
+                                    {
+                                        "label": "6",
+                                        "value": "6"
+                                    },
+                                    {
+                                        "label": "7",
+                                        "value": "7"
+                                    },
+                                    {
+                                        "label": "8",
+                                        "value": "8"
+                                    },
+                                    {
+                                        "label": "9",
+                                        "value": "9"
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "adminPassword",
+                            "type": "Microsoft.Common.PasswordBox",
+                            "label": {
+                                "password": "Admin Password",
+                                "confirmPassword": "Confirm password"
+                            },
+                            "defaultValue": "",
+                            "toolTip": "Password for the local administrator account. Cannot be \"P@ssw0rd\" and possibly other such common passwords. Must be 8 characters long and three of the following complexity requirements: uppercase, lowercase, number, special character",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "options": {
+                                "hideConfirmation": true
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "adDomainName",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Ad Domain Name",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "IMPORTANT: Two-part internal AD name - short/NB name will be first part ('contoso'). The short name will be reused and should be unique when deploying this template in your selected region. If a name is reused, DNS name collisions may occur.",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "usersArray",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Users Array",
+                            "subLabel": "",
+                            "defaultValue": "[[{\"FName\":\"Bob\",\"LName\":\"Jones\",\"SAM\":\"bjones\"},{\"FName\":\"Bill\",\"LName\":\"Smith\",\"SAM\":\"bsmith\"},{\"FName\":\"Mary\",\"LName\":\"Phillips\",\"SAM\":\"mphillips\"},{\"FName\":\"Sue\",\"LName\":\"Jackson\",\"SAM\":\"sjackson\"},{\"FName\":\"Jack\",\"LName\":\"Petersen\",\"SAM\":\"jpetersen\"},{\"FName\":\"Julia\",\"LName\":\"Williams\",\"SAM\":\"jwilliams\"}]",
+                            "toolTip": "JSON object array of users that will be loaded into AD once the domain is established.",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "customupnsuffix",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Customupnsuffix",
+                            "subLabel": "",
+                            "defaultValue": "",
+                            "toolTip": "This needs to be specified in order to have a uniform logon experience within WVD",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "defaultUserPassword",
+                            "type": "Microsoft.Common.PasswordBox",
+                            "label": {
+                                "password": "Default User Password",
+                                "confirmPassword": "Confirm password"
+                            },
+                            "defaultValue": "",
+                            "toolTip": "Enter the password that will be applied to each user account to be created in AD.",
+                            "constraints": {
+                                "required": true,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "options": {
+                                "hideConfirmation": true
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "vmSize",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Vm Size",
+                            "subLabel": "",
+                            "defaultValue": "Standard_D2s_v4",
+                            "toolTip": "Select a VM SKU (please ensure the SKU is available in your selected region).",
+                            "constraints": {
+                                "required": false,
+                                "allowedValues": [
+                                    {
+                                        "label": "Standard_DS2_v2",
+                                        "value": "Standard_DS2_v2"
+                                    },
+                                    {
+                                        "label": "Standard_D2_v3",
+                                        "value": "Standard_D2_v3"
+                                    },
+                                    {
+                                        "label": "Standard_D2_v4",
+                                        "value": "Standard_D2_v4"
+                                    },
+                                    {
+                                        "label": "Standard_D2s_v3",
+                                        "value": "Standard_D2s_v3"
+                                    },
+                                    {
+                                        "label": "Standard_D2s_v4",
+                                        "value": "Standard_D2s_v4"
+                                    },
+                                    {
+                                        "label": "Standard_D4_v4",
+                                        "value": "Standard_D4_v4"
+                                    },
+                                    {
+                                        "label": "Standard_D4s_v4",
+                                        "value": "Standard_D4s_v4"
+                                    }
+                                ],
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "virtualNetworkAddressRange",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Virtual Network Address Range",
+                            "subLabel": "",
+                            "defaultValue": "10.0.0.0/16",
+                            "toolTip": "The address range of the new virtual network in CIDR format",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "adSubnetAddressRange",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Ad Subnet Address Range",
+                            "subLabel": "",
+                            "defaultValue": "10.0.1.0/24",
+                            "toolTip": "The address range of the desired subnet for Active Directory.",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        },
+                        {
+                            "name": "adIP",
+                            "type": "Microsoft.Common.TextBox",
+                            "label": "Ad IP",
+                            "subLabel": "",
+                            "defaultValue": "10.0.1.4",
+                            "toolTip": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.0.0.0/16 reserves 10.0.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail.",
+                            "constraints": {
+                                "required": false,
+                                "regex": "",
+                                "validationMessage": "",
+                                "validations": []
+                            },
+                            "infoMessages": [],
+                            "visible": true
+                        }
+                    ]
+                }
+            ],
+            "deployment": {
+                "kind": "ResourceGroup",
+                "location": "[steps('basics').resourceScope.location.name]",
+                "resourceGroupId": "[steps('basics').resourceScope.resourceGroup.id]",
+                "parameters": {
+                    "assetLocation": "[steps('basics').assetLocation]",
+                    "adminUsername": "[steps('basics').adminUsername]",
+                    "deploymentNumber": "[steps('basics').deploymentNumber]",
+                    "adminPassword": "[steps('basics').adminPassword]",
+                    "adDomainName": "[steps('basics').adDomainName]",
+                    "usersArray": "[steps('basics').usersArray]",
+                    "customupnsuffix": "[steps('basics').customupnsuffix]",
+                    "defaultUserPassword": "[steps('basics').defaultUserPassword]",
+                    "vmSize": "[steps('basics').vmSize]",
+                    "virtualNetworkAddressRange": "[steps('basics').virtualNetworkAddressRange]",
+                    "adSubnetAddressRange": "[steps('basics').adSubnetAddressRange]",
+                    "adIP": "[steps('basics').adIP]"
+                },
+                "template": {
+                    "file": "<ARM deployment template relative path>"
+                }
+            }
+        }
+    }
+}
