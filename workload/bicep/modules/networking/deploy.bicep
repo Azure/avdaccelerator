@@ -312,6 +312,7 @@ module ddosProtectionPlan '../../../../carml/1.3.0/Microsoft.Network/ddosProtect
         name: ddosProtectionPlanName
         location: sessionHostLocation
     }
+    dependsOn: []
 }
 
 // Virtual network.
