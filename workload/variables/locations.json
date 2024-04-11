@@ -159,6 +159,11 @@
         "timeDifference": "+1:00",
         "timeZone": "Central Europe Standard Time"
     },
+    "italynorth": {
+        "acronym": "itn",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
+    },
     "southafricanorth": {
         "acronym": "zan",
         "timeDifference": "+2:00",
