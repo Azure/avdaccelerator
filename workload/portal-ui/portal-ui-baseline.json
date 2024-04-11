@@ -1181,7 +1181,7 @@
                         {
                             "name": "deployDDoSNetworkProtection",
                             "type": "Microsoft.Common.CheckBox",
-                            "visible": true,
+                            "visible": "[steps('network').createAvdVirtualNetwork]",
                             "label": "Enable DDoS Network Protection",
                             "defaultValue": true,
                             "toolTip": "Enables DDoS Network Protection for the virtual network."
