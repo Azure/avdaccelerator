@@ -368,8 +368,8 @@ module virtualNetwork '../../../../carml/1.3.0/Microsoft.Network/virtualNetworks
                 networkSecurityGroupId: createVnet ? networksecurityGroupAvd.outputs.resourceId : ''
                 routeTableId: createVnet ? routeTableAvd.outputs.resourceId : ''
             }
-        ]
-        ddosProtectionPlanId: ddosProtectionPlan.outputs.resourceId
+        ] 
+        ddosProtectionPlanId: deployDDoSNetworkProtection ? ddosProtectionPlan.outputs.resourceId : ''
         tags: tags
         diagnosticWorkspaceId: alaWorkspaceResourceId
         diagnosticLogCategoriesToEnable: varVirtualNetworkLogsDiagnostic
