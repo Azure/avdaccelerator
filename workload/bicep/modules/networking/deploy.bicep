@@ -54,6 +54,12 @@ param remoteVnetPeeringName string
 @sys.description('Create virtual network peering to hub.')
 param createVnetPeering bool
 
+@sys.description('DDoS Protection Plan name.')
+param ddosProtectionPlanName string
+
+@sys.description('Deploy DDoS Network Protection for virtual network.')
+param deployDDoSNetworkProtection bool
+
 @sys.description('Optional. AVD Accelerator will deploy with private endpoints by default.')
 param deployPrivateEndpointSubnet bool
 
@@ -298,6 +304,16 @@ module routeTablePrivateEndpoint '../../../../carml/1.3.0/Microsoft.Network/rout
     dependsOn: []
 }
 
+// DDoS Protection Plan
+module ddosProtectionPlan '../../../../carml/1.3.0/Microsoft.Network/ddosProtectionPlans/deploy.bicep' = if (deployDDoSNetworkProtection) {
+    scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
+    name: 'DDoS-Protection-Plan-${time}'
+    params: {
+        name: ddosProtectionPlanName
+        location: sessionHostLocation
+    }
+}
+
 // Virtual network.
 module virtualNetwork '../../../../carml/1.3.0/Microsoft.Network/virtualNetworks/deploy.bicep' = if (createVnet) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
@@ -352,7 +368,7 @@ module virtualNetwork '../../../../carml/1.3.0/Microsoft.Network/virtualNetworks
                 routeTableId: createVnet ? routeTableAvd.outputs.resourceId : ''
             }
         ]
-
+        ddosProtectionPlanId: ddosProtectionPlan.outputs.resourceId
         tags: tags
         diagnosticWorkspaceId: alaWorkspaceResourceId
         diagnosticLogCategoriesToEnable: varVirtualNetworkLogsDiagnostic
