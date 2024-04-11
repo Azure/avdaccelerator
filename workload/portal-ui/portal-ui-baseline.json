@@ -1179,6 +1179,14 @@
                             }
                         },
                         {
+                            "name": "deployDDoSNetworkProtection",
+                            "type": "Microsoft.Common.CheckBox",
+                            "visible": true,
+                            "label": "Enable DDoS Network Protection",
+                            "defaultValue": true,
+                            "toolTip": "Enables DDoS Network Protection for the virtual network."
+                        },
+                        {
                             "name": "deployPrivateEndpointKeyvaultStorage",
                             "type": "Microsoft.Common.CheckBox",
                             "visible": true,
@@ -2385,6 +2393,7 @@
                 "avdSessionHostDiskType": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskType]",
                 "enableAcceleratedNetworking": "[steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking]",
                 "avdSessionHostsSize": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize, 'Standard_D4ads_v5')]",
+                "deployDDoSNetworkProtection": "[steps('network').deployDDoSNetworkProtection]",
                 "deployPrivateEndpointKeyvaultStorage": "[steps('network').deployPrivateEndpointKeyvaultStorage]",
                 "createPrivateDnsZones": "[if(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), steps('network').virtualNetworkPrivateDnsZone, false)]",
                 "avdVnetPrivateDnsZoneFilesId": "[if(and(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneFilesSelector.id, '')]",
