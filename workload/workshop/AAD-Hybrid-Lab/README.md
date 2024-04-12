@@ -1,10 +1,11 @@
-# Azure Active Directory Hybrid Lab
-## Creates an AD VM with Azure AD Connect installed
+# Microsoft Entra ID Hybrid Lab
+## Creates an AD VM with Entra ID Connect installed
 ## Quick Start
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FPeterR-msft%2FM365AVDWS%2Fmaster%2FAAD-Hybrid-Lab%2Fdeploy.json" target="_blank"><img src="https://azuredeploy.net/deploybutton.png"/></a>
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fworkshop%2FAAD-Hybrid-Lab%2Fdeploy.json)
 
 ## Details
+
 * Deploys the following infrastructure:
  * Virtual Network
   * 1 subnet
