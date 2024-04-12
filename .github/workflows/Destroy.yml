@@ -21,4 +21,8 @@ jobs:
       with:
         azcliversion: 2.30.0
         inlineScript: |
-          az group delete --name ConsistantNames
+          az group delete --name rg-avd-avdn-test-use2-pool-compute
+          az group delete --name rg-avd-avdn-test-use2-service-objects
+          az group delete --name rg-avd-avdn-test-use2-network
+          az group delete --name rg-avd-avdn-test-use2-storage
+          az group delete --name rg-avd-test-use2-monitoring
