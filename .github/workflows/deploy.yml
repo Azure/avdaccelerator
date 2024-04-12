@@ -23,5 +23,5 @@ jobs:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         region: eastus
         template: ./workload/bicep/deploy-baseline-arpah.bicep
-        parameters: ./workload/bicep/parameters/deploy-baseline-parameters-arpah.json avdWorkloadSubsId=${{ secrets.AZURE_SUBID_TEST}} deploymentPrefix=AVDN avdVmLocalUserName=${{ secrets.AVD_ADMIN }} avdVmLocalUserPassword=${{ secrets.AVD_ADMINPASS }} avdIdentityServiceProvider=EntraID avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} avdDeployMonitoring=true createAvdVnet=false createAvdFslogixDeployment=true deployAlaWorkspace=true avdSessionHostLocation=eastus2 avdManagementPlaneLocation=eastus2 existingVnetAvdSubnetResourceId=${{ secrets.AZURE_VPCSUBID_TEST }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AZURE_VPCSUBID_TEST }} deployPrivateEndpointKeyvaultStorage=true createPrivateDnsZones=true
+        parameters: ./workload/bicep/parameters/deploy-baseline-parameters-arpah.json avdWorkloadSubsId=${{ secrets.AZURE_SUBID_TEST }} avdVmLocalUserName=${{ secrets.AVD_ADMIN }} avdVmLocalUserPassword=${{ secrets.AVD_ADMINPASS }} avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} existingVnetAvdSubnetResourceId=${{ secrets.AZURE_VPCSUBID_TEST }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AZURE_VPCSUBID_TEST }}
         failOnStdErr: false

@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "deploymentPrefix": {
-            "value": "AVD1"
+            "value": "AVDN"
         },
         "avdUseCustomNaming": {
             "value": true
@@ -15,10 +15,13 @@
             "value": "eastus2"
         },
         "avdDeployMonitoring": {
-            "value": false
+            "value": true
         },   
         "avdWorkloadSubsId": {
             "value": "<<subscriptionId>>"
+        },
+        "deployPrivateEndpointKeyvaultStorage": {
+            "value": true
         },
         "avdEnterpriseAppObjectId": {
             "value": false
@@ -30,7 +33,7 @@
             "value": "<<localUserPassword>>"
         },
         "avdIdentityServiceProvider": {
-            "value": "<<IdentityServiceProviderType>>"
+            "value": "EntraID"
         },     
         "createIntuneEnrollment": {
             "value": false
@@ -42,13 +45,13 @@
             "value": ""
         },       
         "identityDomainName": {
-            "value": "none"
+            "value": ""
         },
         "avdDomainJoinUserName": {
-            "value": "none"
+            "value": ""
         },
         "avdDomainJoinUserPassword": {
-            "value": "none"
+            "value": ""
         },
         "avdOuPath": {
             "value": ""
@@ -78,7 +81,7 @@
             "value": true
         },
         "createAvdVnet": {
-            "value": true
+            "value": false
         },
         "existingVnetAvdSubnetResourceId": {
             "value": ""
@@ -90,19 +93,19 @@
             "value": ""
         },
         "avdVnetworkAddressPrefixes": {
-            "value": "10.10.0.0/23"
+            "value": ""
         },
         "vNetworkAvdSubnetAddressPrefix": {
-            "value": "10.10.0.0/24"
+            "value": ""
         },
         "vNetworkPrivateEndpointSubnetAddressPrefix": {
-            "value": "10.10.1.0/27"
+            "value": ""
         },
         "customDnsIps": {
             "value": ""
         },
         "createPrivateDnsZones": {
-            "value": false
+            "value": true
         },
         "avdVnetPrivateDnsZoneFilesId": {
             "value": "<<PrivateDnsZoneFilesId>>"
@@ -153,13 +156,13 @@
             "value": "Premium"
         },
         "avdSessionHostsSize": {
-            "value": "Standard_D2s_v3"
+            "value": "Standard_D4ads_v5"
         },
         "avdSessionHostDiskType": {
             "value": "Premium_LRS"
         },
         "avdOsImage": {
-            "value": "win11_21h2"
+            "value": "win11-23h2-avd-m365"
         },
         "managementVmOsImage": {
             "value": "winServer_2022_Datacenter_smalldisk_g2"
