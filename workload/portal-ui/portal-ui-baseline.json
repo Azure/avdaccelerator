@@ -902,11 +902,23 @@
                                     "constraints": {}
                                 },
                                 {
+                                    "name": "storageApi",
+                                    "type": "Microsoft.Solutions.ArmApiControl",
+                                    "request": {
+                                        "method": "GET",
+                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Storage/resourceTypes?api-version=2021-04-01')]"
+                                    }
+                                },
+                                {
                                     "name": "storageGeneralSettingsZoneRedundancy",
-                                    "type": "Microsoft.Common.CheckBox",
-                                    "label": "Zone redundant storage",
-                                    "defaultValue": false,
-                                    "toolTip": "Select to replicate storage across availability zones or only use local redundancy."
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "Storage account type",
+                                    "defaultValue": "[if(equals(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, true), 'Zone-Redundant Storage', 'Locally Redundant Storage')]",
+                                    "toolTip": "Select to replicate storage across availability zones or only use local redundancy.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": "[if(not(empty(filter(filter(first(map(filter(steps('storage').storageGeneralSettings.storageApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'storageAccounts')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => equals(toLower(replace(item.location, ' ', '')), steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion)))), parse('[{\"label\":\"Locally Redundant Storage\",\"value\":\"false\"},{\"label\":\"Zone-Redundant Storage\",\"value\":\"true\"}]'), parse('[{\"label\":\"Locally Redundant Storage\",\"value\":\"false\"}]'))]"
+                                    }
                                 }
                             ]
                         },

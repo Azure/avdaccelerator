@@ -1,0 +1,28 @@
+name: Delete AVD Resource Groups
+
+on:
+    workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@main
+
+    - name: Log into Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Azure CLI script
+      uses: azure/cli@v2
+      with:
+        azcliversion: 2.30.0
+        inlineScript: |
+          az group delete --name rg-avd-avdn-test-use2-pool-compute
+          az group delete --name rg-avd-avdn-test-use2-service-objects
+          az group delete --name rg-avd-avdn-test-use2-network
+          az group delete --name rg-avd-avdn-test-use2-storage
+          az group delete --name rg-avd-test-use2-monitoring
