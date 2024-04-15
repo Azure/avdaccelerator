@@ -33,7 +33,7 @@
             "value": "<<localUserPassword>>"
         },
         "avdIdentityServiceProvider": {
-            "value": "EntraID"
+            "value": "ADDS"
         },     
         "createIntuneEnrollment": {
             "value": false
