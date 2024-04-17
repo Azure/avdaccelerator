@@ -21,13 +21,14 @@ jobs:
       with:
         azcliversion: 2.30.0
         inlineScript: |
-          az vm deallocate --ids $(
-            az vm list --query "[].id"
-            -o tsv
+          az vm deallocate --no-wait yes --ids $(
+            az vm list --query "[].id" 
+            -o tsv 
             --resource-group rg-avd-avdn-test-use2-pool-compute
           )
-          az group delete --name rg-avd-avdn-test-use2-pool-compute
-          az group delete --name rg-avd-avdn-test-use2-service-objects
-          az group delete --name rg-avd-avdn-test-use2-network
-          az group delete --name rg-avd-avdn-test-use2-storage
-          az group delete --name rg-avd-test-use2-monitoring
+          az group delete --yes --name rg-avd-avdn-test-use2-pool-compute
+          az group delete --yes --name rg-avd-avdn-test-use2-service-objects
+          az group delete --yes --name rg-avd-avdn-test-use2-network
+          az group delete --yes --name rg-avd-avdn-test-use2-storage
+          az group delete --yes --name rg-avd-test-use2-monitoring
+
