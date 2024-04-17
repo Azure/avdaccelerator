@@ -1516,7 +1516,7 @@
       "IdentityServiceProvider": "[parameters('avdIdentityServiceProvider')]"
     },
     "varAvdDefaultTags": {
-      "cm-resource-parent": "[format('/subscriptions/{0}}}/resourceGroups/{1}/providers/Microsoft.DesktopVirtualization/hostpools/{2}', parameters('avdWorkloadSubsId'), variables('varServiceObjectsRgName'), variables('varHostPoolName'))]",
+      "cm-resource-parent": "[format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.DesktopVirtualization/hostpools/{2}', parameters('avdWorkloadSubsId'), variables('varServiceObjectsRgName'), variables('varHostPoolName'))]",
       "Environment": "[parameters('deploymentEnvironment')]",
       "ServiceWorkload": "AVD",
       "CreationTimeUTC": "[parameters('time')]"
