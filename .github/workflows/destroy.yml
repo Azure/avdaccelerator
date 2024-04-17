@@ -21,7 +21,7 @@ jobs:
       with:
         azcliversion: 2.30.0
         inlineScript: |
-          az vm deallocate --no-wait yes --ids $(
+          az vm deallocate --no-wait --ids $(
             az vm list --query "[].id" 
             -o tsv 
             --resource-group rg-avd-avdn-test-use2-pool-compute
