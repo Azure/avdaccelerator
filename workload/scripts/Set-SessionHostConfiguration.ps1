@@ -371,6 +371,18 @@ try {
         Start-Sleep -Seconds 5
 
         ##############################################################
+        #  Install Slack Machine-wide
+        ##############################################################
+        $SlackInstaller = 'SlackSetup.msi'
+        $downloadUrl = 'https://slack.com/ssb/download-win64-msi'
+        $hostName = $env:COMPUTERNAME
+        $userName = $env:USERNAME
+        Get-WebFile -FileName $SlackInstaller -URL $downloadUrl
+        Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $SlackInstaller /quiet /qn /norestart /passive" -Wait -Passthru
+        Write-Log -Message "Slack installed on machine: $hostName by user: $userName" -Type 'INFO'
+        Start-Sleep -Seconds 5
+
+        ##############################################################
         #  Restart VM
         ##############################################################
         if ($IdentityServiceProvider -eq "EntraID" -and $AmdVmSize -eq 'false' -and $NvidiaVmSize -eq 'false') {
