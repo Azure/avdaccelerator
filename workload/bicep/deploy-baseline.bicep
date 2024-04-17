@@ -720,7 +720,7 @@ var varAllComputeStorageTags = {
     IdentityServiceProvider: avdIdentityServiceProvider
 }
 var varAvdDefaultTags = {
-    'cm-resource-parent': '/subscriptions/${avdWorkloadSubsId}}/resourceGroups/${varServiceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${varHostPoolName}'
+    'cm-resource-parent': '/subscriptions/${avdWorkloadSubsId}/resourceGroups/${varServiceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${varHostPoolName}'
     Environment: deploymentEnvironment
     ServiceWorkload: 'AVD'
     CreationTimeUTC: time
