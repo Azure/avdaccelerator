@@ -162,7 +162,7 @@
             "value": "Premium_LRS"
         },
         "avdOsImage": {
-            "value": "win11-23h2-avd-m365"
+            "value": "win11_23h2_office"
         },
         "managementVmOsImage": {
             "value": "winServer_2022_Datacenter_smalldisk_g2"
