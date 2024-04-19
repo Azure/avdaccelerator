@@ -293,7 +293,7 @@ param avdServiceObjectsRgCustomName string = 'avd-nih-arpah-test-use2-service-ob
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-network)')
-param avdNetworkObjectsRgCustomName string = 'avd-nih-arpah-test-use2-network'
+param avdNetworkObjectsRgCustomName string = 'rg-avd-avdn-test-use2-network'
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-pool-compute)')
@@ -301,39 +301,39 @@ param avdComputeObjectsRgCustomName string = 'avd-nih-arpah-test-use2-pool-compu
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-storage)')
-param avdStorageObjectsRgCustomName string = 'avd-nih-arpah-test-use2-storage'
+param avdStorageObjectsRgCustomName string = 'rg-avd-avdn-test-use2-storage'
 
 @maxLength(90)
 @sys.description('AVD monitoring resource group custom name. (Default: rg-avd-dev-use2-monitoring)')
-param avdMonitoringRgCustomName string = 'avd-nih-arpah-test-use2-monitoring'
+param avdMonitoringRgCustomName string = 'rg-avd-test-use2-monitoring'
 
 @maxLength(64)
 @sys.description('AVD virtual network custom name. (Default: vnet-app1-dev-use2-001)')
-param avdVnetworkCustomName string = 'vnet-app1-test-use2-001'
+param avdVnetworkCustomName string = 'avd-nih-arpah-test-use2-vnet'
 
 @maxLength(64)
 @sys.description('AVD Azure log analytics workspace custom name. (Default: log-avd-app1-dev-use2)')
-param avdAlaWorkspaceCustomName string = 'log-avd-app1-test-use2'
+param avdAlaWorkspaceCustomName string = 'avd-nih-arpah-test-use2-log'
 
 @maxLength(80)
 @sys.description('AVD virtual network subnet custom name. (Default: snet-avd-app1-dev-use2-001)')
-param avdVnetworkSubnetCustomName string = 'snet-avd-app1-test-use2-001'
+param avdVnetworkSubnetCustomName string = 'avd-nih-arpah-test-use2-subnet'
 
 @maxLength(80)
 @sys.description('private endpoints virtual network subnet custom name. (Default: snet-pe-app1-dev-use2-001)')
-param privateEndpointVnetworkSubnetCustomName string = 'snet-pe-app1-test-use2-001'
+param privateEndpointVnetworkSubnetCustomName string = 'avd-nih-arpah-test-use2-subnet-private'
 
 @maxLength(80)
 @sys.description('AVD network security group custom name. (Default: nsg-avd-app1-dev-use2-001)')
-param avdNetworksecurityGroupCustomName string = 'nsg-avd-app1-test-use2-001'
+param avdNetworksecurityGroupCustomName string = 'avd-nih-arpah-test-use2-nsg'
 
 @maxLength(80)
 @sys.description('Private endpoint network security group custom name. (Default: nsg-pe-app1-dev-use2-001)')
-param privateEndpointNetworksecurityGroupCustomName string = 'nsg-pe-app1-test-use2-001'
+param privateEndpointNetworksecurityGroupCustomName string = 'avd-nih-arpah-test-use2-nsg-private'
 
 @maxLength(80)
 @sys.description('AVD route table custom name. (Default: route-avd-app1-dev-use2-001)')
-param avdRouteTableCustomName string = 'route-avd-app1-test-use2-001'
+param avdRouteTableCustomName string = 'avd-nih-arpah-test-use2-route'
 
 @maxLength(80)
 @sys.description('Private endpoint route table custom name. (Default: route-avd-app1-dev-use2-001)')
