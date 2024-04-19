@@ -349,7 +349,7 @@ param avdWorkSpaceCustomName string = 'vdws-app1-test-use2-001'
 
 @maxLength(64)
 @sys.description('AVD workspace custom friendly (Display) name. (Default: App1 - Dev - East US 2 - 001)')
-param avdWorkSpaceCustomFriendlyName string = 'ARPA-H Azure Virtual Desktop on NIH Network (Test)'
+param avdWorkSpaceCustomFriendlyName string = 'ARPA-H Desktop on NIH Network - Test'
 
 @maxLength(64)
 @sys.description('AVD host pool custom name. (Default: vdpool-app1-dev-use2-001)')
