@@ -21,9 +21,9 @@ jobs:
       with:
         azcliversion: 2.30.0
         inlineScript: |
-          az group delete --yes --name rg-avd-avdn-test-use2-pool-compute
-          az group delete --yes --name rg-avd-avdn-test-use2-service-objects
           az group delete --yes --name rg-avd-avdn-test-use2-network
+          az group delete --yes --name rg-avd-avdn-test-use2-service-objects
+          az group delete --yes --name rg-avd-avdn-test-use2-pool-compute
           az group delete --yes --name rg-avd-avdn-test-use2-storage
           az group delete --yes --name rg-avd-test-use2-monitoring
 
