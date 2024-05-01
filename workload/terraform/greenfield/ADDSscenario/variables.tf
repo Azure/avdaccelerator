@@ -145,13 +145,7 @@ variable "hub_connectivity_rg" {
   description = "The resource group for hub connectivity resources"
 }
 
-/*
-variable "avd_users" {
-  description = "AVD users"
-}
-*/
-
-variable "aad_group_name" {
+variable "user_group_name" {
   type        = string
   description = "Microsoft Entra ID Group for AVD users"
 }
@@ -197,7 +191,7 @@ variable "local_admin_username" {
   type        = string
   description = "local admin username"
 }
-
+/*
 variable "image_name" {
   type        = string
   description = "Name of the custome image to use"
@@ -211,6 +205,7 @@ variable "image_rg" {
   type        = string
   description = "Image Gallery resource group"
 }
+*/
 
 # Create a storage allow list of IP Addresses
 variable "allow_list_ip" {
@@ -238,19 +233,6 @@ variable "avdshared_subscription_id" {
   description = "Spoke Subscription id"
 }
 
-variable "host_pool_log_categories" {
-  description = "value of the log categories to be enabled for the host pool"
-}
-
-variable "dag_log_categories" {
-  description = "value of the log categories to be enabled for the host pool"
-}
-
-variable "ws_log_categories" {
-  description = "value of the log categories to be enabled for the host pool"
-}
-
-
 variable "hub_dns_zone_rg" {
   description = "The resource group for the hub DNS zone"
 }
@@ -277,4 +259,14 @@ variable "offer" {
 variable "sku" {
   type        = string
   description = "SKU of the image"
+}
+
+variable "enable_telemetry" {
+  type        = bool
+  default     = true
+  description = <<DESCRIPTION
+This variable controls whether or not telemetry is enabled for the module.
+For more information see https://aka.ms/avm/telemetry.
+If it is set to false, then no telemetry will be collected.
+DESCRIPTION
 }
