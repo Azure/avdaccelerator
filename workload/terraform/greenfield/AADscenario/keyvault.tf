@@ -10,9 +10,9 @@ resource "azurerm_key_vault" "kv" {
 
   depends_on = [
     azurerm_resource_group.rg,
-    azurerm_virtual_desktop_host_pool.hostpool,
-    azurerm_virtual_desktop_workspace.workspace,
-    azurerm_virtual_desktop_application_group.dag
+    module.avm-res-desktopvirtualization-hostpool,
+    module.avm-res-desktopvirtualization-applicationgroup,
+    module.avm-res-desktopvirtualization-workspace
   ]
 
 

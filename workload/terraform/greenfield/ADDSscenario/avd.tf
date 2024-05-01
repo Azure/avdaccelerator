@@ -107,103 +107,147 @@ resource "azurerm_virtual_desktop_scaling_plan" "scplan" {
 }
 
 resource "azurerm_virtual_desktop_host_pool_registration_info" "registrationinfo" {
-  hostpool_id = azurerm_virtual_desktop_host_pool.hostpool.id
-  # Generating RFC3339Time for the expiration of the token. 
   expiration_date = timeadd(timestamp(), "48h")
+  hostpool_id     = module.avm_res_desktopvirtualization_hostpool.resource.id
 }
 
-# Create AVD DAG
-resource "azurerm_virtual_desktop_application_group" "dag" {
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  host_pool_id        = azurerm_virtual_desktop_host_pool.hostpool.id
-  type                = "Desktop"
-  name                = "${var.dag}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001" //var.dag
-  friendly_name       = "Desktop AppGroup"
-  description         = "AVD Desktop application group"
-  depends_on          = [azurerm_virtual_desktop_host_pool.hostpool, azurerm_virtual_desktop_workspace.workspace]
+# Get an existing built-in role definition
+data "azurerm_role_definition" "this" {
+  name = "Desktop Virtualization User"
 }
 
-# Associate Workspace and DAG
-resource "azurerm_virtual_desktop_workspace_application_group_association" "ws-dag" {
-  application_group_id = azurerm_virtual_desktop_application_group.dag.id
-  workspace_id         = azurerm_virtual_desktop_workspace.workspace.id
+# Get an existing Azure AD group that will be assigned to the application group
+data "azuread_group" "existing" {
+  display_name     = var.user_group_name
+  security_enabled = true
 }
 
-# Get Log Analytics Workspace data
-data "azurerm_log_analytics_workspace" "lawksp" {
-  name                = lower(replace("law-avd-${substr(var.avdLocation, 0, 5)}", "-", ""))
-  resource_group_name = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_avdi}"
-
-  depends_on = [
-    data.azurerm_log_analytics_workspace.lawksp,
-    azurerm_virtual_desktop_workspace.workspace,
-    azurerm_virtual_desktop_host_pool.hostpool,
-    azurerm_virtual_desktop_application_group.dag,
-    azurerm_virtual_desktop_workspace_application_group_association.ws-dag,
-    module.avdi
-  ]
+# Assign the Azure AD group to the application group
+resource "azurerm_role_assignment" "this" {
+  principal_id                     = data.azuread_group.existing.object_id
+  scope                            = module.avm_res_desktopvirtualization_applicationgroup.resource.id
+  role_definition_id               = data.azurerm_role_definition.this.id
+  skip_service_principal_aad_check = false
 }
 
-# Create Diagnostic Settings for AVD Host Pool
-resource "azurerm_monitor_diagnostic_setting" "avd-hp1" {
-  name                       = "AVD-Diag"
-  target_resource_id         = azurerm_virtual_desktop_host_pool.hostpool.id
-  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.lawksp.id
+# Create Azure Virtual Desktop application group
+module "avm_res_desktopvirtualization_applicationgroup" {
+  source                                                = "Azure/avm-res-desktopvirtualization-applicationgroup/azurerm"
+  enable_telemetry                                      = var.enable_telemetry
+  version                                               = "0.1.2"
+  virtual_desktop_application_group_name                = "${var.dag}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001"
+  virtual_desktop_application_group_type                = "Desktop"
+  virtual_desktop_application_group_host_pool_id        = module.avm_res_desktopvirtualization_hostpool.resource.id
+  virtual_desktop_application_group_resource_group_name = azurerm_resource_group.this.name
+  virtual_desktop_application_group_location            = azurerm_resource_group.this.location
+  user_group_name                                       = var.user_group_name
+  virtual_desktop_application_group_tags                = local.tags
+}
 
-  depends_on = [
-    data.azurerm_log_analytics_workspace.lawksp,
-    azurerm_virtual_desktop_host_pool.hostpool
-  ]
-
-  dynamic "enabled_log" {
-    for_each = var.host_pool_log_categories
-    content {
-      category = enabled_log.value
+# Create Azure Virtual Desktop workspace
+module "avm_res_desktopvirtualization_workspace" {
+  source              = "Azure/avm-res-desktopvirtualization-workspace/azurerm"
+  version             = "0.1.2"
+  enable_telemetry    = var.enable_telemetry
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
+  description         = "${var.prefix} Workspace"
+  name                = "${var.workspace}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001"
+  tags                = local.tags
+  diagnostic_settings = {
+    to_law = {
+      name                  = "to-law"
+      workspace_resource_id = module.avm_res_operationalinsights_workspace.resource.id
     }
   }
-  lifecycle {
-    ignore_changes = [log]
-  }
 }
 
-# Create Diagnostic Settings for AVD Desktop App Group
-resource "azurerm_monitor_diagnostic_setting" "avd-dag1" {
-  name                       = "diag-avd-${var.prefix}"
-  target_resource_id         = azurerm_virtual_desktop_application_group.dag.id
-  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.lawksp.id
-
-  depends_on = [
-    data.azurerm_log_analytics_workspace.lawksp
-  ]
-  dynamic "enabled_log" {
-    for_each = var.dag_log_categories
-    content {
-      category = enabled_log.value
-    }
-  }
-  lifecycle {
-    ignore_changes = [log]
-  }
+resource "azurerm_virtual_desktop_workspace_application_group_association" "workappgrassoc" {
+  application_group_id = module.avm_res_desktopvirtualization_applicationgroup.resource.id
+  workspace_id         = module.avm_res_desktopvirtualization_workspace.resource.id
 }
 
-# Create Diagnostic Settings for AVD Workspace
-resource "azurerm_monitor_diagnostic_setting" "avd-wksp1" {
-  name                       = "AVD-Diag"
-  target_resource_id         = azurerm_virtual_desktop_workspace.workspace.id
-  log_analytics_workspace_id = data.azurerm_log_analytics_workspace.lawksp.id
+# Get the subscription
+data "azurerm_subscription" "primary" {}
 
-  depends_on = [
-    data.azurerm_log_analytics_workspace.lawksp
-  ]
+# Get the service principal for Azure Vitual Desktop
+data "azuread_service_principal" "spn" {
+  client_id = "9cdead84-a844-4324-93f2-b2e6bb768d07"
+}
 
-  dynamic "enabled_log" {
-    for_each = var.ws_log_categories
-    content {
-      category = enabled_log.value
-    }
-  }
-  lifecycle {
-    ignore_changes = [log]
-  }
+resource "random_uuid" "example" {}
+
+data "azurerm_role_definition" "power_role" {
+  name = "Desktop Virtualization Power On Off Contributor"
+}
+
+resource "azurerm_role_assignment" "new" {
+  principal_id         = data.azuread_service_principal.spn.object_id
+  scope                = data.azurerm_subscription.primary.id
+  role_definition_name = "Desktop Virtualization Power On Off Contributor"
+}
+
+# Create Azure Virtual Desktop scaling plan
+module "avm_res_desktopvirtualization_scaling_plan" {
+  source                                           = "Azure/avm-res-desktopvirtualization-scalingplan/azurerm"
+  enable_telemetry                                 = var.enable_telemetry
+  version                                          = "0.1.2"
+  virtual_desktop_scaling_plan_name                = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
+  virtual_desktop_scaling_plan_location            = azurerm_resource_group.this.location
+  virtual_desktop_scaling_plan_resource_group_name = azurerm_resource_group.this.name
+  virtual_desktop_scaling_plan_time_zone           = "Eastern Standard Time"
+  virtual_desktop_scaling_plan_description         = "${var.prefix} Scaling Plan"
+  virtual_desktop_scaling_plan_tags                = local.tags
+  virtual_desktop_scaling_plan_host_pool = toset(
+    [
+      {
+        hostpool_id          = module.avm_res_desktopvirtualization_hostpool.resource.id
+        scaling_plan_enabled = true
+      }
+    ]
+  )
+  virtual_desktop_scaling_plan_schedule = toset(
+    [
+      {
+        name                                 = "Weekday"
+        days_of_week                         = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+        ramp_up_start_time                   = "09:00"
+        ramp_up_load_balancing_algorithm     = "BreadthFirst"
+        ramp_up_minimum_hosts_percent        = 50
+        ramp_up_capacity_threshold_percent   = 80
+        peak_start_time                      = "10:00"
+        peak_load_balancing_algorithm        = "DepthFirst"
+        ramp_down_start_time                 = "17:00"
+        ramp_down_load_balancing_algorithm   = "BreadthFirst"
+        ramp_down_minimum_hosts_percent      = 50
+        ramp_down_force_logoff_users         = true
+        ramp_down_wait_time_minutes          = 15
+        ramp_down_notification_message       = "The session will end in 15 minutes."
+        ramp_down_capacity_threshold_percent = 50
+        ramp_down_stop_hosts_when            = "ZeroActiveSessions"
+        off_peak_start_time                  = "18:00"
+        off_peak_load_balancing_algorithm    = "BreadthFirst"
+      },
+      {
+        name                                 = "Weekend"
+        days_of_week                         = ["Saturday", "Sunday"]
+        ramp_up_start_time                   = "09:00"
+        ramp_up_load_balancing_algorithm     = "BreadthFirst"
+        ramp_up_minimum_hosts_percent        = 50
+        ramp_up_capacity_threshold_percent   = 80
+        peak_start_time                      = "10:00"
+        peak_load_balancing_algorithm        = "DepthFirst"
+        ramp_down_start_time                 = "17:00"
+        ramp_down_load_balancing_algorithm   = "BreadthFirst"
+        ramp_down_minimum_hosts_percent      = 50
+        ramp_down_force_logoff_users         = true
+        ramp_down_wait_time_minutes          = 15
+        ramp_down_notification_message       = "The session will end in 15 minutes."
+        ramp_down_capacity_threshold_percent = 50
+        ramp_down_stop_hosts_when            = "ZeroActiveSessions"
+        off_peak_start_time                  = "18:00"
+        off_peak_load_balancing_algorithm    = "BreadthFirst"
+      }
+    ]
+  )
 }
