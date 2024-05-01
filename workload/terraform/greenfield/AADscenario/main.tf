@@ -1,11 +1,3 @@
-# Creates Azure Virtual Desktop Insights Log Analytics Workspace
-module "avdi" {
-  source      = "../../modules/insights"
-  avdLocation = var.avdLocation
-  prefix      = var.prefix
-  rg_avdi     = var.rg_avdi
-}
-
 # Creates the Azure Virtual Desktop Spoke Network resources
 module "network" {
   source                   = "../../modules/network"
@@ -31,50 +23,65 @@ module "network" {
   identity_vnet            = var.identity_vnet
 }
 
-
-
-# Optional - creates AVD hostpool, remote application group, and workspace for remote apps
-# Uncomment out if needed - this is a separate module from the desktop one above
-# Remove /* at beginning and */ at the end to uncomment out the entire module
-/*
-module "poolremoteapp" {
-  source         = "../../modules/poolremoteapp"
-  ragworkspace   = "${var.ragworkspace}-${substr(var.avdLocation,0,5)}-${var.prefix}-remote"  //var.ragworkspace
-  raghostpool    = "${var.raghostpool}-${substr(var.avdLocation,0,5)}-${var.prefix}-poolremoteapp" //var.raghostpool
-  rag            = "${var.rag}-${substr(var.avdLocation,0,5)}-${var.prefix}" //var.rag
-  rg_so          = var.rg_so
-  avdLocation    = var.avdLocation
-  rg_shared_name = var.rg_shared_name
-  prefix         = var.prefix
-  rfc3339        = var.rfc3339
-  depends_on     = [module.avdi.avdLocation]
+# Create AVD Workspace
+module "avm-res-desktopvirtualization-workspace" {
+  source              = "Azure/avm-res-desktopvirtualization-workspace/azurerm"
+  version             = "0.1.0"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  workspace           = "${var.workspace}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
+  diagnostic_settings = {
+    to_law = {
+      name                  = "to-law"
+      workspace_resource_id = data.azurerm_log_analytics_workspace.this.id
+    }
+  }
+  depends_on = [azurerm_resource_group.rg, module.avm-res-desktopvirtualization-hostpool]
 }
-*/
 
-# Optional - creates AVD personal hostpool, desktop application group, and workspace for personal desktops
-# Uncomment out if needed - this is a separate module from the desktop one above
-# Remove /* at beginning and */ at the end to uncomment out the entire module
-/*
-module "personal" {
-  source         = "../../modules/personal"
-  personalpool   = "${var.personalpool}-${substr(var.avdLocation,0,5)}-${var.prefix}-personal" //var.personalpool
-  pworkspace     = "${var.pworkspace}-${substr(var.avdLocation,0,5)}-${var.prefix}-personal" //var.pworkspace
-  rg_so          = var.rg_so
-  avdLocation    = var.avdLocation
-  rg_shared_name = var.rg_shared_name
-  prefix         = var.prefix
-  rfc3339        = var.rfc3339
-  pag            = "${var.pag}-${substr(var.avdLocation,0,5)}-${var.prefix}" //var.pag
-  depends_on     = [module.avdi.avdLocation]
-}
-*/
+# Create AVD host pool
+module "avm-res-desktopvirtualization-hostpool" {
+  source              = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
+  version             = "0.1.2"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  hostpool            = "${var.hostpool}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
+  hostpooltype        = "Pooled"
+  diagnostic_settings = {
+    to_law = {
+      name                  = "to-law"
+      workspace_resource_id = data.azurerm_log_analytics_workspace.this.id
+    }
+  }
 
-# optional - Creates the Azure Virtual Desktop Firewall Rules assuming you have a firewall in the hub
-/*
-module "firewall" {
-  source              = "../../modules/network/firewallrules"
-  avdLocation         = var.avdLocation
-  hub_connectivity_rg = var.hub_connectivity_rg
-  resource_group_name = var.hub_connectivity_rg
+  depends_on = [azurerm_resource_group.rg]
 }
-*/
+
+# Create AVD Desktop Application Group
+module "avm-res-desktopvirtualization-applicationgroup" {
+  source              = "Azure/avm-res-desktopvirtualization-applicationgroup/azurerm"
+  version             = "0.1.0"
+  resource_group_name = azurerm_resource_group.rg.name
+  hostpool            = module.avm-res-desktopvirtualization-hostpool.azure_virtual_desktop_host_pool_id
+  name                = "${var.dag}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
+  description         = "AVD application group"
+  user_group_name     = var.aad_group_name
+  type                = "Desktop"
+  diagnostic_settings = {
+    to_law = {
+      name                  = "to-law"
+      workspace_resource_id = data.azurerm_log_analytics_workspace.this.id
+    }
+  }
+  depends_on = [azurerm_resource_group.rg, module.avm-res-desktopvirtualization-hostpool, module.avm-res-desktopvirtualization-workspace]
+}
+
+# Create Scaling Plan
+module "avm-res-desktopvirtualization-scalingplan" {
+  source              = "Azure/avm-res-desktopvirtualization-scalingplan/azurerm"
+  version             = "0.1.0"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  scalingplan         = "${var.scplan}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
+  hostpool            = module.avm-res-desktopvirtualization-hostpool.azure_virtual_desktop_host_pool_id
+}

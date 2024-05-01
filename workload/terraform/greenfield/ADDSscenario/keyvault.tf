@@ -50,14 +50,14 @@ resource "azurerm_private_endpoint" "kvpe" {
     subresource_names              = ["Vault"]
   }
   depends_on = [
-    azurerm_key_vault.kv, azurerm_key_vault_secret.localpassword, azurerm_private_endpoint.kvpe
+    azurerm_key_vault.kv, azurerm_private_endpoint.kvpe
   ]
   private_dns_zone_group {
     name                 = "dns-kv-${var.prefix}"
     private_dns_zone_ids = data.azurerm_private_dns_zone.pe-vaultdns-zone.*.id
   }
 }
-
+/*
 # Generate VM local password
 resource "random_password" "vmpass" {
   length  = 20
@@ -76,6 +76,7 @@ resource "azurerm_key_vault_secret" "localpassword" {
     azurerm_role_assignment.keystor
   ]
 }
+*/
 
 # Linking DNS Zone to the existing DNS Zone in the Hub VNET
 resource "azurerm_private_dns_zone_virtual_network_link" "vaultlink" {
