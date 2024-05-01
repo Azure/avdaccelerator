@@ -58,7 +58,7 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   provision_vm_agent         = true
   availability_set_id        = azurerm_availability_set.aset.id
   admin_username             = var.local_admin_username
-  admin_password             = azurerm_key_vault_secret.localpassword.value
+  admin_password             = random_string.AVD_local_password[count.index].result
   encryption_at_host_enabled = true //'Microsoft.Compute/EncryptionAtHost' feature is must be enabled in the subscription for this setting to work https://learn.microsoft.com/en-us/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell
   tags                       = local.tags
   os_disk {
@@ -68,15 +68,17 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   }
 
   # To use marketplace image, uncomment the following lines and comment the source_image_id line
-  /*
-  source_image_reference {
-    publisher = var.vm_marketplace_mage.publisher
-    offer     = var.vm_marketplace_image.offer
-    sku       = var.vm_marketplace_image.sku
-    version   = var.vm_marketplace_image.version
-  }
-*/
 
+    # To use marketplace image, uncomment the following lines and comment the source_image_id line
+  source_image_reference {
+    publisher = var.publisher
+    offer     = var.offer
+    sku       = var.sku
+    version   = "latest"
+  }
+
+}
+/*
   //source_image_id = data.azurerm_shared_image.avd.id
   source_image_id = "/subscriptions/${var.avdshared_subscription_id}/resourceGroups/${var.image_rg}/providers/Microsoft.Compute/galleries/${var.gallery_name}/images/${var.image_name}/versions/latest"
   depends_on = [
@@ -90,6 +92,7 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
     type = "SystemAssigned"
   }
 }
+*/
 
 # Virtual Machine Extension for Domain Join
 resource "azurerm_virtual_machine_extension" "domain_join" {
@@ -135,7 +138,7 @@ resource "azurerm_virtual_machine_extension" "vmext_dsc" {
 
   settings = <<-SETTINGS
     {
-      "modulesUrl": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration_09-08-2022.zip",
+      "modulesUrl": "https://raw.githubusercontent.com/Azure/RDS-Templates/master/ARM-wvd-templates/DSC/Configuration.zip",
       "configurationFunction": "Configuration.ps1\\AddSessionHost",
       "properties": {
         "HostPoolName":"${azurerm_virtual_desktop_host_pool.hostpool.name}"

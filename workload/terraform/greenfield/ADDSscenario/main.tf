@@ -1,6 +1,6 @@
 # Creates Azure Virtual Desktop Insights Log Analytics Workspace
 module "avdi" {
-  source      = "../../modules/insights"
+  source      = "../../modules/insights-legacy"
   avdLocation = var.avdLocation
   prefix      = var.prefix
   rg_avdi     = var.rg_avdi

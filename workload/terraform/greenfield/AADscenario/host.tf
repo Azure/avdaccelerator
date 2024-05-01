@@ -55,7 +55,7 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
     azurerm_resource_group.shrg,
     azurerm_network_interface.avd_vm_nic,
     azurerm_resource_group.rg,
-    azurerm_virtual_desktop_host_pool.hostpool
+    module.avm-res-desktopvirtualization-hostpool
   ]
 
   identity {
@@ -94,26 +94,25 @@ resource "azurerm_virtual_machine_extension" "vmext_dsc" {
 
   settings = <<-SETTINGS
     {
-      "modulesUrl": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration_09-08-2022.zip",
+      "modulesUrl": "https://raw.githubusercontent.com/Azure/RDS-Templates/master/ARM-wvd-templates/DSC/Configuration.zip",
       "configurationFunction": "Configuration.ps1\\AddSessionHost",
       "properties": {
-        "HostPoolName":"${azurerm_virtual_desktop_host_pool.hostpool.name}"
+        "HostPoolName":"${module.avm-res-desktopvirtualization-hostpool.azure_virtual_desktop_host_pool}"
       }
     }
-SETTINGS
+  SETTINGS
 
   protected_settings = <<PROTECTED_SETTINGS
-  {
-    "properties": {
-      "registrationInfoToken": "${local.registration_token}"
+    {
+      "properties": {
+        "registrationInfoToken": "${module.avm-res-desktopvirtualization-hostpool.registrationinfo.token}",
+      }
     }
-  }
-PROTECTED_SETTINGS
+  PROTECTED_SETTINGS
 
   depends_on = [
     azurerm_virtual_machine_extension.aadjoin,
-    azurerm_virtual_desktop_host_pool.hostpool,
-    data.azurerm_log_analytics_workspace.lawksp
+    module.avm-res-desktopvirtualization-hostpool
   ]
 }
 
@@ -128,20 +127,19 @@ resource "azurerm_virtual_machine_extension" "mma" {
   auto_upgrade_minor_version = true
   settings                   = <<SETTINGS
     {
-      "workspaceId": "${data.azurerm_log_analytics_workspace.lawksp.workspace_id}"
+      "workspaceId": "${data.azurerm_log_analytics_workspace.this.workspace_id}"
     }
       SETTINGS
 
   protected_settings = <<PROTECTED_SETTINGS
   {
-   "workspaceKey": "${data.azurerm_log_analytics_workspace.lawksp.primary_shared_key}"
+   "workspaceKey": "${data.azurerm_log_analytics_workspace.this.primary_shared_key}"
   }
 PROTECTED_SETTINGS
 
   depends_on = [
     azurerm_virtual_machine_extension.aadjoin,
     azurerm_virtual_machine_extension.vmext_dsc,
-    data.azurerm_log_analytics_workspace.lawksp
   ]
 }
 
