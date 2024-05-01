@@ -47,3 +47,10 @@ data "azurerm_subnet" "pesubnet" {
     module.network
   ]
 }
+
+# Fetch AVD Log Analytics Workspace ID
+data "azurerm_log_analytics_workspace" "this" {
+  name = lower(replace("law-avd-${substr(var.avdLocation, 0, 5)}", "-", ""))
+  provider = azurerm.spoke
+  resource_group_name = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_avdi}"
+}
