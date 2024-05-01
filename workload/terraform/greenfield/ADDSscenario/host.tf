@@ -61,22 +61,22 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   admin_password             = random_string.AVD_local_password[count.index].result
   encryption_at_host_enabled = true //'Microsoft.Compute/EncryptionAtHost' feature is must be enabled in the subscription for this setting to work https://learn.microsoft.com/en-us/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell
   tags                       = local.tags
+  identity {
+    type = "SystemAssigned"
+  }
   os_disk {
     name                 = "${lower(var.prefix)}-${count.index + 1}"
     caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"
+    storage_account_type = "StandardSSD_ZRS"
   }
 
   # To use marketplace image, uncomment the following lines and comment the source_image_id line
-
-    # To use marketplace image, uncomment the following lines and comment the source_image_id line
   source_image_reference {
     publisher = var.publisher
     offer     = var.offer
     sku       = var.sku
     version   = "latest"
   }
-
 }
 /*
   //source_image_id = data.azurerm_shared_image.avd.id
@@ -141,7 +141,7 @@ resource "azurerm_virtual_machine_extension" "vmext_dsc" {
       "modulesUrl": "https://raw.githubusercontent.com/Azure/RDS-Templates/master/ARM-wvd-templates/DSC/Configuration.zip",
       "configurationFunction": "Configuration.ps1\\AddSessionHost",
       "properties": {
-        "HostPoolName":"${azurerm_virtual_desktop_host_pool.hostpool.name}"
+        "HostPoolName":"${module.avm_res_desktopvirtualization_hostpool.resource.name}"
       }
     }
 SETTINGS
@@ -156,43 +156,26 @@ PROTECTED_SETTINGS
 
   depends_on = [
     azurerm_virtual_machine_extension.domain_join,
-    azurerm_virtual_desktop_host_pool.hostpool
+    module.avm_res_desktopvirtualization_hostpool
   ]
 }
 
-# Virtual Machine Extension for MMA agent
-resource "azurerm_virtual_machine_extension" "mma" {
-  name                       = "MicrosoftMonitoringAgent"
-  count                      = var.rdsh_count
-  virtual_machine_id         = azurerm_windows_virtual_machine.avd_vm.*.id[count.index]
-  publisher                  = "Microsoft.EnterpriseCloud.Monitoring"
-  type                       = "MicrosoftMonitoringAgent"
-  type_handler_version       = "1.0"
-  auto_upgrade_minor_version = true
-  settings                   = <<SETTINGS
-    {
-      "workspaceId": "${data.azurerm_log_analytics_workspace.lawksp.workspace_id}"
-    }
-      SETTINGS
-
-  protected_settings = <<PROTECTED_SETTINGS
-  {
-   "workspaceKey": "${data.azurerm_log_analytics_workspace.lawksp.primary_shared_key}"
-  }
-PROTECTED_SETTINGS
-
-  depends_on = [
-    azurerm_virtual_machine_extension.domain_join,
-    azurerm_virtual_machine_extension.vmext_dsc
-  ]
-
+# Virtual Machine Extension for AMA agent
+resource "azurerm_virtual_machine_extension" "ama" {
+  name                      = "AzureMonitorWindowsAgent"
+  publisher                 = "Microsoft.Azure.Monitor"
+  type                      = "AzureMonitorWindowsAgent"
+  type_handler_version      = "1.22"
+  count                     = var.rdsh_count
+  virtual_machine_id        = azurerm_windows_virtual_machine.avd_vm[count.index].id
+  automatic_upgrade_enabled = true
 }
 
 # Virtual Machine Extension for Microsoft Antimalware
 resource "azurerm_virtual_machine_extension" "mal" {
   name                       = "IaaSAntimalware"
   count                      = var.rdsh_count
-  virtual_machine_id         = azurerm_windows_virtual_machine.avd_vm.*.id[count.index]
+  virtual_machine_id         = azurerm_windows_virtual_machine.avd_vm[count.index].id
   publisher                  = "Microsoft.Azure.Security"
   type                       = "IaaSAntimalware"
   type_handler_version       = "1.3"
@@ -201,6 +184,6 @@ resource "azurerm_virtual_machine_extension" "mal" {
   depends_on = [
     azurerm_virtual_machine_extension.domain_join,
     azurerm_virtual_machine_extension.vmext_dsc,
-    azurerm_virtual_machine_extension.mma
+    azurerm_virtual_machine_extension.ama
   ]
 }
