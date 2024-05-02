@@ -3,10 +3,13 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "deploymentPrefix": {
-            "value": "AVDN"
+            "value": "AVDX"
         },
         "avdUseCustomNaming": {
             "value": true
+        },
+        "avdSessionHostCustomNamePrefix": {
+            "value": "arpahavdn"
         },
         "avdSessionHostLocation": {
             "value": "eastus2"
