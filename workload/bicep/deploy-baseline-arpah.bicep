@@ -293,7 +293,7 @@ param avdServiceObjectsRgCustomName string = 'avd-nih-arpah-test-use2-service-ob
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-network)')
-param avdNetworkObjectsRgCustomName string = 'rg-avd-avdn-test-use2-network'
+param avdNetworkObjectsRgCustomName string = 'avd-nih-arpah-test-use2-network'
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-pool-compute)')
@@ -301,11 +301,11 @@ param avdComputeObjectsRgCustomName string = 'avd-nih-arpah-test-use2-pool-compu
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-storage)')
-param avdStorageObjectsRgCustomName string = 'rg-avd-avdn-test-use2-storage'
+param avdStorageObjectsRgCustomName string = 'avd-nih-arpah-test-use2-storage'
 
 @maxLength(90)
 @sys.description('AVD monitoring resource group custom name. (Default: rg-avd-dev-use2-monitoring)')
-param avdMonitoringRgCustomName string = 'rg-avd-test-use2-monitoring'
+param avdMonitoringRgCustomName string = 'avd-nih-arpah-test-use2-monitoring'
 
 @maxLength(64)
 @sys.description('AVD virtual network custom name. (Default: vnet-app1-dev-use2-001)')
@@ -357,7 +357,7 @@ param avdHostPoolCustomName string = 'vdpool-app1-test-use2-001'
 
 @maxLength(64)
 @sys.description('AVD host pool custom friendly (Display) name. (Default: App1 - East US - Dev - 001)')
-param avdHostPoolCustomFriendlyName string = 'App1 - test - East US 2 - 001'
+param avdHostPoolCustomFriendlyName string = 'ARPA-H Desktop on NIH Network - Test'
 
 @maxLength(64)
 @sys.description('AVD scaling plan custom name. (Default: vdscaling-app1-dev-use2-001)')
@@ -369,7 +369,7 @@ param avdApplicationGroupCustomName string = 'vdag-desktop-app1-test-use2-001'
 
 @maxLength(64)
 @sys.description('AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - Dev - 001)')
-param avdApplicationGroupCustomFriendlyName string = 'Desktops - App1 - test - East US 2 - 001'
+param avdApplicationGroupCustomFriendlyName string = 'ARPA-H Desktop on NIH Network - Test'
 
 @maxLength(11)
 @sys.description('AVD session host prefix custom name. (Default: vmapp1duse2)')
