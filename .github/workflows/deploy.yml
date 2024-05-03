@@ -1,4 +1,4 @@
-name: Deploy Bicep file
+name: Deploy to NIH Test
 
 on:
     workflow_dispatch:
