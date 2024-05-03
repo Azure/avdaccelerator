@@ -25,10 +25,10 @@ resource "azurerm_storage_account" "azfile" {
     directory_type = "AD"
       active_directory {
         domain_name          = var.domain_name
-        netbios_domain_name  = "jensheerin"
+        netbios_domain_name  = var.netbios_domain_name
         forest_name          = var.domain_name
-        domain_guid          = "4a642002-4bbe-4969-b7c8-f5b361a717df"
-        domain_sid           = "S-1-5-21-1296217075-2831364558-3283102104"
+        domain_guid          = var.domain_guid
+        domain_sid           = var.domain_sid
       }
     }
   }
