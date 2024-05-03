@@ -163,6 +163,11 @@ variable "prefix" {
   }
 }
 
+variable "environment" {
+  type        = string
+  description = "Environment name sets the type of environment (Development (dev), Test (test), Production (prod)) that will be deployed, this information will be use as part of the resources naming."
+}
+
 variable "domain_name" {
   type        = string
   description = "Name of the domain to join"
@@ -177,6 +182,7 @@ variable "domain_password" {
   type        = string
   description = "Password of the user to authenticate with the domain"
   sensitive   = true
+  default = "ChangeMe123$"
 }
 
 variable "vm_size" {
