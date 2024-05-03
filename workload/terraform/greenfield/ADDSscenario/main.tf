@@ -7,9 +7,9 @@ module "network" {
   snet                     = var.snet
   pesnet                   = var.pesnet
   vnet_range               = var.vnet_range
-  nsg                      = "${var.nsg}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
+  nsg                      = "${var.nsg}-${var.prefix}-${var.environment}-${var.avdLocation}"
   prefix                   = var.prefix
-  rt                       = "${var.rt}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
+  rt                       = "${var.rt}-${var.prefix}-${var.environment}-${var.avdLocation}"
   hub_connectivity_rg      = var.hub_connectivity_rg
   hub_vnet                 = var.hub_vnet
   subnet_range             = var.subnet_range
@@ -23,21 +23,14 @@ module "network" {
   identity_vnet            = var.identity_vnet
 }
 
-# Create a Resource Group for AVD Host Pool, Application Group, Workspace (Service Object)
-# rg-avd-{AzureRegionAcronym}-{deploymentPrefix}-service-objects
-resource "azurerm_resource_group" "this" {
-  name     = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_so}"
-  location = var.avdLocation
-}
-
 # Create Azure Log Analytics workspace for Azure Virtual Desktop
 module "avm_res_operationalinsights_workspace" {
   source              = "Azure/avm-res-operationalinsights-workspace/azurerm"
   version             = "0.1.3"
   enable_telemetry    = var.enable_telemetry
-  resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
-  name                = lower(replace("law-avd-${substr(var.avdLocation, 0, 5)}", "-", ""))
+  resource_group_name = azurerm_resource_group.mon.name
+  location            = var.avdLocation
+  name                = lower(replace("log-avd-${var.environment}-${var.avdLocation}", "-", ""))
   tags                = local.tags
 }
 
@@ -46,10 +39,10 @@ module "avm_res_desktopvirtualization_hostpool" {
   version = "0.1.4"
 
   virtual_desktop_host_pool_location                 = azurerm_resource_group.this.location
-  virtual_desktop_host_pool_name                     = "${var.hostpool}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001"
-  virtual_desktop_host_pool_type                     = "Pooled"
+  virtual_desktop_host_pool_name                     = "${var.hostpool}-${var.prefix}-${var.environment}-${var.avdLocation}"
+  virtual_desktop_host_pool_type                     = "Pooled" // "Personal" or "Pooled"
   virtual_desktop_host_pool_resource_group_name      = azurerm_resource_group.this.name
-  virtual_desktop_host_pool_load_balancer_type       = "BreadthFirst"
+  virtual_desktop_host_pool_load_balancer_type       = "BreadthFirst" // "DepthFirst" or "BreadthFirst"
   virtual_desktop_host_pool_custom_rdp_properties    = "drivestoredirect:s:*;audiomode:i:0;videoplaybackmode:i:1;redirectclipboard:i:1;redirectprinters:i:1;devicestoredirect:s:*;redirectcomports:i:1;redirectsmartcards:i:1;usbdevicestoredirect:s:*;enablecredsspsupport:i:1;use multimon:i:0"
   virtual_desktop_host_pool_maximum_sessions_allowed = 16
   virtual_desktop_host_pool_start_vm_on_connect      = true
@@ -60,6 +53,12 @@ module "avm_res_desktopvirtualization_hostpool" {
       day_of_week = "Sunday"
       hour_of_day = 0
     }])
+  }
+  diagnostic_settings = {
+    to_law = {
+      name                  = "to-law"
+      workspace_resource_id = module.avm_res_operationalinsights_workspace.resource.id
+    }
   }
 }
 
@@ -92,7 +91,7 @@ module "avm_res_desktopvirtualization_applicationgroup" {
   source                                                = "Azure/avm-res-desktopvirtualization-applicationgroup/azurerm"
   enable_telemetry                                      = var.enable_telemetry
   version                                               = "0.1.2"
-  virtual_desktop_application_group_name                = "${var.dag}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001"
+  virtual_desktop_application_group_name                = "${var.dag}-${var.prefix}-${var.environment}-${var.avdLocation}-01"
   virtual_desktop_application_group_type                = "Desktop"
   virtual_desktop_application_group_host_pool_id        = module.avm_res_desktopvirtualization_hostpool.resource.id
   virtual_desktop_application_group_resource_group_name = azurerm_resource_group.this.name
@@ -109,7 +108,7 @@ module "avm_res_desktopvirtualization_workspace" {
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
   description         = "${var.prefix} Workspace"
-  name                = "${var.workspace}-${substr(var.avdLocation, 0, 5)}-${var.prefix}-001"
+  name                = "${var.workspace}-${var.prefix}-${var.environment}-${var.avdLocation}-01"
   tags                = local.tags
   diagnostic_settings = {
     to_law = {
@@ -141,6 +140,12 @@ resource "azurerm_role_assignment" "new" {
   role_definition_name = "Desktop Virtualization Power On Off Contributor"
 }
 
+# This ensures we have unique CAF compliant names for our resources.
+module "naming" {
+  source  = "Azure/naming/azurerm"
+  version = "0.3.0"
+}
+
 # This is the storage account for the diagnostic settings
 resource "azurerm_storage_account" "this" {
   account_replication_type = "ZRS"
@@ -155,7 +160,7 @@ module "avm_res_desktopvirtualization_scaling_plan" {
   source                                           = "Azure/avm-res-desktopvirtualization-scalingplan/azurerm"
   enable_telemetry                                 = var.enable_telemetry
   version                                          = "0.1.2"
-  virtual_desktop_scaling_plan_name                = "${var.scplan}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
+  virtual_desktop_scaling_plan_name                = "${var.scplan}-${var.prefix}-${var.environment}-${var.avdLocation}-01"
   virtual_desktop_scaling_plan_location            = azurerm_resource_group.this.location
   virtual_desktop_scaling_plan_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_scaling_plan_time_zone           = "Eastern Standard Time"
