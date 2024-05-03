@@ -178,6 +178,21 @@ variable "domain_user" {
   description = "Username for domain join (do not include domain name as this is appended)"
 }
 
+variable "netbios_domain_name" {
+  type        = string
+  description = "Netbios domain name"
+}
+
+variable "domain_guid" {
+  type        = string
+  description = "Domain GUID"
+}
+
+variable "domain_sid" {
+  type        = string
+  description = "Domain SID"
+}
+
 variable "domain_password" {
   type        = string
   description = "Password of the user to authenticate with the domain"
