@@ -9,15 +9,6 @@
 resource "time_rotating" "avd_token" {
   rotation_days = 1
 }
-
-resource "random_string" "AVD_local_password" {
-  count            = var.rdsh_count
-  length           = 16
-  special          = true
-  min_special      = 2
-  override_special = "*!@#?"
-}
-
 resource "azurerm_network_interface" "avd_vm_nic" {
   count                         = var.rdsh_count
   name                          = "${var.prefix}-${count.index + 1}-nic"
@@ -38,7 +29,7 @@ resource "azurerm_network_interface" "avd_vm_nic" {
 
 # Availability Set
 resource "azurerm_availability_set" "aset" {
-  name                         = "avail-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
+  name                         = "avail-avd-${var.avdLocation}-${var.prefix}"
   resource_group_name          = azurerm_resource_group.shrg.name
   location                     = azurerm_resource_group.shrg.location
   platform_fault_domain_count  = 2
@@ -57,9 +48,11 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
   network_interface_ids      = ["${azurerm_network_interface.avd_vm_nic.*.id[count.index]}"]
   provision_vm_agent         = true
   availability_set_id        = azurerm_availability_set.aset.id
-  admin_username             = var.local_admin_username
-  admin_password             = random_string.AVD_local_password[count.index].result
   encryption_at_host_enabled = true //'Microsoft.Compute/EncryptionAtHost' feature is must be enabled in the subscription for this setting to work https://learn.microsoft.com/en-us/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell
+  admin_username             = var.local_admin_username
+  admin_password             = azurerm_key_vault_secret.localpassword.value
+  secure_boot_enabled        = true
+  vtpm_enabled               = true
   tags                       = local.tags
   identity {
     type = "SystemAssigned"
