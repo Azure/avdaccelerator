@@ -1,4 +1,4 @@
-name: Delete AVD Resource Groups
+name: Destroy NIH Test
 
 on:
     workflow_dispatch:
