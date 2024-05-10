@@ -20,6 +20,6 @@ jobs:
       uses: azure/cli@v2
       with:
         azcliversion: 2.30.0
-        run: |
-          chmod +x .github/scripts/Delete_RGs.sh
-          .github/scripts/Delete_RGs.sh
+        inlineScript: |
+          chmod +x $GITHUB_WORKSPACE/.github/workflows/scripts/Delete_RGs.sh
+          $GITHUB_WORKSPACE/.github/workflows/scripts/Delete_RGs.sh
