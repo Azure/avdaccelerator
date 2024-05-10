@@ -20,6 +20,6 @@ jobs:
       uses: azure/cli@v2
       with:
         azcliversion: 2.30.0
-        inlineScript: |
+        run: |
           chmod +x .github/scripts/Delete_RGs.sh
           .github/scripts/Delete_RGs.sh
