@@ -14,7 +14,6 @@ resource "azurerm_subnet" "subnet" {
   resource_group_name                       = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_network}"
   virtual_network_name                      = azurerm_virtual_network.vnet.name
   address_prefixes                          = var.subnet_range
-  private_endpoint_network_policies_enabled = true
   depends_on                                = [azurerm_resource_group.net]
 }
 
@@ -23,7 +22,7 @@ resource "azurerm_subnet" "pesubnet" {
   resource_group_name                       = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_network}"
   virtual_network_name                      = azurerm_virtual_network.vnet.name
   address_prefixes                          = var.pesubnet_range
-  private_endpoint_network_policies_enabled = true
+  private_endpoint_network_policies = "Enabled"
   depends_on                                = [azurerm_resource_group.net]
 }
 

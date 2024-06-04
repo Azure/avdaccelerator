@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+
+usage () {
+  echo "Usage: avm <make target>"
+}
+
+CONTAINER_RUNTIME=${CONTAINER_RUNTIME:-docker}
+
+if [ ! "$(command -v "$CONTAINER_RUNTIME")" ]; then
+    echo "Error: $CONTAINER_RUNTIME is not installed. Please install $CONTAINER_RUNTIME first."
+    exit 1
+fi
+
+if [ -z "$1" ]; then
+    echo "Error: Please provide a make target. See https://github.com/Azure/tfmod-scaffold/blob/main/avmmakefile for available targets."
+    echo
+    usage
+    exit 1
+fi
+
+$CONTAINER_RUNTIME run --pull always --rm -v "$(pwd)":/src -w /src -e GITHUB_REPOSITORY -e GITHUB_REPOSITORY_OWNER mcr.microsoft.com/azterraform make "$1"
