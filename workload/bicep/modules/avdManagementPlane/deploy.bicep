@@ -164,14 +164,14 @@ var varRAppApplicationGroupsOfficeApps = (preferredAppGroupType == 'RailApplicat
   {
     name: 'Microsoft Word'
     description: 'Microsoft Word'
-    friendlyName: 'Outlook'
+    friendlyName: 'Word'
     showInPortal: true
     filePath: 'C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE'
   }
   {
     name: 'Microsoft Outlook'
     description: 'Microsoft Word'
-    friendlyName: 'Word'
+    friendlyName: 'Outlook'
     showInPortal: true
     filePath: 'C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE'
   }
