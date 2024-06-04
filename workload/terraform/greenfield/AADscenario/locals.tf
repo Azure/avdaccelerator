@@ -6,7 +6,7 @@ locals {
   tags = {
     environment        = var.prefix
     source             = "https://github.com/Azure/avdaccelerator/tree/main/workload/terraform/avdbaseline"
-    cm-resource-parent = module.avm-res-desktopvirtualization-hostpool.azure_virtual_desktop_host_pool_id
+    cm-resource-parent = module.avm-ptn-avd-lza-managementplane.virtual_desktop_host_pool.id
   }
 }
 

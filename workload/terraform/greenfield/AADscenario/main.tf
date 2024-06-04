@@ -23,65 +23,67 @@ module "network" {
   identity_vnet            = var.identity_vnet
 }
 
-# Create AVD Workspace
-module "avm-res-desktopvirtualization-workspace" {
-  source              = "Azure/avm-res-desktopvirtualization-workspace/azurerm"
-  version             = "0.1.0"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  workspace           = "${var.workspace}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
-  diagnostic_settings = {
-    to_law = {
-      name                  = "to-law"
-      workspace_resource_id = data.azurerm_log_analytics_workspace.this.id
-    }
-  }
-  depends_on = [azurerm_resource_group.rg, module.avm-res-desktopvirtualization-hostpool]
-}
-
-# Create AVD host pool
-module "avm-res-desktopvirtualization-hostpool" {
-  source              = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
-  version             = "0.1.2"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  hostpool            = "${var.hostpool}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
-  hostpooltype        = "Pooled"
-  diagnostic_settings = {
-    to_law = {
-      name                  = "to-law"
-      workspace_resource_id = data.azurerm_log_analytics_workspace.this.id
-    }
-  }
-
-  depends_on = [azurerm_resource_group.rg]
-}
-
-# Create AVD Desktop Application Group
-module "avm-res-desktopvirtualization-applicationgroup" {
-  source              = "Azure/avm-res-desktopvirtualization-applicationgroup/azurerm"
-  version             = "0.1.0"
-  resource_group_name = azurerm_resource_group.rg.name
-  hostpool            = module.avm-res-desktopvirtualization-hostpool.azure_virtual_desktop_host_pool_id
-  name                = "${var.dag}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
-  description         = "AVD application group"
-  user_group_name     = var.aad_group_name
-  type                = "Desktop"
-  diagnostic_settings = {
-    to_law = {
-      name                  = "to-law"
-      workspace_resource_id = data.azurerm_log_analytics_workspace.this.id
-    }
-  }
-  depends_on = [azurerm_resource_group.rg, module.avm-res-desktopvirtualization-hostpool, module.avm-res-desktopvirtualization-workspace]
-}
-
-# Create Scaling Plan
-module "avm-res-desktopvirtualization-scalingplan" {
-  source              = "Azure/avm-res-desktopvirtualization-scalingplan/azurerm"
-  version             = "0.1.0"
-  resource_group_name = azurerm_resource_group.rg.name
-  location            = azurerm_resource_group.rg.location
-  scalingplan         = "${var.scplan}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
-  hostpool            = module.avm-res-desktopvirtualization-hostpool.azure_virtual_desktop_host_pool_id
+# Create AVDmodule "avd" {
+  module "avm-ptn-avd-lza-managementplane" {
+  source  = "Azure/avm-ptn-avd-lza-managementplane/azurerm"
+  version = "0.1.2"
+  enable_telemetry                                   = var.enable_telemetry
+  location                                           = azurerm_resource_group.this.location
+  resource_group_name                                = azurerm_resource_group.this.name
+  user_group_name                                    = var.user_group_name
+  virtual_desktop_workspace_name                     = var.virtual_desktop_workspace_name
+  description                                        = var.description
+  virtual_desktop_scaling_plan_time_zone             = var.virtual_desktop_scaling_plan_time_zone
+  virtual_desktop_scaling_plan_name                  = var.virtual_desktop_scaling_plan_name
+  virtual_desktop_host_pool_type                     = var.virtual_desktop_host_pool_type
+  virtual_desktop_host_pool_load_balancer_type       = var.virtual_desktop_host_pool_load_balancer_type
+  virtual_desktop_host_pool_name                     = var.virtual_desktop_host_pool_name
+  virtual_desktop_host_pool_maximum_sessions_allowed = var.virtual_desktop_host_pool_maximum_sessions_allowed
+  virtual_desktop_host_pool_start_vm_on_connect      = var.virtual_desktop_host_pool_start_vm_on_connect
+  virtual_desktop_application_group_type             = var.virtual_desktop_application_group_type
+  virtual_desktop_application_group_name             = var.virtual_desktop_application_group_name
+  virtual_desktop_scaling_plan_schedule = toset(
+    [
+      {
+        name                                 = "Weekday"
+        days_of_week                         = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+        ramp_up_start_time                   = "09:00"
+        ramp_up_load_balancing_algorithm     = "BreadthFirst"
+        ramp_up_minimum_hosts_percent        = 50
+        ramp_up_capacity_threshold_percent   = 80
+        peak_start_time                      = "10:00"
+        peak_load_balancing_algorithm        = "DepthFirst"
+        ramp_down_start_time                 = "17:00"
+        ramp_down_load_balancing_algorithm   = "BreadthFirst"
+        ramp_down_minimum_hosts_percent      = 50
+        ramp_down_force_logoff_users         = true
+        ramp_down_wait_time_minutes          = 15
+        ramp_down_notification_message       = "The session will end in 15 minutes."
+        ramp_down_capacity_threshold_percent = 50
+        ramp_down_stop_hosts_when            = "ZeroActiveSessions"
+        off_peak_start_time                  = "18:00"
+        off_peak_load_balancing_algorithm    = "BreadthFirst"
+      },
+      {
+        name                                 = "Weekend"
+        days_of_week                         = ["Saturday", "Sunday"]
+        ramp_up_start_time                   = "09:00"
+        ramp_up_load_balancing_algorithm     = "BreadthFirst"
+        ramp_up_minimum_hosts_percent        = 50
+        ramp_up_capacity_threshold_percent   = 80
+        peak_start_time                      = "10:00"
+        peak_load_balancing_algorithm        = "DepthFirst"
+        ramp_down_start_time                 = "17:00"
+        ramp_down_load_balancing_algorithm   = "BreadthFirst"
+        ramp_down_minimum_hosts_percent      = 50
+        ramp_down_force_logoff_users         = true
+        ramp_down_wait_time_minutes          = 15
+        ramp_down_notification_message       = "The session will end in 15 minutes."
+        ramp_down_capacity_threshold_percent = 50
+        ramp_down_stop_hosts_when            = "ZeroActiveSessions"
+        off_peak_start_time                  = "18:00"
+        off_peak_load_balancing_algorithm    = "BreadthFirst"
+      }
+    ]
+  )
 }
