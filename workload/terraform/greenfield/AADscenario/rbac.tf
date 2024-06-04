@@ -8,7 +8,7 @@ data "azuread_group" "adds_group" {
 }
 
 resource "azurerm_role_assignment" "role" {
-  scope              = module.avm-res-desktopvirtualization-applicationgroup.azurerm_virtual_desktop_application_group_id
+  scope              = module.avm-ptn-avd-lza-managementplane.virtual_desktop_application_group_name.id
   role_definition_id = data.azurerm_role_definition.role.id
   principal_id       = data.azuread_group.adds_group.id
 }
