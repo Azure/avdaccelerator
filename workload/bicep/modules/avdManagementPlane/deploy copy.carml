@@ -177,34 +177,32 @@ var varRAppApplicationGroupsOfficeApps = (preferredAppGroupType == 'RailApplicat
   }
 ]: []
 var varRAppApplicationGroupsApps = (preferredAppGroupType == 'RailApplications') ? ((contains(osImage, 'office')) ? union(varRAppApplicationGroupsStandardApps, varRAppApplicationGroupsOfficeApps) : varRAppApplicationGroupsStandardApps) : []
-var varDiagnosticSetting = [
-  {
-    workspaceResourceId: alaWorkspaceResourceId
-  }
+var varHostPoolDiagnostic = [
+  'allLogs'
 ]
-var varRoleAssignments = [
-  for securityPrincipalId in securityPrincipalIds : [
-    {      
-      roleDefinitionIdOrName: 'Desktop Virtualization User'
-      principalId: securityPrincipalId
-      //principalType: 'Group'
-    }
-  ]
-] 
+var varApplicationGroupDiagnostic = [
+  'allLogs'
+]
+var varWorkspaceDiagnostic = [
+  'allLogs'
+]
+var varScalingPlanDiagnostic = [
+  'allLogs'
+]
 
 // =========== //
 // Deployments Commercial//
 // =========== //
 
 // Hostpool.
-module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main.bicep' = {
+module hostPool '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/hostpools/deploy.bicep' = {
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
   name: 'HostPool-${time}'
   params: {
     name: hostPoolName
     friendlyName: hostPoolFriendlyName
     location: managementPlaneLocation
-    hostPoolType: hostPoolType
+    type: hostPoolType
     startVMOnConnect: startVmOnConnect
     customRdpProperty: varHostPoolRdpPropertiesDomainServiceCheck
     loadBalancerType: hostPoolLoadBalancerType
@@ -212,9 +210,8 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
     preferredAppGroupType: preferredAppGroupType
     personalDesktopAssignmentType: personalAssignType
     tags: tags
-
-    diagnosticSettings: varDiagnosticSetting
-
+    diagnosticWorkspaceId: alaWorkspaceResourceId
+    diagnosticLogCategoriesToEnable: varHostPoolDiagnostic
     agentUpdate: !empty(hostPoolAgentUpdateSchedule) ? {
         maintenanceWindows: hostPoolAgentUpdateSchedule
         maintenanceWindowTimeZone: computeTimeZone
@@ -225,7 +222,7 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
 }
 
 // Application groups.
-module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/application-group/main.bicep' = [for applicationGroup in varApplicaitonGroups: {
+module applicationGroups '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/applicationgroups/deploy.bicep' = [for applicationGroup in varApplicaitonGroups: {
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
   name: '${applicationGroup.name}-${time}'
   params: {
@@ -236,8 +233,15 @@ module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/appli
     hostpoolName: hostPoolName
     tags: tags
     applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsApps : []
-    //roleAssignments: varRoleAssignments
-    diagnosticSettings: varDiagnosticSetting
+    roleAssignments: !empty(securityPrincipalIds) ? [
+      {
+      roleDefinitionIdOrName: 'Desktop Virtualization User'
+      principalIds: securityPrincipalIds
+      principalType: 'Group'
+      }
+    ]: []   
+    diagnosticWorkspaceId: alaWorkspaceResourceId
+    diagnosticLogCategoriesToEnable: varApplicationGroupDiagnostic
   }
   dependsOn: [
     hostPool
@@ -245,18 +249,19 @@ module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/appli
 }]
 
 // Workspace.
-module workSpace '../../../../avm/1.0.0/res/desktop-virtualization/workspace/main.bicep' = {
+module workSpace '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/workspaces/deploy.bicep' = {
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
   name: 'Workspace-${time}'
   params: {
       name: workSpaceName
       friendlyName: workSpaceFriendlyName
       location: managementPlaneLocation
-      applicationGroupReferences: [
+      appGroupResourceIds: [
         '/subscriptions/${workloadSubsId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${applicationGroupName}'
       ]
       tags: tags
-      diagnosticSettings: varDiagnosticSetting
+      diagnosticWorkspaceId: alaWorkspaceResourceId
+      diagnosticLogCategoriesToEnable: varWorkspaceDiagnostic
   }
   dependsOn: [
     hostPool
@@ -265,7 +270,7 @@ module workSpace '../../../../avm/1.0.0/res/desktop-virtualization/workspace/mai
 }
 
 // Scaling plan.
-module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-plan/main.bicep' =  if (deployScalingPlan && (hostPoolType == 'Pooled'))  {
+module scalingPlan '../../../../carml/1.3.0/Microsoft.DesktopVirtualization/scalingplans/deploy.bicep' =  if (deployScalingPlan && (hostPoolType == 'Pooled'))  {
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
   name: 'Scaling-Plan-${time}'
   params: {
@@ -282,7 +287,8 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
         }
       ]
       tags: tags
-      diagnosticSettings: varDiagnosticSetting
+      diagnosticWorkspaceId: alaWorkspaceResourceId
+      diagnosticLogCategoriesToEnable: varScalingPlanDiagnostic
   }
   dependsOn: [
     hostPool
