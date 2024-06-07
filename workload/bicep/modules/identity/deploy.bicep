@@ -28,7 +28,7 @@ param enableStartVmOnConnect bool
 param identityServiceProvider string
 
 @sys.description('Required, Identity ID to grant RBAC role to access AVD application group.')
-param securityPrincipalIds array
+param securityPrincipalId string
 
 @sys.description('Deploy scaling plan.')
 param deployScalingPlan bool
@@ -136,34 +136,34 @@ module storageContributorRoleAssign '../../../../carml/1.3.0/Microsoft.Authoriza
 }]
 
 // Storage File Data SMB Share Contributor
-module storageSmbShareContributorRoleAssign '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for appGroupIdentitiesId in securityPrincipalIds: if (createStorageDeployment && (!empty(securityPrincipalIds))) {
-  name: 'Stora-SmbContri-RolAssign${take('${appGroupIdentitiesId}', 6)}-${time}'
+module storageSmbShareContributorRoleAssign '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (createStorageDeployment && (!empty(securityPrincipalId))) {
+  name: 'Stora-SmbContri-RolAssign${take('${securityPrincipalId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
   params: {
     roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varStorageSmbShareContributorRole.id}'
-    principalId: appGroupIdentitiesId
+    principalId: securityPrincipalId
   }
-}]
+}
 
 // Virtual machine Microsoft Entra ID access roles on the compute resource group
-module aadIdentityLoginRoleAssign '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for appGroupIdentitiesId in securityPrincipalIds: if (identityServiceProvider == 'EntraID' && !empty(securityPrincipalIds)) {
-  name: 'VM-Login-Comp-${take('${appGroupIdentitiesId}', 6)}-${time}'
+module aadIdentityLoginRoleAssign '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (identityServiceProvider == 'EntraID' && !empty(securityPrincipalId)) {
+  name: 'VM-Login-Comp-${take('${securityPrincipalId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
   params: {
     roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varVirtualMachineUserLoginRole.id}'
-    principalId: appGroupIdentitiesId
+    principalId: securityPrincipalId
   }
-}]
+}
 
 // Virtual machine Microsoft Entra ID access roles on the service objects resource group
-module aadIdentityLoginAccessServiceObjects '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for appGroupIdentitiesId in securityPrincipalIds: if (identityServiceProvider == 'EntraID' && !empty(securityPrincipalIds)) {
-  name: 'VM-Login-Serv-${take('${appGroupIdentitiesId}', 6)}-${time}'
+module aadIdentityLoginAccessServiceObjects '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (identityServiceProvider == 'EntraID' && !empty(securityPrincipalId)) {
+  name: 'VM-Login-Serv-${take('${securityPrincipalId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   params: {
     roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varVirtualMachineUserLoginRole.id}'
-    principalId: appGroupIdentitiesId
+    principalId: securityPrincipalId
   }
-}]
+}
 
 // =========== //
 // Outputs //
