@@ -177,11 +177,11 @@ var varRAppApplicationGroupsOfficeApps = (preferredAppGroupType == 'RailApplicat
   }
 ]: []
 var varRAppApplicationGroupsApps = (preferredAppGroupType == 'RailApplications') ? ((contains(osImage, 'office')) ? union(varRAppApplicationGroupsStandardApps, varRAppApplicationGroupsOfficeApps) : varRAppApplicationGroupsStandardApps) : []
-var varDiagnosticSetting = [
+var varDiagnosticSetting = !empty(alaWorkspaceResourceId) ? [
   {
     workspaceResourceId: alaWorkspaceResourceId
   }
-]
+]: []
 
 // =========== //
 // Deployments Commercial//
