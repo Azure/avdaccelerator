@@ -109,9 +109,13 @@ var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
     }
   ]: []
 var varVirtualNetworkLinks = createVnet ? [
-    virtualNetwork.outputs.resourceId
+    {
+        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+    }
 ] : [
-    varExistingAvdVnetResourceId
+    {
+        virtualNetworkResourceId: varExistingAvdVnetResourceId
+    }
 ]
 // =========== //
 // Deployments //
