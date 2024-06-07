@@ -1,6 +1,6 @@
-metadata name = 'Azure Virtual Desktop management plane'
+metadata name = 'AVD LZA management plane'
 metadata description = 'This module deploys AVD workspace, host pool, application group scaling plan'
-metadata owner = 'Azure/module-maintainers'
+metadata owner = 'Azure/avdaccelerator'
 
 targetScope = 'subscription'
 
