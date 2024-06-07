@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "11957189839242396362"
+      "templateHash": "8683268250512923004"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -12049,7 +12049,7 @@
           "identityServiceProvider": {
             "value": "[parameters('avdIdentityServiceProvider')]"
           },
-          "securityPrincipalIds": "[if(not(empty(parameters('securityPrincipalId'))), createObject('value', array(parameters('securityPrincipalId'))), createObject('value', createArray()))]",
+          "securityPrincipalId": "[if(not(empty(parameters('securityPrincipalId'))), createObject('value', parameters('securityPrincipalId')), createObject('value', ''))]",
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]",
           "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]",
           "hostPoolAgentUpdateSchedule": {
@@ -12063,7 +12063,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "16698304225040315361"
+              "templateHash": "2142854373500007534"
             }
           },
           "parameters": {
@@ -12091,8 +12091,8 @@
                 "description": "The service providing domain services for Azure Virtual Desktop."
               }
             },
-            "securityPrincipalIds": {
-              "type": "array",
+            "securityPrincipalId": {
+              "type": "string",
               "metadata": {
                 "description": "Identity ID to grant RBAC role to access AVD application group."
               }
@@ -12256,13 +12256,6 @@
             }
           },
           "variables": {
-            "copy": [
-              {
-                "name": "varRoleAssignments",
-                "count": "[length(parameters('securityPrincipalIds'))]",
-                "input": "[createArray(createObject('roleDefinitionIdOrName', 'Desktop Virtualization User', 'principalId', parameters('securityPrincipalIds')[copyIndex('varRoleAssignments')]))]"
-              }
-            ],
             "varApplicaitonGroups": [
               {
                 "name": "[parameters('applicationGroupName')]",
@@ -13829,6 +13822,14 @@
                     "value": "[parameters('tags')]"
                   },
                   "applications": "[if(equals(variables('varApplicaitonGroups')[copyIndex()].applicationGroupType, 'RemoteApp'), createObject('value', variables('varRAppApplicationGroupsApps')), createObject('value', createArray()))]",
+                  "roleAssignments": {
+                    "value": [
+                      {
+                        "roleDefinitionIdOrName": "Desktop Virtualization User",
+                        "principalId": "[parameters('securityPrincipalId')]"
+                      }
+                    ]
+                  },
                   "diagnosticSettings": {
                     "value": "[variables('varDiagnosticSetting')]"
                   }
@@ -16334,7 +16335,7 @@
           "createStorageDeployment": {
             "value": "[variables('varCreateStorageDeployment')]"
           },
-          "securityPrincipalIds": "[if(not(empty(parameters('securityPrincipalId'))), createObject('value', array(parameters('securityPrincipalId'))), createObject('value', createArray()))]",
+          "securityPrincipalId": "[if(not(empty(parameters('securityPrincipalId'))), createObject('value', parameters('securityPrincipalId')), createObject('value', ''))]",
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]"
         },
         "template": {
@@ -16344,7 +16345,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "3451688091470705442"
+              "templateHash": "8942259551916348729"
             }
           },
           "parameters": {
@@ -16396,8 +16397,8 @@
                 "description": "Required, The service providing domain services for Azure Virtual Desktop."
               }
             },
-            "securityPrincipalIds": {
-              "type": "array",
+            "securityPrincipalId": {
+              "type": "string",
               "metadata": {
                 "description": "Required, Identity ID to grant RBAC role to access AVD application group."
               }
@@ -18533,14 +18534,10 @@
               ]
             },
             {
-              "copy": {
-                "name": "storageSmbShareContributorRoleAssign",
-                "count": "[length(parameters('securityPrincipalIds'))]"
-              },
-              "condition": "[and(parameters('createStorageDeployment'), not(empty(parameters('securityPrincipalIds'))))]",
+              "condition": "[and(parameters('createStorageDeployment'), not(empty(parameters('securityPrincipalId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('Stora-SmbContri-RolAssign{0}-{1}', take(format('{0}', parameters('securityPrincipalIds')[copyIndex()]), 6), parameters('time'))]",
+              "name": "[format('Stora-SmbContri-RolAssign{0}-{1}', take(format('{0}', parameters('securityPrincipalId')), 6), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('storageObjectsRgName'))]",
               "properties": {
@@ -18553,7 +18550,7 @@
                     "value": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/roleDefinitions/{1}', parameters('subscriptionId'), variables('varStorageSmbShareContributorRole').id)]"
                   },
                   "principalId": {
-                    "value": "[parameters('securityPrincipalIds')[copyIndex()]]"
+                    "value": "[parameters('securityPrincipalId')]"
                   }
                 },
                 "template": {
@@ -19113,14 +19110,10 @@
               }
             },
             {
-              "copy": {
-                "name": "aadIdentityLoginRoleAssign",
-                "count": "[length(parameters('securityPrincipalIds'))]"
-              },
-              "condition": "[and(equals(parameters('identityServiceProvider'), 'EntraID'), not(empty(parameters('securityPrincipalIds'))))]",
+              "condition": "[and(equals(parameters('identityServiceProvider'), 'EntraID'), not(empty(parameters('securityPrincipalId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('VM-Login-Comp-{0}-{1}', take(format('{0}', parameters('securityPrincipalIds')[copyIndex()]), 6), parameters('time'))]",
+              "name": "[format('VM-Login-Comp-{0}-{1}', take(format('{0}', parameters('securityPrincipalId')), 6), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
@@ -19133,7 +19126,7 @@
                     "value": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/roleDefinitions/{1}', parameters('subscriptionId'), variables('varVirtualMachineUserLoginRole').id)]"
                   },
                   "principalId": {
-                    "value": "[parameters('securityPrincipalIds')[copyIndex()]]"
+                    "value": "[parameters('securityPrincipalId')]"
                   }
                 },
                 "template": {
@@ -19693,14 +19686,10 @@
               }
             },
             {
-              "copy": {
-                "name": "aadIdentityLoginAccessServiceObjects",
-                "count": "[length(parameters('securityPrincipalIds'))]"
-              },
-              "condition": "[and(equals(parameters('identityServiceProvider'), 'EntraID'), not(empty(parameters('securityPrincipalIds'))))]",
+              "condition": "[and(equals(parameters('identityServiceProvider'), 'EntraID'), not(empty(parameters('securityPrincipalId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('VM-Login-Serv-{0}-{1}', take(format('{0}', parameters('securityPrincipalIds')[copyIndex()]), 6), parameters('time'))]",
+              "name": "[format('VM-Login-Serv-{0}-{1}', take(format('{0}', parameters('securityPrincipalId')), 6), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('serviceObjectsRgName'))]",
               "properties": {
@@ -19713,7 +19702,7 @@
                     "value": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/roleDefinitions/{1}', parameters('subscriptionId'), variables('varVirtualMachineUserLoginRole').id)]"
                   },
                   "principalId": {
-                    "value": "[parameters('securityPrincipalIds')[copyIndex()]]"
+                    "value": "[parameters('securityPrincipalId')]"
                   }
                 },
                 "template": {
