@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "8683268250512923004"
+      "templateHash": "4217282957528584984"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline"
@@ -12063,7 +12063,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "2142854373500007534"
+              "templateHash": "18282552316786604783"
             }
           },
           "parameters": {
@@ -12268,11 +12268,7 @@
             "varRAppApplicationGroupsStandardApps": "[if(equals(parameters('preferredAppGroupType'), 'RailApplications'), createArray(createObject('name', 'Task Manager', 'description', 'Task Manager', 'friendlyName', 'Task Manager', 'showInPortal', true(), 'filePath', 'C:\\Windows\\system32\\taskmgr.exe'), createObject('name', 'WordPad', 'description', 'WordPad', 'friendlyName', 'WordPad', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Windows NT\\Accessories\\wordpad.exe'), createObject('name', 'Microsoft Edge', 'description', 'Microsoft Edge', 'friendlyName', 'Edge', 'showInPortal', true(), 'filePath', 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'), createObject('name', 'Remote Desktop Connection', 'description', 'Remote Desktop Connection', 'friendlyName', 'Remote Desktop', 'showInPortal', true(), 'filePath', 'C:\\WINDOWS\\system32\\mtsc.exe')), createArray())]",
             "varRAppApplicationGroupsOfficeApps": "[if(equals(parameters('preferredAppGroupType'), 'RailApplications'), createArray(createObject('name', 'Microsoft Excel', 'description', 'Microsoft Excel', 'friendlyName', 'Excel', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE'), createObject('name', 'Microsoft PowerPoint', 'description', 'Microsoft PowerPoint', 'friendlyName', 'PowerPoint', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Microsoft Office\\root\\Office16\\POWERPNT.EXE'), createObject('name', 'Microsoft Word', 'description', 'Microsoft Word', 'friendlyName', 'Word', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE'), createObject('name', 'Microsoft Outlook', 'description', 'Microsoft Word', 'friendlyName', 'Outlook', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE')), createArray())]",
             "varRAppApplicationGroupsApps": "[if(equals(parameters('preferredAppGroupType'), 'RailApplications'), if(contains(parameters('osImage'), 'office'), union(variables('varRAppApplicationGroupsStandardApps'), variables('varRAppApplicationGroupsOfficeApps')), variables('varRAppApplicationGroupsStandardApps')), createArray())]",
-            "varDiagnosticSetting": [
-              {
-                "workspaceResourceId": "[parameters('alaWorkspaceResourceId')]"
-              }
-            ]
+            "varDiagnosticSetting": "[if(not(empty(parameters('alaWorkspaceResourceId'))), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'))), createArray())]"
           },
           "resources": [
             {
