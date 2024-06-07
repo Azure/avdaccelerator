@@ -1,3 +1,7 @@
+metadata name = 'AVD LZA networking'
+metadata description = 'This module deploys vNet, NSG, ASG, UDR, private DNs zones'
+metadata owner = 'Azure/avdaccelerator'
+
 targetScope = 'subscription'
 
 // ========== //
@@ -104,6 +108,11 @@ var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
       workspaceResourceId: alaWorkspaceResourceId
     }
   ]: []
+var varVirtualNetworkLinks = createVnet ? [
+    virtualNetwork.outputs.resourceId
+] : [
+    varExistingAvdVnetResourceId
+]
 // =========== //
 // Deployments //
 // =========== //
@@ -362,7 +371,7 @@ module privateDnsZoneAzureFilesCommercial '../../../../avm/1.0.0/res/network/pri
     name: 'Private-DNS-Comm-Files-${time}'
     params: {
         name: 'privatelink.file.core.windows.net'
-        virtualNetworkLinks: createVnet ? array(virtualNetwork.outputs.resourceId) : array(varExistingAvdVnetResourceId)
+        virtualNetworkLinks: varVirtualNetworkLinks
         tags: tags
     }
 }
@@ -373,7 +382,7 @@ module privateDnsZoneKeyVaultCommercial '../../../../avm/1.0.0/res/network/priva
     name: 'Private-DNS-Comm-Kv-${time}'
     params: {
         name: 'privatelink.vaultcore.azure.net'
-        virtualNetworkLinks: createVnet ? array(virtualNetwork.outputs.resourceId) : array(varExistingAvdVnetResourceId)
+        virtualNetworkLinks: varVirtualNetworkLinks
         tags: tags
     }
 }
@@ -384,7 +393,7 @@ module privateDnsZoneAzureFilesGov '../../../../avm/1.0.0/res/network/private-dn
     name: 'Private-DNS-Gov-Files-${time}'
     params: {
         name: 'privatelink.file.core.usgovcloudapi.net'
-        virtualNetworkLinks: createVnet ? array(virtualNetwork.outputs.resourceId) : array(varExistingAvdVnetResourceId)
+        virtualNetworkLinks: varVirtualNetworkLinks
         tags: tags
     }
 }
@@ -395,11 +404,10 @@ module privateDnsZoneKeyVaultGov '../../../../avm/1.0.0/res/network/private-dns-
     name: 'Private-DNS-Gov-Kv-${time}'
     params: {
         name: 'privatelink.vaultcore.usgovcloudapi.net'
-        virtualNetworkLinks: createVnet ? array(virtualNetwork.outputs.resourceId) : array(varExistingAvdVnetResourceId)
+        virtualNetworkLinks: varVirtualNetworkLinks
         tags: tags
     }
 }
-
 
 // Private DNS zones Azure files China
 module privateDnsZoneAzureFilesChina '../../../../avm/1.0.0/res/network/private-dns-zone/main.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureChinaCloud')) {
@@ -407,7 +415,7 @@ module privateDnsZoneAzureFilesChina '../../../../avm/1.0.0/res/network/private-
     name: 'Private-DNS-Gov-Files-${time}'
     params: {
         name: 'privatelink.file.core.chinacloudapi.cn'
-        virtualNetworkLinks: createVnet ? array(virtualNetwork.outputs.resourceId) : array(varExistingAvdVnetResourceId)
+        virtualNetworkLinks: varVirtualNetworkLinks
         tags: tags
     }
 }
@@ -418,7 +426,7 @@ module privateDnsZoneKeyVaultChina '../../../../avm/1.0.0/res/network/private-dn
     name: 'Private-DNS-Gov-Kv-${time}'
     params: {
         name: 'privatelink.vaultcore.azure.cn'
-        virtualNetworkLinks: createVnet ? array(virtualNetwork.outputs.resourceId) : array(varExistingAvdVnetResourceId)
+        virtualNetworkLinks: varVirtualNetworkLinks
         tags: tags
     }
 }
