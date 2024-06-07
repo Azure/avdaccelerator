@@ -1,3 +1,7 @@
+metadata name = 'Azure Virtual Desktop management plane'
+metadata description = 'This module deploys AVD workspace, host pool, application group scaling plan'
+metadata owner = 'Azure/module-maintainers'
+
 targetScope = 'subscription'
 
 // ========== //
@@ -177,7 +181,7 @@ var varRAppApplicationGroupsOfficeApps = (preferredAppGroupType == 'RailApplicat
   }
 ]: []
 var varRAppApplicationGroupsApps = (preferredAppGroupType == 'RailApplications') ? ((contains(osImage, 'office')) ? union(varRAppApplicationGroupsStandardApps, varRAppApplicationGroupsOfficeApps) : varRAppApplicationGroupsStandardApps) : []
-var varDiagnosticSetting = !empty(alaWorkspaceResourceId) ? [
+var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
   {
     workspaceResourceId: alaWorkspaceResourceId
   }
@@ -203,9 +207,7 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
     preferredAppGroupType: preferredAppGroupType
     personalDesktopAssignmentType: personalAssignType
     tags: tags
-
-    diagnosticSettings: varDiagnosticSetting
-
+    diagnosticSettings: varDiagnosticSettings
     agentUpdate: !empty(hostPoolAgentUpdateSchedule) ? {
         maintenanceWindows: hostPoolAgentUpdateSchedule
         maintenanceWindowTimeZone: computeTimeZone
@@ -234,7 +236,7 @@ module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/appli
         //principalType: 'Group'
       }
     ]    
-    diagnosticSettings: varDiagnosticSetting
+    diagnosticSettings: varDiagnosticSettings
   }
   dependsOn: [
     hostPool
@@ -253,7 +255,7 @@ module workSpace '../../../../avm/1.0.0/res/desktop-virtualization/workspace/mai
         '/subscriptions/${workloadSubsId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${applicationGroupName}'
       ]
       tags: tags
-      diagnosticSettings: varDiagnosticSetting
+      diagnosticSettings: varDiagnosticSettings
   }
   dependsOn: [
     hostPool
@@ -279,7 +281,7 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
         }
       ]
       tags: tags
-      diagnosticSettings: varDiagnosticSetting
+      diagnosticSettings: varDiagnosticSettings
   }
   dependsOn: [
     hostPool
