@@ -16,7 +16,7 @@ param computeTimeZone string
 param identityServiceProvider string
 
 @sys.description('Identity ID to grant RBAC role to access AVD application group.')
-param securityPrincipalIds array
+param securityPrincipalId string
 
 @sys.description('AVD OS image source.')
 param osImage string
@@ -182,15 +182,6 @@ var varDiagnosticSetting = [
     workspaceResourceId: alaWorkspaceResourceId
   }
 ]
-var varRoleAssignments = [
-  for securityPrincipalId in securityPrincipalIds : [
-    {      
-      roleDefinitionIdOrName: 'Desktop Virtualization User'
-      principalId: securityPrincipalId
-      //principalType: 'Group'
-    }
-  ]
-] 
 
 // =========== //
 // Deployments Commercial//
@@ -236,7 +227,13 @@ module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/appli
     hostpoolName: hostPoolName
     tags: tags
     applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsApps : []
-    //roleAssignments: varRoleAssignments
+    roleAssignments: [
+      {      
+        roleDefinitionIdOrName: 'Desktop Virtualization User'
+        principalId: securityPrincipalId
+        //principalType: 'Group'
+      }
+    ]    
     diagnosticSettings: varDiagnosticSetting
   }
   dependsOn: [

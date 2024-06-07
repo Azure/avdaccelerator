@@ -900,7 +900,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
         startVmOnConnect: (avdHostPoolType == 'Pooled') ? varDeployScalingPlan : avdStartVmOnConnect
         workloadSubsId: avdWorkloadSubsId
         identityServiceProvider: avdIdentityServiceProvider
-        securityPrincipalIds: !empty(securityPrincipalId)? array(securityPrincipalId): []
+        securityPrincipalId: !empty(securityPrincipalId)? securityPrincipalId: ''
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
         hostPoolAgentUpdateSchedule: varHostPoolAgentUpdateSchedule
@@ -927,7 +927,7 @@ module identity './modules/identity/deploy.bicep' = {
         enableStartVmOnConnect: avdStartVmOnConnect
         identityServiceProvider: avdIdentityServiceProvider
         createStorageDeployment: varCreateStorageDeployment
-        securityPrincipalIds: !empty(securityPrincipalId)? array(securityPrincipalId): []
+        securityPrincipalId: !empty(securityPrincipalId)? securityPrincipalId: ''
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
     dependsOn: [
