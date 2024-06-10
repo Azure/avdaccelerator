@@ -175,7 +175,7 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
                 customNetworkInterfaceName: 'nic-01-${varWrklStoragePrivateEndpointName}'
                 service: 'file'
                 privateDnsZoneGroupName: split(vnetPrivateDnsZoneFilesId, '/')[8]
-                privateDNSResourceIds: [
+                privateDnsZoneResourceIds: [
                     vnetPrivateDnsZoneFilesId
                 ]
             }
