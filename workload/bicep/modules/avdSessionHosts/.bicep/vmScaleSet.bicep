@@ -54,7 +54,6 @@ module vmssFlex '../../../../../avm/1.0.0/res/compute/virtual-machine-scale-set/
         skuName: skuName
         imageReference: osImage
         availabilityZones: zoneBalance ? [1, 2, 3]: null
-        scaleSetFaultDomain: faultDomainCount
         tags: tags
     }
 }]
