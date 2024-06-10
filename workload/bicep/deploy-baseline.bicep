@@ -1,5 +1,6 @@
 metadata name = 'AVD Accelerator - Baseline Deployment'
 metadata description = 'AVD Accelerator - Deployment Baseline'
+metadata owner = 'Azure/avdaccelerator'
 
 targetScope = 'subscription'
 
@@ -771,37 +772,37 @@ resource telemetrydeployment 'Microsoft.Resources/deployments@2021-04-01' = if (
 // Resource groups.
 // Compute, service objects, network
 // Network
-module baselineNetworkResourceGroup '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdVnet || createPrivateDnsZones) {
+module baselineNetworkResourceGroup '../../avm/1.0.0/res/resources/resource-group/main.bicep' = if (createAvdVnet || createPrivateDnsZones) {
     scope: subscription(avdWorkloadSubsId)
     name: 'Deploy-Network-RG-${time}'
     params: {
         name: varNetworkObjectsRgName
         location: avdSessionHostLocation
-        enableDefaultTelemetry: false
+        enableTelemetry: false
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
 }
 
 // Compute, service objects
-module baselineResourceGroups '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = [for resourceGroup in verResourceGroups: {
+module baselineResourceGroups '../../avm/1.0.0/res/resources/resource-group/main.bicep' = [for resourceGroup in verResourceGroups: {
     scope: subscription(avdWorkloadSubsId)
     name: '${resourceGroup.purpose}-${time}'
     params: {
         name: resourceGroup.name
         location: resourceGroup.location
-        enableDefaultTelemetry: resourceGroup.enableDefaultTelemetry
+        enableTelemetry: resourceGroup.enableDefaultTelemetry
         tags: resourceGroup.tags
     }
 }]
 
 // Storage
-module baselineStorageResourceGroup '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (varCreateStorageDeployment) {
+module baselineStorageResourceGroup '../../avm/1.0.0/res/resources/resource-group/main.bicep' = if (varCreateStorageDeployment) {
     scope: subscription(avdWorkloadSubsId)
     name: 'Storage-RG-${time}'
     params: {
         name: varStorageObjectsRgName
         location: avdSessionHostLocation
-        enableDefaultTelemetry: false
+        enableTelemetry: false
         tags: createResourceTags ? union(varAllComputeStorageTags, varAvdDefaultTags) : union(varAvdDefaultTags, varAllComputeStorageTags)
     }
 }
