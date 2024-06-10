@@ -200,7 +200,7 @@ module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = {
     name: 'Add-${storagePurpose}-Storage-Setup-${time}'
     params: {
         location: sessionHostLocation
-        name: managementVmName
+        virtualMachineName: managementVmName
         file: storageToDomainScript
         scriptArguments: varStorageToDomainScriptArgs
         adminUserPassword: (identityServiceProvider == 'EntraID') ? avdWrklKeyVaultget.getSecret('vmLocalUserPassword') : avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
