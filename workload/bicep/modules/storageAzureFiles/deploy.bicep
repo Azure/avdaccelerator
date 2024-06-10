@@ -106,12 +106,6 @@ param storageAccountFqdn string
 // Variable declaration //
 // =========== //
 var varAzureCloudName = environment().name
-var varAvdFileShareLogsDiagnostic = [
-    'allLogs'
-]
-var varAvdFileShareMetricsDiagnostic = [
-    'Transaction'
-]
 var varWrklStoragePrivateEndpointName = 'pe-${storageAccountName}-file'
 var varDirectoryServiceOptions = (identityServiceProvider == 'EntraDS') ? 'AADDS': (identityServiceProvider == 'EntraID') ? 'AADKERB': 'None'
 var varSecurityPrincipalName = !empty(securityPrincipalName)? securityPrincipalName : 'none'
@@ -172,9 +166,7 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
                     }
                 }
             } : {}
-            diagnosticWorkspaceId: alaWorkspaceResourceId
-            diagnosticLogCategoriesToEnable: varAvdFileShareLogsDiagnostic
-            diagnosticMetricsToEnable: varAvdFileShareMetricsDiagnostic
+            diagnosticSettings: varDiagnosticSettings
         }
         privateEndpoints: deployPrivateEndpoint ? [
             {
@@ -182,11 +174,10 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
                 subnetResourceId: privateEndpointSubnetId
                 customNetworkInterfaceName: 'nic-01-${varWrklStoragePrivateEndpointName}'
                 service: 'file'
-                privateDnsZoneGroup: {
-                    privateDNSResourceIds: [
-                        vnetPrivateDnsZoneFilesId
-                    ]
-                }
+                privateDnsZoneGroupName: split(vnetPrivateDnsZoneFilesId, '/')[8]
+                privateDNSResourceIds: [
+                    vnetPrivateDnsZoneFilesId
+                ]
             }
         ] : []
         tags: tags
