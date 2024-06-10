@@ -35,7 +35,7 @@ param subscriptionId string
 param count int
 
 @sys.description('Max VMs per availability set.')
-param maxAvsetMembersCount int
+param maxVmssFlexMembersCount int
 
 @sys.description('The session host number to begin with for the deployment.')
 param countIndex int
@@ -43,8 +43,8 @@ param countIndex int
 @sys.description('Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set.')
 param useAvailabilityZones bool
 
-@sys.description('Availablity Set name.')
-param avsetNamePrefix string
+@sys.description('VMSS flex name.')
+param vmssFlexNamePrefix string
 
 @sys.description('The service providing domain services for Azure Virtual Desktop.')
 param identityServiceProvider string
@@ -140,9 +140,6 @@ param dataCollectionRuleId string
 // Variable declaration //
 // =========== //
 var varAllAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', location, 3)
-var varNicDiagnosticMetricsToEnable = [
-    'AllMetrics'
-]
 var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
     storageAccountType: diskType
 } : {
@@ -151,19 +148,22 @@ var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
     }
     storageAccountType: diskType
 }
-
 var varOsDiskProperties = {
     createOption: 'fromImage'
     deleteOption: 'Delete'
     managedDisk: varManagedDisk
 }
-
 var varCustomOsDiskProperties = {
     createOption: 'fromImage'
     deleteOption: 'Delete'
     managedDisk: varManagedDisk
     diskSizeGB: !empty(customOsDiskSizeGB ) ? customOsDiskSizeGB : null
 }
+var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
+    {
+      workspaceResourceId: alaWorkspaceResourceId
+    }
+]: []
 
 // =========== //
 // Deployments //
@@ -181,17 +181,17 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = if (
 }
 
 // Session hosts
-module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(1, count): {
+module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = [for i in range(1, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-${batchId}-${i - 1}-${time}'
     params: {
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         location: location
         timeZone: timeZone
-        systemAssignedIdentity: (identityServiceProvider == 'EntraID') ? true : false
-        availabilityZone: useAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
+        //systemAssignedIdentity: (identityServiceProvider == 'EntraID') ? true : false
+        zone: useAvailabilityZones ? (i % 3 + 1) : 0
         encryptionAtHost: encryptionAtHost
-        availabilitySetResourceId: useAvailabilityZones ? '' : '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/availabilitySets/${avsetNamePrefix}-${padLeft(((1 + (i + countIndex) / maxAvsetMembersCount)), 3, '0')}'
+        virtualMachineScaleSetResourceId: '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/virtualMachineScaleSets/${vmssFlexNamePrefix}-${padLeft(((1 + (i + countIndex) / maxVmssFlexMembersCount)), 3, '0')}'
         osType: 'Windows'
         licenseType: 'Windows_Client'
         vmSize: vmSize
@@ -244,8 +244,6 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
                 mdmId: '0000000a-0000-0000-c000-000000000000'
             } : {}
         }
-        nicdiagnosticMetricsToEnable: deployMonitoring ? varNicDiagnosticMetricsToEnable : []
-        diagnosticWorkspaceId: deployMonitoring ? alaWorkspaceResourceId : ''
         tags: tags
     }
     dependsOn: [
