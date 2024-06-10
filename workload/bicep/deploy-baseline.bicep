@@ -1185,10 +1185,10 @@ module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' = {
         namePrefix: varVmssFlexNamePrefix
         location: avdSessionHostLocation
         count: varVmssFlexCount
-        zoneBalance: availabilityZonesCompute ? true : false
+        useAvailabilityZones: availabilityZonesCompute
         faultDomainCount: avsetFaultDomainCount
         vmLocalUserName: avdVmLocalUserName
-        skuName: avdSessionHostsSize
+        vmSize: avdSessionHostsSize
         osImage: useSharedImage ? avdImageTemplateDefinitionId: varMarketPlaceGalleryWindows[avdOsImage]
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
