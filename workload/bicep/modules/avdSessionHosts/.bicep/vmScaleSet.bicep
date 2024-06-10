@@ -49,11 +49,14 @@ module vmssFlex '../../../../../avm/1.0.0/res/compute/virtual-machine-scale-set/
         osDisk: {
             diskSizeGB: 'FromImage'
             createOption: 'FromImage'
+            managedDisk: {
+                storageAccountType: 'Standard_LRS'
+              }
         }
         osType: 'Windows'
         skuName: vmSize
         imageReference: osImage
-        availabilityZones: useAvailabilityZones ? [1, 2, 3]: null
+        availabilityZones: useAvailabilityZones ? [1, 2, 3]: []
         scaleSetFaultDomain: faultDomainCount
         tags: tags
     }
