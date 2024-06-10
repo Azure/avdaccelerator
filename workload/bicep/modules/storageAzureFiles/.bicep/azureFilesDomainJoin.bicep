@@ -35,7 +35,7 @@ param time string = utcNow()
 module dscStorageScript '../../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = {
   name: 'VM-Ext-AVM-${time}'
   params: {
-    name: '${virtualMachineName}/AzureFilesDomainJoin'
+    name: 'AzureFilesDomainJoin'
     virtualMachineName: virtualMachineName
     location: location
     publisher: 'Microsoft.Compute'
