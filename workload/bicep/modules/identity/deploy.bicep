@@ -103,35 +103,40 @@ module managedIdentityStorage '../../../../avm/1.0.0/res/managed-identity/user-a
 }
 
 // Start VM on connect role assignments
-module startVMonConnectRoleAssignCompute '../../../../avm/1.0.0/ptn/authorization/resource-role-assignment/main.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (enableStartVmOnConnect && !deployScalingPlan) {
+module startVMonConnectRoleAssignCompute '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (enableStartVmOnConnect && !deployScalingPlan) {
   name: 'StartOnCon-RolAssign-${computeAndServiceObjectsRg.name}-${time}'
   scope: resourceGroup('${subscriptionId}', '${computeAndServiceObjectsRg.rgName}')
   params: {
-    roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnContributorRole.id}'
+    roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnContributorRole.id}'
     principalId: avdEnterpriseObjectId
-    resourceId: '/subscriptions/${subscriptionId}/resourceGroups/${computeAndServiceObjectsRg.rgName}'
+    resourceGroupName: computeAndServiceObjectsRg.rgName
+    principalType: 'ServicePrincipal'
   }
 }]
 
 // Scaling plan role assignments
-module scalingPlanRoleAssignCompute '../../../../avm/1.0.0/ptn/authorization/resource-role-assignment/main.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (deployScalingPlan) {
+module scalingPlanRoleAssignCompute '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (deployScalingPlan) {
   name: 'ScalingPlan-RolAssign-${computeAndServiceObjectsRg.name}-${time}'
   scope: resourceGroup('${subscriptionId}', '${computeAndServiceObjectsRg.rgName}')
   params: {
-    roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnOffContributorRole.id}'
+    roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnOffContributorRole.id}'
     principalId: avdEnterpriseObjectId
-    resourceId: '/subscriptions/${subscriptionId}/resourceGroups/${computeAndServiceObjectsRg.rgName}'
+    resourceGroupName: computeAndServiceObjectsRg.rgName
+    subscriptionId: subscriptionId
+    principalType: 'ServicePrincipal'
   }
 }]
 
 // Storage role assignments
-module storageContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/resource-role-assignment/main.bicep' = [for storageRoleAssignment in storageRoleAssignments: if (createStorageDeployment) {
+module storageContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for storageRoleAssignment in storageRoleAssignments: if (createStorageDeployment) {
   name: 'Stora-RolAssign-${storageRoleAssignment.acronym}-${time}'
   scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
   params: {
-    roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${storageRoleAssignment.id}'
+    roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${storageRoleAssignment.id}'
     principalId: createStorageDeployment ? managedIdentityStorage.outputs.principalId : ''
-    resourceId: '/subscriptions/${subscriptionId}/resourceGroups/${storageObjectsRgName}'
+    resourceGroupName: storageObjectsRgName
+    subscriptionId: subscriptionId
+    principalType: 'ServicePrincipal'
   }
   dependsOn: [
     managedIdentityStorage
@@ -139,35 +144,41 @@ module storageContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/res
 }]
 
 // Storage File Data SMB Share Contributor
-module storageSmbShareContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/resource-role-assignment/main.bicep' = if (createStorageDeployment && (!empty(securityPrincipalId))) {
+module storageSmbShareContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (createStorageDeployment && (!empty(securityPrincipalId))) {
   name: 'Stora-SmbContri-RolAssign${take('${securityPrincipalId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
   params: {
-    roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varStorageSmbShareContributorRole.id}'
+    roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varStorageSmbShareContributorRole.id}'
     principalId: securityPrincipalId
-    resourceId: '/subscriptions/${subscriptionId}/resourceGroups/${storageObjectsRgName}'
+    resourceGroupName: storageObjectsRgName
+    subscriptionId: subscriptionId
+    principalType: 'Group'
   }
 }
 
 // Virtual machine Microsoft Entra ID access roles on the compute resource group
-module aadIdentityLoginRoleAssign '../../../../avm/1.0.0/ptn/authorization/resource-role-assignment/main.bicep' = if (identityServiceProvider == 'EntraID' && !empty(securityPrincipalId)) {
+module aadIdentityLoginRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (identityServiceProvider == 'EntraID' && !empty(securityPrincipalId)) {
   name: 'VM-Login-Comp-${take('${securityPrincipalId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
   params: {
-    roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varVirtualMachineUserLoginRole.id}'
+    roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varVirtualMachineUserLoginRole.id}'
     principalId: securityPrincipalId
-    resourceId: '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}'
+    resourceGroupName: computeObjectsRgName
+    subscriptionId: subscriptionId
+    principalType: 'Group'
   }
 }
 
 // Virtual machine Microsoft Entra ID access roles on the service objects resource group
-module aadIdentityLoginAccessServiceObjects '../../../../avm/1.0.0/ptn/authorization/resource-role-assignment/main.bicep' = if (identityServiceProvider == 'EntraID' && !empty(securityPrincipalId)) {
+module aadIdentityLoginAccessServiceObjects '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (identityServiceProvider == 'EntraID' && !empty(securityPrincipalId)) {
   name: 'VM-Login-Serv-${take('${securityPrincipalId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   params: {
-    roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varVirtualMachineUserLoginRole.id}'
+    roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varVirtualMachineUserLoginRole.id}'
     principalId: securityPrincipalId
-    resourceId: '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}'
+    resourceGroupName: serviceObjectsRgName
+    subscriptionId: subscriptionId
+    principalType: 'Group'
   }
 }
 

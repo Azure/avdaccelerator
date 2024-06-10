@@ -1001,8 +1001,7 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
                 }
             }
         ] : []
-        secrets: {
-            secureList: (avdIdentityServiceProvider != 'EntraID') ? [
+        secrets: (avdIdentityServiceProvider != 'EntraID') ? [
                 {
                     name: 'vmLocalUserPassword'
                     value: avdVmLocalUserPassword
@@ -1023,7 +1022,7 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
                     value: avdDomainJoinUserPassword
                     contentType: 'Domain join credentials'
                 }
-            ] : [
+        ]: [
                 {
                     name: 'vmLocalUserPassword'
                     value: avdVmLocalUserPassword
@@ -1043,9 +1042,8 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
                     name: 'domainJoinUserPassword'
                     value: 'NoPassword'
                     contentType: 'Domain join credentials'
-                }
-            ]
-        }
+                }            
+        ]
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags, varWorkloadKeyvaultTag) : union(varAvdDefaultTags, varWorkloadKeyvaultTag)
     }
     dependsOn: [
