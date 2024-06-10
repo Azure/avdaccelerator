@@ -12,17 +12,17 @@ param namePrefix string
 @sys.description('Availablity Set count.')
 param count int
 
+@sys.description('Use availability zones.')
+param useAvailabilityZones bool
+
 @sys.description('Local administrator username.')
 param vmLocalUserName string
 
 @description('Required. The SKU size of the VMs.')
-param skuName string
+param vmSize string
 
 @description('Required. OS image reference. In case of marketplace images, it\'s the combination of the publisher, offer, sku, version attributes. In case of custom images it\'s the resource ID of the custom image.')
 param osImage object
-
-@description('Optional. Whether to force strictly even Virtual Machine distribution cross x-zones in case there is zone outage.')
-param zoneBalance bool
 
 @sys.description('Sets the number of fault domains for the VMSS flex.')
 param faultDomainCount int
@@ -44,16 +44,17 @@ module vmssFlex '../../../../../avm/1.0.0/res/compute/virtual-machine-scale-set/
         name: '${namePrefix}-${padLeft(i, 3, '0')}'
         location: location
         orchestrationMode: 'Flexible'
-        zoneBalance: zoneBalance
+        zoneBalance: useAvailabilityZones ? true: false
         adminUsername: vmLocalUserName
         osDisk: {
             diskSizeGB: 'FromImage'
             createOption: 'FromImage'
         }
         osType: 'Windows'
-        skuName: skuName
+        skuName: vmSize
         imageReference: osImage
-        availabilityZones: zoneBalance ? [1, 2, 3]: null
+        availabilityZones: useAvailabilityZones ? [1, 2, 3]: null
+        scaleSetFaultDomain: faultDomainCount
         tags: tags
     }
 }]
