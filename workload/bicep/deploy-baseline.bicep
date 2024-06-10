@@ -377,8 +377,8 @@ param avdApplicationGroupCustomFriendlyName string = 'Desktops - App1 - Dev - Ea
 param avdSessionHostCustomNamePrefix string = 'vmapp1duse2'
 
 @maxLength(9)
-@sys.description('AVD availability set custom name. (Default: avail)')
-param avsetCustomNamePrefix string = 'avail'
+@sys.description('AVD VMSS Flex custom name. (Default: vmss)')
+param vmssFlexCustomNamePrefix string = 'vmss'
 
 @maxLength(2)
 @sys.description('AVD FSLogix and MSIX app attach storage account prefix custom name. (Default: st)')
@@ -536,7 +536,7 @@ var varWrklKvName = avdUseCustomNaming ? '${avdWrklKvPrefixCustomName}-${varComp
 var varWrklKvPrivateEndpointName = 'pe-${varWrklKvName}-vault'
 var varWrklKeyVaultSku = (varAzureCloudName == 'AzureCloud' || varAzureCloudName == 'AzureUSGovernment') ? 'premium' : (varAzureCloudName == 'AzureChinaCloud' ? 'standard': null)
 var varSessionHostNamePrefix = avdUseCustomNaming ? avdSessionHostCustomNamePrefix : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
-var varAvsetNamePrefix = avdUseCustomNaming ? '${avsetCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'avail-${varComputeStorageResourcesNamingStandard}'
+var varVmssFlexNamePrefix = avdUseCustomNaming ? '${vmssFlexCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'vmss-${varComputeStorageResourcesNamingStandard}'
 var varStorageManagedIdentityName = 'id-storage-${varComputeStorageResourcesNamingStandard}-001'
 var varFslogixFileShareName = avdUseCustomNaming ? fslogixFileShareCustomName : 'fslogix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
 var varMsixFileShareName = avdUseCustomNaming ? msixFileShareCustomName : 'msix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
@@ -570,10 +570,10 @@ var varMaxSessionHostsPerTemplate = 10
 var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varMaxSessionHostsPerTemplate
 var varMaxSessionHostsDivisionRemainderValue = avdDeploySessionHostsCount % varMaxSessionHostsPerTemplate
 var varSessionHostBatchCount = varMaxSessionHostsDivisionRemainderValue > 0 ? varMaxSessionHostsDivisionValue + 1 : varMaxSessionHostsDivisionValue
-var varMaxAvsetMembersCount = 199
-var varDivisionAvsetValue = avdDeploySessionHostsCount / varMaxAvsetMembersCount
-var varDivisionAvsetRemainderValue = avdDeploySessionHostsCount % varMaxAvsetMembersCount
-var varAvsetCount = varDivisionAvsetRemainderValue > 0 ? varDivisionAvsetValue + 1 : varDivisionAvsetValue
+var varMaxVmssFlexMembersCount = 999
+var varDivisionVmssFlexValue = avdDeploySessionHostsCount / varMaxVmssFlexMembersCount
+var varDivisionAvsetRemainderValue = avdDeploySessionHostsCount % varMaxVmssFlexMembersCount
+var varVmssFlexCount = varDivisionAvsetRemainderValue > 0 ? varDivisionVmssFlexValue + 1 : varDivisionVmssFlexValue
 var varHostPoolAgentUpdateSchedule = [
     {
         dayOfWeek: 'Tuesday'
@@ -971,7 +971,7 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
 }
 
 // Key vault
-module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
+module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
     scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
     name: 'Workload-KeyVault-${time}'
     params: {
@@ -979,7 +979,7 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
         location: avdSessionHostLocation
         enableRbacAuthorization: false
         enablePurgeProtection: enableKvPurgeProtection
-        vaultSku: varWrklKeyVaultSku
+        sku: varWrklKeyVaultSku
         softDeleteRetentionInDays: 7
         publicNetworkAccess: deployPrivateEndpointKeyvaultStorage ? 'Disabled' : 'Enabled'
         networkAcls: deployPrivateEndpointKeyvaultStorage ? {
@@ -1047,7 +1047,6 @@ module wrklKeyVault '../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' =
             ]
         }
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags, varWorkloadKeyvaultTag) : union(varAvdDefaultTags, varWorkloadKeyvaultTag)
-
     }
     dependsOn: [
         baselineResourceGroups
@@ -1180,16 +1179,19 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
     ]
 }
 
-// Availability set
-module availabilitySet './modules/avdSessionHosts/.bicep/availabilitySets.bicep' = if (!availabilityZonesCompute && avdDeploySessionHosts) {
-    name: 'AVD-Availability-Set-${time}'
+// VMSS Flex
+module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' = {
+    name: 'AVD-VMSS-Flex-${time}'
     scope: resourceGroup('${avdWorkloadSubsId}', '${varComputeObjectsRgName}')
     params: {
-        namePrefix: varAvsetNamePrefix
+        namePrefix: varVmssFlexNamePrefix
         location: avdSessionHostLocation
-        count: varAvsetCount
+        count: varVmssFlexCount
+        zoneBalance: availabilityZonesCompute ? true : false
         faultDomainCount: avsetFaultDomainCount
-        updateDomainCount: avsetUpdateDomainCount
+        vmLocalUserName: avdVmLocalUserName
+        skuName: avdSessionHostsSize
+        osImage: useSharedImage ? avdImageTemplateDefinitionId: varMarketPlaceGalleryWindows[avdOsImage]
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
     dependsOn: [
@@ -1208,8 +1210,8 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         asgResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) ? '${networking.outputs.applicationSecurityGroupResourceId}' : ''
         identityServiceProvider: avdIdentityServiceProvider
         createIntuneEnrollment: createIntuneEnrollment
-        maxAvsetMembersCount: varMaxAvsetMembersCount
-        avsetNamePrefix: varAvsetNamePrefix
+        maxVmssFlexMembersCount: varMaxVmssFlexMembersCount
+        vmssFlexNamePrefix: varVmssFlexNamePrefix
         batchId: i - 1
         computeObjectsRgName: varComputeObjectsRgName
         count: i == varSessionHostBatchCount && varMaxSessionHostsDivisionRemainderValue > 0 ? varMaxSessionHostsDivisionRemainderValue : varMaxSessionHostsPerTemplate
@@ -1253,7 +1255,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
         networking
         wrklKeyVault
         monitoringDiagnosticSettings
-        availabilitySet
+        vmScaleSetFlex
         managementPLane
     ]
 }]
