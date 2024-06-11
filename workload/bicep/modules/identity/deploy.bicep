@@ -149,7 +149,7 @@ module storageSmbShareContributorRoleAssign '../../../../avm/1.0.0/ptn/authoriza
   scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
   params: {
     roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varStorageSmbShareContributorRole.id}'
-    principalId: securityPrincipalId
+    principalId: !empty(securityPrincipalId) ? securityPrincipalId: ''
     resourceGroupName: storageObjectsRgName
     subscriptionId: subscriptionId
     principalType: 'Group'
@@ -162,7 +162,7 @@ module aadIdentityLoginRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
   params: {
     roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varVirtualMachineUserLoginRole.id}'
-    principalId: securityPrincipalId
+    principalId: !empty(securityPrincipalId) ? securityPrincipalId: ''
     resourceGroupName: computeObjectsRgName
     subscriptionId: subscriptionId
     principalType: 'Group'
@@ -175,7 +175,7 @@ module aadIdentityLoginAccessServiceObjects '../../../../avm/1.0.0/ptn/authoriza
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   params: {
     roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varVirtualMachineUserLoginRole.id}'
-    principalId: securityPrincipalId
+    principalId: !empty(securityPrincipalId) ? securityPrincipalId: ''
     resourceGroupName: serviceObjectsRgName
     subscriptionId: subscriptionId
     principalType: 'Group'
