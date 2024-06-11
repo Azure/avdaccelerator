@@ -1183,15 +1183,9 @@ module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' = {
     scope: resourceGroup('${avdWorkloadSubsId}', '${varComputeObjectsRgName}')
     params: {
         namePrefix: varVmssFlexNamePrefix
-        keyVaultResourceID: wrklKeyVault.outputs.resourceId
         location: avdSessionHostLocation
         count: varVmssFlexCount
         useAvailabilityZones: availabilityZonesCompute
-        faultDomainCount: avsetFaultDomainCount
-        vmLocalUserName: avdVmLocalUserName
-        vmSize: avdSessionHostsSize
-        osImage: useSharedImage ? avdImageTemplateDefinitionId: varMarketPlaceGalleryWindows[avdOsImage]
-        tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
     dependsOn: [
         baselineResourceGroups
