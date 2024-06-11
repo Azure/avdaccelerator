@@ -3,6 +3,9 @@ targetScope = 'resourceGroup'
 // ========== //
 // Parameters //
 // ========== //
+@sys.description('Subscription ID.')
+param keyVaultResourceID string
+
 @sys.description('Location where to deploy compute services.')
 param location string
 
@@ -33,10 +36,19 @@ param tags object
 // =========== //
 // Variable declaration //
 // =========== //
+var varKeyVaultSubId = split(keyVaultResourceID, '/')[2]
+var varKeyVaultRgName = split(keyVaultResourceID, '/')[4]
+var varKeyVaultName = split(keyVaultResourceID, '/')[8]
 
 // =========== //
 // Deployments //
 // =========== //
+// call on the keyvault
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+    name: varKeyVaultName
+    scope: resourceGroup('${varKeyVaultSubId}', '${varKeyVaultRgName}')
+}
+
 // VMSS Flex.
 module vmssFlex '../../../../../avm/1.0.0/res/compute/virtual-machine-scale-set/main.bicep' = [for i in range(1, count): {
     name: '${namePrefix}-${padLeft(i, 3, '0')}'
@@ -46,6 +58,7 @@ module vmssFlex '../../../../../avm/1.0.0/res/compute/virtual-machine-scale-set/
         orchestrationMode: 'Flexible'
         zoneBalance: useAvailabilityZones ? true: false
         adminUsername: vmLocalUserName
+        adminPassword: keyVault.getSecret('vmLocalUserPassword')
         osDisk: {
             diskSizeGB: 128
             createOption: 'FromImage'

@@ -266,7 +266,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2019-12-10-preview'
 }
 
 // call on the keyvault
-resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
   name: varKeyVaultName
   scope: resourceGroup('${varKeyVaultSubId}', '${varKeyVaultRgName}')
 }
