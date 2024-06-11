@@ -9,14 +9,17 @@ param location string
 @sys.description('Availablity Set name.')
 param namePrefix string
 
+@sys.description('Platform Fault Domain count.')
+param platformFaultDomainCount int
+
 @sys.description('Availablity Set count.')
 param count int
 
 @sys.description('Use availability zones.')
 param useAvailabilityZones bool
 
-// @sys.description('Tags to be applied to resources')
-// param tags object
+@sys.description('Tags to be applied to resources')
+param tags object
 
 // =========== //
 // Variable declaration //
@@ -36,7 +39,7 @@ resource vmssFlex 'Microsoft.Compute/virtualMachineScaleSets@2024-03-01' = [for 
     properties: {
         orchestrationMode: 'Flexible'
         zoneBalance: useAvailabilityZones ? true: false
-        platformFaultDomainCount: 1
+        platformFaultDomainCount: useAvailabilityZones ? 1: platformFaultDomainCount
     }
-    // tags: tags
+    tags: tags
 }]
