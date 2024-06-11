@@ -1,3 +1,7 @@
+metadata name = 'AVD Accelerator - VMSS Flex'
+metadata description = 'Deploys a VMSS Flex without VM profile'
+metadata owner = 'Azure/avdaccelerator'
+
 targetScope = 'resourceGroup'
 
 // ========== //
