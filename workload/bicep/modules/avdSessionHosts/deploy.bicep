@@ -160,11 +160,6 @@ var varCustomOsDiskProperties = {
     managedDisk: varManagedDisk
     diskSizeGB: !empty(customOsDiskSizeGB ) ? customOsDiskSizeGB : null
 }
-var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
-    {
-      workspaceResourceId: alaWorkspaceResourceId
-    }
-]: []
 
 // =========== //
 // Deployments //
@@ -287,7 +282,7 @@ module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtu
 }]
 
 // Call to the ALA workspace
-resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(alaWorkspaceResourceId) && deployMonitoring) {
+resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!empty(alaWorkspaceResourceId) && deployMonitoring) {
     scope: az.resourceGroup(split(alaWorkspaceResourceId, '/')[2], split(alaWorkspaceResourceId, '/')[4])
     name: last(split(alaWorkspaceResourceId, '/'))!
 }
