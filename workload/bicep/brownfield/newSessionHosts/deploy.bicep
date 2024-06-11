@@ -298,7 +298,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
     vTpmEnabled: vTpmEnabled
     imageReference: useSharedImage ? json('{\'id\': \'${customImageDefinitionId}\'}') : varMarketPlaceGalleryWindows[osImage]
     osDisk: {
-      createOption: 'fromImage'
+      createOption: 'FromImage'
       deleteOption: 'Delete'
       managedDisk: varManagedDisk
     }
