@@ -47,7 +47,7 @@ module vmssFlex '../../../../../avm/1.0.0/res/compute/virtual-machine-scale-set/
         zoneBalance: useAvailabilityZones ? true: false
         adminUsername: vmLocalUserName
         osDisk: {
-            diskSizeGB: 'FromImage'
+            diskSizeGB: 128
             createOption: 'FromImage'
             managedDisk: {
                 storageAccountType: 'Standard_LRS'
