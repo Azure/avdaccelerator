@@ -500,7 +500,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
         name: osDisk.?name ?? '${name}-disk-os-01'
         createOption: osDisk.?createOption ?? 'FromImage'
         deleteOption: osDisk.?deleteOption ?? 'Delete'
-        diskSizeGB: osDisk.?diskSizeGB ?? null
+        //diskSizeGB: osDisk.?diskSizeGB ?? null
         caching: osDisk.?caching ?? 'ReadOnly'
         managedDisk: {
           storageAccountType: osDisk.managedDisk.storageAccountType
@@ -513,7 +513,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
         for (dataDisk, index) in dataDisks ?? []: {
           lun: dataDisk.?lun ?? index
           name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
-          diskSizeGB: osDisk.?diskSizeGB ?? null
+          //diskSizeGB: osDisk.diskSizeGB
           createOption: dataDisk.?createoption ?? 'Empty'
           deleteOption: dataDisk.?deleteOption ?? 'Delete'
           caching: dataDisk.?caching ?? 'ReadOnly'
@@ -1142,9 +1142,9 @@ type osDiskType = {
   @description('Optional. The disk name.')
   name: string?
 
-  @description('Required. Specifies the size of an empty data disk in gigabytes.')
-  @maxValue(1023)
-  diskSizeGB: int
+  // @description('Required. Specifies the size of an empty data disk in gigabytes.')
+  // @maxValue(1023)
+  // diskSizeGB: int
 
   @description('Optional. Specifies how the virtual machine should be created.')
   createOption: 'Attach' | 'Empty' | 'FromImage'?

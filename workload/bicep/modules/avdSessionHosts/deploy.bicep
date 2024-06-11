@@ -152,6 +152,7 @@ var varOsDiskProperties = {
     createOption: 'fromImage'
     deleteOption: 'Delete'
     managedDisk: varManagedDisk
+    //diskSizeGB: 128
 }
 var varCustomOsDiskProperties = {
     createOption: 'fromImage'
