@@ -149,13 +149,13 @@ var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
     storageAccountType: diskType
 }
 var varOsDiskProperties = {
-    createOption: 'fromImage'
+    createOption: 'FromImage'
     deleteOption: 'Delete'
     managedDisk: varManagedDisk
     //diskSizeGB: 128
 }
 var varCustomOsDiskProperties = {
-    createOption: 'fromImage'
+    createOption: 'FromImage'
     deleteOption: 'Delete'
     managedDisk: varManagedDisk
     diskSizeGB: !empty(customOsDiskSizeGB ) ? customOsDiskSizeGB : null
