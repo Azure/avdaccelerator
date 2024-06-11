@@ -103,19 +103,21 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 }
 
 // Provision temporary VM and add it to domain.
-module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = {
+module managementVm '../../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = {
     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
     name: 'MGMT-VM-${time}'
     params: {
         name: managementVmName
         location: location
         timeZone: computeTimeZone
-        systemAssignedIdentity: false
-        userAssignedIdentities: {
-            '${storageManagedIdentityResourceId}': {}
+        managedIdentities: {
+            systemAssigned: false
+            userAssignedResourceIds: [
+                storageManagedIdentityResourceId
+            ] 
         }
         encryptionAtHost: encryptionAtHost
-        availabilityZone: []
+        zone: 0
         osType: 'Windows'
         //licenseType: 'Windows_Client'
         vmSize: mgmtVmSize
@@ -124,7 +126,7 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
         vTpmEnabled: vTpmEnabled
         imageReference: osImage
         osDisk: {
-            createOption: 'fromImage'
+            createOption: 'FromImage'
             deleteOption: 'Delete'
             managedDisk: varManagedDisk
         }
@@ -132,7 +134,7 @@ module managementVm '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachine
         adminPassword: avdWrklKeyVaultget.getSecret('vmLocalUserPassword')
         nicConfigurations: [
             {
-                nicSuffix: 'nic-01-'
+                name: 'nic-01-${managementVmName}'
                 deleteOption: 'Delete'
                 enableAcceleratedNetworking: enableAcceleratedNetworking
                 ipConfigurations: !empty(applicationSecurityGroupResourceId)  ? [
