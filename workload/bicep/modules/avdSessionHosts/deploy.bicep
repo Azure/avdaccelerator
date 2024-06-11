@@ -175,7 +175,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2019-12-10-preview'
 }
 
 // call on the keyvault
-resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = if (identityServiceProvider != 'EntraID') {
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (identityServiceProvider != 'EntraID') {
     name: wrklKvName
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
 }
