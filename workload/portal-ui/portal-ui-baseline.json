@@ -565,7 +565,7 @@
                                     "visible": true,
                                     "label": "Availability zones",
                                     "defaultValue": true,
-                                    "toolTip": "Distribute compute resources across availability zones. If 'No' is selected then an availability set will be created to host the VMs."
+                                    "toolTip": "Distribute compute resources across availability zones using multi zone VMSS Flex with 1 fault domain. If 'No' is selected then a VMSS Flex will be created to host the VMs at a regional level but distributing across multiple fault domains."
                                 },
                                 {
                                     "name": "sessionHostsRegion",
@@ -1747,7 +1747,7 @@
                                     "name": "computeObjectsRgCustomName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Resource group",
-                                    "toolTip": "Azure Virtual Desktop compute resources (VMs, NICs, Disks, Availability sets) resource group custom name.",
+                                    "toolTip": "Azure Virtual Desktop compute resources (VMs, NICs, Disks, VMSS) resource group custom name.",
                                     "placeholder": "Example: rg-avd-app1-dev-use2-pool-compute",
                                     "constraints": {
                                         "required": true,
@@ -1781,11 +1781,11 @@
                                     }
                                 },
                                 {
-                                    "name": "availabilitySetCustomNamePrefix",
+                                    "name": "vmssCustomNamePrefix",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Availability set prefix",
+                                    "label": "VMSS Flex prefix",
                                     "visible": "[not(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings)]",
-                                    "toolTip": "Azure Virtual Desktop availability set custom name.",
+                                    "toolTip": "Azure Virtual Desktop VMSS Flex custom name.",
                                     "placeholder": "Example: avail",
                                     "constraints": {
                                         "required": true,
@@ -2429,7 +2429,7 @@
                 "avdApplicationGroupCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.applicationGroupCustomName, 'no')]",
                 "avdApplicationGroupCustomFriendlyName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.applicationGroupCustomFriendlyName, 'no')]",
                 "avdSessionHostCustomNamePrefix": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.sessionHostCustomNamePrefix, 'no')]",
-                "avdAvailabilitySetCustomNamePrefix": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.availabilitySetCustomNamePrefix, 'no')]",
+                "vmssFlexCustomNamePrefix": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.vmssCustomNamePrefix, 'no')]",
                 "storageAccountPrefixCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.storageAccountPrefixCustomName, 'no')]",
                 "fslogixFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.fslogixFileShareCustomName, 'no')]",
                 "msixFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.msixFileShareCustomName, 'no')]",
