@@ -229,13 +229,12 @@ module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/appli
     hostpoolName: hostPoolName
     tags: tags
     applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsApps : []
-    roleAssignments: [
+    roleAssignments: !empty(securityPrincipalId) ? [
       {      
         roleDefinitionIdOrName: 'Desktop Virtualization User'
         principalId: securityPrincipalId
-        //principalType: 'Group'
       }
-    ]    
+    ]: []
     diagnosticSettings: varDiagnosticSettings
   }
   dependsOn: [
