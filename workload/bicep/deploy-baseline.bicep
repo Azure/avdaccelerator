@@ -205,10 +205,7 @@ param availabilityZonesCompute bool = true
 param zoneRedundantStorage bool = false
 
 @sys.description('Sets the number of fault domains for the availability set. (Default: 2)')
-param avsetFaultDomainCount int = 2
-
-@sys.description('Sets the number of update domains for the availability set. (Default: 5)')
-param avsetUpdateDomainCount int = 5
+param vmssFlatformFaultDomainCount int = 2
 
 @allowed([
     'Standard'
@@ -1185,7 +1182,9 @@ module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' = {
         namePrefix: varVmssFlexNamePrefix
         location: avdSessionHostLocation
         count: varVmssFlexCount
+        platformFaultDomainCount: vmssFlatformFaultDomainCount
         useAvailabilityZones: availabilityZonesCompute
+        tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
     dependsOn: [
         baselineResourceGroups
