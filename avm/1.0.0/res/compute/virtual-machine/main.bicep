@@ -500,7 +500,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
         name: osDisk.?name ?? '${name}-disk-os-01'
         createOption: osDisk.?createOption ?? 'FromImage'
         deleteOption: osDisk.?deleteOption ?? 'Delete'
-        diskSizeGB: osDisk.diskSizeGB
+        diskSizeGB: osDisk.?diskSizeGB ?? null
         caching: osDisk.?caching ?? 'ReadOnly'
         managedDisk: {
           storageAccountType: osDisk.managedDisk.storageAccountType
@@ -513,7 +513,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
         for (dataDisk, index) in dataDisks ?? []: {
           lun: dataDisk.?lun ?? index
           name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
-          diskSizeGB: dataDisk.diskSizeGB
+          diskSizeGB: osDisk.?diskSizeGB ?? null
           createOption: dataDisk.?createoption ?? 'Empty'
           deleteOption: dataDisk.?deleteOption ?? 'Delete'
           caching: dataDisk.?caching ?? 'ReadOnly'
