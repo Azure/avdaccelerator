@@ -205,7 +205,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
         adminPassword: keyVault.getSecret('vmLocalUserPassword')
         nicConfigurations: [
             {
-                nicSuffix: 'nic-01-'
+                name: 'nic-01-${namePrefix}${padLeft((i + countIndex), 4, '0')}'
                 deleteOption: 'Delete'
                 enableAcceleratedNetworking: enableAcceleratedNetworking
                 ipConfigurations: !empty(asgResourceId) ? [
