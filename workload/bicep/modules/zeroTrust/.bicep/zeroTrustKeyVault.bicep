@@ -60,7 +60,7 @@ param enableKvPurgeProtection bool = true
 // =========== //
 
 // Key vault for Zero Trust.
-module ztKeyVault '../../../../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.bicep' = {
+module ztKeyVault '../../../../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
     scope: resourceGroup('${subscriptionId}', '${rgName}')
     name: 'ZT-KeyVault-${time}'
     params: {
@@ -69,7 +69,7 @@ module ztKeyVault '../../../../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.b
         enableRbacAuthorization: true
         enablePurgeProtection: enableKvPurgeProtection
         softDeleteRetentionInDays: 7
-        vaultSku: vaultSku
+        sku: vaultSku
         publicNetworkAccess: 'Disabled'
         networkAcls: {
             bypass: 'AzureServices'
@@ -96,7 +96,7 @@ module ztKeyVault '../../../../../carml/1.3.0/Microsoft.KeyVault/vaults/deploy.b
 }
 
 // Disk Encryption Key for Zero Trust.
-module ztKeyVaultKey '../../../../../carml/1.3.0/Microsoft.KeyVault/vaults/keys/deploy.bicep' = {
+module ztKeyVaultKey '../../../../../avm/1.0.0/res/key-vault/vault/key/main.bicep' = {
     scope: resourceGroup('${subscriptionId}', '${rgName}')
     name: 'ZT-KeyVaultKey-${time}'
     params: {
@@ -134,20 +134,19 @@ module ztKeyVaultKey '../../../../../carml/1.3.0/Microsoft.KeyVault/vaults/keys/
 }
 
 // Disk Encryption Set for Zero Trust.
-module ztDiskEncryptionSet '../../../../../carml/1.3.0/Microsoft.Compute/diskEncryptionSets/deploy.bicep' = {
+module ztDiskEncryptionSet '../../../../../avm/1.0.0/res/compute/disk-encryption-set/main.bicep' = {
     scope: resourceGroup('${subscriptionId}', '${rgName}')
     name: 'ZT-DiskEncryptionSet-${time}'
     params: {
-        accessPolicy: false
-        federatedClientId: ''
         keyName: ztKeyVaultKey.outputs.name
         keyVaultResourceId: ztKeyVault.outputs.resourceId
         location: location
         name: diskEncryptionSetName
         rotationToLatestKeyVersionEnabled: true
-        systemAssignedIdentity: true
+        managedIdentities: {
+            systemAssigned: true
+        }
         tags: tags
-    //    userAssignedIdentities: {}
     }
 }
 
@@ -156,4 +155,4 @@ module ztDiskEncryptionSet '../../../../../carml/1.3.0/Microsoft.Compute/diskEnc
 // =========== //
 
 output ztDiskEncryptionSetResourceId string = ztDiskEncryptionSet.outputs.resourceId
-output ztDiskEncryptionSetPrincipalId string = ztDiskEncryptionSet.outputs.principalId
+output ztDiskEncryptionSetPrincipalId string = ztDiskEncryptionSet.outputs.systemAssignedMIPrincipalId
