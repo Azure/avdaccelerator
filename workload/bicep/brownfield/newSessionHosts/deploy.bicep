@@ -279,15 +279,14 @@ resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' exis
 
 // Session hosts
 @batchSize(3)
-module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(1, count): {
+module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = [for i in range(1, count): {
   scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
   name: 'SH-${i - 1}-${time}'
   params: {
     name: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
     location: location
     timeZone: varTimeZoneSessionHosts
-    systemAssignedIdentity: (identityServiceProvider == 'EntraID') ? true : false
-    availabilityZone: useAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
+    zone: useAvailabilityZones ? (i % 3 + 1) : 0
     encryptionAtHost: diskZeroTrust
     availabilitySetResourceId: useAvailabilityZones ? '' : avsetResourceId
     osType: 'Windows'
@@ -306,7 +305,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
     adminPassword: keyVault.getSecret(vmLocalAdminPasswordSecretName)
     nicConfigurations: [
       {
-        nicSuffix: 'nic-01-'
+        name: 'nic-01-${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
         deleteOption: 'Delete'
         enableAcceleratedNetworking: enableAcceleratedNetworking
         ipConfigurations: !empty(asgResourceId) ? [
@@ -346,8 +345,6 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
         mdmId: '0000000a-0000-0000-c000-000000000000'
       } : {}
     }
-    nicdiagnosticMetricsToEnable: deployMonitoring ? varNicDiagnosticMetricsToEnable : []
-    diagnosticWorkspaceId: deployMonitoring ? alaWorkspaceResourceId : ''
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
   }
   dependsOn: [
@@ -356,7 +353,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
 }]
 
 // Add antimalware extension to session host.
-module sessionHostsAntimalwareExtension '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, count): {
+module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): {
   scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
   name: 'SH-Antimal-${i - 1}-${time}'
   params: {
@@ -383,7 +380,6 @@ module sessionHostsAntimalwareExtension '../../../../carml/1.3.0/Microsoft.Compu
         Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
       } : {}
     }
-    enableDefaultTelemetry: false
   }
   dependsOn: [
     sessionHosts
@@ -391,7 +387,7 @@ module sessionHostsAntimalwareExtension '../../../../carml/1.3.0/Microsoft.Compu
 }]
 
 // Add monitoring extension to session host
-module monitoring '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, count): if (deployMonitoring) {
+module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployMonitoring) {
   scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
   name: 'SH-Mon-${i - 1}-${time}'
   params: {
@@ -409,7 +405,6 @@ module monitoring '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/ext
     protectedSettings: {
       workspaceKey: !empty(alaWorkspaceResourceId) ? alaWorkspace.listKeys().primarySharedKey : ''
     }
-    enableDefaultTelemetry: false
   }
   dependsOn: [
     sessionHostsAntimalwareExtension

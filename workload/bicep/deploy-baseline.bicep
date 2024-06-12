@@ -1253,7 +1253,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [for i in range(1
 }]
 
 // VM GPU extension policies
-module gpuPolicies './modules/avdSessionHosts/.bicep/azurePolicyGpuExtensions.bicep' = if (deployGpuPolicies) {
+module gpuPolicies './modules/azurePolicies/azurePolicyGpuExtensions.bicep' = if (deployGpuPolicies) {
     scope: subscription('${avdWorkloadSubsId}')
     name: 'GPU-VM-Extensions-${time}'
     params: {
