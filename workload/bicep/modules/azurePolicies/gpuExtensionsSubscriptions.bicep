@@ -38,7 +38,7 @@ var varCustomPolicyDefinitions = [
 // call on the keyvault.
 
 // Policy Definition for GPU extensions.
-module gpuPolicyDefinitions './policyDefinitions.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: {
+module gpuPolicyDefinitions './policyDefinitionsSubscriptions.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: {
     scope: subscription('${subscriptionId}')
     name: 'Policy-Defin-${customPolicyDefinition.deploymentName}-${time}'
     params: {

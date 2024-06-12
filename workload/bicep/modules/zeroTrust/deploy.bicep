@@ -76,7 +76,7 @@ var varCustomPolicyDefinitions = [
 // call on the keyvault.
 
 // Policy Definition for Managed Disk Network Access.
-module ztPolicyDefinitions '../azurePolicies/policyDefinitions.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: if (diskZeroTrust) {
+module ztPolicyDefinitions '../azurePolicies/policyDefinitionsSubscriptions.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: if (diskZeroTrust) {
     scope: subscription('${subscriptionId}')
     name: 'Policy-Defin-${customPolicyDefinition.deploymentName}-${time}'
     params: {
@@ -185,18 +185,6 @@ module ztRoleAssignmentServObj '../../../../avm/1.0.0/ptn/authorization/role-ass
         principalType: 'ServicePrincipal'
     }
 }]
-
-// User Assigned Identity for Zero Trust.
-//module ztManagedIdentity '../../../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
-//    scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
-//    name: 'ZT-Managed-ID-${time}'
-//    params: {
-//        location: location
-//        name: managedIdentityName
-//        tags: tags
-//    }
-//    dependsOn: []
-//}
 
 // Role Assignment for Zero Trust.
 module ztRoleAssignment '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (diskZeroTrust) {
