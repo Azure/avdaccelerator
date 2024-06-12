@@ -52,52 +52,52 @@ var varStorageObjRgs = !empty(storageObjectsRgName) ? [
 var varPolicyAssignmentRgs = union(varComputeServObjRgs, varNetworkObjRgs, varStorageObjRgs)
 
 // Policy Set/Initiative Definition Parameter Variables
-var varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters = loadJsonContent('../../../../policies/monitoring/policySets/parameters/policy-set-definition-es-deploy-diagnostics-to-log-analytics.parameters.json')
+var varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters = loadJsonContent('../../../policies/monitoring/policySets/parameters/policy-set-definition-es-deploy-diagnostics-to-log-analytics.parameters.json')
 
 // This variable contains a number of objects that load in the custom Azure Policy Defintions that are provided as part of the ESLZ/ALZ reference implementation. 
 var varCustomPolicyDefinitions = [
   {
     deploymentName: 'App-Group-Diag'
-    libDefinition: json(loadTextContent('../../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-avd-application-group.json'))
+    libDefinition: json(loadTextContent('../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-avd-application-group.json'))
   }
   {
     deploymentName: 'Host-Pool-Diag'
-    libDefinition: json(loadTextContent('../../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-avd-host-pool.json'))
+    libDefinition: json(loadTextContent('../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-avd-host-pool.json'))
   }
   {
     deploymentName: 'Scaling-Plan-Diag'
-    libDefinition: json(loadTextContent('../../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-avd-scaling-plan.json'))
+    libDefinition: json(loadTextContent('../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-avd-scaling-plan.json'))
   }
   {
     deploymentName: 'Workspace-Diag'
-    libDefinition: json(loadTextContent('../../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-avd-workspace.json'))
+    libDefinition: json(loadTextContent('../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-avd-workspace.json'))
   }
   {
     deploymentName: 'NSG-Diag'
-    libDefinition: json(loadTextContent('../../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-network-security-group.json'))
+    libDefinition: json(loadTextContent('../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-network-security-group.json'))
   }
   {
     deploymentName: 'NIC-Diag'
-    libDefinition: json(loadTextContent('../../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-nic.json'))
+    libDefinition: json(loadTextContent('../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-nic.json'))
   }
   {
     deploymentName: 'VM-Diag'
-    libDefinition: json(loadTextContent('../../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-virtual-machine.json'))
+    libDefinition: json(loadTextContent('../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-virtual-machine.json'))
   }
   {
     deploymentName: 'vNet-Diag'
-    libDefinition: json(loadTextContent('../../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-virtual-network.json'))
+    libDefinition: json(loadTextContent('../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-virtual-network.json'))
   }
   {
     deploymentName: 'Azure-Files-Diag'
-    libDefinition: json(loadTextContent('../../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-azure-files.json'))
+    libDefinition: json(loadTextContent('../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-azure-files.json'))
   }
 ]
 
 // This variable contains a number of objects that load in the custom Azure Policy Set/Initiative Defintions that are provided as part of the ESLZ/ALZ reference implementation - this is automatically created in the file 'infra-as-code\bicep\modules\policy\lib\policy_set_definitions\_policySetDefinitionsBicepInput.txt' via a GitHub action, that runs on a daily schedule, and is then manually copied into this variable.
 var varCustomPolicySetDefinitions = {
   deploymentName: 'policy-set-avd-diagnostics'
-  libSetDefinition: json(loadTextContent('../../../../policies/monitoring/policySets/policy-set-definition-es-deploy-diagnostics-to-log-analytics.json'))
+  libSetDefinition: json(loadTextContent('../../../policies/monitoring/policySets/policy-set-definition-es-deploy-diagnostics-to-log-analytics.json'))
   libSetChildDefinitions: [
     {
       definitionReferenceId: 'AVDAppGroupDeployDiagnosticLogDeployLogAnalytics'
@@ -152,7 +152,7 @@ var varCustomPolicySetDefinitions = {
 // =========== //
 
 // Policy definitions.
-module policyDefinitions '../../azurePolicies/policyDefinitions.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: {
+module policyDefinitions './policyDefinitionsSubscriptions.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: {
   scope: subscription('${subscriptionId}')
   name: 'Policy-Defin-${customPolicyDefinition.deploymentName}-${time}'
   params: {
@@ -166,7 +166,7 @@ module policyDefinitions '../../azurePolicies/policyDefinitions.bicep' = [for cu
 }]
 
 // Policy set definition.
-module policySetDefinitions '../../azurePolicies/policySetDefinitions.bicep' = {
+module policySetDefinitions './policySetDefinitionsSubscriptions.bicep' = {
   scope: subscription('${subscriptionId}')
   name: 'Policy-Set-Definition-${time}'
   params: {
@@ -188,7 +188,7 @@ module policySetDefinitions '../../azurePolicies/policySetDefinitions.bicep' = {
 }
 
 // Policy set assignment.
-module policySetAssignment '../../../../../avm/1.0.0/ptn/authorization/policy-assignment/modules/resource-group.bicep' = [for policyAssignmentRg in varPolicyAssignmentRgs: {
+module policySetAssignment '../../../../avm/1.0.0/ptn/authorization/policy-assignment/modules/resource-group.bicep' = [for policyAssignmentRg in varPolicyAssignmentRgs: {
   scope: resourceGroup('${subscriptionId}', '${policyAssignmentRg.rgName}')
   name: 'Policy-Set-Assignment-${time}'
   params: {
@@ -215,7 +215,7 @@ module policySetAssignment '../../../../../avm/1.0.0/ptn/authorization/policy-as
 }]
 
 // Policy set remediation.
-module policySetRemediation '../../../../../avm/1.0.0/ptn/policy-insights/remediation/modules/resource-group.bicep' = [for (policyAssignmentRg, i) in varPolicyAssignmentRgs: {
+module policySetRemediation '../../../../avm/1.0.0/ptn/policy-insights/remediation/modules/resource-group.bicep' = [for (policyAssignmentRg, i) in varPolicyAssignmentRgs: {
   scope: resourceGroup('${subscriptionId}', '${policyAssignmentRg.rgName}')
   name: 'Remm-Diag-${varCustomPolicySetDefinitions.deploymentName}-${i}'
   params: {
