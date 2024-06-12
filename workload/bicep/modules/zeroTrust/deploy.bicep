@@ -76,13 +76,12 @@ var varCustomPolicyDefinitions = [
 // call on the keyvault.
 
 // Policy Definition for Managed Disk Network Access.
-module ztPolicyDefinitions '../../../../carml/1.3.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: if (diskZeroTrust) {
+module ztPolicyDefinitions '../azurePolicies/policyDefinitions.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: if (diskZeroTrust) {
     scope: subscription('${subscriptionId}')
     name: 'Policy-Defin-${customPolicyDefinition.deploymentName}-${time}'
     params: {
         description: customPolicyDefinition.libDefinition.properties.description
         displayName: customPolicyDefinition.libDefinition.properties.displayName
-        location: location
         name: customPolicyDefinition.libDefinition.name
         metadata: customPolicyDefinition.libDefinition.properties.metadata
         mode: customPolicyDefinition.libDefinition.properties.mode
@@ -92,7 +91,7 @@ module ztPolicyDefinitions '../../../../carml/1.3.0/Microsoft.Authorization/poli
 }]
 
 // Policy Assignment for Managed Disk Network Access.
-module ztPolicyAssignmentServiceObjects '../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/resourceGroup/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (diskZeroTrust) {
+module ztPolicyAssignmentServiceObjects '../../../../avm/1.0.0/ptn/authorization/policy-assignment/modules/resource-group.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (diskZeroTrust) {
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
     name: 'Pol-Assign-ServObj${customPolicyDefinition.deploymentName}-${time}'
     params: {
@@ -119,17 +118,17 @@ module ztPolicyAssignmentServiceObjects '../../../../carml/1.3.0/Microsoft.Autho
 }]
 
 // Policy Remediation Task for Zero Trust.
-module ztPolicyServBojRemediationTask '../azurePolicyAssignmentRemediation/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (diskZeroTrust) {
+module ztPolicyServBojRemediationTask '../../../../avm/1.0.0/ptn/policy-insights/remediation/modules/resource-group.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (diskZeroTrust) {
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
     name: 'Remm-ServObj-${customPolicyDefinition.deploymentName}-${i}'
     params: {
-        deploymentName: '${customPolicyDefinition.deploymentName}-${i}'
+        name: '${customPolicyDefinition.deploymentName}-${i}'
         policyAssignmentId: ztPolicyAssignmentServiceObjects[i].outputs.resourceId
     }
 }]
 
 // Policy Assignment for Managed Disk Network Access.
-module ztPolicyAssignmentCompute '../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/resourceGroup/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (diskZeroTrust) {
+module ztPolicyAssignmentCompute '../../../../avm/1.0.0/ptn/authorization/policy-assignment/modules/resource-group.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (diskZeroTrust) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'Pol-Assign-Comp-${customPolicyDefinition.deploymentName}-${time}'
     params: {
@@ -156,17 +155,17 @@ module ztPolicyAssignmentCompute '../../../../carml/1.3.0/Microsoft.Authorizatio
 }]
 
 // Policy Remediation Task for Zero Trust.
-module ztPolicyComputeRemediationTask '../azurePolicyAssignmentRemediation/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (diskZeroTrust) {
+module ztPolicyComputeRemediationTask '../../../../avm/1.0.0/ptn/policy-insights/remediation/modules/resource-group.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (diskZeroTrust) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'Remm-Comp-${customPolicyDefinition.deploymentName}-${i}'
     params: {
-        deploymentName: '${customPolicyDefinition.deploymentName}-${i}'
+        name: '${customPolicyDefinition.deploymentName}-${i}'
         policyAssignmentId: ztPolicyAssignmentCompute[i].outputs.resourceId
     }
 }]
 
 // Role Assignment for Zero Trust.
-module ztRoleAssignmentCompute '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (diskZeroTrust) {
+module ztRoleAssignmentCompute '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (diskZeroTrust) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'ZT-RA-Comp-${customPolicyDefinition.deploymentName}-${time}'
     params: {
@@ -177,7 +176,7 @@ module ztRoleAssignmentCompute '../../../../carml/1.3.0/Microsoft.Authorization/
 }]
 
 // Role Assignment for Zero Trust.
-module ztRoleAssignmentServObj '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (diskZeroTrust) {
+module ztRoleAssignmentServObj '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for (customPolicyDefinition, i) in varCustomPolicyDefinitions: if (diskZeroTrust) {
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
     name: 'ZT-RA-ServObj-${customPolicyDefinition.deploymentName}-${time}'
     params: {
@@ -200,7 +199,7 @@ module ztRoleAssignmentServObj '../../../../carml/1.3.0/Microsoft.Authorization/
 //}
 
 // Role Assignment for Zero Trust.
-module ztRoleAssignment '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (diskZeroTrust) {
+module ztRoleAssignment '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (diskZeroTrust) {
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
     name: 'ZT-RoleAssign-${time}'
     params: {

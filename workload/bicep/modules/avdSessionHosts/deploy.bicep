@@ -165,7 +165,7 @@ var varCustomOsDiskProperties = {
 // Deployments //
 // =========== //
 // Call on the hotspool
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2019-12-10-preview' existing = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2021-07-12' existing = {
     name: hostPoolName
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
 }
@@ -184,7 +184,6 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         location: location
         timeZone: timeZone
-        //systemAssignedIdentity: (identityServiceProvider == 'EntraID') ? true : false
         zone: useAvailabilityZones ? (i % 3 + 1) : 0
         encryptionAtHost: encryptionAtHost
         virtualMachineScaleSetResourceId: '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/virtualMachineScaleSets/${vmssFlexNamePrefix}-${padLeft(((1 + (i + countIndex) / maxVmssFlexMembersCount)), 3, '0')}'
