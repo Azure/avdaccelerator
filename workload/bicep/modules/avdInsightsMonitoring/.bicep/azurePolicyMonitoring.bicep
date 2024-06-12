@@ -152,11 +152,10 @@ var varCustomPolicySetDefinitions = {
 // =========== //
 
 // Policy definitions.
-module policyDefinitions '../../../../../carml/1.3.0/Microsoft.Authorization/policyDefinitions/subscription/deploy.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: {
+module policyDefinitions '../../azurePolicies/policyDefinitions.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: {
   scope: subscription('${subscriptionId}')
   name: 'Policy-Defin-${customPolicyDefinition.deploymentName}-${time}'
   params: {
-    location: location
     name: customPolicyDefinition.libDefinition.name
     displayName: customPolicyDefinition.libDefinition.properties.displayName
     metadata: customPolicyDefinition.libDefinition.properties.metadata
@@ -167,11 +166,10 @@ module policyDefinitions '../../../../../carml/1.3.0/Microsoft.Authorization/pol
 }]
 
 // Policy set definition.
-module policySetDefinitions '../../../../../carml/1.3.0/Microsoft.Authorization/policySetDefinitions/subscription/deploy.bicep' = {
+module policySetDefinitions '../../azurePolicies/policySetDefinitions.bicep' = {
   scope: subscription('${subscriptionId}')
   name: 'Policy-Set-Definition-${time}'
   params: {
-    location: location
     name: varCustomPolicySetDefinitions.libSetDefinition.name
     description: varCustomPolicySetDefinitions.libSetDefinition.properties.description
     displayName: varCustomPolicySetDefinitions.libSetDefinition.properties.displayName
@@ -190,7 +188,7 @@ module policySetDefinitions '../../../../../carml/1.3.0/Microsoft.Authorization/
 }
 
 // Policy set assignment.
-module policySetAssignment '../../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/resourceGroup/deploy.bicep' = [for policyAssignmentRg in varPolicyAssignmentRgs: {
+module policySetAssignment '../../../../../avm/1.0.0/ptn/authorization/policy-assignment/modules/resource-group.bicep' = [for policyAssignmentRg in varPolicyAssignmentRgs: {
   scope: resourceGroup('${subscriptionId}', '${policyAssignmentRg.rgName}')
   name: 'Policy-Set-Assignment-${time}'
   params: {
@@ -217,11 +215,11 @@ module policySetAssignment '../../../../../carml/1.3.0/Microsoft.Authorization/p
 }]
 
 // Policy set remediation.
-module policySetRemediation '../../azurePolicyAssignmentRemediation/deploy.bicep' = [for (policyAssignmentRg, i) in varPolicyAssignmentRgs: {
+module policySetRemediation '../../../../../avm/1.0.0/ptn/policy-insights/remediation/modules/resource-group.bicep' = [for (policyAssignmentRg, i) in varPolicyAssignmentRgs: {
   scope: resourceGroup('${subscriptionId}', '${policyAssignmentRg.rgName}')
   name: 'Remm-Diag-${varCustomPolicySetDefinitions.deploymentName}-${i}'
   params: {
-    deploymentName: '${varCustomPolicySetDefinitions.deploymentName}-${i}'
+    name: '${varCustomPolicySetDefinitions.deploymentName}-${i}'
     policyAssignmentId: policySetAssignment[i].outputs.resourceId
 }
 }]
