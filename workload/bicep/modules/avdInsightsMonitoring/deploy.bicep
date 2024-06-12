@@ -90,7 +90,7 @@ module alaWorkspace '../../../../avm/1.0.0/res/operational-insights/workspace/ma
 }
 
 // Policy definitions.
-module deployDiagnosticsAzurePolicyForAvd './.bicep/azurePolicyMonitoring.bicep' = if (deployCustomPolicyMonitoring) {
+module deployDiagnosticsAzurePolicyForAvd '../azurePolicies/avdMonitoring.bicep' = if (deployCustomPolicyMonitoring) {
   scope: subscription('${subscriptionId}')
   name: 'Custom-Policy-Monitoring-${time}'
   params: {
