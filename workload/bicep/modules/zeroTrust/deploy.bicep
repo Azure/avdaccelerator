@@ -189,7 +189,7 @@ module ztRoleAssignmentServObj '../../../../avm/1.0.0/ptn/authorization/role-ass
 // Role Assignment for Zero Trust.
 module ztRoleAssignment '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (diskZeroTrust) {
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
-    name: 'ZT-RoleAssign-${time}'
+    name: 'ZT-RA-${time}'
     params: {
         principalId: diskZeroTrust ? ztKeyVault.outputs.ztDiskEncryptionSetPrincipalId : ''
         roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
