@@ -165,7 +165,7 @@ var varCustomOsDiskProperties = {
 // Deployments //
 // =========== //
 // Call on the hotspool
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2021-07-12' existing = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2019-12-10-preview' existing = {
     name: hostPoolName
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
 }
