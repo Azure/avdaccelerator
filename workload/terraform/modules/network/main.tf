@@ -23,6 +23,7 @@ resource "azurerm_subnet" "pesubnet" {
   virtual_network_name                      = azurerm_virtual_network.vnet.name
   address_prefixes                          = var.pesubnet_range
   private_endpoint_network_policies = "Enabled"
+  service_endpoints = ["Microsoft.Storage", "Microsoft.KeyVault"]
   depends_on                                = [azurerm_resource_group.net]
 }
 
