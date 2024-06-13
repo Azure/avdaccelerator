@@ -18,17 +18,6 @@ resource "azurerm_storage_account" "azfile" {
   min_tls_version           = "TLS1_2"
   tags                      = local.tags
 
-  azure_files_authentication {
-    directory_type = "AD"
-
-    active_directory {
-      domain_guid         = var.domain_guid
-      domain_name         = var.domain_name
-      domain_sid          = var.domain_sid
-      forest_name         = var.domain_name
-      netbios_domain_name = var.netbios_domain_name
-    }
-  }
   identity {
     type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.mi.id]
@@ -48,6 +37,15 @@ resource "azurerm_storage_share" "FSShare" {
   }
 }
 
+data "azurerm_role_definition" "contributor" {
+  name = "Storage Account Contributor"
+}
+
+resource "azurerm_role_assignment" "example" {
+  principal_id       = data.azurerm_client_config.current.object_id
+  scope              = azurerm_storage_account.azfile.id
+  role_definition_id = data.azurerm_role_definition.contributor.id
+}
 
 ## Azure built-in roles
 ## https://docs.microsoft.com/azure/role-based-access-control/built-in-roles
@@ -55,10 +53,24 @@ data "azurerm_role_definition" "storage_role" {
   name = "Storage File Data SMB Share Contributor"
 }
 
+data "azurerm_role_definition" "storage_admrole" {
+  name = "Storage File Data SMB Share Elevated Contributor"
+}
+
+# Assigned the Azure AD Group for AVD Users to the permissions to the Storage Account
 resource "azurerm_role_assignment" "af_role" {
   principal_id       = data.azuread_group.existing.object_id
   scope              = azurerm_storage_account.azfile.id
   role_definition_id = data.azurerm_role_definition.storage_role.id
+
+  depends_on = [azurerm_storage_account.azfile]
+}
+
+# Assigned the Azure AD Group for AVD Admins to the permissions to the Storage Account
+resource "azurerm_role_assignment" "af_admrole" {
+  principal_id       = data.azuread_group.existing.object_id
+  scope              = azurerm_storage_account.azfile.id
+  role_definition_id = data.azurerm_role_definition.storage_admrole.id
 
   depends_on = [azurerm_storage_account.azfile]
 }
