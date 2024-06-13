@@ -76,6 +76,7 @@ resource "azurerm_key_vault_secret" "localpassword" {
   }
 }
 
+# Sets RBAC permission for Key Vault
 resource "azurerm_role_assignment" "keystor" {
   principal_id         = data.azurerm_client_config.current.object_id
   scope                = module.avm-res-keyvault-vault.resource.id
