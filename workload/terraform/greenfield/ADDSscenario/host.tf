@@ -12,10 +12,10 @@ resource "time_rotating" "avd_token" {
 resource "azurerm_network_interface" "avd_vm_nic" {
   count = var.rdsh_count
 
-  location                      = azurerm_resource_group.shrg.location
-  name                          = "${var.prefix}-${count.index + 1}-nic"
-  resource_group_name           = azurerm_resource_group.shrg.name
-  enable_accelerated_networking = true
+  location                       = azurerm_resource_group.shrg.location
+  name                           = "${var.prefix}-${count.index + 1}-nic"
+  resource_group_name            = azurerm_resource_group.shrg.name
+  accelerated_networking_enabled = true
 
   ip_configuration {
     name                          = "nic${count.index + 1}_config"
