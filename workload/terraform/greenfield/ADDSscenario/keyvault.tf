@@ -80,7 +80,7 @@ resource "azurerm_key_vault_secret" "localpassword" {
 resource "azurerm_role_assignment" "keystor" {
   principal_id         = data.azurerm_client_config.current.object_id
   scope                = module.avm-res-keyvault-vault.resource.id
-  role_definition_name = "Key Vault Contributor"
+  role_definition_name = "Key Vault Administrator"
 }
 
 resource "azurerm_role_assignment" "secrets_user" {
