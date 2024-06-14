@@ -54,12 +54,6 @@ module "avm_res_desktopvirtualization_hostpool" {
       hour_of_day = 0
     }])
   }
-  //diagnostic_settings = {
-  //  to_law = {
-  //    name                  = "to-law"
-  //    workspace_resource_id = module.avm_res_operationalinsights_workspace.resource.id
-  //  }
-  //  }
 }
 
 resource "azurerm_virtual_desktop_host_pool_registration_info" "registrationinfo" {
@@ -110,12 +104,6 @@ module "avm_res_desktopvirtualization_workspace" {
   description         = "${var.prefix} Workspace"
   name                = "${var.workspace}-${var.prefix}-${var.environment}-${var.avdLocation}-01"
   tags                = local.tags
-  // diagnostic_settings = {
-  //   to_law = {
-  //     name                  = "to-law"
-  //     workspace_resource_id = module.avm_res_operationalinsights_workspace.resource.id
-  //   }
-  // }
 }
 
 resource "azurerm_virtual_desktop_workspace_application_group_association" "workappgrassoc" {
@@ -138,6 +126,10 @@ resource "azurerm_role_assignment" "new" {
   principal_id         = data.azuread_service_principal.spn.object_id
   scope                = data.azurerm_subscription.primary.id
   role_definition_name = "Desktop Virtualization Power On Off Contributor"
+
+  lifecycle {
+    ignore_changes = [role_definition_name]
+  }
 }
 
 # This ensures we have unique CAF compliant names for our resources.
@@ -218,10 +210,4 @@ module "avm_res_desktopvirtualization_scaling_plan" {
       }
     ]
   )
-  //diagnostic_settings = {
-  //  to_law = {
-  //    name                        = "to-storage-account"
-  //    storage_account_resource_id = azurerm_storage_account.this.id
-  //  }
-  // }
 }

@@ -2,7 +2,7 @@
 module "dcr" {
   source                                                      = "../../modules/insights"
   enable_telemetry                                            = var.enable_telemetry
-  monitor_data_collection_rule_resource_group_name            = azurerm_resource_group.this.name
+  monitor_data_collection_rule_resource_group_name            = azurerm_resource_group.mon.name
   name                                                        = "avddcr1"
   monitor_data_collection_rule_kind                           = "Windows"
   monitor_data_collection_rule_location                       = azurerm_resource_group.this.location
