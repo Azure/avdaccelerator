@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "10401444944432187857"
+      "templateHash": "6159495131781462689"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -59275,7 +59275,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "16900609056643651459"
+              "templateHash": "6881401499273887830"
             }
           },
           "parameters": {
@@ -59662,6 +59662,7 @@
                   "extensionAadJoinConfig": {
                     "value": {
                       "enabled": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), true(), false())]",
+                      "typeHandlerVersion": "1.0",
                       "settings": "[if(parameters('createIntuneEnrollment'), createObject('mdmId', '0000000a-0000-0000-c000-000000000000'), createObject())]"
                     }
                   },
