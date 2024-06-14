@@ -21,7 +21,7 @@ param deployAlaWorkspace bool
 param deployCustomPolicyMonitoring bool
 
 @sys.description('Exisintg Azure log analytics workspace resource.')
-param alaWorkspaceId string
+param alaWorkspaceId string = ''
 
 @sys.description('AVD Resource Group Name for monitoring resources.')
 param monitoringRgName string
@@ -82,6 +82,9 @@ module alaWorkspace '../../../../avm/1.0.0/res/operational-insights/workspace/ma
     name: alaWorkspaceName
     dataRetention: alaWorkspaceDataRetention
     useResourcePermissions: true
+    managedIdentities: {
+      systemAssigned: false
+    }
     tags: tags
   }
   dependsOn:[
@@ -116,7 +119,9 @@ module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
       location: location
       name: dataCollectionRulesName
       alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
-      tags: tags
+      tags: {
+        name: 'test'
+      }  //tags
   }
   dependsOn: [
     alaWorkspace

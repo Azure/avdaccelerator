@@ -821,7 +821,6 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
         alaWorkspaceName: deployAlaWorkspace ? varAlaWorkspaceName : ''
         alaWorkspaceDataRetention: avdAlaWorkspaceDataRetention
         subscriptionId: avdWorkloadSubsId
-
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
     dependsOn: [
