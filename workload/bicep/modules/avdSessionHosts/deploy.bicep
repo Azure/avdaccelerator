@@ -184,6 +184,9 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
         location: location
         timeZone: timeZone
         zone: useAvailabilityZones ? (i % 3 + 1) : 0
+        managedIdentities: {
+           systemAssigned: (identityServiceProvider == 'EntraID') ? true : false
+        }
         encryptionAtHost: encryptionAtHost
         virtualMachineScaleSetResourceId: '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/virtualMachineScaleSets/${vmssFlexNamePrefix}-${padLeft(((1 + (i + countIndex) / maxVmssFlexMembersCount)), 3, '0')}'
         osType: 'Windows'
@@ -246,6 +249,77 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
         keyVault
     ]
 }]
+
+// // Session hosts
+// module sessionHosts '../../../../avm/carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(1, count): {
+//     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+//     name: 'SH-${batchId}-${i - 1}-${time}'
+//     params: {
+//         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+//         location: location
+//         timeZone: timeZone
+//         systemAssignedIdentity: (identityServiceProvider == 'EntraID') ? true : false
+//         //availabilityZone: useAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
+//         encryptionAtHost: encryptionAtHost
+//         //availabilitySetResourceId: useAvailabilityZones ? '' : '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/availabilitySets/${avsetNamePrefix}-${padLeft(((1 + (i + countIndex) / maxAvsetMembersCount)), 3, '0')}'
+//         osType: 'Windows'
+//         licenseType: 'Windows_Client'
+//         vmSize: vmSize
+//         securityType: securityType
+//         secureBootEnabled: secureBootEnabled
+//         vTpmEnabled: vTpmEnabled
+//         imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinitionId}\'}') : marketPlaceGalleryWindows
+//         osDisk: !empty(customOsDiskSizeGB ) ? varCustomOsDiskProperties : varOsDiskProperties
+//         adminUsername: vmLocalUserName
+//         adminPassword: keyVault.getSecret('vmLocalUserPassword')
+//         nicConfigurations: [
+//             {
+//                 nicSuffix: 'nic-01-'
+//                 deleteOption: 'Delete'
+//                 enableAcceleratedNetworking: enableAcceleratedNetworking
+//                 ipConfigurations: !empty(asgResourceId) ? [
+//                     {
+//                         name: 'ipconfig01'
+//                         subnetResourceId: subnetId
+//                         applicationSecurityGroups: [
+//                             {
+//                                 id: asgResourceId
+//                             }
+//                         ]
+//                     }
+//                 ] : [
+//                     {
+//                         name: 'ipconfig01'
+//                         subnetResourceId: subnetId
+//                     }
+//                 ]
+//             }
+//         ]
+//         // ADDS or EntraDS domain join.
+//         extensionDomainJoinPassword: keyVault.getSecret('domainJoinUserPassword')
+//         extensionDomainJoinConfig: {
+//             enabled: (identityServiceProvider == 'EntraDS' || identityServiceProvider == 'ADDS') ? true : false
+//             settings: {
+//                 name: identityDomainName
+//                 ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
+//                 user: domainJoinUserName
+//                 restart: 'true'
+//                 options: '3'
+//             }
+//         }
+//         // Microsoft Entra ID Join.
+//         extensionAadJoinConfig: {
+//             enabled: (identityServiceProvider == 'EntraID') ? true : false
+//             settings: createIntuneEnrollment ? {
+//                 mdmId: '0000000a-0000-0000-c000-000000000000'
+//             } : {}
+//         }
+//         tags: tags
+//     }
+//     dependsOn: [
+//         keyVault
+//     ]
+// }]
 
 // Add antimalware extension to session host.
 module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): {
