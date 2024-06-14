@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "14952686938259290384"
+      "templateHash": "4436252798251910472"
     }
   },
   "parameters": {
@@ -839,6 +839,11 @@
             "value": "[variables('varTimeZoneSessionHosts')]"
           },
           "zone": "[if(parameters('useAvailabilityZones'), createObject('value', add(mod(range(1, parameters('count'))[copyIndex()], 3), 1)), createObject('value', 0))]",
+          "managedIdentities": {
+            "value": {
+              "systemAssigned": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), true(), false())]"
+            }
+          },
           "encryptionAtHost": {
             "value": "[parameters('diskZeroTrust')]"
           },

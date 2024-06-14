@@ -287,6 +287,9 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
     location: location
     timeZone: varTimeZoneSessionHosts
     zone: useAvailabilityZones ? (i % 3 + 1) : 0
+    managedIdentities: {
+       systemAssigned: (identityServiceProvider == 'EntraID') ? true : false
+    }
     encryptionAtHost: diskZeroTrust
     availabilitySetResourceId: useAvailabilityZones ? '' : avsetResourceId
     osType: 'Windows'
