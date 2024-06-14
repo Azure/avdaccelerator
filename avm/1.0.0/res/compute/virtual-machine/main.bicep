@@ -638,29 +638,44 @@ resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15
     }
   }
 
-module vm_aadJoinExtension 'extension/main.bicep' =
-  if (extensionAadJoinConfig.enabled) {
-    name: '${uniqueString(deployment().name, location)}-VM-AADLogin'
-    params: {
-      virtualMachineName: vm.name
-      name: 'AADLogin'
-      location: location
-      publisher: 'Microsoft.Azure.ActiveDirectory'
-      type: osType == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginforLinux'
-      typeHandlerVersion: contains(extensionAadJoinConfig, 'typeHandlerVersion')
-        ? extensionAadJoinConfig.typeHandlerVersion
-        : (osType == 'Windows' ? '2.0' : '1.0')
-      autoUpgradeMinorVersion: contains(extensionAadJoinConfig, 'autoUpgradeMinorVersion')
-        ? extensionAadJoinConfig.autoUpgradeMinorVersion
-        : true
-      enableAutomaticUpgrade: contains(extensionAadJoinConfig, 'enableAutomaticUpgrade')
-        ? extensionAadJoinConfig.enableAutomaticUpgrade
-        : false
-      settings: contains(extensionAadJoinConfig, 'settings') ? extensionAadJoinConfig.settings : {}
-      supressFailures: extensionAadJoinConfig.?supressFailures ?? false
-      tags: extensionAadJoinConfig.?tags ?? tags
-    }
+// module vm_aadJoinExtension 'extension/main.bicep' =
+//   if (extensionAadJoinConfig.enabled) {
+//     name: '${uniqueString(deployment().name, location)}-VM-AADLogin'
+//     params: {
+//       virtualMachineName: vm.name
+//       name: 'AADLogin'
+//       location: location
+//       publisher: 'Microsoft.Azure.ActiveDirectory'
+//       type: osType == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginforLinux'
+//       typeHandlerVersion: contains(extensionAadJoinConfig, 'typeHandlerVersion')
+//         ? extensionAadJoinConfig.typeHandlerVersion
+//         : (osType == 'Windows' ? '2.0' : '1.0')
+//       autoUpgradeMinorVersion: contains(extensionAadJoinConfig, 'autoUpgradeMinorVersion')
+//         ? extensionAadJoinConfig.autoUpgradeMinorVersion
+//         : true
+//       enableAutomaticUpgrade: contains(extensionAadJoinConfig, 'enableAutomaticUpgrade')
+//         ? extensionAadJoinConfig.enableAutomaticUpgrade
+//         : false
+//       settings: contains(extensionAadJoinConfig, 'settings') ? extensionAadJoinConfig.settings : {}
+//       supressFailures: extensionAadJoinConfig.?supressFailures ?? false
+//       tags: extensionAadJoinConfig.?tags ?? tags
+//     }
+//   }
+
+module vm_aadJoinExtension '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = if (extensionAadJoinConfig.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-AADLogin'
+  params: {
+    virtualMachineName: vm.name
+    name: 'AADLogin'
+    location: location
+    publisher: 'Microsoft.Azure.ActiveDirectory'
+    type: osType == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginforLinux'
+    typeHandlerVersion: contains(extensionAadJoinConfig, 'typeHandlerVersion') ? extensionAadJoinConfig.typeHandlerVersion : '1.0'
+    autoUpgradeMinorVersion: contains(extensionAadJoinConfig, 'autoUpgradeMinorVersion') ? extensionAadJoinConfig.autoUpgradeMinorVersion : true
+    enableAutomaticUpgrade: contains(extensionAadJoinConfig, 'enableAutomaticUpgrade') ? extensionAadJoinConfig.enableAutomaticUpgrade : false
+    settings: contains(extensionAadJoinConfig, 'settings') ? extensionAadJoinConfig.settings : {}
   }
+}
 
 module vm_domainJoinExtension 'extension/main.bicep' =
   if (extensionDomainJoinConfig.enabled) {
