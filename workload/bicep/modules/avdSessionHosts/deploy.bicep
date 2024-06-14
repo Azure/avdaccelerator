@@ -139,7 +139,6 @@ param dataCollectionRuleId string
 // =========== //
 // Variable declaration //
 // =========== //
-var varAllAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', location, 3)
 var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
     storageAccountType: diskType
 } : {
@@ -235,9 +234,11 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
         // Microsoft Entra ID Join.
         extensionAadJoinConfig: {
             enabled: (identityServiceProvider == 'EntraID') ? true : false
+            typeHandlerVersion: '1.0'
             settings: createIntuneEnrollment ? {
                 mdmId: '0000000a-0000-0000-c000-000000000000'
             } : {}
+            supressFailures: false
         }
         tags: tags
     }

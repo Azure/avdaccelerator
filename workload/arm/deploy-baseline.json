@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.27.1.19265",
-      "templateHash": "14603382389046994972"
+      "templateHash": "4247244518177176073"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -59275,7 +59275,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.27.1.19265",
-              "templateHash": "10195096678166887291"
+              "templateHash": "1556175604137572085"
             }
           },
           "parameters": {
@@ -59547,7 +59547,6 @@
             }
           },
           "variables": {
-            "varAllAvailabilityZones": "[pickZones('Microsoft.Compute', 'virtualMachines', parameters('location'), 3)]",
             "varManagedDisk": "[if(empty(parameters('diskEncryptionSetResourceId')), createObject('storageAccountType', parameters('diskType')), createObject('diskEncryptionSet', createObject('id', parameters('diskEncryptionSetResourceId')), 'storageAccountType', parameters('diskType')))]",
             "varOsDiskProperties": {
               "createOption": "FromImage",
@@ -59658,7 +59657,9 @@
                   "extensionAadJoinConfig": {
                     "value": {
                       "enabled": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), true(), false())]",
-                      "settings": "[if(parameters('createIntuneEnrollment'), createObject('mdmId', '0000000a-0000-0000-c000-000000000000'), createObject())]"
+                      "typeHandlerVersion": "1.0",
+                      "settings": "[if(parameters('createIntuneEnrollment'), createObject('mdmId', '0000000a-0000-0000-c000-000000000000'), createObject())]",
+                      "supressFailures": false
                     }
                   },
                   "tags": {
