@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "11081551979524696783"
+      "templateHash": "14764246243914363247"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -28172,7 +28172,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "17675926321901310201"
+              "templateHash": "14752353674294109242"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -31892,7 +31892,7 @@
                     "value": "[parameters('managementPlaneLocation')]"
                   },
                   "hostPoolType": {
-                    "value": "Pooled"
+                    "value": "[parameters('hostPoolType')]"
                   },
                   "exclusionTag": {
                     "value": "[parameters('scalingPlanExclusionTag')]"
