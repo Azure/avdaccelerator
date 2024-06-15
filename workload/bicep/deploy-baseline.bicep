@@ -894,7 +894,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
         personalAssignType: avdPersonalAssignType
         managementPlaneLocation: avdManagementPlaneLocation
         serviceObjectsRgName: varServiceObjectsRgName
-        startVmOnConnect: (avdHostPoolType == 'Pooled') ? varDeployScalingPlan : avdStartVmOnConnect
+        startVmOnConnect: avdStartVmOnConnect
         workloadSubsId: avdWorkloadSubsId
         identityServiceProvider: avdIdentityServiceProvider
         securityPrincipalId: !empty(securityPrincipalId)? securityPrincipalId: ''
