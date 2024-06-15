@@ -269,7 +269,7 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
   params: {
       name:scalingPlanName
       location: managementPlaneLocation
-      hostPoolType: 'Pooled' //avdHostPoolType
+      hostPoolType: hostPoolType
       exclusionTag: scalingPlanExclusionTag
       timeZone: computeTimeZone
       schedules: scalingPlanSchedules
