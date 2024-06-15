@@ -123,12 +123,12 @@ data "azurerm_role_definition" "power_role" {
 }
 
 resource "azurerm_role_assignment" "new" {
-  principal_id         = data.azuread_service_principal.spn.object_id
-  scope                = data.azurerm_subscription.primary.id
-  role_definition_name = "Desktop Virtualization Power On Off Contributor"
+  principal_id       = data.azuread_service_principal.spn.object_id
+  scope              = data.azurerm_subscription.primary.id
+  role_definition_id = data.azurerm_role_definition.power_role.id
 
   lifecycle {
-    ignore_changes = [role_definition_name]
+    ignore_changes = [role_definition_id]
   }
 }
 
