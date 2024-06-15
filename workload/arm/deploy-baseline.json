@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "10401444944432187857"
+      "templateHash": "11081551979524696783"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -28149,7 +28149,9 @@
           "serviceObjectsRgName": {
             "value": "[variables('varServiceObjectsRgName')]"
           },
-          "startVmOnConnect": "[if(equals(parameters('avdHostPoolType'), 'Pooled'), createObject('value', variables('varDeployScalingPlan')), createObject('value', parameters('avdStartVmOnConnect')))]",
+          "startVmOnConnect": {
+            "value": "[parameters('avdStartVmOnConnect')]"
+          },
           "workloadSubsId": {
             "value": "[parameters('avdWorkloadSubsId')]"
           },
@@ -28170,7 +28172,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "18286937609912633108"
+              "templateHash": "17675926321901310201"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -31871,7 +31873,7 @@
               ]
             },
             {
-              "condition": "[and(parameters('deployScalingPlan'), equals(parameters('hostPoolType'), 'Pooled'))]",
+              "condition": "[parameters('deployScalingPlan')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Scaling-Plan-{0}', parameters('time'))]",

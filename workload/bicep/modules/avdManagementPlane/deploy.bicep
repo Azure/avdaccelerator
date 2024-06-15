@@ -263,7 +263,7 @@ module workSpace '../../../../avm/1.0.0/res/desktop-virtualization/workspace/mai
 }
 
 // Scaling plan.
-module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-plan/main.bicep' =  if (deployScalingPlan && (hostPoolType == 'Pooled'))  {
+module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-plan/main.bicep' =  if (deployScalingPlan)  {
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
   name: 'Scaling-Plan-${time}'
   params: {
