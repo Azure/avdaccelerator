@@ -1,6 +1,7 @@
 ##############  Modify the following variables to match your environment by replacing the values in quotes #####################
 avdLocation               = "eastus"                                        # change to your Azure region
 prefix                    = "poc1"                                          # change to your prefix 4 characters (letters and numbers only)
+environment               = "prod"                                          # change to your environment (development, test, production)
 local_admin_username      = "localadmin"                                    # Your AVD VM local Windows administrator login username (administrator is not allowed)
 ou_path                   = "OU=AVD,OU=ADDS,DC=contoso,DC=net"              # optional 
 vm_size                   = "Standard_D2s_v5"                               # Session host compute 

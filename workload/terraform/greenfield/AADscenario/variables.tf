@@ -2,6 +2,11 @@ variable "avdLocation" {
   description = "Location of the resource group."
 }
 
+variable "environment" {
+  type        = string
+  description = "Environment name sets the type of environment (Development (dev), Test (test), Production (prod)) that will be deployed, this information will be use as part of the resources naming."
+}
+
 variable "rg_so" {
   type        = string
   description = "Name of the Resource group in which to deploy service objects"
@@ -148,7 +153,7 @@ variable "subnet_range" {
   description = "Address range for session host subnet"
 }
 
-variable "aad_group_name" {
+variable "user_group_name" {
   type        = string
   description = "Microsoft Entra ID Group for AVD users"
 }
@@ -240,4 +245,14 @@ variable "fw_policy" {
 
 variable "hub_dns_zone_rg" {
   description = "The resource group for the hub DNS zone"
+}
+
+variable "enable_telemetry" {
+  type        = bool
+  default     = true
+  description = <<DESCRIPTION
+This variable controls whether or not telemetry is enabled for the module.
+For more information see https://aka.ms/avm/telemetry.
+If it is set to false, then no telemetry will be collected.
+DESCRIPTION
 }

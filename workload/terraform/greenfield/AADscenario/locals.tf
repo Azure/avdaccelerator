@@ -4,9 +4,10 @@ locals {
   allow_list_ip = var.allow_list_ip
   white_list_ip = ["0.0.0.0"]
   tags = {
-    environment        = var.prefix
-    source             = "https://github.com/Azure/avdaccelerator/tree/main/workload/terraform/avdbaseline"
-    cm-resource-parent = module.avm-ptn-avd-lza-managementplane.virtual_desktop_host_pool.id
+    environment        = var.environment
+    ServiceWorkload    = "Azure Virtual Desktop"
+    CreationTimeUTC    = timestamp()
+    cm-resource-parent = module.avm_res_desktopvirtualization_hostpool.resource.id
   }
 }
 
