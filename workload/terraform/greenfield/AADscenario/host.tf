@@ -13,11 +13,11 @@ resource "random_string" "AVD_local_password" {
 
 
 resource "azurerm_network_interface" "avd_vm_nic" {
-  count                         = var.rdsh_count
-  name                          = "${var.prefix}-${count.index + 1}-nic"
-  resource_group_name           = azurerm_resource_group.shrg.name
-  location                      = azurerm_resource_group.shrg.location
-  enable_accelerated_networking = true
+  count                          = var.rdsh_count
+  name                           = "${var.prefix}-${count.index + 1}-nic"
+  resource_group_name            = azurerm_resource_group.shrg.name
+  location                       = azurerm_resource_group.shrg.location
+  accelerated_networking_enabled = true
 
   ip_configuration {
     name                          = "nic${count.index + 1}_config"
@@ -55,7 +55,7 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
     azurerm_resource_group.shrg,
     azurerm_network_interface.avd_vm_nic,
     azurerm_resource_group.rg,
-    module.avm-res-desktopvirtualization-hostpool
+    module.avm_res_desktopvirtualization_hostpool
   ]
 
   identity {
@@ -94,25 +94,25 @@ resource "azurerm_virtual_machine_extension" "vmext_dsc" {
 
   settings = <<-SETTINGS
     {
-      "modulesUrl": "https://raw.githubusercontent.com/Azure/RDS-Templates/master/ARM-wvd-templates/DSC/Configuration.zip",
+      "modulesUrl": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration_1.0.02714.342.zip",
       "configurationFunction": "Configuration.ps1\\AddSessionHost",
       "properties": {
-        "HostPoolName":"${module.avm-res-desktopvirtualization-hostpool.azure_virtual_desktop_host_pool}"
+        "HostPoolName":"${module.avm_res_desktopvirtualization_hostpool.resource.name}"
       }
     }
-  SETTINGS
+SETTINGS
 
   protected_settings = <<PROTECTED_SETTINGS
     {
       "properties": {
-        "registrationInfoToken": "${module.avm-res-desktopvirtualization-hostpool.registrationinfo.token}",
+        "registrationInfoToken": "${azurerm_virtual_desktop_host_pool_registration_info.registrationinfo.token}",
       }
     }
   PROTECTED_SETTINGS
 
   depends_on = [
     azurerm_virtual_machine_extension.aadjoin,
-    module.avm-res-desktopvirtualization-hostpool
+    module.avm_res_desktopvirtualization_hostpool
   ]
 }
 
