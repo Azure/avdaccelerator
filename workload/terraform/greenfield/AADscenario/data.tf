@@ -1,4 +1,4 @@
-data "azurerm_subscription" "current" {}
+data "azurerm_subscription" "primary" {}
 
 data "azurerm_client_config" "current" {}
 
@@ -53,4 +53,12 @@ data "azurerm_log_analytics_workspace" "this" {
   name                = lower(replace("law-avd-${substr(var.avdLocation, 0, 5)}", "-", ""))
   provider            = azurerm.spoke
   resource_group_name = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_avdi}"
+}
+
+# Get Private DNS Zone for the Key Vault Private Endpoints
+data "azurerm_private_dns_zone" "pe-vaultdns-zone" {
+  provider = azurerm.hub
+
+  name                = "privatelink.vaultcore.azure.net"
+  resource_group_name = var.hub_dns_zone_rg
 }
