@@ -3,12 +3,12 @@ data "azurerm_role_definition" "role" { # access an existing built-in role
 }
 
 data "azuread_group" "adds_group" {
-  display_name     = var.aad_group_name
+  display_name     = var.user_group_name
   security_enabled = true
 }
 
 resource "azurerm_role_assignment" "role" {
-  scope              = module.avm-ptn-avd-lza-managementplane.virtual_desktop_application_group_name.id
+  scope              = module.avm_res_desktopvirtualization_hostpool.resource.id
   role_definition_id = data.azurerm_role_definition.role.id
   principal_id       = data.azuread_group.adds_group.id
 }

@@ -82,9 +82,3 @@ resource "azurerm_role_assignment" "keystor" {
   scope                = module.avm-res-keyvault-vault.resource.id
   role_definition_name = "Key Vault Administrator"
 }
-
-resource "azurerm_role_assignment" "secrets_user" {
-  principal_id         = data.azurerm_client_config.current.object_id
-  scope                = module.avm-res-keyvault-vault.resource.id
-  role_definition_name = "Key Vault Secrets User"
-}
