@@ -138,7 +138,7 @@ resource "azurerm_virtual_machine_extension" "vmext_dsc" {
 PROTECTED_SETTINGS
   settings                   = <<-SETTINGS
     {
-      "modulesUrl": "https://raw.githubusercontent.com/Azure/RDS-Templates/master/ARM-wvd-templates/DSC/Configuration.zip",
+      "modulesUrl": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration_1.0.02714.342.zip",
       "configurationFunction": "Configuration.ps1\\AddSessionHost",
       "properties": {
         "HostPoolName":"${module.avm_res_desktopvirtualization_hostpool.resource.name}"
