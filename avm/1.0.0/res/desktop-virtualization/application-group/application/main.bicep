@@ -41,7 +41,7 @@ resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2023-09-05'
   name: applicationGroupName
 }
 
-resource application 'Microsoft.DesktopVirtualization/applicationGroups/applications@2024-04-03' = {
+resource application 'Microsoft.DesktopVirtualization/applicationGroups/applications@2023-09-05' = {
   name: name
   parent: appGroup
   properties: {
