@@ -48,17 +48,9 @@ data "azurerm_subnet" "pesubnet" {
   ]
 }
 
-# Fetch AVD Log Analytics Workspace ID
-data "azurerm_log_analytics_workspace" "this" {
-  name                = lower(replace("law-avd-${substr(var.avdLocation, 0, 5)}", "-", ""))
-  provider            = azurerm.spoke
-  resource_group_name = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_avdi}"
-}
-
 # Get Private DNS Zone for the Key Vault Private Endpoints
 data "azurerm_private_dns_zone" "pe-vaultdns-zone" {
-  provider = azurerm.hub
-
+  provider            = azurerm.hub
   name                = "privatelink.vaultcore.azure.net"
   resource_group_name = var.hub_dns_zone_rg
 }
