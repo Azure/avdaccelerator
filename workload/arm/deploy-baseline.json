@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "14764246243914363247"
+      "templateHash": "2150420501971149951"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -1386,7 +1386,142 @@
         "hour": 17
       }
     ],
-    "varScalingPlanSchedules": [
+    "varPersonalScalingPlanSchedules": [
+      {
+        "daysOfWeek": [
+          "Monday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ],
+        "name": "[variables('varScalingPlanWeekdaysScheduleName')]",
+        "offPeakStartTime": {
+          "hour": 20,
+          "minute": 0
+        },
+        "offPeakStartVMOnConnect": "Enable",
+        "offPeakMinutesToWaitOnDisconnect": 30,
+        "offPeakActionOnDisconnect": "Hibernate",
+        "offPeakMinutesToWaitOnLogoff": 0,
+        "offPeakActionOnLogoff": "Shutdown",
+        "peakStartTime": {
+          "hour": 9,
+          "minute": 0
+        },
+        "peakStartVMOnConnect": "Enable",
+        "peakMinutesToWaitOnDisconnect": 30,
+        "peakActionOnDisconnect": "Hibernate",
+        "peakMinutesToWaitOnLogoff": 0,
+        "peakActionOnLogoff": "Shutdown",
+        "rampDownStartTime": {
+          "hour": 18,
+          "minute": 0
+        },
+        "rampDownStartVMOnConnect": "Enable",
+        "rampDownMinutesToWaitOnDisconnect": 30,
+        "rampDownActionOnDisconnect": "Hibernate",
+        "rampDownMinutesToWaitOnLogoff": 0,
+        "rampDownActionOnLogoff": "Shutdown",
+        "rampUpStartTime": {
+          "hour": 7,
+          "minute": 0
+        },
+        "rampUpAutoStartHosts": "WithAssignedUser",
+        "rampUpStartVMOnConnect": "Enable",
+        "rampUpMinutesToWaitOnDisconnect": 30,
+        "rampUpActionOnDisconnect": "Hibernate",
+        "rampUpMinutesToWaitOnLogoff": 0,
+        "rampUpActionOnLogoff": "Shutdown"
+      },
+      {
+        "daysOfWeek": [
+          "Tuesday"
+        ],
+        "name": "[format('{0}-agent-updates', variables('varScalingPlanWeekdaysScheduleName'))]",
+        "offPeakStartTime": {
+          "hour": 20,
+          "minute": 0
+        },
+        "offPeakStartVMOnConnect": "Enable",
+        "offPeakMinutesToWaitOnDisconnect": 30,
+        "offPeakActionOnDisconnect": "Hibernate",
+        "offPeakMinutesToWaitOnLogoff": 0,
+        "offPeakActionOnLogoff": "Shutdown",
+        "peakStartTime": {
+          "hour": 9,
+          "minute": 0
+        },
+        "peakStartVMOnConnect": "Enable",
+        "peakMinutesToWaitOnDisconnect": 30,
+        "peakActionOnDisconnect": "Hibernate",
+        "peakMinutesToWaitOnLogoff": 0,
+        "peakActionOnLogoff": "Shutdown",
+        "rampDownStartTime": {
+          "hour": 18,
+          "minute": 0
+        },
+        "rampDownStartVMOnConnect": "Enable",
+        "rampDownMinutesToWaitOnDisconnect": 30,
+        "rampDownActionOnDisconnect": "Hibernate",
+        "rampDownMinutesToWaitOnLogoff": 0,
+        "rampDownActionOnLogoff": "Shutdown",
+        "rampUpStartTime": {
+          "hour": 7,
+          "minute": 0
+        },
+        "rampUpAutoStartHosts": "WithAssignedUser",
+        "rampUpStartVMOnConnect": "Enable",
+        "rampUpMinutesToWaitOnDisconnect": 30,
+        "rampUpActionOnDisconnect": "Hibernate",
+        "rampUpMinutesToWaitOnLogoff": 0,
+        "rampUpActionOnLogoff": "Shutdown"
+      },
+      {
+        "daysOfWeek": [
+          "Saturday",
+          "Sunday"
+        ],
+        "name": "[variables('varScalingPlanWeekendScheduleName')]",
+        "offPeakStartTime": {
+          "hour": 18,
+          "minute": 0
+        },
+        "offPeakStartVMOnConnect": "Enable",
+        "offPeakMinutesToWaitOnDisconnect": 30,
+        "offPeakActionOnDisconnect": "Hibernate",
+        "offPeakMinutesToWaitOnLogoff": 0,
+        "offPeakActionOnLogoff": "Shutdown",
+        "peakStartTime": {
+          "hour": 10,
+          "minute": 0
+        },
+        "peakStartVMOnConnect": "Enable",
+        "peakMinutesToWaitOnDisconnect": 30,
+        "peakActionOnDisconnect": "Hibernate",
+        "peakMinutesToWaitOnLogoff": 0,
+        "peakActionOnLogoff": "Shutdown",
+        "rampDownStartTime": {
+          "hour": 16,
+          "minute": 0
+        },
+        "rampDownStartVMOnConnect": "Enable",
+        "rampDownMinutesToWaitOnDisconnect": 30,
+        "rampDownActionOnDisconnect": "Hibernate",
+        "rampDownMinutesToWaitOnLogoff": 0,
+        "rampDownActionOnLogoff": "Shutdown",
+        "rampUpStartTime": {
+          "hour": 9,
+          "minute": 0
+        },
+        "rampUpAutoStartHosts": "None",
+        "rampUpStartVMOnConnect": "Enable",
+        "rampUpMinutesToWaitOnDisconnect": 30,
+        "rampUpActionOnDisconnect": "Hibernate",
+        "rampUpMinutesToWaitOnLogoff": 0,
+        "rampUpActionOnLogoff": "Shutdown"
+      }
+    ],
+    "varPooledScalingPlanSchedules": [
       {
         "daysOfWeek": [
           "Monday",
@@ -28131,9 +28266,7 @@
           "scalingPlanExclusionTag": {
             "value": "[variables('varScalingPlanExclusionTag')]"
           },
-          "scalingPlanSchedules": {
-            "value": "[variables('varScalingPlanSchedules')]"
-          },
+          "scalingPlanSchedules": "[if(equals(parameters('avdHostPoolType'), 'Pooled'), createObject('value', variables('varPooledScalingPlanSchedules')), createObject('value', variables('varPersonalScalingPlanSchedules')))]",
           "scalingPlanName": {
             "value": "[variables('varScalingPlanName')]"
           },
