@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "15508676383533430717"
+      "templateHash": "14446997023787772974"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -1446,7 +1446,7 @@
         "offPeakMinutesToWaitOnDisconnect": 30,
         "offPeakActionOnDisconnect": "Hibernate",
         "offPeakMinutesToWaitOnLogoff": 0,
-        "offPeakActionOnLogoff": "Shutdown",
+        "offPeakActionOnLogoff": "Deallocate",
         "peakStartTime": {
           "hour": 9,
           "minute": 0
@@ -1455,7 +1455,7 @@
         "peakMinutesToWaitOnDisconnect": 30,
         "peakActionOnDisconnect": "Hibernate",
         "peakMinutesToWaitOnLogoff": 0,
-        "peakActionOnLogoff": "Shutdown",
+        "peakActionOnLogoff": "Deallocate",
         "rampDownStartTime": {
           "hour": 18,
           "minute": 0
@@ -1464,7 +1464,7 @@
         "rampDownMinutesToWaitOnDisconnect": 30,
         "rampDownActionOnDisconnect": "Hibernate",
         "rampDownMinutesToWaitOnLogoff": 0,
-        "rampDownActionOnLogoff": "Shutdown",
+        "rampDownActionOnLogoff": "Deallocate",
         "rampUpStartTime": {
           "hour": 7,
           "minute": 0
@@ -1474,7 +1474,7 @@
         "rampUpMinutesToWaitOnDisconnect": 30,
         "rampUpActionOnDisconnect": "Hibernate",
         "rampUpMinutesToWaitOnLogoff": 0,
-        "rampUpActionOnLogoff": "Shutdown"
+        "rampUpActionOnLogoff": "Deallocate"
       },
       {
         "daysOfWeek": [
@@ -1490,7 +1490,7 @@
         "offPeakMinutesToWaitOnDisconnect": 30,
         "offPeakActionOnDisconnect": "Hibernate",
         "offPeakMinutesToWaitOnLogoff": 0,
-        "offPeakActionOnLogoff": "Shutdown",
+        "offPeakActionOnLogoff": "Deallocate",
         "peakStartTime": {
           "hour": 10,
           "minute": 0
@@ -1499,7 +1499,7 @@
         "peakMinutesToWaitOnDisconnect": 30,
         "peakActionOnDisconnect": "Hibernate",
         "peakMinutesToWaitOnLogoff": 0,
-        "peakActionOnLogoff": "Shutdown",
+        "peakActionOnLogoff": "Deallocate",
         "rampDownStartTime": {
           "hour": 16,
           "minute": 0
@@ -1508,7 +1508,7 @@
         "rampDownMinutesToWaitOnDisconnect": 30,
         "rampDownActionOnDisconnect": "Hibernate",
         "rampDownMinutesToWaitOnLogoff": 0,
-        "rampDownActionOnLogoff": "Shutdown",
+        "rampDownActionOnLogoff": "Deallocate",
         "rampUpStartTime": {
           "hour": 9,
           "minute": 0
@@ -1518,7 +1518,7 @@
         "rampUpMinutesToWaitOnDisconnect": 30,
         "rampUpActionOnDisconnect": "Hibernate",
         "rampUpMinutesToWaitOnLogoff": 0,
-        "rampUpActionOnLogoff": "Shutdown"
+        "rampUpActionOnLogoff": "Deallocate"
       }
     ],
     "varPooledScalingPlanSchedules": [
