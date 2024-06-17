@@ -2381,7 +2381,7 @@
                 "existingVnetAvdSubnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, false), steps('network').virtualNetworkAvdSubnetSelectorName, 'no')]",
                 "existingVnetPrivateEndpointSubnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, false), steps('network').virtualNetworkPrivateEndpointSubnetSelectorName, 'no')]",
                 "avdDeploySessionHosts": "[steps('sessionHosts').deploySessionHosts]",
-                "avdStartVmOnConnect": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, false)]",
+                "avdStartVmOnConnect": "[steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect]",
                 "avdDeployScalingPlan": "[if(contains(steps('basics').resourceScope.location.name, 'china'), false, steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan)]",
                 "avdEnterpriseAppObjectId": "[first(map(steps('managementPlane').managementPlaneHostPoolScaling.avdEnterpriseApplication.value, (item) => item.id))]",
                 "availabilityZonesCompute": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings]",
