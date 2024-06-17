@@ -97,11 +97,16 @@ resource scalingPlan 'Microsoft.DesktopVirtualization/scalingPlans@2023-09-05' =
     timeZone: timeZone
     hostPoolType: hostPoolType
     exclusionTag: exclusionTag
-    schedules: schedules
+    schedules: (hostPoolType == 'Pooled') ? schedules : []
     hostPoolReferences: hostPoolReferences
     description: description
   }
 }
+
+resource scalingPlanSchedule 'Microsoft.DesktopVirtualization/scalingplans/personalSchedules@2024-03-06-preview' = [for schedule in schedules: if (hostPoolType == 'Personal') {
+  name: '${schedule.name}'
+  properties: schedule
+}]
 
 resource scalingPlan_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
