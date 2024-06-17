@@ -716,7 +716,7 @@ var varPersonalScalingPlanSchedules = [
     offPeakMinutesToWaitOnDisconnect: 30
     offPeakActionOnDisconnect: 'Hibernate'
     offPeakMinutesToWaitOnLogoff: 0
-    offPeakActionOnLogoff: 'Shutdown'
+    offPeakActionOnLogoff: 'Deallocate'
     peakStartTime: {
       hour: 9
       minute: 0
@@ -725,7 +725,7 @@ var varPersonalScalingPlanSchedules = [
     peakMinutesToWaitOnDisconnect: 30
     peakActionOnDisconnect: 'Hibernate'
     peakMinutesToWaitOnLogoff: 0
-    peakActionOnLogoff: 'Shutdown'
+    peakActionOnLogoff: 'Deallocate'
     rampDownStartTime: {
       hour: 18
       minute: 0
@@ -734,7 +734,7 @@ var varPersonalScalingPlanSchedules = [
     rampDownMinutesToWaitOnDisconnect: 30
     rampDownActionOnDisconnect: 'Hibernate'
     rampDownMinutesToWaitOnLogoff: 0
-    rampDownActionOnLogoff: 'Shutdown'
+    rampDownActionOnLogoff: 'Deallocate'
     rampUpStartTime: {
       hour: 7
       minute: 0
@@ -744,7 +744,7 @@ var varPersonalScalingPlanSchedules = [
     rampUpMinutesToWaitOnDisconnect: 30
     rampUpActionOnDisconnect: 'Hibernate'
     rampUpMinutesToWaitOnLogoff: 0
-    rampUpActionOnLogoff: 'Shutdown'
+    rampUpActionOnLogoff: 'Deallocate'
   }
   {
     daysOfWeek: [
@@ -760,7 +760,7 @@ var varPersonalScalingPlanSchedules = [
     offPeakMinutesToWaitOnDisconnect: 30
     offPeakActionOnDisconnect: 'Hibernate'
     offPeakMinutesToWaitOnLogoff: 0
-    offPeakActionOnLogoff: 'Shutdown'
+    offPeakActionOnLogoff: 'Deallocate'
     peakStartTime: {
       hour: 10
       minute: 0
@@ -769,7 +769,7 @@ var varPersonalScalingPlanSchedules = [
     peakMinutesToWaitOnDisconnect: 30
     peakActionOnDisconnect: 'Hibernate'
     peakMinutesToWaitOnLogoff: 0
-    peakActionOnLogoff: 'Shutdown'
+    peakActionOnLogoff: 'Deallocate'
     rampDownStartTime: {
       hour: 16
       minute: 0
@@ -778,7 +778,7 @@ var varPersonalScalingPlanSchedules = [
     rampDownMinutesToWaitOnDisconnect: 30
     rampDownActionOnDisconnect: 'Hibernate'
     rampDownMinutesToWaitOnLogoff: 0
-    rampDownActionOnLogoff: 'Shutdown'
+    rampDownActionOnLogoff: 'Deallocate'
     rampUpStartTime: {
       hour: 9
       minute: 0
@@ -788,7 +788,7 @@ var varPersonalScalingPlanSchedules = [
     rampUpMinutesToWaitOnDisconnect: 30
     rampUpActionOnDisconnect: 'Hibernate'
     rampUpMinutesToWaitOnLogoff: 0
-    rampUpActionOnLogoff: 'Shutdown'
+    rampUpActionOnLogoff: 'Deallocate'
   }
 ]
 var varPooledScalingPlanSchedules = [
