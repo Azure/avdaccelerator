@@ -1112,9 +1112,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     preferredAppGroupType: (hostPoolPreferredAppGroupType == 'RemoteApp') ? 'RailApplications' : 'Desktop'
     deployScalingPlan: varDeployScalingPlan
     scalingPlanExclusionTag: varScalingPlanExclusionTag
-    scalingPlanSchedules: (avdHostPoolType == 'Pooled')
-      ? varPooledScalingPlanSchedules
-      : varPersonalScalingPlanSchedules
+    scalingPlanSchedules: (avdHostPoolType == 'Pooled') ? varPooledScalingPlanSchedules : varPersonalScalingPlanSchedules
     scalingPlanName: varScalingPlanName
     hostPoolMaxSessions: hostPoolMaxSessions
     personalAssignType: avdPersonalAssignType
