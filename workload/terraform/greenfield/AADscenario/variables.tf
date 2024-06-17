@@ -195,6 +195,21 @@ variable "image_rg" {
   description = "Image Gallery resource group"
 }
 
+variable "sku" {
+  type        = string
+  description = "SKU of the image"
+}
+
+variable "offer" {
+  type        = string
+  description = "Offer of the image"
+}
+
+variable "publisher" {
+  type        = string
+  description = "Publisher of the image"
+}
+
 # Create a storage allow list of IP Addresses
 variable "allow_list_ip" {
   type        = list(string)
