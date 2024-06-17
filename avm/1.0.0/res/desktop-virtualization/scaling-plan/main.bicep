@@ -103,7 +103,7 @@ resource scalingPlan 'Microsoft.DesktopVirtualization/scalingPlans@2023-09-05' =
   }
 }
 
-resource scalingPlanSchedulePersonal 'Microsoft.DesktopVirtualization/scalingPlans/personalSchedules@2024-04-03' = [for schedule in schedules: if (hostPoolType == 'Personal') {
+resource scalingPlanSchedulePersonal 'Microsoft.DesktopVirtualization/scalingPlans/personalSchedules@2024-03-06-preview' = [for schedule in schedules: if (hostPoolType == 'Personal') {
   name: '${schedule.name}'
   parent: scalingPlan
   properties: schedule
