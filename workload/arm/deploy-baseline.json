@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "15792640997329789373"
+      "templateHash": "8879646261589822189"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -28305,7 +28305,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "8412991675307460331"
+              "templateHash": "2785778163978713223"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -32059,7 +32059,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "11843870291201072066"
+                      "templateHash": "16144127945132264777"
                     },
                     "name": "Azure Virtual Desktop Scaling Plan",
                     "description": "This module deploys an Azure Virtual Desktop Scaling Plan.",
@@ -32408,48 +32408,38 @@
                         "timeZone": "[parameters('timeZone')]",
                         "hostPoolType": "[parameters('hostPoolType')]",
                         "exclusionTag": "[parameters('exclusionTag')]",
-                        "schedules": "[if(equals(parameters('hostPoolType'), 'Pooled'), parameters('schedules'), createArray())]",
+                        "schedules": [],
                         "hostPoolReferences": "[parameters('hostPoolReferences')]",
                         "description": "[parameters('description')]"
                       }
                     },
-                    "scalingPlanSchedule": {
+                    "scalingPlanSchedulePersonal": {
                       "copy": {
-                        "name": "scalingPlanSchedule",
+                        "name": "scalingPlanSchedulePersonal",
                         "count": "[length(parameters('schedules'))]"
                       },
                       "condition": "[equals(parameters('hostPoolType'), 'Personal')]",
                       "type": "Microsoft.DesktopVirtualization/scalingPlans/personalSchedules",
-                      "apiVersion": "2024-03-06-preview",
-                      "name": "[format('{0}', parameters('schedules')[copyIndex()].name)]",
-                      "properties": {
-                        "daysOfWeek": "[parameters('schedules')[copyIndex()].daysOfWeek]",
-                        "offPeakActionOnDisconnect": "[parameters('schedules')[copyIndex()].offPeakActionOnDisconnect]",
-                        "offPeakActionOnLogoff": "[parameters('schedules')[copyIndex()].offPeakActionOnLogoff]",
-                        "offPeakMinutesToWaitOnDisconnect": "[parameters('schedules')[copyIndex()].offPeakMinutesToWaitOnDisconnect]",
-                        "offPeakMinutesToWaitOnLogoff": "[parameters('schedules')[copyIndex()].offPeakMinutesToWaitOnLogoff]",
-                        "offPeakStartTime": "[parameters('schedules')[copyIndex()].offPeakStartTime]",
-                        "offPeakStartVMOnConnect": "[parameters('schedules')[copyIndex()].offPeakStartVMOnConnect]",
-                        "peakActionOnDisconnect": "[parameters('schedules')[copyIndex()].peakActionOnDisconnect]",
-                        "peakActionOnLogoff": "[parameters('schedules')[copyIndex()].peakActionOnLogoff]",
-                        "peakMinutesToWaitOnDisconnect": "[parameters('schedules')[copyIndex()].peakMinutesToWaitOnDisconnect]",
-                        "peakMinutesToWaitOnLogoff": "[parameters('schedules')[copyIndex()].peakMinutesToWaitOnLogoff]",
-                        "peakStartTime": "[parameters('schedules')[copyIndex()].peakStartTime]",
-                        "peakStartVMOnConnect": "[parameters('schedules')[copyIndex()].peakStartVMOnConnect]",
-                        "rampDownActionOnDisconnect": "[parameters('schedules')[copyIndex()].rampDownActionOnDisconnect]",
-                        "rampDownActionOnLogoff": "[parameters('schedules')[copyIndex()].rampDownActionOnLogoff]",
-                        "rampDownMinutesToWaitOnDisconnect": "[parameters('schedules')[copyIndex()].rampDownMinutesToWaitOnDisconnect]",
-                        "rampDownMinutesToWaitOnLogoff": "[parameters('schedules')[copyIndex()].rampDownMinutesToWaitOnLogoff]",
-                        "rampDownStartTime": "[parameters('schedules')[copyIndex()].rampDownStartTime]",
-                        "rampDownStartVMOnConnect": "[parameters('schedules')[copyIndex()].rampDownStartVMOnConnect]",
-                        "rampUpActionOnDisconnect": "[parameters('schedules')[copyIndex()].rampUpActionOnDisconnect]",
-                        "rampUpActionOnLogoff": "[parameters('schedules')[copyIndex()].rampUpActionOnLogoff]",
-                        "rampUpAutoStartHosts": "[parameters('schedules')[copyIndex()].rampUpAutoStartHosts]",
-                        "rampUpMinutesToWaitOnDisconnect": "[parameters('schedules')[copyIndex()].rampUpMinutesToWaitOnDisconnect]",
-                        "rampUpMinutesToWaitOnLogoff": "[parameters('schedules')[copyIndex()].rampUpMinutesToWaitOnLogoff]",
-                        "rampUpStartTime": "[parameters('schedules')[copyIndex()].rampUpStartTime]",
-                        "rampUpStartVMOnConnect": "[parameters('schedules')[copyIndex()].rampUpStartVMOnConnect]"
-                      }
+                      "apiVersion": "2024-04-03",
+                      "name": "[format('{0}/{1}', parameters('name'), format('{0}', parameters('schedules')[copyIndex()].name))]",
+                      "properties": "[parameters('schedules')[copyIndex()]]",
+                      "dependsOn": [
+                        "scalingPlan"
+                      ]
+                    },
+                    "scalingPlanSchedulePooled": {
+                      "copy": {
+                        "name": "scalingPlanSchedulePooled",
+                        "count": "[length(parameters('schedules'))]"
+                      },
+                      "condition": "[equals(parameters('hostPoolType'), 'Pooled')]",
+                      "type": "Microsoft.DesktopVirtualization/scalingPlans/pooledSchedules",
+                      "apiVersion": "2024-04-03",
+                      "name": "[format('{0}/{1}', parameters('name'), format('{0}', parameters('schedules')[copyIndex()].name))]",
+                      "properties": "[parameters('schedules')[copyIndex()]]",
+                      "dependsOn": [
+                        "scalingPlan"
+                      ]
                     },
                     "scalingPlan_lock": {
                       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",

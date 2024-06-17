@@ -97,42 +97,22 @@ resource scalingPlan 'Microsoft.DesktopVirtualization/scalingPlans@2023-09-05' =
     timeZone: timeZone
     hostPoolType: hostPoolType
     exclusionTag: exclusionTag
-    schedules: (hostPoolType == 'Pooled') ? schedules : []
+    schedules: []
     hostPoolReferences: hostPoolReferences
     description: description
   }
 }
 
-resource scalingPlanSchedule 'Microsoft.DesktopVirtualization/scalingplans/personalSchedules@2024-03-06-preview' = [for schedule in schedules: if (hostPoolType == 'Personal') {
+resource scalingPlanSchedulePersonal 'Microsoft.DesktopVirtualization/scalingPlans/personalSchedules@2024-04-03' = [for schedule in schedules: if (hostPoolType == 'Personal') {
   name: '${schedule.name}'
-  properties: {
-    daysOfWeek: schedule.daysOfWeek
-    offPeakActionOnDisconnect: schedule.offPeakActionOnDisconnect
-    offPeakActionOnLogoff: schedule.offPeakActionOnLogoff
-    offPeakMinutesToWaitOnDisconnect: schedule.offPeakMinutesToWaitOnDisconnect
-    offPeakMinutesToWaitOnLogoff: schedule.offPeakMinutesToWaitOnLogoff
-    offPeakStartTime: schedule.offPeakStartTime
-    offPeakStartVMOnConnect: schedule.offPeakStartVMOnConnect
-    peakActionOnDisconnect: schedule.peakActionOnDisconnect
-    peakActionOnLogoff: schedule.peakActionOnLogoff
-    peakMinutesToWaitOnDisconnect: schedule.peakMinutesToWaitOnDisconnect
-    peakMinutesToWaitOnLogoff: schedule.peakMinutesToWaitOnLogoff
-    peakStartTime: schedule.peakStartTime
-    peakStartVMOnConnect: schedule.peakStartVMOnConnect
-    rampDownActionOnDisconnect: schedule.rampDownActionOnDisconnect
-    rampDownActionOnLogoff: schedule.rampDownActionOnLogoff
-    rampDownMinutesToWaitOnDisconnect: schedule.rampDownMinutesToWaitOnDisconnect
-    rampDownMinutesToWaitOnLogoff: schedule.rampDownMinutesToWaitOnLogoff
-    rampDownStartTime: schedule.rampDownStartTime
-    rampDownStartVMOnConnect: schedule.rampDownStartVMOnConnect
-    rampUpActionOnDisconnect: schedule.rampUpActionOnDisconnect
-    rampUpActionOnLogoff: schedule.rampUpActionOnLogoff
-    rampUpAutoStartHosts: schedule.rampUpAutoStartHosts
-    rampUpMinutesToWaitOnDisconnect: schedule.rampUpMinutesToWaitOnDisconnect
-    rampUpMinutesToWaitOnLogoff: schedule.rampUpMinutesToWaitOnLogoff
-    rampUpStartTime: schedule.rampUpStartTime
-    rampUpStartVMOnConnect: schedule.rampUpStartVMOnConnect
-  }
+  parent: scalingPlan
+  properties: schedule
+}]
+
+resource scalingPlanSchedulePooled 'Microsoft.DesktopVirtualization/scalingPlans/pooledSchedules@2024-04-03' = [for schedule in schedules: if (hostPoolType == 'Pooled') {
+  name: '${schedule.name}'
+  parent: scalingPlan
+  properties: schedule
 }]
 
 resource scalingPlan_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
