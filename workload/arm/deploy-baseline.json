@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "12854007407972331277"
+      "templateHash": "15508676383533430717"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -28305,7 +28305,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "11915071981260487603"
+              "templateHash": "8372525248408809556"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -32059,7 +32059,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "1500244764249973886"
+                      "templateHash": "402289587071812008"
                     },
                     "name": "Azure Virtual Desktop Scaling Plan",
                     "description": "This module deploys an Azure Virtual Desktop Scaling Plan.",
@@ -32420,7 +32420,7 @@
                       },
                       "condition": "[equals(parameters('hostPoolType'), 'Personal')]",
                       "type": "Microsoft.DesktopVirtualization/scalingPlans/personalSchedules",
-                      "apiVersion": "2024-04-03",
+                      "apiVersion": "2024-03-06-preview",
                       "name": "[format('{0}/{1}', parameters('name'), format('{0}', parameters('schedules')[copyIndex()].name))]",
                       "properties": "[parameters('schedules')[copyIndex()]]",
                       "dependsOn": [
