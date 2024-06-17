@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "9759808269069289789"
+      "templateHash": "15792640997329789373"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -1403,7 +1403,7 @@
         "offPeakMinutesToWaitOnDisconnect": 30,
         "offPeakActionOnDisconnect": "Hibernate",
         "offPeakMinutesToWaitOnLogoff": 0,
-        "offPeakActionOnLogoff": "Shutdown",
+        "offPeakActionOnLogoff": "Deallocate",
         "peakStartTime": {
           "hour": 9,
           "minute": 0
@@ -1412,7 +1412,7 @@
         "peakMinutesToWaitOnDisconnect": 30,
         "peakActionOnDisconnect": "Hibernate",
         "peakMinutesToWaitOnLogoff": 0,
-        "peakActionOnLogoff": "Shutdown",
+        "peakActionOnLogoff": "Deallocate",
         "rampDownStartTime": {
           "hour": 18,
           "minute": 0
@@ -1421,7 +1421,7 @@
         "rampDownMinutesToWaitOnDisconnect": 30,
         "rampDownActionOnDisconnect": "Hibernate",
         "rampDownMinutesToWaitOnLogoff": 0,
-        "rampDownActionOnLogoff": "Shutdown",
+        "rampDownActionOnLogoff": "Deallocate",
         "rampUpStartTime": {
           "hour": 7,
           "minute": 0
@@ -1431,7 +1431,7 @@
         "rampUpMinutesToWaitOnDisconnect": 30,
         "rampUpActionOnDisconnect": "Hibernate",
         "rampUpMinutesToWaitOnLogoff": 0,
-        "rampUpActionOnLogoff": "Shutdown"
+        "rampUpActionOnLogoff": "Deallocate"
       },
       {
         "daysOfWeek": [
@@ -28305,7 +28305,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "7329086022925876754"
+              "templateHash": "8412991675307460331"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -32059,7 +32059,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "3698423049050216924"
+                      "templateHash": "11843870291201072066"
                     },
                     "name": "Azure Virtual Desktop Scaling Plan",
                     "description": "This module deploys an Azure Virtual Desktop Scaling Plan.",
@@ -32422,7 +32422,34 @@
                       "type": "Microsoft.DesktopVirtualization/scalingPlans/personalSchedules",
                       "apiVersion": "2024-03-06-preview",
                       "name": "[format('{0}', parameters('schedules')[copyIndex()].name)]",
-                      "properties": "[parameters('schedules')[copyIndex()]]"
+                      "properties": {
+                        "daysOfWeek": "[parameters('schedules')[copyIndex()].daysOfWeek]",
+                        "offPeakActionOnDisconnect": "[parameters('schedules')[copyIndex()].offPeakActionOnDisconnect]",
+                        "offPeakActionOnLogoff": "[parameters('schedules')[copyIndex()].offPeakActionOnLogoff]",
+                        "offPeakMinutesToWaitOnDisconnect": "[parameters('schedules')[copyIndex()].offPeakMinutesToWaitOnDisconnect]",
+                        "offPeakMinutesToWaitOnLogoff": "[parameters('schedules')[copyIndex()].offPeakMinutesToWaitOnLogoff]",
+                        "offPeakStartTime": "[parameters('schedules')[copyIndex()].offPeakStartTime]",
+                        "offPeakStartVMOnConnect": "[parameters('schedules')[copyIndex()].offPeakStartVMOnConnect]",
+                        "peakActionOnDisconnect": "[parameters('schedules')[copyIndex()].peakActionOnDisconnect]",
+                        "peakActionOnLogoff": "[parameters('schedules')[copyIndex()].peakActionOnLogoff]",
+                        "peakMinutesToWaitOnDisconnect": "[parameters('schedules')[copyIndex()].peakMinutesToWaitOnDisconnect]",
+                        "peakMinutesToWaitOnLogoff": "[parameters('schedules')[copyIndex()].peakMinutesToWaitOnLogoff]",
+                        "peakStartTime": "[parameters('schedules')[copyIndex()].peakStartTime]",
+                        "peakStartVMOnConnect": "[parameters('schedules')[copyIndex()].peakStartVMOnConnect]",
+                        "rampDownActionOnDisconnect": "[parameters('schedules')[copyIndex()].rampDownActionOnDisconnect]",
+                        "rampDownActionOnLogoff": "[parameters('schedules')[copyIndex()].rampDownActionOnLogoff]",
+                        "rampDownMinutesToWaitOnDisconnect": "[parameters('schedules')[copyIndex()].rampDownMinutesToWaitOnDisconnect]",
+                        "rampDownMinutesToWaitOnLogoff": "[parameters('schedules')[copyIndex()].rampDownMinutesToWaitOnLogoff]",
+                        "rampDownStartTime": "[parameters('schedules')[copyIndex()].rampDownStartTime]",
+                        "rampDownStartVMOnConnect": "[parameters('schedules')[copyIndex()].rampDownStartVMOnConnect]",
+                        "rampUpActionOnDisconnect": "[parameters('schedules')[copyIndex()].rampUpActionOnDisconnect]",
+                        "rampUpActionOnLogoff": "[parameters('schedules')[copyIndex()].rampUpActionOnLogoff]",
+                        "rampUpAutoStartHosts": "[parameters('schedules')[copyIndex()].rampUpAutoStartHosts]",
+                        "rampUpMinutesToWaitOnDisconnect": "[parameters('schedules')[copyIndex()].rampUpMinutesToWaitOnDisconnect]",
+                        "rampUpMinutesToWaitOnLogoff": "[parameters('schedules')[copyIndex()].rampUpMinutesToWaitOnLogoff]",
+                        "rampUpStartTime": "[parameters('schedules')[copyIndex()].rampUpStartTime]",
+                        "rampUpStartVMOnConnect": "[parameters('schedules')[copyIndex()].rampUpStartVMOnConnect]"
+                      }
                     },
                     "scalingPlan_lock": {
                       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
