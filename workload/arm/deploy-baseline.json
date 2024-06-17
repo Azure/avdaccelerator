@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "9802051656544233886"
+      "templateHash": "12854007407972331277"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -28305,7 +28305,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "4625432472759715689"
+              "templateHash": "11915071981260487603"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -30076,7 +30076,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "16347468929404875049"
+                      "templateHash": "14180952918266581963"
                     },
                     "name": "Azure Virtual Desktop Application Group",
                     "description": "This module deploys an Azure Virtual Desktop Application Group.",
@@ -30405,12 +30405,12 @@
                     "appGroup_hostpool": {
                       "existing": true,
                       "type": "Microsoft.DesktopVirtualization/hostPools",
-                      "apiVersion": "2024-04-03",
+                      "apiVersion": "2022-09-09",
                       "name": "[parameters('hostpoolName')]"
                     },
                     "appGroup": {
                       "type": "Microsoft.DesktopVirtualization/applicationGroups",
-                      "apiVersion": "2024-04-03",
+                      "apiVersion": "2023-09-05",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -30683,7 +30683,7 @@
                       "metadata": {
                         "description": "The location of the scaling plan."
                       },
-                      "value": "[reference('appGroup', '2024-04-03', 'full').location]"
+                      "value": "[reference('appGroup', '2023-09-05', 'full').location]"
                     }
                   }
                 }
