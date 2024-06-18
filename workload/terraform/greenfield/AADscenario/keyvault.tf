@@ -1,70 +1,56 @@
-resource "azurerm_key_vault" "kv" {
-  name                     = local.keyvault_name
-  tenant_id                = data.azurerm_client_config.current.tenant_id
-  location                 = azurerm_resource_group.rg.location
-  resource_group_name      = azurerm_resource_group.rg.name
-  sku_name                 = "standard"
-  purge_protection_enabled = true
-  tags                     = local.tags
-  enabled_for_deployment   = true
+module "avm-res-keyvault-vault" {
+  source                      = "Azure/avm-res-keyvault-vault/azurerm"
+  version                     = "0.5.3"
+  location                    = azurerm_resource_group.this.location
+  name                        = local.keyvault_name
+  resource_group_name         = azurerm_resource_group.this.name
+  tenant_id                   = data.azurerm_client_config.current.tenant_id
+  sku_name                    = "standard"
+  enabled_for_deployment      = true
+  enabled_for_disk_encryption = true
+  purge_protection_enabled    = true
+  soft_delete_retention_days  = 7
+  tags                        = local.tags
+  diagnostic_settings = {
+    to_la = {
+      name                  = "to-la"
+      workspace_resource_id = module.avm_res_operationalinsights_workspace.resource.id
+    }
+  }
 
-  depends_on = [
-    azurerm_resource_group.rg,
-    azurerm_virtual_desktop_host_pool.hostpool,
-    azurerm_virtual_desktop_workspace.workspace,
-    azurerm_virtual_desktop_application_group.dag
-  ]
+  public_network_access_enabled = true
+  private_endpoints = {
+    primary = {
+      private_dns_zone_resource_ids = [data.azurerm_private_dns_zone.pe-vaultdns-zone.id]
+      subnet_resource_id            = data.azurerm_subnet.pesubnet.id
+    }
+  }
 
-
-  lifecycle { ignore_changes = [access_policy, tags] }
-
-  network_acls {
-    default_action = "Deny"
+  network_acls = {
     bypass         = "AzureServices"
-    ip_rules       = local.allow_list_ip
+    default_action = "Deny"
+    ip_rules       = ["136.28.83.128"]
+    virtual_network_subnet_ids = [
+      data.azurerm_subnet.pesubnet.id
+    ]
   }
-}
 
-resource "azurerm_key_vault_access_policy" "deploy" {
-  key_vault_id   = azurerm_key_vault.kv.id
-  tenant_id      = data.azurerm_client_config.current.tenant_id
-  object_id      = data.azurerm_client_config.current.object_id
-  application_id = data.azurerm_client_config.current.client_id
+  keys = {
+    cmk_for_storage_account = {
+      key_opts = [
+        "decrypt",
+        "encrypt",
+        "sign",
+        "unwrapKey",
+        "verify",
+        "wrapKey"
+      ]
 
-  key_permissions         = ["Get", "List", "Update", "Create", "Import", "Delete", "Recover", "Purge"]
-  secret_permissions      = ["Get", "List", "Set", "Delete", "Purge", "Recover"]
-  certificate_permissions = ["Get", "List", "Update", "Create", "Import", "Delete", "Purge", "Recover"]
-  storage_permissions     = ["Get", "List", "Update", "Delete"]
-}
-
-# Get Private DNS Zone for the Key Vault Private Endpoints
-data "azurerm_private_dns_zone" "pe-vaultdns-zone" {
-  name                = "privatelink.vaultcore.azure.net"
-  resource_group_name = var.hub_dns_zone_rg
-  provider            = azurerm.hub
-}
-
-resource "azurerm_private_endpoint" "kvpe" {
-  name                = "pe-${local.keyvault_name}-vault"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  subnet_id           = data.azurerm_subnet.subnet.id
-  tags                = local.tags
-
-  lifecycle { ignore_changes = [tags] }
-
-  private_service_connection {
-    name                           = "psc-kv-${var.prefix}"
-    private_connection_resource_id = azurerm_key_vault.kv.id
-    is_manual_connection           = false
-    subresource_names              = ["Vault"]
-  }
-  depends_on = [
-    azurerm_key_vault.kv, azurerm_key_vault_secret.localpassword
-  ]
-  private_dns_zone_group {
-    name                 = "dns-kv-${var.prefix}"
-    private_dns_zone_ids = data.azurerm_private_dns_zone.pe-vaultdns-zone.*.id
+      key_type     = "RSA"
+      key_vault_id = module.avm-res-keyvault-vault.resource.id
+      name         = "cmk-for-storage-account"
+      key_size     = 2048
+    }
   }
 }
 
@@ -73,35 +59,27 @@ resource "random_password" "vmpass" {
   length  = 20
   special = true
 }
+
 # Create Key Vault Secret
 resource "azurerm_key_vault_secret" "localpassword" {
+  key_vault_id = module.avm-res-keyvault-vault.resource.id
   name         = "vmlocalpassword"
   value        = random_password.vmpass.result
-  key_vault_id = azurerm_key_vault.kv.id
   content_type = "Password"
 
-  lifecycle { ignore_changes = [tags] }
-}
-
-# Linking DNS Zone to the VNET
-resource "azurerm_private_dns_zone_virtual_network_link" "vaultlink" {
-  name                  = "keydnsvnet_link-${var.prefix}"
-  resource_group_name   = var.hub_dns_zone_rg
-  private_dns_zone_name = data.azurerm_private_dns_zone.pe-vaultdns-zone.name
-  virtual_network_id    = data.azurerm_virtual_network.vnet.id
-
-  lifecycle { ignore_changes = [tags] }
-}
-
-resource "time_sleep" "wait" {
-  create_duration = "300s"
-}
-
-resource "azurerm_role_assignment" "keystor" {
-  scope                = azurerm_key_vault.kv.id
-  role_definition_name = "Key Vault Administrator"
-  principal_id         = data.azurerm_client_config.current.object_id
   depends_on = [
-    time_sleep.wait
+    azurerm_role_assignment.keystor
   ]
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }
+
+# Sets RBAC permission for Key Vault
+resource "azurerm_role_assignment" "keystor" {
+  principal_id         = data.azurerm_client_config.current.object_id
+  scope                = module.avm-res-keyvault-vault.resource.id
+  role_definition_name = "Key Vault Administrator"
+}
+

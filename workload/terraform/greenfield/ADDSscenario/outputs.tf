@@ -17,23 +17,3 @@ output "resource" {
   description = "This output is the full output for the resource to allow flexibility to reference all possible values for the resource. Example usage: module.<modulename>.resource.id"
   value       = azurerm_resource_group.this
 }
-
-output "session_host_count" {
-  description = "The number of VMs created"
-  value       = var.rdsh_count
-}
-
-output "dnsservers" {
-  description = "Custom DNS configuration"
-  value       = data.azurerm_virtual_network.vnet.dns_servers
-}
-
-output "vnetrange" {
-  description = "Address range for deployment vnet"
-  value       = data.azurerm_virtual_network.vnet.address_space
-}
-
-output "AVD_user_groupname" {
-  description = "Microsoft Entra ID Group for AVD users"
-  value       = data.azuread_group.adds_group.display_name
-}

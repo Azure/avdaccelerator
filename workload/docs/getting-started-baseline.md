@@ -16,7 +16,7 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
 - [x] Access to the Azure Virtual Desktop Azure subscription with owner permissions.
 - [x]  The following resource provider must be registered in the subscription to be used for deployment:
   - Microsoft.DesktopVirtualization
-  - Microsoft.Compute (When deploying Zero Trust, the feature [EncryptionAtHost](https://learn.microsoft.com/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell) will need to be registered)
+  - Microsoft.Compute (When deploying Zero Trust mathe feature [EncryptionAtHost](https://learn.microsoft.com/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell) will need to be registered)
   - Microsoft.Network
   - Microsoft.Storage
 
