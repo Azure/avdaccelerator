@@ -47,7 +47,7 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
     storage_account_type = "Standard_LRS"
   }
 
-
+  /*
   //source_image_id = data.azurerm_shared_image.avd.id
   source_image_id = "/subscriptions/${var.avdshared_subscription_id}/resourceGroups/${var.image_rg}/providers/Microsoft.Compute/galleries/${var.gallery_name}/images/${var.image_name}/versions/latest"
   depends_on = [
@@ -56,7 +56,7 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
     azurerm_resource_group.rg,
     azurerm_virtual_desktop_host_pool.hostpool
   ]
-
+*/
   identity {
     type = "SystemAssigned"
   }
@@ -74,7 +74,7 @@ resource "azurerm_virtual_machine_extension" "aaddsjoin" {
   settings = <<-SETTINGS
     {
       "Name": "${azurerm_active_directory_domain_service.aadds.domain_name}",
-      "OUPath": "${var.avd_ou_path}",
+      "OUPath": "${var.ou_path}",
       "User": "${azuread_user.dc_admin.user_principal_name}",
       "Restart": "true",
       "Options": "3"
