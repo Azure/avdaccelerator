@@ -1514,6 +1514,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
             : alaExistingWorkspaceResourceId)
         : ''
       dataCollectionRuleId: avdDeployMonitoring ? monitoringDiagnosticSettings.outputs.dataCollectionRuleId : ''
+      hostPoolRegistrationToken: managementPLane.outputs.hostPoolRegistrationToken
     }
     dependsOn: [
       fslogixAzureFilesStorage
