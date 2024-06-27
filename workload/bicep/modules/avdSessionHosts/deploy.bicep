@@ -103,9 +103,6 @@ param sessionHostOuPath string
 @sys.description('Application Security Group (ASG) for the session hosts.')
 param asgResourceId string
 
-@sys.description('AVD Host Pool name.')
-param hostPoolName string
-
 @sys.description('Deploy Fslogix setup.')
 param createAvdFslogixDeployment bool
 
@@ -136,8 +133,6 @@ param time string = utcNow()
 @sys.description('Data collection rule ID.')
 param dataCollectionRuleId string
 
-param hostPoolRegistrationToken string
-
 // =========== //
 // Variable declaration //
 // =========== //
@@ -165,11 +160,6 @@ var varCustomOsDiskProperties = {
 // =========== //
 // Deployments //
 // =========== //
-// Call on the hotspool
-// resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2019-12-10-preview' existing = {
-//     name: hostPoolName
-//     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
-// }
 
 // call on the keyvault
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (identityServiceProvider != 'EntraID') {
@@ -338,7 +328,7 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in 
     params: {
         location: location
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        hostPoolToken: hostPoolRegistrationToken // hostPool.properties.registrationInfo.token
+        hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
         baseScriptUri: sessionHostConfigurationScriptUri
         scriptName: sessionHostConfigurationScript
         fslogix: createAvdFslogixDeployment
