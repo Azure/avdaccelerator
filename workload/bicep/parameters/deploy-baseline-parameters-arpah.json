@@ -214,6 +214,9 @@
         },
         "deployGpuPolicies": {
             "value": false
+        },
+        "storageFilePrivateEndpointStaticIp": {
+            "value": "10.178.8.136"
         }
     }
 }

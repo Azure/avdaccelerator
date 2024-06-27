@@ -98,6 +98,9 @@ param securityPrincipalName string
 @sys.description('storage account FDQN.')
 param storageAccountFqdn string
 
+@sys.description('Storage account private endpoint static ip')
+param storageFilePrivateEndpointStaticIp string
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -179,6 +182,14 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
                         vnetPrivateDnsZoneFilesId
                     ]
                 }
+                ipConfigurations: !empty(storageFilePrivateEndpointStaticIp) ? [
+                    {
+                        name: 'privateEndpointIpConfig'
+                        properties: {
+                            privateIPAddress: storageFilePrivateEndpointStaticIp
+                        }
+                    }
+                ] : []
             }
         ] : []
         tags: tags
