@@ -222,7 +222,7 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
 // Add secret to keyvault
 //resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
 module keyVaultSecret '../../../../avm/1.0.0/res/key-vault/vault/secret/main.bicep' = {
-  name: 'HostPool-Token-Secret${time}'
+  name: 'HP-Token-Secret-${time}'
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   params: {
     keyVaultName: wrklKvName
