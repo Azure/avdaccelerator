@@ -168,7 +168,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
       }
     }
   }
-
+// 2022-10-14-preview
 resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
   name: name
   location: location
@@ -187,7 +187,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
     validationEnvironment: validationEnvironment
     registrationInfo: {
       expirationTime: dateTimeAdd(baseTime, tokenValidityLength)
-      token: null
+      //token: null
       registrationTokenOperation: 'Update'
     }
     vmTemplate: ((!empty(vmTemplate)) ? null : string(vmTemplate))
@@ -318,6 +318,9 @@ output name string = hostPool.name
 
 @sys.description('The location of the host pool.')
 output location string = hostPool.location
+
+@sys.description('The registration token of the host pool.')
+output registrationToken string = hostPool.properties.registrationInfo.token
 
 // ================ //
 // Definitions      //

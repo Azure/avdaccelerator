@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "14446997023787772974"
+      "templateHash": "3366836235191873062"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -28305,7 +28305,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "8372525248408809556"
+              "templateHash": "5084830195651079889"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -28574,7 +28574,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "17619992663257683523"
+                      "templateHash": "610541180611199828"
                     },
                     "name": "Azure Virtual Desktop Host Pool",
                     "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -29252,7 +29252,6 @@
                         "validationEnvironment": "[parameters('validationEnvironment')]",
                         "registrationInfo": {
                           "expirationTime": "[dateTimeAdd(parameters('baseTime'), parameters('tokenValidityLength'))]",
-                          "token": null,
                           "registrationTokenOperation": "Update"
                         },
                         "vmTemplate": "[if(not(empty(parameters('vmTemplate'))), null(), string(parameters('vmTemplate')))]",
@@ -30023,6 +30022,13 @@
                         "description": "The location of the host pool."
                       },
                       "value": "[reference('hostPool', '2023-09-05', 'full').location]"
+                    },
+                    "registrationToken": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The registration token of the host pool."
+                      },
+                      "value": "[reference('hostPool').registrationInfo.token]"
                     }
                   }
                 }
@@ -32548,7 +32554,16 @@
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Workspace-{0}', parameters('time')))]"
               ]
             }
-          ]
+          ],
+          "outputs": {
+            "hostPoolRegistrationToken": {
+              "type": "string",
+              "metadata": {
+                "description": "The host pool registration token."
+              },
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time'))), '2022-09-01').outputs.registrationToken.value]"
+            }
+          }
         }
       },
       "dependsOn": [
@@ -59429,7 +59444,10 @@
             "value": "[parameters('avdDeployMonitoring')]"
           },
           "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]",
-          "dataCollectionRuleId": "[if(parameters('avdDeployMonitoring'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.dataCollectionRuleId.value), createObject('value', ''))]"
+          "dataCollectionRuleId": "[if(parameters('avdDeployMonitoring'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.dataCollectionRuleId.value), createObject('value', ''))]",
+          "hostPoolRegistrationToken": {
+            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('AVD-MGMT-Plane-{0}', parameters('time'))), '2022-09-01').outputs.hostPoolRegistrationToken.value]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
@@ -59438,7 +59456,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "16900609056643651459"
+              "templateHash": "1670812775062008699"
             }
           },
           "parameters": {
@@ -59707,6 +59725,9 @@
               "metadata": {
                 "description": "Data collection rule ID."
               }
+            },
+            "hostPoolRegistrationToken": {
+              "type": "string"
             }
           },
           "variables": {
@@ -65703,7 +65724,7 @@
                     "value": "[format('{0}{1}', parameters('namePrefix'), padLeft(add(range(1, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]"
                   },
                   "hostPoolToken": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.DesktopVirtualization/hostPools', parameters('hostPoolName')), '2019-12-10-preview').registrationInfo.token]"
+                    "value": "[parameters('hostPoolRegistrationToken')]"
                   },
                   "baseScriptUri": {
                     "value": "[parameters('sessionHostConfigurationScriptUri')]"
