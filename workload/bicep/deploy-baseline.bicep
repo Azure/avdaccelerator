@@ -1102,6 +1102,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     applicationGroupFriendlyNameDesktop: varApplicationGroupFriendlyName
     workSpaceName: varWorkSpaceName
     osImage: avdOsImage
+    wrklKvName: varWrklKvName
     workSpaceFriendlyName: varWorkSpaceFriendlyName
     computeTimeZone: varTimeZoneSessionHosts
     hostPoolName: varHostPoolName
@@ -1119,7 +1120,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     managementPlaneLocation: avdManagementPlaneLocation
     serviceObjectsRgName: varServiceObjectsRgName
     startVmOnConnect: avdStartVmOnConnect
-    workloadSubsId: avdWorkloadSubsId
+    subscriptionId: avdWorkloadSubsId
     identityServiceProvider: avdIdentityServiceProvider
     securityPrincipalId: !empty(securityPrincipalId) ? securityPrincipalId : ''
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
@@ -1134,6 +1135,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     baselineResourceGroups
     identity
     monitoringDiagnosticSettings
+    wrklKeyVault
   ]
 }
 
@@ -1479,7 +1481,6 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
       domainJoinUserName: avdDomainJoinUserName
       wrklKvName: varWrklKvName
       serviceObjectsRgName: varServiceObjectsRgName
-      hostPoolName: varHostPoolName
       identityDomainName: identityDomainName
       avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
       sessionHostOuPath: avdOuPath
@@ -1514,7 +1515,6 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
             : alaExistingWorkspaceResourceId)
         : ''
       dataCollectionRuleId: avdDeployMonitoring ? monitoringDiagnosticSettings.outputs.dataCollectionRuleId : ''
-      hostPoolRegistrationToken: managementPLane.outputs.hostPoolRegistrationToken
     }
     dependsOn: [
       fslogixAzureFilesStorage
