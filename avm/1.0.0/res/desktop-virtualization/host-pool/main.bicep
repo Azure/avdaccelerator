@@ -187,7 +187,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
     validationEnvironment: validationEnvironment
     registrationInfo: {
       expirationTime: dateTimeAdd(baseTime, tokenValidityLength)
-      //token: null
+      token: null
       registrationTokenOperation: 'Update'
     }
     vmTemplate: ((!empty(vmTemplate)) ? null : string(vmTemplate))
