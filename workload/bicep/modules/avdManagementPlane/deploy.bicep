@@ -292,3 +292,5 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
 // =========== //
 // Outputs //
 // =========== //
+@sys.description('The host pool registration token.')
+output hostPoolRegistrationToken string = hostPool.outputs.registrationToken
