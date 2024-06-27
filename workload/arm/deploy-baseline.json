@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "4592003030063259636"
+      "templateHash": "10989502248228682318"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -28308,7 +28308,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "1551226879959613397"
+              "templateHash": "15199674802272410177"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -28583,7 +28583,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "610541180611199828"
+                      "templateHash": "17940091034057486395"
                     },
                     "name": "Azure Virtual Desktop Host Pool",
                     "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -29261,6 +29261,7 @@
                         "validationEnvironment": "[parameters('validationEnvironment')]",
                         "registrationInfo": {
                           "expirationTime": "[dateTimeAdd(parameters('baseTime'), parameters('tokenValidityLength'))]",
+                          "token": null,
                           "registrationTokenOperation": "Update"
                         },
                         "vmTemplate": "[if(not(empty(parameters('vmTemplate'))), null(), string(parameters('vmTemplate')))]",
@@ -30046,7 +30047,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('HostPool-Token-Secret{0}', parameters('time'))]",
+              "name": "[format('HP-Token-Secret-{0}', parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('serviceObjectsRgName'))]",
               "properties": {
