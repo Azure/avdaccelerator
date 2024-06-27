@@ -1172,6 +1172,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
         workloadSubsId: avdWorkloadSubsId
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
+        storageFilePrivateEndpointStaticIp: storageFilePrivateEndpointStaticIp
     }
     dependsOn: [
         fslogixAzureFilesStorage
