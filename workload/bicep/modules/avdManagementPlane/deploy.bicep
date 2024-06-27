@@ -11,7 +11,7 @@ targetScope = 'subscription'
 param managementPlaneLocation string
 
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
-param workloadSubsId string
+param subscriptionId string
 
 @sys.description('Virtual machine time zone.')
 param computeTimeZone string
@@ -24,6 +24,9 @@ param securityPrincipalId string
 
 @sys.description('AVD OS image source.')
 param osImage string
+
+@sys.description('Name of keyvault that will contain host pool registration token.')
+param wrklKvName string
 
 @sys.description('AVD Resource Group Name for the service objects.')
 param serviceObjectsRgName string
@@ -190,10 +193,9 @@ var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
 // =========== //
 // Deployments Commercial//
 // =========== //
-
 // Hostpool.
 module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main.bicep' = {
-  scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+  scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   name: 'HostPool-${time}'
   params: {
     name: hostPoolName
@@ -217,9 +219,24 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
   }
 }
 
+// Add secret to keyvault
+//resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+module keyVaultSecret '../../../../avm/1.0.0/res/key-vault/vault/secret/main.bicep' = {
+  name: 'HostPool-Token-Secret${time}'
+  scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+  params: {
+    keyVaultName: wrklKvName
+    name: 'hostPoolRegistrationToken'
+    value: hostPool.outputs.registrationToken
+  }
+  dependsOn: [
+    hostPool
+  ] 
+}
+
 // Application groups.
 module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/application-group/main.bicep' = [for applicationGroup in varApplicaitonGroups: {
-  scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+  scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   name: '${applicationGroup.name}-${time}'
   params: {
     name: applicationGroup.name
@@ -244,14 +261,14 @@ module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/appli
 
 // Workspace.
 module workSpace '../../../../avm/1.0.0/res/desktop-virtualization/workspace/main.bicep' = {
-  scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+  scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   name: 'Workspace-${time}'
   params: {
       name: workSpaceName
       friendlyName: workSpaceFriendlyName
       location: managementPlaneLocation
       applicationGroupReferences: [
-        '/subscriptions/${workloadSubsId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${applicationGroupName}'
+        '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${applicationGroupName}'
       ]
       tags: tags
       diagnosticSettings: varDiagnosticSettings
@@ -264,7 +281,7 @@ module workSpace '../../../../avm/1.0.0/res/desktop-virtualization/workspace/mai
 
 // Scaling plan.
 module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-plan/main.bicep' =  if (deployScalingPlan)  {
-  scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+  scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   name: 'Scaling-Plan-${time}'
   params: {
       name:scalingPlanName
@@ -275,7 +292,7 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
       schedules: scalingPlanSchedules
       hostPoolReferences: [
         {
-        hostPoolArmPath: '/subscriptions/${workloadSubsId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${hostPoolName}'
+        hostPoolArmPath: '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${hostPoolName}'
         scalingPlanEnabled: true
         }
       ]
@@ -288,9 +305,3 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
     workSpace
   ]
 }
-
-// =========== //
-// Outputs //
-// =========== //
-@sys.description('The host pool registration token.')
-output hostPoolRegistrationToken string = hostPool.outputs.registrationToken
