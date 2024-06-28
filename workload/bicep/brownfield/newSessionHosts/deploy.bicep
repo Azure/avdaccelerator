@@ -269,13 +269,19 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
     name: varHostPoolName
     friendlyName: hostPoolGet.properties.friendlyName
     location: hostPoolGet.location
-    //hostPoolType: hostPoolGet.properties.hostPoolType
+    hostPoolType: (hostPoolGet.properties.hostPoolType == 'Personal') ? 'Personal' : (hostPoolGet.properties.hostPoolType == 'Pooled') ? 'Pooled' : null
     startVMOnConnect: hostPoolGet.properties.startVMOnConnect
     customRdpProperty: hostPoolGet.properties.customRdpProperty
-    //loadBalancerType: hostPoolGet.properties.loadBalancerType
+    loadBalancerType: (hostPoolGet.properties.loadBalancerType == 'BreadthFirst') ? 'BreadthFirst' : (hostPoolGet.properties.loadBalancerType == 'DepthFirst') ? 'DepthFirst' : (hostPoolGet.properties.loadBalancerType == 'Persistent') ? 'Persistent': null
     maxSessionLimit: hostPoolGet.properties.maxSessionLimit
-    //preferredAppGroupType: hostPoolGet.properties.preferredAppGroupType
-    //personalDesktopAssignmentType: hostPoolGet.properties.personalDesktopAssignmentType
+    preferredAppGroupType: (hostPoolGet.properties.preferredAppGroupType == 'Desktop') ? 'Desktop' : (hostPoolGet.properties.preferredAppGroupType == 'RailApplications') ? 'RailApplications' : null
+    personalDesktopAssignmentType: (hostPoolGet.properties.personalDesktopAssignmentType == 'Automatic') ? 'Automatic' : (hostPoolGet.properties.personalDesktopAssignmentType == 'Direct') ? 'Direct' : null
+    description: hostPoolGet.properties.description
+    ssoadfsAuthority: hostPoolGet.properties.ssoadfsAuthority
+    ssoClientId: hostPoolGet.properties.ssoClientId
+    ssoClientSecretKeyVaultPath: hostPoolGet.properties.ssoClientSecretKeyVaultPath
+    validationEnvironment: hostPoolGet.properties.validationEnvironment
+    ring: hostPoolGet.properties.ring
     tags: hostPoolGet.tags
     agentUpdate: hostPoolGet.properties.agentUpdate
   }
