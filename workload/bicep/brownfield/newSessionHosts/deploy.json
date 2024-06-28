@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "7164064928636878510"
+      "templateHash": "17104213466852531840"
     }
   },
   "parameters": {
@@ -828,14 +828,36 @@
           "location": {
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05', 'full').location]"
           },
+          "hostPoolType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').hostPoolType, 'Personal'), createObject('value', 'Personal'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').hostPoolType, 'Pooled'), createObject('value', 'Pooled'), createObject('value', null())))]",
           "startVMOnConnect": {
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').startVMOnConnect]"
           },
           "customRdpProperty": {
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').customRdpProperty]"
           },
+          "loadBalancerType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').loadBalancerType, 'BreadthFirst'), createObject('value', 'BreadthFirst'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').loadBalancerType, 'DepthFirst'), createObject('value', 'DepthFirst'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').loadBalancerType, 'Persistent'), createObject('value', 'Persistent'), createObject('value', null()))))]",
           "maxSessionLimit": {
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').maxSessionLimit]"
+          },
+          "preferredAppGroupType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').preferredAppGroupType, 'Desktop'), createObject('value', 'Desktop'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').preferredAppGroupType, 'RailApplications'), createObject('value', 'RailApplications'), createObject('value', null())))]",
+          "personalDesktopAssignmentType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').personalDesktopAssignmentType, 'Automatic'), createObject('value', 'Automatic'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').personalDesktopAssignmentType, 'Direct'), createObject('value', 'Direct'), createObject('value', null())))]",
+          "description": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').description]"
+          },
+          "ssoadfsAuthority": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').ssoadfsAuthority]"
+          },
+          "ssoClientId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').ssoClientId]"
+          },
+          "ssoClientSecretKeyVaultPath": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').ssoClientSecretKeyVaultPath]"
+          },
+          "validationEnvironment": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').validationEnvironment]"
+          },
+          "ring": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').ring]"
           },
           "tags": {
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05', 'full').tags]"
