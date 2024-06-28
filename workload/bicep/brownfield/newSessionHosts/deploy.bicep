@@ -256,19 +256,30 @@ var varCustomResourceTags = createResourceTags ? {
 // =========== //
 
 // Call on the hotspool
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
+resource hostPoolGet 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
   name: varHostPoolName
   scope: resourceGroup('${varHostpoolSubId}', '${varHostpoolRgName}')
 }
-// Call on the hotspool
-// module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main.bicep' = {
-//   scope: resourceGroup('${varHostpoolSubId}', '${varHostpoolRgName}')
-//   name: 'HostPool-${time}'
-//   params: {
-//     name: varHostPoolName
 
-//   }
-// }
+// Hostpool update
+module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main.bicep' = {
+  scope: resourceGroup('${varHostpoolSubId}', '${varHostpoolRgName}')
+  name: 'HostPool-${time}'
+  params: {
+    name: varHostPoolName
+    friendlyName: hostPoolGet.properties.friendlyName
+    location: hostPoolGet.location
+    //hostPoolType: hostPoolGet.properties.hostPoolType
+    startVMOnConnect: hostPoolGet.properties.startVMOnConnect
+    customRdpProperty: hostPoolGet.properties.customRdpProperty
+    //loadBalancerType: hostPoolGet.properties.loadBalancerType
+    maxSessionLimit: hostPoolGet.properties.maxSessionLimit
+    //preferredAppGroupType: hostPoolGet.properties.preferredAppGroupType
+    //personalDesktopAssignmentType: hostPoolGet.properties.personalDesktopAssignmentType
+    tags: hostPoolGet.tags
+    agentUpdate: hostPoolGet.properties.agentUpdate
+  }
+}
 
 // call on the keyvault
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
@@ -427,7 +438,7 @@ module sessionHostConfiguration '../../modules/avdSessionHosts/.bicep/configureS
   params: {
     location: location
     name: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
-    hostPoolToken: hostPool.properties.registrationInfo.token
+    hostPoolToken: hostPool.outputs.registrationToken
     baseScriptUri: varSessionHostConfigurationScriptUri
     scriptName: varSessionHostConfigurationScript
     fslogix: configureFslogix
