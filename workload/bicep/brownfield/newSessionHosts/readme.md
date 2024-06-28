@@ -18,7 +18,7 @@ This solution will deploy new session hosts to an existing host pool.
   - Optional: application security group for session hosts (created by AVD LZA baseline)
   - Storage account and file share configured for fslogix (created by AVD LZA baseline)
   - Optional: log analytics workspace configured with Azure Virtual Desktop insights settings (created by AVD LZA baseline)
-  - Optional: availability set for the session hosts (created by AVD LZA baseline)
+  - Optional: VMSS flex for the session hosts (created by AVD LZA baseline)
 
 ## Deployment Options
 
