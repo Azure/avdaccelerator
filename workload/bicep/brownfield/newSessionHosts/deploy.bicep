@@ -13,8 +13,8 @@ param applicationNameTag string = 'Contoso-App'
 @sys.description('Application Security Group (ASG) for the session hosts. (Default: "")')
 param asgResourceId string = ''
 
-@sys.description('Availability set resource ID. (Default: "")')
-param avsetResourceId string = ''
+@sys.description('VMSS flex resource ID. (Default: "")')
+param virtualMachineScaleSetResourceId string = ''
 
 @sys.description('Source custom image ID. (Default: "")')
 param customImageDefinitionId string = ''
@@ -233,7 +233,6 @@ var varFslogixSharePath = configureFslogix ? '\\\\${fslogixStorageAccountName}.f
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
-var varAllAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', location, 3)
 var varAvdDefaultTags = {
   'cm-resource-parent': hostPoolResourceId
   Environment: deploymentEnvironment
@@ -252,18 +251,24 @@ var varCustomResourceTags = createResourceTags ? {
   Owner: ownerTag
   CostCenter: costCenterTag
 } : {}
-var varNicDiagnosticMetricsToEnable = [
-  'AllMetrics'
-]
 // =========== //
 // Deployments //
 // =========== //
 
 // Call on the hotspool
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2019-12-10-preview' existing = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
   name: varHostPoolName
   scope: resourceGroup('${varHostpoolSubId}', '${varHostpoolRgName}')
 }
+// Call on the hotspool
+// module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main.bicep' = {
+//   scope: resourceGroup('${varHostpoolSubId}', '${varHostpoolRgName}')
+//   name: 'HostPool-${time}'
+//   params: {
+//     name: varHostPoolName
+
+//   }
+// }
 
 // call on the keyvault
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
@@ -272,7 +277,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
 }
 
 // Call to the ALA workspace
-resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(alaWorkspaceResourceId) && deployMonitoring) {
+resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!empty(alaWorkspaceResourceId) && deployMonitoring) {
   scope: az.resourceGroup(split(alaWorkspaceResourceId, '/')[2], split(alaWorkspaceResourceId, '/')[4])
   name: last(split(alaWorkspaceResourceId, '/'))!
 }
@@ -291,7 +296,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
        systemAssigned: (identityServiceProvider == 'EntraID') ? true : false
     }
     encryptionAtHost: diskZeroTrust
-    availabilitySetResourceId: useAvailabilityZones ? '' : avsetResourceId
+    virtualMachineScaleSetResourceId: virtualMachineScaleSetResourceId
     osType: 'Windows'
     licenseType: 'Windows_Client'
     vmSize: vmSize
