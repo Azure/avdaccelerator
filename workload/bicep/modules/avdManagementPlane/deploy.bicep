@@ -228,6 +228,7 @@ module keyVaultSecret '../../../../avm/1.0.0/res/key-vault/vault/secret/main.bic
     keyVaultName: wrklKvName
     name: 'hostPoolRegistrationToken'
     value: hostPool.outputs.registrationToken
+    contentType: 'Host pool registration token for session hosts'
   }
   dependsOn: [
     hostPool
