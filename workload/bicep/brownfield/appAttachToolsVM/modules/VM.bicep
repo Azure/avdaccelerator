@@ -25,11 +25,12 @@ var IPConfig = UsePublicIP ? {
 }
 
 
-module virtualMachine '../../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = {
+module virtualMachine '../../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = {
   name: 'c_${VMName}_DeployAndConfig'
   params: {
     name: VMName
     location: Location
+    zone: 0
     adminUsername: AdminUserName
     adminPassword: AdminPassword
     secureBootEnabled: true

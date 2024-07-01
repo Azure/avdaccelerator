@@ -6,7 +6,7 @@ Every module and resource in the bicep files must have a comment describing its 
 
 ```bash
 // Resource group.
-module resourceGroup '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' =  {
+module resourceGroup '../../avm/1.0.0/res/resources/resourceGroups/main.bicep' =  {
     scope: subscription(avdWorkloadSubsId)
     name: 'Deploy-${varRgName}-${time}'
     params: {
@@ -25,7 +25,7 @@ Or you could provide more detail around the resource or resource group if more t
 
 ```bash
 // Resource group for AVD session hosts.
-module resourceGroup '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' =  {
+module resourceGroup '../../avm/1.0.0/res/resources/resourceGroups/main.bicep' =  {
     scope: subscription(avdWorkloadSubsId)
     name: 'Deploy-${varRgName}-${time}'
     params: {

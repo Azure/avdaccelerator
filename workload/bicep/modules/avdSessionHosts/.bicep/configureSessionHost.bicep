@@ -71,7 +71,7 @@ var varNvidiaVmSize = contains(varNvidiaVmSizes, vmSize)
 // =========== //
 // Deployments //
 // =========== //
-resource sessionHostConfig 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = {
+resource sessionHostConfig 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = {
   name: '${name}/SessionHostConfig'
   location: location
   properties: {
