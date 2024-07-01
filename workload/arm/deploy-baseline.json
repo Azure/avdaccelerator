@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "4050462389668075813"
+      "templateHash": "8880721796637249796"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -59711,7 +59711,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "5385478452740090336"
+              "templateHash": "16001661563011019821"
             }
           },
           "parameters": {
@@ -60017,7 +60017,6 @@
                     "value": "[parameters('timeZone')]"
                   },
                   "zone": "[if(parameters('useAvailabilityZones'), createObject('value', add(mod(range(1, parameters('count'))[copyIndex()], 3), 1)), createObject('value', 0))]",
-                  "managedIdentities": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('value', createObject('systemAssigned', true())), createObject('value', null()))]",
                   "encryptionAtHost": {
                     "value": "[parameters('encryptionAtHost')]"
                   },
@@ -60078,7 +60077,7 @@
                       "enabled": "[if(or(equals(parameters('identityServiceProvider'), 'EntraDS'), equals(parameters('identityServiceProvider'), 'ADDS')), true(), false())]",
                       "settings": {
                         "name": "[parameters('identityDomainName')]",
-                        "ouPath": "Computers",
+                        "ouPath": "[if(not(empty(parameters('sessionHostOuPath'))), parameters('sessionHostOuPath'), null())]",
                         "user": "[parameters('domainJoinUserName')]",
                         "restart": "true",
                         "options": "3"
