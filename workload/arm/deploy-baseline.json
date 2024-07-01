@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "2721063613665403714"
+      "templateHash": "5217564247431525789"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -28308,7 +28308,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "15199674802272410177"
+              "templateHash": "10487436358091895747"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -30064,6 +30064,9 @@
                   },
                   "value": {
                     "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time'))), '2022-09-01').outputs.registrationToken.value]"
+                  },
+                  "contentType": {
+                    "value": "Host pool registration token for session hosts"
                   }
                 },
                 "template": {
@@ -43230,7 +43233,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "6102105726192540040"
+              "templateHash": "1169766570022119879"
             }
           },
           "parameters": {
@@ -43511,7 +43514,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "16307884336628549765"
+                      "templateHash": "959214383654261350"
                     },
                     "name": "Virtual Machines",
                     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -44391,7 +44394,7 @@
                       "signedProtocol": "https"
                     },
                     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-                    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(if(parameters('extensionAadJoinConfig').enabled, true(), coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false())), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+                    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(if(parameters('extensionAadJoinConfig').enabled, true(), coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false())), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), 'none')]",
                     "builtInRoleNames": {
                       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                       "Data Operator for Managed Disks": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '959f8984-c045-4866-89c7-12bf9737be2e')]",
@@ -59708,7 +59711,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "17229633256737485369"
+              "templateHash": "1128022959469179"
             }
           },
           "parameters": {
@@ -60014,6 +60017,7 @@
                     "value": "[parameters('timeZone')]"
                   },
                   "zone": "[if(parameters('useAvailabilityZones'), createObject('value', add(mod(range(1, parameters('count'))[copyIndex()], 3), 1)), createObject('value', 0))]",
+                  "managedIdentities": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('value', createObject('systemAssigned', true())), createObject('value', null()))]",
                   "encryptionAtHost": {
                     "value": "[parameters('encryptionAtHost')]"
                   },
@@ -60099,7 +60103,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "16307884336628549765"
+                      "templateHash": "959214383654261350"
                     },
                     "name": "Virtual Machines",
                     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -60979,7 +60983,7 @@
                       "signedProtocol": "https"
                     },
                     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-                    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(if(parameters('extensionAadJoinConfig').enabled, true(), coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false())), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+                    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(if(parameters('extensionAadJoinConfig').enabled, true(), coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false())), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), 'none')]",
                     "builtInRoleNames": {
                       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                       "Data Operator for Managed Disks": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '959f8984-c045-4866-89c7-12bf9737be2e')]",
