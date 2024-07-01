@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "10989502248228682318"
+      "templateHash": "10204545887103555407"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -59708,7 +59708,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "1750338856786557904"
+              "templateHash": "387394338378700944"
             }
           },
           "parameters": {
@@ -60079,7 +60079,7 @@
                       "enabled": "[if(or(equals(parameters('identityServiceProvider'), 'EntraDS'), equals(parameters('identityServiceProvider'), 'ADDS')), true(), false())]",
                       "settings": {
                         "name": "[parameters('identityDomainName')]",
-                        "ouPath": "[if(not(empty(parameters('sessionHostOuPath'))), parameters('sessionHostOuPath'), null())]",
+                        "ouPath": "Computers",
                         "user": "[parameters('domainJoinUserName')]",
                         "restart": "true",
                         "options": "3"
