@@ -168,7 +168,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
       }
     }
   }
-// 2022-10-14-preview
+
 resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
   name: name
   location: location
