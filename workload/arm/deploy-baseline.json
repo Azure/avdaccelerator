@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "10204545887103555407"
+      "templateHash": "2721063613665403714"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -59708,7 +59708,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "387394338378700944"
+              "templateHash": "17229633256737485369"
             }
           },
           "parameters": {
@@ -60014,11 +60014,6 @@
                     "value": "[parameters('timeZone')]"
                   },
                   "zone": "[if(parameters('useAvailabilityZones'), createObject('value', add(mod(range(1, parameters('count'))[copyIndex()], 3), 1)), createObject('value', 0))]",
-                  "managedIdentities": {
-                    "value": {
-                      "systemAssigned": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), true(), false())]"
-                    }
-                  },
                   "encryptionAtHost": {
                     "value": "[parameters('encryptionAtHost')]"
                   },
