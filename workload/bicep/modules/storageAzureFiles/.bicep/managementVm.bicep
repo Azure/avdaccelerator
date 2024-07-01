@@ -119,7 +119,6 @@ module managementVm '../../../../../avm/1.0.0/res/compute/virtual-machine/main.b
         encryptionAtHost: encryptionAtHost
         zone: 0
         osType: 'Windows'
-        //licenseType: 'Windows_Client'
         vmSize: mgmtVmSize
         securityType: securityType
         secureBootEnabled: secureBootEnabled
