@@ -176,9 +176,9 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
         location: location
         timeZone: timeZone
         zone: useAvailabilityZones ? (i % 3 + 1) : 0
-        managedIdentities: (identityServiceProvider == 'EntraID') ? {
-            systemAssigned: true
-        }: null
+        // managedIdentities: (identityServiceProvider == 'EntraID') ? {
+        //     systemAssigned: true
+        // }: null
         encryptionAtHost: encryptionAtHost
         virtualMachineScaleSetResourceId: '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/virtualMachineScaleSets/${vmssFlexNamePrefix}-${padLeft(((1 + (i + countIndex) / maxVmssFlexMembersCount)), 3, '0')}'
         osType: 'Windows'
@@ -220,7 +220,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
             enabled: (identityServiceProvider == 'EntraDS' || identityServiceProvider == 'ADDS') ? true : false
             settings: {
                 name: identityDomainName
-                ouPath: 'Computers'// !empty(sessionHostOuPath) ? sessionHostOuPath : null
+                ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
                 user: domainJoinUserName
                 restart: 'true'
                 options: '3'
