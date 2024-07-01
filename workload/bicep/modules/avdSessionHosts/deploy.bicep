@@ -220,10 +220,11 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
             enabled: (identityServiceProvider == 'EntraDS' || identityServiceProvider == 'ADDS') ? true : false
             settings: {
                 name: identityDomainName
-                ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
+                ouPath: 'Computers'// !empty(sessionHostOuPath) ? sessionHostOuPath : null
                 user: domainJoinUserName
                 restart: 'true'
                 options: '3'
+
             }
         }
         // Microsoft Entra ID Join.
