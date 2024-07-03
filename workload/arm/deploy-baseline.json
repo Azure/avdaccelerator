@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "17396731730123961985"
+      "templateHash": "3153280769511396717"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -59603,6 +59603,7 @@
       ]
     },
     {
+      "condition": "[parameters('avdDeploySessionHosts')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('AVD-VMSS-Flex-{0}', parameters('time'))]",

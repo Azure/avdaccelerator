@@ -1438,7 +1438,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
 }
 
 // VMSS Flex
-module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' = {
+module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' =  if (avdDeploySessionHosts) {
   name: 'AVD-VMSS-Flex-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${varComputeObjectsRgName}')
   params: {
