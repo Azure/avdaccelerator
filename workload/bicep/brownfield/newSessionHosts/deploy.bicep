@@ -459,5 +459,6 @@ module sessionHostConfiguration '../../modules/avdSessionHosts/.bicep/configureS
     sessionHosts
     monitoring
     hostPool
+    keyVault
   ]
 }]

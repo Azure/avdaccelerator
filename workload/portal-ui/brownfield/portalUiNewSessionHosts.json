@@ -410,7 +410,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "VM count index",
                                     "toolTip": "Provide the number of the highest session host name count, example: if highest session host count is vmavd1duse20005, provide a count index of 5. This number will be use to deploy new session hosts with a naming that continues the count of the current session hosts deployed, example: vmavd1duse20006.",
-                                    "placeholder": 1,
+                                    "placeholder": "Example: 1",
                                     "constraints": {
                                         "required": true
                                     }
