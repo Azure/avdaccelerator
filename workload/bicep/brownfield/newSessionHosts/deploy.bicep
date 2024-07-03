@@ -266,7 +266,7 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
   scope: resourceGroup('${varHostpoolSubId}', '${varHostpoolRgName}')
   name: 'HostPool-${time}'
   params: {
-    name: varHostPoolName
+    name: hostPoolGet.name
     friendlyName: hostPoolGet.properties.friendlyName
     location: hostPoolGet.location
     kvName: varKeyVaultName
@@ -290,7 +290,7 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
 
 // call on the keyvault
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
-  name: varKeyVaultName
+  name: hostPool.name
   scope: resourceGroup('${varKeyVaultSubId}', '${varKeyVaultRgName}')
 }
 
