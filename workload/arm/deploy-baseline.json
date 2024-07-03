@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "3153280769511396717"
+      "templateHash": "17645411745396277873"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -28308,7 +28308,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "15596550585720062237"
+              "templateHash": "7538487266254184368"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -28567,6 +28567,9 @@
                   "personalDesktopAssignmentType": {
                     "value": "[parameters('personalAssignType')]"
                   },
+                  "kvName": {
+                    "value": "[parameters('wrklKvName')]"
+                  },
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
@@ -28583,7 +28586,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "17619992663257683523"
+                      "templateHash": "9464746164097585942"
                     },
                     "name": "Azure Virtual Desktop Host Pool",
                     "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -28971,7 +28974,13 @@
                     "name": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. Name of the scaling plan."
+                        "description": "Required. Name of the host pool."
+                      }
+                    },
+                    "kvName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Name of the keyvault."
                       }
                     },
                     "location": {
@@ -29336,6 +29345,263 @@
                         "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
                         "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
                         "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+                      },
+                      "dependsOn": [
+                        "hostPool"
+                      ]
+                    },
+                    "keyVaultSecret": {
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('HP-Token-Secret-{0}', parameters('baseTime'))]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "keyVaultName": {
+                            "value": "[parameters('kvName')]"
+                          },
+                          "name": {
+                            "value": "hostPoolRegistrationToken"
+                          },
+                          "value": {
+                            "value": "[reference('hostPool').registrationInfo.token]"
+                          },
+                          "contentType": {
+                            "value": "Host pool registration token for session hosts"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "languageVersion": "2.0",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.28.1.47646",
+                              "templateHash": "8081761451262814691"
+                            },
+                            "name": "Key Vault Secrets",
+                            "description": "This module deploys a Key Vault Secret.",
+                            "owner": "Azure/module-maintainers"
+                          },
+                          "definitions": {
+                            "roleAssignmentType": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "roleDefinitionIdOrName": {
+                                    "type": "string",
+                                    "metadata": {
+                                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                                    }
+                                  },
+                                  "principalId": {
+                                    "type": "string",
+                                    "metadata": {
+                                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                                    }
+                                  },
+                                  "principalType": {
+                                    "type": "string",
+                                    "allowedValues": [
+                                      "Device",
+                                      "ForeignGroup",
+                                      "Group",
+                                      "ServicePrincipal",
+                                      "User"
+                                    ],
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The principal type of the assigned principal ID."
+                                    }
+                                  },
+                                  "description": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The description of the role assignment."
+                                    }
+                                  },
+                                  "condition": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                                    }
+                                  },
+                                  "conditionVersion": {
+                                    "type": "string",
+                                    "allowedValues": [
+                                      "2.0"
+                                    ],
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. Version of the condition."
+                                    }
+                                  },
+                                  "delegatedManagedIdentityResourceId": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The Resource Id of the delegated managed identity resource."
+                                    }
+                                  }
+                                }
+                              },
+                              "nullable": true
+                            }
+                          },
+                          "parameters": {
+                            "keyVaultName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Conditional. The name of the parent key vault. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The name of the secret."
+                              }
+                            },
+                            "tags": {
+                              "type": "object",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Resource tags."
+                              }
+                            },
+                            "attributesEnabled": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Determines whether the object is enabled."
+                              }
+                            },
+                            "attributesExp": {
+                              "type": "int",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible."
+                              }
+                            },
+                            "attributesNbf": {
+                              "type": "int",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Not before date in seconds since 1970-01-01T00:00:00Z."
+                              }
+                            },
+                            "contentType": {
+                              "type": "securestring",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The content type of the secret."
+                              }
+                            },
+                            "value": {
+                              "type": "securestring",
+                              "metadata": {
+                                "description": "Required. The value of the secret. NOTE: \"value\" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets."
+                              }
+                            },
+                            "roleAssignments": {
+                              "$ref": "#/definitions/roleAssignmentType",
+                              "metadata": {
+                                "description": "Optional. Array of role assignments to create."
+                              }
+                            }
+                          },
+                          "variables": {
+                            "builtInRoleNames": {
+                              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                              "Key Vault Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
+                              "Key Vault Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f25e0fa2-a7c8-4377-a976-54943a77a395')]",
+                              "Key Vault Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '21090545-7ca7-4776-b22c-e363652d74d2')]",
+                              "Key Vault Secrets Officer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7')]",
+                              "Key Vault Secrets User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')]",
+                              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                            }
+                          },
+                          "resources": {
+                            "keyVault": {
+                              "existing": true,
+                              "type": "Microsoft.KeyVault/vaults",
+                              "apiVersion": "2022-07-01",
+                              "name": "[parameters('keyVaultName')]"
+                            },
+                            "secret": {
+                              "type": "Microsoft.KeyVault/vaults/secrets",
+                              "apiVersion": "2022-07-01",
+                              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
+                              "tags": "[parameters('tags')]",
+                              "properties": {
+                                "contentType": "[parameters('contentType')]",
+                                "attributes": {
+                                  "enabled": "[parameters('attributesEnabled')]",
+                                  "exp": "[parameters('attributesExp')]",
+                                  "nbf": "[parameters('attributesNbf')]"
+                                },
+                                "value": "[parameters('value')]"
+                              },
+                              "dependsOn": [
+                                "keyVault"
+                              ]
+                            },
+                            "secret_roleAssignments": {
+                              "copy": {
+                                "name": "secret_roleAssignments",
+                                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+                              },
+                              "type": "Microsoft.Authorization/roleAssignments",
+                              "apiVersion": "2022-04-01",
+                              "scope": "[format('Microsoft.KeyVault/vaults/{0}/secrets/{1}', parameters('keyVaultName'), parameters('name'))]",
+                              "name": "[guid(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                              "properties": {
+                                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+                                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+                                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+                                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+                                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                              },
+                              "dependsOn": [
+                                "secret"
+                              ]
+                            }
+                          },
+                          "outputs": {
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the secret."
+                              },
+                              "value": "[parameters('name')]"
+                            },
+                            "resourceId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource ID of the secret."
+                              },
+                              "value": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('name'))]"
+                            },
+                            "resourceGroupName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the resource group the secret was created in."
+                              },
+                              "value": "[resourceGroup().name]"
+                            }
+                          }
+                        }
                       },
                       "dependsOn": [
                         "hostPool"
@@ -30036,403 +30302,6 @@
                   }
                 }
               }
-            },
-            {
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('HostPool-Token-{0}', parameters('time'))]",
-              "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
-              "resourceGroup": "[format('{0}', parameters('serviceObjectsRgName'))]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "hostPoolName": {
-                    "value": "[format('HostPool-{0}', parameters('time'))]"
-                  },
-                  "location": {
-                    "value": "[parameters('managementPlaneLocation')]"
-                  },
-                  "serviceObjectsRgName": {
-                    "value": "[parameters('serviceObjectsRgName')]"
-                  },
-                  "subscriptionId": {
-                    "value": "[parameters('subscriptionId')]"
-                  },
-                  "kvName": {
-                    "value": "[parameters('wrklKvName')]"
-                  },
-                  "hostPoolProperties": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.DesktopVirtualization/hostPools', format('HostPool-{0}', parameters('time'))), '2023-09-05')]"
-                  },
-                  "tags": {
-                    "value": "[parameters('tags')]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.28.1.47646",
-                      "templateHash": "693192147441275349"
-                    },
-                    "name": "AVD LZA host pool token get",
-                    "description": "This module gets properties of existing host pool including updates to the registration token.",
-                    "owner": "Azure/avdaccelerator"
-                  },
-                  "parameters": {
-                    "subscriptionId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "AVD workload subscription ID, multiple subscriptions scenario."
-                      }
-                    },
-                    "location": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Location where to deploy AVD management plane."
-                      }
-                    },
-                    "kvName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Name of keyvault that will contain host pool registration token."
-                      }
-                    },
-                    "serviceObjectsRgName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "AVD Resource Group Name for the service objects."
-                      }
-                    },
-                    "hostPoolName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "AVD Host Pool Name"
-                      }
-                    },
-                    "hostPoolProperties": {
-                      "type": "object",
-                      "metadata": {
-                        "description": "AVD Host Pool properties"
-                      }
-                    },
-                    "tags": {
-                      "type": "object",
-                      "metadata": {
-                        "description": "Tags to be applied to resources"
-                      }
-                    },
-                    "time": {
-                      "type": "string",
-                      "defaultValue": "[utcNow()]",
-                      "metadata": {
-                        "description": "Do not modify, used to set unique value for resource deployment."
-                      }
-                    }
-                  },
-                  "resources": [
-                    {
-                      "type": "Microsoft.DesktopVirtualization/hostPools",
-                      "apiVersion": "2023-09-05",
-                      "name": "[parameters('hostPoolName')]",
-                      "location": "[parameters('location')]",
-                      "tags": "[parameters('tags')]",
-                      "properties": {
-                        "friendlyName": "[parameters('hostPoolProperties').friendlyName]",
-                        "description": "[parameters('hostPoolProperties').description]",
-                        "hostPoolType": "[parameters('hostPoolProperties').hostPoolType]",
-                        "publicNetworkAccess": "[parameters('hostPoolProperties').publicNetworkAccess]",
-                        "customRdpProperty": "[parameters('hostPoolProperties').customRdpProperty]",
-                        "personalDesktopAssignmentType": "[parameters('hostPoolProperties').personalDesktopAssignmentType]",
-                        "preferredAppGroupType": "[parameters('hostPoolProperties').preferredAppGroupType]",
-                        "maxSessionLimit": "[parameters('hostPoolProperties').maxSessionLimit]",
-                        "loadBalancerType": "[parameters('hostPoolProperties').loadBalancerType]",
-                        "startVMOnConnect": "[parameters('hostPoolProperties').startVMOnConnect]",
-                        "validationEnvironment": "[parameters('hostPoolProperties').validationEnvironment]",
-                        "registrationInfo": {
-                          "expirationTime": "[dateTimeAdd(parameters('time'), 'PT8H')]",
-                          "token": null,
-                          "registrationTokenOperation": "Update"
-                        },
-                        "vmTemplate": "[parameters('hostPoolProperties').vmTemplate]",
-                        "agentUpdate": "[parameters('hostPoolProperties').agentUpdate]",
-                        "ring": "[parameters('hostPoolProperties').ring]",
-                        "ssoadfsAuthority": "[parameters('hostPoolProperties').ssoadfsAuthority]",
-                        "ssoClientId": "[parameters('hostPoolProperties').ssoClientId]",
-                        "ssoClientSecretKeyVaultPath": "[parameters('hostPoolProperties').ssoClientSecretKeyVaultPath]",
-                        "ssoSecretType": "[parameters('hostPoolProperties').ssoSecretType]"
-                      }
-                    },
-                    {
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[format('HP-Token-Secret-{0}', parameters('time'))]",
-                      "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
-                      "resourceGroup": "[format('{0}', parameters('serviceObjectsRgName'))]",
-                      "properties": {
-                        "expressionEvaluationOptions": {
-                          "scope": "inner"
-                        },
-                        "mode": "Incremental",
-                        "parameters": {
-                          "keyVaultName": {
-                            "value": "[parameters('kvName')]"
-                          },
-                          "name": {
-                            "value": "hostPoolRegistrationToken"
-                          },
-                          "value": {
-                            "value": "[reference(resourceId('Microsoft.DesktopVirtualization/hostPools', parameters('hostPoolName')), '2023-09-05').registrationInfo.token]"
-                          },
-                          "contentType": {
-                            "value": "Host pool registration token for session hosts"
-                          }
-                        },
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "languageVersion": "2.0",
-                          "contentVersion": "1.0.0.0",
-                          "metadata": {
-                            "_generator": {
-                              "name": "bicep",
-                              "version": "0.28.1.47646",
-                              "templateHash": "8081761451262814691"
-                            },
-                            "name": "Key Vault Secrets",
-                            "description": "This module deploys a Key Vault Secret.",
-                            "owner": "Azure/module-maintainers"
-                          },
-                          "definitions": {
-                            "roleAssignmentType": {
-                              "type": "array",
-                              "items": {
-                                "type": "object",
-                                "properties": {
-                                  "roleDefinitionIdOrName": {
-                                    "type": "string",
-                                    "metadata": {
-                                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                                    }
-                                  },
-                                  "principalId": {
-                                    "type": "string",
-                                    "metadata": {
-                                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                                    }
-                                  },
-                                  "principalType": {
-                                    "type": "string",
-                                    "allowedValues": [
-                                      "Device",
-                                      "ForeignGroup",
-                                      "Group",
-                                      "ServicePrincipal",
-                                      "User"
-                                    ],
-                                    "nullable": true,
-                                    "metadata": {
-                                      "description": "Optional. The principal type of the assigned principal ID."
-                                    }
-                                  },
-                                  "description": {
-                                    "type": "string",
-                                    "nullable": true,
-                                    "metadata": {
-                                      "description": "Optional. The description of the role assignment."
-                                    }
-                                  },
-                                  "condition": {
-                                    "type": "string",
-                                    "nullable": true,
-                                    "metadata": {
-                                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                                    }
-                                  },
-                                  "conditionVersion": {
-                                    "type": "string",
-                                    "allowedValues": [
-                                      "2.0"
-                                    ],
-                                    "nullable": true,
-                                    "metadata": {
-                                      "description": "Optional. Version of the condition."
-                                    }
-                                  },
-                                  "delegatedManagedIdentityResourceId": {
-                                    "type": "string",
-                                    "nullable": true,
-                                    "metadata": {
-                                      "description": "Optional. The Resource Id of the delegated managed identity resource."
-                                    }
-                                  }
-                                }
-                              },
-                              "nullable": true
-                            }
-                          },
-                          "parameters": {
-                            "keyVaultName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Conditional. The name of the parent key vault. Required if the template is used in a standalone deployment."
-                              }
-                            },
-                            "name": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. The name of the secret."
-                              }
-                            },
-                            "tags": {
-                              "type": "object",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Resource tags."
-                              }
-                            },
-                            "attributesEnabled": {
-                              "type": "bool",
-                              "defaultValue": true,
-                              "metadata": {
-                                "description": "Optional. Determines whether the object is enabled."
-                              }
-                            },
-                            "attributesExp": {
-                              "type": "int",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible."
-                              }
-                            },
-                            "attributesNbf": {
-                              "type": "int",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. Not before date in seconds since 1970-01-01T00:00:00Z."
-                              }
-                            },
-                            "contentType": {
-                              "type": "securestring",
-                              "nullable": true,
-                              "metadata": {
-                                "description": "Optional. The content type of the secret."
-                              }
-                            },
-                            "value": {
-                              "type": "securestring",
-                              "metadata": {
-                                "description": "Required. The value of the secret. NOTE: \"value\" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets."
-                              }
-                            },
-                            "roleAssignments": {
-                              "$ref": "#/definitions/roleAssignmentType",
-                              "metadata": {
-                                "description": "Optional. Array of role assignments to create."
-                              }
-                            }
-                          },
-                          "variables": {
-                            "builtInRoleNames": {
-                              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-                              "Key Vault Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
-                              "Key Vault Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f25e0fa2-a7c8-4377-a976-54943a77a395')]",
-                              "Key Vault Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '21090545-7ca7-4776-b22c-e363652d74d2')]",
-                              "Key Vault Secrets Officer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7')]",
-                              "Key Vault Secrets User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')]",
-                              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
-                              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-                              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
-                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-                            }
-                          },
-                          "resources": {
-                            "keyVault": {
-                              "existing": true,
-                              "type": "Microsoft.KeyVault/vaults",
-                              "apiVersion": "2022-07-01",
-                              "name": "[parameters('keyVaultName')]"
-                            },
-                            "secret": {
-                              "type": "Microsoft.KeyVault/vaults/secrets",
-                              "apiVersion": "2022-07-01",
-                              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
-                              "tags": "[parameters('tags')]",
-                              "properties": {
-                                "contentType": "[parameters('contentType')]",
-                                "attributes": {
-                                  "enabled": "[parameters('attributesEnabled')]",
-                                  "exp": "[parameters('attributesExp')]",
-                                  "nbf": "[parameters('attributesNbf')]"
-                                },
-                                "value": "[parameters('value')]"
-                              },
-                              "dependsOn": [
-                                "keyVault"
-                              ]
-                            },
-                            "secret_roleAssignments": {
-                              "copy": {
-                                "name": "secret_roleAssignments",
-                                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
-                              },
-                              "type": "Microsoft.Authorization/roleAssignments",
-                              "apiVersion": "2022-04-01",
-                              "scope": "[format('Microsoft.KeyVault/vaults/{0}/secrets/{1}', parameters('keyVaultName'), parameters('name'))]",
-                              "name": "[guid(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
-                              "properties": {
-                                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-                                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-                                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-                                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
-                              },
-                              "dependsOn": [
-                                "secret"
-                              ]
-                            }
-                          },
-                          "outputs": {
-                            "name": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The name of the secret."
-                              },
-                              "value": "[parameters('name')]"
-                            },
-                            "resourceId": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The resource ID of the secret."
-                              },
-                              "value": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('name'))]"
-                            },
-                            "resourceGroupName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The name of the resource group the secret was created in."
-                              },
-                              "value": "[resourceGroup().name]"
-                            }
-                          }
-                        }
-                      },
-                      "dependsOn": [
-                        "[resourceId('Microsoft.DesktopVirtualization/hostPools', parameters('hostPoolName'))]"
-                      ]
-                    }
-                  ]
-                }
-              },
-              "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time')))]"
-              ]
             },
             {
               "copy": {
