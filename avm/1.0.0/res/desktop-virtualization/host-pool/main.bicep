@@ -202,7 +202,6 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
     ssoSecretType: ssoSecretType
   }
 }
-
 module keyVaultSecret '../../../../../avm/1.0.0/res/key-vault/vault/secret/main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-HP-Token-Secret'
   params: {
