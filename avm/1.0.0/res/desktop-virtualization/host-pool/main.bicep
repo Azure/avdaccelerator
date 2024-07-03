@@ -5,8 +5,8 @@ metadata owner = 'Azure/module-maintainers'
 @sys.description('Required. Name of the host pool.')
 param name string
 
-@sys.description('Required. Name of the keyvault.')
-param kvName string
+@sys.description('Required. Resource ID of the keyvault.')
+param keyVaultResourceId string
 
 @sys.description('Optional. Location of the scaling plan. Defaults to resource group location.')
 param location string = resourceGroup().location
@@ -150,6 +150,10 @@ var builtInRoleNames = {
   'Managed Applications Reader': '/providers/Microsoft.Authorization/roleDefinitions/b9331d33-8a36-4f8c-b097-4f54124fdb44'
 }
 
+var varKeyVaultSubId = split(keyVaultResourceId, '/')[2]
+var varKeyVaultRgName = split(keyVaultResourceId, '/')[4]
+var varKeyVaultName = split(keyVaultResourceId, '/')[8]
+
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
   if (enableTelemetry) {
     name: take(
@@ -202,10 +206,12 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
     ssoSecretType: ssoSecretType
   }
 }
+
 module keyVaultSecret '../../../../../avm/1.0.0/res/key-vault/vault/secret/main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-HP-Token-Secret'
+  scope: resourceGroup('${varKeyVaultSubId}', '${varKeyVaultRgName}')
   params: {
-    keyVaultName: kvName
+    keyVaultName: varKeyVaultName
     name: 'hostPoolRegistrationToken'
     value: hostPool.properties.registrationInfo.token
     contentType: 'Host pool registration token for session hosts'
@@ -330,6 +336,9 @@ output name string = hostPool.name
 
 @sys.description('The location of the host pool.')
 output location string = hostPool.location
+
+@sys.description('Host pool registration token secret key vault name.')
+output keyVaultName string = keyVaultSecret.outputs.name
 
 // ================ //
 // Definitions      //
