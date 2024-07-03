@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "1175577734320927441"
+      "templateHash": "12831843698170932848"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -28238,8 +28238,8 @@
           "osImage": {
             "value": "[parameters('avdOsImage')]"
           },
-          "wrklKvName": {
-            "value": "[variables('varWrklKvName')]"
+          "keyVaultResourceId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Workload-KeyVault-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]"
           },
           "workSpaceFriendlyName": {
             "value": "[variables('varWorkSpaceFriendlyName')]"
@@ -28308,7 +28308,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "887915029329415802"
+              "templateHash": "10740025393189833555"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -28351,10 +28351,10 @@
                 "description": "AVD OS image source."
               }
             },
-            "wrklKvName": {
+            "keyVaultResourceId": {
               "type": "string",
               "metadata": {
-                "description": "Name of keyvault that will contain host pool registration token."
+                "description": "Resource ID of keyvault that will contain host pool registration token."
               }
             },
             "serviceObjectsRgName": {
@@ -28567,8 +28567,8 @@
                   "personalDesktopAssignmentType": {
                     "value": "[parameters('personalAssignType')]"
                   },
-                  "kvName": {
-                    "value": "[parameters('wrklKvName')]"
+                  "keyVaultResourceId": {
+                    "value": "[parameters('keyVaultResourceId')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -28586,7 +28586,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "12873793690697787202"
+                      "templateHash": "6101391367967417839"
                     },
                     "name": "Azure Virtual Desktop Host Pool",
                     "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -28977,10 +28977,10 @@
                         "description": "Required. Name of the host pool."
                       }
                     },
-                    "kvName": {
+                    "keyVaultResourceId": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. Name of the keyvault."
+                        "description": "Required. Resource ID of the keyvault."
                       }
                     },
                     "location": {
@@ -29227,7 +29227,10 @@
                       "Managed Application Contributor Role": "/providers/Microsoft.Authorization/roleDefinitions/641177b8-a67a-45b9-a033-47bc880bb21e",
                       "Managed Application Operator Role": "/providers/Microsoft.Authorization/roleDefinitions/c7393b34-138c-406f-901b-d8cf2b17e6ae",
                       "Managed Applications Reader": "/providers/Microsoft.Authorization/roleDefinitions/b9331d33-8a36-4f8c-b097-4f54124fdb44"
-                    }
+                    },
+                    "varKeyVaultSubId": "[split(parameters('keyVaultResourceId'), '/')[2]]",
+                    "varKeyVaultRgName": "[split(parameters('keyVaultResourceId'), '/')[4]]",
+                    "varKeyVaultName": "[split(parameters('keyVaultResourceId'), '/')[8]]"
                   },
                   "resources": {
                     "avmTelemetry": {
@@ -29354,6 +29357,8 @@
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('{0}-HP-Token-Secret', uniqueString(deployment().name, parameters('location')))]",
+                      "subscriptionId": "[format('{0}', variables('varKeyVaultSubId'))]",
+                      "resourceGroup": "[format('{0}', variables('varKeyVaultRgName'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -29361,7 +29366,7 @@
                         "mode": "Incremental",
                         "parameters": {
                           "keyVaultName": {
-                            "value": "[parameters('kvName')]"
+                            "value": "[variables('varKeyVaultName')]"
                           },
                           "name": {
                             "value": "hostPoolRegistrationToken"
@@ -30298,6 +30303,13 @@
                         "description": "The location of the host pool."
                       },
                       "value": "[reference('hostPool', '2023-09-05', 'full').location]"
+                    },
+                    "keyVaultName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Host pool registration token secret key vault name."
+                      },
+                      "value": "[reference('keyVaultSecret').outputs.name.value]"
                     }
                   }
                 }
