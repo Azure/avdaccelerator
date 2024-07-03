@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "17939166048458313192"
+      "templateHash": "6155581133285703499"
     }
   },
   "parameters": {
@@ -2672,7 +2672,7 @@
           "adminPassword": {
             "reference": {
               "keyVault": {
-                "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varKeyVaultSubId')), format('{0}', variables('varKeyVaultRgName'))), 'Microsoft.KeyVault/vaults', split(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '/')[8])]"
+                "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varKeyVaultSubId')), format('{0}', variables('varKeyVaultRgName'))), 'Microsoft.KeyVault/vaults', split(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time'))), '2022-09-01').outputs.hostPoolTokenResourceId.value, '/')[8])]"
               },
               "secretName": "[parameters('vmLocalAdminPasswordSecretName')]"
             }
@@ -2687,7 +2687,7 @@
               }
             ]
           },
-          "extensionDomainJoinPassword": "[if(or(equals(parameters('identityServiceProvider'), 'ADDS'), equals(parameters('identityServiceProvider'), 'EntraDS')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varKeyVaultSubId')), format('{0}', variables('varKeyVaultRgName'))), 'Microsoft.KeyVault/vaults', split(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '/')[8])), 'secretName', parameters('domainJoinPasswordSecretName'))), createObject('value', 'domainJoinUserPassword'))]",
+          "extensionDomainJoinPassword": "[if(or(equals(parameters('identityServiceProvider'), 'ADDS'), equals(parameters('identityServiceProvider'), 'EntraDS')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varKeyVaultSubId')), format('{0}', variables('varKeyVaultRgName'))), 'Microsoft.KeyVault/vaults', split(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time'))), '2022-09-01').outputs.hostPoolTokenResourceId.value, '/')[8])), 'secretName', parameters('domainJoinPasswordSecretName'))), createObject('value', 'domainJoinUserPassword'))]",
           "extensionDomainJoinConfig": {
             "value": {
               "enabled": "[if(or(equals(parameters('identityServiceProvider'), 'ADDS'), equals(parameters('identityServiceProvider'), 'EntraDS')), true(), false())]",
@@ -8517,7 +8517,7 @@
           "hostPoolToken": {
             "reference": {
               "keyVault": {
-                "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varKeyVaultSubId')), format('{0}', variables('varKeyVaultRgName'))), 'Microsoft.KeyVault/vaults', split(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '/')[8])]"
+                "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varKeyVaultSubId')), format('{0}', variables('varKeyVaultRgName'))), 'Microsoft.KeyVault/vaults', split(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time'))), '2022-09-01').outputs.hostPoolTokenResourceId.value, '/')[8])]"
               },
               "secretName": "hostPoolRegistrationToken"
             }
