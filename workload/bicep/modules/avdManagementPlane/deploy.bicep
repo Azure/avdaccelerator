@@ -193,7 +193,7 @@ var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
 // =========== //
 // Deployments Commercial//
 // =========== //
-// Hostpool.
+// Hostpool creation.
 module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main.bicep' = {
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   name: 'HostPool-${time}'
@@ -219,20 +219,45 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
   }
 }
 
-// Add secret to keyvault
-//resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
-module keyVaultSecret '../../../../avm/1.0.0/res/key-vault/vault/secret/main.bicep' = {
-  name: 'HP-Token-Secret-${time}'
+// Call on the hotspool
+resource hostPoolGet 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
+  name: hostPool.name
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+}
+
+// Create registration token secret on keyvault.
+module hostPoolGetToken './.bicep/hostPoolGetToken.bicep' = {
+  scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+  name: 'HostPool-Token-${time}'
   params: {
-    keyVaultName: wrklKvName
-    name: 'hostPoolRegistrationToken'
-    value: hostPool.outputs.registrationToken
-    contentType: 'Host pool registration token for session hosts'
+    hostPoolName: hostPoolGet.name
+    location: managementPlaneLocation
+    serviceObjectsRgName: serviceObjectsRgName
+    subscriptionId: subscriptionId
+    kvName: wrklKvName
+    hostPoolProperties: hostPoolGet.properties
+    // hostPoolProperties: {
+    //   friendlyName: hostPoolGet.properties.friendlyName
+    //   description: hostPoolGet.properties.description
+    //   hostPoolType: hostPoolGet.properties.hostPoolType
+    //   publicNetworkAccess: hostPoolGet.properties.publicNetworkAccess
+    //   customRdpProperty: hostPoolGet.properties.customRdpProperty
+    //   personalDesktopAssignmentType: hostPoolGet.properties.personalDesktopAssignmentType
+    //   preferredAppGroupType: hostPoolGet.properties.preferredAppGroupType
+    //   maxSessionLimit: hostPoolGet.properties.maxSessionLimit
+    //   loadBalancerType: hostPoolGet.properties.loadBalancerType
+    //   startVMOnConnect: hostPoolGet.properties.startVMOnConnect
+    //   validationEnvironment: hostPoolGet.properties.validationEnvironment
+    //   vmTemplate: hostPoolGet.properties.vmTemplate
+    //   agentUpdate: hostPoolGet.properties.agentUpdate
+    //   ring: hostPoolGet.properties.ring
+    //   ssoadfsAuthority: hostPoolGet.properties.ssoadfsAuthority
+    //   ssoClientId: hostPoolGet.properties.ssoClientId
+    //   ssoClientSecretKeyVaultPath: hostPoolGet.properties.ssoClientSecretKeyVaultPath
+    //   ssoSecretType: hostPoolGet.properties.ssoSecretType
+    // }
+    tags: tags
   }
-  dependsOn: [
-    hostPool
-  ] 
 }
 
 // Application groups.
