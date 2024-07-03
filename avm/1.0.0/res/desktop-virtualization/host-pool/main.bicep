@@ -207,7 +207,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
   }
 }
 
-module keyVaultSecret '../../../../../avm/1.0.0/res/key-vault/vault/secret/main.bicep' = {
+module keyVaultHostPoolSecret '../../../../../avm/1.0.0/res/key-vault/vault/secret/main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-HP-Token-Secret'
   scope: resourceGroup('${varKeyVaultSubId}', '${varKeyVaultRgName}')
   params: {
@@ -338,7 +338,7 @@ output name string = hostPool.name
 output location string = hostPool.location
 
 @sys.description('Host pool registration token secret resource ID.')
-output hostPoolTokenResourceId string = keyVaultSecret.outputs.resourceId
+output keyVaultTokenSecretResourceId string = keyVaultHostPoolSecret.outputs.resourceId
 
 // ================ //
 // Definitions      //
