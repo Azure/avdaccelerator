@@ -219,6 +219,7 @@ var varHostpoolRgName = split(hostPoolResourceId, '/')[4]
 var varHostPoolName = split(hostPoolResourceId, '/')[8]
 var varKeyVaultSubId = split(keyVaultResourceId, '/')[2]
 var varKeyVaultRgName = split(keyVaultResourceId, '/')[4]
+var varKeyVaultName = split(keyVaultResourceId, '/')[8]
 var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
   storageAccountType: diskType
 } : {
@@ -289,7 +290,7 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
 
 // call on the keyvault
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
-  name: split(hostPool.outputs.hostPoolTokenResourceId, '/')[8]
+  name: split(hostPool.outputs.keyVaultTokenSecretResourceId, '/')[8]
   scope: resourceGroup('${varKeyVaultSubId}', '${varKeyVaultRgName}')
 }
 
