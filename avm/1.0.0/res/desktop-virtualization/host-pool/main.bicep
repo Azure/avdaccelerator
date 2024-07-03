@@ -319,9 +319,6 @@ output name string = hostPool.name
 @sys.description('The location of the host pool.')
 output location string = hostPool.location
 
-@sys.description('The registration token of the host pool.')
-output registrationToken string = hostPool.properties.registrationInfo.token
-
 // ================ //
 // Definitions      //
 // ================ //
