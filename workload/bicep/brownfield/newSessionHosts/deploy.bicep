@@ -269,6 +269,7 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
     name: varHostPoolName
     friendlyName: hostPoolGet.properties.friendlyName
     location: hostPoolGet.location
+    kvName: varKeyVaultName
     hostPoolType: (hostPoolGet.properties.hostPoolType == 'Personal') ? 'Personal' : (hostPoolGet.properties.hostPoolType == 'Pooled') ? 'Pooled' : null
     startVMOnConnect: hostPoolGet.properties.startVMOnConnect
     customRdpProperty: hostPoolGet.properties.customRdpProperty
@@ -444,7 +445,7 @@ module sessionHostConfiguration '../../modules/avdSessionHosts/.bicep/configureS
   params: {
     location: location
     name: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
-    hostPoolToken: hostPool.outputs.registrationToken
+    hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
     baseScriptUri: varSessionHostConfigurationScriptUri
     scriptName: varSessionHostConfigurationScript
     fslogix: configureFslogix
