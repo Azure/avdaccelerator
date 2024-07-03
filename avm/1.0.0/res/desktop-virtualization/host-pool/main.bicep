@@ -2,8 +2,11 @@ metadata name = 'Azure Virtual Desktop Host Pool'
 metadata description = 'This module deploys an Azure Virtual Desktop Host Pool'
 metadata owner = 'Azure/module-maintainers'
 
-@sys.description('Required. Name of the scaling plan.')
+@sys.description('Required. Name of the host pool.')
 param name string
+
+@sys.description('Required. Name of the keyvault.')
+param kvName string
 
 @sys.description('Optional. Location of the scaling plan. Defaults to resource group location.')
 param location string = resourceGroup().location
@@ -197,6 +200,16 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
     ssoClientId: ssoClientId
     ssoClientSecretKeyVaultPath: ssoClientSecretKeyVaultPath
     ssoSecretType: ssoSecretType
+  }
+}
+
+module keyVaultSecret '../../../../../avm/1.0.0/res/key-vault/vault/secret/main.bicep' = {
+  name: 'HP-Token-Secret-${baseTime}'
+  params: {
+    keyVaultName: kvName
+    name: 'hostPoolRegistrationToken'
+    value: hostPool.properties.registrationInfo.token
+    contentType: 'Host pool registration token for session hosts'
   }
 }
 

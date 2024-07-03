@@ -208,6 +208,7 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
     maxSessionLimit: hostPoolMaxSessions
     preferredAppGroupType: preferredAppGroupType
     personalDesktopAssignmentType: personalAssignType
+    kvName: wrklKvName
     tags: tags
     diagnosticSettings: varDiagnosticSettings
     agentUpdate: !empty(hostPoolAgentUpdateSchedule) ? {
@@ -216,47 +217,6 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
         type: 'Scheduled'
         useSessionHostLocalTime: true
     }: {}
-  }
-}
-
-// Call on the hotspool
-resource hostPoolGet 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
-  name: hostPool.name
-  scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
-}
-
-// Create registration token secret on keyvault.
-module hostPoolGetToken './.bicep/hostPoolGetToken.bicep' = {
-  scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
-  name: 'HostPool-Token-${time}'
-  params: {
-    hostPoolName: hostPoolGet.name
-    location: managementPlaneLocation
-    serviceObjectsRgName: serviceObjectsRgName
-    subscriptionId: subscriptionId
-    kvName: wrklKvName
-    hostPoolProperties: hostPoolGet.properties
-    // hostPoolProperties: {
-    //   friendlyName: hostPoolGet.properties.friendlyName
-    //   description: hostPoolGet.properties.description
-    //   hostPoolType: hostPoolGet.properties.hostPoolType
-    //   publicNetworkAccess: hostPoolGet.properties.publicNetworkAccess
-    //   customRdpProperty: hostPoolGet.properties.customRdpProperty
-    //   personalDesktopAssignmentType: hostPoolGet.properties.personalDesktopAssignmentType
-    //   preferredAppGroupType: hostPoolGet.properties.preferredAppGroupType
-    //   maxSessionLimit: hostPoolGet.properties.maxSessionLimit
-    //   loadBalancerType: hostPoolGet.properties.loadBalancerType
-    //   startVMOnConnect: hostPoolGet.properties.startVMOnConnect
-    //   validationEnvironment: hostPoolGet.properties.validationEnvironment
-    //   vmTemplate: hostPoolGet.properties.vmTemplate
-    //   agentUpdate: hostPoolGet.properties.agentUpdate
-    //   ring: hostPoolGet.properties.ring
-    //   ssoadfsAuthority: hostPoolGet.properties.ssoadfsAuthority
-    //   ssoClientId: hostPoolGet.properties.ssoClientId
-    //   ssoClientSecretKeyVaultPath: hostPoolGet.properties.ssoClientSecretKeyVaultPath
-    //   ssoSecretType: hostPoolGet.properties.ssoSecretType
-    // }
-    tags: tags
   }
 }
 
