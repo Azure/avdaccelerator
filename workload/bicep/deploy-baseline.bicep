@@ -1102,7 +1102,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     applicationGroupFriendlyNameDesktop: varApplicationGroupFriendlyName
     workSpaceName: varWorkSpaceName
     osImage: avdOsImage
-    wrklKvName: varWrklKvName
+    keyVaultResourceId: wrklKeyVault.outputs.resourceId
     workSpaceFriendlyName: varWorkSpaceFriendlyName
     computeTimeZone: varTimeZoneSessionHosts
     hostPoolName: varHostPoolName
