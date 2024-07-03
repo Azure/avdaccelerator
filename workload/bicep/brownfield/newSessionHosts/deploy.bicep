@@ -289,7 +289,7 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
 
 // call on the keyvault
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
-  name: split(hostPool.outputs.resourceId, '/')[8]
+  name: split(hostPool.outputs.hostPoolTokenResourceId, '/')[8]
   scope: resourceGroup('${varKeyVaultSubId}', '${varKeyVaultRgName}')
 }
 
