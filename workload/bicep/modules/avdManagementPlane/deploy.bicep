@@ -25,8 +25,8 @@ param securityPrincipalId string
 @sys.description('AVD OS image source.')
 param osImage string
 
-@sys.description('Name of keyvault that will contain host pool registration token.')
-param wrklKvName string
+@sys.description('Resource ID of keyvault that will contain host pool registration token.')
+param keyVaultResourceId string
 
 @sys.description('AVD Resource Group Name for the service objects.')
 param serviceObjectsRgName string
@@ -208,7 +208,7 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
     maxSessionLimit: hostPoolMaxSessions
     preferredAppGroupType: preferredAppGroupType
     personalDesktopAssignmentType: personalAssignType
-    kvName: wrklKvName
+    keyVaultResourceId: keyVaultResourceId
     tags: tags
     diagnosticSettings: varDiagnosticSettings
     agentUpdate: !empty(hostPoolAgentUpdateSchedule) ? {
