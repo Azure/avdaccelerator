@@ -204,7 +204,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
 }
 
 module keyVaultSecret '../../../../../avm/1.0.0/res/key-vault/vault/secret/main.bicep' = {
-  name: 'HP-Token-Secret-${baseTime}'
+  name: '${uniqueString(deployment().name, location)}-HP-Token-Secret'
   params: {
     keyVaultName: kvName
     name: 'hostPoolRegistrationToken'
