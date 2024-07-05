@@ -14,8 +14,8 @@ This solution fully deploys the AVD Scaling Tool provided in the [Microsoft Lear
 
 ### Azure Portal
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%avm-migration%2Fworkload%2Farm%2Fbrownfield%2FdeployScalingTool.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%avm-migration%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiScalingTool.json)
-[![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%avm-migration%2Fworkload%2Farm%2Fbrownfield%2FdeployScalingTool.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%avm-migration%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiScalingTool.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Favm-migration%2Fworkload%2Farm%2Fbrownfield%2FdeployScalingTool.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Favm-migration%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiScalingTool.json)
+[![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Favm-migration%2Fworkload%2Farm%2Fbrownfield%2FdeployScalingTool.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Favm-migration%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiScalingTool.json)
 
 ### PowerShell
 
