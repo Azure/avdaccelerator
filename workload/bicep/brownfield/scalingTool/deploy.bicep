@@ -326,7 +326,7 @@ module roleAssignments'../../../../avm/1.0.0/ptn/authorization/role-assignment/m
   scope: resourceGroup(varRoleAssignments[i])
   params: {
     principalId: automationAccount_New.outputs.systemAssignedMIPrincipalId
-    roleDefinitionIdOrName: 'Desktop Virtualization Power On Off Contributor'
+    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/40c5ff49-9181-41f8-ae61-143b0e78555e' //'Desktop Virtualization Power On Off Contributor'
     principalType: 'ServicePrincipal'
   }
 }]
