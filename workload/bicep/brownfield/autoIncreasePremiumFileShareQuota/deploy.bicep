@@ -342,7 +342,7 @@ module roleAssignments '../../../../avm/1.0.0/ptn/authorization/role-assignment/
   name: 'Role-Assignment-${time}'
   scope: resourceGroup(varStorageAccountSubscriptionId, varStorageAccountResourceGroupName)
   params: {
-      roleDefinitionIdOrName: 'Storage Account Contributor'
+      roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab' //'Storage Account Contributor'
       principalId: automationAccount_New.outputs.systemAssignedMIPrincipalId
       principalType: 'ServicePrincipal'
   }
