@@ -170,7 +170,7 @@ module ztRoleAssignmentCompute '../../../../avm/1.0.0/ptn/authorization/role-ass
     name: 'ZT-RA-Comp-${customPolicyDefinition.deploymentName}-${time}'
     params: {
         principalId: diskZeroTrust ? ztPolicyAssignmentCompute[i].outputs.principalId : ''
-        roleDefinitionIdOrName: 'Disk Pool Operator'
+        roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/60fc6e62-5479-42d4-8bf4-67625fcc2840'
         principalType: ''
     }
 }]
@@ -181,7 +181,7 @@ module ztRoleAssignmentServObj '../../../../avm/1.0.0/ptn/authorization/role-ass
     name: 'ZT-RA-ServObj-${customPolicyDefinition.deploymentName}-${time}'
     params: {
         principalId: diskZeroTrust ? ztPolicyAssignmentServiceObjects[i].outputs.principalId : ''
-        roleDefinitionIdOrName: 'Disk Pool Operator'
+        roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/60fc6e62-5479-42d4-8bf4-67625fcc2840'
         principalType: ''
     }
 }]
@@ -192,7 +192,7 @@ module ztRoleAssignment '../../../../avm/1.0.0/ptn/authorization/role-assignment
     name: 'ZT-RA-${time}'
     params: {
         principalId: diskZeroTrust ? ztKeyVault.outputs.ztDiskEncryptionSetPrincipalId : ''
-        roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
+        roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/e147488a-f6f5-4113-8e2d-b22465e65bf6' //'Key Vault Crypto Service Encryption User'
         principalType: ''
     }
 }
