@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "13622769139513140798"
+      "templateHash": "5438566960260652450"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -34620,7 +34620,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "3090147738473466001"
+              "templateHash": "17595149312117513254"
             }
           },
           "parameters": {
@@ -35805,7 +35805,7 @@
                     "value": "Disk Pool Operator"
                   },
                   "principalType": {
-                    "value": "ServicePrincipal"
+                    "value": ""
                   }
                 },
                 "template": {
@@ -35978,7 +35978,7 @@
                     "value": "Disk Pool Operator"
                   },
                   "principalType": {
-                    "value": "ServicePrincipal"
+                    "value": ""
                   }
                 },
                 "template": {
@@ -36147,7 +36147,7 @@
                     "value": "Key Vault Crypto Service Encryption User"
                   },
                   "principalType": {
-                    "value": "ServicePrincipal"
+                    "value": ""
                   }
                 },
                 "template": {
