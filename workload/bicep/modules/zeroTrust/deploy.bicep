@@ -171,7 +171,7 @@ module ztRoleAssignmentCompute '../../../../avm/1.0.0/ptn/authorization/role-ass
     params: {
         principalId: diskZeroTrust ? ztPolicyAssignmentCompute[i].outputs.principalId : ''
         roleDefinitionIdOrName: 'Disk Pool Operator'
-        principalType: 'ServicePrincipal'
+        principalType: ''
     }
 }]
 
@@ -182,7 +182,7 @@ module ztRoleAssignmentServObj '../../../../avm/1.0.0/ptn/authorization/role-ass
     params: {
         principalId: diskZeroTrust ? ztPolicyAssignmentServiceObjects[i].outputs.principalId : ''
         roleDefinitionIdOrName: 'Disk Pool Operator'
-        principalType: 'ServicePrincipal'
+        principalType: ''
     }
 }]
 
@@ -193,7 +193,7 @@ module ztRoleAssignment '../../../../avm/1.0.0/ptn/authorization/role-assignment
     params: {
         principalId: diskZeroTrust ? ztKeyVault.outputs.ztDiskEncryptionSetPrincipalId : ''
         roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
-        principalType: 'ServicePrincipal'
+        principalType: ''
     }
 }
 
