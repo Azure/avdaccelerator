@@ -2,7 +2,7 @@
 ## Creates an AD VM with Entra ID Connect installed
 ## Quick Start
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%avm-migration%2Fworkload%2Fworkshop%2FAAD-Hybrid-Lab%2Fdeploy.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%main%2Fworkload%2Fworkshop%2FAAD-Hybrid-Lab%2Fdeploy.json)
 
 ## Details
 
