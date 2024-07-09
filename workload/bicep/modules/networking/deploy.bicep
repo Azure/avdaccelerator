@@ -1,3 +1,7 @@
+metadata name = 'AVD LZA networking'
+metadata description = 'This module deploys vNet, NSG, ASG, UDR, private DNs zones'
+metadata owner = 'Azure/avdaccelerator'
+
 targetScope = 'subscription'
 
 // ========== //
@@ -94,36 +98,38 @@ param time string = utcNow()
 // Variable declaration //
 // =========== //
 var varAzureCloudName = environment().name
-var varNetworkSecurityGroupDiagnostic = [
-    'allLogs'
-]
-var varVirtualNetworkLogsDiagnostic = varAzureCloudName == 'AzureUSGovernment' ? [
-    ''
-] : [
-    'allLogs'
-]
-var varVirtualNetworkMetricsDiagnostic = [
-    'AllMetrics'
-]
 var varCreateAvdStaicRoute = true
 var varExistingAvdVnetSubId = !createVnet ? split(existingAvdSubnetResourceId, '/')[2] : ''
 var varExistingAvdVnetSubRgName = !createVnet ? split(existingAvdSubnetResourceId, '/')[4] : ''
 var varExistingAvdVnetName = !createVnet ? split(existingAvdSubnetResourceId, '/')[8] : ''
 var varExistingAvdVnetResourceId = !createVnet ? '/subscriptions/${varExistingAvdVnetSubId}/resourceGroups/${varExistingAvdVnetSubRgName}/providers/Microsoft.Network/virtualNetworks/${varExistingAvdVnetName}' : ''
+var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
+    {
+      workspaceResourceId: alaWorkspaceResourceId
+    }
+  ]: []
+var varVirtualNetworkLinks = createVnet ? [
+    {
+        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+    }
+] : [
+    {
+        virtualNetworkResourceId: varExistingAvdVnetResourceId
+    }
+]
 // =========== //
 // Deployments //
 // =========== //
 
 // AVD network security group.
-module networksecurityGroupAvd '../../../../carml/1.3.0/Microsoft.Network/networkSecurityGroups/deploy.bicep' = if (createVnet) {
+module networksecurityGroupAvd '../../../../avm/1.0.0/res/network/network-security-group/main.bicep' = if (createVnet) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'NSG-AVD-${time}'
     params: {
         name: avdNetworksecurityGroupName
         location: sessionHostLocation
         tags: tags
-        diagnosticWorkspaceId: alaWorkspaceResourceId
-        diagnosticLogCategoriesToEnable: varNetworkSecurityGroupDiagnostic
+        diagnosticSettings: varDiagnosticSettings
         securityRules: [
             {
                 name: 'AVDServiceTraffic'
@@ -229,22 +235,21 @@ module networksecurityGroupAvd '../../../../carml/1.3.0/Microsoft.Network/networ
 }
 
 // Private endpoint network security group.
-module networksecurityGroupPrivateEndpoint '../../../../carml/1.3.0/Microsoft.Network/networkSecurityGroups/deploy.bicep' = if (createVnet && deployPrivateEndpointSubnet) {
+module networksecurityGroupPrivateEndpoint '../../../../avm/1.0.0/res/network/network-security-group/main.bicep' = if (createVnet && deployPrivateEndpointSubnet) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'NSG-Private-Endpoint-${time}'
     params: {
         name: privateEndpointNetworksecurityGroupName
         location: sessionHostLocation
         tags: tags
-        diagnosticWorkspaceId: alaWorkspaceResourceId
-        diagnosticLogCategoriesToEnable: varNetworkSecurityGroupDiagnostic
+        diagnosticSettings: varDiagnosticSettings
         securityRules: []
     }
     dependsOn: []
 }
 
 // Application security group.
-module applicationSecurityGroup '../../../../carml/1.3.0/Microsoft.Network/applicationSecurityGroups/deploy.bicep' = if (deployAsg) {
+module applicationSecurityGroup '../../../../avm/1.0.0/res/network/application-security-group/main.bicep' = if (deployAsg) {
     scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
     name: 'ASG-${time}'
     params: {
@@ -256,7 +261,7 @@ module applicationSecurityGroup '../../../../carml/1.3.0/Microsoft.Network/appli
 }
 
 // AVD route table.
-module routeTableAvd '../../../../carml/1.3.0/Microsoft.Network/routeTables/deploy.bicep' = if (createVnet) {
+module routeTableAvd '../../../../avm/1.0.0/res/network/route-table/main.bicep' = if (createVnet) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'Route-Table-AVD-${time}'
     params: {
@@ -286,7 +291,7 @@ module routeTableAvd '../../../../carml/1.3.0/Microsoft.Network/routeTables/depl
 }
 
 // Private endpoint route table.
-module routeTablePrivateEndpoint '../../../../carml/1.3.0/Microsoft.Network/routeTables/deploy.bicep' = if (createVnet && deployPrivateEndpointSubnet) {
+module routeTablePrivateEndpoint '../../../../avm/1.0.0/res/network/route-table/main.bicep' = if (createVnet && deployPrivateEndpointSubnet) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'Route-Table-PE-${time}'
     params: {
@@ -299,7 +304,7 @@ module routeTablePrivateEndpoint '../../../../carml/1.3.0/Microsoft.Network/rout
 }
 
 // Virtual network.
-module virtualNetwork '../../../../carml/1.3.0/Microsoft.Network/virtualNetworks/deploy.bicep' = if (createVnet) {
+module virtualNetwork '../../../../avm/1.0.0/res/network/virtual-network/main.bicep' = if (createVnet) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'vNet-${time}'
     params: {
@@ -354,9 +359,7 @@ module virtualNetwork '../../../../carml/1.3.0/Microsoft.Network/virtualNetworks
         ]
 
         tags: tags
-        diagnosticWorkspaceId: alaWorkspaceResourceId
-        diagnosticLogCategoriesToEnable: varVirtualNetworkLogsDiagnostic
-        diagnosticMetricsToEnable: varVirtualNetworkMetricsDiagnostic
+        diagnosticSettings: varDiagnosticSettings
     }
     dependsOn: createVnet ? [
         networksecurityGroupAvd
@@ -367,68 +370,67 @@ module virtualNetwork '../../../../carml/1.3.0/Microsoft.Network/virtualNetworks
 }
 
 // Private DNS zones Azure files commercial
-module privateDnsZoneAzureFilesCommercial '.bicep/privateDnsZones.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureCloud')) {
+module privateDnsZoneAzureFilesCommercial '../../../../avm/1.0.0/res/network/private-dns-zone/main.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureCloud')) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'Private-DNS-Comm-Files-${time}'
     params: {
-        privateDnsZoneName: 'privatelink.file.core.windows.net'
-        virtualNetworkResourceId: createVnet ? virtualNetwork.outputs.resourceId : varExistingAvdVnetResourceId
+        name: 'privatelink.file.core.windows.net'
+        virtualNetworkLinks: varVirtualNetworkLinks
         tags: tags
     }
 }
 
 // Private DNS zones key vault commercial
-module privateDnsZoneKeyVaultCommercial '.bicep/privateDnsZones.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureCloud')) {
+module privateDnsZoneKeyVaultCommercial '../../../../avm/1.0.0/res/network/private-dns-zone/main.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureCloud')) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'Private-DNS-Comm-Kv-${time}'
     params: {
-        privateDnsZoneName: 'privatelink.vaultcore.azure.net'
-        virtualNetworkResourceId: createVnet ? virtualNetwork.outputs.resourceId : varExistingAvdVnetResourceId
+        name: 'privatelink.vaultcore.azure.net'
+        virtualNetworkLinks: varVirtualNetworkLinks
         tags: tags
     }
 }
 
 // Private DNS zones Azure files US goverment
-module privateDnsZoneAzureFilesGov '.bicep/privateDnsZones.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureUSGovernment')) {
+module privateDnsZoneAzureFilesGov '../../../../avm/1.0.0/res/network/private-dns-zone/main.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureUSGovernment')) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'Private-DNS-Gov-Files-${time}'
     params: {
-        privateDnsZoneName: 'privatelink.file.core.usgovcloudapi.net'
-        virtualNetworkResourceId: createVnet ? virtualNetwork.outputs.resourceId : varExistingAvdVnetResourceId
+        name: 'privatelink.file.core.usgovcloudapi.net'
+        virtualNetworkLinks: varVirtualNetworkLinks
         tags: tags
     }
 }
 
 // Private DNS zones key vault US goverment
-module privateDnsZoneKeyVaultGov '.bicep/privateDnsZones.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureUSGovernment')) {
+module privateDnsZoneKeyVaultGov '../../../../avm/1.0.0/res/network/private-dns-zone/main.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureUSGovernment')) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'Private-DNS-Gov-Kv-${time}'
     params: {
-        privateDnsZoneName: 'privatelink.vaultcore.usgovcloudapi.net'
-        virtualNetworkResourceId: createVnet ? virtualNetwork.outputs.resourceId : varExistingAvdVnetResourceId
+        name: 'privatelink.vaultcore.usgovcloudapi.net'
+        virtualNetworkLinks: varVirtualNetworkLinks
         tags: tags
     }
 }
 
-
 // Private DNS zones Azure files China
-module privateDnsZoneAzureFilesChina '.bicep/privateDnsZones.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureChinaCloud')) {
+module privateDnsZoneAzureFilesChina '../../../../avm/1.0.0/res/network/private-dns-zone/main.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureChinaCloud')) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'Private-DNS-Gov-Files-${time}'
     params: {
-        privateDnsZoneName: 'privatelink.file.core.chinacloudapi.cn'
-        virtualNetworkResourceId: createVnet ? virtualNetwork.outputs.resourceId : varExistingAvdVnetResourceId
+        name: 'privatelink.file.core.chinacloudapi.cn'
+        virtualNetworkLinks: varVirtualNetworkLinks
         tags: tags
     }
 }
 
 // Private DNS zones key vault China
-module privateDnsZoneKeyVaultChina '.bicep/privateDnsZones.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureChinaCloud')) {
+module privateDnsZoneKeyVaultChina '../../../../avm/1.0.0/res/network/private-dns-zone/main.bicep' = if (createPrivateDnsZones && (varAzureCloudName == 'AzureChinaCloud')) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'Private-DNS-Gov-Kv-${time}'
     params: {
-        privateDnsZoneName: 'privatelink.vaultcore.azure.cn'
-        virtualNetworkResourceId: createVnet ? virtualNetwork.outputs.resourceId : varExistingAvdVnetResourceId
+        name: 'privatelink.vaultcore.azure.cn'
+        virtualNetworkLinks: varVirtualNetworkLinks
         tags: tags
     }
 }
