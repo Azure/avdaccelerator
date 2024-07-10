@@ -13,11 +13,11 @@ resource "random_string" "AVD_local_password" {
 
 
 resource "azurerm_network_interface" "avd_vm_nic" {
-  count                         = var.rdsh_count
-  name                          = "${var.prefix}-${count.index + 1}-nic"
-  resource_group_name           = azurerm_resource_group.shrg.name
-  location                      = azurerm_resource_group.shrg.location
-  enable_accelerated_networking = true
+  count                          = var.rdsh_count
+  name                           = "${var.prefix}-${count.index + 1}-nic"
+  resource_group_name            = azurerm_resource_group.shrg.name
+  location                       = azurerm_resource_group.shrg.location
+  accelerated_networking_enabled = true
 
   ip_configuration {
     name                          = "nic${count.index + 1}_config"
@@ -47,17 +47,23 @@ resource "azurerm_windows_virtual_machine" "avd_vm" {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
-
-
+  # To use marketplace image, uncomment the following lines and comment the source_image_id line
+  source_image_reference {
+    offer     = var.offer
+    publisher = var.publisher
+    sku       = var.sku
+    version   = "latest"
+  }
+  /*
   //source_image_id = data.azurerm_shared_image.avd.id
   source_image_id = "/subscriptions/${var.avdshared_subscription_id}/resourceGroups/${var.image_rg}/providers/Microsoft.Compute/galleries/${var.gallery_name}/images/${var.image_name}/versions/latest"
   depends_on = [
     azurerm_resource_group.shrg,
     azurerm_network_interface.avd_vm_nic,
     azurerm_resource_group.rg,
-    azurerm_virtual_desktop_host_pool.hostpool
+    module.avm_res_desktopvirtualization_hostpool
   ]
-
+*/
   identity {
     type = "SystemAssigned"
   }
@@ -82,67 +88,49 @@ resource "azurerm_virtual_machine_extension" "aadjoin" {
 SETTINGS
 */
 }
-
+# Virtual Machine Extension for AVD Agent
 resource "azurerm_virtual_machine_extension" "vmext_dsc" {
-  count                      = var.rdsh_count
+  count = var.rdsh_count
+
   name                       = "${var.prefix}${count.index + 1}-avd_dsc"
-  virtual_machine_id         = azurerm_windows_virtual_machine.avd_vm.*.id[count.index]
   publisher                  = "Microsoft.Powershell"
   type                       = "DSC"
   type_handler_version       = "2.73"
+  virtual_machine_id         = azurerm_windows_virtual_machine.avd_vm.*.id[count.index]
   auto_upgrade_minor_version = true
-
-  settings = <<-SETTINGS
-    {
-      "modulesUrl": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration_09-08-2022.zip",
-      "configurationFunction": "Configuration.ps1\\AddSessionHost",
-      "properties": {
-        "HostPoolName":"${azurerm_virtual_desktop_host_pool.hostpool.name}"
-      }
-    }
-SETTINGS
-
-  protected_settings = <<PROTECTED_SETTINGS
+  protected_settings         = <<PROTECTED_SETTINGS
   {
     "properties": {
       "registrationInfoToken": "${local.registration_token}"
     }
   }
 PROTECTED_SETTINGS
+  settings                   = <<-SETTINGS
+    {
+      "modulesUrl": "https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration_1.0.02714.342.zip",
+      "configurationFunction": "Configuration.ps1\\AddSessionHost",
+      "properties": {
+        "HostPoolName":"${module.avm_res_desktopvirtualization_hostpool.resource.name}"
+      }
+    }
+SETTINGS
 
   depends_on = [
     azurerm_virtual_machine_extension.aadjoin,
-    azurerm_virtual_desktop_host_pool.hostpool,
-    data.azurerm_log_analytics_workspace.lawksp
+    module.avm_res_desktopvirtualization_hostpool
   ]
 }
 
-# MMA agent
-resource "azurerm_virtual_machine_extension" "mma" {
-  name                       = "MicrosoftMonitoringAgent"
-  count                      = var.rdsh_count
-  virtual_machine_id         = azurerm_windows_virtual_machine.avd_vm.*.id[count.index]
-  publisher                  = "Microsoft.EnterpriseCloud.Monitoring"
-  type                       = "MicrosoftMonitoringAgent"
-  type_handler_version       = "1.0"
-  auto_upgrade_minor_version = true
-  settings                   = <<SETTINGS
-    {
-      "workspaceId": "${data.azurerm_log_analytics_workspace.lawksp.workspace_id}"
-    }
-      SETTINGS
+# Virtual Machine Extension for AMA agent
+resource "azurerm_virtual_machine_extension" "ama" {
+  count = var.rdsh_count
 
-  protected_settings = <<PROTECTED_SETTINGS
-  {
-   "workspaceKey": "${data.azurerm_log_analytics_workspace.lawksp.primary_shared_key}"
-  }
-PROTECTED_SETTINGS
-
-  depends_on = [
-    azurerm_virtual_machine_extension.aadjoin,
-    azurerm_virtual_machine_extension.vmext_dsc,
-    data.azurerm_log_analytics_workspace.lawksp
-  ]
+  name                      = "AzureMonitorWindowsAgent"
+  publisher                 = "Microsoft.Azure.Monitor"
+  type                      = "AzureMonitorWindowsAgent"
+  type_handler_version      = "1.22"
+  virtual_machine_id        = azurerm_windows_virtual_machine.avd_vm[count.index].id
+  automatic_upgrade_enabled = true
 }
 
 # Microsoft Antimalware
@@ -157,7 +145,6 @@ resource "azurerm_virtual_machine_extension" "mal" {
 
   depends_on = [
     azurerm_virtual_machine_extension.aadjoin,
-    azurerm_virtual_machine_extension.vmext_dsc,
-    azurerm_virtual_machine_extension.mma
+    azurerm_virtual_machine_extension.vmext_dsc
   ]
 }

@@ -1,7 +1,7 @@
 resource "azurerm_user_assigned_identity" "mi" {
-  name                = "id-avd-fslogix-eus-${var.prefix}"
-  resource_group_name = azurerm_resource_group.rg_storage.name
-  location            = azurerm_resource_group.rg_storage.location
+  location            = azurerm_resource_group.rg.location
+  name                = "id-avd-umi-${var.avdLocation}-${var.prefix}"
+  resource_group_name = azurerm_resource_group.rg.name
 }
 
 ## Azure Storage Accounts requires a globally unique names
@@ -9,8 +9,8 @@ resource "azurerm_user_assigned_identity" "mi" {
 ## Create a File Storage Account 
 resource "azurerm_storage_account" "storage" {
   name                      = local.storage_name
-  resource_group_name       = azurerm_resource_group.rg_storage.name
-  location                  = azurerm_resource_group.rg_storage.location
+  resource_group_name       = azurerm_resource_group.rg.name
+  location                  = azurerm_resource_group.rg.location
   min_tls_version           = "TLS1_2"
   account_tier              = "Premium"
   account_replication_type  = "LRS"
@@ -63,8 +63,8 @@ data "azurerm_private_dns_zone" "pe-filedns-zone" {
 
 resource "azurerm_private_endpoint" "afpe" {
   name                = "pe-${local.storage_name}-file"
-  location            = azurerm_resource_group.rg_storage.location
-  resource_group_name = azurerm_resource_group.rg_storage.name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
   subnet_id           = data.azurerm_subnet.pesubnet.id
   tags                = local.tags
 
