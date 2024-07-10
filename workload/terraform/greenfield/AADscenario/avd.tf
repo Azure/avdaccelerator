@@ -1,42 +1,11 @@
-resource "random_uuid" "example" {}
-
-# Create AVD workspace
-resource "azurerm_virtual_desktop_workspace" "workspace" {
-  name                = "${var.workspace}-${substr(var.avdLocation, 0, 5)}-${var.prefix}" //var.workspace
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  friendly_name       = "${var.prefix} Workspace"
-  description         = "${var.prefix} Workspace"
-}
-
-# Create AVD host pool
-resource "azurerm_virtual_desktop_host_pool" "hostpool" {
-  location                 = azurerm_resource_group.rg.location
-  resource_group_name      = azurerm_resource_group.rg.name
-  name                     = "${var.hostpool}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
-  friendly_name            = "${var.hostpool}-${substr(var.avdLocation, 0, 5)}-${var.prefix}"
-  validate_environment     = true
-  custom_rdp_properties    = "drivestoredirect:s:*;audiomode:i:0;videoplaybackmode:i:1;redirectclipboard:i:1;redirectprinters:i:1;devicestoredirect:s:*;redirectcomports:i:1;redirectsmartcards:i:1;usbdevicestoredirect:s:*;enablecredsspsupport:i:1;redirectwebauthn:i:1;use multimon:i:0;targetisaadjoined:i:1;enablerdsaadauth:i:1;autoreconnection enabled:i:1"
-  description              = "${var.prefix} Pooled HostPool"
-  type                     = "Pooled"
-  maximum_sessions_allowed = 16
-  load_balancer_type       = "DepthFirst" #[BreadthFirst DepthFirst]
-  start_vm_on_connect      = true
-
-  depends_on = [azurerm_resource_group.rg]
-
-  lifecycle {
-    ignore_changes = all
-  }
-}
-
 #Autoscale is currently only available in the public cloud.
+/*
 data "azurerm_role_definition" "power_role" {
   name = "Desktop Virtualization Power On Off Contributor"
 }
 
 data "azuread_service_principal" "spn" {
-  application_id = "9cdead84-a844-4324-93f2-b2e6bb768d07"
+  client_id = "9cdead84-a844-4324-93f2-b2e6bb768d07"
 }
 
 resource "azurerm_role_assignment" "power" {
@@ -201,3 +170,4 @@ resource "azurerm_monitor_diagnostic_setting" "avd-ws" {
     }
   }
 }
+*/
