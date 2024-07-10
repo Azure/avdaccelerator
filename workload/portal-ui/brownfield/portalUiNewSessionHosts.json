@@ -315,21 +315,13 @@
                                     "toolTip": "Distribute compute resources across availability zones."
                                 },
                                 {
-                                    "name": "sessionHostsAvailabilitySetSettings",
-                                    "type": "Microsoft.Common.CheckBox",
-                                    "visible": "[not(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilityZoneSettings)]",
-                                    "label": "Availability set",
-                                    "defaultValue": true,
-                                    "toolTip": "Use availability sets to distribute session hosts across fault and update domains."
-                                },
-                                {
-                                    "name": "sessionHostsAvailabilitySetResourceId",
+                                    "name": "sessionHostsVmssResourceId",
                                     "type": "Microsoft.Solutions.ResourceSelector",
-                                    "label": "Select availability set",
-                                    "visible": "[and(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySetSettings, not(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilityZoneSettings))]",
-                                    "resourceType": "Microsoft.Network/applicationSecurityGroups",
+                                    "label": "Select VMSS Flex",
+                                    "visible": true,
+                                    "resourceType": "Microsoft.Compute/virtualMachineScaleSets",
                                     "constraints": {
-                                        "required": true
+                                        "required": false
                                     },
                                     "options": {
                                         "filter": {
@@ -418,7 +410,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "VM count index",
                                     "toolTip": "Provide the number of the highest session host name count, example: if highest session host count is vmavd1duse20005, provide a count index of 5. This number will be use to deploy new session hosts with a naming that continues the count of the current session hosts deployed, example: vmavd1duse20006.",
-                                    "placeholder": 1,
+                                    "placeholder": "Example: 1",
                                     "constraints": {
                                         "required": true
                                     }
@@ -1050,9 +1042,9 @@
                                                 "value": "High"
                                             },
                                             {
-                                                "label": "Missin-critical",
+                                                "label": "Mission-critical",
                                                 "description": "",
-                                                "value": "Missin-critical"
+                                                "value": "Mission-critical"
                                             },
                                             {
                                                 "label": "Custom",
@@ -1151,7 +1143,7 @@
                 "vmLocalAdminPasswordSecretName": "[steps('identity').identityCredentials.identityLocalUserPassword]",
                 "hostPoolResourceId": "[steps('managementPlane').managementPlaneSettings.hostPoolSelector.id]",
                 "useAvailabilityZones": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilityZoneSettings]",
-                "avsetResourceId": "[if(and(not(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilityZoneSettings), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySetSettings), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySetResourceId.id, 'false')]",
+                "virtualMachineScaleSetResourceId": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsVmssResourceId.id]",
                 "sessionHostOuPath": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
                 "vmSize": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize]",
                 "countIndex": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCountIndex]",

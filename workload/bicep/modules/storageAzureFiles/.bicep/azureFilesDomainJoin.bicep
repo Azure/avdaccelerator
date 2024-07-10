@@ -1,9 +1,13 @@
+metadata name = 'AVD LZA storage'
+metadata description = 'Configures domain join settings on storage account via VM custom script extension'
+metadata owner = 'Azure/avdaccelerator'
+
 // ========== //
 // Parameters //
 // ========== //
 
-@sys.description('Extension deployment name.')
-param name string
+@sys.description('Virtual machine name.')
+param virtualMachineName string
 
 @sys.description('Location where to deploy compute services.')
 param location string
@@ -20,19 +24,25 @@ param scriptArguments string
 @sys.description('Domain join user password.')
 param adminUserPassword string
 
+@sys.description('Do not modify, used to set unique value for resource deployment.')
+param time string = utcNow()
+
 // =========== //
 // Deployments //
 // =========== //
 
 // Add Azure Files to AD DS domain.
-resource dscStorageScript 'Microsoft.Compute/virtualMachines/extensions@2022-08-01' = {
-  name: '${name}/AzureFilesDomainJoin'
-  location: location
-  properties: {
+module dscStorageScript '../../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = {
+  name: 'VM-Ext-AVM-${time}'
+  params: {
+    name: 'AzureFilesDomainJoin'
+    virtualMachineName: virtualMachineName
+    location: location
     publisher: 'Microsoft.Compute'
     type: 'CustomScriptExtension'
     typeHandlerVersion: '1.10'
     autoUpgradeMinorVersion: true
+    enableAutomaticUpgrade: false
     settings: {}
     protectedSettings: {
       fileUris: array(baseScriptUri)

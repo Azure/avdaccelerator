@@ -14,7 +14,6 @@ resource "azurerm_subnet" "subnet" {
   resource_group_name                       = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_network}"
   virtual_network_name                      = azurerm_virtual_network.vnet.name
   address_prefixes                          = var.subnet_range
-  private_endpoint_network_policies_enabled = true
   depends_on                                = [azurerm_resource_group.net]
 }
 
@@ -23,7 +22,8 @@ resource "azurerm_subnet" "pesubnet" {
   resource_group_name                       = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_network}"
   virtual_network_name                      = azurerm_virtual_network.vnet.name
   address_prefixes                          = var.pesubnet_range
-  private_endpoint_network_policies_enabled = true
+  private_endpoint_network_policies = "Enabled"
+  service_endpoints = ["Microsoft.Storage", "Microsoft.KeyVault"]
   depends_on                                = [azurerm_resource_group.net]
 }
 
@@ -43,7 +43,6 @@ resource "azurerm_virtual_network_peering" "peer1" {
   allow_virtual_network_access = true
   allow_forwarded_traffic      = true
   allow_gateway_transit        = false
-  use_remote_gateways          = true
   provider                     = azurerm.spoke
 
   depends_on = [
