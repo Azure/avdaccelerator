@@ -200,7 +200,7 @@ var varTimeZone = varLocations[varLocation].timeZone
 // =========== //
 
 // AVD Shared Services Resource Group
-module avdSharedResourcesRg '../../../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
+module avdSharedResourcesRg '../../../../avm/1.0.0/res/resources/resource-group/main.bicep' = {
   scope: subscription(sharedServicesSubscriptionId)
   name: 'RG-${time}'
   params: {
@@ -211,7 +211,7 @@ module avdSharedResourcesRg '../../../../carml/1.3.0/Microsoft.Resources/resourc
 }
 
 // Log Analytics Workspace
-module workspace '../../../../carml/1.3.0/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
+module workspace '../../../../avm/1.0.0/res/operational-insights/workspace/main.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
   scope: resourceGroup(sharedServicesSubscriptionId, varResourceGroupName)
   name: 'LA-Workspace-${time}'
   params: {
@@ -236,16 +236,15 @@ module automationAccount_Existing '../autoIncreasePremiumFileShareQuota/modules/
 }
 
 // Deploy new automation account
-module automationAccount_New '../../../../carml/1.3.0/Microsoft.Automation/automationAccounts/deploy.bicep' = {
+module automationAccount_New '../../../../avm/1.0.0/res/automation/automation-account/main.bicep' = {
   scope: resourceGroup(sharedServicesSubscriptionId, varAutomationAccountScope)
   name: 'AA-${time}'
   params: {
-    diagnosticLogCategoriesToEnable: [
-      'JobLogs'
-      'JobStreams'
-    ]
-    diagnosticLogsRetentionInDays: 30
-    diagnosticWorkspaceId: empty(existingLogAnalyticsWorkspaceResourceId) ? workspace.outputs.resourceId : existingLogAnalyticsWorkspaceResourceId
+    diagnosticSettings: [
+      {
+        workspaceResourceId: empty(existingLogAnalyticsWorkspaceResourceId) ? workspace.outputs.resourceId : existingLogAnalyticsWorkspaceResourceId
+      }
+    ] 
     name: empty(existingAutomationAccountResourceId) ? varAutomationAccountName : automationAccount_Existing.outputs.name
     jobSchedules: [
       {
@@ -315,22 +314,25 @@ module automationAccount_New '../../../../carml/1.3.0/Microsoft.Automation/autom
     ]
     skuName: empty(existingAutomationAccountResourceId) ? 'Free' : automationAccount_Existing.outputs.properties.sku.name
     tags: !(empty(existingAutomationAccountResourceId)) ? automationAccount_Existing.outputs.tags : enableResourceTags ? varCommonResourceTags : {}
-    systemAssignedIdentity: true
+    managedIdentities: {
+      systemAssigned: true
+    }
   }
 }
 
 // Role assignments
-module roleAssignments'../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for i in range(0, length(varRoleAssignments)): {
+module roleAssignments'../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for i in range(0, length(varRoleAssignments)): {
   name: 'Role-Assignment-${i}-${time}'
   scope: resourceGroup(varRoleAssignments[i])
   params: {
-    principalId: automationAccount_New.outputs.systemAssignedPrincipalId
-    roleDefinitionIdOrName: 'Desktop Virtualization Power On Off Contributor'
+    principalId: automationAccount_New.outputs.systemAssignedMIPrincipalId
+    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/40c5ff49-9181-41f8-ae61-143b0e78555e' //'Desktop Virtualization Power On Off Contributor'
+    principalType: 'ServicePrincipal'
   }
 }]
 
 // Alerts action group
-module actionGroup '../../../../carml/1.3.0/Microsoft.Insights/actionGroups/deploy.bicep' = if (enableMonitoringAlerts) {
+module actionGroup '../../../../avm/1.0.0/res/insights/action-group/main.bicep' = if (enableMonitoringAlerts) {
   scope: resourceGroup(sharedServicesSubscriptionId, varResourceGroupName)
   name: 'Action-Group-${time}'
   params: {
@@ -353,7 +355,7 @@ module actionGroup '../../../../carml/1.3.0/Microsoft.Insights/actionGroups/depl
 }
 
 // Scheduled query rules
-module scheduledQueryRules '../../../../carml/1.3.0/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(varAlerts)): if (enableMonitoringAlerts) {
+module scheduledQueryRules '../../../../avm/1.0.0/res/insights/scheduled-query-rule/main.bicep' = [for i in range(0, length(varAlerts)): if (enableMonitoringAlerts) {
   scope: resourceGroup(sharedServicesSubscriptionId, varResourceGroupName)
   name: 'Sche-Query-Rule-${i}-${time}'
   params: {
