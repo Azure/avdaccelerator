@@ -1,4 +1,4 @@
-data "azurerm_subscription" "current" {}
+data "azurerm_subscription" "primary" {}
 
 data "azurerm_client_config" "current" {}
 
@@ -46,4 +46,11 @@ data "azurerm_subnet" "pesubnet" {
   depends_on = [
     module.network
   ]
+}
+
+# Get Private DNS Zone for the Key Vault Private Endpoints
+data "azurerm_private_dns_zone" "pe-vaultdns-zone" {
+  provider            = azurerm.hub
+  name                = "privatelink.vaultcore.azure.net"
+  resource_group_name = var.hub_dns_zone_rg
 }
