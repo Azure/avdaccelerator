@@ -280,6 +280,30 @@ module routeTableAvd '../../../../carml/1.3.0/Microsoft.Network/routeTables/depl
                     nextHopType: 'Internet'
                 }
             }
+            {
+                name: 'DirectRouteToKMS'
+                properties: {
+                    addressPrefix: '23.102.135.246/32'
+                    hasBgpOverride: true
+                    nextHopType: 'Internet'
+                }
+            }
+            {
+                name: 'DirectRouteToAZKMS01'
+                properties: {
+                    addressPrefix: '20.118.99.224/32'
+                    hasBgpOverride: true
+                    nextHopType: 'Internet'
+                }
+            }
+            {
+                name: 'DirectRouteToAZKMS02'
+                properties: {
+                    addressPrefix: '40.83.235.53/32'
+                    hasBgpOverride: true
+                    nextHopType: 'Internet'
+                }
+            }
         ] : []
     }
     dependsOn: []
