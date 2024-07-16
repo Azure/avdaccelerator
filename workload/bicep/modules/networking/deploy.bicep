@@ -255,7 +255,7 @@ module applicationSecurityGroup '../../../../carml/1.3.0/Microsoft.Network/appli
     dependsOn: []
 }
 
-// AVD route table.
+// AVD route table if creating a vnet
 module routeTableAvd '../../../../carml/1.3.0/Microsoft.Network/routeTables/deploy.bicep' = if (createVnet) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'Route-Table-AVD-${time}'
@@ -276,6 +276,44 @@ module routeTableAvd '../../../../carml/1.3.0/Microsoft.Network/routeTables/depl
                 name: 'AVDStunTurnTraffic'
                 properties: {
                     addressPrefix: '20.202.0.0/16'
+                    hasBgpOverride: true
+                    nextHopType: 'Internet'
+                }
+            }
+        ] : []
+    }
+    dependsOn: []
+}
+
+// AVD route table if using an existing vnet
+module routeTableAvdExistingVnet '../../../../carml/1.3.0/Microsoft.Network/routeTables/deploy.bicep' = if (!createVnet) {
+    scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
+    name: 'rt-avd-${time}'
+    params: {
+        name: avdRouteTableName
+        location: sessionHostLocation
+        tags: tags
+        routes: varCreateAvdStaicRoute ? [
+            {
+                name: 'DirectRouteToKMS'
+                properties: {
+                    addressPrefix: '23.102.135.246/32'
+                    hasBgpOverride: true
+                    nextHopType: 'Internet'
+                }
+            }
+            {
+                name: 'DirectRouteToAZKMS01'
+                properties: {
+                    addressPrefix: '20.118.99.224/32'
+                    hasBgpOverride: true
+                    nextHopType: 'Internet'
+                }
+            }
+            {
+                name: 'DirectRouteToAZKMS02'
+                properties: {
+                    addressPrefix: '40.83.235.53/32'
                     hasBgpOverride: true
                     nextHopType: 'Internet'
                 }
