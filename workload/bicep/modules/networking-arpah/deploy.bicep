@@ -6,17 +6,11 @@ targetScope = 'subscription'
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario')
 param workloadSubsId string
 
-@sys.description('Create new virtual network.')
-param createVnet bool = true
-
 @sys.description('Existing virtual network subnet for AVD.')
 param existingAvdSubnetResourceId string
 
 @sys.description('If new virtual network required for the AVD machines. Resource Group name for the virtual network.')
 param networkObjectsRgName string
-
-@sys.description('Name of the virtual network if required to be created.')
-param vnetName string
 
 @sys.description('AVD Network Security Group Name')
 param avdNetworksecurityGroupName string
@@ -44,17 +38,17 @@ var varNetworkSecurityGroupDiagnostic = [
 ]
 
 var varCreateAvdStaicRoute = true
-var varExistingAvdVnetName = !createVnet ? split(existingAvdSubnetResourceId, '/')[8] : ''
-var varExistingSubnetName = !createVnet ? split(existingAvdSubnetResourceId, '/')[10]: ''
+var varExistingAvdVnetName = split(existingAvdSubnetResourceId, '/')[8]
+var varExistingSubnetName = split(existingAvdSubnetResourceId, '/')[10]
 
 // =========== //
 // Deployments //
 // =========== //
 
 // AVD network security group.
-module networksecurityGroupAvd '../../../../carml/1.3.0/Microsoft.Network/networkSecurityGroups/deploy.bicep' = if (!createVnet) {
+module networksecurityGroupAvd '../../../../carml/1.3.0/Microsoft.Network/networkSecurityGroups/deploy.bicep' = {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
-    name: 'NSG-AVD-${time}'
+    name: 'nsg-avd-${time}'
     params: {
         name: avdNetworksecurityGroupName
         location: sessionHostLocation
@@ -166,7 +160,7 @@ module networksecurityGroupAvd '../../../../carml/1.3.0/Microsoft.Network/networ
 }
 
 // AVD route table if creating a vnet
-module routeTableAvd '../../../../carml/1.3.0/Microsoft.Network/routeTables/deploy.bicep' = if (!createVnet) {
+module routeTableAvd '../../../../carml/1.3.0/Microsoft.Network/routeTables/deploy.bicep' = {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'Route-Table-AVD-${time}'
     params: {
@@ -235,7 +229,7 @@ module updateSubnet '.bicep/updateSubnet.bicep' = {
     name: 'update-subnet-with-nsg-and-route-table-${varExistingAvdVnetName}-${varExistingSubnetName}'
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     params: {
-        vnetName: vnetName
+        vnetName: varExistingAvdVnetName
         subnetName: varExistingSubnetName
         // Update the nsg
         properties: union(existingSubnet.properties, {
@@ -253,9 +247,5 @@ module updateSubnet '.bicep/updateSubnet.bicep' = {
 // =========== //
 // Outputs //
 // =========== //
-// output applicationSecurityGroupResourceId string = deployAsg ? applicationSecurityGroup.outputs.resourceId : ''
-// output virtualNetworkResourceId string = createVnet ? virtualNetwork.outputs.resourceId : ''
-// output azureFilesDnsZoneResourceId string = createPrivateDnsZones ? ((varAzureCloudName == 'AzureCloud') ? privateDnsZoneAzureFilesCommercial.outputs.resourceId : ((varAzureCloudName == 'AzureUSGovernment') ? privateDnsZoneAzureFilesGov.outputs.resourceId : ((varAzureCloudName == 'AzureChinaCloud') ? privateDnsZoneAzureFilesChina.outputs.resourceId : ''))) : ''
-// output KeyVaultDnsZoneResourceId string = createPrivateDnsZones ? ((varAzureCloudName == 'AzureCloud') ? privateDnsZoneKeyVaultCommercial.outputs.resourceId : ((varAzureCloudName == 'AzureUSGovernment') ? privateDnsZoneKeyVaultGov.outputs.resourceId : ((varAzureCloudName == 'AzureChinaCloud') ? privateDnsZoneKeyVaultChina.outputs.resourceId : ''))) : ''
 output routeTableResourceId string = routeTableAvd.outputs.resourceId
 output nsgResourceId string = networksecurityGroupAvd.outputs.resourceId

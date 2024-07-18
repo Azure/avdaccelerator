@@ -350,7 +350,7 @@ param avdWorkSpaceCustomName string = 'vdws-app1-test-use2-001'
 
 @maxLength(64)
 @sys.description('AVD workspace custom friendly (Display) name. (Default: App1 - Dev - East US 2 - 001)')
-param avdWorkSpaceCustomFriendlyName string = 'ARPA-H Desktop on NIH Network - Test'
+param avdWorkSpaceCustomFriendlyName string = 'ARPA-H on NIH Network - Test'
 
 @maxLength(64)
 @sys.description('AVD host pool custom name. (Default: vdpool-app1-dev-use2-001)')
@@ -358,7 +358,7 @@ param avdHostPoolCustomName string = 'vdpool-app1-test-use2-001'
 
 @maxLength(64)
 @sys.description('AVD host pool custom friendly (Display) name. (Default: App1 - East US - Dev - 001)')
-param avdHostPoolCustomFriendlyName string = 'ARPA-H Desktop on NIH Network - Test'
+param avdHostPoolCustomFriendlyName string = 'ARPA-H on NIH Network - Test'
 
 @maxLength(64)
 @sys.description('AVD scaling plan custom name. (Default: vdscaling-app1-dev-use2-001)')
@@ -871,6 +871,26 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
         baselineNetworkResourceGroup
         monitoringDiagnosticSettings
         baselineResourceGroups
+    ]
+}
+
+// if existing vnet/subnet
+module updateSubnetNsgAndRouteTable './modules/networking-arpah/deploy.bicep' = if(!createAvdVnet) {
+    name: 'Networking-UpdateSubnet-${time}'
+    params: {
+        existingAvdSubnetResourceId: existingVnetAvdSubnetResourceId
+        networkObjectsRgName: varNetworkObjectsRgName
+        avdNetworksecurityGroupName: varAvdNetworksecurityGroupName
+        avdRouteTableName: varAvdRouteTableName
+        workloadSubsId: avdWorkloadSubsId
+        tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+        alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
+    }
+    dependsOn: [
+        baselineNetworkResourceGroup
+        monitoringDiagnosticSettings
+        baselineResourceGroups
+        networking
     ]
 }
 
