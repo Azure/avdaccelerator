@@ -373,13 +373,73 @@ try {
         ##############################################################
         #  Install Slack Machine-wide
         ##############################################################
-        $SlackInstaller = 'SlackSetup.msi'
-        $downloadUrl = 'https://slack.com/ssb/download-win64-msi'
-        $hostName = $env:COMPUTERNAME
-        $userName = $env:USERNAME
-        Get-WebFile -FileName $SlackInstaller -URL $downloadUrl
-        Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $SlackInstaller /quiet /qn /norestart /passive" -Wait -Passthru
-        Write-Log -Message "Slack installed on machine: $hostName by user: $userName" -Type 'INFO'
+	$SlackInstaller = 'Slack-Installer.msi'
+        Get-WebFile -FileName $SlackInstaller -URL 'https://slack.com/ssb/download-win64-msi'
+        Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $SlackInstaller /quiet /qn /norestart /passive" -Wait -PassThru
+        Write-Log -Message 'Installed Slack' -Type 'INFO'
+        Start-Sleep -Seconds 5
+
+	##############################################################
+        #  Install Zoom Desktop App
+        ##############################################################
+        $ZoomInstaller = 'ZoomInstaller.msi'
+        Get-WebFile -FileName $ZoomInstaller -URL 'https://aka.ms/win32-x64-user-stable'
+        Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $VSCodeInstaller /quiet /qn /norestart /passive" -Wait -PassThru
+        Write-Log -Message 'Installed Visual Studio Code' -Type 'INFO'
+        Start-Sleep -Seconds 5
+
+        ##############################################################
+        #  Install GitHub Desktop App
+        ##############################################################
+        $GitHubDesktopInstaller = 'GitHubDesktopInstaller.msi'
+        Get-WebFile -FileName $GitHubDesktopInstaller -URL 'https://central.github.com/deployments/desktop/desktop/latest/win32'
+        Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $GitHubDesktopInstaller /quiet /qn /norestart /passive" -Wait -PassThru
+        Write-Log -Message 'Installed GitHub Desktop' -Type 'INFO'
+        Start-Sleep -Seconds 5
+
+        ##############################################################
+        #  Install Adobe Creative Cloud
+        ##############################################################
+        $AdobeCCInstaller = 'Creative_Cloud_Set-Up.msi'
+        Get-WebFile -FileName $AdobeCCInstaller -URL 'https://creativecloud.adobe.com/apps/download/creative-cloud'
+        Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $AdobeCCInstaller /quiet /qn /norestart /passive" -Wait -PassThru
+        Write-Log -Message 'Installed Adobe Creative Cloud' -Type 'INFO'
+        Start-Sleep -Seconds 5
+
+        ##############################################################
+        #  Install EndNote Desktop App
+        ##############################################################
+        $EndNoteInstaller = 'EndNoteInstaller.msi'
+        Get-WebFile -FileName $EndNoteInstaller -URL 'https://support.clarivate.com/Endnote/s/article/Download-EndNote?language=en_US'
+        Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $EndNoteInstaller /quiet /qn /norestart /passive" -Wait -PassThru
+        Write-Log -Message 'Installed EndNote' -Type 'INFO'
+        Start-Sleep -Seconds 5
+
+        ##############################################################
+        #  Install Zotero
+        ##############################################################
+        $ZoteroInstaller = 'Zotero-Setup.exe'
+        Get-WebFile -FileName $ZoteroInstaller -URL 'https://www.zotero.org/download/client/dl?channel=release&platform=win32'
+        Start-Process -FilePath $ZoteroInstaller -ArgumentList "/S" -Wait -PassThru
+        Write-Log -Message 'Installed Zotero' -Type 'INFO'
+        Start-Sleep -Seconds 5
+
+        ##############################################################
+        #  Install BoxDrive
+        ##############################################################
+        $BoxDriveInstaller = 'BoxDrive.msi'
+        Get-WebFile -FileName $BoxDriveInstaller -URL 'https://e3.boxcdn.net/box-installers/desktop/releases/win/Box-x64.msi'
+        Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $BoxDriveInstaller /quiet /qn /norestart /passive" -Wait -PassThru
+        Write-Log -Message 'Installed Box Drive' -Type 'INFO'
+        Start-Sleep -Seconds 5
+
+        ##############################################################
+        #  Install FireFox
+        ##############################################################
+        $FirefoxInstaller = 'FirefoxInstaller.msi'
+        Get-WebFile -FileName $FirefoxInstaller -URL 'https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=en-US'
+        Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $FirefoxInstaller /quiet /qn /norestart /passive" -Wait -PassThru
+        Write-Log -Message 'Installed Firefox' -Type 'INFO'
         Start-Sleep -Seconds 5
 
         ##############################################################
