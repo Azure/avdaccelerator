@@ -142,6 +142,9 @@ param vNetworkPrivateEndpointSubnetAddressPrefix string = '10.10.1.0/27'
 @sys.description('custom DNS servers IPs. (Default: "")')
 param customDnsIps string = ''
 
+@sys.description('Deploy DDoS Network Protection for virtual network. (Default: true)')
+param deployDDoSNetworkProtection bool = true
+
 @sys.description('Deploy private endpoints for key vault and storage. (Default: true)')
 param deployPrivateEndpointKeyvaultStorage bool = true
 
@@ -548,6 +551,7 @@ var varPrivateEndpointRouteTableName = avdUseCustomNaming
 var varApplicationSecurityGroupName = avdUseCustomNaming
   ? avdApplicationSecurityGroupCustomName
   : 'asg-${varComputeStorageResourcesNamingStandard}-001'
+var varDDosProtectionPlanName = 'ddos-${varVnetName}'
 var varWorkSpaceName = avdUseCustomNaming ? avdWorkSpaceCustomName : 'vdws-${varManagementPlaneNamingStandard}-001'
 var varWorkSpaceFriendlyName = avdUseCustomNaming
   ? avdWorkSpaceCustomFriendlyName
@@ -1072,6 +1076,8 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
     vnetAvdSubnetName: varVnetAvdSubnetName
     vnetPrivateEndpointSubnetName: varVnetPrivateEndpointSubnetName
     createVnetPeering: varCreateVnetPeering
+    deployDDoSNetworkProtection: deployDDoSNetworkProtection
+    ddosProtectionPlanName: varDDosProtectionPlanName
     deployPrivateEndpointSubnet: (deployPrivateEndpointKeyvaultStorage == true) ? true : false //adding logic that will be used when also including AVD control plane PEs
     vNetworkGatewayOnHub: vNetworkGatewayOnHub
     existingHubVnetResourceId: existingHubVnetResourceId
