@@ -1194,7 +1194,7 @@
                             "type": "Microsoft.Common.CheckBox",
                             "visible": "[steps('network').createAvdVirtualNetwork]",
                             "label": "Enable DDoS Network Protection",
-                            "defaultValue": true,
+                            "defaultValue": false,
                             "toolTip": "Enables DDoS Network Protection for the virtual network."
                         },
                         {
