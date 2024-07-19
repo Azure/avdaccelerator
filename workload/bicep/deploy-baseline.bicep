@@ -143,7 +143,7 @@ param vNetworkPrivateEndpointSubnetAddressPrefix string = '10.10.1.0/27'
 param customDnsIps string = ''
 
 @sys.description('Deploy DDoS Network Protection for virtual network. (Default: true)')
-param deployDDoSNetworkProtection bool = true
+param deployDDoSNetworkProtection bool = false
 
 @sys.description('Deploy private endpoints for key vault and storage. (Default: true)')
 param deployPrivateEndpointKeyvaultStorage bool = true
