@@ -58,6 +58,12 @@ param remoteVnetPeeringName string
 @sys.description('Create virtual network peering to hub.')
 param createVnetPeering bool
 
+@sys.description('DDoS Protection Plan name.')
+param ddosProtectionPlanName string
+
+@sys.description('Deploy DDoS Network Protection for virtual network.')
+param deployDDoSNetworkProtection bool
+
 @sys.description('Optional. AVD Accelerator will deploy with private endpoints by default.')
 param deployPrivateEndpointSubnet bool
 
@@ -303,6 +309,17 @@ module routeTablePrivateEndpoint '../../../../avm/1.0.0/res/network/route-table/
     dependsOn: []
 }
 
+// DDoS Protection Plan
+module ddosProtectionPlan '../../../../avm/1.0.0/res/network/ddos-protection-plan/main.bicep' = if (deployDDoSNetworkProtection) {
+    scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
+    name: 'DDoS-Protection-Plan-${time}'
+    params: {
+        name: ddosProtectionPlanName
+        location: sessionHostLocation
+    }
+    dependsOn: []
+}
+
 // Virtual network.
 module virtualNetwork '../../../../avm/1.0.0/res/network/virtual-network/main.bicep' = if (createVnet) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
@@ -356,8 +373,8 @@ module virtualNetwork '../../../../avm/1.0.0/res/network/virtual-network/main.bi
                 networkSecurityGroupId: createVnet ? networksecurityGroupAvd.outputs.resourceId : ''
                 routeTableId: createVnet ? routeTableAvd.outputs.resourceId : ''
             }
-        ]
-
+        ] 
+        ddosProtectionPlanResourceId: deployDDoSNetworkProtection ? ddosProtectionPlan.outputs.resourceId : ''
         tags: tags
         diagnosticSettings: varDiagnosticSettings
     }
