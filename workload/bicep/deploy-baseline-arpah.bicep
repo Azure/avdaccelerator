@@ -370,7 +370,7 @@ param avdApplicationGroupCustomName string = 'vdag-desktop-app1-test-use2-001'
 
 @maxLength(64)
 @sys.description('AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - Dev - 001)')
-param avdApplicationGroupCustomFriendlyName string = 'ARPA-H Desktop on NIH Network - Test'
+param avdApplicationGroupCustomFriendlyName string = 'ARPA-H on NIH Network - Test'
 
 @maxLength(11)
 @sys.description('AVD session host prefix custom name. (Default: vmapp1duse2)')
