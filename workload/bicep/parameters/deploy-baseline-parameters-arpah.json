@@ -186,7 +186,7 @@
             "value": ""
         },
         "storageOuPath": {
-            "value": ""
+            "value": "OU=Test,OU=Azure Virtual Desktop,OU=Windows,OU=Computers,OU=ARPAH,OU=CIT Managed,OU=OD,OU=NIH,OU=AD,DC=nih,DC=gov"
         },
         "createResourceTags": {
             "value": false
