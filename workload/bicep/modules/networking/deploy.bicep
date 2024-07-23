@@ -255,7 +255,7 @@ module applicationSecurityGroup '../../../../carml/1.3.0/Microsoft.Network/appli
     dependsOn: []
 }
 
-// AVD route table.
+// AVD route table if creating a vnet
 module routeTableAvd '../../../../carml/1.3.0/Microsoft.Network/routeTables/deploy.bicep' = if (createVnet) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'Route-Table-AVD-${time}'
