@@ -318,6 +318,7 @@ param avdAlaWorkspaceCustomName string = 'avd-nih-arpah-test-use2-log'
 @maxLength(80)
 @sys.description('AVD virtual network subnet custom name. (Default: snet-avd-app1-dev-use2-001)')
 param avdVnetworkSubnetCustomName string = 'avd-nih-arpah-test-use2-subnet'
+// existing subname: nih-arpa-h-it-vdi-nih-test-sub
 
 @maxLength(80)
 @sys.description('private endpoints virtual network subnet custom name. (Default: snet-pe-app1-dev-use2-001)')
@@ -349,7 +350,7 @@ param avdWorkSpaceCustomName string = 'vdws-app1-test-use2-001'
 
 @maxLength(64)
 @sys.description('AVD workspace custom friendly (Display) name. (Default: App1 - Dev - East US 2 - 001)')
-param avdWorkSpaceCustomFriendlyName string = 'ARPA-H Desktop on NIH Network - Test'
+param avdWorkSpaceCustomFriendlyName string = 'ARPA-H on NIH Network - Test'
 
 @maxLength(64)
 @sys.description('AVD host pool custom name. (Default: vdpool-app1-dev-use2-001)')
@@ -357,7 +358,7 @@ param avdHostPoolCustomName string = 'vdpool-app1-test-use2-001'
 
 @maxLength(64)
 @sys.description('AVD host pool custom friendly (Display) name. (Default: App1 - East US - Dev - 001)')
-param avdHostPoolCustomFriendlyName string = 'ARPA-H Desktop on NIH Network - Test'
+param avdHostPoolCustomFriendlyName string = 'ARPA-H on NIH Network - Test'
 
 @maxLength(64)
 @sys.description('AVD scaling plan custom name. (Default: vdscaling-app1-dev-use2-001)')
@@ -369,7 +370,7 @@ param avdApplicationGroupCustomName string = 'vdag-desktop-app1-test-use2-001'
 
 @maxLength(64)
 @sys.description('AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - Dev - 001)')
-param avdApplicationGroupCustomFriendlyName string = 'ARPA-H Desktop on NIH Network - Test'
+param avdApplicationGroupCustomFriendlyName string = 'ARPA-H on NIH Network - Test'
 
 @maxLength(11)
 @sys.description('AVD session host prefix custom name. (Default: vmapp1duse2)')
@@ -553,7 +554,7 @@ var varZtKvName = avdUseCustomNaming ? '${ztKvPrefixCustomName}-${varComputeStor
 var varZtKvPrivateEndpointName = 'pe-${varZtKvName}-vault'
 //
 var varFslogixSharePath = createAvdFslogixDeployment ? '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}' : ''
-var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
+var varBaseScriptUri = 'https://raw.githubusercontent.com/ARPA-H/avdaccelerator-nih/main/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
 var varDiskEncryptionKeyExpirationInEpoch = dateTimeToEpoch(dateTimeAdd(time, 'P${string(diskEncryptionKeyExpirationInDays)}D'))
@@ -695,7 +696,7 @@ var varScalingPlanSchedules = [
     }
 ]
 var varMarketPlaceGalleryWindows = loadJsonContent('../variables/osMarketPlaceImages.json')
-var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/1.0.0/DSCStorageScripts.zip'
+var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/ARPA-H/avdaccelerator-nih/raw/main/workload/scripts/DSCStorageScripts/1.0.0/DSCStorageScripts.zip'
 var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
 var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
 var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
@@ -873,6 +874,26 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
         baselineNetworkResourceGroup
         monitoringDiagnosticSettings
         baselineResourceGroups
+    ]
+}
+
+// if existing vnet/subnet
+module updateSubnetNsgAndRouteTable './modules/networking-arpah/deploy.bicep' = if(!createAvdVnet) {
+    name: 'Networking-UpdateSubnet-${time}'
+    params: {
+        existingAvdSubnetResourceId: existingVnetAvdSubnetResourceId
+        networkObjectsRgName: varNetworkObjectsRgName
+        avdNetworksecurityGroupName: varAvdNetworksecurityGroupName
+        avdRouteTableName: varAvdRouteTableName
+        workloadSubsId: avdWorkloadSubsId
+        tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+        alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
+    }
+    dependsOn: [
+        baselineNetworkResourceGroup
+        monitoringDiagnosticSettings
+        baselineResourceGroups
+        networking
     ]
 }
 

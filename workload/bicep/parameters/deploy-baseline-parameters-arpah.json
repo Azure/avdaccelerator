@@ -186,7 +186,7 @@
             "value": ""
         },
         "storageOuPath": {
-            "value": ""
+            "value": "OU=Test,OU=Azure Virtual Desktop,OU=Windows,OU=Computers,OU=ARPAH,OU=CIT Managed,OU=OD,OU=NIH,OU=AD,DC=nih,DC=gov"
         },
         "createResourceTags": {
             "value": false
@@ -214,6 +214,12 @@
         },
         "deployGpuPolicies": {
             "value": false
+        },
+        "avdWorkSpaceCustomFriendlyName": {
+            "value": "ARPA-H on NIH Network - Test"
+        },
+        "avdHostPoolCustomFriendlyName": {
+            "value": "ARPA-H on NIH Network - Test"
         },
         "storageFilePrivateEndpointStaticIp": {
             "value": "10.178.8.136"
