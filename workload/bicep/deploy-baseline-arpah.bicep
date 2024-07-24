@@ -55,6 +55,7 @@ param avdIdentityServiceProvider string = 'ADDS'
 @sys.description('Required, Eronll session hosts on Intune. (Default: false)')
 param createIntuneEnrollment bool = false
 
+// This is the object id for the 'ARPA-H AVD Default' MS Entra Group
 @sys.description('Optional, Identity ID to grant RBAC role to access AVD application group and NTFS permissions. (Default: "")')
 param securityPrincipalId string = ''
 
