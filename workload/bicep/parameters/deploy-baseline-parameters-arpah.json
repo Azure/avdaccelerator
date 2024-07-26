@@ -220,6 +220,9 @@
         },
         "avdHostPoolCustomFriendlyName": {
             "value": "ARPA-H on NIH Network - Test"
+        },
+        "storageFilePrivateEndpointStaticIp": {
+            "value": "10.178.8.136"
         }
     }
 }

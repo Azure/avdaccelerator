@@ -483,6 +483,9 @@ param enableTelemetry bool = true
 @sys.description('Enable purge protection for the keyvaults. (Default: true)')
 param enableKvPurgeProtection bool = true
 
+@sys.description('Storage account private endpoint static ip')
+param storageFilePrivateEndpointStaticIp string
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -1146,6 +1149,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
         workloadSubsId: avdWorkloadSubsId
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
+        storageFilePrivateEndpointStaticIp: storageFilePrivateEndpointStaticIp
     }
     dependsOn: [
         baselineStorageResourceGroup
@@ -1190,6 +1194,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
         workloadSubsId: avdWorkloadSubsId
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
+        storageFilePrivateEndpointStaticIp: storageFilePrivateEndpointStaticIp
     }
     dependsOn: [
         fslogixAzureFilesStorage
