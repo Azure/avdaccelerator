@@ -257,19 +257,15 @@ param secureBootEnabled bool = true
 param vTpmEnabled bool = true
 
 @allowed([
-  'win10_21h2'
-  'win10_21h2_office'
   'win10_22h2_g2'
   'win10_22h2_office_g2'
-  'win11_21h2'
-  'win11_21h2_office'
   'win11_22h2'
   'win11_22h2_office'
   'win11_23h2'
   'win11_23h2_office'
 ])
 @sys.description('AVD OS image SKU. (Default: win11-22h2)')
-param avdOsImage string = 'win11_22h2'
+param avdOsImage string = 'win11_23h2'
 
 @sys.description('Management VM image SKU (Default: winServer_2022_Datacenter_smalldisk_g2)')
 param managementVmOsImage string = 'winServer_2022_Datacenter_smalldisk_g2'

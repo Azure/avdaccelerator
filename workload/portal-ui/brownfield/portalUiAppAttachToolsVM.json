@@ -46,16 +46,8 @@
 								"required": true,
 								"allowedValues": [
 									{
-										"label": "Windows 10 Ent (21H2)",
-										"value": "win10-21h2-ent-g2"
-									},
-									{
 										"label": "Windows 10 Ent (22H2)",
 										"value": "win10-22h2-ent-g2"
-									},
-									{
-										"label": "Windows 11 Ent (21H2)",
-										"value": "win11-21h2-ent"
 									},
 									{
 										"label": "Windows 11 Ent (22H2)",
