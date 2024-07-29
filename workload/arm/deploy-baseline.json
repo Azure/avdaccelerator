@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "14177626822235840240"
+      "templateHash": "15598645982022744574"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -44,16 +44,14 @@
     },
     "avdSessionHostLocation": {
       "type": "string",
-      "defaultValue": "eastus2",
       "metadata": {
-        "description": "Location where to deploy compute services. (Default: eastus2)"
+        "description": "Required. Location where to deploy compute services."
       }
     },
     "avdManagementPlaneLocation": {
       "type": "string",
-      "defaultValue": "eastus2",
       "metadata": {
-        "description": "Location where to deploy AVD management plane. (Default: eastus2)"
+        "description": "Required. Location where to deploy AVD management plane."
       }
     },
     "avdWorkloadSubsId": {
