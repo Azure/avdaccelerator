@@ -115,7 +115,7 @@ Azure platform landing zone has already been deployed in accordance with the [CA
 - allow_list_ip        = ["your.ip.address.range/23"]
 - aad_group_name       = "Desktop Virtualization User"  #user group must pre-created in Microsoft Entra Domain Services
 - rdsh_count           = 2
-- image_name           = "yourimagename-microsoftwindowsdesktop-office-365-win11-21h2-avd-m365"
+- image_name           = "yourimagename-microsoftwindowsdesktop-office-365-win11-23h2-avd-m365"
 - image_rg             = "yourimageresourcegroup-WestEurope-avd-AIBdemo-shared-resources"
 - gallery_name         = "yourimagegalleryname_WestEurope"
 - spoke_subscription_id = "Your spoke subscription ID"

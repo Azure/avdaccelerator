@@ -137,8 +137,8 @@ param existingVirtualNetworkResourceId string = ''
 param imageBuildNameTag string = 'AVD-Image'
 
 @maxLength(64)
-@sys.description('Custom name for Image Definition. (Default: avd-win11-21h2)')
-param imageDefinitionCustomName string = 'avd-win11-21h2'
+@sys.description('Custom name for Image Definition. (Default: avd-win11-23h2)')
+param imageDefinitionCustomName string = 'avd-win11-23h2'
 
 @sys.description('''The image supports accelerated networking.
 Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.
@@ -164,8 +164,8 @@ param imageDefinitionSecurityType string = 'Standard'
 param imageGalleryCustomName string = 'gal_avd_use2_001'
 
 @maxLength(260)
-@sys.description('Custom name for Image Template. (Default: it-avd-win11-21h2)')
-param imageTemplateCustomName string = 'it-avd-win11-22h2'
+@sys.description('Custom name for Image Template. (Default: it-avd-win11-23h2)')
+param imageTemplateCustomName string = 'it-avd-win11-23h2'
 
 @sys.description('Disaster recovery replication location for Image Version. (Default:"")')
 param imageVersionDisasterRecoveryLocation string = ''
@@ -190,12 +190,8 @@ param logAnalyticsWorkspaceCustomName string = 'log-avd'
 param logAnalyticsWorkspaceDataRetention int = 30
 
 @allowed([
-    'win10_21h2'
-    'win10_21h2_office'
     'win10_22h2_g2'
     'win10_22h2_office_g2'
-    'win11_21h2'
-    'win11_21h2_office'
     'win11_22h2'
     'win11_22h2_office'
     'win11_23h2'
@@ -398,24 +394,6 @@ var varModules = [
 ]
 var varNamingStandard = '${varLocationAcronym}'
 var varOperatingSystemImageDefinitions = {
-    win10_21h2: {
-        osType: 'Windows'
-        osState: 'Generalized'
-        offer: 'windows-10'
-        publisher: 'MicrosoftWindowsDesktop'
-        sku: 'win10-21h2-avd'
-        hyperVGeneration: 'V1'
-        version: 'latest'
-    }
-    win10_21h2_office: {
-        osType: 'Windows'
-        osState: 'Generalized'
-        offer: 'office-365'
-        publisher: 'MicrosoftWindowsDesktop'
-        sku: 'win10-21h2-avd-m365'
-        hyperVGeneration: 'V1'
-        version: 'latest'
-    }
     win10_22h2_g2: {
         osType: 'Windows'
         osState: 'Generalized'
@@ -431,24 +409,6 @@ var varOperatingSystemImageDefinitions = {
         offer: 'office-365'
         publisher: 'MicrosoftWindowsDesktop'
         sku: 'win10-22h2-avd-m365-g2'
-        hyperVGeneration: 'V2'
-        version: 'latest'
-    }
-    win11_21h2: {
-        osType: 'Windows'
-        osState: 'Generalized'
-        offer: 'windows-11'
-        publisher: 'MicrosoftWindowsDesktop'
-        sku: 'win11-21h2-avd'
-        hyperVGeneration: 'V2'
-        version: 'latest'
-    }
-    win11_21h2_office: {
-        osType: 'Windows'
-        osState: 'Generalized'
-        offer: 'office-365'
-        publisher: 'MicrosoftWindowsDesktop'
-        sku: 'win11-21h2-avd-m365'
         hyperVGeneration: 'V2'
         version: 'latest'
     }
