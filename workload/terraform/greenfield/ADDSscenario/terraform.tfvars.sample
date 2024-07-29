@@ -18,7 +18,7 @@ user_group_name           = "avdusersgrp"                                   # us
 domain_name               = "contoso.net"                                   # your on-perm AD server domain name 
 domain_user               = "domainjoiner"                                  # do not include domain name as this is appended
 rdsh_count                = 2                                               # Number of session host vm to deploy
-image_name                = "avdImage-win11-21h2-avd-m365"                  # custom image name
+image_name                = "avdImage-win11-23h2-avd-m365"                  # custom image name
 image_rg                  = "rg-image-resources"                            # resource group for custom image and image gallery
 gallery_name              = "avdgallery"                                    # azure compute gallery name for custom image
 hub_vnet                  = "hub-eastus"                                    # hub connectivity vnet name 
@@ -40,7 +40,7 @@ sku       = "win10-22h2-avd-g2"
 # Custom Image uncomment the following lines and comment the above lines to use custom image
 # image_rg                  = "rg-image-resources"                   # resource group for custom image and image gallery
 # gallery_name              = "avdgallery"                           # azure compute gallery name for custom image
-# image_name                = "avdImage-win11-21h2-avd-m365"         # custom image name
+# image_name                = "avdImage-win11-23h2-avd-m365"         # custom image name
 
 ############## Do not modify below this line unless you want to change naming convention#####################
 # Resource Groups

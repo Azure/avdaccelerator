@@ -26,12 +26,12 @@ existingLogAnalyticsWorkspaceResourceId | No       | Existing Azure log analytic
 existingSubnetName | No       | Input the name of the subnet for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: "")
 existingVirtualNetworkResourceId | No       | Input the resource ID for the existing virtual network that the network interfaces on the build virtual machines will join. (Default: "")
 imageBuildNameTag | No       | The name of workload for tagging purposes. (Default: AVD-Image)
-imageDefinitionCustomName | No       | Custom name for Image Definition. (Default: avd-win11-21h2)
+imageDefinitionCustomName | No       | Custom name for Image Definition. (Default: avd-win11-23h2)
 imageDefinitionAcceleratedNetworkSupported | No       | The image supports accelerated networking. Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance. This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types. 
 imageDefinitionHibernateSupported | No       | The image will support hibernation.
 imageDefinitionSecurityType | No       | Choose the Security Type of the Image Definition. (Default: Standard)
 imageGalleryCustomName | No       | Custom name for Image Gallery. (Default: gal_avd_use2_001)
-imageTemplateCustomName | No       | Custom name for Image Template. (Default: it-avd-win11-21h2)
+imageTemplateCustomName | No       | Custom name for Image Template. (Default: it-avd-win11-23h2)
 imageVersionDisasterRecoveryLocation | No       | Disaster recovery replication location for Image Version. (Default:"")
 imageVersionPrimaryLocation | Yes      | Primary replication location for Image Version. (Default:)
 imageVersionStorageAccountType | No       | Determine the Storage Account Type for the Image Version distributed by the Image Template. (Default: Standard_LRS)
@@ -215,9 +215,9 @@ The name of workload for tagging purposes. (Default: AVD-Image)
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-Custom name for Image Definition. (Default: avd-win11-21h2)
+Custom name for Image Definition. (Default: avd-win11-23h2)
 
-- Default value: `avd-win11-21h2`
+- Default value: `avd-win11-23h2`
 
 ### imageDefinitionAcceleratedNetworkSupported
 
@@ -265,7 +265,7 @@ Custom name for Image Gallery. (Default: gal_avd_use2_001)
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-Custom name for Image Template. (Default: it-avd-win11-21h2)
+Custom name for Image Template. (Default: it-avd-win11-23h2)
 
 - Default value: `it-avd-win11-22h2`
 
@@ -315,7 +315,7 @@ AVD OS image source. (Default: win11-22h2)
 
 - Default value: `win11_22h2`
 
-- Allowed values: `win10_21h2`, `win10_21h2_office`, `win10_22h2_g2`, `win10_22h2_office_g2`, `win11_21h2`, `win11_21h2_office`, `win11_22h2`, `win11_22h2_office`, `win11_23h2`, `win11_23h2_office`
+- Allowed values: `win10_22h2_g2`, `win10_22h2_office_g2`, `win11_22h2`, `win11_22h2_office`, `win11_23h2`, `win11_23h2_office`
 
 ### operationsTeamTag
 
@@ -466,7 +466,7 @@ Reference to the size of the VM for your workloads (Default: Contoso-Workload)
             "value": "AVD-Image"
         },
         "imageDefinitionCustomName": {
-            "value": "avd-win11-21h2"
+            "value": "avd-win11-23h2"
         },
         "imageDefinitionAcceleratedNetworkSupported": {
             "value": "true"

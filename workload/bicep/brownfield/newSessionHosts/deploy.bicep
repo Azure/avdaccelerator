@@ -154,17 +154,15 @@ param vmLocalAdminPasswordSecretName string = 'vmLocalUserPassword'
 param sessionHostOuPath string = ''
 
 @allowed([
-  'win10_21h2'
-  'win10_21h2_office'
   'win10_22h2_g2'
   'win10_22h2_office_g2'
-  'win11_21h2'
-  'win11_21h2_office'
   'win11_22h2'
   'win11_22h2_office'
+  'win11_23h2'
+  'win11_23h2_office'
 ])
-@sys.description('AVD OS image SKU. (Default: win11-21h2)')
-param osImage string = 'win11_22h2'
+@sys.description('AVD OS image SKU. (Default: win11-23h2)')
+param osImage string = 'win11_23h2'
 
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
