@@ -624,7 +624,7 @@
                                     "imageReference": {
                                         "publisher": "MicrosoftWindowsDesktop",
                                         "offer": "Windows-11",
-                                        "sku": "21h2-avd"
+                                        "sku": "23h2-avd"
                                     },
                                     "scope": {
                                         "location": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]",
@@ -756,28 +756,12 @@
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Windows 10 21H2",
-                                                "value": "win10_21h2"
-                                            },
-                                            {
-                                                "label": "Windows 10 21H2 - Office 365",
-                                                "value": "win10_21h2_office"
-                                            },
-                                            {
                                                 "label": "Windows 10 22H2 (Gen2)",
                                                 "value": "win10_22h2_g2"
                                             },
                                             {
                                                 "label": "Windows 10 22H2 - Office 365 (Gen2)",
                                                 "value": "win10_22h2_office_g2"
-                                            },
-                                            {
-                                                "label": "Windows 11",
-                                                "value": "win11_21h2"
-                                            },
-                                            {
-                                                "label": "Windows 11 - Office 365",
-                                                "value": "win11_21h2_office"
                                             },
                                             {
                                                 "label": "Windows 11 22H2 (Gen2)",
@@ -2396,7 +2380,7 @@
                 "zoneRedundantStorage": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment), steps('storage').storageGeneralSettings.storageGeneralSettingsZoneRedundancy, false)]",
                 "avdDeploySessionHostsCount": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
                 "useSharedImage": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false)]",
-                "avdOsImage": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false), steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11_21h2')]",
+                "avdOsImage": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false), steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11_23h2')]",
                 "securityType": "[if(and(or(contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11'), contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'g2')), empty(steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage)), steps('sessionHosts').sessionHostsSecuritySection.securityType, 'Standard')]",
                 "secureBootEnabled": "[if(and(or(contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11'), contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'g2')), empty(steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage)), steps('sessionHosts').sessionHostsSecuritySection.secureBootEnabled, false)]",
                 "vTpmEnabled": "[if(and(or(contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11'), contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'g2')), empty(steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage)), steps('sessionHosts').sessionHostsSecuritySection.vTpmEnabled, false)]",
