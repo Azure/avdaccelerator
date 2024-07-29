@@ -130,7 +130,7 @@ module testDeployment '../../../main.bicep' = [
               principalType: 'ServicePrincipal'
             }
           ]
-          sku: 'Win11-21H2'
+          sku: 'Win11-23H2'
         }
         {
           hyperVGeneration: 'V2'
