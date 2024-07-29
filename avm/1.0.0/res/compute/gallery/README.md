@@ -171,7 +171,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           }
         ]
         securityType: 'TrustedLaunch'
-        sku: 'Win11-21H2'
+        sku: 'Win11-23H2'
       }
       {
         hyperVGeneration: 'V2'
@@ -312,7 +312,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
             }
           ],
           "securityType": "TrustedLaunch",
-          "sku": "Win11-21H2"
+          "sku": "Win11-23H2"
         },
         {
           "hyperVGeneration": "V2",
