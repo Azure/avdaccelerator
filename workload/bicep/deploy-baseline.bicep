@@ -26,11 +26,11 @@ param deploymentEnvironment string = 'Dev'
 @sys.description('This value is used to set the expiration date on the disk encryption key. (Default: 60)')
 param diskEncryptionKeyExpirationInDays int = 60
 
-@sys.description('Location where to deploy compute services. (Default: eastus2)')
-param avdSessionHostLocation string = 'eastus2'
+@sys.description('Required. Location where to deploy compute services.')
+param avdSessionHostLocation string 
 
-@sys.description('Location where to deploy AVD management plane. (Default: eastus2)')
-param avdManagementPlaneLocation string = 'eastus2'
+@sys.description('Required. Location where to deploy AVD management plane.')
+param avdManagementPlaneLocation string 
 
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario. (Default: "")')
 param avdWorkloadSubsId string = ''
