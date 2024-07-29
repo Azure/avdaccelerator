@@ -1,16 +1,4 @@
 {
-    "win10_21h2": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "windows-10",
-        "sku": "win10-21h2-avd",
-        "version": "latest"
-    },
-    "win10_21h2_office": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "office-365",
-        "sku": "win10-21h2-avd-m365",
-        "version": "latest"
-    },
     "win10_22h2_g2": {
         "publisher": "MicrosoftWindowsDesktop",
         "offer": "windows-10",
@@ -21,18 +9,6 @@
         "publisher": "MicrosoftWindowsDesktop",
         "offer": "office-365",
         "sku": "win10-22h2-avd-m365-g2",
-        "version": "latest"
-    },
-    "win11_21h2": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "Windows-11",
-        "sku": "win11-21h2-avd",
-        "version": "latest"
-    },
-    "win11_21h2_office": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "office-365",
-        "sku": "win11-21h2-avd-m365",
         "version": "latest"
     },
     "win11_22h2": {

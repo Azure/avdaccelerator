@@ -186,28 +186,12 @@
                                         "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Windows 10 21H2 (Gen1)",
-                                                "value": "win10_21h2"
-                                            },
-                                            {
-                                                "label": "Windows 10 21H2 - Office 365 (Gen1)",
-                                                "value": "win10_21h2_office"
-                                            },
-                                            {
                                                 "label": "Windows 10 22H2 (Gen2)",
                                                 "value": "win10_22h2_g2"
                                             },
                                             {
                                                 "label": "Windows 10 22H2 - Office 365 (Gen2)",
                                                 "value": "win10_22h2_office_g2"
-                                            },
-                                            {
-                                                "label": "Windows 11 21H2 (Gen2)",
-                                                "value": "win11_21h2"
-                                            },
-                                            {
-                                                "label": "Windows 11 21H2 - Office 365 (Gen2)",
-                                                "value": "win11_21h2_office"
                                             },
                                             {
                                                 "label": "Windows 11 22H2 (Gen2)",
@@ -534,7 +518,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Image definition",
                                     "toolTip": "Input a custom name for the Image Definition in the Compute Gallery.",
-                                    "placeholder": "Example: avd_win11_21h2",
+                                    "placeholder": "Example: avd_win11_23h2",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^(?:[a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9_\\.-]{0,78}[a-zA-Z0-9])$",
@@ -546,7 +530,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Image template",
                                     "toolTip": "Input a custom name for the AIB Image Template.",
-                                    "placeholder": "Example: it-avd-win11-21h2",
+                                    "placeholder": "Example: it-avd-win11-23h2",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^(?!.*[\\. ]).{1,260}$",
