@@ -74,7 +74,7 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2022-02-14
       type: 'PlatformImage'
       publisher: 'MicrosoftWindowsDesktop'
       offer: 'Windows-11'
-      sku: 'win11-21h2-avd'
+      sku: 'win11-23h2-avd'
       version: 'latest'
     }
     distribute: [
