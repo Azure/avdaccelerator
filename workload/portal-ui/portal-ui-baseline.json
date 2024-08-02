@@ -4,7 +4,7 @@
         "kind": "Form",
         "properties": {
             "isWizard": false,
-            "title": "EPI TEST - Azure Virtual Desktop - Landing Zone Accelerator (LZA) - Baseline",
+            "title": "API TEST - Azure Virtual Desktop - Landing Zone Accelerator (LZA) - Baseline",
             "steps": [
                 {
                     "name": "basics",

@@ -1439,107 +1439,107 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
   ]
 }
 
-// VMSS Flex
-module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' =  if (avdDeploySessionHosts) {
-  name: 'AVD-VMSS-Flex-${time}'
-  scope: resourceGroup('${avdWorkloadSubsId}', '${varComputeObjectsRgName}')
-  params: {
-    namePrefix: varVmssFlexNamePrefix
-    location: avdSessionHostLocation
-    count: varVmssFlexCount
-    platformFaultDomainCount: vmssFlatformFaultDomainCount
-    useAvailabilityZones: availabilityZonesCompute
-    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-  }
-  dependsOn: [
-    baselineResourceGroups
-    monitoringDiagnosticSettings
-  ]
-}
+// // VMSS Flex
+// module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' =  if (avdDeploySessionHosts) {
+//   name: 'AVD-VMSS-Flex-${time}'
+//   scope: resourceGroup('${avdWorkloadSubsId}', '${varComputeObjectsRgName}')
+//   params: {
+//     namePrefix: varVmssFlexNamePrefix
+//     location: avdSessionHostLocation
+//     count: varVmssFlexCount
+//     platformFaultDomainCount: vmssFlatformFaultDomainCount
+//     useAvailabilityZones: availabilityZonesCompute
+//     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+//   }
+//   dependsOn: [
+//     baselineResourceGroups
+//     monitoringDiagnosticSettings
+//   ]
+// }
 
-// Session hosts
-@batchSize(3)
-module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
-  for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
-    name: 'SH-Batch-${i - 1}-${time}'
-    params: {
-      diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
-      timeZone: varTimeZoneSessionHosts
-      asgResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment)
-        ? '${networking.outputs.applicationSecurityGroupResourceId}'
-        : ''
-      identityServiceProvider: avdIdentityServiceProvider
-      createIntuneEnrollment: createIntuneEnrollment
-      maxVmssFlexMembersCount: varMaxVmssFlexMembersCount
-      vmssFlexNamePrefix: varVmssFlexNamePrefix
-      batchId: i - 1
-      computeObjectsRgName: varComputeObjectsRgName
-      count: i == varSessionHostBatchCount && varMaxSessionHostsDivisionRemainderValue > 0
-        ? varMaxSessionHostsDivisionRemainderValue
-        : varMaxSessionHostsPerTemplate
-      countIndex: i == 1
-        ? avdSessionHostCountIndex
-        : (((i - 1) * varMaxSessionHostsPerTemplate) + avdSessionHostCountIndex)
-      domainJoinUserName: avdDomainJoinUserName
-      wrklKvName: varWrklKvName
-      serviceObjectsRgName: varServiceObjectsRgName
-      identityDomainName: identityDomainName
-      avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
-      sessionHostOuPath: avdOuPath
-      diskType: avdSessionHostDiskType
-      customOsDiskSizeGB: customOsDiskSizeGb
-      location: avdSessionHostLocation
-      namePrefix: varSessionHostNamePrefix
-      vmSize: avdSessionHostsSize
-      enableAcceleratedNetworking: enableAcceleratedNetworking
-      securityType: securityType == 'Standard' ? '' : securityType
-      secureBootEnabled: secureBootEnabled
-      vTpmEnabled: vTpmEnabled
-      subnetId: createAvdVnet
-        ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}'
-        : existingVnetAvdSubnetResourceId
-      useAvailabilityZones: availabilityZonesCompute
-      vmLocalUserName: avdVmLocalUserName
-      subscriptionId: avdWorkloadSubsId
-      encryptionAtHost: diskZeroTrust
-      createAvdFslogixDeployment: createAvdFslogixDeployment
-      fslogixSharePath: varFslogixSharePath
-      fslogixStorageFqdn: varFslogixStorageFqdn
-      sessionHostConfigurationScriptUri: varSessionHostConfigurationScriptUri
-      sessionHostConfigurationScript: varSessionHostConfigurationScript
-      marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
-      useSharedImage: useSharedImage
-      tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-      deployMonitoring: avdDeployMonitoring
-      alaWorkspaceResourceId: avdDeployMonitoring
-        ? (deployAlaWorkspace
-            ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
-            : alaExistingWorkspaceResourceId)
-        : ''
-      dataCollectionRuleId: avdDeployMonitoring ? monitoringDiagnosticSettings.outputs.dataCollectionRuleId : ''
-    }
-    dependsOn: [
-      fslogixAzureFilesStorage
-      baselineResourceGroups
-      networking
-      wrklKeyVault
-      monitoringDiagnosticSettings
-      vmScaleSetFlex
-      managementPLane
-    ]
-  }
-]
+// // Session hosts
+// @batchSize(3)
+// module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
+//   for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
+//     name: 'SH-Batch-${i - 1}-${time}'
+//     params: {
+//       diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
+//       timeZone: varTimeZoneSessionHosts
+//       asgResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment)
+//         ? '${networking.outputs.applicationSecurityGroupResourceId}'
+//         : ''
+//       identityServiceProvider: avdIdentityServiceProvider
+//       createIntuneEnrollment: createIntuneEnrollment
+//       maxVmssFlexMembersCount: varMaxVmssFlexMembersCount
+//       vmssFlexNamePrefix: varVmssFlexNamePrefix
+//       batchId: i - 1
+//       computeObjectsRgName: varComputeObjectsRgName
+//       count: i == varSessionHostBatchCount && varMaxSessionHostsDivisionRemainderValue > 0
+//         ? varMaxSessionHostsDivisionRemainderValue
+//         : varMaxSessionHostsPerTemplate
+//       countIndex: i == 1
+//         ? avdSessionHostCountIndex
+//         : (((i - 1) * varMaxSessionHostsPerTemplate) + avdSessionHostCountIndex)
+//       domainJoinUserName: avdDomainJoinUserName
+//       wrklKvName: varWrklKvName
+//       serviceObjectsRgName: varServiceObjectsRgName
+//       identityDomainName: identityDomainName
+//       avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
+//       sessionHostOuPath: avdOuPath
+//       diskType: avdSessionHostDiskType
+//       customOsDiskSizeGB: customOsDiskSizeGb
+//       location: avdSessionHostLocation
+//       namePrefix: varSessionHostNamePrefix
+//       vmSize: avdSessionHostsSize
+//       enableAcceleratedNetworking: enableAcceleratedNetworking
+//       securityType: securityType == 'Standard' ? '' : securityType
+//       secureBootEnabled: secureBootEnabled
+//       vTpmEnabled: vTpmEnabled
+//       subnetId: createAvdVnet
+//         ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}'
+//         : existingVnetAvdSubnetResourceId
+//       useAvailabilityZones: availabilityZonesCompute
+//       vmLocalUserName: avdVmLocalUserName
+//       subscriptionId: avdWorkloadSubsId
+//       encryptionAtHost: diskZeroTrust
+//       createAvdFslogixDeployment: createAvdFslogixDeployment
+//       fslogixSharePath: varFslogixSharePath
+//       fslogixStorageFqdn: varFslogixStorageFqdn
+//       sessionHostConfigurationScriptUri: varSessionHostConfigurationScriptUri
+//       sessionHostConfigurationScript: varSessionHostConfigurationScript
+//       marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
+//       useSharedImage: useSharedImage
+//       tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+//       deployMonitoring: avdDeployMonitoring
+//       alaWorkspaceResourceId: avdDeployMonitoring
+//         ? (deployAlaWorkspace
+//             ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
+//             : alaExistingWorkspaceResourceId)
+//         : ''
+//       dataCollectionRuleId: avdDeployMonitoring ? monitoringDiagnosticSettings.outputs.dataCollectionRuleId : ''
+//     }
+//     dependsOn: [
+//       fslogixAzureFilesStorage
+//       baselineResourceGroups
+//       networking
+//       wrklKeyVault
+//       monitoringDiagnosticSettings
+//       vmScaleSetFlex
+//       managementPLane
+//     ]
+//   }
+// ]
 
-// VM GPU extension policies
-module gpuPolicies './modules/azurePolicies/gpuExtensionsSubscriptions.bicep' = if (deployGpuPolicies) {
-  scope: subscription('${avdWorkloadSubsId}')
-  name: 'GPU-VM-Extensions-${time}'
-  params: {
-    computeObjectsRgName: varComputeObjectsRgName
-    location: avdSessionHostLocation
-    subscriptionId: avdWorkloadSubsId
-  }
-  dependsOn: [
-    sessionHosts
-  ]
-}
+// // VM GPU extension policies
+// module gpuPolicies './modules/azurePolicies/gpuExtensionsSubscriptions.bicep' = if (deployGpuPolicies) {
+//   scope: subscription('${avdWorkloadSubsId}')
+//   name: 'GPU-VM-Extensions-${time}'
+//   params: {
+//     computeObjectsRgName: varComputeObjectsRgName
+//     location: avdSessionHostLocation
+//     subscriptionId: avdWorkloadSubsId
+//   }
+//   dependsOn: [
+//     sessionHosts
+//   ]
+// }
