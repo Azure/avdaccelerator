@@ -2123,7 +2123,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
+              "value": "USGovVirginia"
             }
           }
         }
@@ -2589,7 +2589,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
+              "value": "USGovVirginia"
             }
           }
         }
@@ -3050,7 +3050,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
+              "value": "USGovVirginia"
             }
           }
         }
