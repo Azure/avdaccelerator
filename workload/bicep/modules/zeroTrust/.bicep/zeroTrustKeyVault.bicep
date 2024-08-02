@@ -13,20 +13,20 @@ param subscriptionId string
 @sys.description('AVD Resource Group Name for the service objects.')
 param rgName string
 
-@sys.description('Deploy private endpoints for key vault and storage.')
-param deployPrivateEndpointKeyvaultStorage bool
+// @sys.description('Deploy private endpoints for key vault and storage.')
+// param deployPrivateEndpointKeyvaultStorage bool
 
 @sys.description('Key vault name')
 param kvName string
 
-@sys.description('Private endpoint subnet resource ID')
-param privateEndpointsubnetResourceId string
+// @sys.description('Private endpoint subnet resource ID')
+// param privateEndpointsubnetResourceId string
 
-@sys.description('Key vault private endpoint name.')
-param ztKvPrivateEndpointName string
+// @sys.description('Key vault private endpoint name.')
+// param ztKvPrivateEndpointName string
 
-@sys.description('Private DNS zone for key vault private endpoint')
-param keyVaultprivateDNSResourceId string
+// @sys.description('Private DNS zone for key vault private endpoint')
+// param keyVaultprivateDNSResourceId string
 
 @sys.description('This value is used to set the expiration date on the disk encryption key.')
 param diskEncryptionKeyExpirationInDays int
@@ -77,19 +77,19 @@ module ztKeyVault '../../../../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
             virtualNetworkRules: []
             ipRules: []
         }
-        privateEndpoints: deployPrivateEndpointKeyvaultStorage ? [
-            {
-                name: ztKvPrivateEndpointName
-                subnetResourceId: privateEndpointsubnetResourceId
-                customNetworkInterfaceName: 'nic-01-${ztKvPrivateEndpointName}'
-                service: 'vault'
-                privateDnsZoneGroup: {
-                    privateDNSResourceIds: [
-                        keyVaultprivateDNSResourceId
-                    ]
-                }
-            }
-        ] : []
+        // privateEndpoints: deployPrivateEndpointKeyvaultStorage ? [
+        //     {
+        //         name: ztKvPrivateEndpointName
+        //         subnetResourceId: privateEndpointsubnetResourceId
+        //         customNetworkInterfaceName: 'nic-01-${ztKvPrivateEndpointName}'
+        //         service: 'vault'
+        //         privateDnsZoneGroup: {
+        //             privateDNSResourceIds: [
+        //                 keyVaultprivateDNSResourceId
+        //             ]
+        //         }
+        //     }
+        // ] : []
         tags: tags
     }
     dependsOn: []

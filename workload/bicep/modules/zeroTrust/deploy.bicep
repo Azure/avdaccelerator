@@ -49,8 +49,8 @@ param diskEncryptionSetName string
 @sys.description('Key vault name')
 param ztKvName string
 
-@sys.description('Private DNS zone for key vault private endpoint')
-param keyVaultprivateDNSResourceId string
+// @sys.description('Private DNS zone for key vault private endpoint')
+// param keyVaultprivateDNSResourceId string
 
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
@@ -207,10 +207,10 @@ module ztKeyVault './.bicep/zeroTrustKeyVault.bicep' = if (diskZeroTrust) {
         rgName: serviceObjectsRgName
         kvName: ztKvName
         vaultSku: vaultSku
-        deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
-        ztKvPrivateEndpointName: ztKvPrivateEndpointName
-        privateEndpointsubnetResourceId: privateEndpointsubnetResourceId
-        keyVaultprivateDNSResourceId: keyVaultprivateDNSResourceId
+        // deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
+        // ztKvPrivateEndpointName: ztKvPrivateEndpointName
+        // privateEndpointsubnetResourceId: privateEndpointsubnetResourceId
+        // keyVaultprivateDNSResourceId: keyVaultprivateDNSResourceId
         diskEncryptionKeyExpirationInDays: diskEncryptionKeyExpirationInDays
         diskEncryptionKeyExpirationInEpoch: diskEncryptionKeyExpirationInEpoch
         diskEncryptionSetName: diskEncryptionSetName

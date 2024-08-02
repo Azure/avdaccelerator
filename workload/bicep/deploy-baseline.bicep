@@ -1187,9 +1187,9 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
       ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
       : existingVnetPrivateEndpointSubnetResourceId
     deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
-    keyVaultprivateDNSResourceId: createPrivateDnsZones
-      ? networking.outputs.KeyVaultDnsZoneResourceId
-      : avdVnetPrivateDnsZoneKeyvaultId
+    // keyVaultprivateDNSResourceId: createPrivateDnsZones
+    //   ? networking.outputs.KeyVaultDnsZoneResourceId
+    //   : avdVnetPrivateDnsZoneKeyvaultId
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     enableKvPurgeProtection: enableKvPurgeProtection
     kvTags: varZtKeyvaultTag
@@ -1222,23 +1222,23 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
           ipRules: []
         }
       : {}
-    privateEndpoints: deployPrivateEndpointKeyvaultStorage
-      ? [
-          {
-            name: varWrklKvPrivateEndpointName
-            subnetResourceId: createAvdVnet
-              ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
-              : existingVnetPrivateEndpointSubnetResourceId
-            customNetworkInterfaceName: 'nic-01-${varWrklKvPrivateEndpointName}'
-            service: 'vault'
-            privateDnsZoneGroup: {
-              privateDNSResourceIds: [
-                createPrivateDnsZones ? networking.outputs.KeyVaultDnsZoneResourceId : avdVnetPrivateDnsZoneKeyvaultId
-              ]
-            }
-          }
-        ]
-      : []
+    // privateEndpoints: deployPrivateEndpointKeyvaultStorage
+    //   ? [
+    //       {
+    //         name: varWrklKvPrivateEndpointName
+    //         subnetResourceId: createAvdVnet
+    //           ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
+    //           : existingVnetPrivateEndpointSubnetResourceId
+    //         customNetworkInterfaceName: 'nic-01-${varWrklKvPrivateEndpointName}'
+    //         service: 'vault'
+    //         privateDnsZoneGroup: {
+    //           privateDNSResourceIds: [
+    //             createPrivateDnsZones ? networking.outputs.KeyVaultDnsZoneResourceId : avdVnetPrivateDnsZoneKeyvaultId
+    //           ]
+    //         }
+    //       }
+    //     ]
+    //   : []
     secrets: (avdIdentityServiceProvider != 'EntraID')
       ? [
           {
@@ -1366,9 +1366,9 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
     privateEndpointSubnetId: createAvdVnet
       ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
       : existingVnetPrivateEndpointSubnetResourceId
-    vnetPrivateDnsZoneFilesId: createPrivateDnsZones
-      ? networking.outputs.azureFilesDnsZoneResourceId
-      : avdVnetPrivateDnsZoneFilesId
+    // vnetPrivateDnsZoneFilesId: createPrivateDnsZones
+    //   ? networking.outputs.azureFilesDnsZoneResourceId
+    //   : avdVnetPrivateDnsZoneFilesId
     workloadSubsId: avdWorkloadSubsId
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     alaWorkspaceResourceId: avdDeployMonitoring
@@ -1418,9 +1418,9 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
     privateEndpointSubnetId: createAvdVnet
       ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
       : existingVnetPrivateEndpointSubnetResourceId
-    vnetPrivateDnsZoneFilesId: createPrivateDnsZones
-      ? networking.outputs.azureFilesDnsZoneResourceId
-      : avdVnetPrivateDnsZoneFilesId
+    // vnetPrivateDnsZoneFilesId: createPrivateDnsZones
+    //   ? networking.outputs.azureFilesDnsZoneResourceId
+    //   : avdVnetPrivateDnsZoneFilesId
     workloadSubsId: avdWorkloadSubsId
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     alaWorkspaceResourceId: avdDeployMonitoring
