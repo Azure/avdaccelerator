@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "14596439087709265378"
+      "templateHash": "13908185521515349045"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -1212,68 +1212,6 @@
         "timeZone": "Mountain Standard Time"
       }
     },
-    "$fxv#1": {
-      "win10_22h2_g2": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "windows-10",
-        "sku": "win10-22h2-avd-g2",
-        "version": "latest"
-      },
-      "win10_22h2_office_g2": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "office-365",
-        "sku": "win10-22h2-avd-m365-g2",
-        "version": "latest"
-      },
-      "win11_22h2": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "Windows-11",
-        "sku": "win11-22h2-avd",
-        "version": "latest"
-      },
-      "win11_22h2_office": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "office-365",
-        "sku": "win11-22h2-avd-m365",
-        "version": "latest"
-      },
-      "win11_23h2": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "Windows-11",
-        "sku": "win11-23h2-avd",
-        "version": "latest"
-      },
-      "win11_23h2_office": {
-        "publisher": "MicrosoftWindowsDesktop",
-        "offer": "office-365",
-        "sku": "win11-23h2-avd-m365",
-        "version": "latest"
-      },
-      "winServer_2022_Datacenter": {
-        "publisher": "MicrosoftWindowsServer",
-        "offer": "WindowsServer",
-        "sku": "2022-datacenter-g2",
-        "version": "latest"
-      },
-      "winServer_2022_Datacenter_smalldisk_g2": {
-        "publisher": "MicrosoftWindowsServer",
-        "offer": "WindowsServer",
-        "sku": "2022-datacenter-smalldisk-g2",
-        "version": "latest"
-      },
-      "winServer_2022_datacenter_core": {
-        "publisher": "MicrosoftWindowsServer",
-        "offer": "WindowsServer",
-        "sku": "2022-datacenter-core-g2",
-        "version": "latest"
-      },
-      "winServer_2022_Datacenter_core_smalldisk_g2": {
-        "publisher": "MicrosoftWindowsServer",
-        "offer": "WindowsServer",
-        "sku": "2022-datacenter-core-smalldisk-g2",
-        "version": "latest"
-      }
-    },
     "varDeploymentPrefixLowercase": "[toLower(parameters('deploymentPrefix'))]",
     "varAzureCloudName": "[environment().name]",
     "varDeploymentEnvironmentLowercase": "[toLower(parameters('deploymentEnvironment'))]",
@@ -1296,359 +1234,21 @@
     "varComputeObjectsRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdComputeObjectsRgCustomName'), format('rg-avd-{0}-pool-compute', variables('varComputeStorageResourcesNamingStandard')))]",
     "varStorageObjectsRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdStorageObjectsRgCustomName'), format('rg-avd-{0}-storage', variables('varComputeStorageResourcesNamingStandard')))]",
     "varMonitoringRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdMonitoringRgCustomName'), format('rg-avd-{0}-{1}-monitoring', variables('varDeploymentEnvironmentLowercase'), variables('varManagementPlaneLocationAcronym')))]",
-    "varVnetName": "[if(parameters('avdUseCustomNaming'), parameters('avdVnetworkCustomName'), format('vnet-{0}-001', variables('varComputeStorageResourcesNamingStandard')))]",
-    "varHubVnetName": "[if(and(parameters('createAvdVnet'), not(empty(parameters('existingHubVnetResourceId')))), split(parameters('existingHubVnetResourceId'), '/')[8], '')]",
-    "varVnetPeeringName": "[format('peer-{0}', variables('varHubVnetName'))]",
-    "varRemoteVnetPeeringName": "[format('peer-{0}', variables('varVnetName'))]",
-    "varVnetAvdSubnetName": "[if(parameters('avdUseCustomNaming'), parameters('avdVnetworkSubnetCustomName'), format('snet-avd-{0}-001', variables('varComputeStorageResourcesNamingStandard')))]",
-    "varVnetPrivateEndpointSubnetName": "[if(parameters('avdUseCustomNaming'), parameters('privateEndpointVnetworkSubnetCustomName'), format('snet-pe-{0}-001', variables('varComputeStorageResourcesNamingStandard')))]",
-    "varAvdNetworksecurityGroupName": "[if(parameters('avdUseCustomNaming'), parameters('avdNetworksecurityGroupCustomName'), format('nsg-avd-{0}-001', variables('varComputeStorageResourcesNamingStandard')))]",
-    "varPrivateEndpointNetworksecurityGroupName": "[if(parameters('avdUseCustomNaming'), parameters('privateEndpointNetworksecurityGroupCustomName'), format('nsg-pe-{0}-001', variables('varComputeStorageResourcesNamingStandard')))]",
-    "varAvdRouteTableName": "[if(parameters('avdUseCustomNaming'), parameters('avdRouteTableCustomName'), format('route-avd-{0}-001', variables('varComputeStorageResourcesNamingStandard')))]",
-    "varPrivateEndpointRouteTableName": "[if(parameters('avdUseCustomNaming'), parameters('privateEndpointRouteTableCustomName'), format('route-pe-{0}-001', variables('varComputeStorageResourcesNamingStandard')))]",
-    "varApplicationSecurityGroupName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationSecurityGroupCustomName'), format('asg-{0}-001', variables('varComputeStorageResourcesNamingStandard')))]",
-    "varDDosProtectionPlanName": "[format('ddos-{0}', variables('varVnetName'))]",
-    "varWorkSpaceName": "[if(parameters('avdUseCustomNaming'), parameters('avdWorkSpaceCustomName'), format('vdws-{0}-001', variables('varManagementPlaneNamingStandard')))]",
-    "varWorkSpaceFriendlyName": "[if(parameters('avdUseCustomNaming'), parameters('avdWorkSpaceCustomFriendlyName'), format('Workspace {0} {1} {2} 001', parameters('deploymentPrefix'), parameters('deploymentEnvironment'), parameters('avdManagementPlaneLocation')))]",
-    "varHostPoolName": "[if(parameters('avdUseCustomNaming'), parameters('avdHostPoolCustomName'), format('vdpool-{0}-001', variables('varManagementPlaneNamingStandard')))]",
-    "varHostFriendlyName": "[if(parameters('avdUseCustomNaming'), parameters('avdHostPoolCustomFriendlyName'), format('Hostpool {0} {1} {2} 001', parameters('deploymentPrefix'), parameters('deploymentEnvironment'), parameters('avdManagementPlaneLocation')))]",
-    "varHostPoolPreferredAppGroupType": "[toLower(parameters('hostPoolPreferredAppGroupType'))]",
-    "varApplicationGroupName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomName'), format('vdag-{0}-{1}-001', variables('varHostPoolPreferredAppGroupType'), variables('varManagementPlaneNamingStandard')))]",
-    "varApplicationGroupFriendlyName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomFriendlyName'), format('{0} {1} {2} {3} 001', variables('varHostPoolPreferredAppGroupType'), parameters('deploymentPrefix'), parameters('deploymentEnvironment'), parameters('avdManagementPlaneLocation')))]",
-    "varDeployScalingPlan": "[if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), false(), parameters('avdDeployScalingPlan'))]",
     "varCreateMsixDeployment": "[if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), false(), parameters('createMsixDeployment'))]",
-    "varScalingPlanName": "[if(parameters('avdUseCustomNaming'), parameters('avdScalingPlanCustomName'), format('vdscaling-{0}-001', variables('varManagementPlaneNamingStandard')))]",
-    "varScalingPlanExclusionTag": "[format('exclude-{0}', variables('varScalingPlanName'))]",
-    "varScalingPlanWeekdaysScheduleName": "[format('Weekdays-{0}', variables('varManagementPlaneNamingStandard'))]",
-    "varScalingPlanWeekendScheduleName": "[format('Weekend-{0}', variables('varManagementPlaneNamingStandard'))]",
-    "varWrklKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('avdWrklKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')), format('kv-sec-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')))]",
-    "varWrklKvPrivateEndpointName": "[format('pe-{0}-vault', variables('varWrklKvName'))]",
-    "varWrklKeyVaultSku": "[if(or(equals(variables('varAzureCloudName'), 'AzureCloud'), equals(variables('varAzureCloudName'), 'AzureUSGovernment')), 'premium', if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), 'standard', null()))]",
-    "varSessionHostNamePrefix": "[if(parameters('avdUseCustomNaming'), parameters('avdSessionHostCustomNamePrefix'), format('vm{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varSessionHostLocationAcronym')))]",
-    "varVmssFlexNamePrefix": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}', parameters('vmssFlexCustomNamePrefix'), variables('varComputeStorageResourcesNamingStandard')), format('vmss-{0}', variables('varComputeStorageResourcesNamingStandard')))]",
-    "varStorageManagedIdentityName": "[format('id-storage-{0}-001', variables('varComputeStorageResourcesNamingStandard'))]",
-    "varFslogixFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('fslogixFileShareCustomName'), format('fslogix-pc-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
-    "varMsixFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('msixFileShareCustomName'), format('msix-pc-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
-    "varFslogixStorageName": "[if(parameters('avdUseCustomNaming'), format('{0}fsl{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')), format('stfsl{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')))]",
-    "varFslogixStorageFqdn": "[if(parameters('createAvdFslogixDeployment'), format('{0}.file.{1}', variables('varFslogixStorageName'), environment().suffixes.storage), '')]",
-    "varMsixStorageFqdn": "[format('{0}.file.{1}', variables('varMsixStorageName'), environment().suffixes.storage)]",
-    "varMsixStorageName": "[if(parameters('avdUseCustomNaming'), format('{0}msx{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')), format('stmsx{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')))]",
-    "varManagementVmName": "[format('vmmgmt{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varSessionHostLocationAcronym'))]",
-    "varAlaWorkspaceName": "[if(parameters('avdUseCustomNaming'), parameters('avdAlaWorkspaceCustomName'), format('log-avd-{0}-{1}', variables('varDeploymentEnvironmentLowercase'), variables('varManagementPlaneLocationAcronym')))]",
-    "varDataCollectionRulesName": "[format('microsoft-avdi-{0}', variables('varSessionHostLocationLowercase'))]",
-    "varZtKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('ztKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')), format('kv-key-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')))]",
-    "varZtKvPrivateEndpointName": "[format('pe-{0}-vault', variables('varZtKvName'))]",
-    "varFslogixSharePath": "[if(parameters('createAvdFslogixDeployment'), format('\\\\{0}.file.{1}\\{2}', variables('varFslogixStorageName'), environment().suffixes.storage, variables('varFslogixFileShareName')), '')]",
-    "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
-    "varSessionHostConfigurationScriptUri": "[format('{0}scripts/Set-SessionHostConfiguration.ps1', variables('varBaseScriptUri'))]",
-    "varSessionHostConfigurationScript": "./Set-SessionHostConfiguration.ps1",
-    "varDiskEncryptionKeyExpirationInEpoch": "[dateTimeToEpoch(dateTimeAdd(parameters('time'), format('P{0}D', string(parameters('diskEncryptionKeyExpirationInDays')))))]",
     "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(variables('varCreateMsixDeployment'), true())), true(), false())]",
-    "varFslogixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('fslogixStoragePerformance')), format('{0}_LRS', parameters('fslogixStoragePerformance')))]",
-    "varMsixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('msixStoragePerformance')), format('{0}_LRS', parameters('msixStoragePerformance')))]",
-    "varMaxSessionHostsPerTemplate": 10,
-    "varMaxSessionHostsDivisionValue": "[div(parameters('avdDeploySessionHostsCount'), variables('varMaxSessionHostsPerTemplate'))]",
-    "varMaxSessionHostsDivisionRemainderValue": "[mod(parameters('avdDeploySessionHostsCount'), variables('varMaxSessionHostsPerTemplate'))]",
-    "varSessionHostBatchCount": "[if(greater(variables('varMaxSessionHostsDivisionRemainderValue'), 0), add(variables('varMaxSessionHostsDivisionValue'), 1), variables('varMaxSessionHostsDivisionValue'))]",
-    "varMaxVmssFlexMembersCount": 999,
-    "varDivisionVmssFlexValue": "[div(parameters('avdDeploySessionHostsCount'), variables('varMaxVmssFlexMembersCount'))]",
-    "varDivisionAvsetRemainderValue": "[mod(parameters('avdDeploySessionHostsCount'), variables('varMaxVmssFlexMembersCount'))]",
-    "varVmssFlexCount": "[if(greater(variables('varDivisionAvsetRemainderValue'), 0), add(variables('varDivisionVmssFlexValue'), 1), variables('varDivisionVmssFlexValue'))]",
-    "varHostPoolAgentUpdateSchedule": [
-      {
-        "dayOfWeek": "Tuesday",
-        "hour": 18
-      },
-      {
-        "dayOfWeek": "Friday",
-        "hour": 17
-      }
-    ],
-    "varPersonalScalingPlanSchedules": [
-      {
-        "daysOfWeek": [
-          "Monday",
-          "Wednesday",
-          "Thursday",
-          "Friday"
-        ],
-        "name": "[variables('varScalingPlanWeekdaysScheduleName')]",
-        "offPeakStartTime": {
-          "hour": 20,
-          "minute": 0
-        },
-        "offPeakStartVMOnConnect": "Enable",
-        "offPeakMinutesToWaitOnDisconnect": 30,
-        "offPeakActionOnDisconnect": "Hibernate",
-        "offPeakMinutesToWaitOnLogoff": 0,
-        "offPeakActionOnLogoff": "Deallocate",
-        "peakStartTime": {
-          "hour": 9,
-          "minute": 0
-        },
-        "peakStartVMOnConnect": "Enable",
-        "peakMinutesToWaitOnDisconnect": 30,
-        "peakActionOnDisconnect": "Hibernate",
-        "peakMinutesToWaitOnLogoff": 0,
-        "peakActionOnLogoff": "Deallocate",
-        "rampDownStartTime": {
-          "hour": 18,
-          "minute": 0
-        },
-        "rampDownStartVMOnConnect": "Enable",
-        "rampDownMinutesToWaitOnDisconnect": 30,
-        "rampDownActionOnDisconnect": "Hibernate",
-        "rampDownMinutesToWaitOnLogoff": 0,
-        "rampDownActionOnLogoff": "Deallocate",
-        "rampUpStartTime": {
-          "hour": 7,
-          "minute": 0
-        },
-        "rampUpAutoStartHosts": "WithAssignedUser",
-        "rampUpStartVMOnConnect": "Enable",
-        "rampUpMinutesToWaitOnDisconnect": 30,
-        "rampUpActionOnDisconnect": "Hibernate",
-        "rampUpMinutesToWaitOnLogoff": 0,
-        "rampUpActionOnLogoff": "Deallocate"
-      },
-      {
-        "daysOfWeek": [
-          "Tuesday"
-        ],
-        "name": "[format('{0}-agent-updates', variables('varScalingPlanWeekdaysScheduleName'))]",
-        "offPeakStartTime": {
-          "hour": 20,
-          "minute": 0
-        },
-        "offPeakStartVMOnConnect": "Enable",
-        "offPeakMinutesToWaitOnDisconnect": 30,
-        "offPeakActionOnDisconnect": "Hibernate",
-        "offPeakMinutesToWaitOnLogoff": 0,
-        "offPeakActionOnLogoff": "Deallocate",
-        "peakStartTime": {
-          "hour": 9,
-          "minute": 0
-        },
-        "peakStartVMOnConnect": "Enable",
-        "peakMinutesToWaitOnDisconnect": 30,
-        "peakActionOnDisconnect": "Hibernate",
-        "peakMinutesToWaitOnLogoff": 0,
-        "peakActionOnLogoff": "Deallocate",
-        "rampDownStartTime": {
-          "hour": 18,
-          "minute": 0
-        },
-        "rampDownStartVMOnConnect": "Enable",
-        "rampDownMinutesToWaitOnDisconnect": 30,
-        "rampDownActionOnDisconnect": "Hibernate",
-        "rampDownMinutesToWaitOnLogoff": 0,
-        "rampDownActionOnLogoff": "Deallocate",
-        "rampUpStartTime": {
-          "hour": 7,
-          "minute": 0
-        },
-        "rampUpAutoStartHosts": "WithAssignedUser",
-        "rampUpStartVMOnConnect": "Enable",
-        "rampUpMinutesToWaitOnDisconnect": 30,
-        "rampUpActionOnDisconnect": "Hibernate",
-        "rampUpMinutesToWaitOnLogoff": 0,
-        "rampUpActionOnLogoff": "Deallocate"
-      },
-      {
-        "daysOfWeek": [
-          "Saturday",
-          "Sunday"
-        ],
-        "name": "[variables('varScalingPlanWeekendScheduleName')]",
-        "offPeakStartTime": {
-          "hour": 18,
-          "minute": 0
-        },
-        "offPeakStartVMOnConnect": "Enable",
-        "offPeakMinutesToWaitOnDisconnect": 30,
-        "offPeakActionOnDisconnect": "Hibernate",
-        "offPeakMinutesToWaitOnLogoff": 0,
-        "offPeakActionOnLogoff": "Deallocate",
-        "peakStartTime": {
-          "hour": 10,
-          "minute": 0
-        },
-        "peakStartVMOnConnect": "Enable",
-        "peakMinutesToWaitOnDisconnect": 30,
-        "peakActionOnDisconnect": "Hibernate",
-        "peakMinutesToWaitOnLogoff": 0,
-        "peakActionOnLogoff": "Deallocate",
-        "rampDownStartTime": {
-          "hour": 16,
-          "minute": 0
-        },
-        "rampDownStartVMOnConnect": "Enable",
-        "rampDownMinutesToWaitOnDisconnect": 30,
-        "rampDownActionOnDisconnect": "Hibernate",
-        "rampDownMinutesToWaitOnLogoff": 0,
-        "rampDownActionOnLogoff": "Deallocate",
-        "rampUpStartTime": {
-          "hour": 9,
-          "minute": 0
-        },
-        "rampUpAutoStartHosts": "None",
-        "rampUpStartVMOnConnect": "Enable",
-        "rampUpMinutesToWaitOnDisconnect": 30,
-        "rampUpActionOnDisconnect": "Hibernate",
-        "rampUpMinutesToWaitOnLogoff": 0,
-        "rampUpActionOnLogoff": "Deallocate"
-      }
-    ],
-    "varPooledScalingPlanSchedules": [
-      {
-        "daysOfWeek": [
-          "Monday",
-          "Wednesday",
-          "Thursday",
-          "Friday"
-        ],
-        "name": "[variables('varScalingPlanWeekdaysScheduleName')]",
-        "offPeakLoadBalancingAlgorithm": "DepthFirst",
-        "offPeakStartTime": {
-          "hour": 20,
-          "minute": 0
-        },
-        "peakLoadBalancingAlgorithm": "DepthFirst",
-        "peakStartTime": {
-          "hour": 9,
-          "minute": 0
-        },
-        "rampDownCapacityThresholdPct": 90,
-        "rampDownForceLogoffUsers": true,
-        "rampDownLoadBalancingAlgorithm": "DepthFirst",
-        "rampDownMinimumHostsPct": 0,
-        "rampDownNotificationMessage": "You will be logged off in 30 min. Make sure to save your work.",
-        "rampDownStartTime": {
-          "hour": 18,
-          "minute": 0
-        },
-        "rampDownStopHostsWhen": "ZeroActiveSessions",
-        "rampDownWaitTimeMinutes": 30,
-        "rampUpCapacityThresholdPct": 80,
-        "rampUpLoadBalancingAlgorithm": "BreadthFirst",
-        "rampUpMinimumHostsPct": 20,
-        "rampUpStartTime": {
-          "hour": 7,
-          "minute": 0
-        }
-      },
-      {
-        "daysOfWeek": [
-          "Tuesday"
-        ],
-        "name": "[format('{0}-agent-updates', variables('varScalingPlanWeekdaysScheduleName'))]",
-        "offPeakLoadBalancingAlgorithm": "DepthFirst",
-        "offPeakStartTime": {
-          "hour": 20,
-          "minute": 0
-        },
-        "peakLoadBalancingAlgorithm": "DepthFirst",
-        "peakStartTime": {
-          "hour": 9,
-          "minute": 0
-        },
-        "rampDownCapacityThresholdPct": 90,
-        "rampDownForceLogoffUsers": true,
-        "rampDownLoadBalancingAlgorithm": "DepthFirst",
-        "rampDownMinimumHostsPct": 0,
-        "rampDownNotificationMessage": "You will be logged off in 30 min. Make sure to save your work.",
-        "rampDownStartTime": {
-          "hour": 19,
-          "minute": 0
-        },
-        "rampDownStopHostsWhen": "ZeroActiveSessions",
-        "rampDownWaitTimeMinutes": 30,
-        "rampUpCapacityThresholdPct": 80,
-        "rampUpLoadBalancingAlgorithm": "BreadthFirst",
-        "rampUpMinimumHostsPct": 20,
-        "rampUpStartTime": {
-          "hour": 7,
-          "minute": 0
-        }
-      },
-      {
-        "daysOfWeek": [
-          "Saturday",
-          "Sunday"
-        ],
-        "name": "[variables('varScalingPlanWeekendScheduleName')]",
-        "offPeakLoadBalancingAlgorithm": "DepthFirst",
-        "offPeakStartTime": {
-          "hour": 18,
-          "minute": 0
-        },
-        "peakLoadBalancingAlgorithm": "DepthFirst",
-        "peakStartTime": {
-          "hour": 10,
-          "minute": 0
-        },
-        "rampDownCapacityThresholdPct": 90,
-        "rampDownForceLogoffUsers": true,
-        "rampDownLoadBalancingAlgorithm": "DepthFirst",
-        "rampDownMinimumHostsPct": 0,
-        "rampDownNotificationMessage": "You will be logged off in 30 min. Make sure to save your work.",
-        "rampDownStartTime": {
-          "hour": 16,
-          "minute": 0
-        },
-        "rampDownStopHostsWhen": "ZeroActiveSessions",
-        "rampDownWaitTimeMinutes": 30,
-        "rampUpCapacityThresholdPct": 90,
-        "rampUpLoadBalancingAlgorithm": "DepthFirst",
-        "rampUpMinimumHostsPct": 0,
-        "rampUpStartTime": {
-          "hour": 9,
-          "minute": 0
-        }
-      }
-    ],
-    "varMarketPlaceGalleryWindows": "[variables('$fxv#1')]",
-    "varStorageAzureFilesDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/1.0.0/DSCStorageScripts.zip",
-    "varStorageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-Storage-Scripts.ps1', variables('varBaseScriptUri'))]",
-    "varStorageToDomainScript": "./Manual-DSC-Storage-Scripts.ps1",
-    "varOuStgPath": "[if(not(empty(parameters('storageOuPath'))), format('\"{0}\"', parameters('storageOuPath')), format('\"{0}\"', variables('varDefaultStorageOuPath')))]",
-    "varDefaultStorageOuPath": "[if(equals(parameters('avdIdentityServiceProvider'), 'EntraDS'), 'AADDC Computers', 'Computers')]",
-    "varStorageCustomOuPath": "[if(not(empty(parameters('storageOuPath'))), 'true', 'false')]",
-    "varAllDnsServers": "[format('{0},168.63.129.16', parameters('customDnsIps'))]",
-    "varDnsServers": "[if(empty(parameters('customDnsIps')), createArray(), split(variables('varAllDnsServers'), ','))]",
-    "varCreateVnetPeering": "[if(not(empty(parameters('existingHubVnetResourceId'))), true(), false())]",
-    "varCustomResourceTags": "[if(parameters('createResourceTags'), createObject('WorkloadName', parameters('workloadNameTag'), 'WorkloadType', parameters('workloadTypeTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('workloadCriticalityTag'), 'Custom'), parameters('workloadCriticalityCustomValueTag'), parameters('workloadCriticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'ServiceClass', parameters('workloadSlaTag'), 'OpsTeam', parameters('opsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag')), createObject())]",
-    "varAllComputeStorageTags": {
-      "DomainName": "[parameters('identityDomainName')]",
-      "IdentityServiceProvider": "[parameters('avdIdentityServiceProvider')]"
-    },
-    "varAvdDefaultTags": {
-      "cm-resource-parent": "[format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.DesktopVirtualization/hostpools/{2}', parameters('avdWorkloadSubsId'), variables('varServiceObjectsRgName'), variables('varHostPoolName'))]",
-      "Environment": "[parameters('deploymentEnvironment')]",
-      "ServiceWorkload": "AVD",
-      "CreationTimeUTC": "[parameters('time')]"
-    },
-    "varWorkloadKeyvaultTag": {
-      "Purpose": "Secrets for local admin and domain join credentials"
-    },
-    "varZtKeyvaultTag": {
-      "Purpose": "Disk encryption keys for zero trust"
-    },
     "varTelemetryId": "[format('pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-{0}', parameters('avdManagementPlaneLocation'))]",
     "verResourceGroups": [
       {
         "purpose": "Service-Objects",
         "name": "[variables('varServiceObjectsRgName')]",
         "location": "[parameters('avdManagementPlaneLocation')]",
-        "enableDefaultTelemetry": false,
-        "tags": "[if(parameters('createResourceTags'), union(variables('varCustomResourceTags'), variables('varAvdDefaultTags')), union(variables('varAvdDefaultTags'), variables('varAllComputeStorageTags')))]"
+        "enableDefaultTelemetry": false
       },
       {
         "purpose": "Pool-Compute",
         "name": "[variables('varComputeObjectsRgName')]",
         "location": "[parameters('avdSessionHostLocation')]",
-        "enableDefaultTelemetry": false,
-        "tags": "[if(parameters('createResourceTags'), union(variables('varAllComputeStorageTags'), variables('varAvdDefaultTags')), union(variables('varAvdDefaultTags'), variables('varAllComputeStorageTags')))]"
+        "enableDefaultTelemetry": false
       }
     ]
   },
@@ -1689,8 +1289,7 @@
           },
           "enableTelemetry": {
             "value": false
-          },
-          "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
@@ -2123,7 +1722,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "USGovVirginia"
+              "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
             }
           }
         }
@@ -2153,9 +1752,6 @@
           },
           "enableTelemetry": {
             "value": "[variables('verResourceGroups')[copyIndex()].enableDefaultTelemetry]"
-          },
-          "tags": {
-            "value": "[variables('verResourceGroups')[copyIndex()].tags]"
           }
         },
         "template": {
@@ -2589,7 +2185,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "USGovVirginia"
+              "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
             }
           }
         }
@@ -2616,8 +2212,7 @@
           },
           "enableTelemetry": {
             "value": false
-          },
-          "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varAllComputeStorageTags'), variables('varAvdDefaultTags'))), createObject('value', union(variables('varAvdDefaultTags'), variables('varAllComputeStorageTags'))))]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
@@ -3050,7 +2645,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "USGovVirginia"
+              "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
             }
           }
         }
