@@ -985,7 +985,8 @@ var verResourceGroups = [
 // Resource groups.
 // Compute, service objects, network
 // Network
-module baselineNetworkResourceGroup '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdVnet || createPrivateDnsZones) {
+module baselineNetworkResourceGroup '../../avm/1.0.0/res/resources/resource-group/main.bicep' = if (createAvdVnet || createPrivateDnsZones) {
+//module baselineNetworkResourceGroup '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (createAvdVnet || createPrivateDnsZones) {
   scope: subscription(avdWorkloadSubsId)
   name: 'Deploy-Network-RG-${time}'
   params: {
@@ -996,34 +997,35 @@ module baselineNetworkResourceGroup '../../carml/1.3.0/Microsoft.Resources/resou
   }
 }
 
-// Compute, service objects
-//module baselineResourceGroups '../../avm/1.0.0/res/resources/resource-group/main.bicep' = [
-module baselineResourceGroups '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = [
-  for resourceGroup in verResourceGroups: {
-    scope: subscription(avdWorkloadSubsId)
-    name: '${resourceGroup.purpose}-${time}'
-    params: {
-      name: resourceGroup.name
-      location: resourceGroup.location
-      //enableTelemetry: resourceGroup.enableDefaultTelemetry
-      // tags: resourceGroup.tags
-    }
-  }
-]
+// // Compute, service objects
+// module baselineResourceGroups '../../avm/1.0.0/res/resources/resource-group/main.bicep' = [
+// //module baselineResourceGroups '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = [
+//   for resourceGroup in verResourceGroups: {
+//     scope: subscription(avdWorkloadSubsId)
+//     name: '${resourceGroup.purpose}-${time}'
+//     params: {
+//       name: resourceGroup.name
+//       location: resourceGroup.location
+//       //enableTelemetry: resourceGroup.enableDefaultTelemetry
+//       // tags: resourceGroup.tags
+//     }
+//   }
+// ]
 
-// Storage
-module baselineStorageResourceGroup '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (varCreateStorageDeployment) {
-  scope: subscription(avdWorkloadSubsId)
-  name: 'Storage-RG-${time}'
-  params: {
-    name: varStorageObjectsRgName
-    location: avdSessionHostLocation
-    //enableTelemetry: false
-    // tags: createResourceTags
-    //   ? union(varAllComputeStorageTags, varAvdDefaultTags)
-    //   : union(varAvdDefaultTags, varAllComputeStorageTags)
-  }
-}
+// // Storage
+// module baselineStorageResourceGroup '../../avm/1.0.0/res/resources/resource-group/main.bicep' = if (varCreateStorageDeployment) {
+// //module baselineStorageResourceGroup '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (varCreateStorageDeployment) {
+//   scope: subscription(avdWorkloadSubsId)
+//   name: 'Storage-RG-${time}'
+//   params: {
+//     name: varStorageObjectsRgName
+//     location: avdSessionHostLocation
+//     //enableTelemetry: false
+//     // tags: createResourceTags
+//     //   ? union(varAllComputeStorageTags, varAvdDefaultTags)
+//     //   : union(varAvdDefaultTags, varAllComputeStorageTags)
+//   }
+// }
 
 // // Azure Policies for monitoring Diagnostic settings. Performance couunters on new or existing Log Analytics workspace. New workspace if needed.
 // module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bicep' = if (avdDeployMonitoring) {
