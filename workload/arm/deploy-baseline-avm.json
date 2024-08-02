@@ -1,0 +1,1536 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.29.47.4906",
+      "templateHash": "15165988210510062550"
+    },
+    "name": "AVD Accelerator - Baseline Deployment",
+    "description": "AVD Accelerator - Deployment Baseline",
+    "owner": "Azure/avdaccelerator"
+  },
+  "parameters": {
+    "deploymentPrefix": {
+      "type": "string",
+      "defaultValue": "AVD1",
+      "minLength": 2,
+      "maxLength": 4,
+      "metadata": {
+        "description": "The name of the resource group to deploy. (Default: AVD1)"
+      }
+    },
+    "deploymentEnvironment": {
+      "type": "string",
+      "defaultValue": "Dev",
+      "allowedValues": [
+        "Dev",
+        "Test",
+        "Prod"
+      ],
+      "metadata": {
+        "description": "The name of the resource group to deploy. (Default: Dev)"
+      }
+    },
+    "diskEncryptionKeyExpirationInDays": {
+      "type": "int",
+      "defaultValue": 60,
+      "minValue": 30,
+      "maxValue": 730,
+      "metadata": {
+        "description": "This value is used to set the expiration date on the disk encryption key. (Default: 60)"
+      }
+    },
+    "avdSessionHostLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Location where to deploy compute services."
+      }
+    },
+    "avdManagementPlaneLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Location where to deploy AVD management plane."
+      }
+    },
+    "avdWorkloadSubsId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "AVD workload subscription ID, multiple subscriptions scenario. (Default: \"\")"
+      }
+    },
+    "avdEnterpriseAppObjectId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Azure Virtual Desktop Enterprise Application object ID. (Default: \"\")"
+      }
+    },
+    "avdVmLocalUserName": {
+      "type": "string",
+      "metadata": {
+        "description": "AVD session host local username."
+      }
+    },
+    "avdVmLocalUserPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "AVD session host local password."
+      }
+    },
+    "avdIdentityServiceProvider": {
+      "type": "string",
+      "defaultValue": "ADDS",
+      "allowedValues": [
+        "ADDS",
+        "EntraDS",
+        "EntraID"
+      ],
+      "metadata": {
+        "description": "Required, The service providing domain services for Azure Virtual Desktop. (Default: ADDS)"
+      }
+    },
+    "createIntuneEnrollment": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Required, Eronll session hosts on Intune. (Default: false)"
+      }
+    },
+    "securityPrincipalId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional, Identity ID to grant RBAC role to access AVD application group and NTFS permissions. (Default: \"\")"
+      }
+    },
+    "securityPrincipalName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional, Identity name to grant RBAC role to access AVD application group and NTFS permissions. (Default: \"\")"
+      }
+    },
+    "identityDomainName": {
+      "type": "string",
+      "defaultValue": "none",
+      "metadata": {
+        "description": "FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: \"\")"
+      }
+    },
+    "identityDomainGuid": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "AD domain GUID. (Default: \"\")"
+      }
+    },
+    "avdDomainJoinUserName": {
+      "type": "string",
+      "defaultValue": "none",
+      "metadata": {
+        "description": "AVD session host domain join user principal name. (Default: none)"
+      }
+    },
+    "avdDomainJoinUserPassword": {
+      "type": "securestring",
+      "defaultValue": "none",
+      "metadata": {
+        "description": "AVD session host domain join password. (Default: none)"
+      }
+    },
+    "avdOuPath": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "OU path to join AVd VMs. (Default: \"\")"
+      }
+    },
+    "avdHostPoolType": {
+      "type": "string",
+      "defaultValue": "Pooled",
+      "allowedValues": [
+        "Personal",
+        "Pooled"
+      ],
+      "metadata": {
+        "description": "AVD host pool type. (Default: Pooled)"
+      }
+    },
+    "hostPoolPreferredAppGroupType": {
+      "type": "string",
+      "defaultValue": "Desktop",
+      "allowedValues": [
+        "Desktop",
+        "RemoteApp"
+      ],
+      "metadata": {
+        "description": "Optional. The type of preferred application group type, default to Desktop Application Group."
+      }
+    },
+    "avdPersonalAssignType": {
+      "type": "string",
+      "defaultValue": "Automatic",
+      "allowedValues": [
+        "Automatic",
+        "Direct"
+      ],
+      "metadata": {
+        "description": "AVD host pool type. (Default: Automatic)"
+      }
+    },
+    "avdHostPoolLoadBalancerType": {
+      "type": "string",
+      "defaultValue": "BreadthFirst",
+      "allowedValues": [
+        "BreadthFirst",
+        "DepthFirst"
+      ],
+      "metadata": {
+        "description": "AVD host pool load balacing type. (Default: BreadthFirst)"
+      }
+    },
+    "hostPoolMaxSessions": {
+      "type": "int",
+      "defaultValue": 8,
+      "metadata": {
+        "description": "AVD host pool maximum number of user sessions per session host. (Default: 8)"
+      }
+    },
+    "avdStartVmOnConnect": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "AVD host pool start VM on Connect. (Default: true)"
+      }
+    },
+    "avdHostPoolRdpProperties": {
+      "type": "string",
+      "defaultValue": "audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2",
+      "metadata": {
+        "description": "AVD host pool Custom RDP properties. (Default: audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2)"
+      }
+    },
+    "avdDeployScalingPlan": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "AVD deploy scaling plan. (Default: true)"
+      }
+    },
+    "createAvdVnet": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Create new virtual network. (Default: true)"
+      }
+    },
+    "existingVnetAvdSubnetResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Existing virtual network subnet for AVD. (Default: \"\")"
+      }
+    },
+    "existingVnetPrivateEndpointSubnetResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Existing virtual network subnet for private endpoints. (Default: \"\")"
+      }
+    },
+    "existingHubVnetResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Existing hub virtual network for perring. (Default: \"\")"
+      }
+    },
+    "avdVnetworkAddressPrefixes": {
+      "type": "string",
+      "defaultValue": "10.10.0.0/23",
+      "metadata": {
+        "description": "AVD virtual network address prefixes. (Default: 10.10.0.0/23)"
+      }
+    },
+    "vNetworkAvdSubnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "10.10.0.0/24",
+      "metadata": {
+        "description": "AVD virtual network subnet address prefix. (Default: 10.10.0.0/23)"
+      }
+    },
+    "vNetworkPrivateEndpointSubnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "10.10.1.0/27",
+      "metadata": {
+        "description": "private endpoints virtual network subnet address prefix. (Default: 10.10.1.0/27)"
+      }
+    },
+    "customDnsIps": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "custom DNS servers IPs. (Default: \"\")"
+      }
+    },
+    "deployDDoSNetworkProtection": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Deploy DDoS Network Protection for virtual network. (Default: true)"
+      }
+    },
+    "deployPrivateEndpointKeyvaultStorage": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Deploy private endpoints for key vault and storage. (Default: true)"
+      }
+    },
+    "createPrivateDnsZones": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Create new  Azure private DNS zones for private endpoints. (Default: true)"
+      }
+    },
+    "avdVnetPrivateDnsZoneFilesId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Use existing Azure private DNS zone for Azure files privatelink.file.core.windows.net or privatelink.file.core.usgovcloudapi.net. (Default: \"\")"
+      }
+    },
+    "avdVnetPrivateDnsZoneKeyvaultId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Use existing Azure private DNS zone for key vault privatelink.vaultcore.azure.net or privatelink.vaultcore.usgovcloudapi.net. (Default: \"\")"
+      }
+    },
+    "vNetworkGatewayOnHub": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Does the hub contains a virtual network gateway. (Default: false)"
+      }
+    },
+    "createAvdFslogixDeployment": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Deploy Fslogix setup. (Default: true)"
+      }
+    },
+    "createMsixDeployment": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Deploy MSIX App Attach setup. (Default: false)"
+      }
+    },
+    "fslogixFileShareQuotaSize": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Fslogix file share size. (Default: 1)"
+      }
+    },
+    "msixFileShareQuotaSize": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "MSIX file share size. (Default: 1)"
+      }
+    },
+    "avdDeploySessionHosts": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Deploy new session hosts. (Default: true)"
+      }
+    },
+    "deployGpuPolicies": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Deploy VM GPU extension policies. (Default: false)"
+      }
+    },
+    "avdDeployMonitoring": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Deploy AVD monitoring resources and setings. (Default: false)"
+      }
+    },
+    "deployAlaWorkspace": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Deploy AVD Azure log analytics workspace. (Default: true)"
+      }
+    },
+    "deployCustomPolicyMonitoring": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace. (Default: false)"
+      }
+    },
+    "avdAlaWorkspaceDataRetention": {
+      "type": "int",
+      "defaultValue": 90,
+      "metadata": {
+        "description": "AVD Azure log analytics workspace data retention. (Default: 90)"
+      }
+    },
+    "alaExistingWorkspaceResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Existing Azure log analytics workspace resource ID to connect to. (Default: \"\")"
+      }
+    },
+    "avdDeploySessionHostsCount": {
+      "type": "int",
+      "defaultValue": 1,
+      "minValue": 1,
+      "maxValue": 100,
+      "metadata": {
+        "description": "Quantity of session hosts to deploy. (Default: 1)"
+      }
+    },
+    "avdSessionHostCountIndex": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 0)"
+      }
+    },
+    "availabilityZonesCompute": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Default: true)"
+      }
+    },
+    "zoneRedundantStorage": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "When true, Zone Redundant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)"
+      }
+    },
+    "vmssFlatformFaultDomainCount": {
+      "type": "int",
+      "defaultValue": 2,
+      "metadata": {
+        "description": "Sets the number of fault domains for the availability set. (Default: 2)"
+      }
+    },
+    "fslogixStoragePerformance": {
+      "type": "string",
+      "defaultValue": "Premium",
+      "allowedValues": [
+        "Standard",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "Storage account SKU for FSLogix storage. Recommended tier is Premium (Default: Premium)"
+      }
+    },
+    "msixStoragePerformance": {
+      "type": "string",
+      "defaultValue": "Premium",
+      "allowedValues": [
+        "Standard",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "Storage account SKU for MSIX storage. Recommended tier is Premium. (Default: Premium)"
+      }
+    },
+    "diskZeroTrust": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enables a zero trust configuration on the session host disks. (Default: false)"
+      }
+    },
+    "avdSessionHostsSize": {
+      "type": "string",
+      "defaultValue": "Standard_D4ads_v5",
+      "metadata": {
+        "description": "Session host VM size. (Default: Standard_D4ads_v5)"
+      }
+    },
+    "avdSessionHostDiskType": {
+      "type": "string",
+      "defaultValue": "Premium_LRS",
+      "metadata": {
+        "description": "OS disk type for session host. (Default: Premium_LRS)"
+      }
+    },
+    "customOsDiskSizeGb": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Custom OS Disk Size."
+      }
+    },
+    "enableAcceleratedNetworking": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enables accelerated Networking on the session hosts.\r\nIf using a Azure Compute Gallery Image, the Image Definition must have been configured with\r\nthe \\'isAcceleratedNetworkSupported\\' property set to \\'true\\'.\r\n"
+      }
+    },
+    "securityType": {
+      "type": "string",
+      "defaultValue": "TrustedLaunch",
+      "allowedValues": [
+        "Standard",
+        "TrustedLaunch",
+        "ConfidentialVM"
+      ],
+      "metadata": {
+        "description": "Specifies the securityType of the virtual machine. \"ConfidentialVM\" and \"TrustedLaunch\" require a Gen2 Image. (Default: TrustedLaunch)"
+      }
+    },
+    "secureBootEnabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings. (Default: true)"
+      }
+    },
+    "vTpmEnabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings. (Default: true)"
+      }
+    },
+    "avdOsImage": {
+      "type": "string",
+      "defaultValue": "win11_23h2",
+      "allowedValues": [
+        "win10_22h2_g2",
+        "win10_22h2_office_g2",
+        "win11_22h2",
+        "win11_22h2_office",
+        "win11_23h2",
+        "win11_23h2_office"
+      ],
+      "metadata": {
+        "description": "AVD OS image SKU. (Default: win11-22h2)"
+      }
+    },
+    "managementVmOsImage": {
+      "type": "string",
+      "defaultValue": "winServer_2022_Datacenter_smalldisk_g2",
+      "metadata": {
+        "description": "Management VM image SKU (Default: winServer_2022_Datacenter_smalldisk_g2)"
+      }
+    },
+    "useSharedImage": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Set to deploy image from Azure Compute Gallery. (Default: false)"
+      }
+    },
+    "avdImageTemplateDefinitionId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Source custom image ID. (Default: \"\")"
+      }
+    },
+    "storageOuPath": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "OU name for Azure Storage Account. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.  (Default: \"\")"
+      }
+    },
+    "avdUseCustomNaming": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "AVD resources custom naming. (Default: false)"
+      }
+    },
+    "avdServiceObjectsRgCustomName": {
+      "type": "string",
+      "defaultValue": "rg-avd-app1-dev-use2-service-objects",
+      "maxLength": 90,
+      "metadata": {
+        "description": "AVD service resources resource group custom name. (Default: rg-avd-app1-dev-use2-service-objects)"
+      }
+    },
+    "avdNetworkObjectsRgCustomName": {
+      "type": "string",
+      "defaultValue": "rg-avd-app1-dev-use2-network",
+      "maxLength": 90,
+      "metadata": {
+        "description": "AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-network)"
+      }
+    },
+    "avdComputeObjectsRgCustomName": {
+      "type": "string",
+      "defaultValue": "rg-avd-app1-dev-use2-pool-compute",
+      "maxLength": 90,
+      "metadata": {
+        "description": "AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-pool-compute)"
+      }
+    },
+    "avdStorageObjectsRgCustomName": {
+      "type": "string",
+      "defaultValue": "rg-avd-app1-dev-use2-storage",
+      "maxLength": 90,
+      "metadata": {
+        "description": "AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-storage)"
+      }
+    },
+    "avdMonitoringRgCustomName": {
+      "type": "string",
+      "defaultValue": "rg-avd-dev-use2-monitoring",
+      "maxLength": 90,
+      "metadata": {
+        "description": "AVD monitoring resource group custom name. (Default: rg-avd-dev-use2-monitoring)"
+      }
+    },
+    "avdVnetworkCustomName": {
+      "type": "string",
+      "defaultValue": "vnet-app1-dev-use2-001",
+      "maxLength": 64,
+      "metadata": {
+        "description": "AVD virtual network custom name. (Default: vnet-app1-dev-use2-001)"
+      }
+    },
+    "avdAlaWorkspaceCustomName": {
+      "type": "string",
+      "defaultValue": "log-avd-app1-dev-use2",
+      "maxLength": 64,
+      "metadata": {
+        "description": "AVD Azure log analytics workspace custom name. (Default: log-avd-app1-dev-use2)"
+      }
+    },
+    "avdVnetworkSubnetCustomName": {
+      "type": "string",
+      "defaultValue": "snet-avd-app1-dev-use2-001",
+      "maxLength": 80,
+      "metadata": {
+        "description": "AVD virtual network subnet custom name. (Default: snet-avd-app1-dev-use2-001)"
+      }
+    },
+    "privateEndpointVnetworkSubnetCustomName": {
+      "type": "string",
+      "defaultValue": "snet-pe-app1-dev-use2-001",
+      "maxLength": 80,
+      "metadata": {
+        "description": "private endpoints virtual network subnet custom name. (Default: snet-pe-app1-dev-use2-001)"
+      }
+    },
+    "avdNetworksecurityGroupCustomName": {
+      "type": "string",
+      "defaultValue": "nsg-avd-app1-dev-use2-001",
+      "maxLength": 80,
+      "metadata": {
+        "description": "AVD network security group custom name. (Default: nsg-avd-app1-dev-use2-001)"
+      }
+    },
+    "privateEndpointNetworksecurityGroupCustomName": {
+      "type": "string",
+      "defaultValue": "nsg-pe-app1-dev-use2-001",
+      "maxLength": 80,
+      "metadata": {
+        "description": "Private endpoint network security group custom name. (Default: nsg-pe-app1-dev-use2-001)"
+      }
+    },
+    "avdRouteTableCustomName": {
+      "type": "string",
+      "defaultValue": "route-avd-app1-dev-use2-001",
+      "maxLength": 80,
+      "metadata": {
+        "description": "AVD route table custom name. (Default: route-avd-app1-dev-use2-001)"
+      }
+    },
+    "privateEndpointRouteTableCustomName": {
+      "type": "string",
+      "defaultValue": "route-pe-app1-dev-use2-001",
+      "maxLength": 80,
+      "metadata": {
+        "description": "Private endpoint route table custom name. (Default: route-avd-app1-dev-use2-001)"
+      }
+    },
+    "avdApplicationSecurityGroupCustomName": {
+      "type": "string",
+      "defaultValue": "asg-app1-dev-use2-001",
+      "maxLength": 80,
+      "metadata": {
+        "description": "AVD application security custom name. (Default: asg-app1-dev-use2-001)"
+      }
+    },
+    "avdWorkSpaceCustomName": {
+      "type": "string",
+      "defaultValue": "vdws-app1-dev-use2-001",
+      "maxLength": 64,
+      "metadata": {
+        "description": "AVD workspace custom name. (Default: vdws-app1-dev-use2-001)"
+      }
+    },
+    "avdWorkSpaceCustomFriendlyName": {
+      "type": "string",
+      "defaultValue": "App1 - Dev - East US 2 - 001",
+      "maxLength": 64,
+      "metadata": {
+        "description": "AVD workspace custom friendly (Display) name. (Default: App1 - Dev - East US 2 - 001)"
+      }
+    },
+    "avdHostPoolCustomName": {
+      "type": "string",
+      "defaultValue": "vdpool-app1-dev-use2-001",
+      "maxLength": 64,
+      "metadata": {
+        "description": "AVD host pool custom name. (Default: vdpool-app1-dev-use2-001)"
+      }
+    },
+    "avdHostPoolCustomFriendlyName": {
+      "type": "string",
+      "defaultValue": "App1 - Dev - East US 2 - 001",
+      "maxLength": 64,
+      "metadata": {
+        "description": "AVD host pool custom friendly (Display) name. (Default: App1 - East US - Dev - 001)"
+      }
+    },
+    "avdScalingPlanCustomName": {
+      "type": "string",
+      "defaultValue": "vdscaling-app1-dev-use2-001",
+      "maxLength": 64,
+      "metadata": {
+        "description": "AVD scaling plan custom name. (Default: vdscaling-app1-dev-use2-001)"
+      }
+    },
+    "avdApplicationGroupCustomName": {
+      "type": "string",
+      "defaultValue": "vdag-desktop-app1-dev-use2-001",
+      "maxLength": 64,
+      "metadata": {
+        "description": "AVD desktop application group custom name. (Default: vdag-desktop-app1-dev-use2-001)"
+      }
+    },
+    "avdApplicationGroupCustomFriendlyName": {
+      "type": "string",
+      "defaultValue": "Desktops - App1 - Dev - East US 2 - 001",
+      "maxLength": 64,
+      "metadata": {
+        "description": "AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - Dev - 001)"
+      }
+    },
+    "avdSessionHostCustomNamePrefix": {
+      "type": "string",
+      "defaultValue": "vmapp1duse2",
+      "maxLength": 11,
+      "metadata": {
+        "description": "AVD session host prefix custom name. (Default: vmapp1duse2)"
+      }
+    },
+    "vmssFlexCustomNamePrefix": {
+      "type": "string",
+      "defaultValue": "vmss",
+      "maxLength": 9,
+      "metadata": {
+        "description": "AVD VMSS Flex custom name. (Default: vmss)"
+      }
+    },
+    "storageAccountPrefixCustomName": {
+      "type": "string",
+      "defaultValue": "st",
+      "maxLength": 2,
+      "metadata": {
+        "description": "AVD FSLogix and MSIX app attach storage account prefix custom name. (Default: st)"
+      }
+    },
+    "fslogixFileShareCustomName": {
+      "type": "string",
+      "defaultValue": "fslogix-pc-app1-dev-use2-001",
+      "metadata": {
+        "description": "FSLogix file share name. (Default: fslogix-pc-app1-dev-001)"
+      }
+    },
+    "msixFileShareCustomName": {
+      "type": "string",
+      "defaultValue": "msix-app1-dev-use2-001",
+      "metadata": {
+        "description": "MSIX file share name. (Default: msix-app1-dev-001)"
+      }
+    },
+    "avdWrklKvPrefixCustomName": {
+      "type": "string",
+      "defaultValue": "kv-sec",
+      "maxLength": 6,
+      "metadata": {
+        "description": "AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv-sec)"
+      }
+    },
+    "ztDiskEncryptionSetCustomNamePrefix": {
+      "type": "string",
+      "defaultValue": "des-zt",
+      "maxLength": 6,
+      "metadata": {
+        "description": "AVD disk encryption set custom name. (Default: des-zt)"
+      }
+    },
+    "ztManagedIdentityCustomName": {
+      "type": "string",
+      "defaultValue": "id-zt",
+      "maxLength": 5,
+      "metadata": {
+        "description": "AVD managed identity for zero trust to encrypt managed disks using a customer managed key.  (Default: id-zt)"
+      }
+    },
+    "ztKvPrefixCustomName": {
+      "type": "string",
+      "defaultValue": "kv-key",
+      "maxLength": 6,
+      "metadata": {
+        "description": "AVD key vault custom name for zero trust and store store disk encryption key (Default: kv-key)"
+      }
+    },
+    "createResourceTags": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Apply tags on resources and resource groups. (Default: false)"
+      }
+    },
+    "workloadNameTag": {
+      "type": "string",
+      "defaultValue": "Contoso-Workload",
+      "metadata": {
+        "description": "The name of workload for tagging purposes. (Default: Contoso-Workload)"
+      }
+    },
+    "workloadTypeTag": {
+      "type": "string",
+      "defaultValue": "Light",
+      "allowedValues": [
+        "Light",
+        "Medium",
+        "High",
+        "Power"
+      ],
+      "metadata": {
+        "description": "Reference to the size of the VM for your workloads (Default: Light)"
+      }
+    },
+    "dataClassificationTag": {
+      "type": "string",
+      "defaultValue": "Non-business",
+      "allowedValues": [
+        "Non-business",
+        "Public",
+        "General",
+        "Confidential",
+        "Highly-confidential"
+      ],
+      "metadata": {
+        "description": "Sensitivity of data hosted (Default: Non-business)"
+      }
+    },
+    "departmentTag": {
+      "type": "string",
+      "defaultValue": "Contoso-AVD",
+      "metadata": {
+        "description": "Department that owns the deployment, (Dafult: Contoso-AVD)"
+      }
+    },
+    "workloadCriticalityTag": {
+      "type": "string",
+      "defaultValue": "Low",
+      "allowedValues": [
+        "Low",
+        "Medium",
+        "High",
+        "Mission-critical",
+        "Custom"
+      ],
+      "metadata": {
+        "description": "Criticality of the workload. (Default: Low)"
+      }
+    },
+    "workloadCriticalityCustomValueTag": {
+      "type": "string",
+      "defaultValue": "Contoso-Critical",
+      "metadata": {
+        "description": "Tag value for custom criticality value. (Default: Contoso-Critical)"
+      }
+    },
+    "applicationNameTag": {
+      "type": "string",
+      "defaultValue": "Contoso-App",
+      "metadata": {
+        "description": "Details about the application."
+      }
+    },
+    "workloadSlaTag": {
+      "type": "string",
+      "defaultValue": "Contoso-SLA",
+      "metadata": {
+        "description": "Service level agreement level of the worload. (Contoso-SLA)"
+      }
+    },
+    "opsTeamTag": {
+      "type": "string",
+      "defaultValue": "workload-admins@Contoso.com",
+      "metadata": {
+        "description": "Team accountable for day-to-day operations. (workload-admins@Contoso.com)"
+      }
+    },
+    "ownerTag": {
+      "type": "string",
+      "defaultValue": "workload-owner@Contoso.com",
+      "metadata": {
+        "description": "Organizational owner of the AVD deployment. (Default: workload-owner@Contoso.com)"
+      }
+    },
+    "costCenterTag": {
+      "type": "string",
+      "defaultValue": "Contoso-CC",
+      "metadata": {
+        "description": "Cost center of owner team. (Default: Contoso-CC)"
+      }
+    },
+    "time": {
+      "type": "string",
+      "defaultValue": "[utcNow()]",
+      "metadata": {
+        "description": "Do not modify, used to set unique value for resource deployment."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable usage and telemetry feedback to Microsoft."
+      }
+    },
+    "enableKvPurgeProtection": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable purge protection for the keyvaults. (Default: true)"
+      }
+    }
+  },
+  "variables": {
+    "$fxv#0": {
+      "australiacentral": {
+        "acronym": "auc",
+        "timeDifference": "+10:00",
+        "timeZone": "AUS Eastern Standard Time"
+      },
+      "australiacentral2": {
+        "acronym": "auc2",
+        "timeDifference": "+10:00",
+        "timeZone": "AUS Eastern Standard Time"
+      },
+      "australiaeast": {
+        "acronym": "aue",
+        "timeDifference": "+10:00",
+        "timeZone": "AUS Eastern Standard Time"
+      },
+      "australiasoutheast": {
+        "acronym": "ause",
+        "timeDifference": "+10:00",
+        "timeZone": "AUS Eastern Standard Time"
+      },
+      "brazilsouth": {
+        "acronym": "brs",
+        "timeDifference": "-3:00",
+        "timeZone": "E. South America Standard Time"
+      },
+      "brazilsoutheast": {
+        "acronym": "brse",
+        "timeDifference": "-3:00",
+        "timeZone": "E. South America Standard Time"
+      },
+      "canadacentral": {
+        "acronym": "cac",
+        "timeDifference": "-5:00",
+        "timeZone": "Eastern Standard Time"
+      },
+      "canadaeast": {
+        "acronym": "cae",
+        "timeDifference": "-5:00",
+        "timeZone": "Eastern Standard Time"
+      },
+      "centralindia": {
+        "acronym": "inc",
+        "timeDifference": "+5:30",
+        "timeZone": "India Standard Time"
+      },
+      "centralus": {
+        "acronym": "usc",
+        "timeDifference": "-6:00",
+        "timeZone": "Central Standard Time"
+      },
+      "chinaeast": {
+        "acronym": "cne",
+        "timeDifference": "+8:00",
+        "timeZone": "China Standard Time"
+      },
+      "chinaeast2": {
+        "acronym": "cne2",
+        "timeDifference": "+8:00",
+        "timeZone": "China Standard Time"
+      },
+      "chinanorth": {
+        "acronym": "cnn",
+        "timeDifference": "+8:00",
+        "timeZone": "China Standard Time"
+      },
+      "chinanorth2": {
+        "acronym": "cnn2",
+        "timeDifference": "+8:00",
+        "timeZone": "China Standard Time"
+      },
+      "chinanorth3": {
+        "acronym": "cnn3",
+        "timeDifference": "+8:00",
+        "timeZone": "China Standard Time"
+      },
+      "eastasia": {
+        "acronym": "ase",
+        "timeDifference": "+8:00",
+        "timeZone": "China Standard Time"
+      },
+      "eastus": {
+        "acronym": "use",
+        "timeDifference": "-5:00",
+        "timeZone": "Eastern Standard Time"
+      },
+      "eastus2": {
+        "acronym": "use2",
+        "timeDifference": "-5:00",
+        "timeZone": "Eastern Standard Time"
+      },
+      "francecentral": {
+        "acronym": "frc",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
+      },
+      "francesouth": {
+        "acronym": "frs",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
+      },
+      "germanynorth": {
+        "acronym": "den",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
+      },
+      "germanywestcentral": {
+        "acronym": "dewc",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
+      },
+      "japaneast": {
+        "acronym": "jpe",
+        "timeDifference": "+9:00",
+        "timeZone": "Tokyo Standard Time"
+      },
+      "japanwest": {
+        "acronym": "jpw",
+        "timeDifference": "+9:00",
+        "timeZone": "Tokyo Standard Time"
+      },
+      "jioindiacentral": {
+        "acronym": "injc",
+        "timeDifference": "+5:30",
+        "timeZone": "India Standard Time"
+      },
+      "jioindiawest": {
+        "acronym": "injw",
+        "timeDifference": "+5:30",
+        "timeZone": "India Standard Time"
+      },
+      "koreacentral": {
+        "acronym": "krc",
+        "timeDifference": "+9:00",
+        "timeZone": "Korea Standard Time"
+      },
+      "koreasouth": {
+        "acronym": "krs",
+        "timeDifference": "+9:00",
+        "timeZone": "Korea Standard Time"
+      },
+      "northcentralus": {
+        "acronym": "usnc",
+        "timeDifference": "-6:00",
+        "timeZone": "Central Standard Time"
+      },
+      "northeurope": {
+        "acronym": "eun",
+        "timeDifference": "0:00",
+        "timeZone": "GMT Standard Time"
+      },
+      "norwayeast": {
+        "acronym": "noe",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
+      },
+      "norwaywest": {
+        "acronym": "now",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
+      },
+      "italynorth": {
+        "acronym": "itn",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
+      },
+      "southafricanorth": {
+        "acronym": "zan",
+        "timeDifference": "+2:00",
+        "timeZone": "South Africa Standard Time"
+      },
+      "southafricawest": {
+        "acronym": "zaw",
+        "timeDifference": "+2:00",
+        "timeZone": "South Africa Standard Time"
+      },
+      "southcentralus": {
+        "acronym": "ussc",
+        "timeDifference": "-6:00",
+        "timeZone": "Central Standard Time"
+      },
+      "southeastasia": {
+        "acronym": "asse",
+        "timeDifference": "+8:00",
+        "timeZone": "Singapore Standard Time"
+      },
+      "southindia": {
+        "acronym": "ins",
+        "timeDifference": "+5:30",
+        "timeZone": "India Standard Time"
+      },
+      "swedencentral": {
+        "acronym": "sec",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
+      },
+      "switzerlandnorth": {
+        "acronym": "chn",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
+      },
+      "switzerlandwest": {
+        "acronym": "chw",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
+      },
+      "uaecentral": {
+        "acronym": "aec",
+        "timeDifference": "+3:00",
+        "timeZone": "Arabian Standard Time"
+      },
+      "uaenorth": {
+        "acronym": "aen",
+        "timeDifference": "+3:00",
+        "timeZone": "Arabian Standard Time"
+      },
+      "uksouth": {
+        "acronym": "uks",
+        "timeDifference": "0:00",
+        "timeZone": "GMT Standard Time"
+      },
+      "ukwest": {
+        "acronym": "ukw",
+        "timeDifference": "0:00",
+        "timeZone": "GMT Standard Time"
+      },
+      "usdodcentral": {
+        "acronym": "dodc",
+        "timeDifference": "-6:00",
+        "timeZone": "Central Standard Time"
+      },
+      "usdodeast": {
+        "acronym": "dode",
+        "timeDifference": "-5:00",
+        "timeZone": "Eastern Standard Time"
+      },
+      "usgovarizona": {
+        "acronym": "az",
+        "timeDifference": "-7:00",
+        "timeZone": "Mountain Standard Time"
+      },
+      "usgovtexas": {
+        "acronym": "tx",
+        "timeDifference": "-6:00",
+        "timeZone": "Central Standard Time"
+      },
+      "usgovvirginia": {
+        "acronym": "va",
+        "timeDifference": "-5:00",
+        "timeZone": "Eastern Standard Time"
+      },
+      "westcentralus": {
+        "acronym": "uswc",
+        "timeDifference": "-7:00",
+        "timeZone": "Mountain Standard Time"
+      },
+      "westeurope": {
+        "acronym": "euw",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
+      },
+      "westindia": {
+        "acronym": "inw",
+        "timeDifference": "+5:30",
+        "timeZone": "India Standard Time"
+      },
+      "westus": {
+        "acronym": "usw",
+        "timeDifference": "-8:00",
+        "timeZone": "Pacific Standard Time"
+      },
+      "westus2": {
+        "acronym": "usw2",
+        "timeDifference": "-8:00",
+        "timeZone": "Pacific Standard Time"
+      },
+      "westus3": {
+        "acronym": "usw3",
+        "timeDifference": "-7:00",
+        "timeZone": "Mountain Standard Time"
+      }
+    },
+    "varDeploymentPrefixLowercase": "[toLower(parameters('deploymentPrefix'))]",
+    "varAzureCloudName": "[environment().name]",
+    "varDeploymentEnvironmentLowercase": "[toLower(parameters('deploymentEnvironment'))]",
+    "varDeploymentEnvironmentComputeStorage": "[if(equals(parameters('deploymentEnvironment'), 'Dev'), 'd', if(equals(parameters('deploymentEnvironment'), 'Test'), 't', if(equals(parameters('deploymentEnvironment'), 'Prod'), 'p', '')))]",
+    "varNamingUniqueStringThreeChar": "[take(format('{0}', uniqueString(parameters('avdWorkloadSubsId'), variables('varDeploymentPrefixLowercase'), parameters('time'))), 3)]",
+    "varNamingUniqueStringTwoChar": "[take(format('{0}', uniqueString(parameters('avdWorkloadSubsId'), variables('varDeploymentPrefixLowercase'), parameters('time'))), 2)]",
+    "varSessionHostLocationAcronym": "[variables('varLocations')[variables('varSessionHostLocationLowercase')].acronym]",
+    "varManagementPlaneLocationAcronym": "[variables('varLocations')[variables('varManagementPlaneLocationLowercase')].acronym]",
+    "varLocations": "[variables('$fxv#0')]",
+    "varTimeZoneSessionHosts": "[variables('varLocations')[variables('varSessionHostLocationLowercase')].timeZone]",
+    "varTimeZoneManagementPlane": "[variables('varLocations')[variables('varManagementPlaneLocationLowercase')].timeZone]",
+    "varManagementPlaneNamingStandard": "[format('{0}-{1}-{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varManagementPlaneLocationAcronym'))]",
+    "varComputeStorageResourcesNamingStandard": "[format('{0}-{1}-{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym'))]",
+    "varDiskEncryptionSetName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-001', parameters('ztDiskEncryptionSetCustomNamePrefix'), variables('varComputeStorageResourcesNamingStandard')), format('des-zt-{0}-001', variables('varComputeStorageResourcesNamingStandard')))]",
+    "varZtManagedIdentityName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-001', parameters('ztManagedIdentityCustomName'), variables('varComputeStorageResourcesNamingStandard')), format('id-zt-{0}-001', variables('varComputeStorageResourcesNamingStandard')))]",
+    "varSessionHostLocationLowercase": "[toLower(replace(parameters('avdSessionHostLocation'), ' ', ''))]",
+    "varManagementPlaneLocationLowercase": "[toLower(replace(parameters('avdManagementPlaneLocation'), ' ', ''))]",
+    "varServiceObjectsRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdServiceObjectsRgCustomName'), format('rg-avd-{0}-service-objects', variables('varManagementPlaneNamingStandard')))]",
+    "varNetworkObjectsRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdNetworkObjectsRgCustomName'), format('rg-avd-{0}-network', variables('varComputeStorageResourcesNamingStandard')))]",
+    "varComputeObjectsRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdComputeObjectsRgCustomName'), format('rg-avd-{0}-pool-compute', variables('varComputeStorageResourcesNamingStandard')))]",
+    "varStorageObjectsRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdStorageObjectsRgCustomName'), format('rg-avd-{0}-storage', variables('varComputeStorageResourcesNamingStandard')))]",
+    "varMonitoringRgName": "[if(parameters('avdUseCustomNaming'), parameters('avdMonitoringRgCustomName'), format('rg-avd-{0}-{1}-monitoring', variables('varDeploymentEnvironmentLowercase'), variables('varManagementPlaneLocationAcronym')))]",
+    "varCreateMsixDeployment": "[if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), false(), parameters('createMsixDeployment'))]",
+    "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(variables('varCreateMsixDeployment'), true())), true(), false())]",
+    "varTelemetryId": "[format('pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-{0}', parameters('avdManagementPlaneLocation'))]",
+    "verResourceGroups": [
+      {
+        "purpose": "Service-Objects",
+        "name": "[variables('varServiceObjectsRgName')]",
+        "location": "[parameters('avdManagementPlaneLocation')]",
+        "enableDefaultTelemetry": false
+      },
+      {
+        "purpose": "Pool-Compute",
+        "name": "[variables('varComputeObjectsRgName')]",
+        "location": "[parameters('avdSessionHostLocation')]",
+        "enableDefaultTelemetry": false
+      }
+    ]
+  },
+  "resources": [
+    {
+      "condition": "[or(parameters('createAvdVnet'), parameters('createPrivateDnsZones'))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('Deploy-Network-RG-{0}', parameters('time'))]",
+      "subscriptionId": "[parameters('avdWorkloadSubsId')]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[variables('varNetworkObjectsRgName')]"
+          },
+          "location": {
+            "value": "[parameters('avdSessionHostLocation')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "7047946455842057701"
+            },
+            "name": "Resource Groups",
+            "description": "This module deploys a Resource Group.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Resource Group."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[deployment().location]",
+              "metadata": {
+                "description": "Optional. Location of the Resource Group. It uses the deployment's location when not provided."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the storage account resource."
+              }
+            }
+          },
+          "resources": {
+            "resourceGroup": {
+              "type": "Microsoft.Resources/resourceGroups",
+              "apiVersion": "2021-04-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {}
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the resource group."
+              },
+              "value": "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('name'))]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "copy": {
+        "name": "baselineResourceGroups",
+        "count": "[length(variables('verResourceGroups'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-{1}', variables('verResourceGroups')[copyIndex()].purpose, parameters('time'))]",
+      "subscriptionId": "[parameters('avdWorkloadSubsId')]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[variables('verResourceGroups')[copyIndex()].name]"
+          },
+          "location": {
+            "value": "[variables('verResourceGroups')[copyIndex()].location]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "7047946455842057701"
+            },
+            "name": "Resource Groups",
+            "description": "This module deploys a Resource Group.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Resource Group."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[deployment().location]",
+              "metadata": {
+                "description": "Optional. Location of the Resource Group. It uses the deployment's location when not provided."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the storage account resource."
+              }
+            }
+          },
+          "resources": {
+            "resourceGroup": {
+              "type": "Microsoft.Resources/resourceGroups",
+              "apiVersion": "2021-04-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {}
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the resource group."
+              },
+              "value": "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('name'))]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "condition": "[variables('varCreateStorageDeployment')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('Storage-RG-{0}', parameters('time'))]",
+      "subscriptionId": "[parameters('avdWorkloadSubsId')]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[variables('varStorageObjectsRgName')]"
+          },
+          "location": {
+            "value": "[parameters('avdSessionHostLocation')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "7047946455842057701"
+            },
+            "name": "Resource Groups",
+            "description": "This module deploys a Resource Group.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Resource Group."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[deployment().location]",
+              "metadata": {
+                "description": "Optional. Location of the Resource Group. It uses the deployment's location when not provided."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the storage account resource."
+              }
+            }
+          },
+          "resources": {
+            "resourceGroup": {
+              "type": "Microsoft.Resources/resourceGroups",
+              "apiVersion": "2021-04-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {}
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the resource group."
+              },
+              "value": "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('name'))]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
