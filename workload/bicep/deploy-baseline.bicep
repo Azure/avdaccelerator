@@ -991,7 +991,7 @@ module baselineNetworkResourceGroup '../../avm/1.0.0/res/resources/resource-grou
   params: {
     name: varNetworkObjectsRgName
     location: avdSessionHostLocation
-    enableTelemetry: false
+    //enableTelemetry: false
     //tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
   }
 }
@@ -1004,7 +1004,7 @@ module baselineResourceGroups '../../avm/1.0.0/res/resources/resource-group/main
     params: {
       name: resourceGroup.name
       location: resourceGroup.location
-      enableTelemetry: resourceGroup.enableDefaultTelemetry
+      //enableTelemetry: resourceGroup.enableDefaultTelemetry
       // tags: resourceGroup.tags
     }
   }
@@ -1017,7 +1017,7 @@ module baselineStorageResourceGroup '../../avm/1.0.0/res/resources/resource-grou
   params: {
     name: varStorageObjectsRgName
     location: avdSessionHostLocation
-    enableTelemetry: false
+    //enableTelemetry: false
     // tags: createResourceTags
     //   ? union(varAllComputeStorageTags, varAvdDefaultTags)
     //   : union(varAvdDefaultTags, varAllComputeStorageTags)
