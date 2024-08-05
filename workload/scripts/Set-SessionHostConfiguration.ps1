@@ -154,10 +154,33 @@ try {
                                 PropertyType = 'DWord'
                                 Value        = 1
                         },
-
                         # Configure fullscreen video encoding: https://docs.microsoft.com/en-us/azure/virtual-desktop/configure-vm-gpu#configure-fullscreen-video-encoding
                         [PSCustomObject]@{
                                 Name         = 'AVC444ModePreferred'
+                                Path         = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services'
+                                PropertyType = 'DWord'
+                                Value        = 1
+                        },
+                        [PSCustomObject]@{
+                                Name         = 'KeepAliveEnable'
+                                Path         = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services'
+                                PropertyType = 'DWord'
+                                Value        = 1
+                        },
+                        [PSCustomObject]@{
+                                Name         = 'KeepAliveInterval'
+                                Path         = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services'
+                                PropertyType = 'DWord'
+                                Value        = 1
+                        },
+                        [PSCustomObject]@{
+                                Name         = 'MinEncryptionLevel'
+                                Path         = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services'
+                                PropertyType = 'DWord'
+                                Value        = 3
+                        },
+                        [PSCustomObject]@{
+                                Name         = 'AVCHardwareEncodePreferred'
                                 Path         = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services'
                                 PropertyType = 'DWord'
                                 Value        = 1
@@ -251,25 +274,25 @@ try {
                                 Name         = 'LockedRetryCount'
                                 Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
                                 PropertyType = 'DWord'
-                                Value        = '3'
+                                Value        = 3
                         },
                         [PSCustomObject]@{
                                 Name         = 'LockedRetryInterval'
                                 Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
                                 PropertyType = 'DWord'
-                                Value        = '15'
+                                Value        = 15
                         },
                         [PSCustomObject]@{
                                 Name         = 'ReAttachIntervalSeconds'
                                 Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
                                 PropertyType = 'DWord'
-                                Value        = '15'
+                                Value        = 15
                         },
                         [PSCustomObject]@{
                                 Name         = 'ReAttachRetryCount'
                                 Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
                                 PropertyType = 'DWord'
-                                Value        = '3'
+                                Value        = 3
                         }
                 )
         }
