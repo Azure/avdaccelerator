@@ -246,6 +246,30 @@ try {
                                 Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
                                 PropertyType = 'MultiString'
                                 Value        = 'vhdx'
+                        },
+                        [PSCustomObject]@{
+                                Name         = 'LockedRetryCount'
+                                Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
+                                PropertyType = 'DWord'
+                                Value        = '3'
+                        },
+                        [PSCustomObject]@{
+                                Name         = 'LockedRetryInterval'
+                                Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
+                                PropertyType = 'DWord'
+                                Value        = '15'
+                        },
+                        [PSCustomObject]@{
+                                Name         = 'ReAttachIntervalSeconds'
+                                Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
+                                PropertyType = 'DWord'
+                                Value        = '15'
+                        },
+                        [PSCustomObject]@{
+                                Name         = 'ReAttachRetryCount'
+                                Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
+                                PropertyType = 'DWord'
+                                Value        = '3'
                         }
                 )
         }
