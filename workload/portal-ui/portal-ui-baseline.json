@@ -545,7 +545,7 @@
                                     "type": "Microsoft.Solutions.ArmApiControl",
                                     "request": {
                                         "method": "GET",
-                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Compute/resourceTypes?api-version=2021-04-01')]"
+                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Compute/resourceTypes?api-version=2022-01-01')]"
                                     }
                                 },
                                 {
@@ -889,7 +889,7 @@
                                     "type": "Microsoft.Solutions.ArmApiControl",
                                     "request": {
                                         "method": "GET",
-                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Storage/resourceTypes?api-version=2021-04-01')]"
+                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Storage/resourceTypes?api-version=2022-01-01')]"
                                     }
                                 },
                                 {
@@ -1153,7 +1153,7 @@
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
                                 "method": "GET",
-                                "path": "[concat(steps('network').avdVirtualNetworkSelectorId.id, '/subnets?api-version=2021-03-01')]"
+                                "path": "[concat(steps('network').avdVirtualNetworkSelectorId.id, '/subnets?api-version=2022-01-01')]"
                             }
                         },
                         {
@@ -1223,7 +1223,7 @@
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
                                 "method": "GET",
-                                "path": "[concat(steps('network').privateEndpointVirtualNetworkSelectorId.id, '/subnets?api-version=2021-03-01')]"
+                                "path": "[concat(steps('network').privateEndpointVirtualNetworkSelectorId.id, '/subnets?api-version=2022-01-01')]"
                             }
                         },
                         {
@@ -1425,7 +1425,7 @@
                                     "type": "Microsoft.Solutions.ArmApiControl",
                                     "request": {
                                         "method": "GET",
-                                        "path": "subscriptions?api-version=2020-01-01"
+                                        "path": "subscriptions?api-version=2022-01-01"
                                     }
                                 },
                                 {
@@ -1449,7 +1449,7 @@
                                     "type": "Microsoft.Solutions.ArmApiControl",
                                     "request": {
                                         "method": "GET",
-                                        "path": "[concat('subscriptions/', steps('network').hubVirtualNetworkPeering.hubVirtualNetworkSub, '/providers/Microsoft.Network/virtualNetworks?api-version=2021-08-01')]"
+                                        "path": "[concat('subscriptions/', steps('network').hubVirtualNetworkPeering.hubVirtualNetworkSub, '/providers/Microsoft.Network/virtualNetworks?api-version=2022-01-01')]"
                                     }
                                 },
                                 {
