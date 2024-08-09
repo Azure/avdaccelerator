@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "12451742192336121315"
+      "templateHash": "18328444158585339438"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -7018,7 +7018,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "2261706584014784900"
+              "templateHash": "16462446284809638774"
             },
             "name": "AVD LZA networking",
             "description": "This module deploys vNet, NSG, ASG, UDR, private DNs zones",
@@ -7223,20 +7223,19 @@
             "varExistingAvdVnetName": "[if(not(parameters('createVnet')), split(parameters('existingAvdSubnetResourceId'), '/')[8], '')]",
             "varExistingAvdVnetResourceId": "[if(not(parameters('createVnet')), format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Network/virtualNetworks/{2}', variables('varExistingAvdVnetSubId'), variables('varExistingAvdVnetSubRgName'), variables('varExistingAvdVnetName')), '')]",
             "varDiagnosticSettings": "[if(not(empty(parameters('alaWorkspaceResourceId'))), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'))), createArray())]",
-            "cloudSuffix": "[replace(replace(environment().resourceManager, 'https://management.azure.', ''), '/', '')]",
             "privateDnsZoneNames": {
-              "AutomationAgentService": "[format('privatelink.agentsvc.azure-automation.{0}', coalesce(variables('privateDnsZoneSuffixes_AzureAutomation')[environment().name], variables('cloudSuffix')))]",
-              "Automation": "[format('privatelink.azure-automation.{0}', coalesce(variables('privateDnsZoneSuffixes_AzureAutomation')[environment().name], variables('cloudSuffix')))]",
-              "AVDFeedConnections": "[format('privatelink.wvd.{0}', coalesce(variables('privateDnsZoneSuffixes_AzureVirtualDesktop')[environment().name], variables('cloudSuffix')))]",
-              "AVDDiscovery": "[format('privatelink-global.wvd.{0}', coalesce(variables('privateDnsZoneSuffixes_AzureVirtualDesktop')[environment().name], variables('cloudSuffix')))]",
+              "AutomationAgentService": "[format('privatelink.agentsvc.azure-automation.{0}', variables('privateDnsZoneSuffixes_AzureAutomation')[environment().name])]",
+              "Automation": "[format('privatelink.azure-automation.{0}', variables('privateDnsZoneSuffixes_AzureAutomation')[environment().name])]",
+              "AVDFeedConnections": "[format('privatelink.wvd.{0}', variables('privateDnsZoneSuffixes_AzureVirtualDesktop')[environment().name])]",
+              "AVDDiscovery": "[format('privatelink-global.wvd.{0}', variables('privateDnsZoneSuffixes_AzureVirtualDesktop')[environment().name])]",
               "StorageFiles": "[format('privatelink.file.{0}', environment().suffixes.storage)]",
               "StorageQueue": "[format('privatelink.queue.{0}', environment().suffixes.storage)]",
               "StorageTable": "[format('privatelink.table.{0}', environment().suffixes.storage)]",
               "StorageBlob": "[format('privatelink.blob.{0}', environment().suffixes.storage)]",
               "KeyVault": "[replace(format('privatelink{0}', environment().suffixes.keyvaultDns), 'vault', 'vaultcore')]",
-              "Monitor": "[format('privatelink.monitor.{0}', coalesce(variables('privateDnsZoneSuffixes_Monitor')[environment().name], variables('cloudSuffix')))]",
-              "MonitorODS": "[format('privatelink.ods.opinsights.{0}', coalesce(variables('privateDnsZoneSuffixes_Monitor')[environment().name], variables('cloudSuffix')))]",
-              "MonitorOMS": "[format('privatelink.oms.opinsights.{0}', coalesce(variables('privateDnsZoneSuffixes_Monitor')[environment().name], variables('cloudSuffix')))]"
+              "Monitor": "[format('privatelink.monitor.{0}', variables('privateDnsZoneSuffixes_Monitor')[environment().name])]",
+              "MonitorODS": "[format('privatelink.ods.opinsights.{0}', variables('privateDnsZoneSuffixes_Monitor')[environment().name])]",
+              "MonitorOMS": "[format('privatelink.oms.opinsights.{0}', variables('privateDnsZoneSuffixes_Monitor')[environment().name])]"
             },
             "privateDnsZoneSuffixes_AzureAutomation": {
               "AzureCloud": "net",
