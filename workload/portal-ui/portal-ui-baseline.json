@@ -11,6 +11,14 @@
                     "label": "Deployment Basics",
                     "elements": [
                         {
+                            "name": "subscriptionsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "subscriptions?api-version=2022-01-01"
+                            }
+                        },
+                        {
                             "name": "infoPreReq",
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
@@ -1421,14 +1429,6 @@
                                     }
                                 },
                                 {
-                                    "name": "hubVirtualNetworkSubs",
-                                    "type": "Microsoft.Solutions.ArmApiControl",
-                                    "request": {
-                                        "method": "GET",
-                                        "path": "subscriptions?api-version=2022-01-01"
-                                    }
-                                },
-                                {
                                     "name": "hubVirtualNetworkSub",
                                     "type": "Microsoft.Common.DropDown",
                                     "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
@@ -1440,7 +1440,7 @@
                                     "filterPlaceholder": "Filter items ...",
                                     "multiLine": true,
                                     "constraints": {
-                                        "allowedValues": "[map(steps('network').hubVirtualNetworkPeering.hubVirtualNetworkSubs.value, (sub) => parse(concat('{\"label\":\"', sub.displayName, '\",\"description\":\"', sub.subscriptionId, '\",\"value\":\"', toLower(sub.subscriptionId), '\"}')) )]",
+                                        "allowedValues": "[map(steps('basics').subscriptionsApi.value, (sub) => parse(concat('{\"label\":\"', sub.displayName, '\",\"description\":\"', sub.subscriptionId, '\",\"value\":\"', toLower(sub.subscriptionId), '\"}')) )]",
                                         "required": true
                                     }
                                 },
