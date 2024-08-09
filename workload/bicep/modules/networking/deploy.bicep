@@ -125,20 +125,19 @@ var varVirtualNetworkLinks = createVnet ? [
 ]
 
 // PRIVATE DNS ZONE NAMING
-var cloudSuffix = replace(replace(environment().resourceManager, 'https://management.azure.', ''), '/', '') 
 var privateDnsZoneNames = {
-        AutomationAgentService:'privatelink.agentsvc.azure-automation.${privateDnsZoneSuffixes_AzureAutomation[environment().name] ?? cloudSuffix}'
-        Automation: 'privatelink.azure-automation.${privateDnsZoneSuffixes_AzureAutomation[environment().name] ?? cloudSuffix}'
-        AVDFeedConnections: 'privatelink.wvd.${privateDnsZoneSuffixes_AzureVirtualDesktop[environment().name] ?? cloudSuffix}'
-        AVDDiscovery: 'privatelink-global.wvd.${privateDnsZoneSuffixes_AzureVirtualDesktop[environment().name] ?? cloudSuffix}'
+        AutomationAgentService:'privatelink.agentsvc.azure-automation.${privateDnsZoneSuffixes_AzureAutomation[environment().name]}'
+        Automation: 'privatelink.azure-automation.${privateDnsZoneSuffixes_AzureAutomation[environment().name]}'
+        AVDFeedConnections: 'privatelink.wvd.${privateDnsZoneSuffixes_AzureVirtualDesktop[environment().name]}'
+        AVDDiscovery: 'privatelink-global.wvd.${privateDnsZoneSuffixes_AzureVirtualDesktop[environment().name]}'
         StorageFiles: 'privatelink.file.${environment().suffixes.storage}'
         StorageQueue: 'privatelink.queue.${environment().suffixes.storage}'
         StorageTable: 'privatelink.table.${environment().suffixes.storage}'
         StorageBlob: 'privatelink.blob.${environment().suffixes.storage}'
         KeyVault: replace('privatelink${environment().suffixes.keyvaultDns}', 'vault', 'vaultcore')
-        Monitor: 'privatelink.monitor.${privateDnsZoneSuffixes_Monitor[environment().name] ?? cloudSuffix}'
-        MonitorODS: 'privatelink.ods.opinsights.${privateDnsZoneSuffixes_Monitor[environment().name] ?? cloudSuffix}'
-        MonitorOMS: 'privatelink.oms.opinsights.${privateDnsZoneSuffixes_Monitor[environment().name] ?? cloudSuffix}'
+        Monitor: 'privatelink.monitor.${privateDnsZoneSuffixes_Monitor[environment().name]}'
+        MonitorODS: 'privatelink.ods.opinsights.${privateDnsZoneSuffixes_Monitor[environment().name]}'
+        MonitorOMS: 'privatelink.oms.opinsights.${privateDnsZoneSuffixes_Monitor[environment().name]}'
   }
 
   var privateDnsZoneSuffixes_AzureAutomation = {
