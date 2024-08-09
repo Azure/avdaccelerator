@@ -8,11 +8,11 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object.')
-param federatedIdentityCredentials federatedIdentityCredentialsType
+// @description('Optional. The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object.')
+// param federatedIdentityCredentials federatedIdentityCredentialsType
 
-@description('Optional. The lock settings of the service.')
-param lock lockType
+// @description('Optional. The lock settings of the service.')
+// param lock lockType
 
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
@@ -70,31 +70,31 @@ resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@
   tags: tags
 }
 
-resource userAssignedIdentity_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: userAssignedIdentity
-  }
+// resource userAssignedIdentity_lock 'Microsoft.Authorization/locks@2020-05-01' =
+//   if (!empty(lock ?? {}) && lock.?kind != 'None') {
+//     name: lock.?name ?? 'lock-${name}'
+//     properties: {
+//       level: lock.?kind ?? ''
+//       notes: lock.?kind == 'CanNotDelete'
+//         ? 'Cannot delete resource or child resources.'
+//         : 'Cannot delete or modify the resource or child resources.'
+//     }
+//     scope: userAssignedIdentity
+//   }
 
-@batchSize(1)
-module userAssignedIdentity_federatedIdentityCredentials 'federated-identity-credential/main.bicep' = [
-  for (federatedIdentityCredential, index) in (federatedIdentityCredentials ?? []): {
-    name: '${uniqueString(deployment().name, location)}-UserMSI-FederatedIdentityCredential-${index}'
-    params: {
-      name: federatedIdentityCredential.name
-      userAssignedIdentityName: userAssignedIdentity.name
-      audiences: federatedIdentityCredential.audiences
-      issuer: federatedIdentityCredential.issuer
-      subject: federatedIdentityCredential.subject
-    }
-  }
-]
+// @batchSize(1)
+// module userAssignedIdentity_federatedIdentityCredentials 'federated-identity-credential/main.bicep' = [
+//   for (federatedIdentityCredential, index) in (federatedIdentityCredentials ?? []): {
+//     name: '${uniqueString(deployment().name, location)}-UserMSI-FederatedIdentityCredential-${index}'
+//     params: {
+//       name: federatedIdentityCredential.name
+//       userAssignedIdentityName: userAssignedIdentity.name
+//       audiences: federatedIdentityCredential.audiences
+//       issuer: federatedIdentityCredential.issuer
+//       subject: federatedIdentityCredential.subject
+//     }
+//   }
+// ]
 
 resource userAssignedIdentity_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {
@@ -138,13 +138,13 @@ output location string = userAssignedIdentity.location
 //   Definitions   //
 // =============== //
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
+// type lockType = {
+//   @description('Optional. Specify the name of lock.')
+//   name: string?
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
+//   @description('Optional. Specify the type of lock.')
+//   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
+// }?
 
 type roleAssignmentType = {
   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
@@ -169,16 +169,16 @@ type roleAssignmentType = {
   delegatedManagedIdentityResourceId: string?
 }[]?
 
-type federatedIdentityCredentialsType = {
-  @description('Required. The name of the federated identity credential.')
-  name: string
+// type federatedIdentityCredentialsType = {
+//   @description('Required. The name of the federated identity credential.')
+//   name: string
 
-  @description('Required. The list of audiences that can appear in the issued token.')
-  audiences: string[]
+//   @description('Required. The list of audiences that can appear in the issued token.')
+//   audiences: string[]
 
-  @description('Required. The URL of the issuer to be trusted.')
-  issuer: string
+//   @description('Required. The URL of the issuer to be trusted.')
+//   issuer: string
 
-  @description('Required. The identifier of the external identity.')
-  subject: string
-}[]?
+//   @description('Required. The identifier of the external identity.')
+//   subject: string
+// }[]?
