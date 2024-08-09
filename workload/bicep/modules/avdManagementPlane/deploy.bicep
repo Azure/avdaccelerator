@@ -114,7 +114,7 @@ param time string = utcNow()
 // =========== //
 // Variable declaration //
 // =========== //
-var varApplicaitonGroups = [
+var varApplicationGroups = [
   {
     name: applicationGroupName
     friendlyName: applicationGroupFriendlyNameDesktop
@@ -221,7 +221,7 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
 }
 
 // Application groups.
-module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/application-group/main.bicep' = [for applicationGroup in varApplicaitonGroups: {
+module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/application-group/main.bicep' = [for applicationGroup in varApplicationGroups: {
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   name: '${applicationGroup.name}-${time}'
   params: {
