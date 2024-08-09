@@ -19,9 +19,6 @@ param serviceObjectsRgName string
 @sys.description('AVD Resource Group Name for the service objects.')
 param computeObjectsRgName string
 
-@sys.description('Managed identity for zero trust setup.')
-param managedIdentityName string
-
 @sys.description('This value is used to set the expiration date on the disk encryption key.')
 param diskEncryptionKeyExpirationInDays int
 
