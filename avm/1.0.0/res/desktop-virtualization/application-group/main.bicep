@@ -34,8 +34,8 @@ param tags object?
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@sys.description('Optional. The lock settings of the service.')
-param lock lockType
+// @sys.description('Optional. The lock settings of the service.')
+// param lock lockType
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -121,17 +121,17 @@ module appGroup_applications 'application/main.bicep' = [
   }
 ]
 
-resource appGroup_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: appGroup
-  }
+// resource appGroup_lock 'Microsoft.Authorization/locks@2020-05-01' =
+//   if (!empty(lock ?? {}) && lock.?kind != 'None') {
+//     name: lock.?name ?? 'lock-${name}'
+//     properties: {
+//       level: lock.?kind ?? ''
+//       notes: lock.?kind == 'CanNotDelete'
+//         ? 'Cannot delete resource or child resources.'
+//         : 'Cannot delete or modify the resource or child resources.'
+//     }
+//     scope: appGroup
+//   }
 
 resource appGroup_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {
@@ -191,13 +191,13 @@ output location string = appGroup.location
 // Definitions      //
 // ================ //
 
-type lockType = {
-  @sys.description('Optional. Specify the name of lock.')
-  name: string?
+// type lockType = {
+//   @sys.description('Optional. Specify the name of lock.')
+//   name: string?
 
-  @sys.description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
+//   @sys.description('Optional. Specify the type of lock.')
+//   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
+// }?
 
 type roleAssignmentType = {
   @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
