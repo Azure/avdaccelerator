@@ -1176,7 +1176,6 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
     diskZeroTrust: diskZeroTrust
     serviceObjectsRgName: varServiceObjectsRgName
     computeObjectsRgName: varComputeObjectsRgName
-    managedIdentityName: varZtManagedIdentityName
     vaultSku: varWrklKeyVaultSku
     diskEncryptionKeyExpirationInDays: diskEncryptionKeyExpirationInDays
     diskEncryptionKeyExpirationInEpoch: varDiskEncryptionKeyExpirationInEpoch
