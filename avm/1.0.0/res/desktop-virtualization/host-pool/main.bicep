@@ -33,8 +33,8 @@ param hostPoolType string = 'Pooled'
 ])
 param publicNetworkAccess string = 'Enabled'
 
-@sys.description('Optional. Configuration details for private endpoints.')
-param privateEndpoints privateEndpointType
+// @sys.description('Optional. Configuration details for private endpoints.')
+// param privateEndpoints privateEndpointType
 
 @sys.description('Optional. Set the type of assignment for a Personal Host Pool type.')
 @allowed([
@@ -113,11 +113,11 @@ param ssoSecretType string = ''
 @sys.description('Optional. Tags of the resource.')
 param tags object?
 
-@sys.description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+// @sys.description('Optional. Array of role assignments to create.')
+// param roleAssignments roleAssignmentType
 
-@sys.description('Optional. The lock settings of the service.')
-param lock lockType
+// @sys.description('Optional. The lock settings of the service.')
+// param lock lockType
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -125,30 +125,30 @@ param enableTelemetry bool = true
 @sys.description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
 
-var builtInRoleNames = {
-  Owner: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
-  Contributor: '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
-  Reader: '/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7'
-  'Role Based Access Control Administrator (Preview)': '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
-  'User Access Administrator': '/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
-  'Application Group Contributor': '/providers/Microsoft.Authorization/roleDefinitions/ca6382a4-1721-4bcf-a114-ff0c70227b6b'
-  'Desktop Virtualization Application Group Contributor': '/providers/Microsoft.Authorization/roleDefinitions/86240b0e-9422-4c43-887b-b61143f32ba8'
-  'Desktop Virtualization Application Group Reader': '/providers/Microsoft.Authorization/roleDefinitions/aebf23d0-b568-4e86-b8f9-fe83a2c6ab55'
-  'Desktop Virtualization Contributor': '/providers/Microsoft.Authorization/roleDefinitions/082f0a83-3be5-4ba1-904c-961cca79b387'
-  'Desktop Virtualization Host Pool Contributor': '/providers/Microsoft.Authorization/roleDefinitions/e307426c-f9b6-4e81-87de-d99efb3c32bc'
-  'Desktop Virtualization Host Pool Reader': '/providers/Microsoft.Authorization/roleDefinitions/ceadfde2-b300-400a-ab7b-6143895aa822'
-  'Desktop Virtualization Power On Off Contributor': '/providers/Microsoft.Authorization/roleDefinitions/40c5ff49-9181-41f8-ae61-143b0e78555e'
-  'Desktop Virtualization Reader': '/providers/Microsoft.Authorization/roleDefinitions/49a72310-ab8d-41df-bbb0-79b649203868'
-  'Desktop Virtualization Session Host Operator': '/providers/Microsoft.Authorization/roleDefinitions/2ad6aaab-ead9-4eaa-8ac5-da422f562408'
-  'Desktop Virtualization User': '/providers/Microsoft.Authorization/roleDefinitions/1d18fff3-a72a-46b5-b4a9-0b38a3cd7e63'
-  'Desktop Virtualization User Session Operator': '/providers/Microsoft.Authorization/roleDefinitions/ea4bfff8-7fb4-485a-aadd-d4129a0ffaa6'
-  'Desktop Virtualization Virtual Machine Contributor': '/providers/Microsoft.Authorization/roleDefinitions/a959dbd1-f747-45e3-8ba6-dd80f235f97c'
-  'Desktop Virtualization Workspace Contributor': '/providers/Microsoft.Authorization/roleDefinitions/21efdde3-836f-432b-bf3d-3e8e734d4b2b'
-  'Desktop Virtualization Workspace Reader': '/providers/Microsoft.Authorization/roleDefinitions/0fa44ee9-7a7d-466b-9bb2-2bf446b1204d'
-  'Managed Application Contributor Role': '/providers/Microsoft.Authorization/roleDefinitions/641177b8-a67a-45b9-a033-47bc880bb21e'
-  'Managed Application Operator Role': '/providers/Microsoft.Authorization/roleDefinitions/c7393b34-138c-406f-901b-d8cf2b17e6ae'
-  'Managed Applications Reader': '/providers/Microsoft.Authorization/roleDefinitions/b9331d33-8a36-4f8c-b097-4f54124fdb44'
-}
+// var builtInRoleNames = {
+//   Owner: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+//   Contributor: '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
+//   Reader: '/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7'
+//   'Role Based Access Control Administrator (Preview)': '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+//   'User Access Administrator': '/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+//   'Application Group Contributor': '/providers/Microsoft.Authorization/roleDefinitions/ca6382a4-1721-4bcf-a114-ff0c70227b6b'
+//   'Desktop Virtualization Application Group Contributor': '/providers/Microsoft.Authorization/roleDefinitions/86240b0e-9422-4c43-887b-b61143f32ba8'
+//   'Desktop Virtualization Application Group Reader': '/providers/Microsoft.Authorization/roleDefinitions/aebf23d0-b568-4e86-b8f9-fe83a2c6ab55'
+//   'Desktop Virtualization Contributor': '/providers/Microsoft.Authorization/roleDefinitions/082f0a83-3be5-4ba1-904c-961cca79b387'
+//   'Desktop Virtualization Host Pool Contributor': '/providers/Microsoft.Authorization/roleDefinitions/e307426c-f9b6-4e81-87de-d99efb3c32bc'
+//   'Desktop Virtualization Host Pool Reader': '/providers/Microsoft.Authorization/roleDefinitions/ceadfde2-b300-400a-ab7b-6143895aa822'
+//   'Desktop Virtualization Power On Off Contributor': '/providers/Microsoft.Authorization/roleDefinitions/40c5ff49-9181-41f8-ae61-143b0e78555e'
+//   'Desktop Virtualization Reader': '/providers/Microsoft.Authorization/roleDefinitions/49a72310-ab8d-41df-bbb0-79b649203868'
+//   'Desktop Virtualization Session Host Operator': '/providers/Microsoft.Authorization/roleDefinitions/2ad6aaab-ead9-4eaa-8ac5-da422f562408'
+//   'Desktop Virtualization User': '/providers/Microsoft.Authorization/roleDefinitions/1d18fff3-a72a-46b5-b4a9-0b38a3cd7e63'
+//   'Desktop Virtualization User Session Operator': '/providers/Microsoft.Authorization/roleDefinitions/ea4bfff8-7fb4-485a-aadd-d4129a0ffaa6'
+//   'Desktop Virtualization Virtual Machine Contributor': '/providers/Microsoft.Authorization/roleDefinitions/a959dbd1-f747-45e3-8ba6-dd80f235f97c'
+//   'Desktop Virtualization Workspace Contributor': '/providers/Microsoft.Authorization/roleDefinitions/21efdde3-836f-432b-bf3d-3e8e734d4b2b'
+//   'Desktop Virtualization Workspace Reader': '/providers/Microsoft.Authorization/roleDefinitions/0fa44ee9-7a7d-466b-9bb2-2bf446b1204d'
+//   'Managed Application Contributor Role': '/providers/Microsoft.Authorization/roleDefinitions/641177b8-a67a-45b9-a033-47bc880bb21e'
+//   'Managed Application Operator Role': '/providers/Microsoft.Authorization/roleDefinitions/c7393b34-138c-406f-901b-d8cf2b17e6ae'
+//   'Managed Applications Reader': '/providers/Microsoft.Authorization/roleDefinitions/b9331d33-8a36-4f8c-b097-4f54124fdb44'
+// }
 
 var varKeyVaultSubId = split(keyVaultResourceId, '/')[2]
 var varKeyVaultRgName = split(keyVaultResourceId, '/')[4]
@@ -218,90 +218,90 @@ module keyVaultHostPoolSecret '../../../../../avm/1.0.0/res/key-vault/vault/secr
   }
 }
 
-module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
-  for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-hostPool-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
-    params: {
-      name: privateEndpoint.?name ?? 'pep-${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
-        ? [
-            {
-              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
-              properties: {
-                privateLinkServiceId: hostPool.id
-                groupIds: [
-                  privateEndpoint.?service ?? 'connection'
-                ]
-              }
-            }
-          ]
-        : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
-        ? [
-            {
-              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
-              properties: {
-                privateLinkServiceId: hostPool.id
-                groupIds: [
-                  privateEndpoint.?service ?? 'connection'
-                ]
-                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
-              }
-            }
-          ]
-        : null
-      subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
-      location: privateEndpoint.?location ?? reference(
-        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
-        '2020-06-01',
-        'Full'
-      ).location
-      lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
-      roleAssignments: privateEndpoint.?roleAssignments
-      tags: privateEndpoint.?tags ?? tags
-      customDnsConfigs: privateEndpoint.?customDnsConfigs
-      ipConfigurations: privateEndpoint.?ipConfigurations
-      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
-      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
-    }
-  }
-]
+// module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+//   for (privateEndpoint, index) in (privateEndpoints ?? []): {
+//     name: '${uniqueString(deployment().name, location)}-hostPool-PrivateEndpoint-${index}'
+//     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+//     params: {
+//       name: privateEndpoint.?name ?? 'pep-${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
+//       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+//         ? [
+//             {
+//               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
+//               properties: {
+//                 privateLinkServiceId: hostPool.id
+//                 groupIds: [
+//                   privateEndpoint.?service ?? 'connection'
+//                 ]
+//               }
+//             }
+//           ]
+//         : null
+//       manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
+//         ? [
+//             {
+//               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
+//               properties: {
+//                 privateLinkServiceId: hostPool.id
+//                 groupIds: [
+//                   privateEndpoint.?service ?? 'connection'
+//                 ]
+//                 requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+//               }
+//             }
+//           ]
+//         : null
+//       subnetResourceId: privateEndpoint.subnetResourceId
+//       enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+//       location: privateEndpoint.?location ?? reference(
+//         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+//         '2020-06-01',
+//         'Full'
+//       ).location
+//       lock: privateEndpoint.?lock ?? lock
+//       privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+//       privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+//       roleAssignments: privateEndpoint.?roleAssignments
+//       tags: privateEndpoint.?tags ?? tags
+//       customDnsConfigs: privateEndpoint.?customDnsConfigs
+//       ipConfigurations: privateEndpoint.?ipConfigurations
+//       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+//       customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+//     }
+//   }
+// ]
 
-resource hostPool_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: hostPool
-  }
+// resource hostPool_lock 'Microsoft.Authorization/locks@2020-05-01' =
+//   if (!empty(lock ?? {}) && lock.?kind != 'None') {
+//     name: lock.?name ?? 'lock-${name}'
+//     properties: {
+//       level: lock.?kind ?? ''
+//       notes: lock.?kind == 'CanNotDelete'
+//         ? 'Cannot delete resource or child resources.'
+//         : 'Cannot delete or modify the resource or child resources.'
+//     }
+//     scope: hostPool
+//   }
 
-resource hostPool_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(hostPool.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-    properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-      principalId: roleAssignment.principalId
-      description: roleAssignment.?description
-      principalType: roleAssignment.?principalType
-      condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null
-      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
-    }
-    scope: hostPool
-  }
-]
+// resource hostPool_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+//   for (roleAssignment, index) in (roleAssignments ?? []): {
+//     name: guid(hostPool.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+//     properties: {
+//       roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+//         ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+//         : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+//             ? roleAssignment.roleDefinitionIdOrName
+//             : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+//       principalId: roleAssignment.principalId
+//       description: roleAssignment.?description
+//       principalType: roleAssignment.?principalType
+//       condition: roleAssignment.?condition
+//       conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null
+//       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+//     }
+//     scope: hostPool
+//   }
+// ]
 
 resource hostPool_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -379,108 +379,108 @@ type diagnosticSettingType = {
   marketplacePartnerResourceId: string?
 }[]?
 
-type roleAssignmentType = {
-  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
+// type roleAssignmentType = {
+//   @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+//   roleDefinitionIdOrName: string
 
-  @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
+//   @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
+//   principalId: string
 
-  @sys.description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
+//   @sys.description('Optional. The principal type of the assigned principal ID.')
+//   principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
 
-  @sys.description('Optional. The description of the role assignment.')
-  description: string?
+//   @sys.description('Optional. The description of the role assignment.')
+//   description: string?
 
-  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
+//   @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
+//   condition: string?
 
-  @sys.description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
+//   @sys.description('Optional. Version of the condition.')
+//   conditionVersion: '2.0'?
 
-  @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+//   @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
+//   delegatedManagedIdentityResourceId: string?
+// }[]?
 
-type privateEndpointType = {
-  @sys.description('Optional. The name of the private endpoint.')
-  name: string?
+// type privateEndpointType = {
+//   @sys.description('Optional. The name of the private endpoint.')
+//   name: string?
 
-  @sys.description('Optional. The location to deploy the private endpoint to.')
-  location: string?
+//   @sys.description('Optional. The location to deploy the private endpoint to.')
+//   location: string?
 
-  @sys.description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
-  service: string?
+//   @sys.description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
+//   service: string?
 
-  @sys.description('Required. Resource ID of the subnet where the endpoint needs to be created.')
-  subnetResourceId: string
+//   @sys.description('Required. Resource ID of the subnet where the endpoint needs to be created.')
+//   subnetResourceId: string
 
-  @sys.description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
+//   @sys.description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
+//   privateDnsZoneGroupName: string?
 
-  @sys.description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
+//   @sys.description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
+//   privateDnsZoneResourceIds: string[]?
 
-  @sys.description('Optional. If Manual Private Link Connection is required.')
-  isManualConnection: bool?
+//   @sys.description('Optional. If Manual Private Link Connection is required.')
+//   isManualConnection: bool?
 
-  @sys.description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
-  @maxLength(140)
-  manualConnectionRequestMessage: string?
+//   @sys.description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
+//   @maxLength(140)
+//   manualConnectionRequestMessage: string?
 
-  @sys.description('Optional. Custom DNS configurations.')
-  customDnsConfigs: {
-    @sys.description('Required. Fqdn that resolves to private endpoint IP address.')
-    fqdn: string?
+//   @sys.description('Optional. Custom DNS configurations.')
+//   customDnsConfigs: {
+//     @sys.description('Required. Fqdn that resolves to private endpoint IP address.')
+//     fqdn: string?
 
-    @sys.description('Required. A list of private IP addresses of the private endpoint.')
-    ipAddresses: string[]
-  }[]?
+//     @sys.description('Required. A list of private IP addresses of the private endpoint.')
+//     ipAddresses: string[]
+//   }[]?
 
-  @sys.description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
-  ipConfigurations: {
-    @sys.description('Required. The name of the resource that is unique within a resource group.')
-    name: string
+  // @sys.description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
+  // ipConfigurations: {
+  //   @sys.description('Required. The name of the resource that is unique within a resource group.')
+  //   name: string
 
-    @sys.description('Required. Properties of private endpoint IP configurations.')
-    properties: {
-      @sys.description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
-      groupId: string
+  //   @sys.description('Required. Properties of private endpoint IP configurations.')
+  //   properties: {
+  //     @sys.description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
+  //     groupId: string
 
-      @sys.description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
-      memberName: string
+  //     @sys.description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
+  //     memberName: string
 
-      @sys.description('Required. A private IP address obtained from the private endpoint\'s subnet.')
-      privateIPAddress: string
-    }
-  }[]?
+  //     @sys.description('Required. A private IP address obtained from the private endpoint\'s subnet.')
+  //     privateIPAddress: string
+  //   }
+  // }[]?
 
-  @sys.description('Optional. Application security groups in which the private endpoint IP configuration is included.')
-  applicationSecurityGroupResourceIds: string[]?
+//   @sys.description('Optional. Application security groups in which the private endpoint IP configuration is included.')
+//   applicationSecurityGroupResourceIds: string[]?
 
-  @sys.description('Optional. The custom name of the network interface attached to the private endpoint.')
-  customNetworkInterfaceName: string?
+//   @sys.description('Optional. The custom name of the network interface attached to the private endpoint.')
+//   customNetworkInterfaceName: string?
 
-  @sys.description('Optional. Specify the type of lock.')
-  lock: lockType
+//   @sys.description('Optional. Specify the type of lock.')
+//   lock: lockType
 
-  @sys.description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
+//   @sys.description('Optional. Array of role assignments to create.')
+//   roleAssignments: roleAssignmentType
 
-  @sys.description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
-  tags: object?
+//   @sys.description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
+//   tags: object?
 
-  @sys.description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
+//   @sys.description('Optional. Enable/Disable usage telemetry for module.')
+//   enableTelemetry: bool?
 
-  @sys.description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
-  resourceGroupName: string?
-}[]?
+//   @sys.description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
+//   resourceGroupName: string?
+// }[]?
 
-type lockType = {
-  @sys.description('Optional. Specify the name of lock.')
-  name: string?
+// type lockType = {
+//   @sys.description('Optional. Specify the name of lock.')
+//   name: string?
 
-  @sys.description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
+//   @sys.description('Optional. Specify the type of lock.')
+//   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
+// }?
