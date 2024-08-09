@@ -79,8 +79,8 @@ param dedicatedHostId string = ''
 ])
 param licenseType string = ''
 
-@description('Optional. The list of SSH public keys used to authenticate with linux based VMs.')
-param publicKeys array = []
+// @description('Optional. The list of SSH public keys used to authenticate with linux based VMs.')
+// param publicKeys array = []
 
 @description('Optional. The managed identity definition for this resource. The system-assigned managed identity will automatically be enabled if extensionAadJoinConfig.enabled = "True".')
 param managedIdentities managedIdentitiesType
@@ -116,17 +116,17 @@ param zone int
 @description('Required. Configures NICs and PIPs.')
 param nicConfigurations array
 
-@description('Optional. Recovery service vault name to add VMs to backup.')
-param backupVaultName string = ''
+// @description('Optional. Recovery service vault name to add VMs to backup.')
+// param backupVaultName string = ''
 
-@description('Optional. Resource group of the backup recovery service vault. If not provided the current resource group name is considered by default.')
-param backupVaultResourceGroup string = resourceGroup().name
+// @description('Optional. Resource group of the backup recovery service vault. If not provided the current resource group name is considered by default.')
+// param backupVaultResourceGroup string = resourceGroup().name
 
-@description('Optional. Backup policy the VMs should be using for backup. If not provided, it will use the DefaultPolicy from the backup recovery service vault.')
-param backupPolicyName string = 'DefaultPolicy'
+// @description('Optional. Backup policy the VMs should be using for backup. If not provided, it will use the DefaultPolicy from the backup recovery service vault.')
+// param backupPolicyName string = 'DefaultPolicy'
 
-@description('Optional. The configuration for auto-shutdown.')
-param autoShutdownConfig object = {}
+// @description('Optional. The configuration for auto-shutdown.')
+// param autoShutdownConfig object = {}
 
 // Child resources
 @description('Optional. Specifies whether extension operations should be allowed on the virtual machine. This may only be set to False when no extensions are present on the virtual machine.')
@@ -146,25 +146,25 @@ param extensionAadJoinConfig object = {
   enabled: false
 }
 
-@description('Optional. The configuration for the [Anti Malware] extension. Must at least contain the ["enabled": true] property to be executed.')
-param extensionAntiMalwareConfig object = {
-  enabled: false
-}
+// @description('Optional. The configuration for the [Anti Malware] extension. Must at least contain the ["enabled": true] property to be executed.')
+// param extensionAntiMalwareConfig object = {
+//   enabled: false
+// }
 
-@description('Optional. The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed.')
-param extensionMonitoringAgentConfig object = {
-  enabled: false
-}
+// @description('Optional. The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed.')
+// param extensionMonitoringAgentConfig object = {
+//   enabled: false
+// }
 
-@description('Optional. The configuration for the [Dependency Agent] extension. Must at least contain the ["enabled": true] property to be executed.')
-param extensionDependencyAgentConfig object = {
-  enabled: false
-}
+// @description('Optional. The configuration for the [Dependency Agent] extension. Must at least contain the ["enabled": true] property to be executed.')
+// param extensionDependencyAgentConfig object = {
+//   enabled: false
+// }
 
-@description('Optional. The configuration for the [Network Watcher Agent] extension. Must at least contain the ["enabled": true] property to be executed.')
-param extensionNetworkWatcherAgentConfig object = {
-  enabled: false
-}
+// @description('Optional. The configuration for the [Network Watcher Agent] extension. Must at least contain the ["enabled": true] property to be executed.')
+// param extensionNetworkWatcherAgentConfig object = {
+//   enabled: false
+// }
 
 @description('Optional. The configuration for the [Azure Disk Encryption] extension. Must at least contain the ["enabled": true] property to be executed. Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys.')
 param extensionAzureDiskEncryptionConfig object = {
@@ -187,36 +187,36 @@ param extensionNvidiaGpuDriverWindows object = {
   enabled: false
 }
 
-@description('Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.')
-param extensionHostPoolRegistration object = {
-  enabled: false
-}
+// @description('Optional. The configuration for the [Host Pool Registration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.')
+// param extensionHostPoolRegistration object = {
+//   enabled: false
+// }
 
-@description('Optional. The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.')
-param extensionGuestConfigurationExtension object = {
-  enabled: false
-}
+// @description('Optional. The configuration for the [Guest Configuration] extension. Must at least contain the ["enabled": true] property to be executed. Needs a managed identy.')
+// param extensionGuestConfigurationExtension object = {
+//   enabled: false
+// }
 
-@description('Optional. The guest configuration for the virtual machine. Needs the Guest Configuration extension to be enabled.')
-param guestConfiguration object = {}
+// @description('Optional. The guest configuration for the virtual machine. Needs the Guest Configuration extension to be enabled.')
+// param guestConfiguration object = {}
 
 @description('Optional. An object that contains the extension specific protected settings.')
 @secure()
 param extensionCustomScriptProtectedSetting object = {}
 
-@description('Optional. An object that contains the extension specific protected settings.')
-@secure()
-param extensionGuestConfigurationExtensionProtectedSettings object = {}
+// @description('Optional. An object that contains the extension specific protected settings.')
+// @secure()
+// param extensionGuestConfigurationExtensionProtectedSettings object = {}
 
 // Shared parameters
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. The lock settings of the service.')
-param lock lockType
+// @description('Optional. The lock settings of the service.')
+// param lock lockType
 
-@description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+// @description('Optional. Array of role assignments to create.')
+// param roleAssignments roleAssignmentType
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -237,9 +237,9 @@ param sasTokenValidityLength string = 'PT8H'
 ])
 param osType string
 
-@description('Optional. Specifies whether password authentication should be disabled.')
-#disable-next-line secure-secrets-in-params // Not a secret
-param disablePasswordAuthentication bool = false
+// @description('Optional. Specifies whether password authentication should be disabled.')
+// #disable-next-line secure-secrets-in-params // Not a secret
+// param disablePasswordAuthentication bool = false
 
 @description('Optional. Indicates whether virtual machine agent should be provisioned on the virtual machine. When this property is not specified in the request body, default behavior is to set it to true. This will ensure that VM Agent is installed on the VM so that extensions can be added to the VM later.')
 param provisionVMAgent bool = true
@@ -288,30 +288,30 @@ param winRM array = []
 @description('Optional. The configuration profile of automanage. Either \'/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction\', \'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest\' or the resource Id of custom profile.')
 param configurationProfile string = ''
 
-var publicKeysFormatted = [
-  for publicKey in publicKeys: {
-    path: publicKey.path
-    keyData: publicKey.keyData
-  }
-]
+// var publicKeysFormatted = [
+//   for publicKey in publicKeys: {
+//     path: publicKey.path
+//     keyData: publicKey.keyData
+//   }
+// ]
 
-var linuxConfiguration = {
-  disablePasswordAuthentication: disablePasswordAuthentication
-  ssh: {
-    publicKeys: publicKeysFormatted
-  }
-  provisionVMAgent: provisionVMAgent
-  patchSettings: (provisionVMAgent && (patchMode =~ 'AutomaticByPlatform' || patchMode =~ 'ImageDefault'))
-    ? {
-        patchMode: patchMode
-        assessmentMode: patchAssessmentMode
-        automaticByPlatformSettings: {
-          bypassPlatformSafetyChecksOnUserSchedule: bypassPlatformSafetyChecksOnUserSchedule
-          rebootSetting: rebootSetting
-        }
-      }
-    : null
-}
+// var linuxConfiguration = {
+//   disablePasswordAuthentication: disablePasswordAuthentication
+//   ssh: {
+//     publicKeys: publicKeysFormatted
+//   }
+//   provisionVMAgent: provisionVMAgent
+//   patchSettings: (provisionVMAgent && (patchMode =~ 'AutomaticByPlatform' || patchMode =~ 'ImageDefault'))
+//     ? {
+//         patchMode: patchMode
+//         assessmentMode: patchAssessmentMode
+//         automaticByPlatformSettings: {
+//           bypassPlatformSafetyChecksOnUserSchedule: bypassPlatformSafetyChecksOnUserSchedule
+//           rebootSetting: rebootSetting
+//         }
+//       }
+//     : null
+// }
 
 var windowsConfiguration = {
   provisionVMAgent: provisionVMAgent
@@ -359,71 +359,71 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-var builtInRoleNames = {
-  Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  'Data Operator for Managed Disks': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    '959f8984-c045-4866-89c7-12bf9737be2e'
-  )
-  'Desktop Virtualization Power On Contributor': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    '489581de-a3bd-480d-9518-53dea7416b33'
-  )
-  'Desktop Virtualization Power On Off Contributor': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    '40c5ff49-9181-41f8-ae61-143b0e78555e'
-  )
-  'Desktop Virtualization Virtual Machine Contributor': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    'a959dbd1-f747-45e3-8ba6-dd80f235f97c'
-  )
-  'DevTest Labs User': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    '76283e04-6283-4c54-8f91-bcf1374a3c64'
-  )
-  'Disk Backup Reader': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    '3e5e47e6-65f7-47ef-90b5-e5dd4d455f24'
-  )
-  'Disk Pool Operator': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    '60fc6e62-5479-42d4-8bf4-67625fcc2840'
-  )
-  'Disk Restore Operator': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    'b50d9833-a0cb-478e-945f-707fcc997c13'
-  )
-  'Disk Snapshot Contributor': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    '7efff54f-a5b4-42b5-a1c5-5411624893ce'
-  )
-  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
-  Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
-  )
-  'User Access Administrator': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
-  )
-  'Virtual Machine Administrator Login': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    '1c0163c0-47e6-4577-8991-ea5c82e286e4'
-  )
-  'Virtual Machine Contributor': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    '9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
-  )
-  'Virtual Machine User Login': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    'fb879df8-f326-4884-b1cf-06f3ad86be52'
-  )
-  'VM Scanner Operator': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    'd24ecba3-c1f4-40fa-a7bb-4588a071e8fd'
-  )
-}
+// var builtInRoleNames = {
+//   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+//   'Data Operator for Managed Disks': subscriptionResourceId(
+//     'Microsoft.Authorization/roleDefinitions',
+//     '959f8984-c045-4866-89c7-12bf9737be2e'
+//   )
+//   'Desktop Virtualization Power On Contributor': subscriptionResourceId(
+//     'Microsoft.Authorization/roleDefinitions',
+//     '489581de-a3bd-480d-9518-53dea7416b33'
+//   )
+//   'Desktop Virtualization Power On Off Contributor': subscriptionResourceId(
+//     'Microsoft.Authorization/roleDefinitions',
+//     '40c5ff49-9181-41f8-ae61-143b0e78555e'
+//   )
+//   'Desktop Virtualization Virtual Machine Contributor': subscriptionResourceId(
+//     'Microsoft.Authorization/roleDefinitions',
+//     'a959dbd1-f747-45e3-8ba6-dd80f235f97c'
+//   )
+//   'DevTest Labs User': subscriptionResourceId(
+//     'Microsoft.Authorization/roleDefinitions',
+//     '76283e04-6283-4c54-8f91-bcf1374a3c64'
+//   )
+//   'Disk Backup Reader': subscriptionResourceId(
+//     'Microsoft.Authorization/roleDefinitions',
+//     '3e5e47e6-65f7-47ef-90b5-e5dd4d455f24'
+//   )
+//   'Disk Pool Operator': subscriptionResourceId(
+//     'Microsoft.Authorization/roleDefinitions',
+//     '60fc6e62-5479-42d4-8bf4-67625fcc2840'
+//   )
+//   'Disk Restore Operator': subscriptionResourceId(
+//     'Microsoft.Authorization/roleDefinitions',
+//     'b50d9833-a0cb-478e-945f-707fcc997c13'
+//   )
+//   'Disk Snapshot Contributor': subscriptionResourceId(
+//     'Microsoft.Authorization/roleDefinitions',
+//     '7efff54f-a5b4-42b5-a1c5-5411624893ce'
+//   )
+//   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+//   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+//   'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+//     'Microsoft.Authorization/roleDefinitions',
+//     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+//   )
+//   'User Access Administrator': subscriptionResourceId(
+//     'Microsoft.Authorization/roleDefinitions',
+//     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+//   )
+//   'Virtual Machine Administrator Login': subscriptionResourceId(
+//     'Microsoft.Authorization/roleDefinitions',
+//     '1c0163c0-47e6-4577-8991-ea5c82e286e4'
+//   )
+//   'Virtual Machine Contributor': subscriptionResourceId(
+//     'Microsoft.Authorization/roleDefinitions',
+//     '9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
+//   )
+//   'Virtual Machine User Login': subscriptionResourceId(
+//     'Microsoft.Authorization/roleDefinitions',
+//     'fb879df8-f326-4884-b1cf-06f3ad86be52'
+//   )
+//   'VM Scanner Operator': subscriptionResourceId(
+//     'Microsoft.Authorization/roleDefinitions',
+//     'd24ecba3-c1f4-40fa-a7bb-4588a071e8fd'
+//   )
+// }
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
   if (enableTelemetry) {
@@ -464,7 +464,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
         ? nicConfiguration.networkSecurityGroupResourceId
         : ''
       ipConfigurations: nicConfiguration.ipConfigurations
-      lock: nicConfiguration.?lock ?? lock
+      //lock: nicConfiguration.?lock ?? lock
       tags: nicConfiguration.?tags ?? tags
       diagnosticSettings: nicConfiguration.?diagnosticSettings
       roleAssignments: nicConfiguration.?roleAssignments
@@ -533,7 +533,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
       adminPassword: adminPassword
       customData: !empty(customData) ? base64(customData) : null
       windowsConfiguration: osType == 'Windows' ? windowsConfiguration : null
-      linuxConfiguration: osType == 'Linux' ? linuxConfiguration : null
+      //linuxConfiguration: osType == 'Linux' ? linuxConfiguration : null
       secrets: certificatesToBeInstalled
       allowExtensionOperations: allowExtensionOperations
     }
@@ -604,39 +604,39 @@ resource vm_configurationProfileAssignment 'Microsoft.Automanage/configurationPr
     scope: vm
   }
 
-resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15' =
-  if (!empty(autoShutdownConfig)) {
-    name: 'shutdown-computevm-${vm.name}'
-    location: location
-    properties: {
-      status: contains(autoShutdownConfig, 'status') ? autoShutdownConfig.status : 'Disabled'
-      targetResourceId: vm.id
-      taskType: 'ComputeVmShutdownTask'
-      dailyRecurrence: {
-        time: contains(autoShutdownConfig, 'time') ? autoShutdownConfig.dailyRecurrenceTime : '19:00'
-      }
-      timeZoneId: contains(autoShutdownConfig, 'timeZone') ? autoShutdownConfig.timeZone : 'UTC'
-      notificationSettings: contains(autoShutdownConfig, 'notificationStatus')
-        ? {
-            status: contains(autoShutdownConfig, 'notificationStatus')
-              ? autoShutdownConfig.notificationStatus
-              : 'Disabled'
-            emailRecipient: contains(autoShutdownConfig, 'notificationEmail')
-              ? autoShutdownConfig.notificationEmail
-              : ''
-            notificationLocale: contains(autoShutdownConfig, 'notificationLocale')
-              ? autoShutdownConfig.notificationLocale
-              : 'en'
-            webhookUrl: contains(autoShutdownConfig, 'notificationWebhookUrl')
-              ? autoShutdownConfig.notificationWebhookUrl
-              : ''
-            timeInMinutes: contains(autoShutdownConfig, 'notificationTimeInMinutes')
-              ? autoShutdownConfig.notificationTimeInMinutes
-              : 30
-          }
-        : null
-    }
-  }
+// resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15' =
+//   if (!empty(autoShutdownConfig)) {
+//     name: 'shutdown-computevm-${vm.name}'
+//     location: location
+//     properties: {
+//       status: contains(autoShutdownConfig, 'status') ? autoShutdownConfig.status : 'Disabled'
+//       targetResourceId: vm.id
+//       taskType: 'ComputeVmShutdownTask'
+//       dailyRecurrence: {
+//         time: contains(autoShutdownConfig, 'time') ? autoShutdownConfig.dailyRecurrenceTime : '19:00'
+//       }
+//       timeZoneId: contains(autoShutdownConfig, 'timeZone') ? autoShutdownConfig.timeZone : 'UTC'
+//       notificationSettings: contains(autoShutdownConfig, 'notificationStatus')
+//         ? {
+//             status: contains(autoShutdownConfig, 'notificationStatus')
+//               ? autoShutdownConfig.notificationStatus
+//               : 'Disabled'
+//             emailRecipient: contains(autoShutdownConfig, 'notificationEmail')
+//               ? autoShutdownConfig.notificationEmail
+//               : ''
+//             notificationLocale: contains(autoShutdownConfig, 'notificationLocale')
+//               ? autoShutdownConfig.notificationLocale
+//               : 'en'
+//             webhookUrl: contains(autoShutdownConfig, 'notificationWebhookUrl')
+//               ? autoShutdownConfig.notificationWebhookUrl
+//               : ''
+//             timeInMinutes: contains(autoShutdownConfig, 'notificationTimeInMinutes')
+//               ? autoShutdownConfig.notificationTimeInMinutes
+//               : 30
+//           }
+//         : null
+//     }
+//   }
 
 module vm_aadJoinExtension 'extension/main.bicep' =
   if (extensionAadJoinConfig.enabled) {
@@ -692,144 +692,144 @@ module vm_domainJoinExtension 'extension/main.bicep' =
     ]
   }
 
-module vm_microsoftAntiMalwareExtension 'extension/main.bicep' =
-  if (extensionAntiMalwareConfig.enabled) {
-    name: '${uniqueString(deployment().name, location)}-VM-MicrosoftAntiMalware'
-    params: {
-      virtualMachineName: vm.name
-      name: 'MicrosoftAntiMalware'
-      location: location
-      publisher: 'Microsoft.Azure.Security'
-      type: 'IaaSAntimalware'
-      typeHandlerVersion: contains(extensionAntiMalwareConfig, 'typeHandlerVersion')
-        ? extensionAntiMalwareConfig.typeHandlerVersion
-        : '1.3'
-      autoUpgradeMinorVersion: contains(extensionAntiMalwareConfig, 'autoUpgradeMinorVersion')
-        ? extensionAntiMalwareConfig.autoUpgradeMinorVersion
-        : true
-      enableAutomaticUpgrade: contains(extensionAntiMalwareConfig, 'enableAutomaticUpgrade')
-        ? extensionAntiMalwareConfig.enableAutomaticUpgrade
-        : false
-      settings: extensionAntiMalwareConfig.settings
-      supressFailures: extensionAntiMalwareConfig.?supressFailures ?? false
-      tags: extensionAntiMalwareConfig.?tags ?? tags
-    }
-    dependsOn: [
-      vm_domainJoinExtension
-    ]
-  }
+// module vm_microsoftAntiMalwareExtension 'extension/main.bicep' =
+//   if (extensionAntiMalwareConfig.enabled) {
+//     name: '${uniqueString(deployment().name, location)}-VM-MicrosoftAntiMalware'
+//     params: {
+//       virtualMachineName: vm.name
+//       name: 'MicrosoftAntiMalware'
+//       location: location
+//       publisher: 'Microsoft.Azure.Security'
+//       type: 'IaaSAntimalware'
+//       typeHandlerVersion: contains(extensionAntiMalwareConfig, 'typeHandlerVersion')
+//         ? extensionAntiMalwareConfig.typeHandlerVersion
+//         : '1.3'
+//       autoUpgradeMinorVersion: contains(extensionAntiMalwareConfig, 'autoUpgradeMinorVersion')
+//         ? extensionAntiMalwareConfig.autoUpgradeMinorVersion
+//         : true
+//       enableAutomaticUpgrade: contains(extensionAntiMalwareConfig, 'enableAutomaticUpgrade')
+//         ? extensionAntiMalwareConfig.enableAutomaticUpgrade
+//         : false
+//       settings: extensionAntiMalwareConfig.settings
+//       supressFailures: extensionAntiMalwareConfig.?supressFailures ?? false
+//       tags: extensionAntiMalwareConfig.?tags ?? tags
+//     }
+//     dependsOn: [
+//       vm_domainJoinExtension
+//     ]
+//   }
 
-resource vm_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing =
-  if (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId)) {
-    name: last(split(
-      (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-        ? extensionMonitoringAgentConfig.monitoringWorkspaceId
-        : 'law'),
-      '/'
-    ))!
-    scope: az.resourceGroup(
-      split(
-        (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-          ? extensionMonitoringAgentConfig.monitoringWorkspaceId
-          : '//'),
-        '/'
-      )[2],
-      split(
-        (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-          ? extensionMonitoringAgentConfig.monitoringWorkspaceId
-          : '////'),
-        '/'
-      )[4]
-    )
-  }
+// resource vm_logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing =
+//   if (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId)) {
+//     name: last(split(
+//       (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
+//         ? extensionMonitoringAgentConfig.monitoringWorkspaceId
+//         : 'law'),
+//       '/'
+//     ))!
+//     scope: az.resourceGroup(
+//       split(
+//         (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
+//           ? extensionMonitoringAgentConfig.monitoringWorkspaceId
+//           : '//'),
+//         '/'
+//       )[2],
+//       split(
+//         (!empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
+//           ? extensionMonitoringAgentConfig.monitoringWorkspaceId
+//           : '////'),
+//         '/'
+//       )[4]
+//     )
+//   }
 
-module vm_azureMonitorAgentExtension 'extension/main.bicep' =
-  if (extensionMonitoringAgentConfig.enabled) {
-    name: '${uniqueString(deployment().name, location)}-VM-AzureMonitorAgent'
-    params: {
-      virtualMachineName: vm.name
-      name: 'AzureMonitorAgent'
-      location: location
-      publisher: 'Microsoft.Azure.Monitor'
-      type: osType == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
-      typeHandlerVersion: extensionMonitoringAgentConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '1.22' : '1.29')
-      autoUpgradeMinorVersion: extensionMonitoringAgentConfig.?autoUpgradeMinorVersion ?? true
-      enableAutomaticUpgrade: extensionMonitoringAgentConfig.?enableAutomaticUpgrade ?? false
-      settings: {
-        workspaceId: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-          ? vm_logAnalyticsWorkspace.properties.customerId
-          : ''
-        GCS_AUTO_CONFIG: osType == 'Linux' ? true : null
-      }
-      supressFailures: extensionMonitoringAgentConfig.?supressFailures ?? false
-      tags: extensionMonitoringAgentConfig.?tags ?? tags
-      protectedSettings: {
-        workspaceKey: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
-          ? vm_logAnalyticsWorkspace.listKeys().primarySharedKey
-          : ''
-      }
-    }
-    dependsOn: [
-      vm_microsoftAntiMalwareExtension
-    ]
-  }
+// module vm_azureMonitorAgentExtension 'extension/main.bicep' =
+//   if (extensionMonitoringAgentConfig.enabled) {
+//     name: '${uniqueString(deployment().name, location)}-VM-AzureMonitorAgent'
+//     params: {
+//       virtualMachineName: vm.name
+//       name: 'AzureMonitorAgent'
+//       location: location
+//       publisher: 'Microsoft.Azure.Monitor'
+//       type: osType == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
+//       typeHandlerVersion: extensionMonitoringAgentConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '1.22' : '1.29')
+//       autoUpgradeMinorVersion: extensionMonitoringAgentConfig.?autoUpgradeMinorVersion ?? true
+//       enableAutomaticUpgrade: extensionMonitoringAgentConfig.?enableAutomaticUpgrade ?? false
+//       settings: {
+//         workspaceId: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
+//           ? vm_logAnalyticsWorkspace.properties.customerId
+//           : ''
+//         GCS_AUTO_CONFIG: osType == 'Linux' ? true : null
+//       }
+//       supressFailures: extensionMonitoringAgentConfig.?supressFailures ?? false
+//       tags: extensionMonitoringAgentConfig.?tags ?? tags
+//       protectedSettings: {
+//         workspaceKey: !empty(extensionMonitoringAgentConfig.?monitoringWorkspaceId ?? '')
+//           ? vm_logAnalyticsWorkspace.listKeys().primarySharedKey
+//           : ''
+//       }
+//     }
+//     dependsOn: [
+//       vm_microsoftAntiMalwareExtension
+//     ]
+//   }
 
-module vm_dependencyAgentExtension 'extension/main.bicep' =
-  if (extensionDependencyAgentConfig.enabled) {
-    name: '${uniqueString(deployment().name, location)}-VM-DependencyAgent'
-    params: {
-      virtualMachineName: vm.name
-      name: 'DependencyAgent'
-      location: location
-      publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
-      type: osType == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
-      typeHandlerVersion: contains(extensionDependencyAgentConfig, 'typeHandlerVersion')
-        ? extensionDependencyAgentConfig.typeHandlerVersion
-        : '9.10'
-      autoUpgradeMinorVersion: contains(extensionDependencyAgentConfig, 'autoUpgradeMinorVersion')
-        ? extensionDependencyAgentConfig.autoUpgradeMinorVersion
-        : true
-      enableAutomaticUpgrade: contains(extensionDependencyAgentConfig, 'enableAutomaticUpgrade')
-        ? extensionDependencyAgentConfig.enableAutomaticUpgrade
-        : true
-      settings: {
-        enableAMA: contains(extensionDependencyAgentConfig, 'enableAMA')
-          ? extensionDependencyAgentConfig.enableAMA
-          : true
-      }
-      supressFailures: extensionDependencyAgentConfig.?supressFailures ?? false
-      tags: extensionDependencyAgentConfig.?tags ?? tags
-    }
-    dependsOn: [
-      vm_azureMonitorAgentExtension
-    ]
-  }
+// module vm_dependencyAgentExtension 'extension/main.bicep' =
+//   if (extensionDependencyAgentConfig.enabled) {
+//     name: '${uniqueString(deployment().name, location)}-VM-DependencyAgent'
+//     params: {
+//       virtualMachineName: vm.name
+//       name: 'DependencyAgent'
+//       location: location
+//       publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
+//       type: osType == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
+//       typeHandlerVersion: contains(extensionDependencyAgentConfig, 'typeHandlerVersion')
+//         ? extensionDependencyAgentConfig.typeHandlerVersion
+//         : '9.10'
+//       autoUpgradeMinorVersion: contains(extensionDependencyAgentConfig, 'autoUpgradeMinorVersion')
+//         ? extensionDependencyAgentConfig.autoUpgradeMinorVersion
+//         : true
+//       enableAutomaticUpgrade: contains(extensionDependencyAgentConfig, 'enableAutomaticUpgrade')
+//         ? extensionDependencyAgentConfig.enableAutomaticUpgrade
+//         : true
+//       settings: {
+//         enableAMA: contains(extensionDependencyAgentConfig, 'enableAMA')
+//           ? extensionDependencyAgentConfig.enableAMA
+//           : true
+//       }
+//       supressFailures: extensionDependencyAgentConfig.?supressFailures ?? false
+//       tags: extensionDependencyAgentConfig.?tags ?? tags
+//     }
+//     dependsOn: [
+//       vm_azureMonitorAgentExtension
+//     ]
+//   }
 
-module vm_networkWatcherAgentExtension 'extension/main.bicep' =
-  if (extensionNetworkWatcherAgentConfig.enabled) {
-    name: '${uniqueString(deployment().name, location)}-VM-NetworkWatcherAgent'
-    params: {
-      virtualMachineName: vm.name
-      name: 'NetworkWatcherAgent'
-      location: location
-      publisher: 'Microsoft.Azure.NetworkWatcher'
-      type: osType == 'Windows' ? 'NetworkWatcherAgentWindows' : 'NetworkWatcherAgentLinux'
-      typeHandlerVersion: contains(extensionNetworkWatcherAgentConfig, 'typeHandlerVersion')
-        ? extensionNetworkWatcherAgentConfig.typeHandlerVersion
-        : '1.4'
-      autoUpgradeMinorVersion: contains(extensionNetworkWatcherAgentConfig, 'autoUpgradeMinorVersion')
-        ? extensionNetworkWatcherAgentConfig.autoUpgradeMinorVersion
-        : true
-      enableAutomaticUpgrade: contains(extensionNetworkWatcherAgentConfig, 'enableAutomaticUpgrade')
-        ? extensionNetworkWatcherAgentConfig.enableAutomaticUpgrade
-        : false
-      supressFailures: extensionNetworkWatcherAgentConfig.?supressFailures ?? false
-      tags: extensionNetworkWatcherAgentConfig.?tags ?? tags
-    }
-    dependsOn: [
-      vm_dependencyAgentExtension
-    ]
-  }
+// module vm_networkWatcherAgentExtension 'extension/main.bicep' =
+//   if (extensionNetworkWatcherAgentConfig.enabled) {
+//     name: '${uniqueString(deployment().name, location)}-VM-NetworkWatcherAgent'
+//     params: {
+//       virtualMachineName: vm.name
+//       name: 'NetworkWatcherAgent'
+//       location: location
+//       publisher: 'Microsoft.Azure.NetworkWatcher'
+//       type: osType == 'Windows' ? 'NetworkWatcherAgentWindows' : 'NetworkWatcherAgentLinux'
+//       typeHandlerVersion: contains(extensionNetworkWatcherAgentConfig, 'typeHandlerVersion')
+//         ? extensionNetworkWatcherAgentConfig.typeHandlerVersion
+//         : '1.4'
+//       autoUpgradeMinorVersion: contains(extensionNetworkWatcherAgentConfig, 'autoUpgradeMinorVersion')
+//         ? extensionNetworkWatcherAgentConfig.autoUpgradeMinorVersion
+//         : true
+//       enableAutomaticUpgrade: contains(extensionNetworkWatcherAgentConfig, 'enableAutomaticUpgrade')
+//         ? extensionNetworkWatcherAgentConfig.enableAutomaticUpgrade
+//         : false
+//       supressFailures: extensionNetworkWatcherAgentConfig.?supressFailures ?? false
+//       tags: extensionNetworkWatcherAgentConfig.?tags ?? tags
+//     }
+//     dependsOn: [
+//       vm_dependencyAgentExtension
+//     ]
+//   }
 
 module vm_desiredStateConfigurationExtension 'extension/main.bicep' =
   if (extensionDSCConfig.enabled) {
@@ -855,7 +855,7 @@ module vm_desiredStateConfigurationExtension 'extension/main.bicep' =
       protectedSettings: contains(extensionDSCConfig, 'protectedSettings') ? extensionDSCConfig.protectedSettings : {}
     }
     dependsOn: [
-      vm_networkWatcherAgentExtension
+      //vm_networkWatcherAgentExtension
     ]
   }
 
@@ -919,7 +919,7 @@ module vm_azureDiskEncryptionExtension 'extension/main.bicep' =
       tags: extensionAzureDiskEncryptionConfig.?tags ?? tags
     }
     dependsOn: [
-      vm_customScriptExtension
+      //vm_customScriptExtension
     ]
   }
 
@@ -949,136 +949,136 @@ module vm_nvidiaGpuDriverWindowsExtension 'extension/main.bicep' =
     ]
   }
 
-module vm_hostPoolRegistrationExtension 'extension/main.bicep' =
-  if (extensionHostPoolRegistration.enabled) {
-    name: '${uniqueString(deployment().name, location)}-VM-HostPoolRegistration'
-    params: {
-      virtualMachineName: vm.name
-      name: 'HostPoolRegistration'
-      location: location
-      publisher: 'Microsoft.PowerShell'
-      type: 'DSC'
-      typeHandlerVersion: contains(extensionHostPoolRegistration, 'typeHandlerVersion')
-        ? extensionHostPoolRegistration.typeHandlerVersion
-        : '2.77'
-      autoUpgradeMinorVersion: contains(extensionHostPoolRegistration, 'autoUpgradeMinorVersion')
-        ? extensionHostPoolRegistration.autoUpgradeMinorVersion
-        : true
-      enableAutomaticUpgrade: contains(extensionHostPoolRegistration, 'enableAutomaticUpgrade')
-        ? extensionHostPoolRegistration.enableAutomaticUpgrade
-        : false
-      settings: {
-        modulesUrl: extensionHostPoolRegistration.modulesUrl
-        configurationFunction: extensionHostPoolRegistration.configurationFunction
-        properties: {
-          hostPoolName: extensionHostPoolRegistration.hostPoolName
-          registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken
-          aadJoin: true
-        }
-        supressFailures: extensionHostPoolRegistration.?supressFailures ?? false
-      }
-      tags: extensionHostPoolRegistration.?tags ?? tags
-    }
-    dependsOn: [
-      vm_nvidiaGpuDriverWindowsExtension
-    ]
-  }
+// module vm_hostPoolRegistrationExtension 'extension/main.bicep' =
+//   if (extensionHostPoolRegistration.enabled) {
+//     name: '${uniqueString(deployment().name, location)}-VM-HostPoolRegistration'
+//     params: {
+//       virtualMachineName: vm.name
+//       name: 'HostPoolRegistration'
+//       location: location
+//       publisher: 'Microsoft.PowerShell'
+//       type: 'DSC'
+//       typeHandlerVersion: contains(extensionHostPoolRegistration, 'typeHandlerVersion')
+//         ? extensionHostPoolRegistration.typeHandlerVersion
+//         : '2.77'
+//       autoUpgradeMinorVersion: contains(extensionHostPoolRegistration, 'autoUpgradeMinorVersion')
+//         ? extensionHostPoolRegistration.autoUpgradeMinorVersion
+//         : true
+//       enableAutomaticUpgrade: contains(extensionHostPoolRegistration, 'enableAutomaticUpgrade')
+//         ? extensionHostPoolRegistration.enableAutomaticUpgrade
+//         : false
+//       settings: {
+//         modulesUrl: extensionHostPoolRegistration.modulesUrl
+//         configurationFunction: extensionHostPoolRegistration.configurationFunction
+//         properties: {
+//           hostPoolName: extensionHostPoolRegistration.hostPoolName
+//           registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken
+//           aadJoin: true
+//         }
+//         supressFailures: extensionHostPoolRegistration.?supressFailures ?? false
+//       }
+//       tags: extensionHostPoolRegistration.?tags ?? tags
+//     }
+//     dependsOn: [
+//       vm_nvidiaGpuDriverWindowsExtension
+//     ]
+//   }
 
-module vm_azureGuestConfigurationExtension 'extension/main.bicep' =
-  if (extensionGuestConfigurationExtension.enabled) {
-    name: '${uniqueString(deployment().name, location)}-VM-GuestConfiguration'
-    params: {
-      virtualMachineName: vm.name
-      name: osType == 'Windows' ? 'AzurePolicyforWindows' : 'AzurePolicyforLinux'
-      location: location
-      publisher: 'Microsoft.GuestConfiguration'
-      type: osType == 'Windows' ? 'ConfigurationforWindows' : 'ConfigurationForLinux'
-      typeHandlerVersion: contains(extensionGuestConfigurationExtension, 'typeHandlerVersion')
-        ? extensionGuestConfigurationExtension.typeHandlerVersion
-        : (osType == 'Windows' ? '1.0' : '1.0')
-      autoUpgradeMinorVersion: contains(extensionGuestConfigurationExtension, 'autoUpgradeMinorVersion')
-        ? extensionGuestConfigurationExtension.autoUpgradeMinorVersion
-        : true
-      enableAutomaticUpgrade: contains(extensionGuestConfigurationExtension, 'enableAutomaticUpgrade')
-        ? extensionGuestConfigurationExtension.enableAutomaticUpgrade
-        : true
-      forceUpdateTag: contains(extensionGuestConfigurationExtension, 'forceUpdateTag')
-        ? extensionGuestConfigurationExtension.forceUpdateTag
-        : '1.0'
-      settings: contains(extensionGuestConfigurationExtension, 'settings')
-        ? extensionGuestConfigurationExtension.settings
-        : {}
-      supressFailures: extensionGuestConfigurationExtension.?supressFailures ?? false
-      protectedSettings: extensionGuestConfigurationExtensionProtectedSettings
-      tags: extensionGuestConfigurationExtension.?tags ?? tags
-    }
-    dependsOn: [
-      vm_hostPoolRegistrationExtension
-    ]
-  }
+// module vm_azureGuestConfigurationExtension 'extension/main.bicep' =
+//   if (extensionGuestConfigurationExtension.enabled) {
+//     name: '${uniqueString(deployment().name, location)}-VM-GuestConfiguration'
+//     params: {
+//       virtualMachineName: vm.name
+//       name: osType == 'Windows' ? 'AzurePolicyforWindows' : 'AzurePolicyforLinux'
+//       location: location
+//       publisher: 'Microsoft.GuestConfiguration'
+//       type: osType == 'Windows' ? 'ConfigurationforWindows' : 'ConfigurationForLinux'
+//       typeHandlerVersion: contains(extensionGuestConfigurationExtension, 'typeHandlerVersion')
+//         ? extensionGuestConfigurationExtension.typeHandlerVersion
+//         : (osType == 'Windows' ? '1.0' : '1.0')
+//       autoUpgradeMinorVersion: contains(extensionGuestConfigurationExtension, 'autoUpgradeMinorVersion')
+//         ? extensionGuestConfigurationExtension.autoUpgradeMinorVersion
+//         : true
+//       enableAutomaticUpgrade: contains(extensionGuestConfigurationExtension, 'enableAutomaticUpgrade')
+//         ? extensionGuestConfigurationExtension.enableAutomaticUpgrade
+//         : true
+//       forceUpdateTag: contains(extensionGuestConfigurationExtension, 'forceUpdateTag')
+//         ? extensionGuestConfigurationExtension.forceUpdateTag
+//         : '1.0'
+//       settings: contains(extensionGuestConfigurationExtension, 'settings')
+//         ? extensionGuestConfigurationExtension.settings
+//         : {}
+//       supressFailures: extensionGuestConfigurationExtension.?supressFailures ?? false
+//       protectedSettings: extensionGuestConfigurationExtensionProtectedSettings
+//       tags: extensionGuestConfigurationExtension.?tags ?? tags
+//     }
+//     dependsOn: [
+//       vm_hostPoolRegistrationExtension
+//     ]
+//   }
 
-resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2020-06-25' =
-  if (!empty(guestConfiguration)) {
-    name: 'AzureWindowsBaseline'
-    scope: vm
-    dependsOn: [
-      vm_azureGuestConfigurationExtension
-    ]
-    location: location
-    properties: {
-      guestConfiguration: guestConfiguration
-    }
-  }
+// resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2020-06-25' =
+//   if (!empty(guestConfiguration)) {
+//     name: 'AzureWindowsBaseline'
+//     scope: vm
+//     dependsOn: [
+//       vm_azureGuestConfigurationExtension
+//     ]
+//     location: location
+//     properties: {
+//       guestConfiguration: guestConfiguration
+//     }
+//   }
 
-module vm_backup 'modules/protected-item.bicep' =
-  if (!empty(backupVaultName)) {
-    name: '${uniqueString(deployment().name, location)}-VM-Backup'
-    params: {
-      name: 'vm;iaasvmcontainerv2;${resourceGroup().name};${vm.name}'
-      location: location
-      policyId: az.resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', backupVaultName, backupPolicyName)
-      protectedItemType: 'Microsoft.Compute/virtualMachines'
-      protectionContainerName: 'iaasvmcontainer;iaasvmcontainerv2;${resourceGroup().name};${vm.name}'
-      recoveryVaultName: backupVaultName
-      sourceResourceId: vm.id
-    }
-    scope: az.resourceGroup(backupVaultResourceGroup)
-    dependsOn: [
-      vm_azureGuestConfigurationExtension
-    ]
-  }
+// module vm_backup 'modules/protected-item.bicep' =
+//   if (!empty(backupVaultName)) {
+//     name: '${uniqueString(deployment().name, location)}-VM-Backup'
+//     params: {
+//       name: 'vm;iaasvmcontainerv2;${resourceGroup().name};${vm.name}'
+//       location: location
+//       policyId: az.resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', backupVaultName, backupPolicyName)
+//       protectedItemType: 'Microsoft.Compute/virtualMachines'
+//       protectionContainerName: 'iaasvmcontainer;iaasvmcontainerv2;${resourceGroup().name};${vm.name}'
+//       recoveryVaultName: backupVaultName
+//       sourceResourceId: vm.id
+//     }
+//     scope: az.resourceGroup(backupVaultResourceGroup)
+//     dependsOn: [
+//       vm_azureGuestConfigurationExtension
+//     ]
+//   }
 
-resource vm_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: vm
-  }
+// resource vm_lock 'Microsoft.Authorization/locks@2020-05-01' =
+//   if (!empty(lock ?? {}) && lock.?kind != 'None') {
+//     name: lock.?name ?? 'lock-${name}'
+//     properties: {
+//       level: lock.?kind ?? ''
+//       notes: lock.?kind == 'CanNotDelete'
+//         ? 'Cannot delete resource or child resources.'
+//         : 'Cannot delete or modify the resource or child resources.'
+//     }
+//     scope: vm
+//   }
 
-resource vm_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(vm.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-    properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-      principalId: roleAssignment.principalId
-      description: roleAssignment.?description
-      principalType: roleAssignment.?principalType
-      condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
-    }
-    scope: vm
-  }
-]
+// resource vm_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+//   for (roleAssignment, index) in (roleAssignments ?? []): {
+//     name: guid(vm.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+//     properties: {
+//       roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
+//         ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
+//         : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+//             ? roleAssignment.roleDefinitionIdOrName
+//             : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+//       principalId: roleAssignment.principalId
+//       description: roleAssignment.?description
+//       principalType: roleAssignment.?principalType
+//       condition: roleAssignment.?condition
+//       conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+//       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+//     }
+//     scope: vm
+//   }
+// ]
 
 @description('The name of the VM.')
 output name string = vm.name
@@ -1107,36 +1107,36 @@ type managedIdentitiesType = {
   userAssignedResourceIds: string[]?
 }?
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
+// type lockType = {
+//   @description('Optional. Specify the name of lock.')
+//   name: string?
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
+//   @description('Optional. Specify the type of lock.')
+//   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
+// }?
 
-type roleAssignmentType = {
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
+// type roleAssignmentType = {
+//   @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+//   roleDefinitionIdOrName: string
 
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
+//   @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
+//   principalId: string
 
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
+//   @description('Optional. The principal type of the assigned principal ID.')
+//   principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
 
-  @description('Optional. The description of the role assignment.')
-  description: string?
+//   @description('Optional. The description of the role assignment.')
+//   description: string?
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
+//   @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
+//   condition: string?
 
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
+//   @description('Optional. Version of the condition.')
+//   conditionVersion: '2.0'?
 
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+//   @description('Optional. The Resource Id of the delegated managed identity resource.')
+//   delegatedManagedIdentityResourceId: string?
+// }[]?
 
 type osDiskType = {
   @description('Optional. The disk name.')
