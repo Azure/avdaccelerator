@@ -171,16 +171,16 @@ param extensionAzureDiskEncryptionConfig object = {
   enabled: false
 }
 
-// @description('Optional. The configuration for the [Desired State Configuration] extension. Must at least contain the ["enabled": true] property to be executed.')
-// param extensionDSCConfig object = {
-//   enabled: false
-// }
+@description('Optional. The configuration for the [Desired State Configuration] extension. Must at least contain the ["enabled": true] property to be executed.')
+param extensionDSCConfig object = {
+  enabled: false
+}
 
-// @description('Optional. The configuration for the [Custom Script] extension. Must at least contain the ["enabled": true] property to be executed.')
-// param extensionCustomScriptConfig object = {
-//   enabled: false
-//   fileData: []
-// }
+@description('Optional. The configuration for the [Custom Script] extension. Must at least contain the ["enabled": true] property to be executed.')
+param extensionCustomScriptConfig object = {
+  enabled: false
+  fileData: []
+}
 
 @description('Optional. The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionNvidiaGpuDriverWindows object = {
@@ -200,9 +200,9 @@ param extensionNvidiaGpuDriverWindows object = {
 // @description('Optional. The guest configuration for the virtual machine. Needs the Guest Configuration extension to be enabled.')
 // param guestConfiguration object = {}
 
-// @description('Optional. An object that contains the extension specific protected settings.')
-// @secure()
-// param extensionCustomScriptProtectedSetting object = {}
+@description('Optional. An object that contains the extension specific protected settings.')
+@secure()
+param extensionCustomScriptProtectedSetting object = {}
 
 // @description('Optional. An object that contains the extension specific protected settings.')
 // @secure()
@@ -335,13 +335,13 @@ var windowsConfiguration = {
     : null
 }
 
-// var accountSasProperties = {
-//   signedServices: 'b'
-//   signedPermission: 'r'
-//   signedExpiry: dateTimeAdd(baseTime, sasTokenValidityLength)
-//   signedResourceTypes: 'o'
-//   signedProtocol: 'https'
-// }
+var accountSasProperties = {
+  signedServices: 'b'
+  signedPermission: 'r'
+  signedExpiry: dateTimeAdd(baseTime, sasTokenValidityLength)
+  signedResourceTypes: 'o'
+  signedProtocol: 'https'
+}
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -831,67 +831,67 @@ module vm_domainJoinExtension 'extension/main.bicep' =
 //     ]
 //   }
 
-// module vm_desiredStateConfigurationExtension 'extension/main.bicep' =
-//   if (extensionDSCConfig.enabled) {
-//     name: '${uniqueString(deployment().name, location)}-VM-DesiredStateConfiguration'
-//     params: {
-//       virtualMachineName: vm.name
-//       name: 'DesiredStateConfiguration'
-//       location: location
-//       publisher: 'Microsoft.Powershell'
-//       type: 'DSC'
-//       typeHandlerVersion: contains(extensionDSCConfig, 'typeHandlerVersion')
-//         ? extensionDSCConfig.typeHandlerVersion
-//         : '2.77'
-//       autoUpgradeMinorVersion: contains(extensionDSCConfig, 'autoUpgradeMinorVersion')
-//         ? extensionDSCConfig.autoUpgradeMinorVersion
-//         : true
-//       enableAutomaticUpgrade: contains(extensionDSCConfig, 'enableAutomaticUpgrade')
-//         ? extensionDSCConfig.enableAutomaticUpgrade
-//         : false
-//       settings: contains(extensionDSCConfig, 'settings') ? extensionDSCConfig.settings : {}
-//       supressFailures: extensionDSCConfig.?supressFailures ?? false
-//       tags: extensionDSCConfig.?tags ?? tags
-//       protectedSettings: contains(extensionDSCConfig, 'protectedSettings') ? extensionDSCConfig.protectedSettings : {}
-//     }
-//     dependsOn: [
-//       //vm_networkWatcherAgentExtension
-//     ]
-//   }
+module vm_desiredStateConfigurationExtension 'extension/main.bicep' =
+  if (extensionDSCConfig.enabled) {
+    name: '${uniqueString(deployment().name, location)}-VM-DesiredStateConfiguration'
+    params: {
+      virtualMachineName: vm.name
+      name: 'DesiredStateConfiguration'
+      location: location
+      publisher: 'Microsoft.Powershell'
+      type: 'DSC'
+      typeHandlerVersion: contains(extensionDSCConfig, 'typeHandlerVersion')
+        ? extensionDSCConfig.typeHandlerVersion
+        : '2.77'
+      autoUpgradeMinorVersion: contains(extensionDSCConfig, 'autoUpgradeMinorVersion')
+        ? extensionDSCConfig.autoUpgradeMinorVersion
+        : true
+      enableAutomaticUpgrade: contains(extensionDSCConfig, 'enableAutomaticUpgrade')
+        ? extensionDSCConfig.enableAutomaticUpgrade
+        : false
+      settings: contains(extensionDSCConfig, 'settings') ? extensionDSCConfig.settings : {}
+      supressFailures: extensionDSCConfig.?supressFailures ?? false
+      tags: extensionDSCConfig.?tags ?? tags
+      protectedSettings: contains(extensionDSCConfig, 'protectedSettings') ? extensionDSCConfig.protectedSettings : {}
+    }
+    dependsOn: [
+      //vm_networkWatcherAgentExtension
+    ]
+  }
 
-// module vm_customScriptExtension 'extension/main.bicep' =
-//   if (extensionCustomScriptConfig.enabled) {
-//     name: '${uniqueString(deployment().name, location)}-VM-CustomScriptExtension'
-//     params: {
-//       virtualMachineName: vm.name
-//       name: 'CustomScriptExtension'
-//       location: location
-//       publisher: osType == 'Windows' ? 'Microsoft.Compute' : 'Microsoft.Azure.Extensions'
-//       type: osType == 'Windows' ? 'CustomScriptExtension' : 'CustomScript'
-//       typeHandlerVersion: contains(extensionCustomScriptConfig, 'typeHandlerVersion')
-//         ? extensionCustomScriptConfig.typeHandlerVersion
-//         : (osType == 'Windows' ? '1.10' : '2.1')
-//       autoUpgradeMinorVersion: contains(extensionCustomScriptConfig, 'autoUpgradeMinorVersion')
-//         ? extensionCustomScriptConfig.autoUpgradeMinorVersion
-//         : true
-//       enableAutomaticUpgrade: contains(extensionCustomScriptConfig, 'enableAutomaticUpgrade')
-//         ? extensionCustomScriptConfig.enableAutomaticUpgrade
-//         : false
-//       settings: {
-//         fileUris: [
-//           for fileData in extensionCustomScriptConfig.fileData: contains(fileData, 'storageAccountId')
-//             ? '${fileData.uri}?${listAccountSas(fileData.storageAccountId, '2019-04-01', accountSasProperties).accountSasToken}'
-//             : fileData.uri
-//         ]
-//       }
-//       supressFailures: extensionCustomScriptConfig.?supressFailures ?? false
-//       tags: extensionCustomScriptConfig.?tags ?? tags
-//       protectedSettings: extensionCustomScriptProtectedSetting
-//     }
-//     dependsOn: [
-//       vm_desiredStateConfigurationExtension
-//     ]
-//   }
+module vm_customScriptExtension 'extension/main.bicep' =
+  if (extensionCustomScriptConfig.enabled) {
+    name: '${uniqueString(deployment().name, location)}-VM-CustomScriptExtension'
+    params: {
+      virtualMachineName: vm.name
+      name: 'CustomScriptExtension'
+      location: location
+      publisher: osType == 'Windows' ? 'Microsoft.Compute' : 'Microsoft.Azure.Extensions'
+      type: osType == 'Windows' ? 'CustomScriptExtension' : 'CustomScript'
+      typeHandlerVersion: contains(extensionCustomScriptConfig, 'typeHandlerVersion')
+        ? extensionCustomScriptConfig.typeHandlerVersion
+        : (osType == 'Windows' ? '1.10' : '2.1')
+      autoUpgradeMinorVersion: contains(extensionCustomScriptConfig, 'autoUpgradeMinorVersion')
+        ? extensionCustomScriptConfig.autoUpgradeMinorVersion
+        : true
+      enableAutomaticUpgrade: contains(extensionCustomScriptConfig, 'enableAutomaticUpgrade')
+        ? extensionCustomScriptConfig.enableAutomaticUpgrade
+        : false
+      settings: {
+        fileUris: [
+          for fileData in extensionCustomScriptConfig.fileData: contains(fileData, 'storageAccountId')
+            ? '${fileData.uri}?${listAccountSas(fileData.storageAccountId, '2019-04-01', accountSasProperties).accountSasToken}'
+            : fileData.uri
+        ]
+      }
+      supressFailures: extensionCustomScriptConfig.?supressFailures ?? false
+      tags: extensionCustomScriptConfig.?tags ?? tags
+      protectedSettings: extensionCustomScriptProtectedSetting
+    }
+    dependsOn: [
+      vm_desiredStateConfigurationExtension
+    ]
+  }
 
 module vm_azureDiskEncryptionExtension 'extension/main.bicep' =
   if (extensionAzureDiskEncryptionConfig.enabled) {

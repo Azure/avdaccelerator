@@ -337,8 +337,8 @@ output name string = hostPool.name
 @sys.description('The location of the host pool.')
 output location string = hostPool.location
 
-// @sys.description('Host pool registration token secret resource ID.')
-// output keyVaultTokenSecretResourceId string = keyVaultHostPoolSecret.outputs.resourceId
+@sys.description('Host pool registration token secret resource ID.')
+output keyVaultTokenSecretResourceId string = keyVaultHostPoolSecret.outputs.resourceId
 
 // ================ //
 // Definitions      //
