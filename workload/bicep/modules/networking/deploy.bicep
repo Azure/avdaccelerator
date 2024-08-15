@@ -131,6 +131,7 @@ var varWindowsActivationKMSPrefixesNsg = (varAzureCloudName == 'AzureCloud') ? [
 ]: (varAzureCloudName == 'AzureChinaCloud') ? [
     '159.27.28.100','163.228.64.161','42.159.7.249'
 ]: []
+// https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/windows/custom-routes-enable-kms-activation#solution
 var varStaticRoutes = (varAzureCloudName == 'AzureCloud') ? [
     {
         name: 'AVDServiceTraffic'
