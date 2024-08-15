@@ -355,6 +355,7 @@ module networksecurityGroupAvd '../../../../avm/1.0.0/res/network/network-securi
                     access: 'Allow'
                     description: 'Session host traffic to Windows license activation services'
                     destinationAddressPrefixes: varWindowsActivationKMSPrefixesNsg
+                    destinationAddressPrefixes: varWindowsActivationKMSPrefixesNsg
                     direction: 'Outbound'
                     sourcePortRange: '*'
                     destinationPortRange: '1688'
@@ -429,6 +430,7 @@ module routeTableAvd '../../../../avm/1.0.0/res/network/route-table/main.bicep' 
         name: avdRouteTableName
         location: sessionHostLocation
         tags: tags
+        routes: varCreateAvdStaicRoute ? varStaticRoutes : []
         routes: varCreateAvdStaicRoute ? varStaticRoutes : []
     }
     dependsOn: []
