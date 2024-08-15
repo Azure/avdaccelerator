@@ -15,7 +15,7 @@ $parameters = @{
     Name = $Name
     FriendlyName = $FriendlyName
 }
- 
+
 # update
-#Update-AzWvdDesktop @parameters
-Write-Host $parameters
+Update-AzWvdDesktop @parameters
+#Write-Host $parameters

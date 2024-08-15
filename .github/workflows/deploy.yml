@@ -15,6 +15,7 @@ jobs:
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
+        enable-AzPSSession: true
 
     - name: Deploy Bicep file
       uses: azure/arm-deploy@v2
@@ -25,3 +26,10 @@ jobs:
         template: ./workload/bicep/deploy-baseline-arpah.bicep
         parameters: ./workload/bicep/parameters/deploy-baseline-parameters-arpah.json avdWorkloadSubsId=${{ secrets.AZURE_SUBID_TEST }} avdVmLocalUserName=${{ secrets.AVD_ADMIN }} avdVmLocalUserPassword=${{ secrets.AVD_ADMINPASS }} avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} existingVnetAvdSubnetResourceId=${{ secrets.AZURE_VPCSUBID_TEST }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AZURE_VPCSUBID_TEST }} identityDomainName=${{ secrets.AD_NAME}} avdDomainJoinUserName=${{ secrets.AD_JOIN_USER }} avdDomainJoinUserPassword=${{ secrets.AD_JOIN_PASS }} avdOuPath="${{ secrets.AD_OU_TEST }}"
         failOnStdErr: false
+
+    - name: Run Azure PowerShell Script File
+      uses: azure/powershell@v2
+      with:
+        inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName 'ResourceGroupName' -ApplicationGroupName 'ApplicationGroupName' -Name 'ApplicationName' -FriendlyName 'FriendlyName'
+        azPSVersion: "latest"
+        errorActionPreference: continue
