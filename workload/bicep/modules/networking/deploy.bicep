@@ -123,6 +123,131 @@ var varVirtualNetworkLinks = createVnet ? [
         virtualNetworkResourceId: varExistingAvdVnetResourceId
     }
 ]
+// https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/windows/custom-routes-enable-kms-activation#solution
+var varWindowsActivationKMSPrefixesNsg = (varAzureCloudName == 'AzureCloud') ? [
+    '20.118.99.224','40.83.235.53','23.102.135.246'
+] : (varAzureCloudName == 'AzureUSGovernment') ? [
+    '23.97.0.13','52.126.105.2'
+]: (varAzureCloudName == 'AzureChinaCloud') ? [
+    '159.27.28.100','163.228.64.161','42.159.7.249'
+]: []
+// https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/windows/custom-routes-enable-kms-activation#solution
+var varStaticRoutes = (varAzureCloudName == 'AzureCloud') ? [
+    {
+        name: 'AVDServiceTraffic'
+        properties: {
+            addressPrefix: 'WindowsVirtualDesktop'
+            hasBgpOverride: true
+            nextHopType: 'Internet'
+        }
+    }
+    {
+        name: 'AVDStunTurnTraffic'
+        properties: {
+            addressPrefix: '20.202.0.0/16'
+            hasBgpOverride: true
+            nextHopType: 'Internet'
+        }
+    }
+    {
+        name: 'DirectRouteToKMS'
+        properties: {
+            addressPrefix: '20.118.99.224/32'
+            hasBgpOverride: true
+            nextHopType: 'Internet'
+        }
+    }
+    {
+        name: 'DirectRouteToKMS01'
+        properties: {
+            addressPrefix: '40.83.235.53/32'
+            hasBgpOverride: true
+            nextHopType: 'Internet'
+        }
+    }
+    {
+        name: 'DirectRouteToKMS02'
+        properties: {
+            addressPrefix: '23.102.135.246/32'
+            hasBgpOverride: true
+            nextHopType: 'Internet'
+        }
+    }
+] : (varAzureCloudName == 'AzureUSGovernment') ? [
+    {
+        name: 'AVDServiceTraffic'
+        properties: {
+            addressPrefix: 'WindowsVirtualDesktop'
+            hasBgpOverride: true
+            nextHopType: 'Internet'
+        }
+    }
+    {
+        name: 'AVDStunTurnTraffic'
+        properties: {
+            addressPrefix: '20.202.0.0/16'
+            hasBgpOverride: true
+            nextHopType: 'Internet'
+        }
+    }
+    {
+        name: 'DirectRouteToKMS'
+        properties: {
+            addressPrefix: '23.97.0.13/32'
+            hasBgpOverride: true
+            nextHopType: 'Internet'
+        }
+    }
+    {
+        name: 'DirectRouteToKMS01'
+        properties: {
+            addressPrefix: '52.126.105.2/32'
+            hasBgpOverride: true
+            nextHopType: 'Internet'
+        }
+    }
+]: (varAzureCloudName == 'AzureChinaCloud') ? [
+    {
+        name: 'AVDServiceTraffic'
+        properties: {
+            addressPrefix: 'WindowsVirtualDesktop'
+            hasBgpOverride: true
+            nextHopType: 'Internet'
+        }
+    }
+    {
+        name: 'AVDStunTurnTraffic'
+        properties: {
+            addressPrefix: '20.202.0.0/16'
+            hasBgpOverride: true
+            nextHopType: 'Internet'
+        }
+    }
+    {
+        name: 'DirectRouteToKMS'
+        properties: {
+            addressPrefix: '159.27.28.100/32'
+            hasBgpOverride: true
+            nextHopType: 'Internet'
+        }
+    }
+    {
+        name: 'DirectRouteToKMS01'
+        properties: {
+            addressPrefix: '163.228.64.161/32'
+            hasBgpOverride: true
+            nextHopType: 'Internet'
+        }
+    }
+    {
+        name: 'DirectRouteToKMS02'
+        properties: {
+            addressPrefix: '42.159.7.249/32'
+            hasBgpOverride: true
+            nextHopType: 'Internet'
+        }
+    }
+]: []
 // =========== //
 // Deployments //
 // =========== //
@@ -199,7 +324,7 @@ module networksecurityGroupAvd '../../../../avm/1.0.0/res/network/network-securi
                     priority: 140
                     access: 'Allow'
                     description: 'Session host traffic to Windows license activation services'
-                    destinationAddressPrefix: '23.102.135.246'
+                    destinationAddressPrefixes: varWindowsActivationKMSPrefixesNsg
                     direction: 'Outbound'
                     sourcePortRange: '*'
                     destinationPortRange: '1688'
@@ -274,24 +399,7 @@ module routeTableAvd '../../../../avm/1.0.0/res/network/route-table/main.bicep' 
         name: avdRouteTableName
         location: sessionHostLocation
         tags: tags
-        routes: varCreateAvdStaicRoute ? [
-            {
-                name: 'AVDServiceTraffic'
-                properties: {
-                    addressPrefix: 'WindowsVirtualDesktop'
-                    hasBgpOverride: true
-                    nextHopType: 'Internet'
-                }
-            }
-            {
-                name: 'AVDStunTurnTraffic'
-                properties: {
-                    addressPrefix: '20.202.0.0/16'
-                    hasBgpOverride: true
-                    nextHopType: 'Internet'
-                }
-            }
-        ] : []
+        routes: varCreateAvdStaicRoute ? varStaticRoutes : []
     }
     dependsOn: []
 }
