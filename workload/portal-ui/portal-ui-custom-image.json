@@ -180,7 +180,7 @@
                                     "type": "Microsoft.Common.DropDown",
                                     "label": "Version",
                                     "filter": true,
-                                    "defaultValue": "Windows 11 22H2 (Gen2)",
+                                    "defaultValue": "Windows 11 23H2 (Gen2)",
                                     "toolTip": "Select the operating system version for the source image.",
                                     "constraints": {
                                         "required": true,
