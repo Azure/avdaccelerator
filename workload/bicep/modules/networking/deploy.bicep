@@ -123,6 +123,13 @@ var varVirtualNetworkLinks = createVnet ? [
         virtualNetworkResourceId: varExistingAvdVnetResourceId
     }
 ]
+var varWindowsActivationKMSPrefixes = (varAzureCloudName == 'AzureCloud') ? [
+    '20.118.99.224','40.83.235.53','23.102.135.246'
+] : (varAzureCloudName == 'AzureUSGovernment') ? [
+    '23.97.0.13','52.126.105.2'
+]: (varAzureCloudName == 'AzureChinaCloud') ? [
+    '159.27.28.100','163.228.64.161','42.159.7.249'
+]: []
 // =========== //
 // Deployments //
 // =========== //
@@ -199,7 +206,7 @@ module networksecurityGroupAvd '../../../../avm/1.0.0/res/network/network-securi
                     priority: 140
                     access: 'Allow'
                     description: 'Session host traffic to Windows license activation services'
-                    destinationAddressPrefix: '23.102.135.246'
+                    destinationAddressPrefixes: varWindowsActivationKMSPrefixes
                     direction: 'Outbound'
                     sourcePortRange: '*'
                     destinationPortRange: '1688'
