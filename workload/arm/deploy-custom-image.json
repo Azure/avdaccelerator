@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "411584507973687932"
+      "templateHash": "5039228173651332863"
     },
     "name": "AVD Accelerator - Baseline Custom Image Deployment",
     "description": "AVD Accelerator - Custom Image Baseline"
@@ -303,7 +303,7 @@
     },
     "operatingSystemImage": {
       "type": "string",
-      "defaultValue": "win11_22h2",
+      "defaultValue": "win11_23h2",
       "allowedValues": [
         "win10_22h2_g2",
         "win10_22h2_office_g2",
@@ -313,7 +313,7 @@
         "win11_23h2_office"
       ],
       "metadata": {
-        "description": "AVD OS image source. (Default: win11-22h2)"
+        "description": "AVD OS image source. (Default: win11_23h2)"
       }
     },
     "operationsTeamTag": {

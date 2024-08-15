@@ -5,7 +5,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
+<<<<<<< HEAD
+      "templateHash": "9164453220407350489"
+=======
       "templateHash": "9498821901267974130"
+>>>>>>> e011fa10b816d3331cc505d81129a19631734837
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -527,7 +531,7 @@
         "win11_23h2_office"
       ],
       "metadata": {
-        "description": "AVD OS image SKU. (Default: win11-22h2)"
+        "description": "AVD OS image SKU. (Default: win11_23h2)"
       }
     },
     "managementVmOsImage": {
