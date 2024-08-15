@@ -30,6 +30,6 @@ jobs:
     - name: Run Azure PowerShell Script File
       uses: azure/powershell@v2
       with:
-        inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName 'ResourceGroupName' -ApplicationGroupName 'ApplicationGroupName' -Name 'ApplicationName' -FriendlyName 'FriendlyName'
+        inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName 'avd-nih-arpah-test-use2-service-objects' -ApplicationGroupName 'vdag-desktop-app1-test-use2-001' -Name 'SessionDesktop' -FriendlyName 'Windows 11 Desktop'
         azPSVersion: "latest"
         errorActionPreference: continue
