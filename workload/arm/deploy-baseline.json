@@ -5,11 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-<<<<<<< HEAD
-      "templateHash": "9164453220407350489"
-=======
-      "templateHash": "9498821901267974130"
->>>>>>> e011fa10b816d3331cc505d81129a19631734837
+      "templateHash": "11196359443167775097"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -10264,9 +10260,7 @@
           "storageObjectsRgName": {
             "value": "[variables('varStorageObjectsRgName')]"
           },
-          "avdEnterpriseObjectId": {
-            "value": "[parameters('avdEnterpriseAppObjectId')]"
-          },
+          "avdEnterpriseObjectId": "[if(not(empty(parameters('avdEnterpriseAppObjectId'))), createObject('value', parameters('avdEnterpriseAppObjectId')), createObject('value', ''))]",
           "deployScalingPlan": {
             "value": "[variables('varDeployScalingPlan')]"
           },
@@ -10292,7 +10286,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "350780160670156654"
+              "templateHash": "12388793568431493624"
             }
           },
           "parameters": {
@@ -10677,7 +10671,7 @@
                 "name": "startVMonConnectRoleAssignCompute",
                 "count": "[length(variables('computeAndServiceObjectsRgs'))]"
               },
-              "condition": "[and(parameters('enableStartVmOnConnect'), not(parameters('deployScalingPlan')))]",
+              "condition": "[and(and(parameters('enableStartVmOnConnect'), not(parameters('deployScalingPlan'))), not(empty(parameters('avdEnterpriseObjectId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('StartOnCon-RolAssign-{0}-{1}', variables('computeAndServiceObjectsRgs')[copyIndex()].name, parameters('time'))]",
@@ -10852,7 +10846,7 @@
                 "name": "scalingPlanRoleAssignCompute",
                 "count": "[length(variables('computeAndServiceObjectsRgs'))]"
               },
-              "condition": "[parameters('deployScalingPlan')]",
+              "condition": "[and(parameters('deployScalingPlan'), not(empty(parameters('avdEnterpriseObjectId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('ScalingPlan-RolAssign-{0}-{1}', variables('computeAndServiceObjectsRgs')[copyIndex()].name, parameters('time'))]",
@@ -30362,7 +30356,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "7844913753445596027"
+              "templateHash": "13397958408421266887"
             }
           },
           "parameters": {
@@ -30668,7 +30662,7 @@
                     "value": "[parameters('timeZone')]"
                   },
                   "zone": "[if(parameters('useAvailabilityZones'), createObject('value', add(mod(range(1, parameters('count'))[copyIndex()], 3), 1)), createObject('value', 0))]",
-                  "managedIdentities": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('value', createObject('systemAssigned', true())), createObject('value', null()))]",
+                  "managedIdentities": "[if(or(equals(parameters('identityServiceProvider'), 'EntraID'), parameters('deployMonitoring')), createObject('value', createObject('systemAssigned', true())), createObject('value', null()))]",
                   "encryptionAtHost": {
                     "value": "[parameters('encryptionAtHost')]"
                   },
