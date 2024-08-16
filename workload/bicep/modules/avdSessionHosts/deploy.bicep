@@ -176,7 +176,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
         location: location
         timeZone: timeZone
         zone: useAvailabilityZones ? (i % 3 + 1) : 0
-        managedIdentities: (identityServiceProvider == 'EntraID') ? {
+        managedIdentities: (identityServiceProvider == 'EntraID' || deployMonitoring) ? {
             systemAssigned: true
         }: null
         encryptionAtHost: encryptionAtHost
