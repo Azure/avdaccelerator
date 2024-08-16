@@ -1150,7 +1150,7 @@ module identity './modules/identity/deploy.bicep' = {
     computeObjectsRgName: varComputeObjectsRgName
     serviceObjectsRgName: varServiceObjectsRgName
     storageObjectsRgName: varStorageObjectsRgName
-    avdEnterpriseObjectId: avdEnterpriseAppObjectId
+    avdEnterpriseObjectId: !empty(avdEnterpriseAppObjectId) ? avdEnterpriseAppObjectId : ''
     deployScalingPlan: varDeployScalingPlan
     storageManagedIdentityName: varStorageManagedIdentityName
     enableStartVmOnConnect: avdStartVmOnConnect
