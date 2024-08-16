@@ -23,6 +23,15 @@
         "avdWorkloadSubsId": {
             "value": "<<subscriptionId>>"
         },
+        "avdServiceObjectsRgCustomName": {
+            "value": "avd-nih-arpah-test-use2-service-objects"
+        },
+        "avdApplicationGroupCustomName": {
+            "value": "vdag-desktop-app1-test-use2-001"
+        },
+        "avdApplicationDisplayName": {
+            "value": "Windows 11 Desktop"
+        },
         "deployPrivateEndpointKeyvaultStorage": {
             "value": true
         },
