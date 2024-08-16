@@ -1,0 +1,24 @@
+name: Deploy to NIH Test
+
+on:
+    workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@main
+
+    - name: Log into Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        enable-AzPSSession: true 
+
+    - name: Run Azure PowerShell Script File
+      uses: azure/powershell@v2
+      with:
+        inlineScript: $GITHUB_WORKSPACE/.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName "myrg" -ApplicationGroupName "appgroupname" -Name "New Session name" -FriendlyName "new friendly name"
+        azPSVersion: "latest"
