@@ -457,10 +457,10 @@ try {
         $shortcutPath = Join-Path $desktopPath $shortcutName
 
         if (Test-Path $shortcutPath) {
-                Remove-Item $shortcutPath -Force
-                Write-Log -Message "Desktop shortcut removed successfully." -Type 'INFO'
+            Remove-Item $shortcutPath -Force
+            Write-Log -Message "Desktop shortcut removed successfully." -Type 'INFO'
         } else {
-                Write-Log -Message "Desktop shortcut not found." -Type 'INFO'
+            Write-Log -Message "Desktop shortcut not found." -Type 'INFO'
         }
 
 
