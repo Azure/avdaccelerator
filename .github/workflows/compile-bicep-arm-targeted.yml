@@ -8,13 +8,13 @@ on:
   push:
     branches: [ main ]
     paths:
-      - "./carml/*"
+      - "./avm/*"
       - "./workload/bicep/*.bicep"
       - "./workload/bicep/modules/*"
   pull_request:
     branches: [ main ]
     paths:
-      - "./carml/*"
+      - "./avm/*"
       - "./workload/bicep/*.bicep"
       - "./workload/bicep/modules/*"
 

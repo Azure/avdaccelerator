@@ -35,7 +35,7 @@ param subscriptionId string
 param count int
 
 @sys.description('Max VMs per availability set.')
-param maxAvsetMembersCount int
+param maxVmssFlexMembersCount int
 
 @sys.description('The session host number to begin with for the deployment.')
 param countIndex int
@@ -43,8 +43,8 @@ param countIndex int
 @sys.description('Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set.')
 param useAvailabilityZones bool
 
-@sys.description('Availablity Set name.')
-param avsetNamePrefix string
+@sys.description('VMSS flex name.')
+param vmssFlexNamePrefix string
 
 @sys.description('The service providing domain services for Azure Virtual Desktop.')
 param identityServiceProvider string
@@ -103,9 +103,6 @@ param sessionHostOuPath string
 @sys.description('Application Security Group (ASG) for the session hosts.')
 param asgResourceId string
 
-@sys.description('AVD Host Pool name.')
-param hostPoolName string
-
 @sys.description('Deploy Fslogix setup.')
 param createAvdFslogixDeployment bool
 
@@ -139,10 +136,6 @@ param dataCollectionRuleId string
 // =========== //
 // Variable declaration //
 // =========== //
-var varAllAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', location, 3)
-var varNicDiagnosticMetricsToEnable = [
-    'AllMetrics'
-]
 var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
     storageAccountType: diskType
 } : {
@@ -151,15 +144,14 @@ var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
     }
     storageAccountType: diskType
 }
-
 var varOsDiskProperties = {
-    createOption: 'fromImage'
+    createOption: 'FromImage'
     deleteOption: 'Delete'
     managedDisk: varManagedDisk
+    //diskSizeGB: 128
 }
-
 var varCustomOsDiskProperties = {
-    createOption: 'fromImage'
+    createOption: 'FromImage'
     deleteOption: 'Delete'
     managedDisk: varManagedDisk
     diskSizeGB: !empty(customOsDiskSizeGB ) ? customOsDiskSizeGB : null
@@ -168,30 +160,27 @@ var varCustomOsDiskProperties = {
 // =========== //
 // Deployments //
 // =========== //
-// Call on the hotspool
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2019-12-10-preview' existing = {
-    name: hostPoolName
-    scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
-}
 
 // call on the keyvault
-resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = if (identityServiceProvider != 'EntraID') {
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (identityServiceProvider != 'EntraID') {
     name: wrklKvName
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
 }
 
 // Session hosts
-module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(1, count): {
+module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = [for i in range(1, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-${batchId}-${i - 1}-${time}'
     params: {
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         location: location
         timeZone: timeZone
-        systemAssignedIdentity: (identityServiceProvider == 'EntraID') ? true : false
-        availabilityZone: useAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
+        zone: useAvailabilityZones ? (i % 3 + 1) : 0
+        managedIdentities: (identityServiceProvider == 'EntraID' || deployMonitoring) ? {
+            systemAssigned: true
+        }: null
         encryptionAtHost: encryptionAtHost
-        availabilitySetResourceId: useAvailabilityZones ? '' : '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/availabilitySets/${avsetNamePrefix}-${padLeft(((1 + (i + countIndex) / maxAvsetMembersCount)), 3, '0')}'
+        virtualMachineScaleSetResourceId: '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/virtualMachineScaleSets/${vmssFlexNamePrefix}-${padLeft(((1 + (i + countIndex) / maxVmssFlexMembersCount)), 3, '0')}'
         osType: 'Windows'
         licenseType: 'Windows_Client'
         vmSize: vmSize
@@ -204,7 +193,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
         adminPassword: keyVault.getSecret('vmLocalUserPassword')
         nicConfigurations: [
             {
-                nicSuffix: 'nic-01-'
+                name: 'nic-01-${namePrefix}${padLeft((i + countIndex), 4, '0')}'
                 deleteOption: 'Delete'
                 enableAcceleratedNetworking: enableAcceleratedNetworking
                 ipConfigurations: !empty(asgResourceId) ? [
@@ -235,17 +224,16 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
                 user: domainJoinUserName
                 restart: 'true'
                 options: '3'
+
             }
         }
         // Microsoft Entra ID Join.
         extensionAadJoinConfig: {
             enabled: (identityServiceProvider == 'EntraID') ? true : false
             settings: createIntuneEnrollment ? {
-                mdmId: '0000000a-0000-0000-c000-000000000000'
+               mdmId: '0000000a-0000-0000-c000-000000000000'
             } : {}
         }
-        nicdiagnosticMetricsToEnable: deployMonitoring ? varNicDiagnosticMetricsToEnable : []
-        diagnosticWorkspaceId: deployMonitoring ? alaWorkspaceResourceId : ''
         tags: tags
     }
     dependsOn: [
@@ -254,7 +242,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
 }]
 
 // Add antimalware extension to session host.
-module sessionHostsAntimalwareExtension '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, count): {
+module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-Antimal-${batchId}-${i - 1}-${time}'
     params: {
@@ -281,7 +269,6 @@ module sessionHostsAntimalwareExtension '../../../../carml/1.3.0/Microsoft.Compu
                 Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
             } : {}
         }
-        enableDefaultTelemetry: false
     }
     dependsOn: [
         sessionHosts
@@ -289,13 +276,13 @@ module sessionHostsAntimalwareExtension '../../../../carml/1.3.0/Microsoft.Compu
 }]
 
 // Call to the ALA workspace
-resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(alaWorkspaceResourceId) && deployMonitoring) {
+resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!empty(alaWorkspaceResourceId) && deployMonitoring) {
     scope: az.resourceGroup(split(alaWorkspaceResourceId, '/')[2], split(alaWorkspaceResourceId, '/')[4])
     name: last(split(alaWorkspaceResourceId, '/'))!
 }
 
 // Add monitoring extension to session host
-module monitoring '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, count): if (deployMonitoring) {
+module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-Mon-${batchId}-${i - 1}-${time}'
     params: {
@@ -313,7 +300,6 @@ module monitoring '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/ext
         protectedSettings: {
             workspaceKey: !empty(alaWorkspaceResourceId) ? alaWorkspace.listKeys().primarySharedKey : ''
         }
-        enableDefaultTelemetry: false
     }
     dependsOn: [
         sessionHostsAntimalwareExtension
@@ -343,7 +329,7 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in 
     params: {
         location: location
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        hostPoolToken: hostPool.properties.registrationInfo.token
+        hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
         baseScriptUri: sessionHostConfigurationScriptUri
         scriptName: sessionHostConfigurationScript
         fslogix: createAvdFslogixDeployment

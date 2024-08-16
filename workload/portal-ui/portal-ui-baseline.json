@@ -11,6 +11,14 @@
                     "label": "Deployment Basics",
                     "elements": [
                         {
+                            "name": "subscriptionsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "subscriptions?api-version=2022-01-01"
+                            }
+                        },
+                        {
                             "name": "infoPreReq",
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
@@ -457,7 +465,7 @@
                                 {
                                     "name": "scalingPlan",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "visible": "[and(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), not(contains(steps('basics').resourceScope.location.name, 'china')))]",
+                                    "visible": "[not(contains(steps('basics').resourceScope.location.name, 'china'))]",
                                     "label": "Scaling plan",
                                     "defaultValue": true,
                                     "toolTip": "Will automatically manage session host power state based on usage and schedules (weekdays and weekend schedules will be created)."
@@ -465,7 +473,6 @@
                                 {
                                     "name": "startVmOnConnect",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "visible": "[equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal')]",
                                     "label": "Start VM on connect",
                                     "defaultValue": true,
                                     "toolTip": "If VM is powered off (deallocated), VM will be started automatically once user connects."
@@ -546,7 +553,7 @@
                                     "type": "Microsoft.Solutions.ArmApiControl",
                                     "request": {
                                         "method": "GET",
-                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Compute/resourceTypes?api-version=2021-04-01')]"
+                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Compute/resourceTypes?api-version=2022-01-01')]"
                                     }
                                 },
                                 {
@@ -565,7 +572,7 @@
                                     "visible": true,
                                     "label": "Availability zones",
                                     "defaultValue": true,
-                                    "toolTip": "Distribute compute resources across availability zones. If 'No' is selected then an availability set will be created to host the VMs."
+                                    "toolTip": "Distribute compute resources across availability zones using multi zone VMSS Flex with 1 fault domain. If 'No' is selected then a VMSS Flex will be created to host the VMs at a regional level but distributing across multiple fault domains."
                                 },
                                 {
                                     "name": "sessionHostsRegion",
@@ -625,7 +632,7 @@
                                     "imageReference": {
                                         "publisher": "MicrosoftWindowsDesktop",
                                         "offer": "Windows-11",
-                                        "sku": "21h2-avd"
+                                        "sku": "23h2-avd"
                                     },
                                     "scope": {
                                         "location": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]",
@@ -751,19 +758,11 @@
                                     "visible": "[not(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource)]",
                                     "label": "OS version",
                                     "filter": true,
-                                    "defaultValue": "Windows 11 22H2 (Gen2)",
+                                    "defaultValue": "Windows 11 23H2 (Gen2)",
                                     "toolTip": "Select the operating system version of the session hosts.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
-                                            {
-                                                "label": "Windows 10 21H2",
-                                                "value": "win10_21h2"
-                                            },
-                                            {
-                                                "label": "Windows 10 21H2 - Office 365",
-                                                "value": "win10_21h2_office"
-                                            },
                                             {
                                                 "label": "Windows 10 22H2 (Gen2)",
                                                 "value": "win10_22h2_g2"
@@ -771,14 +770,6 @@
                                             {
                                                 "label": "Windows 10 22H2 - Office 365 (Gen2)",
                                                 "value": "win10_22h2_office_g2"
-                                            },
-                                            {
-                                                "label": "Windows 11",
-                                                "value": "win11_21h2"
-                                            },
-                                            {
-                                                "label": "Windows 11 - Office 365",
-                                                "value": "win11_21h2_office"
                                             },
                                             {
                                                 "label": "Windows 11 22H2 (Gen2)",
@@ -906,7 +897,7 @@
                                     "type": "Microsoft.Solutions.ArmApiControl",
                                     "request": {
                                         "method": "GET",
-                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Storage/resourceTypes?api-version=2021-04-01')]"
+                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Storage/resourceTypes?api-version=2022-01-01')]"
                                     }
                                 },
                                 {
@@ -1170,7 +1161,7 @@
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
                                 "method": "GET",
-                                "path": "[concat(steps('network').avdVirtualNetworkSelectorId.id, '/subnets?api-version=2021-03-01')]"
+                                "path": "[concat(steps('network').avdVirtualNetworkSelectorId.id, '/subnets?api-version=2022-01-01')]"
                             }
                         },
                         {
@@ -1189,6 +1180,14 @@
                                 "allowedValues": "[map(steps('network').avdSubnetApi.value,(item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\",\"description\":\"', 'Resource Group: ', last(take(split(item.id, '/'), 5)), '\"}')))]",
                                 "required": true
                             }
+                        },
+                        {
+                            "name": "deployDDoSNetworkProtection",
+                            "type": "Microsoft.Common.CheckBox",
+                            "visible": "[steps('network').createAvdVirtualNetwork]",
+                            "label": "Enable DDoS Network Protection",
+                            "defaultValue": false,
+                            "toolTip": "Enables DDoS Network Protection for the virtual network."
                         },
                         {
                             "name": "deployPrivateEndpointKeyvaultStorage",
@@ -1232,7 +1231,7 @@
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
                                 "method": "GET",
-                                "path": "[concat(steps('network').privateEndpointVirtualNetworkSelectorId.id, '/subnets?api-version=2021-03-01')]"
+                                "path": "[concat(steps('network').privateEndpointVirtualNetworkSelectorId.id, '/subnets?api-version=2022-01-01')]"
                             }
                         },
                         {
@@ -1430,14 +1429,6 @@
                                     }
                                 },
                                 {
-                                    "name": "hubVirtualNetworkSubs",
-                                    "type": "Microsoft.Solutions.ArmApiControl",
-                                    "request": {
-                                        "method": "GET",
-                                        "path": "subscriptions?api-version=2020-01-01"
-                                    }
-                                },
-                                {
                                     "name": "hubVirtualNetworkSub",
                                     "type": "Microsoft.Common.DropDown",
                                     "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
@@ -1449,7 +1440,7 @@
                                     "filterPlaceholder": "Filter items ...",
                                     "multiLine": true,
                                     "constraints": {
-                                        "allowedValues": "[map(steps('network').hubVirtualNetworkPeering.hubVirtualNetworkSubs.value, (sub) => parse(concat('{\"label\":\"', sub.displayName, '\",\"description\":\"', sub.subscriptionId, '\",\"value\":\"', toLower(sub.subscriptionId), '\"}')) )]",
+                                        "allowedValues": "[map(steps('basics').subscriptionsApi.value, (sub) => parse(concat('{\"label\":\"', sub.displayName, '\",\"description\":\"', sub.subscriptionId, '\",\"value\":\"', toLower(sub.subscriptionId), '\"}')) )]",
                                         "required": true
                                     }
                                 },
@@ -1458,7 +1449,7 @@
                                     "type": "Microsoft.Solutions.ArmApiControl",
                                     "request": {
                                         "method": "GET",
-                                        "path": "[concat('subscriptions/', steps('network').hubVirtualNetworkPeering.hubVirtualNetworkSub, '/providers/Microsoft.Network/virtualNetworks?api-version=2021-08-01')]"
+                                        "path": "[concat('subscriptions/', steps('network').hubVirtualNetworkPeering.hubVirtualNetworkSub, '/providers/Microsoft.Network/virtualNetworks?api-version=2022-01-01')]"
                                     }
                                 },
                                 {
@@ -1747,7 +1738,7 @@
                                     "name": "computeObjectsRgCustomName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Resource group",
-                                    "toolTip": "Azure Virtual Desktop compute resources (VMs, NICs, Disks, Availability sets) resource group custom name.",
+                                    "toolTip": "Azure Virtual Desktop compute resources (VMs, NICs, Disks, VMSS) resource group custom name.",
                                     "placeholder": "Example: rg-avd-app1-dev-use2-pool-compute",
                                     "constraints": {
                                         "required": true,
@@ -1781,11 +1772,11 @@
                                     }
                                 },
                                 {
-                                    "name": "availabilitySetCustomNamePrefix",
+                                    "name": "vmssCustomNamePrefix",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "Availability set prefix",
+                                    "label": "VMSS Flex prefix",
                                     "visible": "[not(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings)]",
-                                    "toolTip": "Azure Virtual Desktop availability set custom name.",
+                                    "toolTip": "Azure Virtual Desktop VMSS Flex custom name.",
                                     "placeholder": "Example: avail",
                                     "constraints": {
                                         "required": true,
@@ -2382,14 +2373,14 @@
                 "existingVnetAvdSubnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, false), steps('network').virtualNetworkAvdSubnetSelectorName, 'no')]",
                 "existingVnetPrivateEndpointSubnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, false), steps('network').virtualNetworkPrivateEndpointSubnetSelectorName, 'no')]",
                 "avdDeploySessionHosts": "[steps('sessionHosts').deploySessionHosts]",
-                "avdStartVmOnConnect": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, false)]",
-                "avdDeployScalingPlan": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), if(contains(steps('basics').resourceScope.location.name, 'china'), false, steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan), false)]",
+                "avdStartVmOnConnect": "[steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect]",
+                "avdDeployScalingPlan": "[if(contains(steps('basics').resourceScope.location.name, 'china'), false, steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan)]",
                 "avdEnterpriseAppObjectId": "[first(map(steps('managementPlane').managementPlaneHostPoolScaling.avdEnterpriseApplication.value, (item) => item.id))]",
-                "availabilityZonesCompute": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings]",
+                "availabilityZonesCompute": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, false)]",
                 "zoneRedundantStorage": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment), steps('storage').storageGeneralSettings.storageGeneralSettingsZoneRedundancy, false)]",
                 "avdDeploySessionHostsCount": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
                 "useSharedImage": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false)]",
-                "avdOsImage": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false), steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11_21h2')]",
+                "avdOsImage": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false), steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11_23h2')]",
                 "securityType": "[if(and(or(contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11'), contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'g2')), empty(steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage)), steps('sessionHosts').sessionHostsSecuritySection.securityType, 'Standard')]",
                 "secureBootEnabled": "[if(and(or(contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11'), contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'g2')), empty(steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage)), steps('sessionHosts').sessionHostsSecuritySection.secureBootEnabled, false)]",
                 "vTpmEnabled": "[if(and(or(contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11'), contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'g2')), empty(steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage)), steps('sessionHosts').sessionHostsSecuritySection.vTpmEnabled, false)]",
@@ -2397,6 +2388,7 @@
                 "avdSessionHostDiskType": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskType]",
                 "enableAcceleratedNetworking": "[steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking]",
                 "avdSessionHostsSize": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize, 'Standard_D4ads_v5')]",
+                "deployDDoSNetworkProtection": "[steps('network').deployDDoSNetworkProtection]",
                 "deployPrivateEndpointKeyvaultStorage": "[steps('network').deployPrivateEndpointKeyvaultStorage]",
                 "createPrivateDnsZones": "[if(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), steps('network').virtualNetworkPrivateDnsZone, false)]",
                 "avdVnetPrivateDnsZoneFilesId": "[if(and(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneFilesSelector.id, '')]",
@@ -2429,7 +2421,7 @@
                 "avdApplicationGroupCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.applicationGroupCustomName, 'no')]",
                 "avdApplicationGroupCustomFriendlyName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.applicationGroupCustomFriendlyName, 'no')]",
                 "avdSessionHostCustomNamePrefix": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.sessionHostCustomNamePrefix, 'no')]",
-                "avdAvailabilitySetCustomNamePrefix": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.availabilitySetCustomNamePrefix, 'no')]",
+                "vmssFlexCustomNamePrefix": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.vmssCustomNamePrefix, 'no')]",
                 "storageAccountPrefixCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.storageAccountPrefixCustomName, 'no')]",
                 "fslogixFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.fslogixFileShareCustomName, 'no')]",
                 "msixFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.msixFileShareCustomName, 'no')]",

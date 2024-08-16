@@ -13,8 +13,8 @@ param applicationNameTag string = 'Contoso-App'
 @sys.description('Application Security Group (ASG) for the session hosts. (Default: "")')
 param asgResourceId string = ''
 
-@sys.description('Availability set resource ID. (Default: "")')
-param avsetResourceId string = ''
+@sys.description('VMSS flex resource ID. (Default: "")')
+param virtualMachineScaleSetResourceId string = ''
 
 @sys.description('Source custom image ID. (Default: "")')
 param customImageDefinitionId string = ''
@@ -154,17 +154,15 @@ param vmLocalAdminPasswordSecretName string = 'vmLocalUserPassword'
 param sessionHostOuPath string = ''
 
 @allowed([
-  'win10_21h2'
-  'win10_21h2_office'
   'win10_22h2_g2'
   'win10_22h2_office_g2'
-  'win11_21h2'
-  'win11_21h2_office'
   'win11_22h2'
   'win11_22h2_office'
+  'win11_23h2'
+  'win11_23h2_office'
 ])
-@sys.description('AVD OS image SKU. (Default: win11-21h2)')
-param osImage string = 'win11_22h2'
+@sys.description('AVD OS image SKU. (Default: win11-23h2)')
+param osImage string = 'win11_23h2'
 
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
@@ -233,7 +231,6 @@ var varFslogixSharePath = configureFslogix ? '\\\\${fslogixStorageAccountName}.f
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
-var varAllAvailabilityZones = pickZones('Microsoft.Compute', 'virtualMachines', location, 3)
 var varAvdDefaultTags = {
   'cm-resource-parent': hostPoolResourceId
   Environment: deploymentEnvironment
@@ -252,44 +249,70 @@ var varCustomResourceTags = createResourceTags ? {
   Owner: ownerTag
   CostCenter: costCenterTag
 } : {}
-var varNicDiagnosticMetricsToEnable = [
-  'AllMetrics'
-]
 // =========== //
 // Deployments //
 // =========== //
 
 // Call on the hotspool
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2019-12-10-preview' existing = {
+resource hostPoolGet 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
   name: varHostPoolName
   scope: resourceGroup('${varHostpoolSubId}', '${varHostpoolRgName}')
 }
 
+// Hostpool update
+module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main.bicep' = {
+  scope: resourceGroup('${varHostpoolSubId}', '${varHostpoolRgName}')
+  name: 'HostPool-${time}'
+  params: {
+    name: hostPoolGet.name
+    friendlyName: hostPoolGet.properties.friendlyName
+    location: hostPoolGet.location
+    keyVaultResourceId: keyVaultResourceId
+    hostPoolType: (hostPoolGet.properties.hostPoolType == 'Personal') ? 'Personal' : (hostPoolGet.properties.hostPoolType == 'Pooled') ? 'Pooled' : null
+    startVMOnConnect: hostPoolGet.properties.startVMOnConnect
+    customRdpProperty: hostPoolGet.properties.customRdpProperty
+    loadBalancerType: (hostPoolGet.properties.loadBalancerType == 'BreadthFirst') ? 'BreadthFirst' : (hostPoolGet.properties.loadBalancerType == 'DepthFirst') ? 'DepthFirst' : (hostPoolGet.properties.loadBalancerType == 'Persistent') ? 'Persistent': null
+    maxSessionLimit: hostPoolGet.properties.maxSessionLimit
+    preferredAppGroupType: (hostPoolGet.properties.preferredAppGroupType == 'Desktop') ? 'Desktop' : (hostPoolGet.properties.preferredAppGroupType == 'RailApplications') ? 'RailApplications' : null
+    personalDesktopAssignmentType: (hostPoolGet.properties.personalDesktopAssignmentType == 'Automatic') ? 'Automatic' : (hostPoolGet.properties.personalDesktopAssignmentType == 'Direct') ? 'Direct' : null
+    description: hostPoolGet.properties.description
+    ssoadfsAuthority: hostPoolGet.properties.ssoadfsAuthority
+    ssoClientId: hostPoolGet.properties.ssoClientId
+    ssoClientSecretKeyVaultPath: hostPoolGet.properties.ssoClientSecretKeyVaultPath
+    validationEnvironment: hostPoolGet.properties.validationEnvironment
+    ring: hostPoolGet.properties.ring
+    tags: hostPoolGet.tags
+    agentUpdate: hostPoolGet.properties.agentUpdate
+  }
+}
+
 // call on the keyvault
-resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
-  name: varKeyVaultName
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+  name: split(hostPool.outputs.keyVaultTokenSecretResourceId, '/')[8]
   scope: resourceGroup('${varKeyVaultSubId}', '${varKeyVaultRgName}')
 }
 
 // Call to the ALA workspace
-resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (!empty(alaWorkspaceResourceId) && deployMonitoring) {
+resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!empty(alaWorkspaceResourceId) && deployMonitoring) {
   scope: az.resourceGroup(split(alaWorkspaceResourceId, '/')[2], split(alaWorkspaceResourceId, '/')[4])
   name: last(split(alaWorkspaceResourceId, '/'))!
 }
 
 // Session hosts
 @batchSize(3)
-module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/deploy.bicep' = [for i in range(1, count): {
+module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = [for i in range(1, count): {
   scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
   name: 'SH-${i - 1}-${time}'
   params: {
     name: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
     location: location
     timeZone: varTimeZoneSessionHosts
-    systemAssignedIdentity: (identityServiceProvider == 'EntraID') ? true : false
-    availabilityZone: useAvailabilityZones ? take(skip(varAllAvailabilityZones, i % length(varAllAvailabilityZones)), 1) : []
+    zone: useAvailabilityZones ? (i % 3 + 1) : 0
+    managedIdentities: (identityServiceProvider == 'EntraID') ? {
+      systemAssigned: true
+    }: null
     encryptionAtHost: diskZeroTrust
-    availabilitySetResourceId: useAvailabilityZones ? '' : avsetResourceId
+    virtualMachineScaleSetResourceId: virtualMachineScaleSetResourceId
     osType: 'Windows'
     licenseType: 'Windows_Client'
     vmSize: vmSize
@@ -298,7 +321,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
     vTpmEnabled: vTpmEnabled
     imageReference: useSharedImage ? json('{\'id\': \'${customImageDefinitionId}\'}') : varMarketPlaceGalleryWindows[osImage]
     osDisk: {
-      createOption: 'fromImage'
+      createOption: 'FromImage'
       deleteOption: 'Delete'
       managedDisk: varManagedDisk
     }
@@ -306,7 +329,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
     adminPassword: keyVault.getSecret(vmLocalAdminPasswordSecretName)
     nicConfigurations: [
       {
-        nicSuffix: 'nic-01-'
+        name: 'nic-01-${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
         deleteOption: 'Delete'
         enableAcceleratedNetworking: enableAcceleratedNetworking
         ipConfigurations: !empty(asgResourceId) ? [
@@ -346,8 +369,6 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
         mdmId: '0000000a-0000-0000-c000-000000000000'
       } : {}
     }
-    nicdiagnosticMetricsToEnable: deployMonitoring ? varNicDiagnosticMetricsToEnable : []
-    diagnosticWorkspaceId: deployMonitoring ? alaWorkspaceResourceId : ''
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
   }
   dependsOn: [
@@ -356,7 +377,7 @@ module sessionHosts '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/d
 }]
 
 // Add antimalware extension to session host.
-module sessionHostsAntimalwareExtension '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, count): {
+module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): {
   scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
   name: 'SH-Antimal-${i - 1}-${time}'
   params: {
@@ -383,7 +404,6 @@ module sessionHostsAntimalwareExtension '../../../../carml/1.3.0/Microsoft.Compu
         Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
       } : {}
     }
-    enableDefaultTelemetry: false
   }
   dependsOn: [
     sessionHosts
@@ -391,7 +411,7 @@ module sessionHostsAntimalwareExtension '../../../../carml/1.3.0/Microsoft.Compu
 }]
 
 // Add monitoring extension to session host
-module monitoring '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/extensions/deploy.bicep' = [for i in range(1, count): if (deployMonitoring) {
+module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployMonitoring) {
   scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
   name: 'SH-Mon-${i - 1}-${time}'
   params: {
@@ -409,7 +429,6 @@ module monitoring '../../../../carml/1.3.0/Microsoft.Compute/virtualMachines/ext
     protectedSettings: {
       workspaceKey: !empty(alaWorkspaceResourceId) ? alaWorkspace.listKeys().primarySharedKey : ''
     }
-    enableDefaultTelemetry: false
   }
   dependsOn: [
     sessionHostsAntimalwareExtension
@@ -424,7 +443,7 @@ module sessionHostConfiguration '../../modules/avdSessionHosts/.bicep/configureS
   params: {
     location: location
     name: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
-    hostPoolToken: hostPool.properties.registrationInfo.token
+    hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
     baseScriptUri: varSessionHostConfigurationScriptUri
     scriptName: varSessionHostConfigurationScript
     fslogix: configureFslogix

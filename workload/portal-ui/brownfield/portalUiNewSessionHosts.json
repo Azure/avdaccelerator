@@ -24,7 +24,7 @@
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
                                 "method": "GET",
-                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/resourceGroups?api-version=2021-04-01')]"
+                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/resourceGroups?api-version=2022-01-01')]"
                             }
                         },
                         {
@@ -293,7 +293,7 @@
                                     "type": "Microsoft.Solutions.ArmApiControl",
                                     "request": {
                                         "method": "GET",
-                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Compute/resourceTypes?api-version=2021-04-01')]"
+                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Compute/resourceTypes?api-version=2022-01-01')]"
                                     }
                                 },
                                 {
@@ -315,21 +315,13 @@
                                     "toolTip": "Distribute compute resources across availability zones."
                                 },
                                 {
-                                    "name": "sessionHostsAvailabilitySetSettings",
-                                    "type": "Microsoft.Common.CheckBox",
-                                    "visible": "[not(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilityZoneSettings)]",
-                                    "label": "Availability set",
-                                    "defaultValue": true,
-                                    "toolTip": "Use availability sets to distribute session hosts across fault and update domains."
-                                },
-                                {
-                                    "name": "sessionHostsAvailabilitySetResourceId",
+                                    "name": "sessionHostsVmssResourceId",
                                     "type": "Microsoft.Solutions.ResourceSelector",
-                                    "label": "Select availability set",
-                                    "visible": "[and(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySetSettings, not(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilityZoneSettings))]",
-                                    "resourceType": "Microsoft.Network/applicationSecurityGroups",
+                                    "label": "Select VMSS Flex",
+                                    "visible": true,
+                                    "resourceType": "Microsoft.Compute/virtualMachineScaleSets",
                                     "constraints": {
-                                        "required": true
+                                        "required": false
                                     },
                                     "options": {
                                         "filter": {
@@ -396,7 +388,7 @@
                                     "imageReference": {
                                         "publisher": "MicrosoftWindowsDesktop",
                                         "offer": "Windows-11",
-                                        "sku": "21h2-avd"
+                                        "sku": "23h2-avd"
                                     },
                                     "scope": {
                                         "location": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]",
@@ -418,7 +410,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "VM count index",
                                     "toolTip": "Provide the number of the highest session host name count, example: if highest session host count is vmavd1duse20005, provide a count index of 5. This number will be use to deploy new session hosts with a naming that continues the count of the current session hosts deployed, example: vmavd1duse20006.",
-                                    "placeholder": 1,
+                                    "placeholder": "Example: 1",
                                     "constraints": {
                                         "required": true
                                     }
@@ -507,19 +499,11 @@
                                     "visible": "[not(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource)]",
                                     "label": "OS version",
                                     "filter": true,
-                                    "defaultValue": "Windows 11 22H2 (Gen2)",
+                                    "defaultValue": "Windows 11 23H2 (Gen2)",
                                     "toolTip": "Select the operating system version of the session hosts.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
-                                            {
-                                                "label": "Windows 10 21H2",
-                                                "value": "win10_21h2"
-                                            },
-                                            {
-                                                "label": "Windows 10 21H2 - Office 365",
-                                                "value": "win10_21h2_office"
-                                            },
                                             {
                                                 "label": "Windows 10 22H2 (Gen2)",
                                                 "value": "win10_22h2_g2"
@@ -529,20 +513,20 @@
                                                 "value": "win10_22h2_office_g2"
                                             },
                                             {
-                                                "label": "Windows 11",
-                                                "value": "win11_21h2"
-                                            },
-                                            {
-                                                "label": "Windows 11 - Office 365",
-                                                "value": "win11_21h2_office"
-                                            },
-                                            {
                                                 "label": "Windows 11 22H2 (Gen2)",
                                                 "value": "win11_22h2"
                                             },
                                             {
                                                 "label": "Windows 11 22H2 - Office 365 (Gen2)",
                                                 "value": "win11_22h2_office"
+                                            },
+                                            {
+                                                "label": "Windows 11 23H2 (Gen2)",
+                                                "value": "win11_23h2"
+                                            },
+                                            {
+                                                "label": "Windows 11 23H2 - Office 365 (Gen2)",
+                                                "value": "win11_23h2_office"
                                             }
                                         ]
                                     }
@@ -737,7 +721,7 @@
                                     "type": "Microsoft.Solutions.ArmApiControl",
                                     "request": {
                                         "method": "GET",
-                                        "path": "[concat(steps('network').networkSettings.virtualNetworkSelectorId.id, '/subnets?api-version=2021-03-01')]"
+                                        "path": "[concat(steps('network').networkSettings.virtualNetworkSelectorId.id, '/subnets?api-version=2022-01-01')]"
                                     }
                                 },
                                 {
@@ -1151,7 +1135,7 @@
                 "vmLocalAdminPasswordSecretName": "[steps('identity').identityCredentials.identityLocalUserPassword]",
                 "hostPoolResourceId": "[steps('managementPlane').managementPlaneSettings.hostPoolSelector.id]",
                 "useAvailabilityZones": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilityZoneSettings]",
-                "avsetResourceId": "[if(and(not(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilityZoneSettings), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySetSettings), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySetResourceId.id, 'false')]",
+                "virtualMachineScaleSetResourceId": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsVmssResourceId.id]",
                 "sessionHostOuPath": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
                 "vmSize": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize]",
                 "countIndex": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCountIndex]",
@@ -1159,7 +1143,7 @@
                 "diskType": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskType]",
                 "enableAcceleratedNetworking": "[steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking]",
                 "useSharedImage": "[steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource]",
-                "osImage": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false), steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11_21h2')]",
+                "osImage": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false), steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11_23h2')]",
                 "customImageDefinitionId": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage.id, 'no')]",
                 "securityType": "[steps('sessionHosts').sessionHostsSecuritySection.securityType]",
                 "secureBootEnabled": "[steps('sessionHosts').sessionHostsSecuritySection.secureBootEnabled]",
