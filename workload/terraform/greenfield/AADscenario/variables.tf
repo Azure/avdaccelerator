@@ -2,11 +2,6 @@ variable "avdLocation" {
   description = "Location of the resource group."
 }
 
-variable "environment" {
-  type        = string
-  description = "Environment name sets the type of environment (Development (dev), Test (test), Production (prod)) that will be deployed, this information will be use as part of the resources naming."
-}
-
 variable "rg_so" {
   type        = string
   description = "Name of the Resource group in which to deploy service objects"
@@ -84,16 +79,6 @@ variable "dag" {
   description = "Name of the Azure Virtual Desktop desktop application group"
 }
 
-variable "rag" {
-  type        = string
-  description = "Name of the Azure Virtual Desktop remote application group"
-}
-
-variable "pag" {
-  type        = string
-  description = "Name of the Azure Virtual Desktop remote application group"
-}
-
 variable "scplan" {
   type        = string
   description = "Name of the session host scaling plan"
@@ -114,29 +99,9 @@ variable "workspace" {
   description = "Name of the Azure Virtual Desktop workspace"
 }
 
-variable "pworkspace" {
-  type        = string
-  description = "Name of the Azure Virtual Desktop Personal workspace"
-}
-
 variable "hostpool" {
   type        = string
   description = "Name of the Azure Virtual Desktop host pool"
-}
-
-variable "personalpool" {
-  type        = string
-  description = "Name of the Azure Virtual Desktop host pool"
-}
-
-variable "raghostpool" {
-  type        = string
-  description = "Name of the Azure Virtual Desktop remote app group"
-}
-
-variable "ragworkspace" {
-  type        = string
-  description = "Name of the Azure Virtual Desktop workspace"
 }
 
 variable "dns_servers" {
@@ -153,9 +118,9 @@ variable "subnet_range" {
   description = "Address range for session host subnet"
 }
 
-variable "user_group_name" {
+variable "aad_group_name" {
   type        = string
-  description = "Microsoft Entra ID Group for AVD users"
+  description = "Azure Active Directory Group for AVD users"
 }
 
 variable "rdsh_count" {
@@ -195,21 +160,6 @@ variable "image_rg" {
   description = "Image Gallery resource group"
 }
 
-variable "sku" {
-  type        = string
-  description = "SKU of the image"
-}
-
-variable "offer" {
-  type        = string
-  description = "Offer of the image"
-}
-
-variable "publisher" {
-  type        = string
-  description = "Publisher of the image"
-}
-
 # Create a storage allow list of IP Addresses
 variable "allow_list_ip" {
   type        = list(string)
@@ -235,7 +185,6 @@ variable "avdshared_subscription_id" {
   type        = string
   description = "Spoke Subscription id"
 }
-
 variable "host_pool_log_categories" {
   description = "value of the log categories to be enabled for the host pool"
 }
@@ -260,14 +209,4 @@ variable "fw_policy" {
 
 variable "hub_dns_zone_rg" {
   description = "The resource group for the hub DNS zone"
-}
-
-variable "enable_telemetry" {
-  type        = bool
-  default     = true
-  description = <<DESCRIPTION
-This variable controls whether or not telemetry is enabled for the module.
-For more information see https://aka.ms/avm/telemetry.
-If it is set to false, then no telemetry will be collected.
-DESCRIPTION
 }

@@ -7,12 +7,11 @@ resource "azurerm_firewall_policy_rule_collection_group" "fw_policy_rule_collect
   name               = "fwpol-avd-${var.prefix}-rcg"
   firewall_policy_id = data.azurerm_firewall_policy.fw_policy.id
   priority           = 100
-  provider           = azurerm.hub
+  provider = azurerm.hub
 
   depends_on = [
     data.azurerm_firewall_policy.fw_policy
   ]
-
 
   ### Required Network Rules for AVD
   network_rule_collection {

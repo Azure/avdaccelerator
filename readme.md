@@ -2,28 +2,26 @@
 
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/azure/avdaccelerator.svg)](http://isitmaintained.com/project/azure/avdaccelerator "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/azure/avdaccelerator.svg)](http://isitmaintained.com/project/azure/avdaccelerator "Percentage of issues still open")
 
-[LZA Baseline](#azure-virtual-desktop---lza-baseline) | [Browfield Scenarios](#brownfield-scenarios) | [Custom Image Build](#custom-image-build) | [Architectural Diagram](#architectural-diagram)
-
 ## Overview
 
 Enterprise-scale is an architectural approach and a reference implementation that enables effective construction and operation of landing zones on Azure, at scale. This approach aligns with the Azure roadmap and the Cloud Adoption Framework for Azure.
 
-Azure Virtual Desktop Landing Zone Accelerator (LZA) represents the strategic design path and target technical state for Azure Virtual Desktop deployment. This solution provides an architectural approach and reference implementation to prepare landing zone subscriptions for a scalable Azure Virtual Desktop deployment. For the architectural guidance, check out [Enterprise-scale for Azure Virtual Desktop in Microsoft Docs](https://docs.microsoft.com/azure/cloud-adoption-framework/scenarios/wvd/enterprise-scale-landing-zone).
+AVD Landing Zone Accelerator represents the strategic design path and target technical state for AVD deployment. This solution provides an architectural approach and reference implementation to prepare landing zone subscriptions for a scalable AVD deployment. For the architectural guidance, check out [Enterprise-scale for AVD in Microsoft Docs](https://docs.microsoft.com/azure/cloud-adoption-framework/scenarios/wvd/enterprise-scale-landing-zone).
 
-The Azure Virtual Desktop Landing Zone Accelerator (LZA) only addresses what gets deployed in the specific Azure Virtual Desktop landing zone subscriptions, highlighted by the red boxes in the [architectural diagram below](#architectural-diagram). It is assumed that an appropriate platform foundation is already setup which may or may not be the official [ALZ platform foundation](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/enterprise-scale/implementation#reference-implementation). This means that policies and governance should already be in place or should be set up after this implementation and are not a part of the scope this program. The policies applied to management groups in the hierarchy above the subscription will trickle down to the Enterprise-scale for Azure Virtual Desktop landing zone subscriptions.
+The AVD Landing Zone Accelerator only addresses what gets deployed in the specific AVD landing zone subscriptions, highlighted by the red boxes in the [architectural diagram below](#architectural-diagram). It is assumed that an appropriate platform foundation is already setup which may or may not be the official [ALZ platform foundation](https://docs.microsoft.com/azure/cloud-adoption-framework/ready/enterprise-scale/implementation#reference-implementation). This means that policies and governance should already be in place or should be set up after this implementation and are not a part of the scope this program. The policies applied to management groups in the hierarchy above the subscription will trickle down to the Enterprise-scale for AVD landing zone subscriptions.
 
 ## This Repository
 
-This repository will contain various customer scenarios that can help accelerate the development and deployment of Azure Virtual Desktop that conforms with [Enterprise-Scale for Azure Virtual Desktop best practices and guidelines](https://docs.microsoft.com/azure/cloud-adoption-framework/scenarios/wvd/ready). Each scenario aims to represent common customer experiences with the goal of accelerating the process of developing and deploying conforming Azure Virtual Desktop using IaaC. Each scenario will eventually have an ARM, Bicep, PowerShell and CLI version to choose from.
-As of today, we have a first reference implementation scenario that is one of the most common ones used by Enterprise customers and partners and it can be used to deploy an Azure Virtual Desktop workload. We will continue to add new scenarios in future updates.
+This repository will contain various customer scenarios that can help accelerate the development and deployment of AVD that conforms with [Enterprise-Scale for AVD best practices and guidelines](https://docs.microsoft.com/azure/cloud-adoption-framework/scenarios/wvd/ready). Each scenario aims to represent common customer experiences with the goal of accelerating the process of developing and deploying conforming AVD using IaaC. Each scenario will eventually have an ARM, Bicep, PowerShell and CLI version to choose from.
+As of today, we have a first reference implementation scenario that is one of the most common ones used by Enterprise customers and partners and it can be used to deploy an AVD workload. We will continue to add new scenarios in future updates.
 
 ## Getting Started
 
-## Azure Virtual Desktop - LZA Baseline
+## AVD Accelerator Baseline
 
 [Getting Started](/workload/docs/getting-started-baseline.md) deploying Azure Virtual Desktop (AVD) resources and dependent services for establishing the baseline
 
-- Azure Virtual Desktop resources: workspace, two (2) application groups, scaling plan and a host pool
+- AVD resources: workspace, two (2) application groups, scaling plan and a host pool
 - [Optional]: new virtual network (VNet) with NSGs, ASG and route tables
 - Azure Files with Integration to the identity service
 - Key vault
@@ -31,44 +29,23 @@ As of today, we have a first reference implementation scenario that is one of th
 
 | Deployment Type | Link |
 |:--|:--|
-| Azure portal UI |[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json) [![Deploy to Azure China](https://aka.ms/deploytoazurechinabutton)](https://portal.azure.cn/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json)|
-| Command line (Bicep/ARM) | [![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](./workload/bicep/readme.md#avd-accelerator-baseline) |
+| Azure portal UI |[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-baseline.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-baseline.json)|
+| Command line (Bicep/ARM) | [![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](./workload/bicep/readme.md) |
 | Terraform | [![Terraform](./workload/docs/icons/terraform.png)](./workload/terraform/greenfield/readme.md) |
 
-If you are having deployment challenges, refer to the [LZA baseline troubleshooting guide](/workload/docs/baseline-troubleshooting-guide.md) for guidance. For additional support please submit a GitHub issue.
+[Brownfield deployments](/workload/bicep/brownfield) deploy new features to existing AVD deployments.
 
-## Azure Virtual Desktop - LZA Optional Deployments
+## Optional: Custom Image Build
 
-### Brownfield scenarios
-
-The brownfield section contains templates to deploy additional features for Azure Virtual Desktop when existing infrastructure already exists. These templates can be used individually as required. Here is the list of deployment options available:
-
-- [Add New Session Hosts](./workload/bicep/brownfield/newSessionHosts/readme.md)
-- [Alerts](./workload/bicep/brownfield/alerts/readme.md)
-- [App Attach Tools VM](./workload/bicep/brownfield/appAttachToolsVM/Readme.md)
-- [Auto Increase Premium File Share Quota](./workload/bicep/brownfield/autoIncreasePremiumFileShareQuota/readme.md)
-- [AVD Session Host Replacer](https://github.com/Azure/AVDSessionHostReplacer)
-- [Migrate monitoring agent from MMA to AMA](./workload/scripts/Monitoring/readme.md)
-- [Scaling Tool](./workload/bicep/brownfield/scalingTool/readme.md)
-- [Start VM On Connect](./workload/bicep/brownfield/startVmOnConnect/readme.md)
-
-
-### Monitoring workbooks
-
-- [Deep Insights Workbook](./workload/workbooks/deepInsightsWorkbook/readme.md)
-- [Error Reporting Workbook](./workload/workbooks/errorReporting/readme.md)
-- [Error Tracking Workbook](./workload/workbooks/errorTracking/readme.md)
-
-### Custom image build
-
-[Getting Started](/workload/docs/getting-started-custom-image-build.md) deploying a custom image based on the latest version of the Azure marketplace image to an Azure Compute Gallery. The following images are offered:
-
+[Getting Started](/workload/docs/getting-started-custom-image-build.md) deploying a custom image based on the latest version of the Azure marketplace image to an Azure Compute Gallery. The following images are offered: 
+ - Windows 10 21H2
  - Windows 10 22H2 (Gen 2)
+ - Windows 11 21H2 (Gen 2)
  - Windows 11 22H2 (Gen 2)
- - Windows 11 23H2 (Gen 2)
+ - Windows 10 21H2 with O365
  - Windows 10 22H2 with O365 (Gen 2)
+ - Windows 11 21H2 with O365 (Gen 2)
  - Windows 11 22H2 with O365 (Gen 2)
- - Windows 11 23H2 with O365 (Gen 2)
 
 You can also select to enable the Trusted Launch or Confidential VM security type feature on the Azure Compute Gallery image definition.
 
@@ -77,12 +54,12 @@ Custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https
 | Deployment Type | Link |
 |:--|:--|
 | Azure portal UI | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json) |
-| Command line (Bicep/ARM) | [![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](./workload/bicep/readme.md#optional-custom-image-build-deployment) |
-| Terraform | [![Terraform](./workload/docs/icons/terraform.png)](./workload/terraform/customimage) |
+| Command line (Bicep/ARM) | [![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](https://github.com/Azure/avdaccelerator/blob/carml-paranVarNaming-peSubnet/workload/bicep/readme.md) |
+| Terraform | [![Terraform](./workload/docs/icons/terraform.png)](https://github.com/Azure/avdaccelerator/blob/carml-paranVarNaming-peSubnet/workload/terraform/customimage) |
 
 ## Architectural Diagram
 
-![Azure Virtual Desktop accelerator diagram](./workload/docs/diagrams/avd-accelerator-baseline-architecture.png)
+![AVD accelerator diagram](./workload/docs/diagrams/avd-accelerator-baseline-architecture.png)
 
 _Download a [Visio file](./workload/docs/diagrams/avd-accelerator-baseline-architecture.vsdx) of this architecture._
 

@@ -3,7 +3,7 @@
     "view": {
         "kind": "Form",
         "properties": {
-            "title": "Azure Virtual Desktop LZA: Scaling Tool",
+            "title": "AVD Landing Zone Accelerator: Scaling Tool",
             "steps": [
                 {
                     "name": "basics",
@@ -53,7 +53,7 @@
                             "type": "Microsoft.Solutions.ArmApiControl",
                             "request": {
                                 "method": "GET",
-                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/resourceGroups?api-version=2022-01-01')]"
+                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/resourceGroups?api-version=2021-04-01')]"
                             }
                         },
                         {

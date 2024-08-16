@@ -1,14 +1,14 @@
-# Implement Azure Virtual Desktop with Microsoft Entra ID
+# Implement Azure Virtual Desktop with Azure Active Directory
 
 This guide is designed to help you get started with deploying a greenfield Azure Virtual Desktop using the provided Terraform template(s) within this repository. Before you deploy, it is recommended to review the template(s) to understand the resources that will be deployed and the associated costs.
 
-This accelerator is to be used as starter kit and you can expand its functionality by developing your own deployments. This scenario deploys a new Azure Virtual Desktop workload with Microsoft Entra ID joined session host using a custom image, so it cannot be used to maintain, modify or add resources to an existing or already deployed Azure Virtual Desktop workload from this accelerator.
+This accelerator is to be used as starter kit and you can expand its functionality by developing your own deployments. This scenario deploys a new Azure Virtual Desktop workload with Azure AD joined session host using a custom image, so it cannot be used to maintain, modify or add resources to an existing or already deployed Azure Virtual Desktop workload from this accelerator.
 
 ***Note*** This terraform accelerator requires the Custom Image Build before deploying the Baseline. If you prefer to use the marketplace image with no customization [see](https://docs.microsoft.com/en-us/azure/developer/terraform/create-avd-session-host)
 
 ## Table of contents
 
-- [Implement Azure Virtual Desktop with Microsoft Entra ID](#implement-azure-virtual-desktop-with-azure-active-directory)
+- [Implement Azure Virtual Desktop with Azure Active Directory](#implement-azure-virtual-desktop-with-azure-active-directory)
   - [Table of contents](#table-of-contents)
   - [Scenario Overview](#scenario-overview)
     - [Azure Architecture](#azure-architecture)
@@ -26,7 +26,7 @@ This accelerator is to be used as starter kit and you can expand its functionali
 
 ### Azure Architecture
 
-This scenario is a greenfield Azure Virtual Desktop deployment using Microsoft Entra ID joined session host and a pre-existing custom image.
+This scenario is a greenfield Azure Virtual Desktop deployment using Azure AD joined session host and a pre-existing custom image.
 The solution implements a new:
 
 - Azure Virtual Desktop resources:
@@ -35,7 +35,7 @@ The solution implements a new:
   - 1 Workspaces – 1 pooled
   - AVD Monitoring, log analytics workspace and diagnostic logs enabled
   - AVD Scaling plan
-- Azure Files Storage with FSLogix share, RBAC role assignment and private endpoint joined to Microsoft Entra ID
+- Azure Files Storage with FSLogix share, RBAC role assignment and private endpoint
 - Key Vault and private endpoint
 - Azure Virtual Desktop spoke resources:
   - Virtual Network
@@ -43,7 +43,7 @@ The solution implements a new:
   - NSG
   - DNS Zone
   - Route table
-- 1 Session host VMs Microsoft Entra ID join using custom image
+- 2 Session host VMs Azure AD join using custom image
   - Application Security Group  
 
 AVD Landing Zone concepts can be explored in more detail via the [official documentation page](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/wvd/).
@@ -70,7 +70,7 @@ Azure Virtual Desktop resources and dependent services for establishing the Azur
 - Current version of the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 - Current version of the Terraform CLI
 - An Azure Subscription(s) where you or an identity you manage has `Owner` [RBAC permissions](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#owner)
-- Ensure Encryption at Host feature is already enabled on the subscription. To enable: az feature register --name EncryptionAtHost  --namespace Microsoft.Compute. To validate: az feature show --name EncryptionAtHost --namespace Microsoft.Compute
+- Ensure Encrption at Host feature is already enabled on the subscription. To enable: az feature register --name EncryptionAtHost  --namespace Microsoft.Compute. To validate: az feature show --name EncryptionAtHost --namespace Microsoft.Compute
 
 ### Naming
 
@@ -109,13 +109,13 @@ Azure platform landing zone has already been deployed in accordance with the [CA
 - prefix               = "your prefix"
 - local_admin_username = "your local admin name"  # Your AVD VM login id to manage username
 - local_admin_password = "your local admin password"  # Your AVD VM login id to manage password
-- vm_size              = "Standard_D2s_v5"
+- vm_size              = "Standard_D8s_v5"
 - vnet_range           = ["your.ip.address.range/16"]
 - subnet_range         = ["your.ip.address.range/24"]
 - allow_list_ip        = ["your.ip.address.range/23"]
-- aad_group_name       = "Desktop Virtualization User"  #user group must pre-created in Microsoft Entra ID
+- aad_group_name       = "Desktop Virtualization User"  #user group must pre-created in Azure AD
 - rdsh_count           = 2
-- image_name           = "yourimagename-microsoftwindowsdesktop-office-365-win11-23h2-avd-m365"
+- image_name           = "yourimagename-microsoftwindowsdesktop-office-365-win11-21h2-avd-m365"
 - image_rg             = "yourimageresourcegroup-WestEurope-avd-AIBdemo-shared-resources"
 - gallery_name         = "yourimagegalleryname_WestEurope"
 - spoke_subscription_id = "Your spoke subscription ID"

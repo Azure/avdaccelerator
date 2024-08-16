@@ -1,0 +1,3 @@
+rg_avdi     = "monitoring" #rg-avd-<location>-<prefix>-monitoring
+prefix      = "mod2"
+avdLocation = "eastus" # azure region for AVD

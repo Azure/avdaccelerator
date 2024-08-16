@@ -21,7 +21,7 @@ This solution will deploy Start VM On Connect. The feature allows stopped / deal
 New-AzDeployment `
     -Location '<Azure location>' `
     -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/brownfield/startVmOnConnect/solution.json' `
-    -AvdObjectId '<Object ID for the AVD / WVD application in Microsoft Entra ID>' `
+    -AvdObjectId '<Object ID for the AVD / WVD application in Azure AD>' `
     -HostPoolResourceId '<Resource ID for the target host pool>' `
     -Verbose
 ```
@@ -33,6 +33,6 @@ az deployment sub create \
     --location '<Azure location>' \
     --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/brownfield/startVmOnConnect/solution.json' \
     --parameters \
-        AvdObjectId '<Object ID for the AVD / WVD application in Microsoft Entra ID>' \
+        AvdObjectId '<Object ID for the AVD / WVD application in Azure AD>' \
         HostPoolResourceId '<Resource ID for the target host pool>'
 ```

@@ -14,7 +14,7 @@ param applicationNameTag string = 'Contoso-App'
 @description('Optional. Custom name for the Automation Account.')
 param automationAccountCustomName string = 'aa-avd'
 
-@description('Optional. Cost center of owner team. (Default: Contoso-CC)')
+@description('Optional. Cost center of owner team. (Defualt: Contoso-CC)')
 param costCenterTag string = 'Contoso-CC'
 
 @description('Optional. Tag value for custom criticality value. (Default: Contoso-Critical)')
@@ -216,9 +216,9 @@ var varTimeZone = varLocations[varLocation].timeZone
 // =========== //
 
 // AVD Shared Services Resource Group
-module avdSharedResourcesRg '../../../../avm/1.0.0/res/resources/resource-group/main.bicep' = {
+module avdSharedResourcesRg '../../../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
   scope: subscription(sharedServicesSubscriptionId)
-  name: 'RG-${time}'
+  name: 'Resource-Group-${time}'
   params: {
       name: varResourceGroupName
       location: deploymentLocation
@@ -227,9 +227,9 @@ module avdSharedResourcesRg '../../../../avm/1.0.0/res/resources/resource-group/
 }
 
 // Log Analytics Workspace
-module workspace '../../../../avm/1.0.0/res/operational-insights/workspace/main.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
+module workspace '../../../../carml/1.3.0/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
   scope: resourceGroup(sharedServicesSubscriptionId, varResourceGroupName)
-  name: 'LA-Workspace-${time}'
+  name: 'Log-Analytics-Workspace-${time}'
   params: {
       location: deploymentLocation
       name: varLogAnalyticsWorkspaceName
@@ -242,9 +242,32 @@ module workspace '../../../../avm/1.0.0/res/operational-insights/workspace/main.
   ]
 }
 
+// Introduce wait after log analitics workspace creation.
+module workspaceWait '../../../../carml/1.3.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
+  scope: resourceGroup(sharedServicesSubscriptionId, varResourceGroupName)
+  name: 'Log-Analytics-Workspace-Wait-${time}'
+  params: {
+      name: 'Log-Analytics-Workspace-Wait-${time}'
+      location: deploymentLocation
+      azPowerShellVersion: '8.3.0'
+      cleanupPreference: 'Always'
+      timeout: 'PT10M'
+      scriptContent: '''
+      Write-Host "Start"
+      Get-Date
+      Start-Sleep -Seconds 60
+      Write-Host "Stop"
+      Get-Date
+      '''
+  }
+  dependsOn: [
+      workspace
+  ]
+}
+
 // Get existing automation account
 module automationAccount_Existing 'modules/existingAutomationAccount.bicep' = if(!(empty(existingAutomationAccountResourceId))) {
-  name: 'Existing-AA-${time}'
+  name: 'Existing_Automation-Account-${time}'
   scope: resourceGroup(sharedServicesSubscriptionId, varAutomationAccountScope)
   params:{
     automationAccountName: varExistingAutomationAccountName
@@ -252,15 +275,16 @@ module automationAccount_Existing 'modules/existingAutomationAccount.bicep' = if
 }
 
 // Deploy new automation account
-module automationAccount_New '../../../../avm/1.0.0/res/automation/automation-account/main.bicep' = {
+module automationAccount_New '../../../../carml/1.3.0/Microsoft.Automation/automationAccounts/deploy.bicep' = {
   scope: resourceGroup(sharedServicesSubscriptionId, varAutomationAccountScope)
-  name: 'AA-${time}'
+  name: 'Automation-Account-${time}'
   params: {
-    diagnosticSettings: [
-      {
-        workspaceResourceId: empty(existingLogAnalyticsWorkspaceResourceId) ? workspace.outputs.resourceId : existingLogAnalyticsWorkspaceResourceId
-      }
-    ] 
+    diagnosticLogCategoriesToEnable: [
+      'JobLogs'
+      'JobStreams'
+    ]
+    diagnosticLogsRetentionInDays: 30
+    diagnosticWorkspaceId: empty(existingLogAnalyticsWorkspaceResourceId) ? workspace.outputs.resourceId : existingLogAnalyticsWorkspaceResourceId
     name: empty(existingAutomationAccountResourceId) ? varAutomationAccountName : automationAccount_Existing.outputs.name
     jobSchedules: [
       {
@@ -331,25 +355,23 @@ module automationAccount_New '../../../../avm/1.0.0/res/automation/automation-ac
     ]
     skuName: empty(existingAutomationAccountResourceId) ? 'Free' : automationAccount_Existing.outputs.properties.sku.name
     tags: !(empty(existingAutomationAccountResourceId)) ? automationAccount_Existing.outputs.tags : enableResourceTags ? varCommonResourceTags : {}
-    managedIdentities: {
-      systemAssigned:true
-    }
+    systemAssignedIdentity: true
   }
 }
 
 // Role assignment
-module roleAssignments '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = {
+module roleAssignments '../../../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = {
   name: 'Role-Assignment-${time}'
   scope: resourceGroup(varStorageAccountSubscriptionId, varStorageAccountResourceGroupName)
   params: {
-      roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/17d1049b-9a84-46fb-8f53-869881c3d3ab' //'Storage Account Contributor'
-      principalId: automationAccount_New.outputs.systemAssignedMIPrincipalId
+      roleDefinitionIdOrName: 'Storage Account Contributor'
+      principalId: automationAccount_New.outputs.systemAssignedPrincipalId
       principalType: 'ServicePrincipal'
   }
 }
 
 // Alerts action group
-module actionGroup '../../../../avm/1.0.0/res/insights/action-group/main.bicep' = if (enableMonitoringAlerts) {
+module actionGroup '../../../../carml/1.3.0/Microsoft.Insights/actionGroups/deploy.bicep' = if (enableMonitoringAlerts) {
   scope: resourceGroup(sharedServicesSubscriptionId, varResourceGroupName)
   name: 'Action-Group-${time}'
   params: {
@@ -372,9 +394,9 @@ module actionGroup '../../../../avm/1.0.0/res/insights/action-group/main.bicep' 
 }
 
 // Scheduled query rules
-module scheduledQueryRules '../../../../avm/1.0.0/res/insights/scheduled-query-rule/main.bicep' = [for i in range(0, length(varAlerts)): if (enableMonitoringAlerts) {
+module scheduledQueryRules '../../../../carml/1.3.0/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(varAlerts)): if (enableMonitoringAlerts) {
   scope: resourceGroup(sharedServicesSubscriptionId, varResourceGroupName)
-  name: 'Sche-Query-Rule-${i}-${time}'
+  name: 'Scheduled-Query-Rule-${i}-${time}'
   params: {
       location: deploymentLocation
       name: varAlerts[i].name

@@ -1,7 +1,7 @@
 resource "azurerm_user_assigned_identity" "mi" {
-  location            = azurerm_resource_group.rg.location
-  name                = "id-avd-umi-${var.avdLocation}-${var.prefix}"
-  resource_group_name = azurerm_resource_group.rg.name
+  name                = "id-avd-fslogix-eus-${var.prefix}"
+  resource_group_name = azurerm_resource_group.rg_storage.name
+  location            = azurerm_resource_group.rg_storage.location
 }
 
 ## Azure Storage Accounts requires a globally unique names
@@ -9,8 +9,8 @@ resource "azurerm_user_assigned_identity" "mi" {
 ## Create a File Storage Account 
 resource "azurerm_storage_account" "storage" {
   name                      = local.storage_name
-  resource_group_name       = azurerm_resource_group.rg.name
-  location                  = azurerm_resource_group.rg.location
+  resource_group_name       = azurerm_resource_group.rg_storage.name
+  location                  = azurerm_resource_group.rg_storage.location
   min_tls_version           = "TLS1_2"
   account_tier              = "Premium"
   account_replication_type  = "LRS"
@@ -20,16 +20,7 @@ resource "azurerm_storage_account" "storage" {
   identity {
     type = "SystemAssigned"
   }
-  azure_files_authentication {
-    directory_type = "AADKERB"
-  }
-  lifecycle {
-    ignore_changes = [
-      customer_managed_key
-    ]
-  }
 }
-
 
 resource "azurerm_storage_share" "FSShare" {
   name             = "fslogix"
@@ -63,9 +54,9 @@ data "azurerm_private_dns_zone" "pe-filedns-zone" {
 
 resource "azurerm_private_endpoint" "afpe" {
   name                = "pe-${local.storage_name}-file"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  subnet_id           = data.azurerm_subnet.pesubnet.id
+  location            = azurerm_resource_group.rg_storage.location
+  resource_group_name = azurerm_resource_group.rg_storage.name
+  subnet_id           = data.azurerm_subnet.subnet.id
   tags                = local.tags
 
   private_service_connection {
@@ -96,7 +87,6 @@ resource "azurerm_private_dns_zone_virtual_network_link" "filelink" {
   resource_group_name   = var.hub_dns_zone_rg
   private_dns_zone_name = data.azurerm_private_dns_zone.pe-filedns-zone.name
   virtual_network_id    = data.azurerm_virtual_network.vnet.id
-  provider              = azurerm.hub
 
   lifecycle { ignore_changes = [tags] }
 }

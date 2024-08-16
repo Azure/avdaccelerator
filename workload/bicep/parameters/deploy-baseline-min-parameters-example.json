@@ -14,8 +14,8 @@
         "avdVmLocalUserPassword": {
             "value": "<<localUserPassword>>"
         },
-        "identityDomainName": {
-            "value": "none"
+        "avdIdentityDomainName": {
+            "value": "<<domainName>>"
         },
         "avdDomainJoinUserName": {
             "value": "<<domainJoinUserName>>"

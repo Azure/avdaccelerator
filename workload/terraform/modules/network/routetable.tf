@@ -3,7 +3,7 @@ resource "azurerm_route_table" "udr" {
   location                      = azurerm_resource_group.net.location
   resource_group_name           = "rg-avd-${substr(var.avdLocation, 0, 5)}-${var.prefix}-${var.rg_network}"
   disable_bgp_route_propagation = false
-  tags                          = local.tags
+  tags = local.tags
   # Optional uncomment to set a route
   /*
   route {

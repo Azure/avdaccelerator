@@ -15,7 +15,7 @@ To get started with Terraform on Azure check out their [tutorial](https://learn.
 
 ## Prerequisites
 
-- Meet the prerequisites listed [here](https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started-baseline.md#prerequisites)
+- Meet the prerequisites listed [here](https://github.com/Azure/avdaccelerator/wiki/Getting-Started#Getting-Started)
 - Current version of the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 - Current version of the Terraform CLI
 - An Azure Subscription(s) where you or an identity you manage has `Owner` [RBAC permissions](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#owner)
@@ -23,7 +23,7 @@ To get started with Terraform on Azure check out their [tutorial](https://learn.
 
 ## Custom-Image-Build
 
-Deploy a customer image based on the latest version of the Azure Marketplace image for Windows 11 23H2 with M365 using Azure Image Builder to an Azure Compute Gallery. The custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates.
+Deploy a customer image based on the latest version of the Azure Marketplace image for Windows 11 21H2 with M365 using Azure Image Builder to an Azure Compute Gallery. The custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates.
 
 ![Custom Image diagram](../../docs/diagrams/avd-accelerator-terraform-aib-custom-image.png)
 

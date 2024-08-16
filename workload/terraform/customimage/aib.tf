@@ -171,7 +171,7 @@ resource "azurerm_resource_group_template_deployment" "aib" {
             "type": "PlatformImage",
             "publisher": "microsoftwindowsdesktop",
             "offer": "office-365",
-            "sku": "win11-23h2-avd-m365",
+            "sku": "win11-21h2-avd-m365",
             "version": "latest"
           },
           "customize": [

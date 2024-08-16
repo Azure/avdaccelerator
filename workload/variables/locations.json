@@ -69,11 +69,6 @@
         "timeDifference": "+8:00",
         "timeZone": "China Standard Time"
     },
-    "chinanorth3": {
-        "acronym": "cnn3",
-        "timeDifference": "+8:00",
-        "timeZone": "China Standard Time"
-    },
     "eastasia": {
         "acronym": "ase",
         "timeDifference": "+8:00",
@@ -156,11 +151,6 @@
     },
     "norwaywest": {
         "acronym": "now",
-        "timeDifference": "+1:00",
-        "timeZone": "Central Europe Standard Time"
-    },
-    "italynorth": {
-        "acronym": "itn",
         "timeDifference": "+1:00",
         "timeZone": "Central Europe Standard Time"
     },
