@@ -29,7 +29,7 @@
         "avdApplicationGroupCustomName": {
             "value": "vdag-desktop-app1-test-use2-001"
         },
-        "avdApplicationDisplayName": {
+        "avdApplicationFriendlyName": {
             "value": "Windows 11 Desktop"
         },
         "deployPrivateEndpointKeyvaultStorage": {

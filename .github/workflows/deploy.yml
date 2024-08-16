@@ -35,11 +35,11 @@ jobs:
   
     - run: echo "avdServiceObjectsRgCustomName =  ${{ env.test_parameters_avdServiceObjectsRgCustomName_value }}"
     - run: echo "avdApplicationGroupCustomName =  ${{ env.test_parameters_avdApplicationGroupCustomName_value }}"
-    - run: echo "avdApplicationDisplayName =  ${{ env.test_parameters_avdApplicationDisplayName_value }}"
+    - run: echo "avdApplicationFriendlyName =  ${{ env.test_parameters_avdApplicationFriendlyName_value }}"
     
     - name: Run Azure PowerShell Script File
       uses: azure/powershell@v2
       with:
-        inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName '${{ env.test_parameters_avdServiceObjectsRgCustomName_value }}' -ApplicationGroupName '${{ env.test_parameters_avdApplicationGroupCustomName_value }}' -Name 'SessionDesktop' -FriendlyName '${{ env.test_parameters_avdApplicationDisplayName_value }}'
+        inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName '${{ env.test_parameters_avdServiceObjectsRgCustomName_value }}' -ApplicationGroupName '${{ env.test_parameters_avdApplicationGroupCustomName_value }}' -Name 'SessionDesktop' -FriendlyName '${{ env.test_parameters_avdApplicationFriendlyName_value }}'
         azPSVersion: "latest"
         errorActionPreference: continue
