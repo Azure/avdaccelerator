@@ -17,14 +17,14 @@ Azure Files Premium is charged based on the size of the file share quota, not th
 
 ### Azure portal UI
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployAutoIncreasePremiumFileShareQuota.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAutoIncreasePremiumFileShareQuota.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployAutoIncreasePremiumFileShareQuota.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAutoIncreasePremiumFileShareQuota.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmay-2023%2Fworkload%2Farm%2Fbrownfield%2FdeployAutoIncreasePremiumFileShareQuota.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmay-2023%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAutoIncreasePremiumFileShareQuota.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmay-2023%2Fworkload%2Farm%2Fbrownfield%2FdeployAutoIncreasePremiumFileShareQuota.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmay-2023%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAutoIncreasePremiumFileShareQuota.json)
 
 ### PowerShell
 
 ```powershell
 New-AzDeployment `
     -Location '<Azure location>' `
-    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployAutoIncreasePremiumFileShareQuota.json' `
+    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/may-2023/workload/arm/brownfield/deployAutoIncreasePremiumFileShareQuota.json' `
     -ActionGroupCustomName '<Name of the Action Group>' `
     -ApplicationNameTag '<Value for the Application Name tag>' `
     -AutomationAccountCustomName '<Name of the Automation Account>' `
@@ -58,7 +58,7 @@ New-AzDeployment `
 ```azurecli
 az deployment sub create \
     --location '<Azure location>' \
-    --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployAutoIncreasePremiumFileShareQuota.json' \
+    --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/may-2023/workload/arm/brownfield/deployAutoIncreasePremiumFileShareQuota.json' \
     --parameters \
       ActionGroupCustomName '<Name of the Action Group>' \
       ApplicationNameTag '<Value for the Application Name tag>' \

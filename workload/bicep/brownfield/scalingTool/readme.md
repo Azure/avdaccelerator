@@ -14,15 +14,15 @@ This solution fully deploys the AVD Scaling Tool provided in the [Microsoft Lear
 
 ### Azure Portal
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployScalingTool.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiScalingTool.json)
-[![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployScalingTool.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiScalingTool.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmay-2023%2Fworkload%2Farm%2Fbrownfield%2FdeployScalingTool.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmay-2023%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiScalingTool.json)
+[![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmay-2023%2Fworkload%2Farm%2Fbrownfield%2FdeployScalingTool.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmay-2023%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiScalingTool.json)
 
 ### PowerShell
 
 ````powershell
 New-AzResourceGroupDeployment `
     -ResourceGroupName '<Resource Group Name>' `
-    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployScalingTool.json' `
+    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/may-2023/workload/arm/brownfield/deployScalingTool.json' `
     -ActionGroupCustomName '<Custom name for action group>' `
     -ApplicationNameTag '<Tag for application name>' `
     -AutomationAccountCustomName '<Custom name for automation account>' `
@@ -60,7 +60,7 @@ New-AzResourceGroupDeployment `
 ````cli
 az deployment group create \
     --resource-group '<Resource Group Name>' \
-    --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployScalingTool.json' \
+    --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/may-2023/workload/arm/brownfield/deployScalingTool.json' \
     --parameters \
         ActionGroupCustomName='<Custom name for action group>' \
         ApplicationNameTag='<Tag for application name>' \

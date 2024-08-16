@@ -298,7 +298,7 @@ module automationAccount_New '../../../../carml/1.3.0/Microsoft.Automation/autom
         name: varRunbookName
         description: 'When this runbook is triggered, the AVD session hosts will be either turned on or off depending upon the peak hours and active sessions.'
         type: 'PowerShell'
-        uri: 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/Set-AvdScalingTool.ps1'
+        uri: 'https://raw.githubusercontent.com/Azure/avdaccelerator/may-2023/workload/scripts/Set-AvdScalingTool.ps1'
         version: '1.0.0.0'
       }
     ]

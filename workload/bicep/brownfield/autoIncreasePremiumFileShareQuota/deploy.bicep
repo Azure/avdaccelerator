@@ -315,7 +315,7 @@ module automationAccount_New '../../../../carml/1.3.0/Microsoft.Automation/autom
         description: 'When this runbook is triggered, the quota on the Azure Files Premium is checked. If the quota is within the defined threshold, the quota is increased based on the defined increment.'
         type: 'PowerShell'
         // To Do: Update URL to Azure repo
-        uri: 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/Set-AzureFilesPremiumShareQuota.ps1'
+        uri: 'https://raw.githubusercontent.com/Azure/avdaccelerator/may-2023/workload/scripts/Set-AzureFilesPremiumShareQuota.ps1'
         version: '1.0.0.0'
       }
     ]

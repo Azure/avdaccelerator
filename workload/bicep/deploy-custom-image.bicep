@@ -325,7 +325,7 @@ var varAutomationAccountName = customNaming ? automationAccountCustomName : 'aa-
 // Placeholder for future feature
 // var varAvdContainerName = customNaming ? avdContainerCustomName : 'avd-artifacts'
 var varAzureCloudName = environment().name
-var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
+var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/may-2023/workload/'
 var varCommonResourceTags = enableResourceTags ? {
     ImageBuildName: imageBuildNameTag
     WorkloadName: workloadNameTag
@@ -829,7 +829,7 @@ module automationAccount '../../carml/1.3.0/Microsoft.Automation/automationAccou
                 description: 'When this runbook is triggered, last build date is checked on the AIB image template.  If a new marketplace image has been released since that date, a new build is initiated. If a build has never been initiated then it will be start one.'
                 type: 'PowerShell'
                 // ToDo: Update URL before PR merge
-                uri: 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/New-AzureImageBuilderBuild.ps1'
+                uri: 'https://raw.githubusercontent.com/Azure/avdaccelerator/may-2023/workload/scripts/New-AzureImageBuilderBuild.ps1'
                 version: '1.0.0.0'
             }
         ]
