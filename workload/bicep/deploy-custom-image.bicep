@@ -137,26 +137,18 @@ param existingVirtualNetworkResourceId string = ''
 param imageBuildNameTag string = 'AVD-Image'
 
 @maxLength(64)
-@sys.description('Custom name for Image Definition. (Default: avd-win11-21h2)')
-param imageDefinitionCustomName string = 'avd-win11-21h2'
+@sys.description('Custom name for Image Definition. (Default: avd-win11-23h2)')
+param imageDefinitionCustomName string = 'avd-win11-23h2'
 
 @sys.description('''The image supports accelerated networking.
 Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.
 This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the
 most demanding network workloads on supported VM types.
 ''')
-@allowed([
-    'true'
-    'false'
-])
-param imageDefinitionAcceleratedNetworkSupported string = 'true'
+param imageDefinitionAcceleratedNetworkSupported bool = true
 
 @sys.description('The image will support hibernation.')
-@allowed([
-    'true'
-    'false'
-])
-param imageDefinitionHibernateSupported string = 'false'
+param imageDefinitionHibernateSupported bool = false
 
 @allowed([
     'Standard'
@@ -172,8 +164,8 @@ param imageDefinitionSecurityType string = 'Standard'
 param imageGalleryCustomName string = 'gal_avd_use2_001'
 
 @maxLength(260)
-@sys.description('Custom name for Image Template. (Default: it-avd-win11-21h2)')
-param imageTemplateCustomName string = 'it-avd-win11-22h2'
+@sys.description('Custom name for Image Template. (Default: it-avd-win11-23h2)')
+param imageTemplateCustomName string = 'it-avd-win11-23h2'
 
 @sys.description('Disaster recovery replication location for Image Version. (Default:"")')
 param imageVersionDisasterRecoveryLocation string = ''
@@ -198,19 +190,15 @@ param logAnalyticsWorkspaceCustomName string = 'log-avd'
 param logAnalyticsWorkspaceDataRetention int = 30
 
 @allowed([
-    'win10_21h2'
-    'win10_21h2_office'
     'win10_22h2_g2'
     'win10_22h2_office_g2'
-    'win11_21h2'
-    'win11_21h2_office'
     'win11_22h2'
     'win11_22h2_office'
     'win11_23h2'
     'win11_23h2_office'
 ])
-@sys.description('AVD OS image source. (Default: win11-22h2)')
-param operatingSystemImage string = 'win11_22h2'
+@sys.description('AVD OS image source. (Default: win11_23h2)')
+param operatingSystemImage string = 'win11_23h2'
 
 @sys.description('Team accountable for day-to-day operations. (Contoso-Ops)')
 param operationsTeamTag string = 'workload-admins@Contoso.com'
@@ -406,24 +394,6 @@ var varModules = [
 ]
 var varNamingStandard = '${varLocationAcronym}'
 var varOperatingSystemImageDefinitions = {
-    win10_21h2: {
-        osType: 'Windows'
-        osState: 'Generalized'
-        offer: 'windows-10'
-        publisher: 'MicrosoftWindowsDesktop'
-        sku: 'win10-21h2-avd'
-        hyperVGeneration: 'V1'
-        version: 'latest'
-    }
-    win10_21h2_office: {
-        osType: 'Windows'
-        osState: 'Generalized'
-        offer: 'office-365'
-        publisher: 'MicrosoftWindowsDesktop'
-        sku: 'win10-21h2-avd-m365'
-        hyperVGeneration: 'V1'
-        version: 'latest'
-    }
     win10_22h2_g2: {
         osType: 'Windows'
         osState: 'Generalized'
@@ -439,24 +409,6 @@ var varOperatingSystemImageDefinitions = {
         offer: 'office-365'
         publisher: 'MicrosoftWindowsDesktop'
         sku: 'win10-22h2-avd-m365-g2'
-        hyperVGeneration: 'V2'
-        version: 'latest'
-    }
-    win11_21h2: {
-        osType: 'Windows'
-        osState: 'Generalized'
-        offer: 'windows-11'
-        publisher: 'MicrosoftWindowsDesktop'
-        sku: 'win11-21h2-avd'
-        hyperVGeneration: 'V2'
-        version: 'latest'
-    }
-    win11_21h2_office: {
-        osType: 'Windows'
-        osState: 'Generalized'
-        offer: 'office-365'
-        publisher: 'MicrosoftWindowsDesktop'
-        sku: 'win11-21h2-avd-m365'
         hyperVGeneration: 'V2'
         version: 'latest'
     }
@@ -618,7 +570,7 @@ resource telemetryDeployment 'Microsoft.Resources/deployments@2021-04-01' = if (
 }
 
 // AVD Shared Services Resource Group.
-module avdSharedResourcesRg '../../carml/1.3.0/Microsoft.Resources/resourceGroups/deploy.bicep' = {
+module avdSharedResourcesRg '../../avm/1.0.0/res/resources/resource-group/main.bicep' = {
     scope: subscription(sharedServicesSubId)
     name: 'RG-${time}'
     params: {
@@ -645,11 +597,10 @@ resource virtualNetworkJoinExistingRoleCheck 'Microsoft.Authorization/roleDefini
 */
 
 // Role definition deployment.
-module roleDefinitions '../../carml/1.3.0/Microsoft.Authorization/roleDefinitions/subscription/deploy.bicep' = [for i in range(0, length(varRoles)): {
+module roleDefinitions './modules/rbacRoles/roleDefinitionsSubscriptions.bicep' = [for i in range(0, length(varRoles)): {
     scope: subscription(sharedServicesSubId)
     name: 'Role-Definition-${i}-${time}'
     params: {
-        location: deploymentLocation
         subscriptionId: sharedServicesSubId
         description: varRoles[i].description
         roleName: varRoles[i].name
@@ -658,15 +609,10 @@ module roleDefinitions '../../carml/1.3.0/Microsoft.Authorization/roleDefinition
             '/subscriptions/${sharedServicesSubId}'
         ]
     }
-    //dependsOn: [
-    //    imageTemplateBuildAutomationExistingRoleCheck
-    //    virtualNetworkJoinExistingRoleCheck
-    //    imageTemplateContributorExistingRoleCheck
-    //]
 }]
 
 // Managed identity.
-module userAssignedManagedIdentity '../../carml/1.3.0/Microsoft.ManagedIdentity/userAssignedIdentities/deploy.bicep' = {
+module userAssignedManagedIdentity '../../avm/1.0.0/res/managed-identity/user-assigned-identity/main.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'User-Assigned-Managed-Identity-${time}'
     params: {
@@ -680,7 +626,7 @@ module userAssignedManagedIdentity '../../carml/1.3.0/Microsoft.ManagedIdentity/
 }
 
 // Role assignments.
-module roleAssignments '../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = [for i in range(0, length(varRoles)): {
+module roleAssignments '../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for i in range(0, length(varRoles)): {
     name: 'Role-Assignment-${i}-${time}'
     scope: resourceGroup(sharedServicesSubId, varRoles[i].resourceGroup)
     params: {
@@ -691,7 +637,7 @@ module roleAssignments '../../carml/1.3.0/Microsoft.Authorization/roleAssignment
 }]
 
 //// Unique role assignment for Azure US Government since it does not support image template permissions
-module roleAssignment_AzureUSGovernment '../../carml/1.3.0/Microsoft.Authorization/roleAssignments/resourceGroup/deploy.bicep' = if (varAzureCloudName != 'AzureCloud') {
+module roleAssignment_AzureUSGovernment '../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (varAzureCloudName != 'AzureCloud') {
     name: 'Role-Assignment-MAG-${time}'
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     params: {
@@ -702,13 +648,13 @@ module roleAssignment_AzureUSGovernment '../../carml/1.3.0/Microsoft.Authorizati
 }
 
 // Compute Gallery.
-module gallery '../../carml/1.3.0/Microsoft.Compute/galleries/deploy.bicep' = {
+module gallery '../../avm/1.0.0/res/compute/gallery/main.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Compute-Gallery-${time}'
     params: {
         name: varImageGalleryName
         location: imageVersionPrimaryLocation
-        galleryDescription: 'Azure Virtual Desktops Images'
+        description: 'Azure Virtual Desktops Images'
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
@@ -717,7 +663,7 @@ module gallery '../../carml/1.3.0/Microsoft.Compute/galleries/deploy.bicep' = {
 }
 
 // Image Definition.
-module image '../../carml/1.3.0/Microsoft.Compute/galleries/images/deploy.bicep' = {
+module image '../../avm/1.0.0/res/compute/gallery/image/main.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Image-Definition-${time}'
     params: {
@@ -744,19 +690,29 @@ module image '../../carml/1.3.0/Microsoft.Compute/galleries/images/deploy.bicep'
     ]
 }
 
+
+
 // Image template.
-module imageTemplate '../../carml/1.3.0/Microsoft.VirtualMachineImages/imageTemplates/deploy.bicep' = {
+module imageTemplate '../../avm/1.0.0/res/virtual-machine-images/image-template/main.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Image-Template-${time}'
     params: {
         name: varImageTemplateName
-        subnetId: !empty(existingVirtualNetworkResourceId) && !empty(existingSubnetName) ? '${existingVirtualNetworkResourceId}/subnets/${existingSubnetName}' : ''
-        userMsiName: userAssignedManagedIdentity.outputs.name
-        userMsiResourceGroup: userAssignedManagedIdentity.outputs.resourceGroupName
+        subnetResourceId: !empty(existingVirtualNetworkResourceId) && !empty(existingSubnetName) ? '${existingVirtualNetworkResourceId}/subnets/${existingSubnetName}' : ''
+        managedIdentities: {
+            userAssignedResourceIds: [
+                userAssignedManagedIdentity.outputs.resourceId
+            ]
+        } 
         location: deploymentLocation
-        imageReplicationRegions: varImageReplicationRegions
-        storageAccountType: imageVersionStorageAccountType
-        sigImageDefinitionId: image.outputs.resourceId
+        distributions: [
+            {
+                type: 'SharedImage'
+                replicationRegions: varImageReplicationRegions
+                storageAccountType: imageVersionStorageAccountType
+                sharedImageGalleryImageDefinitionResourceId: image.outputs.resourceId
+            }
+        ]
         vmSize: varVmSize
         customizationSteps: varCustomizationSteps
         imageSource: {
@@ -777,7 +733,7 @@ module imageTemplate '../../carml/1.3.0/Microsoft.VirtualMachineImages/imageTemp
 }
 
 // Log Analytics Workspace.
-module workspace '../../carml/1.3.0/Microsoft.OperationalInsights/workspaces/deploy.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
+module workspace '../../avm/1.0.0/res/operational-insights/workspace/main.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Log-Analytics-Workspace-${time}'
     params: {
@@ -793,16 +749,15 @@ module workspace '../../carml/1.3.0/Microsoft.OperationalInsights/workspaces/dep
 }
 
 // Automation account.
-module automationAccount '../../carml/1.3.0/Microsoft.Automation/automationAccounts/deploy.bicep' = {
+module automationAccount '../../avm/1.0.0/res/automation/automation-account/main.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Automation-Account-${time}'
     params: {
-        diagnosticLogCategoriesToEnable: [
-            'JobLogs'
-            'JobStreams'
+        diagnosticSettings: [
+            {
+                workspaceResourceId: empty(alertsDistributionGroup) ? '' : empty(existingLogAnalyticsWorkspaceResourceId) ? workspace.outputs.resourceId : existingLogAnalyticsWorkspaceResourceId
+            }
         ]
-        diagnosticLogsRetentionInDays: 30
-        diagnosticWorkspaceId: empty(alertsDistributionGroup) ? '' : empty(existingLogAnalyticsWorkspaceResourceId) ? workspace.outputs.resourceId : existingLogAnalyticsWorkspaceResourceId
         name: varAutomationAccountName
         jobSchedules: [
             {
@@ -845,9 +800,11 @@ module automationAccount '../../carml/1.3.0/Microsoft.Automation/automationAccou
         ]
         skuName: 'Free'
         tags: enableResourceTags ? varCommonResourceTags : {}
-        systemAssignedIdentity: false
-        userAssignedIdentities: {
-            '${userAssignedManagedIdentity.outputs.resourceId}': {}
+        managedIdentities: {
+            systemAssigned: false
+            userAssignedResourceIds: [
+                userAssignedManagedIdentity.outputs.resourceId
+            ]
         }
     }
     dependsOn: empty(existingLogAnalyticsWorkspaceResourceId) ? [
@@ -857,7 +814,7 @@ module automationAccount '../../carml/1.3.0/Microsoft.Automation/automationAccou
 
 // Automation accounts.
 @batchSize(1)
-module modules '../../carml/1.3.0/Microsoft.Automation/automationAccounts/modules/deploy.bicep' = [for i in range(0, length(varModules)): {
+module modules '../../avm/1.0.0/res/automation/automation-account/module/main.bicep' = [for i in range(0, length(varModules)): {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'AA-Module-${i}-${time}'
     params: {
@@ -869,37 +826,8 @@ module modules '../../carml/1.3.0/Microsoft.Automation/automationAccounts/module
     }
 }]
 
-// Commenting out for future feature release
-/* module storageAccount '../../carml/1.2.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
-    scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
-    name: 'Storage-Account-${time}'
-    params: {
-        name: varStorageAccountName
-        location: deploymentLocation
-        storageAccountSku: storageAccountSku
-        storageAccountKind: 'StorageV2'
-        blobServices: {
-            containers: [
-                {
-                    name: varAibContainerName
-                    publicAccess: 'None'
-                }
-                {
-                    name: varAvdContainerName
-                    publicAccess: 'None'
-                }
-            ]
-        }
-        tags: enableResourceTags ? varCommonResourceTags : {}
-    }
-    dependsOn: [
-        avdSharedResourcesRg
-    ]
-} 
-*/
-
 // Action groups.
-module actionGroup '../../carml/1.3.0/Microsoft.Insights/actionGroups/deploy.bicep' = if (enableMonitoringAlerts) {
+module actionGroup '../../avm/1.0.0/res/insights/action-group/main.bicep' = if (enableMonitoringAlerts) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Action-Group-${time}'
     params: {
@@ -922,7 +850,7 @@ module actionGroup '../../carml/1.3.0/Microsoft.Insights/actionGroups/deploy.bic
 }
 
 // Schedules.
-module scheduledQueryRules '../../carml/1.3.0/Microsoft.Insights/scheduledQueryRules/deploy.bicep' = [for i in range(0, length(varAlerts)): if (enableMonitoringAlerts) {
+module scheduledQueryRules '../../avm/1.0.0/res/insights/scheduled-query-rule/main.bicep' = [for i in range(0, length(varAlerts)): if (enableMonitoringAlerts) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Scheduled-Query-Rule-${i}-${time}'
     params: {

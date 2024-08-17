@@ -1,3 +1,7 @@
+metadata name = 'AVD LZA storage'
+metadata description = 'This module deploys storage account, azure files. domain join logic'
+metadata owner = 'Azure/avdaccelerator'
+
 targetScope = 'subscription'
 
 // ========== //
@@ -105,18 +109,16 @@ param storageFilePrivateEndpointStaticIp string
 // Variable declaration //
 // =========== //
 var varAzureCloudName = environment().name
-var varAvdFileShareLogsDiagnostic = [
-    'allLogs'
-]
-var varAvdFileShareMetricsDiagnostic = [
-    'Transaction'
-]
 var varWrklStoragePrivateEndpointName = 'pe-${storageAccountName}-file'
 var varDirectoryServiceOptions = (identityServiceProvider == 'EntraDS') ? 'AADDS': (identityServiceProvider == 'EntraID') ? 'AADKERB': 'None'
 var varSecurityPrincipalName = !empty(securityPrincipalName)? securityPrincipalName : 'none'
 var varAdminUserName = (identityServiceProvider == 'EntraID') ? vmLocalUserName : domainJoinUserName
 var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -AdminUserName ${varAdminUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName "${varSecurityPrincipalName}" -StorageAccountFqdn ${storageAccountFqdn} '
-
+var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
+    {
+        workspaceResourceId: alaWorkspaceResourceId
+    }
+]: []
 // =========== //
 // Deployments //
 // =========== //
@@ -128,7 +130,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 }
 
 // Provision the storage account and Azure Files.
-module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts/deploy.bicep' = {
+module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bicep' = {
     scope: resourceGroup('${workloadSubsId}', '${storageObjectsRgName}')
     name: 'Storage-${storagePurpose}-${time}'
     params: {
@@ -167,9 +169,7 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
                     }
                 }
             } : {}
-            diagnosticWorkspaceId: alaWorkspaceResourceId
-            diagnosticLogCategoriesToEnable: varAvdFileShareLogsDiagnostic
-            diagnosticMetricsToEnable: varAvdFileShareMetricsDiagnostic
+            diagnosticSettings: varDiagnosticSettings
         }
         privateEndpoints: deployPrivateEndpoint ? [
             {
@@ -177,23 +177,24 @@ module storageAndFile '../../../../carml/1.3.0/Microsoft.Storage/storageAccounts
                 subnetResourceId: privateEndpointSubnetId
                 customNetworkInterfaceName: 'nic-01-${varWrklStoragePrivateEndpointName}'
                 service: 'file'
-                privateDnsZoneGroup: {
-                    privateDNSResourceIds: [
-                        vnetPrivateDnsZoneFilesId
-                    ]
-                }
+                privateDnsZoneGroupName: split(vnetPrivateDnsZoneFilesId, '/')[8]
+                privateDnsZoneResourceIds: [
+                    vnetPrivateDnsZoneFilesId
+                ]
                 ipConfigurations: !empty(storageFilePrivateEndpointStaticIp) ? [
                     {
                         name: 'privateEndpointIpConfig'
                         properties: {
+                            groupId: 'file' // Example value, replace with actual groupId
+                            memberName: 'memberName' // Example value, replace with actual memberName
                             privateIPAddress: storageFilePrivateEndpointStaticIp
                         }
                     }
-                ] : []
+                ] : null
             }
         ] : []
         tags: tags
-        diagnosticWorkspaceId: alaWorkspaceResourceId
+        diagnosticSettings: varDiagnosticSettings
     }
 }
 
@@ -203,7 +204,7 @@ module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = {
     name: 'Add-${storagePurpose}-Storage-Setup-${time}'
     params: {
         location: sessionHostLocation
-        name: managementVmName
+        virtualMachineName: managementVmName
         file: storageToDomainScript
         scriptArguments: varStorageToDomainScriptArgs
         adminUserPassword: (identityServiceProvider == 'EntraID') ? avdWrklKeyVaultget.getSecret('vmLocalUserPassword') : avdWrklKeyVaultget.getSecret('domainJoinUserPassword')

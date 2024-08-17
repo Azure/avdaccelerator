@@ -50,7 +50,7 @@ var varCustomPolicySetDefinitions = {
 
 // Storage account for NSG flow logs. If blank value passed - then to 
 
-module deployStgAccountForFlowLogs '../../../../../carml/1.3.0/Microsoft.Storage/storageAccounts/deploy.bicep' = if (empty(stgAccountForFlowLogsId)) {
+module deployStgAccountForFlowLogs '../../../../../avm/1.0.0/res/storage/storage-account/main.bicep' = if (empty(stgAccountForFlowLogsId)) {
   scope: resourceGroup('${monitoringRgName}')
   name: (length('Deploy-Stg-Account-for-Flow-Logs-${stgAccountForFlowLogsName}-${time}') > 64) ? take('Deploy-Stg-Account-for-Flow-Logs-${stgAccountForFlowLogsName}-${time}', 64) : 'Deploy-Stg-Account-for-Flow-Logs-${stgAccountForFlowLogsName}-${time}'
   params: {
@@ -69,11 +69,10 @@ module deployStgAccountForFlowLogs '../../../../../carml/1.3.0/Microsoft.Storage
 
 // Policy set definition.
 
-module networkingPolicySetDefinition '../../../../../carml/1.3.0/Microsoft.Authorization/policySetDefinitions/subscription/deploy.bicep' = {
+module networkingPolicySetDefinition '../../azurePolicies/policySetDefinitionsSubscriptions.bicep' = {
   scope: subscription('${workloadSubsId}')
   name: (length('NetPolicySetDefini-${time}') > 64) ? take('AVD-Network-Policy-Set-Definition-${time}', 64) : 'AVD-Network-Policy-Set-Definition-${time}'
   params: {
-    location: managementPlaneLocation
     name: varCustomPolicySetDefinitions.name
     description: varCustomPolicySetDefinitions.libSetDefinition.properties.description
     displayName: varCustomPolicySetDefinitions.libSetDefinition.properties.displayName
@@ -86,7 +85,7 @@ module networkingPolicySetDefinition '../../../../../carml/1.3.0/Microsoft.Autho
 }
 
 // Policy set assignment.
-module networkingPolicySetDefinitionAssignment '../../../../../carml/1.3.0/Microsoft.Authorization/policyAssignments/subscription/deploy.bicep' = {
+module networkingPolicySetDefinitionAssignment '../../../../../avm/1.0.0/ptn/authorization/policy-assignment/modules/subscription.bicep' = {
   scope: subscription('${workloadSubsId}')
   name: (length('NetPolicySetAssign-${time}') > 64) ? take('AVD-NetPolicySetAssign-${time}', 64) : 'AVD-NetPolicySetAssign-${time}'
   params: {

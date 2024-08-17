@@ -20,7 +20,7 @@ param dataCollectionRuleId string
 // Deployments //
 // =========== //
 // Get Vm object
-resource getVm 'Microsoft.Compute/virtualMachines@2021-11-01' existing = {
+resource getVm 'Microsoft.Compute/virtualMachines@2023-09-01' existing = {
   name: virtualMachineName
 }
 
