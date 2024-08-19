@@ -490,6 +490,28 @@ try {
         Start-Sleep -Seconds 5
 
         ##############################################################
+        #  Install Chrome
+        ##############################################################
+
+        $ChromeInstaller = 'ChromeInstaller.msi'
+        Get-WebFile -FileName $ChromeInstaller -URL 'https://dl.google.com/tag/s/appguid%3D%7B8A69D345-D564-463C-AFF1-A69D9E530F96%7D%26iid%3D%7B7FFD4799-4EBC-E6EA-19CB-E6EAF684910B%7D%26lang%3Den%26browser%3D4%26usagestats%3D0%26appname%3DGoogle%2520Chrome%26needsadmin%3Dtrue%26ap%3Dx64-stable-statsdef_0%26brand%3DGCGW/dl/chrome/install/googlechromestandaloneenterprise64.msi'
+        Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $ChromeInstaller /quiet /qn /norestart /passive" -Wait -PassThru
+        Start-Sleep -Seconds 5
+
+        # Remove the desktop shortcut
+        $desktopPath = [Environment]::GetFolderPath("CommonDesktopDirectory")
+        $shortcutName = "Google Chrome.lnk"
+        $shortcutPath = Join-Path $desktopPath $shortcutName
+
+        if (Test-Path $shortcutPath) {
+            Remove-Item $shortcutPath -Force
+            Write-Log -Message "Desktop shortcut removed successfully." -Type 'INFO'
+        } else {
+            Write-Log -Message "Desktop shortcut not found." -Type 'INFO'
+        }
+
+
+        ##############################################################
         #  Restart VM
         ##############################################################
         if ($IdentityServiceProvider -eq "EntraID" -and $AmdVmSize -eq 'false' -and $NvidiaVmSize -eq 'false') {
