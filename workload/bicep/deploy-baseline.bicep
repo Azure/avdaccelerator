@@ -93,6 +93,22 @@ param avdHostPoolType string = 'Pooled'
 param hostPoolPreferredAppGroupType string = 'Desktop'
 
 @allowed([
+  'Disabled' // Blocks public access and requires both clients and session hosts to use the private endpoints
+  'Enabled' // Allow clients and session hosts to communicate over the public network
+  'EnabledForClientsOnly' // Allows only clients to access AVD over public network
+  'EnabledForSessionHostsOnly' // Allows only the session hosts to communicate over the public network
+])
+@sys.description('Enables or Disables public network access on the host pool. (Default: EnabledForClientsOnly.)')
+param hostPoolPublicNetworkAccess string = 'EnabledForClientsOnly'
+
+@allowed([
+  'Disabled'
+  'Enabled'
+])
+@sys.description('Default to Enabled. Enables or Disables public network access on the workspace.')
+param workspacePublicNetworkAccess string = 'Enabled'
+  
+@allowed([
   'Automatic'
   'Direct'
 ])
@@ -150,6 +166,15 @@ param deployPrivateEndpointKeyvaultStorage bool = true
 
 @sys.description('Create new  Azure private DNS zones for private endpoints. (Default: true)')
 param createPrivateDnsZones bool = true
+
+@sys.description('Deploys the private link for AVD. Requires resource provider registration or re-registration. (Default: false)')
+param deployAvdPrivateLinkService bool = false
+
+@sys.description('The ResourceID of the AVD Private DNS Zone for Connection. (privatelink.wvd.azure.com). Only required if createPrivateDNSZones is set to false.')
+param avdVnetPrivateDnsZoneConnectionResourceId string
+
+@sys.description('The ResourceID of the AVD Private DNS Zone for Discovery. (privatelink-global.wvd.azure.com). Only required if createPrivateDNSZones is set to false.')
+param avdVnetPrivateDnsZoneDiscoveryResourceId string
 
 @sys.description('Use existing Azure private DNS zone for Azure files privatelink.file.core.windows.net or privatelink.file.core.usgovcloudapi.net. (Default: "")')
 param avdVnetPrivateDnsZoneFilesId string = ''
@@ -361,6 +386,18 @@ param avdHostPoolCustomFriendlyName string = 'App1 - Dev - East US 2 - 001'
 param avdScalingPlanCustomName string = 'vdscaling-app1-dev-use2-001'
 
 @maxLength(64)
+@sys.description('AVD private endpoint connection custom name. (Default: pe-connection-app1-dev-use2-001)')
+param avdPrivateEndpointConnectionCustomName string = 'pe-connection-app1-dev-use2-001'
+
+@maxLength(64)
+@sys.description('AVD private endpoint discovery custom name. (Default: pe-discovery-app1-dev-use2-001)')
+param avdPrivateEndpointDiscoveryCustomName string = 'pe-discovery-app1-dev-use2-001'
+
+@maxLength(64)
+@sys.description('AVD private endpoint global custom name. (Default: pe-global-app1-dev-use2-001)')
+param avdPrivateEndpointWorkspaceCustomName string = 'pe-workspace-app1-dev-use2-001'
+
+@maxLength(64)
 @sys.description('AVD desktop application group custom name. (Default: vdag-desktop-app1-dev-use2-001)')
 param avdApplicationGroupCustomName string = 'vdag-desktop-app1-dev-use2-001'
 
@@ -568,6 +605,9 @@ var varCreateMsixDeployment = (varAzureCloudName == 'AzureChinaCloud') ? false :
 var varScalingPlanName = avdUseCustomNaming
   ? avdScalingPlanCustomName
   : 'vdscaling-${varManagementPlaneNamingStandard}-001'
+var varPrivateEndPointConnectionName = avdUseCustomNaming ? avdPrivateEndpointConnectionCustomName : 'pe-connection-${varManagementPlaneNamingStandard}-001'
+var varPrivateEndPointDiscoveryName = avdUseCustomNaming ? avdPrivateEndpointDiscoveryCustomName : 'pe-discovery-${varManagementPlaneNamingStandard}-001'
+var varPrivateEndPointWorkspaceName = avdUseCustomNaming ? avdPrivateEndpointWorkspaceCustomName : 'pe-global-${varManagementPlaneNamingStandard}-001'
 var varScalingPlanExclusionTag = 'exclude-${varScalingPlanName}'
 var varScalingPlanWeekdaysScheduleName = 'Weekdays-${varManagementPlaneNamingStandard}'
 var varScalingPlanWeekendScheduleName = 'Weekend-${varManagementPlaneNamingStandard}'
@@ -1075,6 +1115,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
     deployDDoSNetworkProtection: deployDDoSNetworkProtection
     ddosProtectionPlanName: varDDosProtectionPlanName
     deployPrivateEndpointSubnet: (deployPrivateEndpointKeyvaultStorage == true) ? true : false //adding logic that will be used when also including AVD control plane PEs
+    deployAvdPrivateLinkService: deployAvdPrivateLinkService
     vNetworkGatewayOnHub: vNetworkGatewayOnHub
     existingHubVnetResourceId: existingHubVnetResourceId
     sessionHostLocation: avdSessionHostLocation
@@ -1132,6 +1173,19 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
           : alaExistingWorkspaceResourceId)
       : ''
     hostPoolAgentUpdateSchedule: varHostPoolAgentUpdateSchedule
+    deployAvdPrivateLinkService: deployAvdPrivateLinkService
+    hostPoolPublicNetworkAccess: hostPoolPublicNetworkAccess
+    workspacePublicNetworkAccess: workspacePublicNetworkAccess
+    privateEndpointSubnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
+    avdVnetPrivateDnsZoneDiscoveryResourceId: createPrivateDnsZones
+     ? networking.outputs.aVDDnsDiscoveryZoneResourceId
+     : avdVnetPrivateDnsZoneDiscoveryResourceId
+    avdVnetPrivateDnsZoneConnectionResourceId: createPrivateDnsZones
+     ? networking.outputs.aVDDnsConnectionZoneResourceId
+     : avdVnetPrivateDnsZoneConnectionResourceId
+    privateEndpointConnectionName: varPrivateEndPointConnectionName
+    privateEndpointDiscoveryName: varPrivateEndPointDiscoveryName
+    privateEndpointWorkspaceName: varPrivateEndPointWorkspaceName
   }
   dependsOn: [
     baselineResourceGroups
@@ -1187,7 +1241,7 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
       : existingVnetPrivateEndpointSubnetResourceId
     deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
     keyVaultprivateDNSResourceId: createPrivateDnsZones
-      ? networking.outputs.KeyVaultDnsZoneResourceId
+      ? networking.outputs.keyVaultDnsZoneResourceId
       : avdVnetPrivateDnsZoneKeyvaultId
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     enableKvPurgeProtection: enableKvPurgeProtection
@@ -1232,7 +1286,7 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
             service: 'vault'
             privateDnsZoneGroup: {
               privateDNSResourceIds: [
-                createPrivateDnsZones ? networking.outputs.KeyVaultDnsZoneResourceId : avdVnetPrivateDnsZoneKeyvaultId
+                createPrivateDnsZones ? networking.outputs.keyVaultDnsZoneResourceId : avdVnetPrivateDnsZoneKeyvaultId
               ]
             }
           }
