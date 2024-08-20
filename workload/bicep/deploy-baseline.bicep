@@ -629,7 +629,7 @@ var varMsixStorageSku = zoneRedundantStorage ? '${msixStoragePerformance}_ZRS' :
 var varMgmtVmSpecs = {
   osImage: varMarketPlaceGalleryWindows[managementVmOsImage]
   osDiskType: 'Standard_LRS'
-  mgmtVmSize: 'Standard_B2ms'
+  mgmtVmSize: avdSessionHostsSize //'Standard_D2ads_v5'
   enableAcceleratedNetworking: false
   ouPath: avdOuPath
   subnetId: createAvdVnet
