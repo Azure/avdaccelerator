@@ -102,9 +102,6 @@ param securityPrincipalName string
 @sys.description('storage account FDQN.')
 param storageAccountFqdn string
 
-@sys.description('Storage account private endpoint static ip')
-param storageFilePrivateEndpointStaticIp string
-
 // =========== //
 // Variable declaration //
 // =========== //
@@ -181,16 +178,6 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
                 privateDnsZoneResourceIds: [
                     vnetPrivateDnsZoneFilesId
                 ]
-                ipConfigurations: !empty(storageFilePrivateEndpointStaticIp) ? [
-                    {
-                        name: 'privateEndpointIpConfig'
-                        properties: {
-                            groupId: 'file' // Example value, replace with actual groupId
-                            memberName: 'memberName' // Example value, replace with actual memberName
-                            privateIPAddress: storageFilePrivateEndpointStaticIp
-                        }
-                    }
-                ] : null
             }
         ] : []
         tags: tags
