@@ -28,5 +28,5 @@ jobs:
       with:
         azcliversion: 2.30.0
         inlineScript: |
-          chmod +x $GITHUB_WORKSPACE/.github/workflows/scripts/Delete_RGs.sh ${{ github.event.inputs.environment }}
-          $GITHUB_WORKSPACE/.github/workflows/scripts/Delete_RGs.sh
+          chmod +x $GITHUB_WORKSPACE/.github/workflows/scripts/Delete_RGs.sh 
+          $GITHUB_WORKSPACE/.github/workflows/scripts/Delete_RGs.sh ${{ github.event.inputs.environment }}
