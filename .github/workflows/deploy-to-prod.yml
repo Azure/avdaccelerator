@@ -21,25 +21,15 @@ jobs:
       uses: azure/arm-deploy@v2
       with:
         scope: subscription
-        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+        subscriptionId: ${{ secrets.AZURE_SUBID_PROD }}
         region: eastus
         template: ./workload/bicep/deploy-baseline-arpah.bicep
         parameters: ./workload/bicep/parameters/deploy-baseline-parameters-arpah.json avdWorkloadSubsId=${{ secrets.AZURE_SUBID_PROD }} avdVmLocalUserName=${{ secrets.AVD_ADMIN }} avdVmLocalUserPassword=${{ secrets.AVD_ADMINPASS }} avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} existingVnetAvdSubnetResourceId=${{ secrets.AZURE_VPCSUBID_PROD }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AZURE_VPCSUBID_PROD }} identityDomainName=${{ secrets.AD_NAME}} avdDomainJoinUserName=${{ secrets.AD_JOIN_USER }} avdDomainJoinUserPassword=${{ secrets.AD_JOIN_PASS }} avdOuPath="${{ secrets.AD_OU_PROD }}" storageOuPath="${{ secrets.AD_OU_PROD }}"
         failOnStdErr: false
-
-    # - name: Read JSON to variables
-    #   uses: antifree/json-to-variables@v1.2.0 # x-release-please-version
-    #   with:
-    #     filename: './workload/bicep/parameters/deploy-baseline-parameters-arpah.json'
-    #     prefix: 'test'
-  
-    # - run: echo "avdServiceObjectsRgCustomName =  ${{ env.test_parameters_avdServiceObjectsRgCustomName_value }}"
-    # - run: echo "avdApplicationGroupCustomName =  ${{ env.test_parameters_avdApplicationGroupCustomName_value }}"
-    # - run: echo "avdApplicationFriendlyName =  ${{ env.test_parameters_avdApplicationFriendlyName_value }}"
     
     - name: Run Azure PowerShell Script File
       uses: azure/powershell@v2
       with:
-        inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName '${{ secrets.AVD_SERVICEOBJECTS_RG_PROD }}' -ApplicationGroupName '${{ secrets.AVD_APPLICATIONGROUP_PROD }}' -Name 'SessionDesktop' -FriendlyName ' Windows 11 Desktop'
+        inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName 'avd-nih-arpah-prod-use2-service-objects' -ApplicationGroupName 'vdag-desktop-app1-prod-use2-001' -Name 'SessionDesktop' -FriendlyName ' Windows 11 Desktop'
         azPSVersion: "latest"
         errorActionPreference: continue
