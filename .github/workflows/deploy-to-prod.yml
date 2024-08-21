@@ -24,7 +24,7 @@ jobs:
         subscriptionId: ${{ secrets.AZURE_SUBID_PROD }}
         region: eastus
         template: ./workload/bicep/deploy-baseline-arpah.bicep
-        parameters: ./workload/bicep/parameters/deploy-baseline-parameters-arpah.json avdWorkloadSubsId=${{ secrets.AZURE_SUBID_PROD }} avdVmLocalUserName=${{ secrets.AVD_ADMIN }} avdVmLocalUserPassword=${{ secrets.AVD_ADMINPASS }} avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} existingVnetAvdSubnetResourceId=${{ secrets.AZURE_VPCSUBID_PROD }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AZURE_VPCSUBID_PROD }} identityDomainName=${{ secrets.AD_NAME}} avdDomainJoinUserName=${{ secrets.AD_JOIN_USER }} avdDomainJoinUserPassword=${{ secrets.AD_JOIN_PASS }} avdOuPath="${{ secrets.AD_OU_PROD }}" storageOuPath="${{ secrets.AD_OU_PROD }}"
+        parameters: ./workload/bicep/parameters/deploy-baseline-parameters-arpah.json deploymentEnvironment=Prod avdWorkloadSubsId=${{ secrets.AZURE_SUBID_PROD }} avdVmLocalUserName=${{ secrets.AVD_ADMIN }} avdVmLocalUserPassword=${{ secrets.AVD_ADMINPASS }} avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} existingVnetAvdSubnetResourceId=${{ secrets.AZURE_VPCSUBID_PROD }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AZURE_VPCSUBID_PROD }} identityDomainName=${{ secrets.AD_NAME}} avdDomainJoinUserName=${{ secrets.AD_JOIN_USER }} avdDomainJoinUserPassword=${{ secrets.AD_JOIN_PASS }} avdOuPath="${{ secrets.AD_OU_PROD }}" storageOuPath="${{ secrets.AD_OU_PROD }}"
         failOnStdErr: false
     
     - name: Run Azure PowerShell Script File

@@ -24,7 +24,7 @@ jobs:
         subscriptionId: ${{ secrets.AZURE_SUBID_TEST }}
         region: eastus
         template: ./workload/bicep/deploy-baseline-arpah.bicep
-        parameters: ./workload/bicep/parameters/deploy-baseline-parameters-arpah.json avdWorkloadSubsId=${{ secrets.AZURE_SUBID_TEST }} avdVmLocalUserName=${{ secrets.AVD_ADMIN }} avdVmLocalUserPassword=${{ secrets.AVD_ADMINPASS }} avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} existingVnetAvdSubnetResourceId=${{ secrets.AZURE_VPCSUBID_TEST }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AZURE_VPCSUBID_TEST }} identityDomainName=${{ secrets.AD_NAME}} avdDomainJoinUserName=${{ secrets.AD_JOIN_USER }} avdDomainJoinUserPassword=${{ secrets.AD_JOIN_PASS }} avdOuPath="${{ secrets.AD_OU_TEST }}" storageOuPath="${{ secrets.AD_OU_TEST }}"
+        parameters: ./workload/bicep/parameters/deploy-baseline-parameters-arpah.json deploymentEnvironment=Test avdWorkloadSubsId=${{ secrets.AZURE_SUBID_TEST }} avdVmLocalUserName=${{ secrets.AVD_ADMIN }} avdVmLocalUserPassword=${{ secrets.AVD_ADMINPASS }} avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} existingVnetAvdSubnetResourceId=${{ secrets.AZURE_VPCSUBID_TEST }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AZURE_VPCSUBID_TEST }} identityDomainName=${{ secrets.AD_NAME}} avdDomainJoinUserName=${{ secrets.AD_JOIN_USER }} avdDomainJoinUserPassword=${{ secrets.AD_JOIN_PASS }} avdOuPath="${{ secrets.AD_OU_TEST }}" storageOuPath="${{ secrets.AD_OU_TEST }}"
         failOnStdErr: false
 
     # - name: Read JSON to variables
