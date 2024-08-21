@@ -5,6 +5,9 @@
         "deploymentPrefix": {
             "value": "AVDX"
         },
+        "deploymentEnvironment": {
+            "value": "test"
+        },
         "avdUseCustomNaming": {
             "value": true
         },
@@ -22,12 +25,6 @@
         },   
         "avdWorkloadSubsId": {
             "value": "<<subscriptionId>>"
-        },
-        "avdServiceObjectsRgCustomName": {
-            "value": "avd-nih-arpah-test-use2-service-objects"
-        },
-        "avdApplicationGroupCustomName": {
-            "value": "vdag-desktop-app1-test-use2-001"
         },
         "avdApplicationFriendlyName": {
             "value": "Windows 11 Desktop"
@@ -223,12 +220,6 @@
         },
         "deployGpuPolicies": {
             "value": false
-        },
-        "avdWorkSpaceCustomFriendlyName": {
-            "value": "ARPA-H on NIH Network - Test"
-        },
-        "avdHostPoolCustomFriendlyName": {
-            "value": "ARPA-H on NIH Network - Test"
         },
         "storageFilePrivateEndpointStaticIp": {
             "value": "10.178.8.136"
