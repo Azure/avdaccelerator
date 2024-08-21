@@ -1361,7 +1361,7 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
 }
 
 // FSLogix storage
-module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (createAvdFslogixDeployment) {
+module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy-arpah.bicep' = if (createAvdFslogixDeployment) {
     name: 'Storage-FSLogix-${time}'
     params: {
         storagePurpose: 'fslogix'
@@ -1455,7 +1455,6 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
                 ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId 
                 : alaExistingWorkspaceResourceId) 
             : ''
-        storageFilePrivateEndpointStaticIp: storageFilePrivateEndpointStaticIp
     }
     dependsOn: [
         fslogixAzureFilesStorage
