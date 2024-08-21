@@ -46,15 +46,15 @@ var varExistingSubnetName = split(existingAvdSubnetResourceId, '/')[10]
 // =========== //
 
 // AVD network security group.
-module networksecurityGroupAvd '../../../../carml/1.3.0/Microsoft.Network/networkSecurityGroups/deploy.bicep' = {
+module networksecurityGroupAvd '../../../../avm/1.0.0/res/network/network-security-group/main.bicep' = {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'nsg-avd-${time}'
     params: {
         name: avdNetworksecurityGroupName
         location: sessionHostLocation
         tags: tags
-        diagnosticWorkspaceId: alaWorkspaceResourceId
-        diagnosticLogCategoriesToEnable: varNetworkSecurityGroupDiagnostic
+        // diagnosticWorkspaceId: alaWorkspaceResourceId
+        // diagnosticLogCategoriesToEnable: varNetworkSecurityGroupDiagnostic
         securityRules: [
             {
                 name: 'AVDServiceTraffic'
@@ -160,7 +160,7 @@ module networksecurityGroupAvd '../../../../carml/1.3.0/Microsoft.Network/networ
 }
 
 // AVD route table if creating a vnet
-module routeTableAvd '../../../../carml/1.3.0/Microsoft.Network/routeTables/deploy.bicep' = {
+module routeTableAvd '../../../../avm/1.0.0/res/network/route-table/main.bicep' = {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
     name: 'Route-Table-AVD-${time}'
     params: {
