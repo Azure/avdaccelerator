@@ -1,7 +1,14 @@
 name: Destroy NIH Test
 
 on:
-    workflow_dispatch:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: Choose environment to destroy
+        options: 
+        - test
+        - prod
 
 jobs:
   build-and-deploy:
@@ -21,5 +28,5 @@ jobs:
       with:
         azcliversion: 2.30.0
         inlineScript: |
-          chmod +x $GITHUB_WORKSPACE/.github/workflows/scripts/Delete_RGs.sh
+          chmod +x $GITHUB_WORKSPACE/.github/workflows/scripts/Delete_RGs.sh ${{ github.event.inputs.environment }}
           $GITHUB_WORKSPACE/.github/workflows/scripts/Delete_RGs.sh

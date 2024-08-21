@@ -24,22 +24,22 @@ jobs:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         region: eastus
         template: ./workload/bicep/deploy-baseline-arpah.bicep
-        parameters: ./workload/bicep/parameters/deploy-baseline-parameters-arpah.json avdWorkloadSubsId=${{ secrets.AZURE_SUBID_TEST }} avdVmLocalUserName=${{ secrets.AVD_ADMIN }} avdVmLocalUserPassword=${{ secrets.AVD_ADMINPASS }} avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} existingVnetAvdSubnetResourceId=${{ secrets.AZURE_VPCSUBID_TEST }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AZURE_VPCSUBID_TEST }} identityDomainName=${{ secrets.AD_NAME}} avdDomainJoinUserName=${{ secrets.AD_JOIN_USER }} avdDomainJoinUserPassword=${{ secrets.AD_JOIN_PASS }} avdOuPath="${{ secrets.AD_OU_TEST }}"
+        parameters: ./workload/bicep/parameters/deploy-baseline-parameters-arpah.json avdWorkloadSubsId=${{ secrets.AZURE_SUBID_TEST }} avdVmLocalUserName=${{ secrets.AVD_ADMIN }} avdVmLocalUserPassword=${{ secrets.AVD_ADMINPASS }} avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} existingVnetAvdSubnetResourceId=${{ secrets.AZURE_VPCSUBID_TEST }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AZURE_VPCSUBID_TEST }} identityDomainName=${{ secrets.AD_NAME}} avdDomainJoinUserName=${{ secrets.AD_JOIN_USER }} avdDomainJoinUserPassword=${{ secrets.AD_JOIN_PASS }} avdOuPath="${{ secrets.AD_OU_TEST }}" storageOuPath="${{ secrets.AD_OU_TEST }}"
         failOnStdErr: false
 
-    - name: Read JSON to variables
-      uses: antifree/json-to-variables@v1.2.0 # x-release-please-version
-      with:
-        filename: './workload/bicep/parameters/deploy-baseline-parameters-arpah.json'
-        prefix: 'test'
+    # - name: Read JSON to variables
+    #   uses: antifree/json-to-variables@v1.2.0 # x-release-please-version
+    #   with:
+    #     filename: './workload/bicep/parameters/deploy-baseline-parameters-arpah.json'
+    #     prefix: 'test'
   
-    - run: echo "avdServiceObjectsRgCustomName =  ${{ env.test_parameters_avdServiceObjectsRgCustomName_value }}"
-    - run: echo "avdApplicationGroupCustomName =  ${{ env.test_parameters_avdApplicationGroupCustomName_value }}"
-    - run: echo "avdApplicationFriendlyName =  ${{ env.test_parameters_avdApplicationFriendlyName_value }}"
+    # - run: echo "avdServiceObjectsRgCustomName =  ${{ env.test_parameters_avdServiceObjectsRgCustomName_value }}"
+    # - run: echo "avdApplicationGroupCustomName =  ${{ env.test_parameters_avdApplicationGroupCustomName_value }}"
+    # - run: echo "avdApplicationFriendlyName =  ${{ env.test_parameters_avdApplicationFriendlyName_value }}"
     
     - name: Run Azure PowerShell Script File
       uses: azure/powershell@v2
       with:
-        inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName '${{ env.test_parameters_avdServiceObjectsRgCustomName_value }}' -ApplicationGroupName '${{ env.test_parameters_avdApplicationGroupCustomName_value }}' -Name 'SessionDesktop' -FriendlyName '${{ env.test_parameters_avdApplicationFriendlyName_value }}'
+        inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName '${{ secrets.AVD_SERVICEOBJECTS_RG_TEST }}' -ApplicationGroupName '${{ secrets.AVD_APPLICATIONGROUP_TEST }}' -Name 'SessionDesktop' -FriendlyName ' Windows 11 Desktop'
         azPSVersion: "latest"
         errorActionPreference: continue
