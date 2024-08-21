@@ -75,6 +75,28 @@ do {
 until((Test-Path $FileName) -or $Counter -eq 9)
 }
 
+function Install-Font {
+        param (
+            [string]$fontFile
+        )
+        
+        $FONTS_FOLDER = "C:\Windows\Fonts"
+        $FONTS_REG_KEY = "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts"
+        
+        $fontName = [System.IO.Path]::GetFileNameWithoutExtension($fontFile)
+        $fontExtension = [System.IO.Path]::GetExtension($fontFile)
+        
+        # Copy the font to the Fonts folder
+        Copy-Item $fontFile $FONTS_FOLDER
+    
+        # Add the font to the registry
+        $regName = "$fontName (TrueType)"
+        $regValue = [System.IO.Path]::GetFileName($fontFile)
+        New-ItemProperty -Path $FONTS_REG_KEY -Name $regName -Value $regValue -PropertyType String -Force
+        
+        Write-Log -Message "Installed font: $fontName" -Type 'INFO'
+    }    
+
 $ErrorActionPreference = 'Stop'
 
 try {
@@ -496,6 +518,7 @@ try {
         $ChromeInstaller = 'ChromeInstaller.msi'
         Get-WebFile -FileName $ChromeInstaller -URL 'https://dl.google.com/tag/s/appguid%3D%7B8A69D345-D564-463C-AFF1-A69D9E530F96%7D%26iid%3D%7B7FFD4799-4EBC-E6EA-19CB-E6EAF684910B%7D%26lang%3Den%26browser%3D4%26usagestats%3D0%26appname%3DGoogle%2520Chrome%26needsadmin%3Dtrue%26ap%3Dx64-stable-statsdef_0%26brand%3DGCGW/dl/chrome/install/googlechromestandaloneenterprise64.msi'
         Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $ChromeInstaller /quiet /qn /norestart /passive" -Wait -PassThru
+        Write-Log -Message 'Installed Chrome' -Type 'INFO'
         Start-Sleep -Seconds 5
 
         # Remove the desktop shortcut
@@ -507,8 +530,80 @@ try {
             Remove-Item $shortcutPath -Force
             Write-Log -Message "Desktop shortcut removed successfully." -Type 'INFO'
         } else {
-            Write-Log -Message "Desktop shortcut not found." -Type 'INFO'
+            Write-Log -Message "Desktop shortcut not found." -Type 'ERROR'
         }
+
+        ##############################################################
+        #  Install ARPA-H fonts
+        ##############################################################
+        $baseUrl = "https://arpahsessionhostbaseline.blob.core.windows.net/public/ARPA-H/Fonts/"
+    
+        # List of font URLs to download and install
+        $fontUrls = @(
+            "NewYork-Regular_4293932765.ttf",
+            "NewYork-RegularItalic_871433785.ttf",
+            "NewYork.ttf",
+            "NewYorkItalic.ttf",
+            "Poppins-Black_3008352512.ttf",
+            "Poppins-BlackItalic_371123804.ttf",
+            "Poppins-Bold_1019179171.ttf",
+            "Poppins-BoldItalic_1803493887.ttf",
+            "Poppins-ExtraBold_3421185964.ttf",
+            "Poppins-ExtraBoldItalic_3500825864.ttf",
+            "Poppins-ExtraLight_990443044.ttf",
+            "Poppins-ExtraLightItalic_2096693632.ttf",
+            "Poppins-Italic_2289676922.ttf",
+            "Poppins-Light_4270612763.ttf",
+            "Poppins-LightItalic_283490423.ttf",
+            "Poppins-Medium_1896896901.ttf",
+            "Poppins-MediumItalic_2763936481.ttf",
+            "Poppins-Regular_2359647735.ttf",
+            "Poppins-SemiBold_4006441525.ttf",
+            "Poppins-SemiBoldItalic_4164016017.ttf",
+            "Poppins-Thin_1094694325.ttf",
+            "Poppins-ThinItalic_1893905169.ttf",
+            "PublicSans-Thin_3884680131.ttf",
+            "PublicSans-ThinItalic_2099296031.ttf",
+            "RobotoMono-Italic_3840806306.ttf",
+            "RobotoMono-Regular_1946149919.ttf",
+            "SF-Arabic-Rounded.ttf",
+            "SF-Arabic.ttf",
+            "SF-Armenian-Rounded.ttf",
+            "SF-Armenian.ttf",
+            "SF-Compact-Italic.ttf",
+            "SF-Compact.ttf",
+            "SF-Georgian-Rounded.ttf",
+            "SF-Georgian.ttf",
+            "SF-Hebrew-Rounded.ttf",
+            "SF-Hebrew.ttf",
+            "SF-Pro-Italic.ttf",
+            "SF-Pro.ttf",
+            "SFCompact-Black_1927307385.ttf"
+        )
+        
+        # Temporary directory to store downloaded fonts
+        $tempDir = Join-Path $env:TEMP "FontInstall"
+        New-Item -ItemType Directory -Force -Path $tempDir | Out-Null
+        
+        foreach ($url in $fontUrls) {
+            $fileName = [System.IO.Path]::GetFileName($url)
+            $filePath = Join-Path $tempDir $fileName
+            
+            try {
+                # Download the font
+                Invoke-WebRequest -Uri "$($baseUrl)$($url)" -OutFile $filePath
+                
+                # Install the font
+                Install-Font -fontFile $filePath
+            }
+            catch {
+                Write-Log -Message "Failed to download or install font from $url. Error: $_" -Type 'ERROR'
+            }
+        }
+        
+        # Clean up temporary files
+        Remove-Item -Path $tempDir -Recurse -Force
+    
 
 
         ##############################################################
