@@ -2,6 +2,13 @@ name: Deploy to NIH Prod
 
 on:
     workflow_dispatch:
+      inputs:
+        environment:
+          type: choice
+          description: Choose environment to deploy
+          options: 
+          - test
+          - prod
 
 jobs:
   build-and-deploy:
@@ -29,7 +36,12 @@ jobs:
     
     - name: Run Azure PowerShell Script File
       uses: azure/powershell@v2
+      env:
+        ResourceGroupName: 'avd-nih-arpah-prod-use2-service-objects'
+        ApplicationGroupName: 'vdag-desktop-app1-prod-use2-001'
+        Name: 'SessionDesktop'
+        FriendlyName: 'Windows 11 Desktop'
       with:
-        inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName 'avd-nih-arpah-prod-use2-service-objects' -ApplicationGroupName 'vdag-desktop-app1-prod-use2-001' -Name 'SessionDesktop' -FriendlyName ' Windows 11 Desktop'
+        inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName ${{ env.ResourceGroupName }} -ApplicationGroupName  ${{ env.ApplicationGroupName }} -Name  ${{ env.Name }} -FriendlyName  ${{ env.FriendlyName }}
         azPSVersion: "latest"
         errorActionPreference: continue

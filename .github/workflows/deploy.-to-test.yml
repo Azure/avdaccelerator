@@ -39,8 +39,14 @@ jobs:
     
     - name: Run Azure PowerShell Script File
       uses: azure/powershell@v2
+      env:
+        ResourceGroupName: 'avd-nih-arpah-test-use2-service-objects'
+        ApplicationGroupName: 'vdag-desktop-app1-test-use2-001'
+        Name: 'SessionDesktop'
+        FriendlyName: 'Windows 11 Desktop'
       with:
         #inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName '${{ secrets.AVD_SERVICEOBJECTS_RG_TEST }}' -ApplicationGroupName '${{ secrets.AVD_APPLICATIONGROUP_TEST }}' -Name 'SessionDesktop' -FriendlyName ' Windows 11 Desktop'
-        inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName 'avd-nih-arpah-test-use2-service-objects' -ApplicationGroupName 'vdag-desktop-app1-test-use2-001' -Name 'SessionDesktop' -FriendlyName ' Windows 11 Desktop'
+        #inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName 'avd-nih-arpah-test-use2-service-objects' -ApplicationGroupName 'vdag-desktop-app1-test-use2-001' -Name 'SessionDesktop' -FriendlyName ' Windows 11 Desktop'
+        inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName ${{ env.ResourceGroupName }} -ApplicationGroupName  ${{ env.ApplicationGroupName }} -Name  ${{ env.Name }} -FriendlyName  ${{ env.FriendlyName }}
         azPSVersion: "latest"
         errorActionPreference: continue
