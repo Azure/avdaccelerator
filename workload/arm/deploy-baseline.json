@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "4508014583957684313"
+      "templateHash": "4941515064719473604"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -30382,7 +30382,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "13397958408421266887"
+              "templateHash": "15745844634886577488"
             }
           },
           "parameters": {
@@ -30648,7 +30648,7 @@
             }
           },
           "variables": {
-            "varManagedDisk": "[if(empty(parameters('diskEncryptionSetResourceId')), createObject('storageAccountType', parameters('diskType')), createObject('diskEncryptionSet', createObject('id', parameters('diskEncryptionSetResourceId')), 'storageAccountType', parameters('diskType')))]",
+            "varManagedDisk": "[if(empty(parameters('diskEncryptionSetResourceId')), createObject('storageAccountType', parameters('diskType')), createObject('diskEncryptionSetResourceId', parameters('diskEncryptionSetResourceId'), 'storageAccountType', parameters('diskType')))]",
             "varOsDiskProperties": {
               "createOption": "FromImage",
               "deleteOption": "Delete",
