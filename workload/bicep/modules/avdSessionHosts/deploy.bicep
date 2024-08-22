@@ -139,9 +139,7 @@ param dataCollectionRuleId string
 var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
     storageAccountType: diskType
 } : {
-    diskEncryptionSet: {
-        id: diskEncryptionSetResourceId
-    }
+    diskEncryptionSetResourceId: diskEncryptionSetResourceId
     storageAccountType: diskType
 }
 var varOsDiskProperties = {
