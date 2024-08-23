@@ -1,4 +1,4 @@
-name: Deploy to NIH Prod
+name: Deploy AVD to NIH Environment
 
 on:
     workflow_dispatch:
@@ -24,14 +24,14 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         enable-AzPSSession: true
 
-    - name: Deploy Bicep file
+    - name: Deploy Bicep file to ${{ github.event.inputs.environment }} environment
       uses: azure/arm-deploy@v2
       with:
         scope: subscription
-        subscriptionId: ${{ secrets.AZURE_SUBID_PROD }}
+        subscriptionId: ${{ secrets.AZURE_SUB_ID }}
         region: eastus
         template: ./workload/bicep/deploy-baseline-arpah.bicep
-        parameters: ./workload/bicep/parameters/deploy-baseline-parameters-arpah.json deploymentEnvironment=Prod avdWorkloadSubsId=${{ secrets.AZURE_SUBID_PROD }} avdVmLocalUserName=${{ secrets.AVD_ADMIN }} avdVmLocalUserPassword=${{ secrets.AVD_ADMINPASS }} avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} existingVnetAvdSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} identityDomainName=${{ secrets.AD_NAME}} avdDomainJoinUserName=${{ secrets.AD_JOIN_USER }} avdDomainJoinUserPassword=${{ secrets.AD_JOIN_PASS }} avdOuPath="${{ secrets.AD_OU }}" storageOuPath="${{ secrets.AD_OU }}"
+        parameters: ./workload/bicep/parameters/deploy-baseline-parameters-arpah.json deploymentEnvironment=Prod avdWorkloadSubsId=${{ secrets.AZURE_SUB_ID }} avdVmLocalUserName=${{ secrets.AVD_ADMIN }} avdVmLocalUserPassword=${{ secrets.AVD_ADMINPASS }} avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} existingVnetAvdSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} identityDomainName=${{ secrets.AD_NAME}} avdDomainJoinUserName=${{ secrets.AD_JOIN_USER }} avdDomainJoinUserPassword=${{ secrets.AD_JOIN_PASS }} avdOuPath="${{ secrets.AD_OU }}" storageOuPath="${{ secrets.AD_OU }}"
         failOnStdErr: false
     
     - name: Run Azure PowerShell Script File
