@@ -1,0 +1,44 @@
+name: Deploy AVD to NIH
+
+on:
+  workflow_dispatch:
+    inputs:
+        environment:
+            type: choice
+            description: Choose environment to deploy
+            options: 
+            - TEST
+            - PROD
+
+jobs:
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment }} environment
+    environment: ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Log into Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          enable-AzPSSession: true
+
+      - name: Run Azure PowerShell Script File to deploy to the ${{ github.event.inputs.environment }} environment
+        uses: azure/powershell@v2
+        with:
+            inlineScript: ./.github/workflows/scripts/Deploy-To-Test.ps1 `
+             -DomJoinUserName '${{ secrets.AD_JOIN_USER }}' `
+             -DomJoinUserPassword '${{ secrets.AD_JOIN_PASS }}' `
+             -OUName '${{ secrets.AD_OU }}' `
+             -SubnetId '${{ secrets.AVD_SUBNET_ID }}' `
+             -LogAnalyticsWorkspaceId '${{ secrets.AVD_LOG_ANALYTICS_WORKSPACE_ID }}' `
+             -IdentityDomainName '${{ secrets.AD_NAME}}' `
+             -ResourceGroupName '${{ secrets.AVD_HOST_POOL_RG }}' `
+             -SessionHostResourceGroupName '${{ secrets.AVD_SESSION_HOST_RG }}' `
+             -HostPoolName '${{ secrets.AVD_HOST_POOL_NAME }}' `
+             -LocalAdminUserName '${{ secrets.LOCAL_ADMIN_USER }}'
+            azPSVersion: "latest"
+            errorActionPreference: continue
+            
