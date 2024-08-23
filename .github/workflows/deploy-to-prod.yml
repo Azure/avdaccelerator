@@ -37,8 +37,8 @@ jobs:
     - name: Run Azure PowerShell Script File
       uses: azure/powershell@v2
       env:
-        ResourceGroupName: 'avd-nih-arpah-prod-use2-service-objects'
-        ApplicationGroupName: 'vdag-desktop-app1-prod-use2-001'
+        ResourceGroupName: 'avd-nih-arpah-${{ github.event.inputs.environment }}-use2-service-objects'
+        ApplicationGroupName: 'vdag-desktop-app1-${{ github.event.inputs.environment }}-use2-001'
         Name: 'SessionDesktop'
         FriendlyName: 'Windows 11 Desktop'
       with:
