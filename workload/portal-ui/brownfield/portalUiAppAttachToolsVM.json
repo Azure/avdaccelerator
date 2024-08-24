@@ -40,14 +40,22 @@
 							"name": "OSVersion",
 							"type": "Microsoft.Common.DropDown",
 							"label": "OS Version",
-							"defaultValue": "Windows 11 Ent (23H2)",
+							"defaultValue": "Windows 11 Ent (22H2)",
 							"toolTip": "The Windows version for the VM. This will be Gen 2 without Office.",
 							"constraints": {
 								"required": true,
 								"allowedValues": [
 									{
+										"label": "Windows 10 Ent (21H2)",
+										"value": "win10-21h2-ent-g2"
+									},
+									{
 										"label": "Windows 10 Ent (22H2)",
 										"value": "win10-22h2-ent-g2"
+									},
+									{
+										"label": "Windows 11 Ent (21H2)",
+										"value": "win11-21h2-ent"
 									},
 									{
 										"label": "Windows 11 Ent (22H2)",
