@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "5291332406785432023"
+      "templateHash": "8529136871393216686"
     }
   },
   "parameters": {
@@ -1587,7 +1587,7 @@
             "value": "[variables('varTimeZoneSessionHosts')]"
           },
           "zone": "[if(parameters('useAvailabilityZones'), createObject('value', add(mod(range(1, parameters('count'))[copyIndex()], 3), 1)), createObject('value', 0))]",
-          "managedIdentities": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('value', createObject('systemAssigned', true())), createObject('value', null()))]",
+          "managedIdentities": "[if(or(equals(parameters('identityServiceProvider'), 'EntraID'), parameters('deployMonitoring')), createObject('value', createObject('systemAssigned', true())), createObject('value', null()))]",
           "encryptionAtHost": {
             "value": "[parameters('diskZeroTrust')]"
           },
@@ -5527,13 +5527,13 @@
             "value": "[format('{0}{1}', variables('varSessionHostNamePrefix'), padLeft(add(range(1, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]"
           },
           "name": {
-            "value": "MicrosoftMonitoringAgent"
+            "value": "AzureMonitorWindowsAgent"
           },
           "publisher": {
-            "value": "Microsoft.EnterpriseCloud.Monitoring"
+            "value": "Microsoft.Azure.Monitor"
           },
           "type": {
-            "value": "MicrosoftMonitoringAgent"
+            "value": "AzureMonitorWindowsAgent"
           },
           "typeHandlerVersion": {
             "value": "1.0"
@@ -5542,7 +5542,7 @@
             "value": true
           },
           "enableAutomaticUpgrade": {
-            "value": false
+            "value": true
           },
           "settings": {
             "value": {
