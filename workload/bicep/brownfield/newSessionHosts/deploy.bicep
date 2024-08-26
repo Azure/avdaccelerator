@@ -308,9 +308,9 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
     location: location
     timeZone: varTimeZoneSessionHosts
     zone: useAvailabilityZones ? (i % 3 + 1) : 0
-    managedIdentities: (identityServiceProvider == 'EntraID') ? {
+    managedIdentities: (identityServiceProvider == 'EntraID' || deployMonitoring) ? {
       systemAssigned: true
-    }: null
+  }: null
     encryptionAtHost: diskZeroTrust
     virtualMachineScaleSetResourceId: virtualMachineScaleSetResourceId
     osType: 'Windows'
@@ -417,17 +417,17 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
   params: {
     location: location
     virtualMachineName: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
-    name: 'MicrosoftMonitoringAgent'
-    publisher: 'Microsoft.EnterpriseCloud.Monitoring'
-    type: 'MicrosoftMonitoringAgent'
+    name: 'AzureMonitorWindowsAgent'
+    publisher: 'Microsoft.Azure.Monitor'
+    type: 'AzureMonitorWindowsAgent'
     typeHandlerVersion: '1.0'
     autoUpgradeMinorVersion: true
-    enableAutomaticUpgrade: false
+    enableAutomaticUpgrade: true
     settings: {
       workspaceId: !empty(alaWorkspaceResourceId) ? reference(alaWorkspace.id, alaWorkspace.apiVersion).customerId : ''
     }
     protectedSettings: {
-      workspaceKey: !empty(alaWorkspaceResourceId) ? alaWorkspace.listKeys().primarySharedKey : ''
+        workspaceKey: !empty(alaWorkspaceResourceId) ? alaWorkspace.listKeys().primarySharedKey : ''
     }
   }
   dependsOn: [
