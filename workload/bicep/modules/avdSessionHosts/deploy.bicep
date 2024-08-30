@@ -160,7 +160,7 @@ var varCustomOsDiskProperties = {
 // =========== //
 
 // call on the keyvault
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (identityServiceProvider != 'EntraID') {
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
     name: wrklKvName
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
 }
