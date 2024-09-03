@@ -1,4 +1,4 @@
-name: Destroy NIH Test
+name: Destroy NIH Environment
 
 on:
   workflow_dispatch:
