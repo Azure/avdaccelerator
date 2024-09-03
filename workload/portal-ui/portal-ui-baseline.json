@@ -1153,7 +1153,7 @@
                                 }
                             },
                             "scope": {
-                                "location": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]"
+                                "location": "[if(empty(steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion), steps('basics').resourceScope.location.name, steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion)]"
                             }   
                         },
                         {
