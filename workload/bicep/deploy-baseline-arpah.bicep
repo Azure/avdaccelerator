@@ -453,22 +453,22 @@ param departmentTag string = 'ARPA-H-AVD'
 param workloadCriticalityTag string = 'Low'
 
 @sys.description('Tag value for custom criticality value. (Default: Contoso-Critical)')
-param workloadCriticalityCustomValueTag string = 'Contoso-Critical'
+param workloadCriticalityCustomValueTag string = 'ARPA-H-Critical'
 
 @sys.description('Details about the application.')
-param applicationNameTag string = 'Contoso-App'
+param applicationNameTag string = 'ARPA-H-AVD'
 
 @sys.description('Service level agreement level of the worload. (Contoso-SLA)')
-param workloadSlaTag string = 'Contoso-SLA'
+param workloadSlaTag string = 'ARPA-H-SLA'
 
 @sys.description('Team accountable for day-to-day operations. (workload-admins@Contoso.com)')
-param opsTeamTag string = 'workload-admins@Contoso.com'
+param opsTeamTag string = 'workload-admins@arpa-h.gov'
 
 @sys.description('Organizational owner of the AVD deployment. (Default: workload-owner@Contoso.com)')
-param ownerTag string = 'workload-owner@Contoso.com'
+param ownerTag string = 'workload-owner@arpa-h.gov'
 
 @sys.description('Cost center of owner team. (Default: Contoso-CC)')
-param costCenterTag string = 'Contoso-CC'
+param costCenterTag string = 'ARPA-H-CC'
 //
 
 //@sys.description('Remove resources not needed afdter deployment. (Default: false)')
@@ -485,6 +485,9 @@ param enableKvPurgeProtection bool = true
 
 @sys.description('Storage account private endpoint static ip')
 param storageFilePrivateEndpointStaticIp string
+
+@sys.description('Vnet resource group name')
+param vnetResourceGroupName string = 'nih-arpa-h-it-vdi-nih-${toLower(deploymentEnvironment)}-rg-admin-az'
 
 // =========== //
 // Variable declaration //
@@ -1106,6 +1109,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
 module updateSubnetNsgAndRouteTable './modules/networking-arpah/deploy.bicep' = if(!createAvdVnet) {
     name: 'Networking-UpdateSubnet-${time}'
     params: {
+        vnetResourceGroupName: vnetResourceGroupName
         existingAvdSubnetResourceId: existingVnetAvdSubnetResourceId
         networkObjectsRgName: varNetworkObjectsRgName
         avdNetworksecurityGroupName: varAvdNetworksecurityGroupName
