@@ -88,8 +88,8 @@ param dnsServers array
 @sys.description('Optional. Use Azure private DNS zones for private endpoints.')
 param createPrivateDnsZones bool
 
-@sys.description('Location where to deploy compute services.')
-param sessionHostLocation string = deployment().location
+@sys.description('Location where to deploy resources.')
+param location string = deployment().location
 
 @sys.description('Tags to be applied to resources')
 param tags object
@@ -309,7 +309,7 @@ module networksecurityGroupAvd '../../../../avm/1.0.0/res/network/network-securi
   name: 'NSG-AVD-${time}'
   params: {
     name: avdNetworksecurityGroupName
-    location: sessionHostLocation
+    location: location
     tags: tags
     diagnosticSettings: varDiagnosticSettings
     securityRules: [
@@ -422,7 +422,7 @@ module networksecurityGroupPrivateEndpoint '../../../../avm/1.0.0/res/network/ne
   name: 'NSG-Private-Endpoint-${time}'
   params: {
     name: privateEndpointNetworksecurityGroupName
-    location: sessionHostLocation
+    location: location
     tags: tags
     diagnosticSettings: varDiagnosticSettings
     securityRules: []
@@ -436,7 +436,7 @@ module applicationSecurityGroup '../../../../avm/1.0.0/res/network/application-s
   name: 'ASG-${time}'
   params: {
     name: applicationSecurityGroupName
-    location: sessionHostLocation
+    location: location
     tags: tags
   }
   dependsOn: []
@@ -448,7 +448,7 @@ module routeTableAvd '../../../../avm/1.0.0/res/network/route-table/main.bicep' 
   name: 'Route-Table-AVD-${time}'
   params: {
     name: avdRouteTableName
-    location: sessionHostLocation
+    location: location
     tags: tags
     routes: varCreateAvdStaicRoute ? varStaticRoutes : []
   }
@@ -461,7 +461,7 @@ module routeTablePrivateEndpoint '../../../../avm/1.0.0/res/network/route-table/
   name: 'Route-Table-PE-${time}'
   params: {
     name: privateEndpointRouteTableName
-    location: sessionHostLocation
+    location: location
     tags: tags
     routes: []
   }
@@ -474,7 +474,7 @@ module ddosProtectionPlan '../../../../avm/1.0.0/res/network/ddos-protection-pla
   name: 'DDoS-Protection-Plan-${time}'
   params: {
     name: ddosProtectionPlanName
-    location: sessionHostLocation
+    location: location
   }
   dependsOn: []
 }
@@ -485,7 +485,7 @@ module virtualNetwork '../../../../avm/1.0.0/res/network/virtual-network/main.bi
   name: 'vNet-${time}'
   params: {
     name: vnetName
-    location: sessionHostLocation
+    location: location
     addressPrefixes: array(vnetAddressPrefixes)
     dnsServers: dnsServers
     peerings: createVnetPeering
