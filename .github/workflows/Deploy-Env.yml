@@ -7,8 +7,8 @@ on:
           type: choice
           description: Choose environment to deploy
           options: 
-          - TEST
-          - PROD
+          - Test
+          - Prod
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
