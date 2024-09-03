@@ -98,8 +98,8 @@ param hostPoolPreferredAppGroupType string = 'Desktop'
   'EnabledForClientsOnly' // Allows only clients to access AVD over public network
   'EnabledForSessionHostsOnly' // Allows only the session hosts to communicate over the public network
 ])
-@sys.description('Enables or Disables public network access on the host pool. (Default: EnabledForClientsOnly.)')
-param hostPoolPublicNetworkAccess string = 'EnabledForClientsOnly'
+@sys.description('Enables or Disables public network access on the host pool. (Default: Enabled.)')
+param hostPoolPublicNetworkAccess string = 'Enabled'
 
 @allowed([
   'Disabled'
@@ -164,11 +164,11 @@ param deployDDoSNetworkProtection bool = false
 @sys.description('Deploy private endpoints for key vault and storage. (Default: true)')
 param deployPrivateEndpointKeyvaultStorage bool = true
 
-@sys.description('Create new  Azure private DNS zones for private endpoints. (Default: true)')
-param createPrivateDnsZones bool = true
-
 @sys.description('Deploys the private link for AVD. Requires resource provider registration or re-registration. (Default: false)')
 param deployAvdPrivateLinkService bool = false
+
+@sys.description('Create new  Azure private DNS zones for private endpoints. (Default: true)')
+param createPrivateDnsZones bool = true
 
 @sys.description('The ResourceID of the AVD Private DNS Zone for Connection. (privatelink.wvd.azure.com). Only required if createPrivateDNSZones is set to false.')
 param avdVnetPrivateDnsZoneConnectionResourceId string
@@ -386,18 +386,6 @@ param avdHostPoolCustomFriendlyName string = 'App1 - Dev - East US 2 - 001'
 param avdScalingPlanCustomName string = 'vdscaling-app1-dev-use2-001'
 
 @maxLength(64)
-@sys.description('AVD private endpoint connection custom name. (Default: pe-connection-app1-dev-use2-001)')
-param avdPrivateEndpointConnectionCustomName string = 'pe-connection-app1-dev-use2-001'
-
-@maxLength(64)
-@sys.description('AVD private endpoint discovery custom name. (Default: pe-discovery-app1-dev-use2-001)')
-param avdPrivateEndpointDiscoveryCustomName string = 'pe-discovery-app1-dev-use2-001'
-
-@maxLength(64)
-@sys.description('AVD private endpoint global custom name. (Default: pe-global-app1-dev-use2-001)')
-param avdPrivateEndpointWorkspaceCustomName string = 'pe-workspace-app1-dev-use2-001'
-
-@maxLength(64)
 @sys.description('AVD desktop application group custom name. (Default: vdag-desktop-app1-dev-use2-001)')
 param avdApplicationGroupCustomName string = 'vdag-desktop-app1-dev-use2-001'
 
@@ -605,9 +593,9 @@ var varCreateMsixDeployment = (varAzureCloudName == 'AzureChinaCloud') ? false :
 var varScalingPlanName = avdUseCustomNaming
   ? avdScalingPlanCustomName
   : 'vdscaling-${varManagementPlaneNamingStandard}-001'
-var varPrivateEndPointConnectionName = avdUseCustomNaming ? avdPrivateEndpointConnectionCustomName : 'pe-connection-${varManagementPlaneNamingStandard}-001'
-var varPrivateEndPointDiscoveryName = avdUseCustomNaming ? avdPrivateEndpointDiscoveryCustomName : 'pe-discovery-${varManagementPlaneNamingStandard}-001'
-var varPrivateEndPointWorkspaceName = avdUseCustomNaming ? avdPrivateEndpointWorkspaceCustomName : 'pe-global-${varManagementPlaneNamingStandard}-001'
+var varPrivateEndPointConnectionName = 'pe-${varHostPoolName}-connection'
+var varPrivateEndPointDiscoveryName = 'pe-${varWorkSpaceName}-discovery'
+var varPrivateEndPointWorkspaceName = 'pe-${varWorkSpaceName}-global'
 var varScalingPlanExclusionTag = 'exclude-${varScalingPlanName}'
 var varScalingPlanWeekdaysScheduleName = 'Weekdays-${varManagementPlaneNamingStandard}'
 var varScalingPlanWeekendScheduleName = 'Weekend-${varManagementPlaneNamingStandard}'
