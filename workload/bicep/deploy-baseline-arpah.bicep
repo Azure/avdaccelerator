@@ -227,8 +227,8 @@ param msixStoragePerformance string = 'Premium'
 @sys.description('Enables a zero trust configuration on the session host disks. (Default: false)')
 param diskZeroTrust bool = false
 
-@sys.description('Session host VM size. (Default: Standard_D4ads_v5)')
-param avdSessionHostsSize string = 'Standard_D4ads_v5'
+@sys.description('Session host VM size. (Default: Standard_D4ads_v5)') // getting OverconstrainedZonalAllocationRequest error on provisioning the session host, so switching to Standard_E4s_v5
+param avdSessionHostsSize string = 'Standard_E4s_v5'
 
 @sys.description('OS disk type for session host. (Default: Premium_LRS)')
 param avdSessionHostDiskType string = 'Premium_LRS'
