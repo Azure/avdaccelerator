@@ -26,7 +26,7 @@
         "avdWorkloadSubsId": {
             "value": "<<subscriptionId>>"
         },
-        "avdApplicationFriendlyName": {
+        "avdApplicationGroupCustomFriendlyName": {
             "value": "Windows 11 Desktop"
         },
         "deployPrivateEndpointKeyvaultStorage": {
@@ -152,12 +152,10 @@
         "zoneRedundantStorage": {
             "value": false
         },
-        "avsetFaultDomainCount": {
+        "vmssFlatformFaultDomainCount": {
             "value": 2
         },
-        "avsetUpdateDomainCount": {
-            "value": 5
-        },
+
         "fslogixStoragePerformance": {
             "value": "Premium"
         },
