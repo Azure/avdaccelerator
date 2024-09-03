@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "438984103544493905"
+      "templateHash": "6743126300086831496"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -4087,9 +4087,7 @@
           "existingHubVnetResourceId": {
             "value": "[parameters('existingHubVnetResourceId')]"
           },
-          "sessionHostLocation": {
-            "value": "[parameters('avdSessionHostLocation')]"
-          },
+          "location": "[if(parameters('avdDeploySessionHosts'), createObject('value', parameters('avdSessionHostLocation')), createObject('value', parameters('avdManagementPlaneLocation')))]",
           "vnetAvdSubnetAddressPrefix": {
             "value": "[parameters('vNetworkAvdSubnetAddressPrefix')]"
           },
@@ -4112,7 +4110,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "14586518896585175073"
+              "templateHash": "17721019575695313993"
             },
             "name": "AVD LZA networking",
             "description": "This module deploys vNet, NSG, ASG, UDR, private DNs zones",
@@ -4282,11 +4280,11 @@
                 "description": "Optional. Use Azure private DNS zones for private endpoints."
               }
             },
-            "sessionHostLocation": {
+            "location": {
               "type": "string",
               "defaultValue": "[deployment().location]",
               "metadata": {
-                "description": "Location where to deploy compute services."
+                "description": "Location where to deploy resources."
               }
             },
             "tags": {
@@ -4364,7 +4362,7 @@
                     "value": "[parameters('avdNetworksecurityGroupName')]"
                   },
                   "location": {
-                    "value": "[parameters('sessionHostLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -5018,7 +5016,7 @@
                     "value": "[parameters('privateEndpointNetworksecurityGroupName')]"
                   },
                   "location": {
-                    "value": "[parameters('sessionHostLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -5573,7 +5571,7 @@
                     "value": "[parameters('applicationSecurityGroupName')]"
                   },
                   "location": {
-                    "value": "[parameters('sessionHostLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -5702,7 +5700,7 @@
                     "value": "[parameters('avdRouteTableName')]"
                   },
                   "location": {
-                    "value": "[parameters('sessionHostLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -5907,7 +5905,7 @@
                     "value": "[parameters('privateEndpointRouteTableName')]"
                   },
                   "location": {
-                    "value": "[parameters('sessionHostLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -6114,7 +6112,7 @@
                     "value": "[parameters('ddosProtectionPlanName')]"
                   },
                   "location": {
-                    "value": "[parameters('sessionHostLocation')]"
+                    "value": "[parameters('location')]"
                   }
                 },
                 "template": {
@@ -6241,7 +6239,7 @@
                     "value": "[parameters('vnetName')]"
                   },
                   "location": {
-                    "value": "[parameters('sessionHostLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "addressPrefixes": {
                     "value": "[array(parameters('vnetAddressPrefixes'))]"
@@ -20262,9 +20260,7 @@
           "osDiskType": {
             "value": "[createObject('osImage', variables('varMarketPlaceGalleryWindows')[parameters('managementVmOsImage')], 'osDiskType', 'Standard_LRS', 'mgmtVmSize', 'Standard_D2ads_v5', 'enableAcceleratedNetworking', false(), 'ouPath', parameters('avdOuPath'), 'subnetId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName')), parameters('existingVnetAvdSubnetResourceId'))).osDiskType]"
           },
-          "location": {
-            "value": "[parameters('avdSessionHostLocation')]"
-          },
+          "location": "[if(parameters('avdDeploySessionHosts'), createObject('value', parameters('avdSessionHostLocation')), createObject('value', parameters('avdManagementPlaneLocation')))]",
           "mgmtVmSize": {
             "value": "[createObject('osImage', variables('varMarketPlaceGalleryWindows')[parameters('managementVmOsImage')], 'osDiskType', 'Standard_LRS', 'mgmtVmSize', 'Standard_D2ads_v5', 'enableAcceleratedNetworking', false(), 'ouPath', parameters('avdOuPath'), 'subnetId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName')), parameters('existingVnetAvdSubnetResourceId'))).mgmtVmSize]"
           },
@@ -24281,9 +24277,7 @@
           "identityDomainGuid": {
             "value": "[parameters('identityDomainGuid')]"
           },
-          "sessionHostLocation": {
-            "value": "[parameters('avdSessionHostLocation')]"
-          },
+          "location": "[if(parameters('avdDeploySessionHosts'), createObject('value', parameters('avdSessionHostLocation')), createObject('value', parameters('avdManagementPlaneLocation')))]",
           "storageObjectsRgName": {
             "value": "[variables('varStorageObjectsRgName')]"
           },
@@ -24302,7 +24296,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "712067399651911756"
+              "templateHash": "9332074825075946878"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -24351,10 +24345,10 @@
                 "description": "Private endpoint subnet ID."
               }
             },
-            "sessionHostLocation": {
+            "location": {
               "type": "string",
               "metadata": {
-                "description": "Location where to deploy compute services."
+                "description": "Location where to deploy resources."
               }
             },
             "fileShareMultichannel": {
@@ -24523,7 +24517,7 @@
                     "value": "[parameters('storageAccountName')]"
                   },
                   "location": {
-                    "value": "[parameters('sessionHostLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "skuName": {
                     "value": "[parameters('storageSku')]"
@@ -26875,7 +26869,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "location": {
-                    "value": "[parameters('sessionHostLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "virtualMachineName": {
                     "value": "[parameters('managementVmName')]"
@@ -27247,9 +27241,7 @@
           "identityDomainGuid": {
             "value": "[parameters('identityDomainGuid')]"
           },
-          "sessionHostLocation": {
-            "value": "[parameters('avdSessionHostLocation')]"
-          },
+          "location": "[if(parameters('avdDeploySessionHosts'), createObject('value', parameters('avdSessionHostLocation')), createObject('value', parameters('avdManagementPlaneLocation')))]",
           "storageObjectsRgName": {
             "value": "[variables('varStorageObjectsRgName')]"
           },
@@ -27268,7 +27260,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "712067399651911756"
+              "templateHash": "9332074825075946878"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -27317,10 +27309,10 @@
                 "description": "Private endpoint subnet ID."
               }
             },
-            "sessionHostLocation": {
+            "location": {
               "type": "string",
               "metadata": {
-                "description": "Location where to deploy compute services."
+                "description": "Location where to deploy resources."
               }
             },
             "fileShareMultichannel": {
@@ -27489,7 +27481,7 @@
                     "value": "[parameters('storageAccountName')]"
                   },
                   "location": {
-                    "value": "[parameters('sessionHostLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "skuName": {
                     "value": "[parameters('storageSku')]"
@@ -29841,7 +29833,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "location": {
-                    "value": "[parameters('sessionHostLocation')]"
+                    "value": "[parameters('location')]"
                   },
                   "virtualMachineName": {
                     "value": "[parameters('managementVmName')]"

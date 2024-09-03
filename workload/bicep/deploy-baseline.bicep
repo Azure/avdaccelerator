@@ -1077,7 +1077,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
     deployPrivateEndpointSubnet: (deployPrivateEndpointKeyvaultStorage == true) ? true : false //adding logic that will be used when also including AVD control plane PEs
     vNetworkGatewayOnHub: vNetworkGatewayOnHub
     existingHubVnetResourceId: existingHubVnetResourceId
-    sessionHostLocation: avdSessionHostLocation
+    location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
     vnetAvdSubnetAddressPrefix: vNetworkAvdSubnetAddressPrefix
     vnetPrivateEndpointSubnetAddressPrefix: vNetworkPrivateEndpointSubnetAddressPrefix
     workloadSubsId: avdWorkloadSubsId
@@ -1310,7 +1310,7 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
     identityDomainName: identityDomainName
     ouPath: varMgmtVmSpecs.ouPath
     osDiskType: varMgmtVmSpecs.osDiskType
-    location: avdSessionHostLocation
+    location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
     mgmtVmSize: varMgmtVmSpecs.mgmtVmSize
     subnetId: varMgmtVmSpecs.subnetId
     enableAcceleratedNetworking: varMgmtVmSpecs.enableAcceleratedNetworking
@@ -1360,7 +1360,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
     serviceObjectsRgName: varServiceObjectsRgName
     identityDomainName: identityDomainName
     identityDomainGuid: identityDomainGuid
-    sessionHostLocation: avdSessionHostLocation
+    location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
     storageObjectsRgName: varStorageObjectsRgName
     privateEndpointSubnetId: createAvdVnet
       ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
@@ -1412,7 +1412,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
     serviceObjectsRgName: varServiceObjectsRgName
     identityDomainName: identityDomainName
     identityDomainGuid: identityDomainGuid
-    sessionHostLocation: avdSessionHostLocation
+    location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
     storageObjectsRgName: varStorageObjectsRgName
     privateEndpointSubnetId: createAvdVnet
       ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
