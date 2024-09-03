@@ -221,6 +221,9 @@
         },
         "storageFilePrivateEndpointStaticIp": {
             "value": "10.178.8.136"
+        },
+        "vnetResourceGroupName": {
+            "value": ""
         }
     }
 }

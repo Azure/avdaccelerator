@@ -30,6 +30,10 @@ param alaWorkspaceResourceId string
 @sys.description('Do not modify, used to set unique value for resource deployment')
 param time string = utcNow()
 
+@sys.description('Vnet resource group name')
+param vnetResourceGroupName string
+
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -216,7 +220,7 @@ module routeTableAvd '../../../../avm/1.0.0/res/network/route-table/main.bicep' 
 // Get existing vnet
 resource existingVnet 'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
     name: varExistingAvdVnetName
-    scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
+    scope: resourceGroup('${workloadSubsId}', '${vnetResourceGroupName}')
 }
 
 resource existingSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = {
