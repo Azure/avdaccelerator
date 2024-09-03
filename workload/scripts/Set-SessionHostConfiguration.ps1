@@ -582,17 +582,15 @@ try {
         Start-Sleep -Seconds 5
 
         #FIX ISSUE WITH BOX DRIVE RUNNING AT START
-        $regContent = @"
-        Windows Registry Editor Version 5.00
+        # $regContent = @"
+        # Windows Registry Editor Version 5.00
 
-        [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run]
-        "Box"=-
-        "@
-
-        $regFilePath = "$env:TEMP\remove_box.reg"
-        Set-Content -Path $regFilePath -Value $regContent
-        Start-Process regedit.exe -ArgumentList "/s $regFilePath" -Wait
-        Remove-Item -Path $regFilePath
+        # [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run]
+        # "Box"=-
+        # $regFilePath = "$env:TEMP\remove_box.reg"
+        # Set-Content -Path $regFilePath -Value $regContent
+        # Start-Process regedit.exe -ArgumentList "/s $regFilePath" -Wait
+        # Remove-Item -Path $regFilePath
 
         #FIX BOX DRIVE ICON NOT SHOWING IN START MENU
         $exePath = "C:\Program Files\Box\Box\Box.exe"  # Update with the correct path
