@@ -300,7 +300,7 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
         }
     }
     dependsOn: [
-        sessionHostsAntimalwareExtension
+        //sessionHostsAntimalwareExtension
         alaWorkspace
     ]
 }]
@@ -315,7 +315,7 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
     }
     dependsOn: [
         monitoring
-        sessionHostsAntimalwareExtension
+        //sessionHostsAntimalwareExtension
         alaWorkspace
     ]
 }]
