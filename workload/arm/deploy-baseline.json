@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "6231199880303177510"
+      "templateHash": "438984103544493905"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -2097,7 +2097,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "18254479050352715901"
+              "templateHash": "13094388685246624954"
             },
             "name": "AVD LZA insights monitoring",
             "description": "This module deploys Log analytics workspace, DCR and policies",
@@ -3841,9 +3841,7 @@
                   },
                   "alaWorkspaceId": "[if(parameters('deployAlaWorkspace'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', parameters('alaWorkspaceId')))]",
                   "tags": {
-                    "value": {
-                      "name": "test"
-                    }
+                    "value": "[parameters('tags')]"
                   }
                 },
                 "template": {

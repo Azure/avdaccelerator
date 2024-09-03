@@ -119,9 +119,7 @@ module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
       location: location
       name: dataCollectionRulesName
       alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
-      tags: {
-        name: 'test'
-      }  //tags
+      tags: tags
   }
   dependsOn: [
     alaWorkspace
