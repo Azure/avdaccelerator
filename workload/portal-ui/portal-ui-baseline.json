@@ -908,7 +908,7 @@
                                     "toolTip": "Select to replicate storage across availability zones or only use local redundancy.",
                                     "constraints": {
                                         "required": true,
-                                        "allowedValues": "[if(not(empty(filter(filter(first(map(filter(steps('storage').storageGeneralSettings.storageApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'storageAccounts')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => equals(toLower(replace(item.location, ' ', '')), if(empty(steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion), steps('basics').resourceScope.location.name, steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion))))), parse('[{\"label\":\"Locally Redundant Storage\",\"value\":\"false\"},{\"label\":\"Zone-Redundant Storage\",\"value\":\"true\"}]'), parse('[{\"label\":\"Locally Redundant Storage\",\"value\":\"false\"}]'))]"
+                                        "allowedValues": "[if(not(empty(filter(filter(first(map(filter(steps('storage').storageGeneralSettings.storageApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'storageAccounts')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => equals(toLower(replace(item.location, ' ', '')), if(steps('sessionHosts').deploySessionHosts, steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion, steps('basics').resourceScope.location.name))))), parse('[{\"label\":\"Locally Redundant Storage\",\"value\":\"false\"},{\"label\":\"Zone-Redundant Storage\",\"value\":\"true\"}]'), parse('[{\"label\":\"Locally Redundant Storage\",\"value\":\"false\"}]'))]"
                                     }
                                 }
                             ]
@@ -1153,7 +1153,7 @@
                                 }
                             },
                             "scope": {
-                                "location": "[if(empty(steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion), steps('basics').resourceScope.location.name, steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion)]"
+                                "location": "[if(steps('sessionHosts').deploySessionHosts, steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion, steps('basics').resourceScope.location.name)]"
                             }   
                         },
                         {
