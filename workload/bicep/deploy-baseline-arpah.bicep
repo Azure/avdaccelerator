@@ -202,7 +202,7 @@ param avdDeploySessionHostsCount int = 1
 param avdSessionHostCountIndex int = 0
 
 @sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Default: true)')
-param availabilityZonesCompute bool = true
+param availabilityZonesCompute bool = false
 
 @sys.description('When true, Zone Redundant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)')
 param zoneRedundantStorage bool = false
