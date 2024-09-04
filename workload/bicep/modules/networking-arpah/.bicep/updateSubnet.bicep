@@ -1,4 +1,4 @@
-targetScope = 'resourceGroup'
+//targetScope = 'resourceGroup'
 
 @sys.description('Existing virtual network name for AVD.')
 param vnetName string
