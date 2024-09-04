@@ -19,7 +19,7 @@ param avdNetworksecurityGroupName string
 param avdRouteTableName string
 
 @sys.description('Location where to deploy compute services.')
-param sessionHostLocation string = deployment().location
+param sessionHostLocation string
 
 @sys.description('Tags to be applied to resources')
 param tags object
@@ -231,7 +231,7 @@ resource existingSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' e
 // update the subnet:  attach nsg and
 module updateSubnet '.bicep/updateSubnet.bicep' = {
     name: 'update-subnet-with-nsg-and-route-table-${varExistingAvdVnetName}-${varExistingSubnetName}'
-    scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
+    scope: resourceGroup('${workloadSubsId}', '${vnetResourceGroupName}')
     params: {
         vnetName: varExistingAvdVnetName
         subnetName: varExistingSubnetName

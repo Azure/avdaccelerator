@@ -1115,6 +1115,7 @@ module updateSubnetNsgAndRouteTable './modules/networking-arpah/deploy.bicep' = 
         avdNetworksecurityGroupName: varAvdNetworksecurityGroupName
         avdRouteTableName: varAvdRouteTableName
         workloadSubsId: avdWorkloadSubsId
+        sessionHostLocation: avdSessionHostLocation
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
     }
