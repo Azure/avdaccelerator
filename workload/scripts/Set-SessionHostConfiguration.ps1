@@ -517,29 +517,6 @@ try {
         Write-Host "Shortcut for '$shortcutName' created successfully in '$folderPath' with the specified icon."
 
         ##############################################################
-        #  Install Zoom Workplace
-        ##############################################################
-        $ZoomInstaller = 'ZoomInstaller.msi'
-        $URL = 'https://zoom.us/client/latest/ZoomInstallerFull.msi'
-        Invoke-WebRequest -Uri $URL -OutFile $ZoomInstaller
-        Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $ZoomInstaller /quiet /qn /norestart DESKTOP_SHORTCUTS=0 SIGNIN=0" -Wait -PassThru
-        Write-Host 'Installed Zoom' -ForegroundColor Green
-        Start-Sleep -Seconds 5
-        Remove-Item -Path $ZoomInstaller -Force
-
-        #REMOVE DESKTOP SHORTCUTS
-        $desktopPath = [Environment]::GetFolderPath("CommonDesktopDirectory")
-        $shortcutName = "Zoom Workplace.lnk"
-        $shortcutPath = Join-Path $desktopPath $shortcutName
-
-        if (Test-Path $shortcutPath) {
-            Remove-Item $shortcutPath -Force
-            Write-Host "Desktop shortcut removed successfully." -ForegroundColor Green
-        } else {
-            Write-Host "Desktop shortcut not found." -ForegroundColor Yellow
-        }
-
-        ##############################################################
         #  Install EndNote Desktop App
         ##############################################################
         $EndNoteInstaller = 'EndNote.msi'
