@@ -1119,7 +1119,7 @@
                         {
                             "name": "virtualNetworkDns",
                             "type": "Microsoft.Common.TextBox",
-                            "visible": "[steps('network').createAvdVirtualNetwork]",
+                            "visible": "[and(steps('network').createAvdVirtualNetwork, not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')))]",
                             "label": "Custom DNS servers",
                             "defaultValue": "",
                             "placeholder": "Example: 10.10.100.4,10.10.100.5",

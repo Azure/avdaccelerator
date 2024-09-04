@@ -1165,12 +1165,8 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     hostPoolPublicNetworkAccess: hostPoolPublicNetworkAccess
     workspacePublicNetworkAccess: workspacePublicNetworkAccess
     privateEndpointSubnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
-    avdVnetPrivateDnsZoneDiscoveryResourceId: createPrivateDnsZones
-     ? networking.outputs.aVDDnsDiscoveryZoneResourceId
-     : avdVnetPrivateDnsZoneDiscoveryResourceId
-    avdVnetPrivateDnsZoneConnectionResourceId: createPrivateDnsZones
-     ? networking.outputs.aVDDnsConnectionZoneResourceId
-     : avdVnetPrivateDnsZoneConnectionResourceId
+    avdVnetPrivateDnsZoneDiscoveryResourceId: createPrivateDnsZones ? networking.outputs.aVDDnsDiscoveryZoneResourceId : avdVnetPrivateDnsZoneDiscoveryResourceId
+    avdVnetPrivateDnsZoneConnectionResourceId: createPrivateDnsZones ? networking.outputs.aVDDnsConnectionZoneResourceId : avdVnetPrivateDnsZoneConnectionResourceId
     privateEndpointConnectionName: varPrivateEndPointConnectionName
     privateEndpointDiscoveryName: varPrivateEndPointDiscoveryName
     privateEndpointWorkspaceName: varPrivateEndPointWorkspaceName
