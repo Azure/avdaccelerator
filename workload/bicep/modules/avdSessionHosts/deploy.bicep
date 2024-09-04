@@ -249,7 +249,7 @@ module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtu
         name: 'MicrosoftAntiMalware'
         publisher: 'Microsoft.Azure.Security'
         type: 'IaaSAntimalware'
-        typeHandlerVersion: '1.3'
+        typeHandlerVersion: '1.7'
         autoUpgradeMinorVersion: true
         enableAutomaticUpgrade: false
         settings: {
