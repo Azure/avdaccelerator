@@ -1,4 +1,3 @@
-
 metadata name = 'AVD LZA insights monitoring'
 metadata description = 'This module deploys Log analytics workspace, DCR and policies'
 metadata owner = 'Azure/avdaccelerator'
@@ -66,10 +65,10 @@ module baselineMonitoringResourceGroup '../../../../avm/1.0.0/res/resources/reso
   scope: subscription(subscriptionId)
   name: 'Monitoing-RG-${time}'
   params: {
-      name: monitoringRgName
-      location: location
-      enableTelemetry: false
-      tags: tags
+    name: monitoringRgName
+    location: location
+    enableTelemetry: false
+    tags: tags
   }
 }
 
@@ -87,7 +86,7 @@ module alaWorkspace '../../../../avm/1.0.0/res/operational-insights/workspace/ma
     }
     tags: tags
   }
-  dependsOn:[
+  dependsOn: [
     baselineMonitoringResourceGroup
   ]
 }
@@ -111,15 +110,23 @@ module deployDiagnosticsAzurePolicyForAvd '../azurePolicies/avdMonitoring.bicep'
   ]
 }
 
+// /subscriptions/40879978-1a98-4dcd-b600-8e1c8696fe68/resourceGroups/DefaultResourceGroup-EUS/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-40879978-1a98-4dcd-b600-8e1c8696fe68-EUS
+
+var splitId = split(alaWorkspaceId, '/')
+resource existingLAW 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!deployAlaWorkspace) {
+  scope: resourceGroup(splitId[1], splitId[3])
+  name: splitId[7]
+}
+
 // data collection rules
 module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
-  scope: resourceGroup('${subscriptionId}', (deployAlaWorkspace ? '${monitoringRgName}': '${serviceObjectsRgName}'))
+  scope: resourceGroup('${subscriptionId}', (deployAlaWorkspace ? '${monitoringRgName}' : '${serviceObjectsRgName}'))
   name: 'DCR-${time}'
   params: {
-      location: location
-      name: dataCollectionRulesName
-      alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
-      tags: tags
+    location: deployAlaWorkspace ? alaWorkspace.outputs.location : existingLAW.location
+    name: dataCollectionRulesName
+    alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
+    tags: tags
   }
   dependsOn: [
     alaWorkspace
