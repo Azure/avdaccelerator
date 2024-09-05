@@ -231,7 +231,8 @@ resource existingSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' e
 // update the subnet:  attach nsg and
 module updateSubnet '.bicep/updateSubnet.bicep' = {
     name: 'update-subnet-with-nsg-and-route-table-${varExistingAvdVnetName}-${varExistingSubnetName}'
-    scope: resourceGroup('${workloadSubsId}', '${vnetResourceGroupName}')
+    //scope: resourceGroup('${workloadSubsId}', '${vnetResourceGroupName}')
+    scope: resourceGroup(vnetResourceGroupName)
     params: {
         vnetName: varExistingAvdVnetName
         subnetName: varExistingSubnetName
