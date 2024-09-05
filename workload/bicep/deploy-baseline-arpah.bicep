@@ -489,6 +489,7 @@ param storageFilePrivateEndpointStaticIp string
 @sys.description('Vnet resource group name')
 param vnetResourceGroupName string = 'nih-arpa-h-it-vdi-nih-${toLower(deploymentEnvironment)}-rg-admin-az'
 
+
 // =========== //
 // Variable declaration //
 // =========== //
