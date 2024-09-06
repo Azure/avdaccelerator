@@ -98,6 +98,7 @@ function Install-Font {
     }    
 
 $ErrorActionPreference = 'Stop'
+$ProgressPreference = 'SilentlyContinue'
 
 try {
 
