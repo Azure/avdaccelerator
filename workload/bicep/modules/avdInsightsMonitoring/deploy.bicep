@@ -113,7 +113,7 @@ module deployDiagnosticsAzurePolicyForAvd '../azurePolicies/avdMonitoring.bicep'
 }
 
 // Get existing LAW
-resource existingLaw 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!deployAlaWorkspace && !empty(alaWorkspaceId)) {
+resource existingAlaw 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!deployAlaWorkspace && !empty(alaWorkspaceId)) {
   scope: resourceGroup(varAlaWorkspaceIdSplitId[1], varAlaWorkspaceIdSplitId[3])
   name: varAlaWorkspaceIdSplitId[7]
 }
@@ -123,7 +123,7 @@ module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
   scope: resourceGroup('${subscriptionId}', (deployAlaWorkspace ? '${monitoringRgName}' : '${serviceObjectsRgName}'))
   name: 'DCR-${time}'
   params: {
-    location: deployAlaWorkspace ? alaWorkspace.outputs.location : existingLaw.location
+    location: deployAlaWorkspace ? alaWorkspace.outputs.location : existingAlaw.location
     name: dataCollectionRulesName
     alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
     tags: tags
