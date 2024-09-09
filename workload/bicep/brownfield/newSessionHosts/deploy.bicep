@@ -201,6 +201,9 @@ param opsTeamTag string = 'workload-admins@Contoso.com'
 @sys.description('Organizational owner of the AVD deployment. (Default: workload-owner@Contoso.com)')
 param ownerTag string = 'workload-owner@Contoso.com'
 
+@sys.description('Data collection rule ID.')
+param dataCollectionRuleId string
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -435,6 +438,22 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
     alaWorkspace
   ]
 }]
+
+// Data collection rule association
+module dataCollectionRuleAssociation '../..//modules/avdSessionHosts/.bicep/dataCollectionRulesAssociation.bicep' = [for i in range(1, count): if (deployMonitoring) {
+  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
+  name: 'DCR-Asso-${i - 1}-${time}'
+  params: {
+      virtualMachineName: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
+      dataCollectionRuleId: dataCollectionRuleId
+  }
+  dependsOn: [
+      monitoring
+      sessionHostsAntimalwareExtension
+      alaWorkspace
+  ]
+}]
+
 
 // Apply AVD session host configurations
 module sessionHostConfiguration '../../modules/avdSessionHosts/.bicep/configureSessionHost.bicep' = [for i in range(1, count): {

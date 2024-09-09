@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "8529136871393216686"
+      "templateHash": "14096690486777536500"
     }
   },
   "parameters": {
@@ -404,6 +404,12 @@
       "defaultValue": "workload-owner@Contoso.com",
       "metadata": {
         "description": "Organizational owner of the AVD deployment. (Default: workload-owner@Contoso.com)"
+      }
+    },
+    "dataCollectionRuleId": {
+      "type": "string",
+      "metadata": {
+        "description": "Data collection rule ID."
       }
     }
   },
@@ -5717,6 +5723,73 @@
         }
       },
       "dependsOn": [
+        "sessionHostsAntimalwareExtension"
+      ]
+    },
+    {
+      "copy": {
+        "name": "dataCollectionRuleAssociation",
+        "count": "[length(range(1, parameters('count')))]"
+      },
+      "condition": "[parameters('deployMonitoring')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('DCR-Asso-{0}-{1}', sub(range(1, parameters('count'))[copyIndex()], 1), parameters('time'))]",
+      "subscriptionId": "[format('{0}', parameters('computeSubscriptionId'))]",
+      "resourceGroup": "[format('{0}', parameters('computeRgResourceGroupName'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "virtualMachineName": {
+            "value": "[format('{0}{1}', variables('varSessionHostNamePrefix'), padLeft(add(range(1, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]"
+          },
+          "dataCollectionRuleId": {
+            "value": "[parameters('dataCollectionRuleId')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "15961062277630290779"
+            }
+          },
+          "parameters": {
+            "virtualMachineName": {
+              "type": "string",
+              "metadata": {
+                "description": "VM name."
+              }
+            },
+            "dataCollectionRuleId": {
+              "type": "string",
+              "metadata": {
+                "description": "Data collection rule ID."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Insights/dataCollectionRuleAssociations",
+              "apiVersion": "2022-06-01",
+              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('virtualMachineName'))]",
+              "name": "[parameters('virtualMachineName')]",
+              "properties": {
+                "dataCollectionRuleId": "[parameters('dataCollectionRuleId')]",
+                "description": "AVD Insights data collection rule association"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "monitoring",
         "sessionHostsAntimalwareExtension"
       ]
     },
