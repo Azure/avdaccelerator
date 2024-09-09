@@ -4,7 +4,7 @@ echo "Environment: $1"
 
 # List of resource groups to delete
 #resource_groups=("avd-nih-arpah-test-use2-monitoring" "avd-nih-arpah-test-use2-network" "avd-nih-arpah-test-use2-pool-compute" "avd-nih-arpah-test-use2-service-objects" "rg-avd-test-use2-monitoring")
-resource_groups=("avd-nih-arpah-$1-use2-monitoring" "avd-nih-arpah-$1-use2-network" "avd-nih-arpah-$1-use2-pool-compute" "avd-nih-arpah-$1-use2-service-objects" "avd-nih-arpah-$1-use2-monitoring")
+resource_groups=("avd-nih-arpah-$1-use2-monitoring" "avd-nih-arpah-$1-use2-network" "avd-nih-arpah-$1-use2-pool-compute" "avd-nih-arpah-$1-use2-service-objects")
 
 # Loop through each resource group and delete
 for rg in "${resource_groups[@]}"; do
