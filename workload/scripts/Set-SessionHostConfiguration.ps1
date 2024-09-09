@@ -407,7 +407,8 @@ try {
                 )
 
                 foreach ($File in $Files) {
-                        Add-MpPreference -ExclusionPath $File
+                        # JWI:  Comment out to to AntiMalware ext failing
+                        #Add-MpPreference -ExclusionPath $File
                 }
                 Write-Log -Message 'Enabled Defender exlusions for FSLogix paths' -Type 'INFO'
 
@@ -418,7 +419,8 @@ try {
                 )
 
                 foreach ($Process in $Processes) {
-                        Add-MpPreference -ExclusionProcess $Process
+                        # JWI:  Comment out to to AntiMalware ext failing
+                        #Add-MpPreference -ExclusionProcess $Process
                 }
                 Write-Log -Message 'Enabled Defender exlusions for FSLogix processes' -Type 'INFO'
         }
