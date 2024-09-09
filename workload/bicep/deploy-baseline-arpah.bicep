@@ -113,7 +113,7 @@ param hostPoolMaxSessions int = 8
 param avdStartVmOnConnect bool = true
 
 @sys.description('AVD host pool Custom RDP properties. (Default: audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2)')
-param avdHostPoolRdpProperties string = 'audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2'
+param avdHostPoolRdpProperties string = 'audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2;enablerdsaadauth:i:1'
 
 @sys.description('AVD deploy scaling plan. (Default: true)')
 param avdDeployScalingPlan bool = true
@@ -488,6 +488,7 @@ param storageFilePrivateEndpointStaticIp string
 
 @sys.description('Vnet resource group name')
 param vnetResourceGroupName string = 'nih-arpa-h-it-vdi-nih-${toLower(deploymentEnvironment)}-rg-admin-az'
+
 
 // =========== //
 // Variable declaration //
@@ -1115,6 +1116,7 @@ module updateSubnetNsgAndRouteTable './modules/networking-arpah/deploy.bicep' = 
         avdNetworksecurityGroupName: varAvdNetworksecurityGroupName
         avdRouteTableName: varAvdRouteTableName
         workloadSubsId: avdWorkloadSubsId
+        sessionHostLocation: avdSessionHostLocation
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
     }

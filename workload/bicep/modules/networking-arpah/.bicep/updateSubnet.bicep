@@ -9,7 +9,6 @@ param subnetName string
 @sys.description('Existing subnet properties')
 param properties object
 
-
 // Get existing vnet
 resource existingVnet 'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
   name: vnetName
