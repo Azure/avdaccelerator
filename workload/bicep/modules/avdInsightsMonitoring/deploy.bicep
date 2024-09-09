@@ -63,7 +63,7 @@ var varAlaWorkspaceIdSplitId = split(alaWorkspaceId, '/')
 // =========== //
 
 // Resource group if new Log Analytics space is required
-module baselineMonitoringResourceGroup '../../../../avm/1.0.0/res/resources/resource-group/main.bicep' = if (deployAlaWorkspace) {
+module baselineMonitoringResourceGroup '../../../../avm/1.0.0/res/resources/resource-group/main.bicep' = if (deployAlaWorkspace || (!deployAlaWorkspace && !empty(alaWorkspaceId))) {
   scope: subscription(subscriptionId)
   name: 'Monitoing-RG-${time}'
   params: {
@@ -120,7 +120,7 @@ resource existingAlaw 'Microsoft.OperationalInsights/workspaces@2022-10-01' exis
 
 // data collection rules
 module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
-  scope: resourceGroup('${subscriptionId}', (deployAlaWorkspace ? '${monitoringRgName}' : '${serviceObjectsRgName}'))
+  scope: resourceGroup('${subscriptionId}', '${monitoringRgName}')
   name: 'DCR-${time}'
   params: {
     location: deployAlaWorkspace ? alaWorkspace.outputs.location : existingAlaw.location
@@ -128,6 +128,9 @@ module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
     alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
     tags: tags
   }
+  dependsOn: [
+    baselineMonitoringResourceGroup
+  ]
 }
 
 // =========== //
