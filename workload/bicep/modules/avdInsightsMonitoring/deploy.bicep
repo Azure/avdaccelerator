@@ -56,6 +56,8 @@ param time string = utcNow()
 // Variable declaration //
 // =========== //
 
+var varAlaWorkspaceIdSplitId = split(alaWorkspaceId, '/')
+
 // =========== //
 // Deployments //
 // =========== //
@@ -110,12 +112,10 @@ module deployDiagnosticsAzurePolicyForAvd '../azurePolicies/avdMonitoring.bicep'
   ]
 }
 
-// /subscriptions/40879978-1a98-4dcd-b600-8e1c8696fe68/resourceGroups/DefaultResourceGroup-EUS/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-40879978-1a98-4dcd-b600-8e1c8696fe68-EUS
-
-var splitId = split(alaWorkspaceId, '/')
-resource existingLAW 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!deployAlaWorkspace) {
-  scope: resourceGroup(splitId[1], splitId[3])
-  name: splitId[7]
+// Get existing LAW
+resource existingLaw 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!deployAlaWorkspace && !empty(alaWorkspaceId)) {
+  scope: resourceGroup(varAlaWorkspaceIdSplitId[1], varAlaWorkspaceIdSplitId[3])
+  name: varAlaWorkspaceIdSplitId[7]
 }
 
 // data collection rules
@@ -123,14 +123,11 @@ module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
   scope: resourceGroup('${subscriptionId}', (deployAlaWorkspace ? '${monitoringRgName}' : '${serviceObjectsRgName}'))
   name: 'DCR-${time}'
   params: {
-    location: deployAlaWorkspace ? alaWorkspace.outputs.location : existingLAW.location
+    location: deployAlaWorkspace ? alaWorkspace.outputs.location : existingLaw.location
     name: dataCollectionRulesName
     alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
     tags: tags
   }
-  dependsOn: [
-    alaWorkspace
-  ]
 }
 
 // =========== //
