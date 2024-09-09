@@ -114,8 +114,8 @@ module deployDiagnosticsAzurePolicyForAvd '../azurePolicies/avdMonitoring.bicep'
 
 // Get existing LAW
 resource existingAlaw 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!deployAlaWorkspace && !empty(alaWorkspaceId)) {
-  scope: resourceGroup(varAlaWorkspaceIdSplitId[1], varAlaWorkspaceIdSplitId[3])
-  name: varAlaWorkspaceIdSplitId[7]
+  scope: resourceGroup(varAlaWorkspaceIdSplitId[2], varAlaWorkspaceIdSplitId[4])
+  name: varAlaWorkspaceIdSplitId[8]
 }
 
 // data collection rules

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "9043558783126504087"
+      "templateHash": "5450536995988122327"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -2097,7 +2097,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "5096941863617871865"
+              "templateHash": "7671498800948047567"
             },
             "name": "AVD LZA insights monitoring",
             "description": "This module deploys Log analytics workspace, DCR and policies",
@@ -3836,7 +3836,7 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "location": "[if(parameters('deployAlaWorkspace'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.location.value), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', variables('varAlaWorkspaceIdSplitId')[1], variables('varAlaWorkspaceIdSplitId')[3]), 'Microsoft.OperationalInsights/workspaces', variables('varAlaWorkspaceIdSplitId')[7]), '2022-10-01', 'full').location))]",
+                  "location": "[if(parameters('deployAlaWorkspace'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.location.value), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', variables('varAlaWorkspaceIdSplitId')[2], variables('varAlaWorkspaceIdSplitId')[4]), 'Microsoft.OperationalInsights/workspaces', variables('varAlaWorkspaceIdSplitId')[8]), '2022-10-01', 'full').location))]",
                   "name": {
                     "value": "[parameters('dataCollectionRulesName')]"
                   },
