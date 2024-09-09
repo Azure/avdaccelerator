@@ -796,10 +796,19 @@
                                     }
                                 },
                                 {
+                                    "name": "monitoringDataCollectionRuleSelection",
+                                    "type": "Microsoft.Solutions.ResourceSelector",
+                                    "label": "Data Collection Rule",
+                                    "resourceType": "Microsoft.Insights/dataCollectionRules",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
+                                {
                                     "name": "deployMonitoringInfo1",
                                     "type": "Microsoft.Common.InfoBox",
                                     "options": {
-                                        "text": "Azure Virtual Desktop monitoring requires an existing Azure Log Analytics Workspace or the creation of a new one.",
+                                        "text": "Azure Virtual Desktop monitoring requires an existing Azure Log Analytics Workspace and Data Collection Rules.",
                                         "uri": "https://docs.microsoft.com/azure/virtual-desktop/azure-monitor",
                                         "style": "Info"
                                     }
@@ -1155,6 +1164,7 @@
                 "asgResourceId": "[if(steps('network').networkSettings.applicationSecurityGroup, steps('network').networkSettings.applicationSecurityGroupSelectorId.id, '')]",
                 "deployMonitoring": "[steps('monitoring').configureMonitoring]",
                 "alaWorkspaceResourceId": "[if(steps('monitoring').configureMonitoring, steps('monitoring').motoringSettings.monitoringWorkspaceSelection.id, '')]",
+                "dataCollectionRuleId": "[if(steps('monitoring').configureMonitoring, steps('monitoring').motoringSettings.monitoringDataCollectionRuleSelection.id, '')]",
                 "customNaming": "[steps('resourceNaming').resourceNamingSelection]",
                 "sessionHostCustomNamePrefix": "[if(steps('resourceNaming').resourceNamingSelection, steps('resourceNaming').resourceNamingCompute.sessionHostCustomNamePrefix, '')]",
                 "createResourceTags": "[steps('resourceTagging').resourceTaggingSelection]",
