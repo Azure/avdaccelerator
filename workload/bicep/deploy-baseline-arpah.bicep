@@ -60,7 +60,7 @@ param createIntuneEnrollment bool = false
 param securityPrincipalId string = ''
 
 @sys.description('Optional, Identity name to grant RBAC role to access AVD application group and NTFS permissions. (Default: "")')
-param securityPrincipalName string = ''
+param securityPrincipalName string = 'ARPA-H AVD Default'
 
 @sys.description('FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")')
 param identityDomainName string = 'none'
