@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "17808671897898503725"
+      "templateHash": "15101347986771491299"
     }
   },
   "parameters": {
@@ -91,13 +91,14 @@
     },
     "resourceGroupName": {
       "type": "string",
-      "defaultValue": "rg-cit-dev-use",
+      "defaultValue": "",
       "metadata": {
         "description": "The name of the resource group for the resources."
       }
     },
     "storageAccountName": {
       "type": "string",
+      "defaultValue": "",
       "metadata": {
         "description": "The name of the storage account for the imaging artifacts."
       }
