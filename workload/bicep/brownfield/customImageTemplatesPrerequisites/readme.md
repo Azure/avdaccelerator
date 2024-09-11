@@ -7,25 +7,21 @@ This solution will deploy the prerequisites for AVD Custom Image Templates as de
 ## Requirements
 
 - Permissions: below are the minimum required roles on the target subscription to deploy this solution.
-  - 
-  - 
-  - 
+  - Owner
 
 ## Deployment Options
 
-To deploy this solution, the principal must have Owner privileges on the Azure subscription.
-
 ### Azure Portal
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fjamasten%2FAVD-CIT-Prereqs%2Fmain%2Fsolution.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Fjamasten%2FAVD-CIT-Prereqs%2Fmain%2FuiDefinition.json)
-[![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fjamasten%2FAVD-CIT-Prereqs%2Fmain%2Fsolution.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Fjamasten%2FAVD-CIT-Prereqs%2Fmain%2FuiDefinition.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fjamasten%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployCustomImageTemplatesPrerequisites.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Fjamasten%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiCustomImageTemplatesPrerequisites.json)
+[![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fjamasten%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployCustomImageTemplatesPrerequisites.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2Fjamasten%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiCustomImageTemplatesPrerequisites.json)
 
 ### PowerShell
 
 ````powershell
 New-AzDeployment `
     -Location '<Azure location>' `
-    -TemplateFile 'https://raw.githubusercontent.com/jamasten/AVD-CIT-Prereqs/main/solution.json' `
+    -TemplateFile 'https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/arm/brownfield/deployCustomImageTemplatesPrerequisites.json' `
     -Verbose
 ````
 
@@ -34,5 +30,5 @@ New-AzDeployment `
 ````cli
 az deployment sub create \
     --location '<Azure location>' \
-    --template-uri 'https://raw.githubusercontent.com/jamasten/AVD-CIT-Prereqs/main/solution.json'
+    --template-uri 'https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/arm/brownfield/deployCustomImageTemplatesPrerequisites.json'
 ````
