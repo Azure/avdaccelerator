@@ -48,10 +48,10 @@ The brownfield section contains templates to deploy additional features for Azur
 - [App Attach Tools VM](./workload/bicep/brownfield/appAttachToolsVM/Readme.md)
 - [Auto Increase Premium File Share Quota](./workload/bicep/brownfield/autoIncreasePremiumFileShareQuota/readme.md)
 - [AVD Session Host Replacer](https://github.com/Azure/AVDSessionHostReplacer)
+- [Custom Image Templates Prerequisites](./workload/bicep/brownfield/customImageTemplatesPrerequisites/readme.md)
 - [Migrate monitoring agent from MMA to AMA](./workload/scripts/Monitoring/readme.md)
 - [Scaling Tool](./workload/bicep/brownfield/scalingTool/readme.md)
 - [Start VM On Connect](./workload/bicep/brownfield/startVmOnConnect/readme.md)
-
 
 ### Monitoring workbooks
 
@@ -63,12 +63,12 @@ The brownfield section contains templates to deploy additional features for Azur
 
 [Getting Started](/workload/docs/getting-started-custom-image-build.md) deploying a custom image based on the latest version of the Azure marketplace image to an Azure Compute Gallery. The following images are offered:
 
- - Windows 10 22H2 (Gen 2)
- - Windows 11 22H2 (Gen 2)
- - Windows 11 23H2 (Gen 2)
- - Windows 10 22H2 with O365 (Gen 2)
- - Windows 11 22H2 with O365 (Gen 2)
- - Windows 11 23H2 with O365 (Gen 2)
+- Windows 10 22H2 (Gen 2)
+- Windows 11 22H2 (Gen 2)
+- Windows 11 23H2 (Gen 2)
+- Windows 10 22H2 with O365 (Gen 2)
+- Windows 11 22H2 with O365 (Gen 2)
+- Windows 11 23H2 with O365 (Gen 2)
 
 You can also select to enable the Trusted Launch or Confidential VM security type feature on the Azure Compute Gallery image definition.
 
