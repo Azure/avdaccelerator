@@ -1,0 +1,690 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.29.47.4906",
+      "templateHash": "17808671897898503725"
+    }
+  },
+  "parameters": {
+    "computeGalleryName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the compute gallery for managing the images."
+      }
+    },
+    "deploymentScriptName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployment script for configuring an existing subnet."
+      }
+    },
+    "existingResourceGroup": {
+      "type": "bool",
+      "metadata": {
+        "description": "Determine whether to use an existing resource group."
+      }
+    },
+    "existingVirtualNetworkResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The resource ID of an existing virtual network."
+      }
+    },
+    "imageDefinitionIsAcceleratedNetworkSupported": {
+      "type": "bool",
+      "metadata": {
+        "description": "Indicates whether the image definition supports accelerated networking."
+      }
+    },
+    "imageDefinitionIsHibernateSupported": {
+      "type": "bool",
+      "metadata": {
+        "description": "Indicates whether the image definition supports hibernation."
+      }
+    },
+    "imageDefinitionName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Image Definition for the Shared Image Gallery."
+      }
+    },
+    "imageDefinitionSecurityType": {
+      "type": "string",
+      "allowedValues": [
+        "ConfidentialVM",
+        "ConfidentialVMSupported",
+        "Standard",
+        "TrustedLaunch"
+      ],
+      "metadata": {
+        "description": "The security type for the Image Definition."
+      }
+    },
+    "imageOffer": {
+      "type": "string",
+      "metadata": {
+        "description": "The offer of the marketplace image."
+      }
+    },
+    "imagePublisher": {
+      "type": "string",
+      "metadata": {
+        "description": "The publisher of the marketplace image."
+      }
+    },
+    "imageSku": {
+      "type": "string",
+      "metadata": {
+        "description": "The SKU of the marketplace image."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[deployment().location]",
+      "metadata": {
+        "description": "The location for the resources deployed in this solution."
+      }
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "defaultValue": "rg-cit-dev-use",
+      "metadata": {
+        "description": "The name of the resource group for the resources."
+      }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the storage account for the imaging artifacts."
+      }
+    },
+    "subnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "The subnet name of an existing virtual network."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "The key-value pairs of tags for the resources."
+      }
+    },
+    "timestamp": {
+      "type": "string",
+      "defaultValue": "[utcNow('yyyyMMddhhmmss')]",
+      "metadata": {
+        "description": "DO NOT MODIFY THIS VALUE! The timestamp is needed to differentiate deployments for certain Azure resources and must be set using a parameter."
+      }
+    },
+    "userAssignedIdentityName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name for the user assigned identity"
+      }
+    }
+  },
+  "variables": {
+    "Roles": [
+      {
+        "resourceGroup": "[split(parameters('existingVirtualNetworkResourceId'), '/')[4]]",
+        "name": "Virtual Network Join",
+        "description": "Allow resources to join a subnet",
+        "permissions": [
+          {
+            "actions": [
+              "Microsoft.Network/virtualNetworks/read",
+              "Microsoft.Network/virtualNetworks/subnets/read",
+              "Microsoft.Network/virtualNetworks/subnets/join/action",
+              "Microsoft.Network/virtualNetworks/subnets/write"
+            ]
+          }
+        ]
+      },
+      {
+        "resourceGroup": "[parameters('resourceGroupName')]",
+        "name": "Image Template Contributor",
+        "description": "Allow the creation and management of images",
+        "permissions": [
+          {
+            "actions": [
+              "Microsoft.Compute/galleries/read",
+              "Microsoft.Compute/galleries/images/read",
+              "Microsoft.Compute/galleries/images/versions/read",
+              "Microsoft.Compute/galleries/images/versions/write",
+              "Microsoft.Compute/images/read",
+              "Microsoft.Compute/images/write",
+              "Microsoft.Compute/images/delete"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "resources": [
+    {
+      "condition": "[not(parameters('existingResourceGroup'))]",
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2019-10-01",
+      "name": "[parameters('resourceGroupName')]",
+      "location": "[parameters('location')]",
+      "tags": "[coalesce(tryGet(parameters('tags'), 'Microsoft.Resources/resourceGroups'), createObject())]",
+      "properties": {}
+    },
+    {
+      "copy": {
+        "name": "roleDefinitions",
+        "count": "[length(range(0, length(variables('Roles'))))]"
+      },
+      "type": "Microsoft.Authorization/roleDefinitions",
+      "apiVersion": "2015-07-01",
+      "name": "[guid(variables('Roles')[range(0, length(variables('Roles')))[copyIndex()]].name, subscription().id)]",
+      "properties": {
+        "roleName": "[format('{0} ({1})', variables('Roles')[range(0, length(variables('Roles')))[copyIndex()]].name, subscription().subscriptionId)]",
+        "description": "[variables('Roles')[range(0, length(variables('Roles')))[copyIndex()]].description]",
+        "permissions": "[variables('Roles')[range(0, length(variables('Roles')))[copyIndex()]].permissions]",
+        "assignableScopes": [
+          "[subscription().id]"
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('UserAssignedIdentity_{0}', parameters('timestamp'))]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "name": {
+            "value": "[parameters('userAssignedIdentityName')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "11016069752754697904"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+              "apiVersion": "2018-11-30",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[coalesce(tryGet(parameters('tags'), 'Microsoft.ManagedIdentity/userAssignedIdentities'), createObject())]"
+            }
+          ],
+          "outputs": {
+            "PrincipalId": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), '2018-11-30').principalId]"
+            },
+            "ResourceId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "roleAssignments",
+        "count": "[length(range(0, length(variables('Roles'))))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('RoleAssignments_{0}_{1}', range(0, length(variables('Roles')))[copyIndex()], parameters('timestamp'))]",
+      "resourceGroup": "[variables('Roles')[range(0, length(variables('Roles')))[copyIndex()]].resourceGroup]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "principalId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('UserAssignedIdentity_{0}', parameters('timestamp'))), '2022-09-01').outputs.PrincipalId.value]"
+          },
+          "roleDefinitionId": {
+            "value": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', guid(variables('Roles')[range(0, length(variables('Roles')))[range(0, length(variables('Roles')))[copyIndex()]]].name, subscription().id))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "6575514276609591630"
+            }
+          },
+          "parameters": {
+            "principalId": {
+              "type": "string"
+            },
+            "roleDefinitionId": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2020-10-01-preview",
+              "name": "[guid(parameters('principalId'), parameters('roleDefinitionId'), resourceGroup().id)]",
+              "properties": {
+                "roleDefinitionId": "[parameters('roleDefinitionId')]",
+                "principalId": "[parameters('principalId')]",
+                "principalType": "ServicePrincipal"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]",
+        "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', guid(variables('Roles')[range(0, length(variables('Roles')))[range(0, length(variables('Roles')))[copyIndex()]]].name, subscription().id))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('UserAssignedIdentity_{0}', parameters('timestamp')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('ComputeGallery_{0}', parameters('timestamp'))]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "computeGalleryName": {
+            "value": "[parameters('computeGalleryName')]"
+          },
+          "imageDefinitionName": {
+            "value": "[parameters('imageDefinitionName')]"
+          },
+          "imageDefinitionSecurityType": {
+            "value": "[parameters('imageDefinitionSecurityType')]"
+          },
+          "imageOffer": {
+            "value": "[parameters('imageOffer')]"
+          },
+          "imagePublisher": {
+            "value": "[parameters('imagePublisher')]"
+          },
+          "imageSku": {
+            "value": "[parameters('imageSku')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "imageDefinitionIsAcceleratedNetworkSupported": {
+            "value": "[parameters('imageDefinitionIsAcceleratedNetworkSupported')]"
+          },
+          "imageDefinitionIsHibernateSupported": {
+            "value": "[parameters('imageDefinitionIsHibernateSupported')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "10054677487571746771"
+            }
+          },
+          "parameters": {
+            "computeGalleryName": {
+              "type": "string"
+            },
+            "imageDefinitionName": {
+              "type": "string"
+            },
+            "imageDefinitionIsAcceleratedNetworkSupported": {
+              "type": "bool"
+            },
+            "imageDefinitionIsHibernateSupported": {
+              "type": "bool"
+            },
+            "imageDefinitionSecurityType": {
+              "type": "string"
+            },
+            "imageOffer": {
+              "type": "string"
+            },
+            "imagePublisher": {
+              "type": "string"
+            },
+            "imageSku": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Compute/galleries",
+              "apiVersion": "2022-01-03",
+              "name": "[parameters('computeGalleryName')]",
+              "location": "[parameters('location')]",
+              "tags": "[coalesce(tryGet(parameters('tags'), 'Microsoft.Compute/galleries'), createObject())]"
+            },
+            {
+              "type": "Microsoft.Compute/galleries/images",
+              "apiVersion": "2022-01-03",
+              "name": "[format('{0}/{1}', parameters('computeGalleryName'), parameters('imageDefinitionName'))]",
+              "location": "[parameters('location')]",
+              "tags": "[coalesce(tryGet(parameters('tags'), 'Microsoft.Compute/galleries'), createObject())]",
+              "properties": {
+                "osType": "Windows",
+                "osState": "Generalized",
+                "hyperVGeneration": "[if(or(contains(parameters('imageSku'), '-g2'), contains(parameters('imageSku'), 'win11-')), 'V2', 'V1')]",
+                "identifier": {
+                  "publisher": "[parameters('imagePublisher')]",
+                  "offer": "[parameters('imageOffer')]",
+                  "sku": "[parameters('imageSku')]"
+                },
+                "features": "[if(equals(parameters('imageDefinitionSecurityType'), 'Standard'), null(), createArray(createObject('name', 'SecurityType', 'value', parameters('imageDefinitionSecurityType')), createObject('name', 'IsAcceleratedNetworkSupported', 'value', string(parameters('imageDefinitionIsAcceleratedNetworkSupported'))), createObject('name', 'IsHibernateSupported', 'value', string(parameters('imageDefinitionIsHibernateSupported')))))]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Compute/galleries', parameters('computeGalleryName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "imageDefinitionResourceId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Compute/galleries/images', parameters('computeGalleryName'), parameters('imageDefinitionName'))]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]"
+      ]
+    },
+    {
+      "condition": "[and(not(empty(parameters('subnetName'))), not(empty(parameters('existingVirtualNetworkResourceId'))))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('NetworkPolicy_{0}', parameters('timestamp'))]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "deploymentScriptName": {
+            "value": "[parameters('deploymentScriptName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "subnetName": {
+            "value": "[parameters('subnetName')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "timestamp": {
+            "value": "[parameters('timestamp')]"
+          },
+          "userAssignedIdentityResourceId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('UserAssignedIdentity_{0}', parameters('timestamp'))), '2022-09-01').outputs.ResourceId.value]"
+          },
+          "virtualNetworkName": {
+            "value": "[split(parameters('existingVirtualNetworkResourceId'), '/')[8]]"
+          },
+          "virtualNetworkResourceGroupName": {
+            "value": "[split(parameters('existingVirtualNetworkResourceId'), '/')[4]]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "14159932047348825315"
+            }
+          },
+          "parameters": {
+            "deploymentScriptName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "subnetName": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "timestamp": {
+              "type": "string"
+            },
+            "userAssignedIdentityResourceId": {
+              "type": "string"
+            },
+            "virtualNetworkName": {
+              "type": "string"
+            },
+            "virtualNetworkResourceGroupName": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Resources/deploymentScripts",
+              "apiVersion": "2020-10-01",
+              "name": "[parameters('deploymentScriptName')]",
+              "location": "[parameters('location')]",
+              "tags": "[coalesce(tryGet(parameters('tags'), 'Microsoft.Resources/deploymentScripts'), createObject())]",
+              "kind": "AzurePowerShell",
+              "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                  "[format('{0}', parameters('userAssignedIdentityResourceId'))]": {}
+                }
+              },
+              "properties": {
+                "arguments": "[format('-Subnet {0} -VirtualNetwork {1} -ResourceGroup {2}', parameters('subnetName'), parameters('virtualNetworkName'), parameters('virtualNetworkResourceGroupName'))]",
+                "azPowerShellVersion": "9.4",
+                "cleanupPreference": "Always",
+                "forceUpdateTag": "[parameters('timestamp')]",
+                "retentionInterval": "PT2H",
+                "scriptContent": "Param([string]$ResourceGroup, [string]$Subnet, [string]$VirtualNetwork); $VNET = Get-AzVirtualNetwork -Name $VirtualNetwork -ResourceGroupName $ResourceGroup; ($VNET | Select-Object -ExpandProperty \"Subnets\" | Where-Object {$_.Name -eq $Subnet}).privateLinkServiceNetworkPolicies = \"Disabled\"; $VNET | Set-AzVirtualNetwork",
+                "timeout": "PT30M"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]",
+        "roleAssignments",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('UserAssignedIdentity_{0}', parameters('timestamp')))]"
+      ]
+    },
+    {
+      "condition": "[not(empty(parameters('storageAccountName')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('StorageAccount_{0}', parameters('timestamp'))]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "storageAccountName": {
+            "value": "[parameters('storageAccountName')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "userAssignedIdentityPrincipalId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('UserAssignedIdentity_{0}', parameters('timestamp'))), '2022-09-01').outputs.PrincipalId.value]"
+          },
+          "userAssignedIdentityResourceId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('UserAssignedIdentity_{0}', parameters('timestamp'))), '2022-09-01').outputs.ResourceId.value]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.29.47.4906",
+              "templateHash": "6265773523729199346"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "storageAccountName": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "userAssignedIdentityPrincipalId": {
+              "type": "string"
+            },
+            "userAssignedIdentityResourceId": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2023-01-01",
+              "name": "[parameters('storageAccountName')]",
+              "location": "[parameters('location')]",
+              "tags": "[coalesce(tryGet(parameters('tags'), 'Microsoft.Storage/storageAccounts'), createObject())]",
+              "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                  "[format('{0}', parameters('userAssignedIdentityResourceId'))]": {}
+                }
+              },
+              "kind": "StorageV2",
+              "sku": {
+                "name": "Standard_LRS"
+              },
+              "properties": {
+                "accessTier": "Cool",
+                "allowBlobPublicAccess": false,
+                "allowCrossTenantReplication": false,
+                "allowedCopyScope": "AAD",
+                "allowSharedKeyAccess": false,
+                "defaultToOAuthAuthentication": true,
+                "dnsEndpointType": "Standard",
+                "minimumTlsVersion": "TLS1_2",
+                "networkAcls": {
+                  "bypass": "AzureServices",
+                  "virtualNetworkRules": [],
+                  "ipRules": [],
+                  "defaultAction": "Allow"
+                },
+                "publicNetworkAccess": "Enabled",
+                "supportsHttpsTrafficOnly": true
+              }
+            },
+            {
+              "type": "Microsoft.Storage/storageAccounts/blobServices",
+              "apiVersion": "2021-09-01",
+              "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]",
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+              "apiVersion": "2021-09-01",
+              "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', 'artifacts')]",
+              "properties": {
+                "publicAccess": "None"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccountName'), 'default')]"
+              ]
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2020-10-01-preview",
+              "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
+              "name": "[guid(parameters('userAssignedIdentityPrincipalId'), '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1', resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')))]",
+              "properties": {
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1')]",
+                "principalId": "[parameters('userAssignedIdentityPrincipalId')]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('UserAssignedIdentity_{0}', parameters('timestamp')))]"
+      ]
+    }
+  ]
+}

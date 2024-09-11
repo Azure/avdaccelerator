@@ -1,0 +1,382 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2021-09-09/uiFormDefinition.schema.json",
+    "view": {
+        "kind": "Form",
+        "properties": {
+            "title": "Azure Virtual Desktop LZA: Custom Image Templates Prerequisites",
+            "steps": [
+                {
+                    "name": "basics",
+                    "label": "Basics",
+                    "elements": [
+                        {
+                            "name": "resourceScope",
+                            "type": "Microsoft.Common.ResourceScope",
+                            "location": {
+                                "resourceTypes": [
+                                    "Microsoft.Compute/galleries",
+                                    "Microsoft.ManagedIdentity/userAssignedIdentities",
+                                    "Microsoft.Resources/deploymentScripts",
+                                    "Microsoft.Resources/resourceGroups",
+                                    "Microsoft.Storage/storageAccounts"
+                                ],
+                                "allowedValues": []
+                            }
+                        },
+                        {
+                            "name": "resourceGroupsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/resourceGroups?api-version=2021-04-01')]"
+                            }
+                        },
+                        {
+                            "name": "existingResourceGroup",
+                            "type": "Microsoft.Common.CheckBox",
+                            "visible": true,
+                            "label": "Use existing resource group?",
+                            "defaultValue": false,
+                            "toolTip": "Determine whether to use an existing resource group for the CIT prerequisite resources."
+                        },
+                        {
+                            "name": "resourceGroup",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Resource Group",
+                            "multiselect": false,
+                            "defaultValue": "",
+                            "toolTip": "Select the name of the existing resource group.",
+                            "filterPlaceholder": "",
+                            "defaultDescription": "",
+                            "constraints": {
+                                "allowedValues": "[map(steps('basics').resourceGroupsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.name, '\"}')))]",
+                                "required": true
+                            },
+                            "infoMessages": [],
+                            "visible": "[steps('basics').existingResourceGroup]"
+                        },
+                        {
+                            "name": "deployStorage",
+                            "type": "Microsoft.Common.CheckBox",
+                            "visible": true,
+                            "label": "Deploy a storage account for build artifacts?",
+                            "defaultValue": false,
+                            "toolTip": "Determine whether to deploy a storage account to store build artifacts for the image build."
+                        },
+                        {
+                            "name": "names",
+                            "type": "Microsoft.Common.Section",
+                            "label": "Resource Names",
+                            "elements": [
+                                {
+                                    "name": "resourceGroup",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Resource group",
+                                    "visible": "[not(steps('basics').existingResourceGroup)]",
+                                    "toolTip": "Input a custom name for the shared services resource group.",
+                                    "placeholder": "Example: rg-cit-dev-use",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^(?!.*[\\.]$)[a-zA-Z0-9_\\.()-]{1,90}$",
+                                        "validationMessage": "The value must be alphanumerics, underscores, hyphens, periods, and parentheses. The value must not end with a period. The length must be 1 to 90 characters."
+                                    }
+                                },
+                                {
+                                    "name": "computeGallery",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Compute gallery",
+                                    "toolTip": "Input a custom name for the Azure Compute Gallery.",
+                                    "placeholder": "Example: gal_dev_use",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^(?:[a-zA-Z0-9]|[a-z0-9A-Z][a-z0-9A-Z_\\.]{0,78}[a-z0-9A-Z])$",
+                                        "validationMessage": "The value must be alphanumerics, underscores, and periods. The value must begin and end with alphanumerics. The length must be 1 to 80 characters."
+                                    }
+                                },
+                                {
+                                    "name": "desploymentScript",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Deployment script",
+                                    "toolTip": "Input a custom name for the Deployment Script.",
+                                    "placeholder": "Example: ds-cit-dev-use",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-zA-Z0-9][a-zA-Z0-9_-]{2,127}$",
+                                        "validationMessage": "The value must contain alphanumerics, hyphens, and underscores. The value must start with a letter or number. The length must be 3 to 128 characters."
+                                    }
+                                },
+                                {
+                                    "name": "imageDefinition",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Image definition",
+                                    "toolTip": "Input a custom name for the Image Definition in the Compute Gallery.",
+                                    "placeholder": "Example: win11-21h2-m365-avd-officeworkers",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^(?:[a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9_\\.-]{0,78}[a-zA-Z0-9])$",
+                                        "validationMessage": "The value must be alphanumerics, underscores, hyphens, and periods. The value must start and end with an alphanumeric. The length must be 1 to 80 characters."
+                                    }
+                                },
+                                {
+                                    "name": "storageAccountName_checkNameAvailability",
+                                    "type": "Microsoft.Solutions.ArmApiControl",
+                                    "request": {
+                                        "method": "POST",
+                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/providers/Microsoft.Storage/checkNameAvailability?api-version=2016-01-01')]",
+                                        "body": {
+                                            "name": "[steps('basics').names.storageAccountName]",
+                                            "type": "Microsoft.Storage/storageAccounts"
+                                        }
+                                    }
+                                },
+                                {
+                                    "name": "storageAccountName_rePUT",
+                                    "type": "Microsoft.Solutions.ArmApiControl",
+                                    "request": {
+                                        "method": "GET",
+                                        "path": "[concat(steps('basics').resourceScope.subscription.id,'/resourceGroups/',steps('basics').resourceScope.resourceGroup.name,'/providers/Microsoft.Storage/storageAccounts/',steps('basics').names.storageAccountName,'?api-version=2016-01-01')]",
+                                        "body": {}
+                                    }
+                                },
+                                {
+                                    "name": "storageAccountName",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Storage account",
+                                    "defaultValue": "",
+                                    "placeholder": "Example: sacitdevuse",
+                                    "toolTip": "The name of the storage account to store the build artifacts (optional). The value must be 24 characters or less. Special characters are not allowed. The value must be in lowercase.",
+                                    "constraints": {
+                                        "required": true,
+                                        "validations": [
+                                            {
+                                                "isValid": "[or(steps('basics').names.storageAccountName_checkNameAvailability.nameAvailable,equals(steps('basics').names.storageAccountName_checkNameAvailability.reason,'AlreadyExists'))]",
+                                                "message": "[steps('basics').names.storageAccountName_checkNameAvailability.message]"
+                                            },
+                                            {
+                                                "isValid": "[or(steps('basics').names.storageAccountName_checkNameAvailability.nameAvailable,equals(steps('basics').names.storageAccountName_rePUT.id,concat(steps('basics').resourceScope.subscription.id,'/resourceGroups/',steps('basics').resourceScope.resourceGroup.name,'/providers/Microsoft.Storage/storageAccounts/',steps('basics').names.storageAccountName)),not(equals(steps('basics').names.storageAccountName_checkNameAvailability.reason,'AlreadyExists')))]",
+                                                "message": "[steps('basics').names.storageAccountName_checkNameAvailability.message]"
+                                            }
+                                        ]
+                                    },
+                                    "visible": "[steps('basics').deployStorage]"
+                                },
+                                {
+                                    "name": "userAssignedIdentity",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "User assigned identity",
+                                    "toolTip": "Input a custom name for the User Assigned Identity.",
+                                    "placeholder": "Example: id-cit-dev-use",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-zA-Z0-9][a-zA-Z0-9_-]{2,127}$",
+                                        "validationMessage": "The value must contain alphanumerics, hyphens, and underscores. The value must start with a letter or number. The length must be 3 to 128 characters."
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "networking",
+                    "type": "Microsoft.Common.Section",
+                    "label": "Networking",
+                    "elements": [
+                        {
+                            "name": "enable",
+                            "type": "Microsoft.Common.CheckBox",
+                            "visible": true,
+                            "label": "Enable custom virtual network",
+                            "defaultValue": false,
+                            "toolTip": "Determine whether to deploy the build virtual machine in a custom virtual network."
+                        },
+                        {
+                            "name": "virtualNetwork",
+                            "type": "Microsoft.Solutions.ResourceSelector",
+                            "visible": "[steps('networking').enable]",
+                            "label": "Virtual network",
+                            "resourceType": "Microsoft.Network/virtualNetworks",
+                            "options": {
+                                "filter": {
+                                    "subscription": "onBasics",
+                                    "location": "onBasics"
+                                }
+                            }
+                        },
+                        {
+                            "name": "subnetsApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('networking').virtualNetwork.id, '/subnets?api-version=2022-05-01')]"
+                            }
+                        },
+                        {
+                            "name": "subnet",
+                            "type": "Microsoft.Common.DropDown",
+                            "visible": "[steps('networking').enable]",
+                            "label": "Subnet",
+                            "defaultValue": "",
+                            "toolTip": "Select an existing subnet for AIB build virtual machines. This enables the use of Private Link and prevents the deployment of public IP addresses.",
+                            "constraints": {
+                                "allowedValues": "[map(steps('networking').subnetsApi.value, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.name, '\"}')))]"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "imageDefinition",
+                    "type": "Microsoft.Common.Section",
+                    "label": "Image Definition",
+                    "elements": [
+                        {
+                            "name": "supportsAcceleratedNetworking",
+                            "type": "Microsoft.Common.CheckBox",
+                            "visible": true,
+                            "label": "Supports network acceleration.",
+                            "defaultValue": true,
+                            "toolTip": "Accelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance. This high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types."
+                        },
+                        {
+                            "name": "supportsHibernation",
+                            "type": "Microsoft.Common.CheckBox",
+                            "visible": true,
+                            "label": "Supports hibernation.",
+                            "defaultValue": false,
+                            "toolTip": "This is currently a preview feature and is only supported on Dsv5 series VMs."
+                        },
+                        {
+                            "name": "securityType",
+                            "type": "Microsoft.Common.DropDown",
+                            "visible": true,
+                            "label": "Security type",
+                            "defaultValue": "Standard",
+                            "toolTip": "Security type refers to the different security features available for a virtual machine. Security features like Trusted launch and Confidential Virtual Machines help to improve the security of Azure generation 2 virtual machines. However, additional security features have some limitations, which include not supporting back up, managed disks, and ephemeral OS disks. Learn more about Trusted launch virtual machines at https://learn.microsoft.com/en-us/azure/virtual-machines/trusted-launch and Confidential virtual machines at https://learn.microsoft.com/en-us/azure/confidential-computing/confidential-vm-overview.",
+                            "constraints": {
+                                "required": true,
+                                "allowedValues": [
+                                    {
+                                        "label": "Standard",
+                                        "value": "Standard"
+                                    },
+                                    {
+                                        "label": "Trusted Launch",
+                                        "value": "TrustedLaunch"
+                                    },
+                                    {
+                                        "label": "Confidential Virtual Machine",
+                                        "value": "ConfidentialVM"
+                                    },
+                                    {
+                                        "label": "Confidential Virtual Machine Supported",
+                                        "value": "ConfidentialVMSupported"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "publisher",
+                            "type": "Microsoft.Common.OptionsGroup",
+                            "label": "Publisher",
+                            "defaultValue": "Microsoft Windows Desktop",
+                            "toolTip": "Select the desired marketplace image publisher.",
+                            "constraints": {
+                                "allowedValues": [
+                                    {
+                                        "label": "Microsoft Windows Desktop",
+                                        "value": "MicrosoftWindowsDesktop"
+                                    },
+                                    {
+                                        "label": "Microsoft Windows Server",
+                                        "value": "MicrosoftWindowsServer"
+                                    }
+                                ],
+                                "required": true
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "offersApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Compute/locations/', steps('basics').resourceScope.location.name, '/publishers/', steps('imageDefinition').publisher, '/artifacttypes/vmimage/offers?api-version=2023-07-01')]"
+                            }
+                        },
+                        {
+                            "name": "offer",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "Offer",
+                            "defaultValue": "",
+                            "toolTip": "Select the desired marketplace image offer.",
+                            "constraints": {
+                                "allowedValues": "[map(steps('imageDefinition').offersApi, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.name, '\"}')))]",
+                                "required": true
+                            },
+                            "visible": true
+                        },
+                        {
+                            "name": "skusApi",
+                            "type": "Microsoft.Solutions.ArmApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Compute/locations/', steps('basics').resourceScope.location.name, '/publishers/', steps('imageDefinition').publisher, '/artifacttypes/vmimage/offers/', steps('imageDefinition').offer, '/skus?api-version=2023-07-01')]"
+                            }
+                        },
+                        {
+                            "name": "sku",
+                            "type": "Microsoft.Common.DropDown",
+                            "label": "SKU",
+                            "defaultValue": "win11-22h2-avd",
+                            "toolTip": "Select the desired marketplace image SKU.",
+                            "constraints": {
+                                "allowedValues": "[map(steps('imageDefinition').skusApi, (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.name, '\"}')))]",
+                                "required": true
+                            },
+                            "visible": true
+                        }
+                    ]
+                },
+                {
+                    "name": "tags",
+                    "label": "Tags",
+                    "elements": [
+                        {
+                            "name": "tags",
+                            "type": "Microsoft.Common.TagsByResource",
+                            "resources": [
+                                "Microsoft.Compute/galleries",
+                                "Microsoft.ManagedIdentity/userAssignedIdentities",
+                                "Microsoft.Resources/deploymentScripts",
+                                "Microsoft.Resources/resourceGroups",
+                                "Microsoft.Storage/storageAccounts"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "outputs": {
+            "parameters": {
+                "computeGalleryName": "[steps('basics').names.computeGallery]",
+                "deploymentScriptName": "[steps('basics').names.desploymentScript]",
+                "existingResourceGroup": "[steps('basics').existingResourceGroup]",
+                "existingVirtualNetworkResourceId": "[steps('networking').virtualNetwork.id]",
+                "imageDefinitionIsAcceleratedNetworkSupported": "[steps('imageDefinition').supportsAcceleratedNetworking]",
+                "imageDefinitionIsHibernateSupported": "[steps('imageDefinition').supportsHibernation]",
+                "imageDefinitionName": "[steps('basics').names.imageDefinition]",
+                "imageDefinitionSecurityType": "[steps('imageDefinition').securityType]",
+                "imageOffer": "[steps('imageDefinition').offer]",
+                "imagePublisher": "[steps('imageDefinition').publisher]",
+                "imageSku": "[steps('imageDefinition').sku]",
+                "resourceGroupName": "[if(steps('basics').existingResourceGroup, steps('basics').resourceGroup, steps('basics').names.resourceGroup)]",
+                "storageAccountName": "[steps('basics').names.storageAccountName]",
+                "subnetName": "[steps('networking').subnet]",
+                "tags": "[steps('tags').tags]",
+                "userAssignedIdentityName": "[steps('basics').names.userAssignedIdentity]"
+            },
+            "kind": "Subscription",
+            "location": "[steps('basics').resourceScope.location.name]",
+            "subscriptionId": "[steps('basics').resourceScope.subscription.id]"
+        }
+    }
+}
