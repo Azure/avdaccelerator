@@ -54,7 +54,7 @@ param resourceGroupName string = ''
 param storageAccountName string = ''
 
 @description('The subnet name of an existing virtual network.')
-param subnetName string
+param subnetName string = ''
 
 @description('The key-value pairs of tags for the resources.')
 param tags object = {}
