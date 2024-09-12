@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "16554761906325427806"
+      "templateHash": "1363943185885897908"
     }
   },
   "parameters": {
@@ -132,7 +132,7 @@
     }
   },
   "variables": {
-    "Roles": "[union(if(empty(parameters('existingVirtualNetworkResourceId')), createArray(), createArray(createObject('resourceGroup', split(parameters('existingVirtualNetworkResourceId'), '/')[4], 'name', 'Virtual Network Join', 'description', 'Allow resources to join a subnet', 'permissions', createArray(createObject('actions', createArray('Microsoft.Network/virtualNetworks/read', 'Microsoft.Network/virtualNetworks/subnets/read', 'Microsoft.Network/virtualNetworks/subnets/join/action', 'Microsoft.Network/virtualNetworks/subnets/write')))))), createArray(createObject('resourceGroup', parameters('resourceGroupName'), 'name', 'Image Template Contributor', 'description', 'Allow the creation and management of images', 'permissions', createArray(createObject('actions', createArray('Microsoft.Compute/galleries/read', 'Microsoft.Compute/galleries/images/read', 'Microsoft.Compute/galleries/images/versions/read', 'Microsoft.Compute/galleries/images/versions/write', 'Microsoft.Compute/images/read', 'Microsoft.Compute/images/write', 'Microsoft.Compute/images/delete'))))))]"
+    "varRoles": "[union(if(empty(parameters('existingVirtualNetworkResourceId')), createArray(), createArray(createObject('resourceGroup', split(parameters('existingVirtualNetworkResourceId'), '/')[4], 'name', 'Virtual Network Join', 'description', 'Allow resources to join a subnet', 'permissions', createArray(createObject('actions', createArray('Microsoft.Network/virtualNetworks/read', 'Microsoft.Network/virtualNetworks/subnets/read', 'Microsoft.Network/virtualNetworks/subnets/join/action', 'Microsoft.Network/virtualNetworks/subnets/write')))))), createArray(createObject('resourceGroup', parameters('resourceGroupName'), 'name', 'Image Template Contributor', 'description', 'Allow the creation and management of images', 'permissions', createArray(createObject('actions', createArray('Microsoft.Compute/galleries/read', 'Microsoft.Compute/galleries/images/read', 'Microsoft.Compute/galleries/images/versions/read', 'Microsoft.Compute/galleries/images/versions/write', 'Microsoft.Compute/images/read', 'Microsoft.Compute/images/write', 'Microsoft.Compute/images/delete'))))))]"
   },
   "resources": [
     {
@@ -147,15 +147,15 @@
     {
       "copy": {
         "name": "roleDefinitions",
-        "count": "[length(range(0, length(variables('Roles'))))]"
+        "count": "[length(range(0, length(variables('varRoles'))))]"
       },
       "type": "Microsoft.Authorization/roleDefinitions",
       "apiVersion": "2015-07-01",
-      "name": "[guid(variables('Roles')[range(0, length(variables('Roles')))[copyIndex()]].name, subscription().id)]",
+      "name": "[guid(variables('varRoles')[range(0, length(variables('varRoles')))[copyIndex()]].name, subscription().id)]",
       "properties": {
-        "roleName": "[format('{0} ({1})', variables('Roles')[range(0, length(variables('Roles')))[copyIndex()]].name, subscription().subscriptionId)]",
-        "description": "[variables('Roles')[range(0, length(variables('Roles')))[copyIndex()]].description]",
-        "permissions": "[variables('Roles')[range(0, length(variables('Roles')))[copyIndex()]].permissions]",
+        "roleName": "[format('{0} ({1})', variables('varRoles')[range(0, length(variables('varRoles')))[copyIndex()]].name, subscription().subscriptionId)]",
+        "description": "[variables('varRoles')[range(0, length(variables('varRoles')))[copyIndex()]].description]",
+        "permissions": "[variables('varRoles')[range(0, length(variables('varRoles')))[copyIndex()]].permissions]",
         "assignableScopes": [
           "[subscription().id]"
         ]
@@ -231,14 +231,14 @@
     {
       "copy": {
         "name": "roleAssignments",
-        "count": "[length(range(0, length(variables('Roles'))))]",
+        "count": "[length(range(0, length(variables('varRoles'))))]",
         "mode": "serial",
         "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('RoleAssignments_{0}_{1}', range(0, length(variables('Roles')))[copyIndex()], parameters('timestamp'))]",
-      "resourceGroup": "[variables('Roles')[range(0, length(variables('Roles')))[copyIndex()]].resourceGroup]",
+      "name": "[format('RoleAssignments_{0}_{1}', range(0, length(variables('varRoles')))[copyIndex()], parameters('timestamp'))]",
+      "resourceGroup": "[variables('varRoles')[range(0, length(variables('varRoles')))[copyIndex()]].resourceGroup]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -249,7 +249,7 @@
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('UserAssignedIdentity_{0}', parameters('timestamp'))), '2022-09-01').outputs.PrincipalId.value]"
           },
           "roleDefinitionId": {
-            "value": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', guid(variables('Roles')[range(0, length(variables('Roles')))[range(0, length(variables('Roles')))[copyIndex()]]].name, subscription().id))]"
+            "value": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', guid(variables('varRoles')[range(0, length(variables('varRoles')))[range(0, length(variables('varRoles')))[copyIndex()]]].name, subscription().id))]"
           }
         },
         "template": {
@@ -286,7 +286,7 @@
       },
       "dependsOn": [
         "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]",
-        "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', guid(variables('Roles')[range(0, length(variables('Roles')))[range(0, length(variables('Roles')))[copyIndex()]]].name, subscription().id))]",
+        "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', guid(variables('varRoles')[range(0, length(variables('varRoles')))[range(0, length(variables('varRoles')))[copyIndex()]]].name, subscription().id))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('UserAssignedIdentity_{0}', parameters('timestamp')))]"
       ]
     },

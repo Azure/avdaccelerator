@@ -1,3 +1,9 @@
+
+
+// ========== //
+// Parameters //
+// ========== //
+
 param computeGalleryName string
 param imageDefinitionName string
 param imageDefinitionIsAcceleratedNetworkSupported bool
@@ -8,6 +14,11 @@ param imagePublisher string
 param imageSku string
 param location string
 param tags object
+
+
+// =========== //
+// Deployments //
+// =========== //
 
 resource gallery 'Microsoft.Compute/galleries@2023-07-03' = {
   name: computeGalleryName
@@ -47,5 +58,10 @@ resource image 'Microsoft.Compute/galleries/images@2023-07-03' = {
         ]
   }
 }
+
+
+// =========== //
+// Outputs //
+// =========== //
 
 output imageDefinitionResourceId string = image.id

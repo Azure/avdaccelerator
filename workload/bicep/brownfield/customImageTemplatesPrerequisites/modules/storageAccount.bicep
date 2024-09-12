@@ -1,8 +1,19 @@
+
+
+// ========== //
+// Parameters //
+// ========== //
+
 param location string
 param storageAccountName string
 param tags object
 param userAssignedIdentityPrincipalId string
 param userAssignedIdentityResourceId string
+
+
+// =========== //
+// Deployments //
+// =========== //
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
   name: storageAccountName

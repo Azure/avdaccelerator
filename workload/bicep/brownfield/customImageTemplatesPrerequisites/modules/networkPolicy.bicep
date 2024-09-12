@@ -1,3 +1,9 @@
+
+
+// ========== //
+// Parameters //
+// ========== //
+
 param deploymentScriptName string
 param location string
 param subnetName string
@@ -7,6 +13,10 @@ param userAssignedIdentityResourceId string
 param virtualNetworkName string
 param virtualNetworkResourceGroupName string
 
+
+// =========== //
+// Deployments //
+// =========== //
 
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: deploymentScriptName

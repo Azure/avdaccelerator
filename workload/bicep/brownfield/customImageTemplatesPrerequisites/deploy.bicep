@@ -70,7 +70,7 @@ param userAssignedIdentityName string
 // Variables   //
 // =========== //
 
-var Roles = union(empty(existingVirtualNetworkResourceId) ? [] : [
+var varRoles = union(empty(existingVirtualNetworkResourceId) ? [] : [
   {
     resourceGroup: split(existingVirtualNetworkResourceId, '/')[4]
     name: 'Virtual Network Join'
@@ -112,6 +112,7 @@ var Roles = union(empty(existingVirtualNetworkResourceId) ? [] : [
 // Deployments //
 // =========== //
 
+// Resource group
 resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = if (!existingResourceGroup) {
   name: resourceGroupName
   location: location
@@ -119,18 +120,20 @@ resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = if (!existingResou
   properties: {}
 }
 
-resource roleDefinitions 'Microsoft.Authorization/roleDefinitions@2015-07-01' = [for i in range(0, length(Roles)): {
-  name: guid(Roles[i].name, subscription().id)
+// Role definitions
+resource roleDefinitions 'Microsoft.Authorization/roleDefinitions@2015-07-01' = [for i in range(0, length(varRoles)): {
+  name: guid(varRoles[i].name, subscription().id)
   properties: {
-    roleName: '${Roles[i].name} (${subscription().subscriptionId})'
-    description: Roles[i].description
-    permissions: Roles[i].permissions
+    roleName: '${varRoles[i].name} (${subscription().subscriptionId})'
+    description: varRoles[i].description
+    permissions: varRoles[i].permissions
     assignableScopes: [
       subscription().id
     ]
   }
 }]
 
+// User assigned identity
 module userAssignedIdentity 'modules/userAssignedIdentity.bicep' = {
   name: 'UserAssignedIdentity_${timestamp}'
   scope: rg
@@ -141,10 +144,11 @@ module userAssignedIdentity 'modules/userAssignedIdentity.bicep' = {
   }
 }
 
+// Role assignments
 @batchSize(1)
-module roleAssignments 'modules/roleAssignment.bicep' = [for i in range(0, length(Roles)): {
+module roleAssignments 'modules/roleAssignment.bicep' = [for i in range(0, length(varRoles)): {
   name: 'RoleAssignments_${i}_${timestamp}'
-  scope: resourceGroup(Roles[i].resourceGroup)
+  scope: resourceGroup(varRoles[i].resourceGroup)
   params: {
     principalId: userAssignedIdentity.outputs.PrincipalId
     roleDefinitionId: roleDefinitions[i].id
@@ -154,6 +158,7 @@ module roleAssignments 'modules/roleAssignment.bicep' = [for i in range(0, lengt
   ]
 }]
 
+// Compute gallery with image definition
 module computeGallery 'modules/computeGallery.bicep' = {
   name: 'ComputeGallery_${timestamp}'
   scope: rg
@@ -171,6 +176,7 @@ module computeGallery 'modules/computeGallery.bicep' = {
   }
 }
 
+// Disables the network policy for the subnet
 module networkPolicy 'modules/networkPolicy.bicep' = if (!(empty(subnetName)) && !(empty(existingVirtualNetworkResourceId))) {
   name: 'NetworkPolicy_${timestamp}'
   scope: rg
@@ -189,6 +195,7 @@ module networkPolicy 'modules/networkPolicy.bicep' = if (!(empty(subnetName)) &&
   ]
 }
 
+// Storage account with blob container
 module storage 'modules/storageAccount.bicep' = if (!empty(storageAccountName)) {
   name: 'StorageAccount_${timestamp}'
   scope: rg
