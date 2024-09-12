@@ -114,16 +114,21 @@ Connect-AzAccount -Identity -AccountId $ClientId
 Write-Log "Setting Azure subscription to $SubscriptionId"
 Select-AzSubscription -SubscriptionId $SubscriptionId
 
+$Path = 'C:\Windows\Temp\JoinAzStorageAccount.log'
+if (!(Test-Path -Path $Path)) {
+		New-Item -Path 'C:\' -Name 'JoinAzStorageAccount.log' | Out-Null
+}
+
 if ($IdentityServiceProvider -eq 'ADDS') {
 	Write-Log "Domain joining storage account $StorageAccountName in Resource group $StorageAccountRG"
 	if ( $CustomOuPath -eq 'true') {
 		#Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitDistinguishedName $OUName -OverwriteExistingADObject
-		Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitDistinguishedName $OUName -DomainAccountType 'ComputerAccount' -EncryptionType 'AES256' -OverwriteExistingADObject #-SamAccountName $SamAccountName
+		Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitDistinguishedName $OUName -DomainAccountType 'ComputerAccount' -EncryptionType 'AES256' -OverwriteExistingADObject -Verbose | Out-File -Path $Path #-SamAccountName $SamAccountName
 		Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to custom OU path $OUName"
 	}
  else {
 		#Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitName $OUName -OverwriteExistingADObject
-		Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitName $OUName -DomainAccountType 'ComputerAccount' -EncryptionType 'AES256' -OverwriteExistingADObject #-SamAccountName $SamAccountName
+		Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitName $OUName -DomainAccountType 'ComputerAccount' -EncryptionType 'AES256' -OverwriteExistingADObject -Verbose | Out-File -Path $Path #-SamAccountName $SamAccountName
 		Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to default OU path $OUName"
 	}
 }
