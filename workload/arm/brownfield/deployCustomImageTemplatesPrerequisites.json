@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "1363943185885897908"
+      "templateHash": "16157207237605124434"
     }
   },
   "parameters": {
@@ -117,7 +117,7 @@
         "description": "The key-value pairs of tags for the resources."
       }
     },
-    "timestamp": {
+    "time": {
       "type": "string",
       "defaultValue": "[utcNow('yyyyMMddhhmmss')]",
       "metadata": {
@@ -164,7 +164,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('UserAssignedIdentity_{0}', parameters('timestamp'))]",
+      "name": "[format('ID-{0}', parameters('time'))]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -237,7 +237,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('RoleAssignments_{0}_{1}', range(0, length(variables('varRoles')))[copyIndex()], parameters('timestamp'))]",
+      "name": "[format('Role-Assignment-{0}-{1}', range(0, length(variables('varRoles')))[copyIndex()], parameters('time'))]",
       "resourceGroup": "[variables('varRoles')[range(0, length(variables('varRoles')))[copyIndex()]].resourceGroup]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -246,7 +246,7 @@
         "mode": "Incremental",
         "parameters": {
           "principalId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('UserAssignedIdentity_{0}', parameters('timestamp'))), '2022-09-01').outputs.PrincipalId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('ID-{0}', parameters('time'))), '2022-09-01').outputs.PrincipalId.value]"
           },
           "roleDefinitionId": {
             "value": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', guid(variables('varRoles')[range(0, length(variables('varRoles')))[range(0, length(variables('varRoles')))[copyIndex()]]].name, subscription().id))]"
@@ -287,13 +287,13 @@
       "dependsOn": [
         "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]",
         "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', guid(variables('varRoles')[range(0, length(variables('varRoles')))[range(0, length(variables('varRoles')))[copyIndex()]]].name, subscription().id))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('UserAssignedIdentity_{0}', parameters('timestamp')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('ID-{0}', parameters('time')))]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('ComputeGallery_{0}', parameters('timestamp'))]",
+      "name": "[format('Compute-Gallery-{0}', parameters('time'))]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -420,7 +420,7 @@
       "condition": "[and(not(empty(parameters('subnetName'))), not(empty(parameters('existingVirtualNetworkResourceId'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('NetworkPolicy_{0}', parameters('timestamp'))]",
+      "name": "[format('Network-Policy-{0}', parameters('time'))]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -441,10 +441,10 @@
             "value": "[parameters('tags')]"
           },
           "timestamp": {
-            "value": "[parameters('timestamp')]"
+            "value": "[parameters('time')]"
           },
           "userAssignedIdentityResourceId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('UserAssignedIdentity_{0}', parameters('timestamp'))), '2022-09-01').outputs.ResourceId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('ID-{0}', parameters('time'))), '2022-09-01').outputs.ResourceId.value]"
           },
           "virtualNetworkName": {
             "value": "[split(parameters('existingVirtualNetworkResourceId'), '/')[8]]"
@@ -519,14 +519,14 @@
       "dependsOn": [
         "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]",
         "roleAssignments",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('UserAssignedIdentity_{0}', parameters('timestamp')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('ID-{0}', parameters('time')))]"
       ]
     },
     {
       "condition": "[not(empty(parameters('storageAccountName')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('StorageAccount_{0}', parameters('timestamp'))]",
+      "name": "[format('Storage-Account-{0}', parameters('time'))]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -544,10 +544,10 @@
             "value": "[parameters('tags')]"
           },
           "userAssignedIdentityPrincipalId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('UserAssignedIdentity_{0}', parameters('timestamp'))), '2022-09-01').outputs.PrincipalId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('ID-{0}', parameters('time'))), '2022-09-01').outputs.PrincipalId.value]"
           },
           "userAssignedIdentityResourceId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('UserAssignedIdentity_{0}', parameters('timestamp'))), '2022-09-01').outputs.ResourceId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('ID-{0}', parameters('time'))), '2022-09-01').outputs.ResourceId.value]"
           }
         },
         "template": {
@@ -651,7 +651,7 @@
       },
       "dependsOn": [
         "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('UserAssignedIdentity_{0}', parameters('timestamp')))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('ID-{0}', parameters('time')))]"
       ]
     }
   ]

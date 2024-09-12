@@ -60,7 +60,7 @@ param subnetName string = ''
 param tags object = {}
 
 @description('DO NOT MODIFY THIS VALUE! The timestamp is needed to differentiate deployments for certain Azure resources and must be set using a parameter.')
-param timestamp string = utcNow('yyyyMMddhhmmss')
+param time string = utcNow('yyyyMMddhhmmss')
 
 @description('The name for the user assigned identity')
 param userAssignedIdentityName string
@@ -135,7 +135,7 @@ resource roleDefinitions 'Microsoft.Authorization/roleDefinitions@2015-07-01' = 
 
 // User assigned identity
 module userAssignedIdentity 'modules/userAssignedIdentity.bicep' = {
-  name: 'UserAssignedIdentity_${timestamp}'
+  name: 'ID-${time}'
   scope: rg
   params: {
     location: location
@@ -147,7 +147,7 @@ module userAssignedIdentity 'modules/userAssignedIdentity.bicep' = {
 // Role assignments
 @batchSize(1)
 module roleAssignments 'modules/roleAssignment.bicep' = [for i in range(0, length(varRoles)): {
-  name: 'RoleAssignments_${i}_${timestamp}'
+  name: 'Role-Assignment-${i}-${time}'
   scope: resourceGroup(varRoles[i].resourceGroup)
   params: {
     principalId: userAssignedIdentity.outputs.PrincipalId
@@ -160,7 +160,7 @@ module roleAssignments 'modules/roleAssignment.bicep' = [for i in range(0, lengt
 
 // Compute gallery with image definition
 module computeGallery 'modules/computeGallery.bicep' = {
-  name: 'ComputeGallery_${timestamp}'
+  name: 'Compute-Gallery-${time}'
   scope: rg
   params: {
     computeGalleryName: computeGalleryName
@@ -178,14 +178,14 @@ module computeGallery 'modules/computeGallery.bicep' = {
 
 // Disables the network policy for the subnet
 module networkPolicy 'modules/networkPolicy.bicep' = if (!(empty(subnetName)) && !(empty(existingVirtualNetworkResourceId))) {
-  name: 'NetworkPolicy_${timestamp}'
+  name: 'Network-Policy-${time}'
   scope: rg
   params: {
     deploymentScriptName: deploymentScriptName
     location: location
     subnetName: subnetName
     tags: tags
-    timestamp: timestamp
+    timestamp: time
     userAssignedIdentityResourceId: userAssignedIdentity.outputs.ResourceId
     virtualNetworkName: split(existingVirtualNetworkResourceId, '/')[8]
     virtualNetworkResourceGroupName: split(existingVirtualNetworkResourceId, '/')[4]
@@ -197,7 +197,7 @@ module networkPolicy 'modules/networkPolicy.bicep' = if (!(empty(subnetName)) &&
 
 // Storage account with blob container
 module storage 'modules/storageAccount.bicep' = if (!empty(storageAccountName)) {
-  name: 'StorageAccount_${timestamp}'
+  name: 'Storage-Account-${time}'
   scope: rg
   params: {
     location: location
