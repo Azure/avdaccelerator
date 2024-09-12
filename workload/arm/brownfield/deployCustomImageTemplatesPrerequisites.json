@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "15101347986771491299"
+      "templateHash": "17585166685464872752"
     }
   },
   "parameters": {
@@ -105,6 +105,7 @@
     },
     "subnetName": {
       "type": "string",
+      "defaultValue": "",
       "metadata": {
         "description": "The subnet name of an existing virtual network."
       }
