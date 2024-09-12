@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "17585166685464872752"
+      "templateHash": "13272185734120658047"
     }
   },
   "parameters": {
@@ -132,41 +132,7 @@
     }
   },
   "variables": {
-    "Roles": [
-      {
-        "resourceGroup": "[split(parameters('existingVirtualNetworkResourceId'), '/')[4]]",
-        "name": "Virtual Network Join",
-        "description": "Allow resources to join a subnet",
-        "permissions": [
-          {
-            "actions": [
-              "Microsoft.Network/virtualNetworks/read",
-              "Microsoft.Network/virtualNetworks/subnets/read",
-              "Microsoft.Network/virtualNetworks/subnets/join/action",
-              "Microsoft.Network/virtualNetworks/subnets/write"
-            ]
-          }
-        ]
-      },
-      {
-        "resourceGroup": "[parameters('resourceGroupName')]",
-        "name": "Image Template Contributor",
-        "description": "Allow the creation and management of images",
-        "permissions": [
-          {
-            "actions": [
-              "Microsoft.Compute/galleries/read",
-              "Microsoft.Compute/galleries/images/read",
-              "Microsoft.Compute/galleries/images/versions/read",
-              "Microsoft.Compute/galleries/images/versions/write",
-              "Microsoft.Compute/images/read",
-              "Microsoft.Compute/images/write",
-              "Microsoft.Compute/images/delete"
-            ]
-          }
-        ]
-      }
-    ]
+    "Roles": "[union(if(empty(parameters('existingVirtualNetworkResourceId')), createArray(), createArray(createObject('resourceGroup', split(parameters('existingVirtualNetworkResourceId'), '/')[4], 'name', 'Virtual Network Join', 'description', 'Allow resources to join a subnet', 'permissions', createArray(createObject('actions', createArray('Microsoft.Network/virtualNetworks/read', 'Microsoft.Network/virtualNetworks/subnets/read', 'Microsoft.Network/virtualNetworks/subnets/join/action', 'Microsoft.Network/virtualNetworks/subnets/write')))))), createArray(createObject('resourceGroup', parameters('resourceGroupName'), 'name', 'Image Template Contributor', 'description', 'Allow the creation and management of images', 'permissions', createArray(createObject('actions', createArray('Microsoft.Compute/galleries/read', 'Microsoft.Compute/galleries/images/read', 'Microsoft.Compute/galleries/images/versions/read', 'Microsoft.Compute/galleries/images/versions/write', 'Microsoft.Compute/images/read', 'Microsoft.Compute/images/write', 'Microsoft.Compute/images/delete'))))))]"
   },
   "resources": [
     {

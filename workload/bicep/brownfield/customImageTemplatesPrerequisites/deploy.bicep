@@ -70,7 +70,7 @@ param userAssignedIdentityName string
 // Variables   //
 // =========== //
 
-var Roles = [
+var Roles = union(empty(existingVirtualNetworkResourceId) ? [] : [
   {
     resourceGroup: split(existingVirtualNetworkResourceId, '/')[4]
     name: 'Virtual Network Join'
@@ -86,6 +86,7 @@ var Roles = [
       }
     ]
   }
+], [
   {
     resourceGroup: resourceGroupName
     name: 'Image Template Contributor'
@@ -104,7 +105,7 @@ var Roles = [
       }
     ]
   }
-]
+])
 
 
 // =========== //
