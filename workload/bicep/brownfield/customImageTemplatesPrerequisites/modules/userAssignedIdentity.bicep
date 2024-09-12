@@ -2,7 +2,7 @@ param location string
 param name string
 param tags object
 
-resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: name
   location: location
   tags: tags[?'Microsoft.ManagedIdentity/userAssignedIdentities'] ?? {}

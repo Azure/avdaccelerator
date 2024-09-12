@@ -112,7 +112,7 @@ var Roles = union(empty(existingVirtualNetworkResourceId) ? [] : [
 // Deployments //
 // =========== //
 
-resource rg 'Microsoft.Resources/resourceGroups@2019-10-01' = if (!existingResourceGroup) {
+resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = if (!existingResourceGroup) {
   name: resourceGroupName
   location: location
   tags: tags[?'Microsoft.Resources/resourceGroups'] ?? {}

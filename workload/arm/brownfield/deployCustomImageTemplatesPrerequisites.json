@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "13272185734120658047"
+      "templateHash": "16554761906325427806"
     }
   },
   "parameters": {
@@ -138,7 +138,7 @@
     {
       "condition": "[not(parameters('existingResourceGroup'))]",
       "type": "Microsoft.Resources/resourceGroups",
-      "apiVersion": "2019-10-01",
+      "apiVersion": "2024-03-01",
       "name": "[parameters('resourceGroupName')]",
       "location": "[parameters('location')]",
       "tags": "[coalesce(tryGet(parameters('tags'), 'Microsoft.Resources/resourceGroups'), createObject())]",
@@ -189,7 +189,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "11016069752754697904"
+              "templateHash": "474725451169467785"
             }
           },
           "parameters": {
@@ -206,7 +206,7 @@
           "resources": [
             {
               "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-              "apiVersion": "2018-11-30",
+              "apiVersion": "2023-01-31",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[coalesce(tryGet(parameters('tags'), 'Microsoft.ManagedIdentity/userAssignedIdentities'), createObject())]"
@@ -215,7 +215,7 @@
           "outputs": {
             "PrincipalId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), '2018-11-30').principalId]"
+              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), '2023-01-31').principalId]"
             },
             "ResourceId": {
               "type": "string",
@@ -259,7 +259,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "6575514276609591630"
+              "templateHash": "6259838335436832030"
             }
           },
           "parameters": {
@@ -273,7 +273,7 @@
           "resources": [
             {
               "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2020-10-01-preview",
+              "apiVersion": "2022-04-01",
               "name": "[guid(parameters('principalId'), parameters('roleDefinitionId'), resourceGroup().id)]",
               "properties": {
                 "roleDefinitionId": "[parameters('roleDefinitionId')]",
@@ -339,7 +339,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "10054677487571746771"
+              "templateHash": "17477988232584003343"
             }
           },
           "parameters": {
@@ -377,14 +377,14 @@
           "resources": [
             {
               "type": "Microsoft.Compute/galleries",
-              "apiVersion": "2022-01-03",
+              "apiVersion": "2023-07-03",
               "name": "[parameters('computeGalleryName')]",
               "location": "[parameters('location')]",
               "tags": "[coalesce(tryGet(parameters('tags'), 'Microsoft.Compute/galleries'), createObject())]"
             },
             {
               "type": "Microsoft.Compute/galleries/images",
-              "apiVersion": "2022-01-03",
+              "apiVersion": "2023-07-03",
               "name": "[format('{0}/{1}', parameters('computeGalleryName'), parameters('imageDefinitionName'))]",
               "location": "[parameters('location')]",
               "tags": "[coalesce(tryGet(parameters('tags'), 'Microsoft.Compute/galleries'), createObject())]",
@@ -460,7 +460,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "14159932047348825315"
+              "templateHash": "8044371530674251887"
             }
           },
           "parameters": {
@@ -492,7 +492,7 @@
           "resources": [
             {
               "type": "Microsoft.Resources/deploymentScripts",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2023-08-01",
               "name": "[parameters('deploymentScriptName')]",
               "location": "[parameters('location')]",
               "tags": "[coalesce(tryGet(parameters('tags'), 'Microsoft.Resources/deploymentScripts'), createObject())]",
@@ -557,7 +557,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "6265773523729199346"
+              "templateHash": "12715486127819516060"
             }
           },
           "parameters": {
@@ -580,7 +580,7 @@
           "resources": [
             {
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2023-01-01",
+              "apiVersion": "2023-05-01",
               "name": "[parameters('storageAccountName')]",
               "location": "[parameters('location')]",
               "tags": "[coalesce(tryGet(parameters('tags'), 'Microsoft.Storage/storageAccounts'), createObject())]",
@@ -615,7 +615,7 @@
             },
             {
               "type": "Microsoft.Storage/storageAccounts/blobServices",
-              "apiVersion": "2021-09-01",
+              "apiVersion": "2023-05-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]",
               "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
@@ -623,7 +623,7 @@
             },
             {
               "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-              "apiVersion": "2021-09-01",
+              "apiVersion": "2023-05-01",
               "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', 'artifacts')]",
               "properties": {
                 "publicAccess": "None"
@@ -634,7 +634,7 @@
             },
             {
               "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2020-10-01-preview",
+              "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
               "name": "[guid(parameters('userAssignedIdentityPrincipalId'), '2a2b9908-6ea1-4ae2-8e65-a410df84e7d1', resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')))]",
               "properties": {

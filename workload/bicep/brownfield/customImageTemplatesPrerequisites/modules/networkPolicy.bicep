@@ -8,7 +8,7 @@ param virtualNetworkName string
 param virtualNetworkResourceGroupName string
 
 
-resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: deploymentScriptName
   location: location
   tags: tags[?'Microsoft.Resources/deploymentScripts'] ?? {}

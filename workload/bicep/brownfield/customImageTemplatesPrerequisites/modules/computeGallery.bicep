@@ -9,13 +9,13 @@ param imageSku string
 param location string
 param tags object
 
-resource gallery 'Microsoft.Compute/galleries@2022-01-03' = {
+resource gallery 'Microsoft.Compute/galleries@2023-07-03' = {
   name: computeGalleryName
   location: location
   tags: tags[?'Microsoft.Compute/galleries'] ?? {}
 }
 
-resource image 'Microsoft.Compute/galleries/images@2022-01-03' = {
+resource image 'Microsoft.Compute/galleries/images@2023-07-03' = {
   parent: gallery
   name: imageDefinitionName
   location: location
