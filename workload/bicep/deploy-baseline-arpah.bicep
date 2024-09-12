@@ -370,6 +370,10 @@ param avdScalingPlanCustomName string = 'vdscaling-app1-${toLower(deploymentEnvi
 param avdApplicationGroupCustomName string = 'vdag-desktop-app1-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(64)
+@sys.description('AVD desktop application group custom name. (Default: vdag-desktop-app1-dev-use2-001)')
+param avdRemoteAppApplicationGroupCustomName string = 'vdag-desktop-remote1-${toLower(deploymentEnvironment)}-use2-001'
+
+@maxLength(64)
 @sys.description('AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - Dev - 001)')
 param avdApplicationGroupCustomFriendlyName string = 'ARPA-H on NIH Network - ${deploymentPrefix}'
 
@@ -1174,6 +1178,52 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
         wrklKeyVault
     ]
 }
+
+// AVD RemoteApp host pool
+module managementPlaneRemoteApp './modules/avdManagementPlane/deploy-remoteapp-arpah.bicep' = {
+    name: 'AVD-MGMT-Plane-${time}'
+    params: {
+        applicationGroupName: avdRemoteAppApplicationGroupCustomName
+        applicationGroupFriendlyNameDesktop: varApplicationGroupFriendlyName
+        workSpaceName: varWorkSpaceName
+        osImage: avdOsImage
+        keyVaultResourceId: wrklKeyVault.outputs.resourceId
+        workSpaceFriendlyName: varWorkSpaceFriendlyName
+        computeTimeZone: varTimeZoneSessionHosts
+        hostPoolName: varHostPoolName
+        hostPoolFriendlyName: varHostFriendlyName
+        hostPoolRdpProperties: avdHostPoolRdpProperties
+        hostPoolLoadBalancerType: avdHostPoolLoadBalancerType
+        hostPoolType: avdHostPoolType
+        preferredAppGroupType: (hostPoolPreferredAppGroupType == 'RemoteApp') ? 'RailApplications' : 'Desktop'
+        deployScalingPlan: varDeployScalingPlan
+        scalingPlanExclusionTag: varScalingPlanExclusionTag
+        scalingPlanSchedules: (avdHostPoolType == 'Pooled') ? varPooledScalingPlanSchedules : varPersonalScalingPlanSchedules
+        scalingPlanName: varScalingPlanName
+        hostPoolMaxSessions: hostPoolMaxSessions
+        personalAssignType: avdPersonalAssignType
+        managementPlaneLocation: avdManagementPlaneLocation
+        serviceObjectsRgName: varServiceObjectsRgName
+        startVmOnConnect: avdStartVmOnConnect
+        subscriptionId: avdWorkloadSubsId
+        identityServiceProvider: avdIdentityServiceProvider
+        securityPrincipalId: !empty(securityPrincipalId) ? securityPrincipalId : ''
+        tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+        alaWorkspaceResourceId: avdDeployMonitoring
+        ? (deployAlaWorkspace
+            ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
+            : alaExistingWorkspaceResourceId)
+        : ''
+            hostPoolAgentUpdateSchedule: varHostPoolAgentUpdateSchedule
+        }
+    dependsOn: [
+        baselineResourceGroups
+        identity
+        monitoringDiagnosticSettings
+        wrklKeyVault
+    ]
+}
+
 
 // Identity: managed identities and role assignments
 module identity './modules/identity/deploy.bicep' = {
