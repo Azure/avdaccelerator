@@ -442,222 +442,222 @@ try {
         Write-Log -Message 'Installed AVD Agent' -Type 'INFO'
         Start-Sleep -Seconds 5
 
-        # ##############################################################
-        # #  Install Slack Machine-wide
-        # ##############################################################
-        # $SlackInstaller = 'Slack-Installer.msi'
-        # Get-WebFile -FileName $SlackInstaller -URL 'https://slack.com/ssb/download-win64-msi'
-        # Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $SlackInstaller /quiet /qn /norestart DESKTOP_SHORTCUTS=0 SIGNIN=0" -Wait -PassThru
-        # Write-Log -Message 'Installed Slack' -Type 'INFO'
-        # Start-Sleep -Seconds 5
-        # Remove-Item -Path $SlackInstaller -Force
+        ##############################################################
+        #  Install Slack Machine-wide
+        ##############################################################
+        $SlackInstaller = 'Slack-Installer.msi'
+        Get-WebFile -FileName $SlackInstaller -URL 'https://slack.com/ssb/download-win64-msi'
+        Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $SlackInstaller /quiet /qn /norestart DESKTOP_SHORTCUTS=0 SIGNIN=0" -Wait -PassThru
+        Write-Log -Message 'Installed Slack' -Type 'INFO'
+        Start-Sleep -Seconds 5
+        Remove-Item -Path $SlackInstaller -Force
 
-        # #REMOVE DESKTOP SHORTCUTS
-        # $desktopPath = [Environment]::GetFolderPath("CommonDesktopDirectory")
-        # $shortcutName = "Slack.lnk"
-        # $shortcutPath = Join-Path $desktopPath $shortcutName
+        #REMOVE DESKTOP SHORTCUTS
+        $desktopPath = [Environment]::GetFolderPath("CommonDesktopDirectory")
+        $shortcutName = "Slack.lnk"
+        $shortcutPath = Join-Path $desktopPath $shortcutName
 
-        # if (Test-Path $shortcutPath) {
-        #     Remove-Item $shortcutPath -Force
-        #     Write-Host "Desktop shortcut removed successfully." -ForegroundColor Green
-        # } else {
-        #     Write-Host "Desktop shortcut not found." -ForegroundColor Yellow
-        # }
+        if (Test-Path $shortcutPath) {
+            Remove-Item $shortcutPath -Force
+            Write-Host "Desktop shortcut removed successfully." -ForegroundColor Green
+        } else {
+            Write-Host "Desktop shortcut not found." -ForegroundColor Yellow
+        }
 
-	# ##############################################################
-        # #  Install Zoom Desktop App
-        # ##############################################################
-        # $ZoomInstaller = 'ZoomInstaller.msi'
-        # $URL = 'https://zoom.us/client/latest/ZoomInstallerFull.msi'
-        # Invoke-WebRequest -Uri $URL -OutFile $ZoomInstaller
-        # Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $ZoomInstaller /quiet /qn /norestart DESKTOP_SHORTCUTS=0 SIGNIN=0" -Wait -PassThru
-        # Write-Host 'Installed Zoom' -ForegroundColor Green
-        # Start-Sleep -Seconds 5
-        # Remove-Item -Path $ZoomInstaller -Force
+	##############################################################
+        #  Install Zoom Desktop App
+        ##############################################################
+        $ZoomInstaller = 'ZoomInstaller.msi'
+        $URL = 'https://zoom.us/client/latest/ZoomInstallerFull.msi'
+        Invoke-WebRequest -Uri $URL -OutFile $ZoomInstaller
+        Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $ZoomInstaller /quiet /qn /norestart DESKTOP_SHORTCUTS=0 SIGNIN=0" -Wait -PassThru
+        Write-Host 'Installed Zoom' -ForegroundColor Green
+        Start-Sleep -Seconds 5
+        Remove-Item -Path $ZoomInstaller -Force
 
-        # #REMOVE DESKTOP SHORTCUTS
-        # $desktopPath = [Environment]::GetFolderPath("CommonDesktopDirectory")
-        # $shortcutName = "Zoom Workplace.lnk"
-        # $shortcutPath = Join-Path $desktopPath $shortcutName
+        #REMOVE DESKTOP SHORTCUTS
+        $desktopPath = [Environment]::GetFolderPath("CommonDesktopDirectory")
+        $shortcutName = "Zoom Workplace.lnk"
+        $shortcutPath = Join-Path $desktopPath $shortcutName
 
-        # if (Test-Path $shortcutPath) {
-        #     Remove-Item $shortcutPath -Force
-        #     Write-Host "Desktop shortcut removed successfully." -ForegroundColor Green
-        # } else {
-        #     Write-Host "Desktop shortcut not found." -ForegroundColor Yellow
-        # }
+        if (Test-Path $shortcutPath) {
+            Remove-Item $shortcutPath -Force
+            Write-Host "Desktop shortcut removed successfully." -ForegroundColor Green
+        } else {
+            Write-Host "Desktop shortcut not found." -ForegroundColor Yellow
+        }
 
-        # ##############################################################
-        # #  Install GitHub Desktop App
-        # ##############################################################
-        # $GitHubDesktopInstaller = "https://central.github.com/deployments/desktop/desktop/latest/win32"
-        # Invoke-WebRequest -Uri $GitHubDesktopInstaller -OutFile "$env:TEMP\GitHubDesktopSetup.exe"
-        # Start-Process -FilePath "$env:TEMP\GitHubDesktopSetup.exe" -ArgumentList "/silent" -Wait -PassThru
-        # Write-Output 'Installed GitHub Desktop'
-        # Start-Sleep -Seconds 5
+        ##############################################################
+        #  Install GitHub Desktop App
+        ##############################################################
+        $GitHubDesktopInstaller = "https://central.github.com/deployments/desktop/desktop/latest/win32"
+        Invoke-WebRequest -Uri $GitHubDesktopInstaller -OutFile "$env:TEMP\GitHubDesktopSetup.exe"
+        Start-Process -FilePath "$env:TEMP\GitHubDesktopSetup.exe" -ArgumentList "/silent" -Wait -PassThru
+        Write-Output 'Installed GitHub Desktop'
+        Start-Sleep -Seconds 5
 
-        # #FIX ISSUE WITH GITHUB NOT SHOWING SHORTCUT IN START MENU
-        # $exePath = "C:\Users\*\AppData\Local\GitHubDesktop\GitHubDesktop.exe"  # Update with the correct path
-        # $shortcutName = "GitHub Desktop"
-        # $startMenuPath = "C:\Users\*\AppData\Roaming\Microsoft\Windows\Start Menu\Programs"
-        # $folderName = "GitHub, Inc"
-        # $folderPath = [System.IO.Path]::Combine($startMenuPath, $folderName)
+        #FIX ISSUE WITH GITHUB NOT SHOWING SHORTCUT IN START MENU
+        $exePath = "C:\Users\*\AppData\Local\GitHubDesktop\GitHubDesktop.exe"  # Update with the correct path
+        $shortcutName = "GitHub Desktop"
+        $startMenuPath = "C:\Users\*\AppData\Roaming\Microsoft\Windows\Start Menu\Programs"
+        $folderName = "GitHub, Inc"
+        $folderPath = [System.IO.Path]::Combine($startMenuPath, $folderName)
 
-        # if (-not (Test-Path $folderPath)) {
-        #     New-Item -Path $folderPath -ItemType Directory
-        # }
+        if (-not (Test-Path $folderPath)) {
+            New-Item -Path $folderPath -ItemType Directory
+        }
 
-        # $shortcutPath = [System.IO.Path]::Combine($folderPath, "$shortcutName.lnk")
-        # $WScriptShell = New-Object -ComObject WScript.Shell
-        # $shortcut = $WScriptShell.CreateShortcut($shortcutPath)
-        # $shortcut.TargetPath = $exePath
-        # $shortcut.WorkingDirectory = [System.IO.Path]::GetDirectoryName($exePath)
-        # $shortcut.WindowStyle = 1
-        # $shortcut.Description = "Shortcut for $shortcutName"
-        # $shortcut.IconLocation = "C:\Users\*\AppData\Local\GitHubDesktop\GitHubDesktop.exe, 0"  # First try with 0
-        # $shortcut.Save()
+        $shortcutPath = [System.IO.Path]::Combine($folderPath, "$shortcutName.lnk")
+        $WScriptShell = New-Object -ComObject WScript.Shell
+        $shortcut = $WScriptShell.CreateShortcut($shortcutPath)
+        $shortcut.TargetPath = $exePath
+        $shortcut.WorkingDirectory = [System.IO.Path]::GetDirectoryName($exePath)
+        $shortcut.WindowStyle = 1
+        $shortcut.Description = "Shortcut for $shortcutName"
+        $shortcut.IconLocation = "C:\Users\*\AppData\Local\GitHubDesktop\GitHubDesktop.exe, 0"  # First try with 0
+        $shortcut.Save()
 
-        # Write-Host "Shortcut for '$shortcutName' created successfully in '$folderPath' with the specified icon."
+        Write-Host "Shortcut for '$shortcutName' created successfully in '$folderPath' with the specified icon."
 
-        # ##############################################################
-        # #  Install EndNote Desktop App
-        # ##############################################################
-        # $EndNoteInstaller = 'EndNote.msi'
-        # Get-WebFile -FileName $EndNoteInstaller -URL 'https://download.endnote.com/downloads/21/EN21Inst.msi'
-        # Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $EndNoteInstaller /quiet /qn /norestart DESKTOP_SHORTCUTS=0 SIGNIN=0" -Wait -PassThru
-        # Write-Log -Message 'Installed EndNote' -Type 'INFO'
-        # Start-Sleep -Seconds 5
-        # Remove-Item -Path $EndNoteInstaller -Force
+        ##############################################################
+        #  Install EndNote Desktop App
+        ##############################################################
+        $EndNoteInstaller = 'EndNote.msi'
+        Get-WebFile -FileName $EndNoteInstaller -URL 'https://download.endnote.com/downloads/21/EN21Inst.msi'
+        Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $EndNoteInstaller /quiet /qn /norestart DESKTOP_SHORTCUTS=0 SIGNIN=0" -Wait -PassThru
+        Write-Log -Message 'Installed EndNote' -Type 'INFO'
+        Start-Sleep -Seconds 5
+        Remove-Item -Path $EndNoteInstaller -Force
 
-        # ##############################################################
-        # #  Install Zotero
-        # ##############################################################
-        # $ZoteroInstaller = 'Zotero-Setup.exe'
-        # Invoke-WebRequest -Uri 'https://www.zotero.org/download/client/dl?channel=release&platform=win-x64' -Outfile $ZoteroInstaller
-        # Start-Process -FilePath $ZoteroInstaller -ArgumentList "/S /norestart" -Wait -PassThru
-        # Write-Output 'Installed Zotero'
-        # Start-Sleep -Seconds 5
+        ##############################################################
+        #  Install Zotero
+        ##############################################################
+        $ZoteroInstaller = 'Zotero-Setup.exe'
+        Invoke-WebRequest -Uri 'https://www.zotero.org/download/client/dl?channel=release&platform=win-x64' -Outfile $ZoteroInstaller
+        Start-Process -FilePath $ZoteroInstaller -ArgumentList "/S /norestart" -Wait -PassThru
+        Write-Output 'Installed Zotero'
+        Start-Sleep -Seconds 5
 
-        # #REMOVE DESKTOP SHORTCUTS
-        # $desktopPath = [Environment]::GetFolderPath("CommonDesktopDirectory")
-        # $shortcutName = "Zotero.lnk"
-        # $shortcutPath = Join-Path $desktopPath $shortcutName
+        #REMOVE DESKTOP SHORTCUTS
+        $desktopPath = [Environment]::GetFolderPath("CommonDesktopDirectory")
+        $shortcutName = "Zotero.lnk"
+        $shortcutPath = Join-Path $desktopPath $shortcutName
 
-        # if (Test-Path $shortcutPath) {
-        #     Remove-Item $shortcutPath -Force
-        #     Write-Host "Desktop shortcut removed successfully." -ForegroundColor Green
-        # } else {
-        #     Write-Host "Desktop shortcut not found." -ForegroundColor Yellow
-        # }
+        if (Test-Path $shortcutPath) {
+            Remove-Item $shortcutPath -Force
+            Write-Host "Desktop shortcut removed successfully." -ForegroundColor Green
+        } else {
+            Write-Host "Desktop shortcut not found." -ForegroundColor Yellow
+        }
 
-        # ##############################################################
-        # #  Install BoxDrive
-        # ##############################################################
-        # $BoxDriveInstaller = 'BoxDrive.msi'
-        # Get-WebFile -FileName $BoxDriveInstaller -URL 'https://e3.boxcdn.net/box-installers/desktop/releases/win/Box-x64.msi'
-        # Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $BoxDriveInstaller /quiet /qn /norestart DESKTOP_SHORTCUTS=0 SIGNIN=0" -Wait -PassThru
-        # Write-Log -Message 'Installed BoxDrive' -Type 'INFO'
-        # Start-Sleep -Seconds 5
-        # Remove-Item -Path $BoxDriveInstaller -Force
-        # Start-Sleep -Seconds 5
+        ##############################################################
+        #  Install BoxDrive
+        ##############################################################
+        $BoxDriveInstaller = 'BoxDrive.msi'
+        Get-WebFile -FileName $BoxDriveInstaller -URL 'https://e3.boxcdn.net/box-installers/desktop/releases/win/Box-x64.msi'
+        Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $BoxDriveInstaller /quiet /qn /norestart DESKTOP_SHORTCUTS=0 SIGNIN=0" -Wait -PassThru
+        Write-Log -Message 'Installed BoxDrive' -Type 'INFO'
+        Start-Sleep -Seconds 5
+        Remove-Item -Path $BoxDriveInstaller -Force
+        Start-Sleep -Seconds 5
 
-        # #FIX ISSUE WITH BOX DRIVE RUNNING AT START
-        # # $regContent = @"
-        # # Windows Registry Editor Version 5.00
+        #FIX ISSUE WITH BOX DRIVE RUNNING AT START
+        # $regContent = @"
+        # Windows Registry Editor Version 5.00
 
-        # # [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run]
-        # # "Box"=-
-        # # $regFilePath = "$env:TEMP\remove_box.reg"
-        # # Set-Content -Path $regFilePath -Value $regContent
-        # # Start-Process regedit.exe -ArgumentList "/s $regFilePath" -Wait
-        # # Remove-Item -Path $regFilePath
+        # [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run]
+        # "Box"=-
+        # $regFilePath = "$env:TEMP\remove_box.reg"
+        # Set-Content -Path $regFilePath -Value $regContent
+        # Start-Process regedit.exe -ArgumentList "/s $regFilePath" -Wait
+        # Remove-Item -Path $regFilePath
 
-        # #FIX BOX DRIVE ICON NOT SHOWING IN START MENU
-        # $exePath = "C:\Program Files\Box\Box\Box.exe"  # Update with the correct path
-        # $shortcutName = "Box Drive"
-        # $startMenuPath = "C:\Users\*\AppData\Roaming\Microsoft\Windows\Start Menu\Programs"
-        # $folderName = "Box Drive, Inc"
-        # $folderPath = [System.IO.Path]::Combine($startMenuPath, $folderName)
+        #FIX BOX DRIVE ICON NOT SHOWING IN START MENU
+        $exePath = "C:\Program Files\Box\Box\Box.exe"  # Update with the correct path
+        $shortcutName = "Box Drive"
+        $startMenuPath = "C:\Users\*\AppData\Roaming\Microsoft\Windows\Start Menu\Programs"
+        $folderName = "Box Drive, Inc"
+        $folderPath = [System.IO.Path]::Combine($startMenuPath, $folderName)
 
-        # if (-not (Test-Path $folderPath)) {
-        #     New-Item -Path $folderPath -ItemType Directory
-        # }
+        if (-not (Test-Path $folderPath)) {
+            New-Item -Path $folderPath -ItemType Directory
+        }
 
-        # $shortcutPath = [System.IO.Path]::Combine($folderPath, "$shortcutName.lnk")
-        # $WScriptShell = New-Object -ComObject WScript.Shell
-        # $shortcut = $WScriptShell.CreateShortcut($shortcutPath)
-        # $shortcut.TargetPath = $exePath
-        # $shortcut.WorkingDirectory = [System.IO.Path]::GetDirectoryName($exePath)
-        # $shortcut.WindowStyle = 1
-        # $shortcut.Description = "Shortcut for $shortcutName"
-        # $shortcut.IconLocation = "C:\Program Files\Box\Box\Box.exe, 0"  # First try with 0
-        # $shortcut.Save()
+        $shortcutPath = [System.IO.Path]::Combine($folderPath, "$shortcutName.lnk")
+        $WScriptShell = New-Object -ComObject WScript.Shell
+        $shortcut = $WScriptShell.CreateShortcut($shortcutPath)
+        $shortcut.TargetPath = $exePath
+        $shortcut.WorkingDirectory = [System.IO.Path]::GetDirectoryName($exePath)
+        $shortcut.WindowStyle = 1
+        $shortcut.Description = "Shortcut for $shortcutName"
+        $shortcut.IconLocation = "C:\Program Files\Box\Box\Box.exe, 0"  # First try with 0
+        $shortcut.Save()
 
-        # Write-Host "Shortcut for '$shortcutName' created successfully in '$folderPath' with the specified icon."
+        Write-Host "Shortcut for '$shortcutName' created successfully in '$folderPath' with the specified icon."
 
-        # ##############################################################
-        # #  Install FireFox
-        # ##############################################################
-        # $source = "https://download.mozilla.org/?product=firefox-esr-latest&os=win64&lang=en-US"
-        # $destination = "$env:TEMP\firefox.exe"
-        # Invoke-WebRequest -Uri $source -OutFile $destination
-        # Start-Process $destination -ArgumentList "/S" -Wait
-        # Remove-Item $destination -Force
+        ##############################################################
+        #  Install FireFox
+        ##############################################################
+        $source = "https://download.mozilla.org/?product=firefox-esr-latest&os=win64&lang=en-US"
+        $destination = "$env:TEMP\firefox.exe"
+        Invoke-WebRequest -Uri $source -OutFile $destination
+        Start-Process $destination -ArgumentList "/S" -Wait
+        Remove-Item $destination -Force
 
-        # #REMOVE DESKTOP SHORTCUTS
-        # $desktopPath = [Environment]::GetFolderPath("CommonDesktopDirectory")
-        # $shortcutName = "Firefox.lnk"
-        # $shortcutPath = Join-Path $desktopPath $shortcutName
+        #REMOVE DESKTOP SHORTCUTS
+        $desktopPath = [Environment]::GetFolderPath("CommonDesktopDirectory")
+        $shortcutName = "Firefox.lnk"
+        $shortcutPath = Join-Path $desktopPath $shortcutName
 
-        # if (Test-Path $shortcutPath) {
-        #     Remove-Item $shortcutPath -Force
-        #     Write-Host "Desktop shortcut removed successfully." -ForegroundColor Green
-        # } else {
-        #     Write-Host "Desktop shortcut not found." -ForegroundColor Yellow
-        # }
+        if (Test-Path $shortcutPath) {
+            Remove-Item $shortcutPath -Force
+            Write-Host "Desktop shortcut removed successfully." -ForegroundColor Green
+        } else {
+            Write-Host "Desktop shortcut not found." -ForegroundColor Yellow
+        }
 
-        # ##############################################################
-        # #  Install Visual Studio Code
-        # ##############################################################
-        # Start-Process -FilePath "winget" -ArgumentList "install --id Microsoft.VisualStudioCode -e --silent" -Wait -NoNewWindow
-        # Write-Log -Message 'Installed VS Code via winget' -Type 'INFO'
+        ##############################################################
+        #  Install Visual Studio Code
+        ##############################################################
+        Start-Process -FilePath "winget" -ArgumentList "install --id Microsoft.VisualStudioCode -e --silent" -Wait -NoNewWindow
+        Write-Log -Message 'Installed VS Code via winget' -Type 'INFO'
 
-        # Start-Sleep -Seconds 15
-        # $processes = Get-Process -Name "Code" -ErrorAction SilentlyContinue
-        # foreach ($process in $processes) {
-        #     Stop-Process -Id $process.Id -Force
-        #     Write-Log -Message "Forced closed VS Code process with ID $($process.Id)" -Type 'INFO'
-        # }
+        Start-Sleep -Seconds 15
+        $processes = Get-Process -Name "Code" -ErrorAction SilentlyContinue
+        foreach ($process in $processes) {
+            Stop-Process -Id $process.Id -Force
+            Write-Log -Message "Forced closed VS Code process with ID $($process.Id)" -Type 'INFO'
+        }
 
-        # $VSInstaller = 'VSCodeSetup.exe'
-        # if (Test-Path $VSInstaller) {
-        #     Remove-Item -Path $VSInstaller -Force
-        #     Write-Log -Message "Removed $VSInstaller" -Type 'INFO'
-        # } else {
-        #     Write-Log -Message "$VSInstaller not found, nothing to remove" -Type 'INFO'
-        # }
+        $VSInstaller = 'VSCodeSetup.exe'
+        if (Test-Path $VSInstaller) {
+            Remove-Item -Path $VSInstaller -Force
+            Write-Log -Message "Removed $VSInstaller" -Type 'INFO'
+        } else {
+            Write-Log -Message "$VSInstaller not found, nothing to remove" -Type 'INFO'
+        }
 
-        # ##############################################################
-        # #  Install Chrome
-        # ##############################################################
+        ##############################################################
+        #  Install Chrome
+        ##############################################################
 
-        # $ChromeInstaller = 'ChromeInstaller.msi'
-        # Get-WebFile -FileName $ChromeInstaller -URL 'https://dl.google.com/tag/s/appguid%3D%7B8A69D345-D564-463C-AFF1-A69D9E530F96%7D%26iid%3D%7B7FFD4799-4EBC-E6EA-19CB-E6EAF684910B%7D%26lang%3Den%26browser%3D4%26usagestats%3D0%26appname%3DGoogle%2520Chrome%26needsadmin%3Dtrue%26ap%3Dx64-stable-statsdef_0%26brand%3DGCGW/dl/chrome/install/googlechromestandaloneenterprise64.msi'
-        # Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $ChromeInstaller /quiet /qn /norestart /passive" -Wait -PassThru
-        # Write-Log -Message 'Installed Chrome' -Type 'INFO'
-        # Start-Sleep -Seconds 5
+        $ChromeInstaller = 'ChromeInstaller.msi'
+        Get-WebFile -FileName $ChromeInstaller -URL 'https://dl.google.com/tag/s/appguid%3D%7B8A69D345-D564-463C-AFF1-A69D9E530F96%7D%26iid%3D%7B7FFD4799-4EBC-E6EA-19CB-E6EAF684910B%7D%26lang%3Den%26browser%3D4%26usagestats%3D0%26appname%3DGoogle%2520Chrome%26needsadmin%3Dtrue%26ap%3Dx64-stable-statsdef_0%26brand%3DGCGW/dl/chrome/install/googlechromestandaloneenterprise64.msi'
+        Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $ChromeInstaller /quiet /qn /norestart /passive" -Wait -PassThru
+        Write-Log -Message 'Installed Chrome' -Type 'INFO'
+        Start-Sleep -Seconds 5
 
-        # # Remove the desktop shortcut
-        # $desktopPath = [Environment]::GetFolderPath("CommonDesktopDirectory")
-        # $shortcutName = "Google Chrome.lnk"
-        # $shortcutPath = Join-Path $desktopPath $shortcutName
+        # Remove the desktop shortcut
+        $desktopPath = [Environment]::GetFolderPath("CommonDesktopDirectory")
+        $shortcutName = "Google Chrome.lnk"
+        $shortcutPath = Join-Path $desktopPath $shortcutName
 
-        # if (Test-Path $shortcutPath) {
-        #     Remove-Item $shortcutPath -Force
-        #     Write-Log -Message "Desktop shortcut removed successfully." -Type 'INFO'
-        # } else {
-        #     Write-Log -Message "Desktop shortcut not found." -Type 'ERROR'
-        # }
+        if (Test-Path $shortcutPath) {
+            Remove-Item $shortcutPath -Force
+            Write-Log -Message "Desktop shortcut removed successfully." -Type 'INFO'
+        } else {
+            Write-Log -Message "Desktop shortcut not found." -Type 'ERROR'
+        }
 
         ##############################################################
         #  Install ARPA-H fonts
