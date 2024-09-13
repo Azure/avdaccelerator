@@ -1622,7 +1622,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
 @batchSize(3)
 module sessionHostsRemoteApp './modules/avdSessionHosts/deploy.bicep' = [
     for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
-    name: 'SH-Batch-RemoteApp-${i - 1}-${time}'
+    name: 'SH-RemoteApp-${i - 1}-${time}'
     params: {
         diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
         timeZone: varTimeZoneSessionHosts
@@ -1651,7 +1651,7 @@ module sessionHostsRemoteApp './modules/avdSessionHosts/deploy.bicep' = [
         diskType: avdSessionHostDiskType
         customOsDiskSizeGB: customOsDiskSizeGb
         location: avdSessionHostLocation
-        namePrefix: '${varSessionHostNamePrefix}-remoteapps'
+        namePrefix: '${varSessionHostNamePrefix}ra'
         vmSize: avdSessionHostsSize
         enableAcceleratedNetworking: enableAcceleratedNetworking
         securityType: securityType == 'Standard' ? '' : securityType
