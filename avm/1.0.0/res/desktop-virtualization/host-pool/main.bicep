@@ -75,7 +75,6 @@ param baseTime string = utcNow('u')
   'Desktop'
   'None'
   'RailApplications'
-  'RemoteApp'
 ])
 param preferredAppGroupType string = 'Desktop'
 

@@ -55,8 +55,8 @@ param scalingPlanSchedules array
 @sys.description('AVD workspace name.')
 param workSpaceName string
 
-@sys.description('AVD workspace friendly name.')
-param workSpaceFriendlyName string
+// @sys.description('AVD workspace friendly name.')
+// param workSpaceFriendlyName string
 
 @sys.description('AVD host pool Custom RDP properties.')
 param hostPoolRdpProperties string
@@ -73,7 +73,6 @@ param hostPoolType string
   'Desktop'
   'None'
   'RailApplications'
-  'RemoteApp'
 ])
 param preferredAppGroupType string = 'Desktop'
 
@@ -124,8 +123,37 @@ var varApplicationGroups = [
   }
 ]
 var varHostPoolRdpPropertiesDomainServiceCheck = (identityServiceProvider == 'EntraID') ? '${hostPoolRdpProperties};targetisaadjoined:i:1;enablerdsaadauth:i:1' : hostPoolRdpProperties
-
-var varRAppApplicationGroupsApps = [
+var varRAppApplicationGroupsStandardApps = (preferredAppGroupType == 'RailApplications') ? [
+  {
+    name: 'Task Manager'
+    description: 'Task Manager'
+    friendlyName: 'Task Manager'
+    showInPortal: true
+    filePath: 'C:\\Windows\\system32\\taskmgr.exe'
+  }
+  {
+    name: 'WordPad'
+    description: 'WordPad'
+    friendlyName: 'WordPad'
+    showInPortal: true
+    filePath: 'C:\\Program Files\\Windows NT\\Accessories\\wordpad.exe'
+  }
+  {
+    name: 'Microsoft Edge'
+    description: 'Microsoft Edge'
+    friendlyName: 'Edge'
+    showInPortal: true
+    filePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+  }
+  {
+    name: 'Remote Desktop Connection'
+    description: 'Remote Desktop Connection'
+    friendlyName: 'Remote Desktop'
+    showInPortal: true
+    filePath: 'C:\\WINDOWS\\system32\\mtsc.exe'
+  }
+]: []
+var varRAppApplicationGroupsOfficeApps = (preferredAppGroupType == 'RailApplications') ? [
   {
     name: 'Microsoft Excel'
     description: 'Microsoft Excel'
@@ -154,15 +182,8 @@ var varRAppApplicationGroupsApps = [
     showInPortal: true
     filePath: 'C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE'
   }
-  {
-    name: 'Microsoft Edge'
-    description: 'Microsoft Edge'
-    friendlyName: 'Edge'
-    showInPortal: true
-    filePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
-  }
-]
-//var varRAppApplicationGroupsApps = (preferredAppGroupType == 'RailApplications') ? ((contains(osImage, 'office')) ? union(varRAppApplicationGroupsStandardApps, varRAppApplicationGroupsOfficeApps) : varRAppApplicationGroupsStandardApps) : []
+]: []
+var varRAppApplicationGroupsApps = (preferredAppGroupType == 'RailApplications') ? ((contains(osImage, 'office')) ? union(varRAppApplicationGroupsStandardApps, varRAppApplicationGroupsOfficeApps) : varRAppApplicationGroupsStandardApps) : []
 var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
   {
     workspaceResourceId: alaWorkspaceResourceId
@@ -300,5 +321,6 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
     hostPool
     applicationGroups
     //workSpace
+    updateWorkspace
   ]
 }

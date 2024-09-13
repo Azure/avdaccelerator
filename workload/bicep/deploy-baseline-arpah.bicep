@@ -358,6 +358,10 @@ param avdWorkSpaceCustomFriendlyName string = 'ARPA-H on NIH Network - ${deploym
 param avdHostPoolCustomName string = 'vdpool-app1-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(64)
+@sys.description('AVD remote host pool custom name. (Default: vdpool-app1-dev-use2-001)')
+param avdRemoteHostPoolCustomName string = 'vdpool-remote1-${toLower(deploymentEnvironment)}-use2-001'
+
+@maxLength(64)
 @sys.description('AVD host pool custom friendly (Display) name. (Default: App1 - East US - Dev - 001)')
 param avdHostPoolCustomFriendlyName string = 'ARPA-H on NIH Network - ${deploymentEnvironment}'
 
@@ -1184,14 +1188,14 @@ module managementPlaneRemoteApp './modules/avdManagementPlane/deploy-remoteapp-a
     name: 'AVD-MGMT-Plane-${time}'
     params: {
         applicationGroupName: avdRemoteAppApplicationGroupCustomName
-        applicationGroupFriendlyNameDesktop: varApplicationGroupFriendlyName
+        applicationGroupFriendlyNameDesktop: 'RemoteApp Host Pool - ${deploymentPrefix}'
         workSpaceName: varWorkSpaceName
         osImage: avdOsImage
         keyVaultResourceId: wrklKeyVault.outputs.resourceId
-        workSpaceFriendlyName: varWorkSpaceFriendlyName
+        //workSpaceFriendlyName: varWorkSpaceFriendlyName
         computeTimeZone: varTimeZoneSessionHosts
-        hostPoolName: varHostPoolName
-        hostPoolFriendlyName: varHostFriendlyName
+        hostPoolName: avdRemoteHostPoolCustomName
+        hostPoolFriendlyName:  'RemoteApp Host Pool - ${deploymentEnvironment}'
         hostPoolRdpProperties: avdHostPoolRdpProperties
         hostPoolLoadBalancerType: avdHostPoolLoadBalancerType
         hostPoolType: avdHostPoolType
@@ -1199,7 +1203,7 @@ module managementPlaneRemoteApp './modules/avdManagementPlane/deploy-remoteapp-a
         deployScalingPlan: varDeployScalingPlan
         scalingPlanExclusionTag: varScalingPlanExclusionTag
         scalingPlanSchedules: (avdHostPoolType == 'Pooled') ? varPooledScalingPlanSchedules : varPersonalScalingPlanSchedules
-        scalingPlanName: varScalingPlanName
+        scalingPlanName: 'vdscaling-remote1-${toLower(deploymentEnvironment)}-use2-001'
         hostPoolMaxSessions: hostPoolMaxSessions
         personalAssignType: avdPersonalAssignType
         managementPlaneLocation: avdManagementPlaneLocation
@@ -1223,7 +1227,6 @@ module managementPlaneRemoteApp './modules/avdManagementPlane/deploy-remoteapp-a
         wrklKeyVault
     ]
 }
-
 
 // Identity: managed identities and role assignments
 module identity './modules/identity/deploy.bicep' = {
@@ -1612,6 +1615,79 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
         monitoringDiagnosticSettings
         vmScaleSetFlex
         managementPLane
+    ]
+  }
+]
+
+@batchSize(3)
+module sessionHostsRemoteApp './modules/avdSessionHosts/deploy.bicep' = [
+    for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
+    name: 'SH-Batch-${i - 1}-${time}'
+    params: {
+        diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
+        timeZone: varTimeZoneSessionHosts
+        asgResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) 
+            ? '${networking.outputs.applicationSecurityGroupResourceId}' 
+            : ''
+        identityServiceProvider: avdIdentityServiceProvider
+        createIntuneEnrollment: createIntuneEnrollment
+        maxVmssFlexMembersCount: varMaxVmssFlexMembersCount
+        vmssFlexNamePrefix: varVmssFlexNamePrefix
+        batchId: i - 1
+        computeObjectsRgName: varComputeObjectsRgName
+        count: i == varSessionHostBatchCount && varMaxSessionHostsDivisionRemainderValue > 0 
+            ? varMaxSessionHostsDivisionRemainderValue 
+            : varMaxSessionHostsPerTemplate
+        countIndex: i == 1 
+            ? avdSessionHostCountIndex 
+            : (((i - 1) * varMaxSessionHostsPerTemplate) + avdSessionHostCountIndex)
+        domainJoinUserName: avdDomainJoinUserName
+        wrklKvName: varWrklKvName
+        serviceObjectsRgName: varServiceObjectsRgName
+        //hostPoolName: varHostPoolName
+        identityDomainName: identityDomainName
+        avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
+        sessionHostOuPath: avdOuPath
+        diskType: avdSessionHostDiskType
+        customOsDiskSizeGB: customOsDiskSizeGb
+        location: avdSessionHostLocation
+        namePrefix: '${varSessionHostNamePrefix}-remoteapps'
+        vmSize: avdSessionHostsSize
+        enableAcceleratedNetworking: enableAcceleratedNetworking
+        securityType: securityType == 'Standard' ? '' : securityType
+        secureBootEnabled: secureBootEnabled
+        vTpmEnabled: vTpmEnabled
+        subnetId: createAvdVnet
+            ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}'
+            : existingVnetAvdSubnetResourceId
+        useAvailabilityZones: availabilityZonesCompute
+        vmLocalUserName: avdVmLocalUserName
+        subscriptionId: avdWorkloadSubsId
+        encryptionAtHost: diskZeroTrust
+        createAvdFslogixDeployment: createAvdFslogixDeployment
+        fslogixSharePath: varFslogixSharePath
+        fslogixStorageFqdn: varFslogixStorageFqdn
+        sessionHostConfigurationScriptUri: varSessionHostConfigurationScriptUri
+        sessionHostConfigurationScript: varSessionHostConfigurationScript
+        marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
+        useSharedImage: useSharedImage
+        tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+        deployMonitoring: avdDeployMonitoring
+        alaWorkspaceResourceId: avdDeployMonitoring 
+            ? (deployAlaWorkspace 
+                ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId 
+                : alaExistingWorkspaceResourceId) 
+                : ''
+        dataCollectionRuleId: avdDeployMonitoring ? monitoringDiagnosticSettings.outputs.dataCollectionRuleId : ''
+    }
+    dependsOn: [
+        fslogixAzureFilesStorage
+        baselineResourceGroups
+        networking
+        wrklKeyVault
+        monitoringDiagnosticSettings
+        vmScaleSetFlex
+        managementPlaneRemoteApp
     ]
   }
 ]
