@@ -1185,7 +1185,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
 
 // AVD RemoteApp host pool
 module managementPlaneRemoteApp './modules/avdManagementPlane/deploy-remoteapp-arpah.bicep' = {
-    name: 'AVD-MGMT-Plane-${time}'
+    name: 'AVD-MGMT-Plane-RemoteApp-${time}'
     params: {
         applicationGroupName: avdRemoteAppApplicationGroupCustomName
         applicationGroupFriendlyNameDesktop: 'RemoteApp Host Pool - ${deploymentPrefix}'
@@ -1622,7 +1622,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
 @batchSize(3)
 module sessionHostsRemoteApp './modules/avdSessionHosts/deploy.bicep' = [
     for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
-    name: 'SH-Batch-${i - 1}-${time}'
+    name: 'SH-Batch-RemoteApp-${i - 1}-${time}'
     params: {
         diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
         timeZone: varTimeZoneSessionHosts
