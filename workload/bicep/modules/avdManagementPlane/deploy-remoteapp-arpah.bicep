@@ -267,6 +267,7 @@ module updateWorkspace '.bicep/updateAVDWorkspace.bicep' = {
     //scope: resourceGroup(vnetResourceGroupName)
     params: {
         workSpaceName: workSpaceName
+        location: managementPlaneLocation
         
         // Update the nsg
         properties: union(existingWorkspace.properties, {
