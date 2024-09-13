@@ -1199,7 +1199,7 @@ module managementPlaneRemoteApp './modules/avdManagementPlane/deploy-remoteapp-a
         hostPoolRdpProperties: avdHostPoolRdpProperties
         hostPoolLoadBalancerType: avdHostPoolLoadBalancerType
         hostPoolType: avdHostPoolType
-        preferredAppGroupType: (hostPoolPreferredAppGroupType == 'RemoteApp') ? 'RailApplications' : 'Desktop'
+        preferredAppGroupType: 'RailApplications'
         deployScalingPlan: varDeployScalingPlan
         scalingPlanExclusionTag: varScalingPlanExclusionTag
         scalingPlanSchedules: (avdHostPoolType == 'Pooled') ? varPooledScalingPlanSchedules : varPersonalScalingPlanSchedules
