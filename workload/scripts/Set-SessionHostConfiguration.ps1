@@ -58,10 +58,10 @@ $Entry | Out-File -FilePath $Path -Append
 
 function Write-TimestampedMessage {
 param(
-        [string]$Message
+        [string]$Message,
         [string]$Type="INFO"
 )
-$timestampp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+$timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
 Write-Host "$timestamp - $Message"
 }
 
