@@ -5,6 +5,9 @@
         "deploymentPrefix": {
             "value": "AVDX"
         },
+        "deploymentEnvironment": {
+            "value": "test"
+        },
         "avdUseCustomNaming": {
             "value": true
         },
@@ -23,13 +26,7 @@
         "avdWorkloadSubsId": {
             "value": "<<subscriptionId>>"
         },
-        "avdServiceObjectsRgCustomName": {
-            "value": "avd-nih-arpah-test-use2-service-objects"
-        },
-        "avdApplicationGroupCustomName": {
-            "value": "vdag-desktop-app1-test-use2-001"
-        },
-        "avdApplicationFriendlyName": {
+        "avdApplicationGroupCustomFriendlyName": {
             "value": "Windows 11 Desktop"
         },
         "deployPrivateEndpointKeyvaultStorage": {
@@ -155,12 +152,10 @@
         "zoneRedundantStorage": {
             "value": false
         },
-        "avsetFaultDomainCount": {
+        "vmssFlatformFaultDomainCount": {
             "value": 2
         },
-        "avsetUpdateDomainCount": {
-            "value": 5
-        },
+
         "fslogixStoragePerformance": {
             "value": "Premium"
         },
@@ -195,7 +190,7 @@
             "value": ""
         },
         "storageOuPath": {
-            "value": "OU=Test,OU=Azure Virtual Desktop,OU=Windows,OU=Computers,OU=ARPAH,OU=CIT Managed,OU=OD,OU=NIH,OU=AD,DC=nih,DC=gov"
+            "value": ""
         },
         "createResourceTags": {
             "value": false
@@ -224,14 +219,11 @@
         "deployGpuPolicies": {
             "value": false
         },
-        "avdWorkSpaceCustomFriendlyName": {
-            "value": "ARPA-H on NIH Network - Test"
-        },
-        "avdHostPoolCustomFriendlyName": {
-            "value": "ARPA-H on NIH Network - Test"
-        },
         "storageFilePrivateEndpointStaticIp": {
             "value": "10.178.8.136"
+        },
+        "vnetResourceGroupName": {
+            "value": ""
         }
     }
 }

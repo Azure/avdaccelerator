@@ -35,14 +35,14 @@ param tags object
 resource vmssFlex 'Microsoft.Compute/virtualMachineScaleSets@2024-03-01' = [for i in range(1, count): {
     location: location
     name: '${namePrefix}-${padLeft(i, 3, '0')}'
-    zones: useAvailabilityZones ? [
-        '1'
-        '2'
-        '3'
-    ]: null
+    // zones: useAvailabilityZones ? [
+    //     '1'
+    //     '2'
+    //     '3'
+    // ]: null
     properties: {
         orchestrationMode: 'Flexible'
-        zoneBalance: useAvailabilityZones ? true: false
+        //zoneBalance: useAvailabilityZones ? true: false
         platformFaultDomainCount: useAvailabilityZones ? 1: platformFaultDomainCount
     }
     tags: tags

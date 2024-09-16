@@ -140,9 +140,6 @@
         "zoneRedundantStorage": {
             "value": false
         },
-        "avsetFaultDomainCount": {
-            "value": 2
-        },
         "avsetUpdateDomainCount": {
             "value": 5
         },

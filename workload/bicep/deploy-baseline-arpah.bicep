@@ -113,7 +113,7 @@ param hostPoolMaxSessions int = 8
 param avdStartVmOnConnect bool = true
 
 @sys.description('AVD host pool Custom RDP properties. (Default: audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2)')
-param avdHostPoolRdpProperties string = 'audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2'
+param avdHostPoolRdpProperties string = 'audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2;enablerdsaadauth:i:1'
 
 @sys.description('AVD deploy scaling plan. (Default: true)')
 param avdDeployScalingPlan bool = true
@@ -202,7 +202,7 @@ param avdDeploySessionHostsCount int = 1
 param avdSessionHostCountIndex int = 0
 
 @sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Default: true)')
-param availabilityZonesCompute bool = true
+param availabilityZonesCompute bool = false
 
 @sys.description('When true, Zone Redundant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)')
 param zoneRedundantStorage bool = false
@@ -227,8 +227,8 @@ param msixStoragePerformance string = 'Premium'
 @sys.description('Enables a zero trust configuration on the session host disks. (Default: false)')
 param diskZeroTrust bool = false
 
-@sys.description('Session host VM size. (Default: Standard_D4ads_v5)')
-param avdSessionHostsSize string = 'Standard_D4ads_v5'
+@sys.description('Session host VM size. (Default: Standard_D4ads_v5)') // getting OverconstrainedZonalAllocationRequest error on provisioning the session host, so switching to Standard_E4s_v5
+param avdSessionHostsSize string = 'Standard_E4s_v5'
 
 @sys.description('OS disk type for session host. (Default: Premium_LRS)')
 param avdSessionHostDiskType string = 'Premium_LRS'
@@ -290,88 +290,88 @@ param avdUseCustomNaming bool = true
 
 @maxLength(90)
 @sys.description('AVD service resources resource group custom name. (Default: rg-avd-app1-dev-use2-service-objects)')
-param avdServiceObjectsRgCustomName string = 'avd-nih-arpah-test-use2-service-objects'
+param avdServiceObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-service-objects'
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-network)')
-param avdNetworkObjectsRgCustomName string = 'avd-nih-arpah-test-use2-network'
+param avdNetworkObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-network'
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-pool-compute)')
-param avdComputeObjectsRgCustomName string = 'avd-nih-arpah-test-use2-pool-compute'
+param avdComputeObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pool-compute'
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-storage)')
-param avdStorageObjectsRgCustomName string = 'avd-nih-arpah-test-use2-storage'
+param avdStorageObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-storage'
 
 @maxLength(90)
 @sys.description('AVD monitoring resource group custom name. (Default: rg-avd-dev-use2-monitoring)')
-param avdMonitoringRgCustomName string = 'avd-nih-arpah-test-use2-monitoring'
+param avdMonitoringRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-monitoring'
 
 @maxLength(64)
 @sys.description('AVD virtual network custom name. (Default: vnet-app1-dev-use2-001)')
-param avdVnetworkCustomName string = 'avd-nih-arpah-test-use2-vnet'
+param avdVnetworkCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-vnet'
 
 @maxLength(64)
 @sys.description('AVD Azure log analytics workspace custom name. (Default: log-avd-app1-dev-use2)')
-param avdAlaWorkspaceCustomName string = 'avd-nih-arpah-test-use2-log'
+param avdAlaWorkspaceCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-log'
 
 @maxLength(80)
 @sys.description('AVD virtual network subnet custom name. (Default: snet-avd-app1-dev-use2-001)')
-param avdVnetworkSubnetCustomName string = 'avd-nih-arpah-test-use2-subnet'
+param avdVnetworkSubnetCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-subnet'
 // existing subname: nih-arpa-h-it-vdi-nih-test-sub
 
 @maxLength(80)
 @sys.description('private endpoints virtual network subnet custom name. (Default: snet-pe-app1-dev-use2-001)')
-param privateEndpointVnetworkSubnetCustomName string = 'avd-nih-arpah-test-use2-subnet-private'
+param privateEndpointVnetworkSubnetCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-subnet-private'
 
 @maxLength(80)
 @sys.description('AVD network security group custom name. (Default: nsg-avd-app1-dev-use2-001)')
-param avdNetworksecurityGroupCustomName string = 'avd-nih-arpah-test-use2-nsg'
+param avdNetworksecurityGroupCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-nsg'
 
 @maxLength(80)
 @sys.description('Private endpoint network security group custom name. (Default: nsg-pe-app1-dev-use2-001)')
-param privateEndpointNetworksecurityGroupCustomName string = 'avd-nih-arpah-test-use2-nsg-private'
+param privateEndpointNetworksecurityGroupCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-nsg-private'
 
 @maxLength(80)
 @sys.description('AVD route table custom name. (Default: route-avd-app1-dev-use2-001)')
-param avdRouteTableCustomName string = 'avd-nih-arpah-test-use2-route'
+param avdRouteTableCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-route'
 
 @maxLength(80)
 @sys.description('Private endpoint route table custom name. (Default: route-avd-app1-dev-use2-001)')
-param privateEndpointRouteTableCustomName string = 'route-pe-app1-test-use2-001'
+param privateEndpointRouteTableCustomName string = 'route-pe-app1-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(80)
 @sys.description('AVD application security custom name. (Default: asg-app1-dev-use2-001)')
-param avdApplicationSecurityGroupCustomName string = 'asg-app1-test-use2-001'
+param avdApplicationSecurityGroupCustomName string = 'asg-app1-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(64)
 @sys.description('AVD workspace custom name. (Default: vdws-app1-dev-use2-001)')
-param avdWorkSpaceCustomName string = 'vdws-app1-test-use2-001'
+param avdWorkSpaceCustomName string = 'vdws-app1-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(64)
 @sys.description('AVD workspace custom friendly (Display) name. (Default: App1 - Dev - East US 2 - 001)')
-param avdWorkSpaceCustomFriendlyName string = 'ARPA-H on NIH Network - Test'
+param avdWorkSpaceCustomFriendlyName string = 'ARPA-H on NIH Network - ${deploymentEnvironment}'
 
 @maxLength(64)
 @sys.description('AVD host pool custom name. (Default: vdpool-app1-dev-use2-001)')
-param avdHostPoolCustomName string = 'vdpool-app1-test-use2-001'
+param avdHostPoolCustomName string = 'vdpool-app1-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(64)
 @sys.description('AVD host pool custom friendly (Display) name. (Default: App1 - East US - Dev - 001)')
-param avdHostPoolCustomFriendlyName string = 'ARPA-H on NIH Network - Test'
+param avdHostPoolCustomFriendlyName string = 'ARPA-H on NIH Network - ${deploymentEnvironment}'
 
 @maxLength(64)
 @sys.description('AVD scaling plan custom name. (Default: vdscaling-app1-dev-use2-001)')
-param avdScalingPlanCustomName string = 'vdscaling-app1-test-use2-001'
+param avdScalingPlanCustomName string = 'vdscaling-app1-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(64)
 @sys.description('AVD desktop application group custom name. (Default: vdag-desktop-app1-dev-use2-001)')
-param avdApplicationGroupCustomName string = 'vdag-desktop-app1-test-use2-001'
+param avdApplicationGroupCustomName string = 'vdag-desktop-app1-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(64)
 @sys.description('AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - Dev - 001)')
-param avdApplicationGroupCustomFriendlyName string = 'ARPA-H on NIH Network - Test'
+param avdApplicationGroupCustomFriendlyName string = 'ARPA-H on NIH Network - ${deploymentPrefix}'
 
 @maxLength(11)
 @sys.description('AVD session host prefix custom name. (Default: vmapp1duse2)')
@@ -386,10 +386,10 @@ param vmssFlexCustomNamePrefix string = 'vmss'
 param storageAccountPrefixCustomName string = 'st'
 
 @sys.description('FSLogix file share name. (Default: fslogix-pc-app1-dev-001)')
-param fslogixFileShareCustomName string = 'fslogix-pc-app1-test-use2-001'
+param fslogixFileShareCustomName string = 'fslogix-pc-app1-${toLower(deploymentEnvironment)}-use2-001'
 
 @sys.description('MSIX file share name. (Default: msix-app1-dev-001)')
-param msixFileShareCustomName string = 'msix-app1-test-use2-001'
+param msixFileShareCustomName string = 'msix-app1-${toLower(deploymentEnvironment)}-use2-001'
 
 //@maxLength(64)
 //@sys.description('AVD fslogix storage account office container file share prefix custom name. (Default: fslogix-oc-app1-dev-001)')
@@ -418,7 +418,7 @@ param ztKvPrefixCustomName string = 'kv-key'
 param createResourceTags bool = false
 
 @sys.description('The name of workload for tagging purposes. (Default: Contoso-Workload)')
-param workloadNameTag string = 'Contoso-Workload'
+param workloadNameTag string = 'AVD ${deploymentEnvironment} ARPA-H on NIH Network '
 
 @allowed([
     'Light'
@@ -440,7 +440,7 @@ param workloadTypeTag string = 'Light'
 param dataClassificationTag string = 'Non-business'
 
 @sys.description('Department that owns the deployment, (Dafult: Contoso-AVD)')
-param departmentTag string = 'Contoso-AVD'
+param departmentTag string = 'ARPA-H-AVD'
 
 @allowed([
     'Low'
@@ -453,22 +453,22 @@ param departmentTag string = 'Contoso-AVD'
 param workloadCriticalityTag string = 'Low'
 
 @sys.description('Tag value for custom criticality value. (Default: Contoso-Critical)')
-param workloadCriticalityCustomValueTag string = 'Contoso-Critical'
+param workloadCriticalityCustomValueTag string = 'ARPA-H-Critical'
 
 @sys.description('Details about the application.')
-param applicationNameTag string = 'Contoso-App'
+param applicationNameTag string = 'ARPA-H-AVD'
 
 @sys.description('Service level agreement level of the worload. (Contoso-SLA)')
-param workloadSlaTag string = 'Contoso-SLA'
+param workloadSlaTag string = 'ARPA-H-SLA'
 
 @sys.description('Team accountable for day-to-day operations. (workload-admins@Contoso.com)')
-param opsTeamTag string = 'workload-admins@Contoso.com'
+param opsTeamTag string = 'workload-admins@arpa-h.gov'
 
 @sys.description('Organizational owner of the AVD deployment. (Default: workload-owner@Contoso.com)')
-param ownerTag string = 'workload-owner@Contoso.com'
+param ownerTag string = 'workload-owner@arpa-h.gov'
 
 @sys.description('Cost center of owner team. (Default: Contoso-CC)')
-param costCenterTag string = 'Contoso-CC'
+param costCenterTag string = 'ARPA-H-CC'
 //
 
 //@sys.description('Remove resources not needed afdter deployment. (Default: false)')
@@ -485,6 +485,10 @@ param enableKvPurgeProtection bool = true
 
 @sys.description('Storage account private endpoint static ip')
 param storageFilePrivateEndpointStaticIp string
+
+@sys.description('Vnet resource group name')
+param vnetResourceGroupName string = 'nih-arpa-h-it-vdi-nih-${toLower(deploymentEnvironment)}-rg-admin-az'
+
 
 // =========== //
 // Variable declaration //
@@ -580,7 +584,7 @@ var varScalingPlanExclusionTag = 'exclude-${varScalingPlanName}'
 var varScalingPlanWeekdaysScheduleName = 'Weekdays-${varManagementPlaneNamingStandard}'
 var varScalingPlanWeekendScheduleName = 'Weekend-${varManagementPlaneNamingStandard}'
 var varWrklKvName = avdUseCustomNaming 
-    ? '${avdWrklKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' 
+    ? '${avdWrklKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}' 
     : 'kv-sec-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters
 var varWrklKvPrivateEndpointName = 'pe-${varWrklKvName}-vault'
 var varWrklKeyVaultSku = (varAzureCloudName == 'AzureCloud' || varAzureCloudName == 'AzureUSGovernment') 
@@ -600,7 +604,7 @@ var varMsixFileShareName = avdUseCustomNaming
     ? msixFileShareCustomName 
     : 'msix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
 var varFslogixStorageName = avdUseCustomNaming 
-    ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}' 
+    ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}biz' 
     : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
 var varFslogixStorageFqdn = createAvdFslogixDeployment 
     ? '${varFslogixStorageName}.file.${environment().suffixes.storage}' 
@@ -1106,11 +1110,13 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
 module updateSubnetNsgAndRouteTable './modules/networking-arpah/deploy.bicep' = if(!createAvdVnet) {
     name: 'Networking-UpdateSubnet-${time}'
     params: {
+        vnetResourceGroupName: vnetResourceGroupName
         existingAvdSubnetResourceId: existingVnetAvdSubnetResourceId
         networkObjectsRgName: varNetworkObjectsRgName
         avdNetworksecurityGroupName: varAvdNetworksecurityGroupName
         avdRouteTableName: varAvdRouteTableName
         workloadSubsId: avdWorkloadSubsId
+        sessionHostLocation: avdSessionHostLocation
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
     }

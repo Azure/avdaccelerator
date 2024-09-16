@@ -10,8 +10,8 @@ param (
 
 # set parameters object
 $parameters = @{
-    ResourceGroupName = $ResourceGroupName
-    ApplicationGroupName = $ApplicationGroupName
+    ResourceGroupName = $ResourceGroupName.ToLower()
+    ApplicationGroupName = $ApplicationGroupName.ToLower()
     Name = $Name
     FriendlyName = $FriendlyName
 }

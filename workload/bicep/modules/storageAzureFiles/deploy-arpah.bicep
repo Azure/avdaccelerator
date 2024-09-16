@@ -186,7 +186,7 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
                         name: 'privateEndpointIpConfig'
                         properties: {
                             groupId: 'file' // Example value, replace with actual groupId
-                            memberName: 'memberName' // Example value, replace with actual memberName
+                            memberName: 'file' // Example value, replace with actual memberName
                             privateIPAddress: storageFilePrivateEndpointStaticIp
                         }
                     }

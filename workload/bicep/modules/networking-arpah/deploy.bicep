@@ -19,7 +19,7 @@ param avdNetworksecurityGroupName string
 param avdRouteTableName string
 
 @sys.description('Location where to deploy compute services.')
-param sessionHostLocation string = deployment().location
+param sessionHostLocation string
 
 @sys.description('Tags to be applied to resources')
 param tags object
@@ -29,6 +29,10 @@ param alaWorkspaceResourceId string
 
 @sys.description('Do not modify, used to set unique value for resource deployment')
 param time string = utcNow()
+
+@sys.description('Vnet resource group name')
+param vnetResourceGroupName string
+
 
 // =========== //
 // Variable declaration //
@@ -214,35 +218,36 @@ module routeTableAvd '../../../../avm/1.0.0/res/network/route-table/main.bicep' 
 }
 
 // Get existing vnet
-resource existingVnet 'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
-    name: varExistingAvdVnetName
-    scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
-}
+// resource existingVnet 'Microsoft.Network/virtualNetworks@2022-07-01' existing = {
+//     name: varExistingAvdVnetName
+//     scope: resourceGroup('${workloadSubsId}', '${vnetResourceGroupName}')
+// }
 
-resource existingSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = {
-    name: varExistingSubnetName
-    parent: existingVnet
-}
+// resource existingSubnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' existing = {
+//     name: varExistingSubnetName
+//     parent: existingVnet
+// }
 
-// update the subnet:  attach nsg and
-module updateSubnet '.bicep/updateSubnet.bicep' = {
-    name: 'update-subnet-with-nsg-and-route-table-${varExistingAvdVnetName}-${varExistingSubnetName}'
-    scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
-    params: {
-        vnetName: varExistingAvdVnetName
-        subnetName: varExistingSubnetName
-        // Update the nsg
-        properties: union(existingSubnet.properties, {
-          networkSecurityGroup: {
-            id: networksecurityGroupAvd.outputs.resourceId
-          }
-          routeTable: {
-            id: routeTableAvd.outputs.resourceId
-          }
-        })
-      }
+// // update the subnet:  attach nsg and
+// module updateSubnet '.bicep/updateSubnet.bicep' = {
+//     name: 'update-subnet-with-nsg-and-route-table-${varExistingAvdVnetName}-${varExistingSubnetName}'
+//     scope: resourceGroup('${workloadSubsId}', '${vnetResourceGroupName}')
+//     //scope: resourceGroup(vnetResourceGroupName)
+//     params: {
+//         vnetName: varExistingAvdVnetName
+//         subnetName: varExistingSubnetName
+//         // Update the nsg
+//         properties: union(existingSubnet.properties, {
+//           networkSecurityGroup: {
+//             id: networksecurityGroupAvd.outputs.resourceId
+//           }
+//           routeTable: {
+//             id: routeTableAvd.outputs.resourceId
+//           }
+//         })
+//       }
 
-}
+// }
 
 // =========== //
 // Outputs //
