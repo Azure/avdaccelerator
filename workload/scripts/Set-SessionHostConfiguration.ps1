@@ -73,13 +73,14 @@ param (
 
 Write-TimestampedMessage "Downloading $FileName from $URL"
 
-try{
-        Invoke-WebRequest -Uri $URL -OutFile $FileName
-        Write-TimestampedMessage "Downloaded $FileName successfully."
+try {
+    Invoke-WebRequest -Uri $URL -OutFile $FileName
+    Write-TimestampedMessage "Downloaded $FileName successfully."
 }
-catch{
-          Write-TimestampedMessage "Failed to download $FileName from $URL. Error: $_"
-          throw "Download failed for $FileName."
+catch {
+    Write-TimestampedMessage "Failed to download $FileName from $URL. Error: $_"
+    throw "Download failed for $FileName."
+}
 }
 
 function Get-WebFile {
