@@ -1117,26 +1117,27 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
 }
 
 // if existing vnet/subnet
-module updateSubnetNsgAndRouteTable './modules/networking-arpah/deploy.bicep' = if(!createAvdVnet) {
-    name: 'Networking-UpdateSubnet-${time}'
-    params: {
-        vnetResourceGroupName: vnetResourceGroupName
-        existingAvdSubnetResourceId: existingVnetAvdSubnetResourceId
-        networkObjectsRgName: varNetworkObjectsRgName
-        avdNetworksecurityGroupName: varAvdNetworksecurityGroupName
-        avdRouteTableName: varAvdRouteTableName
-        workloadSubsId: avdWorkloadSubsId
-        sessionHostLocation: avdSessionHostLocation
-        tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-        alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
-    }
-    dependsOn: [
-        baselineNetworkResourceGroup
-        monitoringDiagnosticSettings
-        baselineResourceGroups
-        networking
-    ]
-}
+// JWI:  this code is not working correctly;  it creates the nsg an rt, but updating the subnet fails
+// module updateSubnetNsgAndRouteTable './modules/networking-arpah/deploy.bicep' = if(!createAvdVnet) {
+//     name: 'Networking-UpdateSubnet-${time}'
+//     params: {
+//         vnetResourceGroupName: vnetResourceGroupName
+//         existingAvdSubnetResourceId: existingVnetAvdSubnetResourceId
+//         networkObjectsRgName: varNetworkObjectsRgName
+//         avdNetworksecurityGroupName: varAvdNetworksecurityGroupName
+//         avdRouteTableName: varAvdRouteTableName
+//         workloadSubsId: avdWorkloadSubsId
+//         sessionHostLocation: avdSessionHostLocation
+//         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+//         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
+//     }
+//     dependsOn: [
+//         baselineNetworkResourceGroup
+//         monitoringDiagnosticSettings
+//         baselineResourceGroups
+//         networking
+//     ]
+// }
 
 // AVD management plane
 // module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
