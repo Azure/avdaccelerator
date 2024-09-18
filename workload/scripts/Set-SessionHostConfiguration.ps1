@@ -58,10 +58,10 @@ $Entry | Out-File -FilePath $Path -Append
 
 function Write-TimestampedMessage {
 param(
-        [string]$Message
+        [string]$Message,
         [string]$Type="INFO"
 )
-$timestampp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+$timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
 Write-Host "$timestamp - $Message"
 }
 
@@ -73,13 +73,14 @@ param (
 
 Write-TimestampedMessage "Downloading $FileName from $URL"
 
-try{
-        Invoke-WebRequest -Uri $URL -OutFile $FileName
-        Write-TimestampedMessage "Downloaded $FileName successfully."
+try {
+    Invoke-WebRequest -Uri $URL -OutFile $FileName
+    Write-TimestampedMessage "Downloaded $FileName successfully."
 }
-catch{
-          Write-TimestampedMessage "Failed to download $FileName from $URL. Error: $_"
-          throw "Download failed for $FileName."
+catch {
+    Write-TimestampedMessage "Failed to download $FileName from $URL. Error: $_"
+    throw "Download failed for $FileName."
+}
 }
 
 function Get-WebFile {
