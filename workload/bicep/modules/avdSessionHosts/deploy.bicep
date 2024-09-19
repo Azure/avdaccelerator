@@ -173,8 +173,8 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         location: location
         timeZone: timeZone
-        //zone: useAvailabilityZones ? (i % 3 + 1) : 0 // JWI: Temp comment out and set to 0;  having zone issues in east us 2
-        zone: 0
+        zone: useAvailabilityZones ? (i % 3 + 1) : 0 // JWI: Temp comment out and set to 0;  having zone issues in east us 2
+        //zone: 0
         managedIdentities: (identityServiceProvider == 'EntraID' || deployMonitoring) ? {
             systemAssigned: true
         }: null
@@ -301,7 +301,7 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
         }
     }
     dependsOn: [
-        //sessionHostsAntimalwareExtension
+        sessionHostsAntimalwareExtension
         alaWorkspace
     ]
 }]
@@ -316,7 +316,7 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
     }
     dependsOn: [
         monitoring
-        //sessionHostsAntimalwareExtension
+        sessionHostsAntimalwareExtension
         alaWorkspace
     ]
 }]
