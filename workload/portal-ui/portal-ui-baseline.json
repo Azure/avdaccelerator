@@ -256,7 +256,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "User principal name",
                                     "toolTip": "Provide username with permissions to join session host to the domain.",
-                                    "placeholder": "Example: '***REMOVED***'@contoso.com",
+                                    "placeholder": "Example: 'avdadmin@contoso.com",
                                     "defaultValue": "",
                                     "constraints": {
                                         "required": true
@@ -289,7 +289,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Username",
                                     "toolTip": "Provide username for session host local admin account. Administrator can't be used as username, it is reserved by the system.",
-                                    "placeholder": "Example: '***REMOVED***'",
+                                    "placeholder": "Example: 'localadmin'",
                                     "defaultValue": "",
                                     "constraints": {
                                         "regex": "^(?!.*[aA]dministrator).*$",

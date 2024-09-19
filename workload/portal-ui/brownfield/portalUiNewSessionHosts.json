@@ -177,7 +177,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
                                     "label": "Domain join principal name",
-                                    "placeholder": "Example: '***REMOVED***'@contoso.com",
+                                    "placeholder": "Example: 'avdadmin@contoso.com",
                                     "defaultValue": "",
                                     "toolTip": "Provide username with permissions to join session host to the domain.",
                                     "constraints": {
@@ -209,7 +209,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "VM local admin username",
                                     "toolTip": "Provide username for session host local admin account. Administrator can't be used as username, it is reserved by the system.",
-                                    "placeholder": "Example: '***REMOVED***'",
+                                    "placeholder": "Example: 'localadmin'",
                                     "defaultValue": "",
                                     "constraints": {
                                         "regex": "^(?!.*[aA]dministrator).*$",
