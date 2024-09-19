@@ -33,7 +33,7 @@ param time string = utcNow()
 
 // Add Azure Files to AD DS domain.
 module dscStorageScript '../../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = {
-  name: 'VM-Ext-AVM-${time}'
+  name: 'VM-Ext-FSL-${time}'
   params: {
     name: 'AzureFilesDomainJoin'
     virtualMachineName: virtualMachineName

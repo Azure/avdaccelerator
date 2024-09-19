@@ -46,7 +46,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2022-11-01' existing 
   name: virtualMachineName
 }
 
-resource extension 'Microsoft.Compute/virtualMachines/extensions@2022-11-01' = {
+resource extension 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = {
   name: name
   parent: virtualMachine
   location: location

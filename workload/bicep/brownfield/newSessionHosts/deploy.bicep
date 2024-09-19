@@ -440,7 +440,7 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
 }]
 
 // Data collection rule association
-module dataCollectionRuleAssociation '../..//modules/avdSessionHosts/.bicep/dataCollectionRulesAssociation.bicep' = [for i in range(1, count): if (deployMonitoring) {
+module dataCollectionRuleAssociation '../../modules/avdSessionHosts/.bicep/dataCollectionRulesAssociation.bicep' = [for i in range(1, count): if (deployMonitoring) {
   scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
   name: 'DCR-Asso-${i - 1}-${time}'
   params: {
