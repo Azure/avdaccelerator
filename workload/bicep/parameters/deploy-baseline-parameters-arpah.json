@@ -163,7 +163,7 @@
             "value": "Premium"
         },
         "avdSessionHostsSize": {
-            "value": "Standard_D4ads_v5"
+            "value": "Standard_E4s_v5"
         },
         "avdSessionHostDiskType": {
             "value": "Premium_LRS"
