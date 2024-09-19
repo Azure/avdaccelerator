@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "16158188096098504874"
+      "templateHash": "3542876644048729128"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -24298,7 +24298,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "14520024442280757382"
+              "templateHash": "11739566550450726253"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -26894,7 +26894,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.29.47.4906",
-                      "templateHash": "2537897267704424361"
+                      "templateHash": "3052591312369014330"
                     },
                     "name": "AVD LZA storage",
                     "description": "Configures domain join settings on storage account via VM custom script extension",
@@ -26975,7 +26975,7 @@
                             "value": true
                           },
                           "enableAutomaticUpgrade": {
-                            "value": true
+                            "value": false
                           },
                           "settings": {
                             "value": {}
@@ -27262,7 +27262,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "14520024442280757382"
+              "templateHash": "11739566550450726253"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -29858,7 +29858,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.29.47.4906",
-                      "templateHash": "2537897267704424361"
+                      "templateHash": "3052591312369014330"
                     },
                     "name": "AVD LZA storage",
                     "description": "Configures domain join settings on storage account via VM custom script extension",
@@ -29939,7 +29939,7 @@
                             "value": true
                           },
                           "enableAutomaticUpgrade": {
-                            "value": true
+                            "value": false
                           },
                           "settings": {
                             "value": {}

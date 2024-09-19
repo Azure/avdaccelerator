@@ -42,7 +42,7 @@ module dscStorageScript '../../../../../avm/1.0.0/res/compute/virtual-machine/ex
     type: 'CustomScriptExtension'
     typeHandlerVersion: '2.0' //'1.10'
     autoUpgradeMinorVersion: true
-    enableAutomaticUpgrade: true
+    enableAutomaticUpgrade: false
     settings: {}
     protectedSettings: {
       fileUris: array(baseScriptUri)
