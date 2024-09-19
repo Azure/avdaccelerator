@@ -87,7 +87,7 @@
                                     "vmExtensionName": "NvidiaGpuDriverWindows",
                                     "vmExtensionPublisher": "Microsoft.HpcCompute",
                                     "vmExtensionType": "NvidiaGpuDriverWindows",
-                                    "vmExtensionTypeHandlerVersion": "1.2"
+                                    "vmExtensionTypeHandlerVersion": "2.0"
                                 },
                                 "resources": [
                                     {

@@ -77,8 +77,9 @@ resource sessionHostConfig 'Microsoft.Compute/virtualMachines/extensions@2023-09
   properties: {
     publisher: 'Microsoft.Compute'
     type: 'CustomScriptExtension'
-    typeHandlerVersion: '1.10'
+    typeHandlerVersion: '2.0'
     autoUpgradeMinorVersion: true
+    enableAutomaticUpgrade: true
     settings: {
       fileUris: array(baseScriptUri)
     }

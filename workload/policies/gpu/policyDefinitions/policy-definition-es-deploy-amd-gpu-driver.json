@@ -74,7 +74,7 @@
                                     "vmExtensionName": "AmdGpuDriverWindows",
                                     "vmExtensionPublisher": "Microsoft.HpcCompute",
                                     "vmExtensionType": "AmdGpuDriverWindows",
-                                    "vmExtensionTypeHandlerVersion": "1.0"
+                                    "vmExtensionTypeHandlerVersion": "2.0"
                                 },
                                 "resources": [
                                     {

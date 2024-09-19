@@ -40,9 +40,9 @@ module dscStorageScript '../../../../../avm/1.0.0/res/compute/virtual-machine/ex
     location: location
     publisher: 'Microsoft.Compute'
     type: 'CustomScriptExtension'
-    typeHandlerVersion: '1.10'
+    typeHandlerVersion: '2.0' //'1.10'
     autoUpgradeMinorVersion: true
-    enableAutomaticUpgrade: false
+    enableAutomaticUpgrade: true
     settings: {}
     protectedSettings: {
       fileUris: array(baseScriptUri)

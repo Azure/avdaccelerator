@@ -249,7 +249,7 @@ module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtu
         name: 'MicrosoftAntiMalware'
         publisher: 'Microsoft.Azure.Security'
         type: 'IaaSAntimalware'
-        typeHandlerVersion: '1.3'
+        typeHandlerVersion: '2.0' //'1.3'
         autoUpgradeMinorVersion: true
         enableAutomaticUpgrade: false
         settings: {
@@ -289,7 +289,7 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
         name: 'AzureMonitorWindowsAgent'
         publisher: 'Microsoft.Azure.Monitor'
         type: 'AzureMonitorWindowsAgent'
-        typeHandlerVersion: '1.0'
+        typeHandlerVersion: '2.0' //'1.0'
         autoUpgradeMinorVersion: true
         enableAutomaticUpgrade: true
         settings: {
