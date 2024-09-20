@@ -1120,7 +1120,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
     deployPrivateEndpointSubnet: (deployPrivateEndpointKeyvaultStorage == true) ? true : false //adding logic that will be used when also including AVD control plane PEs
     vNetworkGatewayOnHub: vNetworkGatewayOnHub
     existingHubVnetResourceId: existingHubVnetResourceId
-    sessionHostLocation: avdSessionHostLocation
+    location: avdSessionHostLocation
     vnetAvdSubnetAddressPrefix: vNetworkAvdSubnetAddressPrefix
     vnetPrivateEndpointSubnetAddressPrefix: vNetworkPrivateEndpointSubnetAddressPrefix
     workloadSubsId: avdWorkloadSubsId
