@@ -27,10 +27,10 @@ param deploymentEnvironment string = 'Dev'
 param diskEncryptionKeyExpirationInDays int = 60
 
 @sys.description('Required. Location where to deploy compute services.')
-param avdSessionHostLocation string 
+param avdSessionHostLocation string
 
 @sys.description('Required. Location where to deploy AVD management plane.')
-param avdManagementPlaneLocation string 
+param avdManagementPlaneLocation string
 
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario. (Default: "")')
 param avdWorkloadSubsId string = ''
@@ -192,6 +192,26 @@ param avdAlaWorkspaceDataRetention int = 90
 
 @sys.description('Existing Azure log analytics workspace resource ID to connect to. (Default: "")')
 param alaExistingWorkspaceResourceId string = ''
+//alerting params
+
+@description('bool to decide if alerts should be deplyed')
+param deployAlerts bool
+
+@description('Location of needed scripts to deploy solution.')
+param _ArtifactsLocation string = 'https://raw.githubusercontent.com/Azure/azure-monitor-baseline-alerts/main/patterns/avd/scripts/'
+
+@description('SaS token if needed for script location.')
+@secure()
+param _ArtifactsLocationSasToken string = ''
+
+@description('Telemetry Opt-Out') // Change this to true to opt out of Microsoft Telemetry
+param optoutTelemetry bool = false
+
+@description('Determine if you would like to set all deployed alerts to auto-resolve.')
+param AutoResolveAlert bool = true
+
+@description('The Distribution Group that will receive email alerts for AVD.')
+param DistributionGroup string
 
 @minValue(1)
 @maxValue(100)
@@ -485,9 +505,7 @@ param enableKvPurgeProtection bool = true
 var varDeploymentPrefixLowercase = toLower(deploymentPrefix)
 var varAzureCloudName = environment().name
 var varDeploymentEnvironmentLowercase = toLower(deploymentEnvironment)
-var varDeploymentEnvironmentComputeStorage = (deploymentEnvironment == 'Dev')
-  ? 'd'
-  : ((deploymentEnvironment == 'Test') ? 't' : ((deploymentEnvironment == 'Prod') ? 'p' : ''))
+var varDeploymentEnvironmentFirstCar = first(toLower(deploymentEnvironment))
 var varNamingUniqueStringThreeChar = take('${uniqueString(avdWorkloadSubsId, varDeploymentPrefixLowercase, time)}', 3)
 var varNamingUniqueStringTwoChar = take('${uniqueString(avdWorkloadSubsId, varDeploymentPrefixLowercase, time)}', 2)
 var varSessionHostLocationAcronym = varLocations[varSessionHostLocationLowercase].acronym
@@ -580,7 +598,7 @@ var varWrklKeyVaultSku = (varAzureCloudName == 'AzureCloud' || varAzureCloudName
   : (varAzureCloudName == 'AzureChinaCloud' ? 'standard' : null)
 var varSessionHostNamePrefix = avdUseCustomNaming
   ? avdSessionHostCustomNamePrefix
-  : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
+  : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentFirstCar}${varSessionHostLocationAcronym}'
 var varVmssFlexNamePrefix = avdUseCustomNaming
   ? '${vmssFlexCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}'
   : 'vmss-${varComputeStorageResourcesNamingStandard}'
@@ -592,16 +610,16 @@ var varMsixFileShareName = avdUseCustomNaming
   ? msixFileShareCustomName
   : 'msix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
 var varFslogixStorageName = avdUseCustomNaming
-  ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
-  : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
+  ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentFirstCar}${varNamingUniqueStringThreeChar}'
+  : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentFirstCar}${varNamingUniqueStringThreeChar}'
 var varFslogixStorageFqdn = createAvdFslogixDeployment
   ? '${varFslogixStorageName}.file.${environment().suffixes.storage}'
   : ''
 var varMsixStorageFqdn = '${varMsixStorageName}.file.${environment().suffixes.storage}'
 var varMsixStorageName = avdUseCustomNaming
-  ? '${storageAccountPrefixCustomName}msx${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
-  : 'stmsx${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
-var varManagementVmName = 'vmmgmt${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
+  ? '${storageAccountPrefixCustomName}msx${varDeploymentPrefixLowercase}${varDeploymentEnvironmentFirstCar}${varNamingUniqueStringThreeChar}'
+  : 'stmsx${varDeploymentPrefixLowercase}${varDeploymentEnvironmentFirstCar}${varNamingUniqueStringThreeChar}'
+var varManagementVmName = 'vmmgmt${varDeploymentPrefixLowercase}${varDeploymentEnvironmentFirstCar}${varSessionHostLocationAcronym}'
 var varAlaWorkspaceName = avdUseCustomNaming
   ? avdAlaWorkspaceCustomName
   : 'log-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}'
@@ -629,7 +647,7 @@ var varMsixStorageSku = zoneRedundantStorage ? '${msixStoragePerformance}_ZRS' :
 var varMgmtVmSpecs = {
   osImage: varMarketPlaceGalleryWindows[managementVmOsImage]
   osDiskType: 'Standard_LRS'
-  mgmtVmSize: avdSessionHostsSize //'Standard_D2ads_v5'
+  mgmtVmSize: 'Standard_D2ads_v5'
   enableAcceleratedNetworking: false
   ouPath: avdOuPath
   subnetId: createAvdVnet
@@ -1049,6 +1067,31 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
     baselineStorageResourceGroup
   ]
 }
+//Aleerting module for avd AMBA alerts
+module alerting './modules/avdAlerts/deploy.bicep' = if (deployAlerts && avdDeployMonitoring) {
+  name: 'Alerting-${time}'
+  params: {
+    artifactsLocation: _ArtifactsLocation
+    artifactsLocationSasToken: _ArtifactsLocationSasToken
+    optoutTelemetry: optoutTelemetry
+    autoResolveAlert: AutoResolveAlert
+    distributionGroup: DistributionGroup
+    alertNamePrefix: deploymentPrefix
+    deploymentEnvironment: varDeploymentEnvironmentFirstCar
+    hostPoolName: varHostPoolName
+    computeObjectsRgName: varComputeObjectsRgName
+    deployAlaWorkspace: deployAlaWorkspace
+    location: avdManagementPlaneLocation
+    monitoringRgName: varMonitoringRgName
+    subscriptionId: avdWorkloadSubsId
+    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+    avdAlaWorkspaceId: monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
+    hostPoolResourceID: managementPLane.outputs.hostPoolResourceId
+  }
+  dependsOn: [
+    sessionHosts
+  ]
+}
 
 // Networking
 module networking './modules/networking/deploy.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) {
@@ -1077,7 +1120,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
     deployPrivateEndpointSubnet: (deployPrivateEndpointKeyvaultStorage == true) ? true : false //adding logic that will be used when also including AVD control plane PEs
     vNetworkGatewayOnHub: vNetworkGatewayOnHub
     existingHubVnetResourceId: existingHubVnetResourceId
-    location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
+    sessionHostLocation: avdSessionHostLocation
     vnetAvdSubnetAddressPrefix: vNetworkAvdSubnetAddressPrefix
     vnetPrivateEndpointSubnetAddressPrefix: vNetworkPrivateEndpointSubnetAddressPrefix
     workloadSubsId: avdWorkloadSubsId
@@ -1115,7 +1158,9 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     preferredAppGroupType: (hostPoolPreferredAppGroupType == 'RemoteApp') ? 'RailApplications' : 'Desktop'
     deployScalingPlan: varDeployScalingPlan
     scalingPlanExclusionTag: varScalingPlanExclusionTag
-    scalingPlanSchedules: (avdHostPoolType == 'Pooled') ? varPooledScalingPlanSchedules : varPersonalScalingPlanSchedules
+    scalingPlanSchedules: (avdHostPoolType == 'Pooled')
+      ? varPooledScalingPlanSchedules
+      : varPersonalScalingPlanSchedules
     scalingPlanName: varScalingPlanName
     hostPoolMaxSessions: hostPoolMaxSessions
     personalAssignType: avdPersonalAssignType
@@ -1310,7 +1355,7 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
     identityDomainName: identityDomainName
     ouPath: varMgmtVmSpecs.ouPath
     osDiskType: varMgmtVmSpecs.osDiskType
-    location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
+    location: avdSessionHostLocation
     mgmtVmSize: varMgmtVmSpecs.mgmtVmSize
     subnetId: varMgmtVmSpecs.subnetId
     enableAcceleratedNetworking: varMgmtVmSpecs.enableAcceleratedNetworking
@@ -1360,7 +1405,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
     serviceObjectsRgName: varServiceObjectsRgName
     identityDomainName: identityDomainName
     identityDomainGuid: identityDomainGuid
-    location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
+    sessionHostLocation: avdSessionHostLocation
     storageObjectsRgName: varStorageObjectsRgName
     privateEndpointSubnetId: createAvdVnet
       ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
@@ -1412,7 +1457,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
     serviceObjectsRgName: varServiceObjectsRgName
     identityDomainName: identityDomainName
     identityDomainGuid: identityDomainGuid
-    location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
+    sessionHostLocation: avdSessionHostLocation
     storageObjectsRgName: varStorageObjectsRgName
     privateEndpointSubnetId: createAvdVnet
       ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
@@ -1439,7 +1484,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
 }
 
 // VMSS Flex
-module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' =  if (avdDeploySessionHosts) {
+module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' = if (avdDeploySessionHosts) {
   name: 'AVD-VMSS-Flex-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${varComputeObjectsRgName}')
   params: {
