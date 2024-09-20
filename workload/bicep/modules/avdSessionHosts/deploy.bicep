@@ -303,6 +303,7 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
     }
     dependsOn: [
         //sessionHostsAntimalwareExtension
+        sessionHosts // jwi added when sessionHostAntimalwareExtension was commented out
         alaWorkspace
     ]
 }]
