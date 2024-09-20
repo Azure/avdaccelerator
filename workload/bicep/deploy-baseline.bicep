@@ -1405,7 +1405,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
     serviceObjectsRgName: varServiceObjectsRgName
     identityDomainName: identityDomainName
     identityDomainGuid: identityDomainGuid
-    sessionHostLocation: avdSessionHostLocation
+    location: avdSessionHostLocation
     storageObjectsRgName: varStorageObjectsRgName
     privateEndpointSubnetId: createAvdVnet
       ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
@@ -1457,7 +1457,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
     serviceObjectsRgName: varServiceObjectsRgName
     identityDomainName: identityDomainName
     identityDomainGuid: identityDomainGuid
-    sessionHostLocation: avdSessionHostLocation
+    location: avdSessionHostLocation
     storageObjectsRgName: varStorageObjectsRgName
     privateEndpointSubnetId: createAvdVnet
       ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
