@@ -1,0 +1,3 @@
+[submodule "azure-monitor-baseline-alerts"]
+	path = azure-monitor-baseline-alerts
+	url = https://github.com/Azure/azure-monitor-baseline-alerts
