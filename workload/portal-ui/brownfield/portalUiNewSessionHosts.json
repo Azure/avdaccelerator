@@ -177,7 +177,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
                                     "label": "Domain join principal name",
-                                    "placeholder": "Example: 'avdadmin@contoso.com",
+                                    "placeholder": "Example: 'avdadmin@contoso.com'",
                                     "defaultValue": "",
                                     "toolTip": "Provide username with permissions to join session host to the domain.",
                                     "constraints": {

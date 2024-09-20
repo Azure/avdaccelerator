@@ -256,7 +256,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "User principal name",
                                     "toolTip": "Provide username with permissions to join session host to the domain.",
-                                    "placeholder": "Example: 'avdadmin@contoso.com",
+                                    "placeholder": "Example: 'avdadmin@contoso.com'",
                                     "defaultValue": "",
                                     "constraints": {
                                         "required": true
