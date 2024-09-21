@@ -405,7 +405,7 @@ param msixFileShareCustomName string = 'msix-app1-${toLower(deploymentEnvironmen
 
 @maxLength(6)
 @sys.description('AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv-sec)')
-param avdWrklKvPrefixCustomName string = 'kv-sc'
+param avdWrklKvPrefixCustomName string = 'kv-sc1'
 
 @maxLength(6)
 @sys.description('AVD disk encryption set custom name. (Default: des-zt)')
@@ -1690,7 +1690,6 @@ module sessionHostsRemoteApp './modules/avdSessionHosts/deploy.bicep' = [
         domainJoinUserName: avdDomainJoinUserName
         wrklKvName: varWrklKvName
         serviceObjectsRgName: varServiceObjectsRgName
-        //hostPoolName: varHostPoolName
         identityDomainName: identityDomainName
         avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
         sessionHostOuPath: avdOuPath
