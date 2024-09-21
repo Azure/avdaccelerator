@@ -128,7 +128,6 @@ var remoteAppApplicationGroupName = replace(applicationGroupName, 'desktop', 're
 //avdApplicationGroupCustomFriendlyName string = 'ARPA-H on NIH Network - Test'
 var remoteAppApplicationGroupFriendlyName = replace(applicationGroupName, 'ARPA-H', 'ARPA-H RemoteApps')
 
-//param preferredAppGroupType string = 'Desktop'
 var preferredRemoteAppGroupType = 'RailApplications'
 
 var varApplicationGroups = [
@@ -150,37 +149,46 @@ var varRemoteApplicationGroups = [
 ]
 
 var varHostPoolRdpPropertiesDomainServiceCheck = (identityServiceProvider == 'EntraID') ? '${hostPoolRdpProperties};targetisaadjoined:i:1;enablerdsaadauth:i:1' : hostPoolRdpProperties
-var varRAppApplicationGroupsStandardApps = (preferredAppGroupType == 'RailApplications') ? [
+// var varRAppApplicationGroupsStandardApps = (preferredAppGroupType == 'RailApplications') ? [
+//   {
+//     name: 'Task Manager'
+//     description: 'Task Manager'
+//     friendlyName: 'Task Manager'
+//     showInPortal: true
+//     filePath: 'C:\\Windows\\system32\\taskmgr.exe'
+//   }
+//   {
+//     name: 'WordPad'
+//     description: 'WordPad'
+//     friendlyName: 'WordPad'
+//     showInPortal: true
+//     filePath: 'C:\\Program Files\\Windows NT\\Accessories\\wordpad.exe'
+//   }
+//   {
+//     name: 'Microsoft Edge'
+//     description: 'Microsoft Edge'
+//     friendlyName: 'Edge'
+//     showInPortal: true
+//     filePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+//   }
+//   {
+//     name: 'Remote Desktop Connection'
+//     description: 'Remote Desktop Connection'
+//     friendlyName: 'Remote Desktop'
+//     showInPortal: true
+//     filePath: 'C:\\WINDOWS\\system32\\mtsc.exe'
+//   }
+// ]: []
+var varRAppApplicationGroupsOfficeApps = (preferredRemoteAppGroupType == 'RailApplications') ? [
   {
-    name: 'Task Manager'
-    description: 'Task Manager'
-    friendlyName: 'Task Manager'
-    showInPortal: true
-    filePath: 'C:\\Windows\\system32\\taskmgr.exe'
-  }
-  {
-    name: 'WordPad'
-    description: 'WordPad'
-    friendlyName: 'WordPad'
-    showInPortal: true
-    filePath: 'C:\\Program Files\\Windows NT\\Accessories\\wordpad.exe'
-  }
-  {
-    name: 'Microsoft Edge'
+    name: 'Microsoft Edge - myitsm.nih.gov'
     description: 'Microsoft Edge'
     friendlyName: 'Edge'
     showInPortal: true
     filePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+    commandLineSetting: 'Allow'
+    commandLineArguments: 'microsoft-edge:https://myitsm.nih.gov'
   }
-  {
-    name: 'Remote Desktop Connection'
-    description: 'Remote Desktop Connection'
-    friendlyName: 'Remote Desktop'
-    showInPortal: true
-    filePath: 'C:\\WINDOWS\\system32\\mtsc.exe'
-  }
-]: []
-var varRAppApplicationGroupsOfficeApps = (preferredAppGroupType == 'RailApplications') ? [
   {
     name: 'Microsoft Excel'
     description: 'Microsoft Excel'
@@ -210,7 +218,9 @@ var varRAppApplicationGroupsOfficeApps = (preferredAppGroupType == 'RailApplicat
     filePath: 'C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE'
   }
 ]: []
-var varRAppApplicationGroupsApps = (preferredAppGroupType == 'RailApplications') ? ((contains(osImage, 'office')) ? union(varRAppApplicationGroupsStandardApps, varRAppApplicationGroupsOfficeApps) : varRAppApplicationGroupsStandardApps) : []
+
+//var varRAppApplicationGroupsApps = (preferredAppGroupType == 'RailApplications') ? ((contains(osImage, 'office')) ? union(varRAppApplicationGroupsStandardApps, varRAppApplicationGroupsOfficeApps) : varRAppApplicationGroupsStandardApps) : []
+
 var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
   {
     workspaceResourceId: alaWorkspaceResourceId
@@ -285,7 +295,7 @@ module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/appli
     applicationGroupType: applicationGroup.applicationGroupType
     hostpoolName: hostPoolName
     tags: tags
-    applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsApps : []
+    applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsOfficeApps : []
     roleAssignments: !empty(securityPrincipalId) ? [
       {      
         roleDefinitionIdOrName: 'Desktop Virtualization User'
@@ -310,7 +320,7 @@ module remoteApplicationGroups '../../../../avm/1.0.0/res/desktop-virtualization
     applicationGroupType: applicationGroup.applicationGroupType
     hostpoolName: remoteHostPoolName
     tags: tags
-    applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsApps : []
+    applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsOfficeApps : []
     roleAssignments: !empty(securityPrincipalId) ? [
       {      
         roleDefinitionIdOrName: 'Desktop Virtualization User'
@@ -375,3 +385,11 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
     workSpace
   ]
 }
+
+@sys.description('The name of the desktop host pool.')
+output desktopHostPoolName string = hostPool.name
+
+@sys.description('The name of the remote app host pool.')
+output remoteAppHostPoolName string = hostPoolRemoteApps.name
+
+

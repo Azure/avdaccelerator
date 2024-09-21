@@ -207,12 +207,24 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
   }
 }
 
+// module keyVaultHostPoolSecret '../../../../../avm/1.0.0/res/key-vault/vault/secret/main.bicep' = {
+//   name: '${uniqueString(deployment().name, location)}-HP-Token-Secret'
+//   scope: resourceGroup('${varKeyVaultSubId}', '${varKeyVaultRgName}')
+//   params: {
+//     keyVaultName: varKeyVaultName
+//     name: 'hostPoolRegistrationToken'
+//     value: hostPool.properties.registrationInfo.token
+//     contentType: 'Host pool registration token for session hosts'
+//   }
+// }
+
+// ARPA-H customization:  save the token in a secret in the keyvault, with the host pool name as the secret name
 module keyVaultHostPoolSecret '../../../../../avm/1.0.0/res/key-vault/vault/secret/main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-HP-Token-Secret'
   scope: resourceGroup('${varKeyVaultSubId}', '${varKeyVaultRgName}')
   params: {
     keyVaultName: varKeyVaultName
-    name: 'hostPoolRegistrationToken'
+    name: hostPool.name
     value: hostPool.properties.registrationInfo.token
     contentType: 'Host pool registration token for session hosts'
   }
@@ -339,6 +351,10 @@ output location string = hostPool.location
 
 @sys.description('Host pool registration token secret resource ID.')
 output keyVaultTokenSecretResourceId string = keyVaultHostPoolSecret.outputs.resourceId
+
+// ARPA-H customization
+@sys.description('The registration token for the host pool.')
+output hostPoolRegistrationToken string = hostPool.properties.registrationInfo.token
 
 // ================ //
 // Definitions      //

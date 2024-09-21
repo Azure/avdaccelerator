@@ -134,6 +134,9 @@ param time string = utcNow()
 @sys.description('Data collection rule ID.')
 param dataCollectionRuleId string
 
+@sys.description('Host pool name for registration token.  The host pool name is the secret name for the host pool registration token.')
+param hostPoolName string
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -330,7 +333,8 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in 
     params: {
         location: location
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
+        //hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
+        hostPoolToken: keyVault.getSecret(hostPoolName)
         baseScriptUri: sessionHostConfigurationScriptUri
         scriptName: sessionHostConfigurationScript
         fslogix: createAvdFslogixDeployment
