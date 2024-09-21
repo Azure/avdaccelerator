@@ -353,8 +353,12 @@ output location string = hostPool.location
 output keyVaultTokenSecretResourceId string = keyVaultHostPoolSecret.outputs.resourceId
 
 // ARPA-H customization
-@sys.description('The registration token for the host pool.')
-output hostPoolRegistrationToken string = hostPool.properties.registrationInfo.token
+// @sys.description('The registration token for the host pool.')
+// output hostPoolRegistrationToken string = hostPool.properties.registrationInfo.token
+
+// @sys.description('The name of the host pool.')
+// output hostPoolName string = name
+
 
 // ================ //
 // Definitions      //
