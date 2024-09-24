@@ -1228,52 +1228,6 @@ module managementPLane './modules/avdManagementPlane/deploy-arpah.bicep' = {
     ]
 }
 
-
-// AVD RemoteApp host pool
-// module managementPlaneRemoteApp './modules/avdManagementPlane/deploy-remoteapp-arpah.bicep' = {
-//     name: 'AVD-MGMT-Plane-RemoteApp-${time}'
-//     params: {
-//         applicationGroupName: avdRemoteAppApplicationGroupCustomName
-//         applicationGroupFriendlyNameDesktop: 'RemoteApp Host Pool - ${deploymentPrefix}'
-//         workSpaceName: varWorkSpaceName
-//         osImage: avdOsImage
-//         keyVaultResourceId: wrklKeyVault.outputs.resourceId
-//         //workSpaceFriendlyName: varWorkSpaceFriendlyName
-//         computeTimeZone: varTimeZoneSessionHosts
-//         hostPoolName: avdRemoteHostPoolCustomName
-//         hostPoolFriendlyName:  'RemoteApp Host Pool - ${deploymentEnvironment}'
-//         hostPoolRdpProperties: avdHostPoolRdpProperties
-//         hostPoolLoadBalancerType: avdHostPoolLoadBalancerType
-//         hostPoolType: avdHostPoolType
-//         preferredAppGroupType: 'RailApplications'
-//         deployScalingPlan: varDeployScalingPlan
-//         scalingPlanExclusionTag: varScalingPlanExclusionTag
-//         scalingPlanSchedules: (avdHostPoolType == 'Pooled') ? varPooledScalingPlanSchedules : varPersonalScalingPlanSchedules
-//         scalingPlanName: 'vdscaling-remote1-${toLower(deploymentEnvironment)}-use2-001'
-//         hostPoolMaxSessions: hostPoolMaxSessions
-//         personalAssignType: avdPersonalAssignType
-//         managementPlaneLocation: avdManagementPlaneLocation
-//         serviceObjectsRgName: varServiceObjectsRgName
-//         startVmOnConnect: avdStartVmOnConnect
-//         subscriptionId: avdWorkloadSubsId
-//         identityServiceProvider: avdIdentityServiceProvider
-//         securityPrincipalId: !empty(securityPrincipalId) ? securityPrincipalId : ''
-//         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-//         alaWorkspaceResourceId: avdDeployMonitoring
-//         ? (deployAlaWorkspace
-//             ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
-//             : alaExistingWorkspaceResourceId)
-//         : ''
-//             hostPoolAgentUpdateSchedule: varHostPoolAgentUpdateSchedule
-//         }
-//     dependsOn: [
-//         baselineResourceGroups
-//         identity
-//         monitoringDiagnosticSettings
-//         wrklKeyVault
-//     ]
-// }
-
 // Identity: managed identities and role assignments
 module identity './modules/identity/deploy.bicep' = {
     name: 'Identities-And-RoleAssign-${time}'
