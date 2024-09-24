@@ -184,7 +184,7 @@
             "value": true
         },
         "useSharedImage": {
-            "value": false
+            "value": true
         },
         "avdImageTemplateDefinitionId": {
             "value": ""

@@ -278,7 +278,7 @@ param managementVmOsImage string = 'winServer_2022_Datacenter_smalldisk_g2'
 param useSharedImage bool = false
 
 @sys.description('Source custom image ID. (Default: "")')
-param avdImageTemplateDefinitionId string = ''
+param avdImageTemplateDefinitionId string = '/subscriptions/${avdWorkloadSubsId}/resourceGroups/rg-avd-golden-image/providers/Microsoft.Compute/galleries/acgavd/images/GoldenImageAVDArpaH'
 
 @sys.description('OU name for Azure Storage Account. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.  (Default: "")')
 param storageOuPath string = ''
@@ -949,7 +949,7 @@ var varAllComputeStorageTags = {
     IdentityServiceProvider: avdIdentityServiceProvider
 }
 var varAvdDefaultTags = {
-    'cm-resource-parent': '/subscriptions/${avdWorkloadSubsId}}/resourceGroups/${varServiceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${varHostPoolName}'
+    'cm-resource-parent': '/subscriptions/${avdWorkloadSubsId}/resourceGroups/${varServiceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${varHostPoolName}'
     Environment: deploymentEnvironment
     ServiceWorkload: 'AVD'
     CreationTimeUTC: time
@@ -1547,7 +1547,7 @@ module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' =  if 
 
 // Session hosts
 @batchSize(3)
-module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
+module sessionHosts './modules/avdSessionHosts/deploy-arpah.bicep' = [
     for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
     name: 'SH-Batch-${i - 1}-${time}'
     params: {
@@ -1620,7 +1620,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
 ]
 
 @batchSize(3)
-module sessionHostsRemoteApp './modules/avdSessionHosts/deploy.bicep' = [
+module sessionHostsRemoteApp './modules/avdSessionHosts/deploy-arpah.bicep' = [
     for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
     name: 'SH-RemoteApp-${i - 1}-${time}'
     params: {

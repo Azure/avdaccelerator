@@ -293,25 +293,19 @@ module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtu
 
 // Add domjoin ext separately from vm module to session host
 module vm_domainJoinExtension '.bicep/domJoinExtension.bicep' = [for i in range(1, count): {
-    //name: 'VMDomJoin-${batchId}-${i - 1}-${time}'
+    name: 'VMDomJoin-${batchId}-${i - 1}-${time}'
     params: {
         virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         name: 'DomainJoin'
         location: location
         publisher: 'Microsoft.Compute'
         type: 'JsonADDomainExtension'
-        typeHandlerVersion: contains(extensionDomainJoinConfig, 'typeHandlerVersion')
-            ? extensionDomainJoinConfig.typeHandlerVersion
-            : '1.3'
-        autoUpgradeMinorVersion: contains(extensionDomainJoinConfig, 'autoUpgradeMinorVersion')
-            ? extensionDomainJoinConfig.autoUpgradeMinorVersion
-            : true
-        enableAutomaticUpgrade: contains(extensionDomainJoinConfig, 'enableAutomaticUpgrade')
-            ? extensionDomainJoinConfig.enableAutomaticUpgrade
-            : false
+        typeHandlerVersion: '1.3'
+        autoUpgradeMinorVersion: true
+        enableAutomaticUpgrade: false
         settings: extensionDomainJoinConfig.settings
         supressFailures: extensionDomainJoinConfig.?supressFailures ?? false
-        tags: extensionDomainJoinConfig.?tags ?? tags
+        tags: tags
         extensionDomainJoinPassword: keyVault.getSecret('domainJoinUserPassword')
     }
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
