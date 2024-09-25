@@ -181,22 +181,20 @@ var varHostPoolRdpPropertiesDomainServiceCheck = (identityServiceProvider == 'En
 // ]: []
 var varRAppApplicationGroupsOfficeApps = (preferredRemoteAppGroupType == 'RailApplications') ? [
   {
-    name: 'Microsoft Edge - myitsm.nih.gov'
+    name: 'Microsoft Edge - itas.nih.gov'
     description: 'Microsoft Edge'
-    friendlyName: 'myitsm.nih.gov'
+    friendlyName: 'itas.nih.gov'
     showInPortal: true
     filePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
     commandLineSetting: 'Require'
-    commandLineArguments: 'microsoft-edge:https://myitsm.nih.gov'
+    commandLineArguments: 'microsoft-edge:https://itas.nih.gov'
   }
   {
-    name: 'Microsoft Edge - login.arpa-h.gov'
-    description: 'Microsoft Edge'
-    friendlyName: 'ARPA-H MyApps - login.arpa-h.gov'
-    showInPortal: true
-    filePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
-    commandLineSetting: 'Require'
-    commandLineArguments: 'microsoft-edge:https://login.arpa-h.gov'
+      name: 'Microsoft Edge'
+      description: 'Microsoft Edge'
+      friendlyName: 'Edge'
+      showInPortal: true
+      filePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
   }
   {
     name: 'Microsoft Excel'
