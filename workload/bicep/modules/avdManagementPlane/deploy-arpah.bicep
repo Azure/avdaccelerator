@@ -190,6 +190,15 @@ var varRAppApplicationGroupsOfficeApps = (preferredRemoteAppGroupType == 'RailAp
     commandLineArguments: 'microsoft-edge:https://myitsm.nih.gov'
   }
   {
+    name: 'Microsoft Edge - login.arpa-h.gov'
+    description: 'Microsoft Edge'
+    friendlyName: 'ARPA-H MyApps - login.arpa-h.gov'
+    showInPortal: true
+    filePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+    commandLineSetting: 'Require'
+    commandLineArguments: 'microsoft-edge:https://login.arpa-h.gov'
+  }
+  {
     name: 'Microsoft Excel'
     description: 'Microsoft Excel'
     friendlyName: 'Excel'
