@@ -44,6 +44,19 @@ resource vmssFlex 'Microsoft.Compute/virtualMachineScaleSets@2024-03-01' = [for 
         orchestrationMode: 'Flexible'
         zoneBalance: useAvailabilityZones ? true: false
         platformFaultDomainCount: useAvailabilityZones ? 1: platformFaultDomainCount
+        singlePlacementGroup: false
+        virtualMachineProfile: {
+            osProfile: {
+                windowsConfiguration: {
+                    enableAutomaticUpdates: true
+                    // enableVMAgentPlatformUpdates: true
+                    // patchSettings : {
+                    //     patchMode: 'AutomaticByPlatform'
+                    // }
+                    provisionVMAgent: true
+                }
+            }
+        }
     }
     tags: tags
 }]
