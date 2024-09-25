@@ -183,7 +183,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (identity
 // Session hosts
 module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = [for i in range(1, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-${batchId}-${i - 1}-${time}'
+    name: 'SH-${namePrefix}-${batchId}-${i - 1}-${time}'
     params: {
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         location: location
@@ -260,7 +260,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
 // Add antimalware extension to session host.
 module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Antimal-${batchId}-${i - 1}-${time}'
+    name: 'SH-Antimal-${namePrefix}-${batchId}-${i - 1}-${time}'
     params: {
         location: location
         virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
@@ -293,7 +293,7 @@ module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtu
 
 // Add domjoin ext separately from vm module to session host
 module vm_domainJoinExtension '.bicep/domJoinExtension.bicep' = [for i in range(1, count): {
-    name: 'VMDomJoin-${batchId}-${i - 1}-${time}'
+    name: 'VMDomJoin-${namePrefix}-${batchId}-${i - 1}-${time}'
     params: {
         virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         name: 'DomainJoin'
@@ -323,7 +323,7 @@ resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' exis
 // Add monitoring extension to session host
 module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Mon-${batchId}-${i - 1}-${time}'
+    name: 'SH-Mon-${namePrefix}-${batchId}-${i - 1}-${time}'
     params: {
         location: location
         virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
@@ -349,7 +349,7 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
 // Data collection rule association
 module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bicep' = [for i in range(1, count): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'DCR-Asso-${batchId}-${i - 1}-${time}'
+    name: 'DCR-Asso-${namePrefix}-${batchId}-${i - 1}-${time}'
     params: {
         virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         dataCollectionRuleId: dataCollectionRuleId
@@ -364,7 +364,7 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
 // Apply AVD session host configurations
 module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in range(1, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Config-${batchId}-${i}-${time}'
+    name: 'SH-Config-${namePrefix}-${batchId}-${i}-${time}'
     params: {
         location: location
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
