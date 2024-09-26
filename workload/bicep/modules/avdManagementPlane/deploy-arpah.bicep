@@ -380,6 +380,10 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
         hostPoolArmPath: '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${hostPoolName}'
         scalingPlanEnabled: true
         }
+        {
+          hostPoolArmPath: '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${remoteHostPoolName}'
+          scalingPlanEnabled: true
+        }
       ]
       tags: tags
       diagnosticSettings: varDiagnosticSettings

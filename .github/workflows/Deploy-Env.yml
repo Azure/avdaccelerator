@@ -40,7 +40,7 @@ jobs:
         ResourceGroupName: 'avd-nih-arpah-${{ github.event.inputs.environment }}-use2-service-objects'
         ApplicationGroupName: 'vdag-desktop-app1-${{ github.event.inputs.environment }}-use2-001'
         Name: 'SessionDesktop'
-        FriendlyName: 'Windows 11 Desktop'
+        FriendlyName: 'ARPA-H Windows Desktop'
       with:
         inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName ${{ env.ResourceGroupName }} -ApplicationGroupName  ${{ env.ApplicationGroupName }} -Name  ${{ env.Name }} -FriendlyName  '${{ env.FriendlyName }}'
         azPSVersion: "latest"

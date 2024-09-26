@@ -27,7 +27,7 @@
             "value": "<<subscriptionId>>"
         },
         "avdApplicationGroupCustomFriendlyName": {
-            "value": "Windows 11 Desktop"
+            "value": "ARPA-H Windows Desktop"
         },
         "deployPrivateEndpointKeyvaultStorage": {
             "value": true
