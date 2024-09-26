@@ -277,9 +277,12 @@ param managementVmOsImage string = 'winServer_2022_Datacenter_smalldisk_g2'
 @sys.description('Set to deploy image from Azure Compute Gallery. (Default: false)')
 param useSharedImage bool = false
 
+@sys.description('Image from Azure Compute Gallery.')
+param goldenImageId string  = ''
+
 @sys.description('Source custom image ID. (Default: "")')
-//param avdImageTemplateDefinitionId string = '/subscriptions/${avdWorkloadSubsId}/resourceGroups/rg-avd-golden-image/providers/Microsoft.Compute/galleries/acgavd/images/GoldenImageAVDArpaH/versions/1.0.0'
-param avdImageTemplateDefinitionId string
+param avdImageTemplateDefinitionId string = '/subscriptions/${avdWorkloadSubsId}/resourceGroups/rg-avd-golden-image/providers/Microsoft.Compute/galleries/acgavd/images/${goldenImageId}'
+//param avdImageTemplateDefinitionId string
 
 @sys.description('OU name for Azure Storage Account. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.  (Default: "")')
 param storageOuPath string = ''

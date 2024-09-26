@@ -186,8 +186,8 @@
         "useSharedImage": {
             "value": true
         },
-        "avdImageTemplateDefinitionId": {
-            "value": "/subscriptions/87a23dae-87b7-4372-b94f-92e72de0705e/resourceGroups/rg-avd-golden-image/providers/Microsoft.Compute/galleries/acgavd/images/GoldenImageAVDArpaH/versions/1.0.0"
+        "goldenImageId": {
+            "value": "GoldenImageAVDArpaH/versions/1.0.0"
         },
         "storageOuPath": {
             "value": ""
