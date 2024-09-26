@@ -400,6 +400,9 @@ param storageAccountPrefixCustomName string = 'st'
 @sys.description('FSLogix file share name. (Default: fslogix-pc-app1-dev-001)')
 param fslogixFileShareCustomName string = 'fslogix-pc-app1-${toLower(deploymentEnvironment)}-use2-001'
 
+@sys.description('FSLogix file share name. (Default: fslogix-pc-app1-dev-001)')
+param fslogixFileShareCustomNameRemote string = 'fslogix-pc-remote-${toLower(deploymentEnvironment)}-use2-001'
+
 @sys.description('MSIX file share name. (Default: msix-app1-dev-001)')
 param msixFileShareCustomName string = 'msix-app1-${toLower(deploymentEnvironment)}-use2-001'
 
@@ -497,6 +500,9 @@ param enableKvPurgeProtection bool = true
 
 @sys.description('Storage account private endpoint static ip')
 param storageFilePrivateEndpointStaticIp string
+
+@sys.description('Storage account private endpoint static ip for the remote apps file share')
+param storageFilePrivateEndpointStaticIpRemote string
 
 @sys.description('Vnet resource group name')
 param vnetResourceGroupName string = 'nih-arpa-h-it-vdi-nih-${toLower(deploymentEnvironment)}-rg-admin-az'
@@ -612,15 +618,29 @@ var varStorageManagedIdentityName = 'id-storage-${varComputeStorageResourcesNami
 var varFslogixFileShareName = avdUseCustomNaming 
     ? fslogixFileShareCustomName 
     : 'fslogix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
+var varFslogixFileShareNameRemote = avdUseCustomNaming 
+    ? fslogixFileShareCustomNameRemote 
+    : 'fslogix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
 var varMsixFileShareName = avdUseCustomNaming 
     ? msixFileShareCustomName 
     : 'msix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
 var varFslogixStorageName = avdUseCustomNaming 
     ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}biz' 
     : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
+
+// for remote apps
+var varFslogixStorageNameRemote = avdUseCustomNaming 
+    ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}ra' 
+    : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
+
 var varFslogixStorageFqdn = createAvdFslogixDeployment 
     ? '${varFslogixStorageName}.file.${environment().suffixes.storage}' 
     : ''
+
+var varFslogixStorageFqdnRemote = createAvdFslogixDeployment 
+    ? '${varFslogixStorageNameRemote}.file.${environment().suffixes.storage}' 
+    : ''
+
 var varMsixStorageFqdn = '${varMsixStorageName}.file.${environment().suffixes.storage}'
 var varMsixStorageName = avdUseCustomNaming 
     ? '${storageAccountPrefixCustomName}msx${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}' 
@@ -638,6 +658,25 @@ var varZtKvPrivateEndpointName = 'pe-${varZtKvName}-vault'
 var varFslogixSharePath = createAvdFslogixDeployment 
     ? '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}' 
     : ''
+
+var varFslogixSharePathRemote = createAvdFslogixDeployment 
+    ? '\\\\${varFslogixStorageNameRemote}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}' 
+    : ''
+
+var fsLogixStorageAccounts = [
+    {
+        storageAccountName: varFslogixStorageName
+        fslogixStorageFqdn: varFslogixStorageFqdn
+        fslogixSharePath: varFslogixSharePath   
+        fslogixFileShareName: varFslogixFileShareName
+    }
+    {
+        storageAccountName: varFslogixStorageNameRemote
+        fslogixStorageFqdn: varFslogixStorageFqdnRemote
+        fslogixSharePath: varFslogixSharePathRemote
+        fslogixFileShareName: varFslogixFileShareNameRemote
+    }
+]
 //var varBaseScriptUri = 'https://raw.githubusercontent.com/ARPA-H/avdaccelerator-nih/main/workload/'
 var varBaseScriptUri = 'https://github.com/ARPA-H/avdaccelerator-nih/raw/deployment/workload/'
 
@@ -1426,17 +1465,69 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
 }
 
 // FSLogix storage
-module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy-arpah.bicep' = if (createAvdFslogixDeployment) {
-    name: 'Storage-FSLogix-${time}'
+// module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy-arpah.bicep' = if (createAvdFslogixDeployment) {
+//     name: 'Storage-FSLogix-${time}'
+//     params: {
+//         storagePurpose: 'fslogix'
+//         vmLocalUserName: avdVmLocalUserName
+//         fileShareName: varFslogixFileShareName
+//         fileShareMultichannel: (fslogixStoragePerformance == 'Premium') ? true : false
+//         storageSku: varFslogixStorageSku
+//         fileShareQuotaSize: fslogixFileShareQuotaSize
+//         storageAccountFqdn: varFslogixStorageFqdn
+//         storageAccountName: varFslogixStorageName
+//         storageToDomainScript: varStorageToDomainScript
+//         storageToDomainScriptUri: varStorageToDomainScriptUri
+//         identityServiceProvider: avdIdentityServiceProvider
+//         dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
+//         storageCustomOuPath: varStorageCustomOuPath
+//         managementVmName: varManagementVmName
+//         deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
+//         ouStgPath: varOuStgPath
+//         managedIdentityClientId: varCreateStorageDeployment ? identity.outputs.managedIdentityStorageClientId : ''
+//         securityPrincipalName: !empty(securityPrincipalName) ? securityPrincipalName : ''
+//         domainJoinUserName: avdDomainJoinUserName
+//         wrklKvName: varWrklKvName
+//         serviceObjectsRgName: varServiceObjectsRgName
+//         identityDomainName: identityDomainName
+//         identityDomainGuid: identityDomainGuid
+//         sessionHostLocation: avdSessionHostLocation
+//         storageObjectsRgName: varStorageObjectsRgName
+//         privateEndpointSubnetId: createAvdVnet 
+//             ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}' 
+//             : existingVnetPrivateEndpointSubnetResourceId
+//         vnetPrivateDnsZoneFilesId: createPrivateDnsZones 
+//             ? networking.outputs.azureFilesDnsZoneResourceId 
+//             : avdVnetPrivateDnsZoneFilesId
+//         workloadSubsId: avdWorkloadSubsId
+//         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+//         alaWorkspaceResourceId: avdDeployMonitoring 
+//             ? (deployAlaWorkspace 
+//                 ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId 
+//                 : alaExistingWorkspaceResourceId) 
+//             : ''
+//         storageFilePrivateEndpointStaticIp: storageFilePrivateEndpointStaticIp
+//     }
+//     dependsOn: [
+//         baselineStorageResourceGroup
+//         networking
+//         wrklKeyVault
+//         managementVm
+//         monitoringDiagnosticSettings
+//     ]
+// }
+
+module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy-arpah.bicep' = [for storageAccountInfo in fsLogixStorageAccounts: if (createAvdFslogixDeployment) {
+    name: 'Storage-FSLogix-${storageAccountInfo.storageAccountName}${time}'
     params: {
         storagePurpose: 'fslogix'
         vmLocalUserName: avdVmLocalUserName
-        fileShareName: varFslogixFileShareName
+        fileShareName: storageAccountInfo.fslogixFileShareName
         fileShareMultichannel: (fslogixStoragePerformance == 'Premium') ? true : false
         storageSku: varFslogixStorageSku
         fileShareQuotaSize: fslogixFileShareQuotaSize
-        storageAccountFqdn: varFslogixStorageFqdn
-        storageAccountName: varFslogixStorageName
+        storageAccountFqdn: storageAccountInfo.fslogixStorageFqdn
+        storageAccountName: storageAccountInfo.storageAccountName
         storageToDomainScript: varStorageToDomainScript
         storageToDomainScriptUri: varStorageToDomainScriptUri
         identityServiceProvider: avdIdentityServiceProvider
@@ -1476,7 +1567,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy-arpah.bicep'
         managementVm
         monitoringDiagnosticSettings
     ]
-}
+}]
 
 // MSIX storage
 module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (varCreateMsixDeployment) {

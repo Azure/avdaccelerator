@@ -183,7 +183,7 @@ var varRAppApplicationGroupsOfficeApps = (preferredRemoteAppGroupType == 'RailAp
   {
     name: 'Microsoft Edge - itas.nih.gov'
     description: 'Microsoft Edge'
-    friendlyName: 'itas.nih.gov'
+    friendlyName: 'ITAS'
     showInPortal: true
     filePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
     commandLineSetting: 'Require'
