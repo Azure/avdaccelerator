@@ -231,9 +231,9 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
         // ADDS or EntraDS domain join.
         extensionDomainJoinPassword: keyVault.getSecret('domainJoinUserPassword')
         extensionDomainJoinConfig: {
-            //enabled: (identityServiceProvider == 'EntraDS' || identityServiceProvider == 'ADDS') ? true : false
+            enabled: (identityServiceProvider == 'EntraDS' || identityServiceProvider == 'ADDS') ? true : false
             // disable dom join when vm is created, so that we can install the antimalware extension first
-            enabled: false
+            //enabled: false
             settings: {
                 name: identityDomainName
                 ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
@@ -291,28 +291,28 @@ module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtu
     ]
 }]
 
-// Add domjoin ext separately from vm module to session host
-module vm_domainJoinExtension '.bicep/domJoinExtension.bicep' = [for i in range(1, count): {
-    name: 'VMDomJoin-${namePrefix}-${batchId}-${i - 1}-${time}'
-    params: {
-        virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        name: 'DomainJoin'
-        location: location
-        publisher: 'Microsoft.Compute'
-        type: 'JsonADDomainExtension'
-        typeHandlerVersion: '1.3'
-        autoUpgradeMinorVersion: true
-        enableAutomaticUpgrade: false
-        settings: extensionDomainJoinConfig.settings
-        supressFailures: extensionDomainJoinConfig.?supressFailures ?? false
-        tags: tags
-        extensionDomainJoinPassword: keyVault.getSecret('domainJoinUserPassword')
-    }
-    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    dependsOn: [
-        sessionHostsAntimalwareExtension
-    ]
-  }]
+// // Add domjoin ext separately from vm module to session host
+// module vm_domainJoinExtension '.bicep/domJoinExtension.bicep' = [for i in range(1, count): {
+//     name: 'VMDomJoin-${namePrefix}-${batchId}-${i - 1}-${time}'
+//     params: {
+//         virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+//         name: 'DomainJoin'
+//         location: location
+//         publisher: 'Microsoft.Compute'
+//         type: 'JsonADDomainExtension'
+//         typeHandlerVersion: '1.3'
+//         autoUpgradeMinorVersion: true
+//         enableAutomaticUpgrade: false
+//         settings: extensionDomainJoinConfig.settings
+//         supressFailures: extensionDomainJoinConfig.?supressFailures ?? false
+//         tags: tags
+//         extensionDomainJoinPassword: keyVault.getSecret('domainJoinUserPassword')
+//     }
+//     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+//     dependsOn: [
+//         sessionHostsAntimalwareExtension
+//     ]
+//   }]
 
 // Call to the ALA workspace
 resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!empty(alaWorkspaceResourceId) && deployMonitoring) {
@@ -341,7 +341,7 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
         }
     }
     dependsOn: [
-        vm_domainJoinExtension
+        sessionHostsAntimalwareExtension
         alaWorkspace
     ]
 }]
@@ -379,7 +379,7 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in 
         identityServiceProvider: identityServiceProvider
     }
     dependsOn: [
-        sessionHostsAntimalwareExtension
+        //sessionHostsAntimalwareExtension
         sessionHosts
         monitoring
     ]

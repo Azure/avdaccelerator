@@ -1759,8 +1759,8 @@ module sessionHostsRemoteApp './modules/avdSessionHosts/deploy-arpah.bicep' = [
         subscriptionId: avdWorkloadSubsId
         encryptionAtHost: diskZeroTrust
         createAvdFslogixDeployment: createAvdFslogixDeployment
-        fslogixSharePath: varFslogixSharePath
-        fslogixStorageFqdn: varFslogixStorageFqdn
+        fslogixSharePath: varFslogixSharePathRemote
+        fslogixStorageFqdn: varFslogixStorageFqdnRemote
         sessionHostConfigurationScriptUri: varSessionHostConfigurationScriptUri
         sessionHostConfigurationScript: varSessionHostConfigurationScript
         marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
