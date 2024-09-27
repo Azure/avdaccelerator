@@ -401,7 +401,7 @@ param storageAccountPrefixCustomName string = 'st'
 param fslogixFileShareCustomName string = 'fslogix-pc-app1-${toLower(deploymentEnvironment)}-use2-001'
 
 @sys.description('FSLogix file share name. (Default: fslogix-pc-app1-dev-001)')
-param fslogixFileShareCustomNameRemote string = 'fslogix-pc-remote-${toLower(deploymentEnvironment)}-use2-001'
+param fslogixFileShareCustomNameRemote string = 'fslogix-pc-remoteapps-${toLower(deploymentEnvironment)}-use2-001'
 
 @sys.description('MSIX file share name. (Default: msix-app1-dev-001)')
 param msixFileShareCustomName string = 'msix-app1-${toLower(deploymentEnvironment)}-use2-001'
@@ -660,7 +660,7 @@ var varFslogixSharePath = createAvdFslogixDeployment
     : ''
 
 var varFslogixSharePathRemote = createAvdFslogixDeployment 
-    ? '\\\\${varFslogixStorageNameRemote}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}' 
+    ? '\\\\${varFslogixStorageNameRemote}.file.${environment().suffixes.storage}\\${varFslogixFileShareNameRemote}' 
     : ''
 
 var fsLogixStorageAccounts = [
@@ -669,12 +669,14 @@ var fsLogixStorageAccounts = [
         fslogixStorageFqdn: varFslogixStorageFqdn
         fslogixSharePath: varFslogixSharePath   
         fslogixFileShareName: varFslogixFileShareName
+        storageFilePrivateEndpointStaticIp: storageFilePrivateEndpointStaticIp
     }
     {
         storageAccountName: varFslogixStorageNameRemote
         fslogixStorageFqdn: varFslogixStorageFqdnRemote
         fslogixSharePath: varFslogixSharePathRemote
         fslogixFileShareName: varFslogixFileShareNameRemote
+        storageFilePrivateEndpointStaticIp: storageFilePrivateEndpointStaticIpRemote
     }
 ]
 //var varBaseScriptUri = 'https://raw.githubusercontent.com/ARPA-H/avdaccelerator-nih/main/workload/'
@@ -1558,7 +1560,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy-arpah.bicep'
                 ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId 
                 : alaExistingWorkspaceResourceId) 
             : ''
-        storageFilePrivateEndpointStaticIp: storageFilePrivateEndpointStaticIp
+        storageFilePrivateEndpointStaticIp: storageAccountInfo.storageFilePrivateEndpointStaticIp
     }
     dependsOn: [
         baselineStorageResourceGroup
