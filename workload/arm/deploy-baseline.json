@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.29.47.4906",
-      "templateHash": "17140296604916437495"
+      "templateHash": "718139678628774950"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -1608,7 +1608,7 @@
       }
     ],
     "varMarketPlaceGalleryWindows": "[variables('$fxv#1')]",
-    "varStorageAzureFilesDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/1.0.0/DSCStorageScripts.zip",
+    "varStorageAzureFilesDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/1.0.1/DSCStorageScripts.zip",
     "varStorageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-Storage-Scripts.ps1', variables('varBaseScriptUri'))]",
     "varStorageToDomainScript": "./Manual-DSC-Storage-Scripts.ps1",
     "varOuStgPath": "[if(not(empty(parameters('storageOuPath'))), format('\"{0}\"', parameters('storageOuPath')), format('\"{0}\"', variables('varDefaultStorageOuPath')))]",
@@ -30170,7 +30170,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.29.47.4906",
-              "templateHash": "15635298892932140918"
+              "templateHash": "11757932224469015605"
             },
             "name": "AVD Accelerator - VMSS Flex",
             "description": "Deploys a VMSS Flex without VM profile",
@@ -30228,7 +30228,8 @@
               "properties": {
                 "orchestrationMode": "Flexible",
                 "zoneBalance": "[if(parameters('useAvailabilityZones'), true(), false())]",
-                "platformFaultDomainCount": "[if(parameters('useAvailabilityZones'), 1, parameters('platformFaultDomainCount'))]"
+                "platformFaultDomainCount": "[if(parameters('useAvailabilityZones'), 1, parameters('platformFaultDomainCount'))]",
+                "singlePlacementGroup": false
               },
               "tags": "[parameters('tags')]"
             }
