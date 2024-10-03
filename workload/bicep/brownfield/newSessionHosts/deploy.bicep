@@ -160,6 +160,8 @@ param sessionHostOuPath string = ''
   'win11_22h2_office'
   'win11_23h2'
   'win11_23h2_office'
+  'win11_24h2'
+  'win11_24h2_office'
 ])
 @sys.description('AVD OS image SKU. (Default: win11-23h2)')
 param osImage string = 'win11_23h2'

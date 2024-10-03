@@ -263,6 +263,8 @@ param vTpmEnabled bool = true
   'win11_22h2_office'
   'win11_23h2'
   'win11_23h2_office'
+  'win11_24h2'
+  'win11_24h2_office'
 ])
 @sys.description('AVD OS image SKU. (Default: win11_23h2)')
 param avdOsImage string = 'win11_23h2'
