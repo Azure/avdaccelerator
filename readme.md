@@ -66,9 +66,11 @@ The brownfield section contains templates to deploy additional features for Azur
 - Windows 10 22H2 (Gen 2)
 - Windows 11 22H2 (Gen 2)
 - Windows 11 23H2 (Gen 2)
+- Windows 11 24H2 (Gen 2)
 - Windows 10 22H2 with O365 (Gen 2)
 - Windows 11 22H2 with O365 (Gen 2)
 - Windows 11 23H2 with O365 (Gen 2)
+- Windows 11 24H2 with O365 (Gen 2)
 
 You can also select to enable the Trusted Launch or Confidential VM security type feature on the Azure Compute Gallery image definition.
 
