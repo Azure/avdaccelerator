@@ -452,7 +452,7 @@ try {
                 )
 
                 foreach ($File in $Files) {
-                        #Add-MpPreference -ExclusionPath $File
+                        Add-MpPreference -ExclusionPath $File
                 }
                 Write-Log -Message 'Enabled Defender exlusions for FSLogix paths' -Type 'INFO'
 
@@ -463,7 +463,7 @@ try {
                 )
 
                 foreach ($Process in $Processes) {
-                        #Add-MpPreference -ExclusionProcess $Process
+                        Add-MpPreference -ExclusionProcess $Process
                 }
                 Write-Log -Message 'Enabled Defender exlusions for FSLogix processes' -Type 'INFO'
         }
