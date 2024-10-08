@@ -317,7 +317,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
       systemAssigned: true
   }: null
     encryptionAtHost: diskZeroTrust
-    virtualMachineScaleSetResourceId: virtualMachineScaleSetResourceId
+    virtualMachineScaleSetResourceId: !empty(virtualMachineScaleSetResourceId) ? virtualMachineScaleSetResourceId : ''
     osType: 'Windows'
     licenseType: 'Windows_Client'
     vmSize: vmSize

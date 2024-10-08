@@ -207,6 +207,9 @@ param availabilityZonesCompute bool = true
 @sys.description('When true, Zone Redundant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)')
 param zoneRedundantStorage bool = false
 
+@sys.description('Deploys a VMSS Flex group and associates session hosts with it for availability purposes. (Default: true)')
+param deployVmssFlex bool = true
+
 @sys.description('Sets the number of fault domains for the availability set. (Default: 2)')
 param vmssFlatformFaultDomainCount int = 2
 
@@ -1441,7 +1444,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
 }
 
 // VMSS Flex
-module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' =  if (avdDeploySessionHosts) {
+module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' =  if (avdDeploySessionHosts && deployVmssFlex) {
   name: 'AVD-VMSS-Flex-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${varComputeObjectsRgName}')
   params: {
@@ -1473,6 +1476,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
       createIntuneEnrollment: createIntuneEnrollment
       maxVmssFlexMembersCount: varMaxVmssFlexMembersCount
       vmssFlexNamePrefix: varVmssFlexNamePrefix
+      useVmssFlex: deployVmssFlex
       batchId: i - 1
       computeObjectsRgName: varComputeObjectsRgName
       count: i == varSessionHostBatchCount && varMaxSessionHostsDivisionRemainderValue > 0

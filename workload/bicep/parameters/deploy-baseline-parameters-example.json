@@ -208,6 +208,9 @@
         },
         "deployGpuPolicies": {
             "value": false
+        },
+        "deployVmssFlex": {
+            "value": true
         }
     }
 }

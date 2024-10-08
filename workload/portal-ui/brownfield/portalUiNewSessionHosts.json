@@ -320,6 +320,7 @@
                                     "label": "Select VMSS Flex",
                                     "visible": true,
                                     "resourceType": "Microsoft.Compute/virtualMachineScaleSets",
+                                    "toolTip": "Deploy and associate session hosts with a Virtual Machine Scale Set (VMSS) with Flex orchestration to distribute session hosts across fault domains.",
                                     "constraints": {
                                         "required": false
                                     },
