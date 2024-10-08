@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "14713858361202530562"
+      "templateHash": "2465926344295153346"
     }
   },
   "parameters": {
@@ -1611,9 +1611,7 @@
           "encryptionAtHost": {
             "value": "[parameters('diskZeroTrust')]"
           },
-          "virtualMachineScaleSetResourceId": {
-            "value": "[parameters('virtualMachineScaleSetResourceId')]"
-          },
+          "virtualMachineScaleSetResourceId": "[if(not(empty(parameters('virtualMachineScaleSetResourceId'))), createObject('value', parameters('virtualMachineScaleSetResourceId')), createObject('value', ''))]",
           "osType": {
             "value": "Windows"
           },
