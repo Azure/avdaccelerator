@@ -111,22 +111,18 @@ var varExistingAvdVnetName = !createVnet ? split(existingAvdSubnetResourceId, '/
 var varExistingAvdVnetResourceId = !createVnet
   ? '/subscriptions/${varExistingAvdVnetSubId}/resourceGroups/${varExistingAvdVnetSubRgName}/providers/Microsoft.Network/virtualNetworks/${varExistingAvdVnetName}'
   : ''
-var varVnetDiagnosticSettings = (environment().name == 'AzureCloud')
-  ? [
-      {
-        workspaceResourceId: alaWorkspaceResourceId
-      }
-    ]
-  : [
-      {
-        workspaceResourceId: alaWorkspaceResourceId
-        logCategoriesAndGroups: [
-          {
-            enabled: false
-          }
-        ] 
-      }
+var varVnetDiagnosticSettings = (!empty(alaWorkspaceResourceId) && (environment().name == 'AzureCloud'))
+? [
+    {
+      workspaceResourceId: alaWorkspaceResourceId
+    }
   ]
+: (!empty(alaWorkspaceResourceId) && (environment().name != 'AzureCloud')) ? [
+  {
+    workspaceResourceId: alaWorkspaceResourceId
+    logCategoriesAndGroups: [] 
+  }
+]: []
 var varDiagnosticSettings = !empty(alaWorkspaceResourceId)
   ? [
       {
