@@ -220,10 +220,10 @@
             "value": false
         },
         "storageFilePrivateEndpointStaticIp": {
-            "value": "10.178.8.136"
+            "value": ""
         },
         "storageFilePrivateEndpointStaticIpRemote": {
-            "value": "10.178.8.140"
+            "value": ""
         },
         "vnetResourceGroupName": {
             "value": ""
