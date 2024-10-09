@@ -127,7 +127,7 @@ param tags object
 @sys.description('Log analytics workspace for diagnostic logs.')
 param alaWorkspaceResourceId string
 
-@sys.description('Deploy AVD monitoring resources and setings. (Default: true)')
+@sys.description('Deploy AVD monitoring resources and setings.')
 param deployMonitoring bool
 
 @sys.description('Do not modify, used to set unique value for resource deployment.')
@@ -135,6 +135,9 @@ param time string = utcNow()
 
 @sys.description('Data collection rule ID.')
 param dataCollectionRuleId string
+
+@sys.description('Deploys anti malware extension on session hosts.')
+param deployAntiMalwareExt bool
 
 // =========== //
 // Variable declaration //
@@ -243,7 +246,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
 }]
 
 // Add antimalware extension to session host.
-module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): {
+module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployAntiMalwareExt) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-Antimal-${batchId}-${i - 1}-${time}'
     params: {
