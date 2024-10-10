@@ -43,6 +43,7 @@
   - **VM count** - Select the number of session hosts to deploy.
   - **OS disk type** - Select the OS Disk SKU type. Premium is recommended for performance and higher SLA.
   - **Zero trust disk configuration** - Check the box to enable the zero trust configuration on the session host disks to ensure all the disks are encrypted, the OS and data disks are protected with double encryption with a customer managed key, and network access is disabled.
+  - **Enable Antimalware extension** -  Enables Azure VM antimalware extension on session hosts
   - **Enable accelerated networking** - Check the box to ensure the network traffic on the session hosts is offloaded to the network interface to enhance performance. This feature is free and available as long a supported VM SKU and [OS](https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-overview?tabs=redhat#supported-operating-systems) is chosen. To check whether a VM size supports Accelerated Networking, see [Sizes for virtual machines in Azure](https://learn.microsoft.com/en-us/azure/virtual-machines/sizes). This feature is recommended as it will decrease CPU utilization for networking (offloading to NIC) and increase network performance/throughput to Azure VMs and Services, like Azure Files.
   - **OS image source** - Select a marketplace image or an image from Azure Compute Gallery (Custom image build deployment will create images in compute gallery).
   - **OS version or image** - Choose the OS version or desired image from the Azure compute gallery.

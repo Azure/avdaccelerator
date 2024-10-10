@@ -483,6 +483,9 @@ param enableTelemetry bool = true
 @sys.description('Enable purge protection for the keyvaults. (Default: true)')
 param enableKvPurgeProtection bool = true
 
+@sys.description('Deploys anti malware extension on session hosts. (Default: true)')
+param deployAntiMalwareExt bool = true
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -1522,6 +1525,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
             : alaExistingWorkspaceResourceId)
         : ''
       dataCollectionRuleId: avdDeployMonitoring ? monitoringDiagnosticSettings.outputs.dataCollectionRuleId : ''
+      deployAntiMalwareExt: deployAntiMalwareExt
     }
     dependsOn: [
       fslogixAzureFilesStorage

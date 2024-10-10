@@ -206,6 +206,9 @@ param ownerTag string = 'workload-owner@Contoso.com'
 @sys.description('Data collection rule ID.')
 param dataCollectionRuleId string
 
+@sys.description('Deploys anti malware extension on session hosts. (Default: true)')
+param deployAntiMalwareExt bool = true
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -382,7 +385,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
 }]
 
 // Add antimalware extension to session host.
-module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): {
+module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployAntiMalwareExt) {
   scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
   name: 'SH-Antimal-${i - 1}-${time}'
   params: {

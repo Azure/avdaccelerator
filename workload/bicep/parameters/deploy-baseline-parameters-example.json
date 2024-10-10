@@ -211,6 +211,9 @@
         },
         "deployVmssFlex": {
             "value": true
+        },
+        "deployAntiMalwareExt": {
+            "value": true
         }
     }
 }

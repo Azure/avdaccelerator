@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "14398112227498582260"
+      "templateHash": "5937057250547040463"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -935,6 +935,13 @@
       "defaultValue": true,
       "metadata": {
         "description": "Enable purge protection for the keyvaults. (Default: true)"
+      }
+    },
+    "deployAntiMalwareExt": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Deploys anti malware extension on session hosts. (Default: true)"
       }
     }
   },
@@ -30390,7 +30397,10 @@
             "value": "[parameters('avdDeployMonitoring')]"
           },
           "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]",
-          "dataCollectionRuleId": "[if(parameters('avdDeployMonitoring'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.dataCollectionRuleId.value), createObject('value', ''))]"
+          "dataCollectionRuleId": "[if(parameters('avdDeployMonitoring'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.dataCollectionRuleId.value), createObject('value', ''))]",
+          "deployAntiMalwareExt": {
+            "value": "[parameters('deployAntiMalwareExt')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
@@ -30399,7 +30409,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "17246082322388360155"
+              "templateHash": "16948281966398873853"
             }
           },
           "parameters": {
@@ -30653,7 +30663,7 @@
             "deployMonitoring": {
               "type": "bool",
               "metadata": {
-                "description": "Deploy AVD monitoring resources and setings. (Default: true)"
+                "description": "Deploy AVD monitoring resources and setings."
               }
             },
             "time": {
@@ -30667,6 +30677,12 @@
               "type": "string",
               "metadata": {
                 "description": "Data collection rule ID."
+              }
+            },
+            "deployAntiMalwareExt": {
+              "type": "bool",
+              "metadata": {
+                "description": "Deploys anti malware extension on session hosts."
               }
             }
           },
@@ -34411,6 +34427,7 @@
                 "name": "sessionHostsAntimalwareExtension",
                 "count": "[length(range(1, parameters('count')))]"
               },
+              "condition": "[parameters('deployAntiMalwareExt')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('SH-Antimal-{0}-{1}-{2}', parameters('batchId'), sub(range(1, parameters('count'))[copyIndex()], 1), parameters('time'))]",

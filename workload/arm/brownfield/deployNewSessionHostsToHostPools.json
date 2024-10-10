@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "2465926344295153346"
+      "templateHash": "7861484256086051414"
     }
   },
   "parameters": {
@@ -412,6 +412,13 @@
       "type": "string",
       "metadata": {
         "description": "Data collection rule ID."
+      }
+    },
+    "deployAntiMalwareExt": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Deploys anti malware extension on session hosts. (Default: true)"
       }
     }
   },
@@ -5307,6 +5314,7 @@
         "name": "sessionHostsAntimalwareExtension",
         "count": "[length(range(1, parameters('count')))]"
       },
+      "condition": "[parameters('deployAntiMalwareExt')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('SH-Antimal-{0}-{1}', sub(range(1, parameters('count'))[copyIndex()], 1), parameters('time'))]",

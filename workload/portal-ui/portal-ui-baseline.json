@@ -874,6 +874,14 @@
                                     "label": "Enable vTPM",
                                     "defaultValue": true,
                                     "toolTip": "Virtual Trusted Platform Module (vTPM) is TPM2.0 compliant and validates your VM boot integrity apart from securely storing keys and secrets."
+                                },
+                                {
+                                    "name": "enableAntiMalwareExt",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "visible": true,
+                                    "label": "Enable Antimalware extension",
+                                    "defaultValue": true,
+                                    "toolTip": "Enables Azure VM antimalware extension on session hosts."
                                 }
                             ]
                         }
@@ -2401,6 +2409,7 @@
                 "securityType": "[if(and(or(contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11'), contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'g2')), empty(steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage)), steps('sessionHosts').sessionHostsSecuritySection.securityType, 'Standard')]",
                 "secureBootEnabled": "[if(and(or(contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11'), contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'g2')), empty(steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage)), steps('sessionHosts').sessionHostsSecuritySection.secureBootEnabled, false)]",
                 "vTpmEnabled": "[if(and(or(contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11'), contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'g2')), empty(steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage)), steps('sessionHosts').sessionHostsSecuritySection.vTpmEnabled, false)]",
+                "deployAntiMalwareExt": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSecuritySection.enableAntiMalwareExt, true)]",
                 "avdImageTemplateDefinitionId": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage.id, 'no')]",
                 "avdSessionHostDiskType": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskType]",
                 "enableAcceleratedNetworking": "[steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking]",

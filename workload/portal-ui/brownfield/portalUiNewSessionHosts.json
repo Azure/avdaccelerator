@@ -614,6 +614,14 @@
                                     "label": "Enable vTPM",
                                     "defaultValue": true,
                                     "toolTip": "Virtual Trusted Platform Module (vTPM) is TPM2.0 compliant and validates your VM boot integrity apart from securely storing keys and secrets."
+                                },
+                                {
+                                    "name": "enableAntiMalwareExt",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "visible": true,
+                                    "label": "Enable Antimalware extension",
+                                    "defaultValue": true,
+                                    "toolTip": "Enables Azure VM antimalware extension on session hosts."
                                 }
                             ]
                         }
@@ -1166,6 +1174,7 @@
                 "securityType": "[steps('sessionHosts').sessionHostsSecuritySection.securityType]",
                 "secureBootEnabled": "[steps('sessionHosts').sessionHostsSecuritySection.secureBootEnabled]",
                 "vTpmEnabled": "[steps('sessionHosts').sessionHostsSecuritySection.vTpmEnabled]",
+                "deployAntiMalwareExt": "[steps('sessionHosts').sessionHostsSecuritySection.enableAntiMalwareExt]",
                 "configureFslogix": "[steps('storage').fslogixConfiguration]",
                 "fslogixStorageAccountName": "[if(steps('storage').fslogixConfiguration, steps('storage').storageFslogix.fslogixStorageAccountSelector.id, '')]",
                 "fslogixFileShareName": "[if(steps('storage').fslogixConfiguration, steps('storage').storageFslogix.fslogixStorageAccountFileShare, '')]",
