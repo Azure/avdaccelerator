@@ -1174,7 +1174,7 @@
                 "securityType": "[steps('sessionHosts').sessionHostsSecuritySection.securityType]",
                 "secureBootEnabled": "[steps('sessionHosts').sessionHostsSecuritySection.secureBootEnabled]",
                 "vTpmEnabled": "[steps('sessionHosts').sessionHostsSecuritySection.vTpmEnabled]",
-                "deployAntiMalwareExt": "[steps('sessionHosts').sessionHostsSecuritySection.vTpmEnabled]",
+                "deployAntiMalwareExt": "[steps('sessionHosts').sessionHostsSecuritySection.enableAntiMalwareExt]",
                 "configureFslogix": "[steps('storage').fslogixConfiguration]",
                 "fslogixStorageAccountName": "[if(steps('storage').fslogixConfiguration, steps('storage').storageFslogix.fslogixStorageAccountSelector.id, '')]",
                 "fslogixFileShareName": "[if(steps('storage').fslogixConfiguration, steps('storage').storageFslogix.fslogixStorageAccountFileShare, '')]",
