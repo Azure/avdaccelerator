@@ -25,35 +25,25 @@ The easiest method is to configure the deployment via the provided blue buttons 
 ### PowerShell
 
 ```powershell
-New-AzDeployment `
-    -Location '<Azure location>' `
-    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployAppAttachToolsVM.json' `
-    -adminUsername '<Local Admin User Name>' `
-    -adminPassUseKv false `
-    -adminPassword '<Password for Local Admin Account>' `
-    -publicIPAllowed '<true or false (Determines if NIC will have a Public IP Address)>' `
-    -OSoffer 'WindowsDesktop' `
-    -SubnetName '<Name of Subnet where VM will be attached.>' `
-    -vmDiskType '<Standard_LRS, StandardSSD_LRS or Premium_LRS>' `
-    -vmName '<Name for VM>' `
-    -VNet '<Object value surrounded by {} with comma seperated key pairs for desired VNet name, id, location and subscriptionName>' `
-    -Verbose
-```
+$Vnet = @{
+    "name"             = '<Virtual NetworkName>'
+    "id"               = '<Virtual Network Id>'
+    "location"         = '<Azure location>'
+    "subscriptionName" = '<Subscription Name>'
+}
 
-### Azure CLI
-
-```azurecli
-az deployment sub create \
-    --location '<Azure location>' \
-    --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployAppAttachToolsVM.json' \
-    --parameters \
-    -adminUsername '<Local Admin User Name>' \
-    -adminPassUseKv false \
-    -adminPassword '<Password for Local Admin Account>' \
-    -publicIPAllowed '<true or false (Determines if NIC will have a Public IP Address)>' \
-    -OSoffer 'WindowsDesktop' \
-    -SubnetName '<Name of Subnet where VM will be attached.>' \
-    -vmDiskType '<Standard_LRS, StandardSSD_LRS or Premium_LRS>' \
-    -vmName '<Name for VM>' \
-    -VNet '<Object value surrounded by {} with comma seperated key pairs for desired VNet name, id, location and subscriptionName>'
+$TemplateParameterObject = @{
+    "Location"        = '<Azure location>'
+    "adminUsername"   = '<Local Admin User Name>'
+    "adminPassUseKv"  = $false
+    "adminPassword"   = <Clear Text Password>
+    "publicIPAllowed" = '<$true or $false (Determines if NIC will have a Public IP Address)>'
+    "OSoffer"         = 'Windows-11'
+    "OSVersion"       = 'win11-23h2-ent'
+    "SubnetName"      = '<Name of Subnet where VM will be attached.>'
+    "vmDiskType"      = '<Standard_LRS, StandardSSD_LRS or Premium_LRS>'
+    "vmName"          = '<Name for VM>'
+    "VNet"            = $VNet
+}
+New-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateUri 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployAppAttachToolsVM.json' -TemplateParameterObject $TemplateParameterObject -Verbose
 ```
