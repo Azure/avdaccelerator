@@ -180,6 +180,14 @@ var varStaticRoutes = (varAzureCloudName == 'AzureCloud')
         }
       }
       {
+        name: 'AVDTurnRelayTraffic'
+        properties: {
+          addressPrefix: '51.5.0.0/16'
+          hasBgpOverride: true
+          nextHopType: 'Internet'
+        }
+      }
+      {
         name: 'DirectRouteToKMS'
         properties: {
           addressPrefix: '20.118.99.224/32'
