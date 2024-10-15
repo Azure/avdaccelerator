@@ -448,7 +448,7 @@ module networksecurityGroupAvd '../../../../avm/1.0.0/res/network/network-securi
       {
         name: 'RDPShortpathTurnRelay'
         properties: {
-          priority: 160
+          priority: 170
           access: 'Allow'
           description: 'Session host traffic to RDP shortpath STUN/TURN'
           destinationAddressPrefix: '51.5.0.0/16'

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "3213635122528305311"
+      "templateHash": "3654889178215051503"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -4140,7 +4140,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "15440910059522564320"
+              "templateHash": "2086672113665702648"
             },
             "name": "AVD LZA networking",
             "description": "This module deploys vNet, NSG, ASG, UDR, private DNs zones",
@@ -4518,7 +4518,7 @@
                       {
                         "name": "RDPShortpathTurnRelay",
                         "properties": {
-                          "priority": 160,
+                          "priority": 170,
                           "access": "Allow",
                           "description": "Session host traffic to RDP shortpath STUN/TURN",
                           "destinationAddressPrefix": "51.5.0.0/16",
