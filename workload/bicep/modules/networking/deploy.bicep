@@ -111,6 +111,18 @@ var varExistingAvdVnetName = !createVnet ? split(existingAvdSubnetResourceId, '/
 var varExistingAvdVnetResourceId = !createVnet
   ? '/subscriptions/${varExistingAvdVnetSubId}/resourceGroups/${varExistingAvdVnetSubRgName}/providers/Microsoft.Network/virtualNetworks/${varExistingAvdVnetName}'
   : ''
+var varVnetDiagnosticSettings = (!empty(alaWorkspaceResourceId) && (environment().name == 'AzureCloud'))
+? [
+    {
+      workspaceResourceId: alaWorkspaceResourceId
+    }
+  ]
+: (!empty(alaWorkspaceResourceId) && (environment().name != 'AzureCloud')) ? [
+  {
+    workspaceResourceId: alaWorkspaceResourceId
+    logCategoriesAndGroups: [] 
+  }
+]: []
 var varDiagnosticSettings = !empty(alaWorkspaceResourceId)
   ? [
       {
@@ -543,7 +555,7 @@ module virtualNetwork '../../../../avm/1.0.0/res/network/virtual-network/main.bi
         ]
     ddosProtectionPlanResourceId: deployDDoSNetworkProtection ? ddosProtectionPlan.outputs.resourceId : ''
     tags: tags
-    diagnosticSettings: varDiagnosticSettings
+    diagnosticSettings: varVnetDiagnosticSettings
   }
   dependsOn: createVnet
     ? [
