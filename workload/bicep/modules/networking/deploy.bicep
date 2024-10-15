@@ -172,7 +172,7 @@ var varStaticRoutes = (varAzureCloudName == 'AzureCloud')
         }
       }
       {
-        name: 'AVDStunTurnTraffic'
+        name: 'AVDStunInfraTurnRelayTraffic'
         properties: {
           addressPrefix: '20.202.0.0/16'
           hasBgpOverride: true
@@ -427,6 +427,34 @@ module networksecurityGroupAvd '../../../../avm/1.0.0/res/network/network-securi
           direction: 'Inbound'
           sourcePortRange: '*'
           destinationPortRange: '3390'
+          protocol: 'Udp'
+          sourceAddressPrefix: 'VirtualNetwork'
+        }
+      }
+      {
+        name: 'RDPShortpathTurnStun'
+        properties: {
+          priority: 160
+          access: 'Allow'
+          description: 'Session host traffic to RDP shortpath STUN/TURN'
+          destinationAddressPrefix: '20.202.0.0/16'
+          direction: 'Outbound'
+          sourcePortRange: '*'
+          destinationPortRange: '3478'
+          protocol: 'Udp'
+          sourceAddressPrefix: 'VirtualNetwork'
+        }
+      }
+      {
+        name: 'RDPShortpathTurnRelay'
+        properties: {
+          priority: 160
+          access: 'Allow'
+          description: 'Session host traffic to RDP shortpath STUN/TURN'
+          destinationAddressPrefix: '51.5.0.0/16'
+          direction: 'Outbound'
+          sourcePortRange: '*'
+          destinationPortRange: '3478'
           protocol: 'Udp'
           sourceAddressPrefix: 'VirtualNetwork'
         }

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "4945536759736560983"
+      "templateHash": "3213635122528305311"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -4140,7 +4140,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "13514992166737922932"
+              "templateHash": "15440910059522564320"
             },
             "name": "AVD LZA networking",
             "description": "This module deploys vNet, NSG, ASG, UDR, private DNs zones",
@@ -4347,7 +4347,7 @@
             "varVnetDiagnosticSettings": "[if(and(not(empty(parameters('alaWorkspaceResourceId'))), equals(environment().name, 'AzureCloud')), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'))), if(and(not(empty(parameters('alaWorkspaceResourceId'))), not(equals(environment().name, 'AzureCloud'))), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'), 'logCategoriesAndGroups', createArray())), createArray()))]",
             "varDiagnosticSettings": "[if(not(empty(parameters('alaWorkspaceResourceId'))), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'))), createArray())]",
             "varWindowsActivationKMSPrefixesNsg": "[if(equals(variables('varAzureCloudName'), 'AzureCloud'), createArray('20.118.99.224', '40.83.235.53', '23.102.135.246'), if(equals(variables('varAzureCloudName'), 'AzureUSGovernment'), createArray('23.97.0.13', '52.126.105.2'), if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), createArray('159.27.28.100', '163.228.64.161', '42.159.7.249'), createArray())))]",
-            "varStaticRoutes": "[if(equals(variables('varAzureCloudName'), 'AzureCloud'), createArray(createObject('name', 'AVDServiceTraffic', 'properties', createObject('addressPrefix', 'WindowsVirtualDesktop', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'AVDStunTurnTraffic', 'properties', createObject('addressPrefix', '20.202.0.0/16', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'AVDTurnRelayTraffic', 'properties', createObject('addressPrefix', '51.5.0.0/16', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS', 'properties', createObject('addressPrefix', '20.118.99.224/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS01', 'properties', createObject('addressPrefix', '40.83.235.53/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS02', 'properties', createObject('addressPrefix', '23.102.135.246/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet'))), if(equals(variables('varAzureCloudName'), 'AzureUSGovernment'), createArray(createObject('name', 'AVDServiceTraffic', 'properties', createObject('addressPrefix', 'WindowsVirtualDesktop', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'AVDStunTurnTraffic', 'properties', createObject('addressPrefix', '20.202.0.0/16', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS', 'properties', createObject('addressPrefix', '23.97.0.13/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS01', 'properties', createObject('addressPrefix', '52.126.105.2/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet'))), if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), createArray(createObject('name', 'AVDServiceTraffic', 'properties', createObject('addressPrefix', 'WindowsVirtualDesktop', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'AVDStunTurnTraffic', 'properties', createObject('addressPrefix', '20.202.0.0/16', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS', 'properties', createObject('addressPrefix', '159.27.28.100/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS01', 'properties', createObject('addressPrefix', '163.228.64.161/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS02', 'properties', createObject('addressPrefix', '42.159.7.249/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet'))), createArray())))]",
+            "varStaticRoutes": "[if(equals(variables('varAzureCloudName'), 'AzureCloud'), createArray(createObject('name', 'AVDServiceTraffic', 'properties', createObject('addressPrefix', 'WindowsVirtualDesktop', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'AVDStunInfraTurnRelayTraffic', 'properties', createObject('addressPrefix', '20.202.0.0/16', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'AVDTurnRelayTraffic', 'properties', createObject('addressPrefix', '51.5.0.0/16', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS', 'properties', createObject('addressPrefix', '20.118.99.224/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS01', 'properties', createObject('addressPrefix', '40.83.235.53/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS02', 'properties', createObject('addressPrefix', '23.102.135.246/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet'))), if(equals(variables('varAzureCloudName'), 'AzureUSGovernment'), createArray(createObject('name', 'AVDServiceTraffic', 'properties', createObject('addressPrefix', 'WindowsVirtualDesktop', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'AVDStunTurnTraffic', 'properties', createObject('addressPrefix', '20.202.0.0/16', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS', 'properties', createObject('addressPrefix', '23.97.0.13/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS01', 'properties', createObject('addressPrefix', '52.126.105.2/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet'))), if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), createArray(createObject('name', 'AVDServiceTraffic', 'properties', createObject('addressPrefix', 'WindowsVirtualDesktop', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'AVDStunTurnTraffic', 'properties', createObject('addressPrefix', '20.202.0.0/16', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS', 'properties', createObject('addressPrefix', '159.27.28.100/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS01', 'properties', createObject('addressPrefix', '163.228.64.161/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS02', 'properties', createObject('addressPrefix', '42.159.7.249/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet'))), createArray())))]",
             "privateDnsZoneNames": {
               "AutomationAgentService": "[format('privatelink.agentsvc.azure-automation.{0}', variables('privateDnsZoneSuffixes_AzureAutomation')[environment().name])]",
               "Automation": "[format('privatelink.azure-automation.{0}', variables('privateDnsZoneSuffixes_AzureAutomation')[environment().name])]",
@@ -4497,6 +4497,34 @@
                           "direction": "Inbound",
                           "sourcePortRange": "*",
                           "destinationPortRange": "3390",
+                          "protocol": "Udp",
+                          "sourceAddressPrefix": "VirtualNetwork"
+                        }
+                      },
+                      {
+                        "name": "RDPShortpathTurnStun",
+                        "properties": {
+                          "priority": 160,
+                          "access": "Allow",
+                          "description": "Session host traffic to RDP shortpath STUN/TURN",
+                          "destinationAddressPrefix": "20.202.0.0/16",
+                          "direction": "Outbound",
+                          "sourcePortRange": "*",
+                          "destinationPortRange": "3478",
+                          "protocol": "Udp",
+                          "sourceAddressPrefix": "VirtualNetwork"
+                        }
+                      },
+                      {
+                        "name": "RDPShortpathTurnRelay",
+                        "properties": {
+                          "priority": 160,
+                          "access": "Allow",
+                          "description": "Session host traffic to RDP shortpath STUN/TURN",
+                          "destinationAddressPrefix": "51.5.0.0/16",
+                          "direction": "Outbound",
+                          "sourcePortRange": "*",
+                          "destinationPortRange": "3478",
                           "protocol": "Udp",
                           "sourceAddressPrefix": "VirtualNetwork"
                         }
