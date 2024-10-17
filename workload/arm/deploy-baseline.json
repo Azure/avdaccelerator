@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "12801986197009122891"
+      "templateHash": "7531174900982543619"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -2125,7 +2125,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "4236169587998799965"
+              "templateHash": "10746678051697223286"
             },
             "name": "AVD LZA insights monitoring",
             "description": "This module deploys Log analytics workspace, DCR and policies",
@@ -3855,7 +3855,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('DCR-{0}', parameters('time'))]",
+              "name": "[format('Mon-DCR-{0}', parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('monitoringRgName'))]",
               "properties": {
@@ -4031,7 +4031,7 @@
             },
             "dataCollectionRuleId": {
               "type": "string",
-              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('DCR-{0}', parameters('time'))), '2022-09-01').outputs.dataCollectionRulesId.value]"
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('Mon-DCR-{0}', parameters('time'))), '2022-09-01').outputs.dataCollectionRulesId.value]"
             }
           }
         }

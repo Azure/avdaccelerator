@@ -121,7 +121,7 @@ resource existingAlaw 'Microsoft.OperationalInsights/workspaces@2022-10-01' exis
 // data collection rules
 module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
   scope: resourceGroup('${subscriptionId}', '${monitoringRgName}')
-  name: 'DCR-${time}'
+  name: 'Mon-DCR-${time}'
   params: {
     location: deployAlaWorkspace ? alaWorkspace.outputs.location : existingAlaw.location
     name: dataCollectionRulesName
@@ -129,6 +129,8 @@ module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
     tags: tags
   }
   dependsOn: [
+    alaWorkspace
+    existingAlaw
     baselineMonitoringResourceGroup
   ]
 }
