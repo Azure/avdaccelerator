@@ -114,6 +114,7 @@ var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -Storage
 var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
     {
         workspaceResourceId: alaWorkspaceResourceId
+        logCategoriesAndGroups: [] 
     }
 ]: []
 // =========== //
