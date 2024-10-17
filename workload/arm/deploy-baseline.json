@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "7531174900982543619"
+      "templateHash": "8936754153817869684"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -11879,7 +11879,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "7394685528371599287"
+              "templateHash": "14504875806674358738"
             }
           },
           "parameters": {
@@ -12428,7 +12428,7 @@
                 }
               },
               "dependsOn": [
-                "[subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
+                "ztPolicyDefinitions"
               ]
             },
             {
@@ -12592,7 +12592,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Pol-Assign-ServObj{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
+                "ztPolicyAssignmentServiceObjects"
               ]
             },
             {
@@ -12869,7 +12869,8 @@
                 }
               },
               "dependsOn": [
-                "[subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('Policy-Defin-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
+                "ztPolicyDefinitions",
+                "ztPolicyServBojRemediationTask"
               ]
             },
             {
@@ -13033,7 +13034,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('Pol-Assign-Comp-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
+                "ztPolicyAssignmentCompute"
               ]
             },
             {
@@ -13206,7 +13207,8 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('Pol-Assign-Comp-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
+                "ztPolicyAssignmentCompute",
+                "ztPolicyComputeRemediationTask"
               ]
             },
             {
@@ -13379,7 +13381,8 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Pol-Assign-ServObj{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
+                "ztPolicyAssignmentServiceObjects",
+                "ztPolicyServBojRemediationTask"
               ]
             },
             {
