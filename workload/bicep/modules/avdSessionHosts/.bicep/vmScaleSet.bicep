@@ -16,7 +16,7 @@ param namePrefix string
 @sys.description('Platform Fault Domain count.')
 param platformFaultDomainCount int
 
-@sys.description('Availablity Set count.')
+@sys.description('VMSS Flex count.')
 param count int
 
 @sys.description('Use availability zones.')

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "8936754153817869684"
+      "templateHash": "8514367717295350076"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -30229,7 +30229,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "10966017454446351575"
+              "templateHash": "3813426440693373404"
             },
             "name": "AVD Accelerator - VMSS Flex",
             "description": "Deploys a VMSS Flex without VM profile",
@@ -30257,7 +30257,7 @@
             "count": {
               "type": "int",
               "metadata": {
-                "description": "Availablity Set count."
+                "description": "VMSS Flex count."
               }
             },
             "useAvailabilityZones": {
