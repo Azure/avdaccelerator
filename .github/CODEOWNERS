@@ -7,3 +7,5 @@
 
 .github/CODEOWNERS @Azure/avd-accelerator-admins
 .github/** @Azure/avd-accelerator-admins
+
+workload/** @Azure/avd-accelerator-admins
