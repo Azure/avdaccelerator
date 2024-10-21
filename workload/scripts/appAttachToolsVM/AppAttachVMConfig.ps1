@@ -1,5 +1,5 @@
 # Purpose: 
-# Configure VM for App Attach package creation. Installs PsfTooling and MSIX App Attach Windows Store based applications and sets recommended registry settings.
+# Configure VM for App Attach package creation. Installs MSIX App Attach Windows Store based application, MSIX Tools Driver, and sets recommended registry settings.
 
 <#
 Updates:
