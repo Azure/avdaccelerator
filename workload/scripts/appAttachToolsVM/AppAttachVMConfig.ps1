@@ -196,17 +196,17 @@ $DestinationPath = "C:\Users\Public\Desktop"
 $AppAttach = "$DestinationPath\MSIX App Attach.lnk"
 $AppAttachExe = "C:\Program Files\WindowsApps\$AppAttachInstallFolder\MsixPackageTool.exe"
 # $PSFToolExe = "C:\Program Files\WindowsApps\$PsfToolInstallFolder\PsfTooling.exe"
-$PSFTool = "$DestinationPath\PSFTool.lnk"
+# $PSFTool = "$DestinationPath\PSFTool.lnk"
 $MSIXfldr = "$DestinationPath\MSIX Folder.lnk"
 $MSIXfldrLoc = "C:\MSIX\"
 $WshShell = New-Object -comObject WScript.Shell
 $Shortcut = $WshShell.CreateShortcut($AppAttach)
 $Shortcut.TargetPath = $AppAttachExe
 $Shortcut.Save()
-$WshShell = New-Object -comObject WScript.Shell
-$Shortcut = $WshShell.CreateShortcut($PSFTool)
-$Shortcut.TargetPath = $PSFToolExe
-$Shortcut.Save()
+# $WshShell = New-Object -comObject WScript.Shell
+# $Shortcut = $WshShell.CreateShortcut($PSFTool)
+# $Shortcut.TargetPath = $PSFToolExe
+# $Shortcut.Save()
 $WshShell = New-Object -comObject WScript.Shell
 $Shortcut = $WshShell.CreateShortcut($MSIXfldr)
 $Shortcut.TargetPath = $MSIXfldrLoc
