@@ -942,7 +942,7 @@ var varPooledScalingPlanSchedules = [
         }
         peakLoadBalancingAlgorithm: 'DepthFirst'
         peakStartTime: {
-            hour: 10
+            hour: 4
             minute: 0
         }
         rampDownCapacityThresholdPct: 90
@@ -956,11 +956,11 @@ var varPooledScalingPlanSchedules = [
         }
         rampDownStopHostsWhen: 'ZeroActiveSessions'
         rampDownWaitTimeMinutes: 30
-        rampUpCapacityThresholdPct: 90
+        rampUpCapacityThresholdPct: 80
         rampUpLoadBalancingAlgorithm: 'DepthFirst'
-        rampUpMinimumHostsPct: 0
+        rampUpMinimumHostsPct: 20
         rampUpStartTime: {
-            hour: 9
+            hour: 3
             minute: 0
         }
     }
