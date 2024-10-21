@@ -1,0 +1,47 @@
+{
+    "centralus": {
+        "acronym": "usc",
+        "timeDifference": "-6:00",
+        "timeZone": "Central Standard Time"
+    },
+    "eastus": {
+        "acronym": "use",
+        "timeDifference": "-5:00",
+        "timeZone": "Eastern Standard Time"
+    },
+    "eastus2": {
+        "acronym": "use2",
+        "timeDifference": "-5:00",
+        "timeZone": "Eastern Standard Time"
+    },
+    "northcentralus": {
+        "acronym": "usnc",
+        "timeDifference": "-6:00",
+        "timeZone": "Central Standard Time"
+    },
+    "southcentralus": {
+        "acronym": "ussc",
+        "timeDifference": "-6:00",
+        "timeZone": "Central Standard Time"
+    },
+    "westcentralus": {
+        "acronym": "uswc",
+        "timeDifference": "-7:00",
+        "timeZone": "Mountain Standard Time"
+    },
+    "westus": {
+        "acronym": "usw",
+        "timeDifference": "-8:00",
+        "timeZone": "Pacific Standard Time"
+    },
+    "westus2": {
+        "acronym": "usw2",
+        "timeDifference": "-8:00",
+        "timeZone": "Pacific Standard Time"
+    },
+    "westus3": {
+        "acronym": "usw3",
+        "timeDifference": "-7:00",
+        "timeZone": "Mountain Standard Time"
+    }
+}
