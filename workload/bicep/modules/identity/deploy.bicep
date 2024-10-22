@@ -114,18 +114,18 @@ module startVMonConnectRoleAssignCompute '../../../../avm/1.0.0/ptn/authorizatio
   }
 }]
 
-// // Scaling plan role assignments
-// module scalingPlanRoleAssignCompute '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (deployScalingPlan && !empty(avdEnterpriseObjectId)) {
-//   name: 'ScalingPlan-RolAssign-${computeAndServiceObjectsRg.name}-${time}'
-//   scope: resourceGroup('${subscriptionId}', '${computeAndServiceObjectsRg.rgName}')
-//   params: {
-//     roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnOffContributorRole.id}'
-//     principalId: avdEnterpriseObjectId
-//     resourceGroupName: computeAndServiceObjectsRg.rgName
-//     subscriptionId: subscriptionId
-//     principalType: 'ServicePrincipal'
-//   }
-// }]
+// Scaling plan role assignments
+module scalingPlanRoleAssignCompute '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (deployScalingPlan && !empty(avdEnterpriseObjectId)) {
+  name: 'ScalingPlan-RolAssign-${computeAndServiceObjectsRg.name}-${time}'
+  scope: resourceGroup('${subscriptionId}', '${computeAndServiceObjectsRg.rgName}')
+  params: {
+    roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnOffContributorRole.id}'
+    principalId: avdEnterpriseObjectId
+    resourceGroupName: computeAndServiceObjectsRg.rgName
+    subscriptionId: subscriptionId
+    principalType: 'ServicePrincipal'
+  }
+}]
 
 // // Storage role assignments
 // module storageContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for storageRoleAssignment in storageRoleAssignments: if (createStorageDeployment) {
