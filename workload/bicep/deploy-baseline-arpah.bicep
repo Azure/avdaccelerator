@@ -1186,30 +1186,30 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
 //     ]
 // }
 
-// // Identity: managed identities and role assignments
-// module identity './modules/identity/deploy.bicep' = {
-//     name: 'Identities-And-RoleAssign-${time}'
-//     params: {
-//         location: avdSessionHostLocation
-//         subscriptionId: avdWorkloadSubsId
-//         computeObjectsRgName: varComputeObjectsRgName
-//         serviceObjectsRgName: varServiceObjectsRgName
-//         storageObjectsRgName: varStorageObjectsRgName
-//         avdEnterpriseObjectId: !empty(avdEnterpriseAppObjectId) ? avdEnterpriseAppObjectId : ''
-//         deployScalingPlan: varDeployScalingPlan
-//         storageManagedIdentityName: varStorageManagedIdentityName
-//         enableStartVmOnConnect: avdStartVmOnConnect
-//         identityServiceProvider: avdIdentityServiceProvider
-//         createStorageDeployment: varCreateStorageDeployment
-//         securityPrincipalId: !empty(securityPrincipalId) ? securityPrincipalId : ''
-//         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-//     }
-//     dependsOn: [
-//         baselineResourceGroups
-//         baselineStorageResourceGroup
-//         monitoringDiagnosticSettings
-//     ]
-// }
+// Identity: managed identities and role assignments
+module identity './modules/identity/deploy.bicep' = {
+    name: 'Identities-And-RoleAssign-${time}'
+    params: {
+        location: avdSessionHostLocation
+        subscriptionId: avdWorkloadSubsId
+        computeObjectsRgName: varComputeObjectsRgName
+        serviceObjectsRgName: varServiceObjectsRgName
+        storageObjectsRgName: varStorageObjectsRgName
+        avdEnterpriseObjectId: !empty(avdEnterpriseAppObjectId) ? avdEnterpriseAppObjectId : ''
+        deployScalingPlan: varDeployScalingPlan
+        storageManagedIdentityName: varStorageManagedIdentityName
+        enableStartVmOnConnect: avdStartVmOnConnect
+        identityServiceProvider: avdIdentityServiceProvider
+        createStorageDeployment: varCreateStorageDeployment
+        securityPrincipalId: !empty(securityPrincipalId) ? securityPrincipalId : ''
+        tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+    }
+    dependsOn: [
+        baselineResourceGroups
+        baselineStorageResourceGroup
+        monitoringDiagnosticSettings
+    ]
+}
 
 // // Zero trust
 // module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDeploySessionHosts) {
