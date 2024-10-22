@@ -224,9 +224,6 @@
         },
         "storageFilePrivateEndpointStaticIpRemote": {
             "value": ""
-        },
-        "vnetResourceGroupName": {
-            "value": ""
         }
     }
 }
