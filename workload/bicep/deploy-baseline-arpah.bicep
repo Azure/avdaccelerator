@@ -1041,19 +1041,19 @@ module baselineNetworkResourceGroup '../../avm/1.0.0/res/resources/resource-grou
     }
 }
 
-// // Compute, service objects
-// module baselineResourceGroups '../../avm/1.0.0/res/resources/resource-group/main.bicep' = [
-//   for resourceGroup in verResourceGroups: {
-//     scope: subscription(avdWorkloadSubsId)
-//     name: '${resourceGroup.purpose}-${time}'
-//     params: {
-//         name: resourceGroup.name
-//         location: resourceGroup.location
-//         enableTelemetry: resourceGroup.enableDefaultTelemetry
-//         tags: resourceGroup.tags
-//     }
-// }
-// ]
+// Compute, service objects
+module baselineResourceGroups '../../avm/1.0.0/res/resources/resource-group/main.bicep' = [
+  for resourceGroup in verResourceGroups: {
+    scope: subscription(avdWorkloadSubsId)
+    name: '${resourceGroup.purpose}-${time}'
+    params: {
+        name: resourceGroup.name
+        location: resourceGroup.location
+        enableTelemetry: resourceGroup.enableDefaultTelemetry
+        tags: resourceGroup.tags
+    }
+}
+]
 
 // // Storage
 // module baselineStorageResourceGroup '../../avm/1.0.0/res/resources/resource-group/main.bicep' = if (varCreateStorageDeployment) {
