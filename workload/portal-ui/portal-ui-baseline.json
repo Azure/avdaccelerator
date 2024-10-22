@@ -1217,14 +1217,21 @@
                             "name": "deployPrivateEndpointKeyvaultStorage",
                             "type": "Microsoft.Common.CheckBox",
                             "visible": true,
-                            "label": "Private endpoints (Key vault and Storage account)",
+                            "label": "Private endpoints for Key vault and Storage account",
                             "defaultValue": true,
                             "toolTip": "Enables Private Endpoints for Key Vault and Storage Resources. It is recommended to use Azure Private Endpoints to keep all traffic to PaaS services on the Azure backbone."
                         },
                         {
+                            "name": "deployAvdPrivateLinkService",
+                            "type": "Microsoft.Common.CheckBox",
+                            "label": "Private endpoints for AVD (Requires registration of resource provider)",
+                            "defaultValue": false,
+                            "toolTip": "Enables Private Endpoints for AVD Discovery and Connection. It is recommended to use Azure Private Endpoints to keep all traffic to PaaS services on the Azure backbone."
+                        },
+                        {
                             "name": "virtualNetworkPrivateEndpointSubnetSize",
                             "type": "Microsoft.Common.TextBox",
-                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true))]",
+                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), or(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').deployAvdPrivateLinkService, true)))]",
                             "label": "Private endpoint subnet address prefix",
                             "toolTip": "Virtual network subnet CIDR for private endpoints",
                             "placeholder": "Example: 10.10.1.0/27",
@@ -1237,7 +1244,7 @@
                         {
                             "name": "privateEndpointVirtualNetworkSelectorId",
                             "type": "Microsoft.Solutions.ResourceSelector",
-                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true))]",
+                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), or(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').deployAvdPrivateLinkService, true)))]",
                             "label": "Private endpoint virtual network",
                             "resourceType": "Microsoft.Network/virtualNetworks",
                             "constraints": {
@@ -1262,7 +1269,7 @@
                             "name": "virtualNetworkPrivateEndpointSubnetSelectorName",
                             "label": "Private endpoint subnet",
                             "type": "Microsoft.Common.DropDown",
-                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true))]",
+                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), or(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').deployAvdPrivateLinkService, true)))]",
                             "defaultValue": "",
                             "toolTip": "Select the subnet.",
                             "multiselect": false,
@@ -1278,7 +1285,7 @@
                         {
                             "name": "existingVirtualNetworkInfoBoxPrivateEndpointWarning",
                             "type": "Microsoft.Common.InfoBox",
-                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true))]",
+                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), or(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').deployAvdPrivateLinkService, true)))]",
                             "options": {
                                 "text": "Private endpoint network policy will need to be disabled on the existing subnet before deploying Azure Virtual Desktop LZA.",
                                 "uri": "https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy",
@@ -1288,10 +1295,10 @@
                         {
                             "name": "virtualNetworkPrivateDnsZone",
                             "type": "Microsoft.Common.OptionsGroup",
-                            "visible": "[steps('network').deployPrivateEndpointKeyvaultStorage]",
+                            "visible": "[or(steps('network').deployPrivateEndpointKeyvaultStorage, steps('network').deployAvdPrivateLinkService)]",
                             "label": "Azure private DNS zones",
                             "defaultValue": "Use existing",
-                            "toolTip": "It is recommended to use Azure private DNS zones for private endpoint name spaces, private endpoints will be automatically created for PaaS services (Azure Files and Key Vault) if enabled, but the private DNS zones are required for name resolution of private edpoint DNS records.",
+                            "toolTip": "It is recommended to use Azure private DNS zones for private endpoint name spaces, private endpoints will be automatically created for PaaS services (Azure Files and Key Vault) if enabled, but the private DNS zones are required for name resolution of private endpoint DNS records.",
                             "constraints": {
                                 "required": true,
                                 "allowedValues": [
@@ -1309,7 +1316,7 @@
                         {
                             "name": "privateDnsZoneSelectionWarning1",
                             "type": "Microsoft.Common.InfoBox",
-                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false))]",
+                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), or(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').deployAvdPrivateLinkService, true)), equals(steps('network').virtualNetworkPrivateDnsZone, false))]",
                             "options": {
                                 "text": "When using private endpoints, creating a new Azure Virtual Desktop vNet, and providing custom DNS servers, existing Azure private DNS Zones MUST be linked to the vNet where the custom DNS servers are located, this is needed for the end-to-end setup of FSLogix and MSIX App Attach file shares to be successful. The DNS resolution requests will be sent to the custom DNS servers and its vNet is the one that needs to resolve private endpoint DNS records.",
                                 "uri": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns",
@@ -1319,7 +1326,7 @@
                         {
                             "name": "privateDnsZoneSelectionWarning2",
                             "type": "Microsoft.Common.InfoBox",
-                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, true))]",
+                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), or(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').deployAvdPrivateLinkService, true)), equals(steps('network').virtualNetworkPrivateDnsZone, true))]",
                             "options": {
                                 "text": "When using private endpoints and creating a new Azure Virtual Desktop vNet and new private DNS zones, custom DNS servers may NOT be used in the new vNet as this will cause FSLogix and/or MSIX App Attach file shares deployments to fail. This happens because the private DNS zones will be linked to the newly created vNet and only this vNet will be able to resolve the private endpoints DNS records.",
                                 "uri": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns",
@@ -1329,7 +1336,7 @@
                         {
                             "name": "privateDnsZoneSelectionWarning3",
                             "type": "Microsoft.Common.InfoBox",
-                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false))]",
+                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), or(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').deployAvdPrivateLinkService, true)), equals(steps('network').virtualNetworkPrivateDnsZone, false))]",
                             "options": {
                                 "text": "When using private endpoints and an existing Azure Virtual Desktop vNet with custom DNS servers configured, existing private DNS zones MUST be linked to the vNet containing the custom DNS servers for FSLogix and/or MSIX App Attach file shares deployments to be successful, given DNS name resolution requests will go to custom DNS servers and their vNet will need to resolve private endpoints DNS records.",
                                 "uri": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns",
@@ -1347,50 +1354,42 @@
                             }
                         },
                         {
+                            "name": "privateDnsZoneSelectionWarning5",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployAvdPrivateLinkService, true), equals(steps('network').virtualNetworkPrivateDnsZone, true))]",
+                            "options": {
+                                "text": "When using private endpoints, an existing Azure Virtual Desktop vNet, and creating new private DNS zones, custom DNS servers may NOT be used (unless they are connected to the same vNet used for the Azure Virtual Desktop deployment) in order for FSlogix/MSIX App Attach deployment to be successful, given that the private DNS zone will be linked to the existing vNet and this will be the only network able to resolve private endpoint DNS records. <br/> ***Note: selected options (existing vNet and create DNS zones) are only recommended when using Microsoft Entra ID as identity service provider.",
+                                "uri": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns",
+                                "style": "Warning"
+                            }
+                        },
+                        {
                             "name": "virtualNetworkPrivateDnsZoneInfo1",
                             "type": "Microsoft.Common.InfoBox",
-                            "visible": "[and(and(steps('network').virtualNetworkPrivateDnsZone, steps('network').createAvdVirtualNetwork), or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment))]",
+                            "visible": "[and(steps('network').deployPrivateEndpointKeyvaultStorage, steps('network').virtualNetworkPrivateDnsZone)]",
                             "options": {
-                                "text": "The following private DNS zones will be created and linked to the new Azure Virtual Desktop vNet: <br/> Azure Files: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net <br/> - Azure China: privatelink.file.core.chinacloudapi.cn <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net <br/> - Azure China: privatelink.vaultcore.azure.cn",
+                                "text": "The following private DNS zones will be created and linked to the new Azure Virtual Desktop vNet: <br/> Azure Files: <br/> - Azure Commercial: privatelink.file.core.windows.net <br/> - Azure Government: privatelink.file.core.usgovcloudapi.net <br/> - Azure China: privatelink.file.core.chinacloudapi.cn <br/> Key vault: <br/> - Azure Commercial: privatelink.vaultcore.azure.net <br/> - Azure Government: privatelink.vaultcore.usgovcloudapi.net <br/> - Azure China: privatelink.vaultcore.azure.cn",
                                 "style": "info"
                             }
                         },
                         {
                             "name": "virtualNetworkPrivateDnsZoneInfo2",
                             "type": "Microsoft.Common.InfoBox",
-                            "visible": "[and(and(steps('network').virtualNetworkPrivateDnsZone, steps('network').createAvdVirtualNetwork), not(steps('storage').storageFslogix.fslogixDeployment), not(steps('storage').storageMsix.msixDeployment))]",
+                            "visible": "[and(steps('network').deployAvdPrivateLinkService, steps('network').virtualNetworkPrivateDnsZone)]",
                             "options": {
-                                "text": "The following private DNS zones will be created and linked to the new Azure Virtual Desktop vNet: <br/> Azure Files: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net <br/> - Azure China: privatelink.file.core.chinacloudapi.cn <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net <br/> - Azure China: privatelink.vaultcore.azure.cn",
-                                "style": "info"
-                            }
-                        },
-                        {
-                            "name": "virtualNetworkPrivateDnsZoneInfo3",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": "[and(and(steps('network').virtualNetworkPrivateDnsZone, not(steps('network').createAvdVirtualNetwork)), or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment))]",
-                            "options": {
-                                "text": "The following private DNS zones will be created and linked to the new Azure Virtual Desktop vNet: <br/> Azure Files: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net <br/> - Azure China: privatelink.file.core.chinacloudapi.cn <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net <br/> - Azure China: privatelink.vaultcore.azure.cn",
-                                "style": "info"
-                            }
-                        },
-                        {
-                            "name": "virtualNetworkPrivateDnsZoneInfo4",
-                            "type": "Microsoft.Common.InfoBox",
-                            "visible": "[and(and(steps('network').virtualNetworkPrivateDnsZone, not(steps('network').createAvdVirtualNetwork)), not(steps('storage').storageFslogix.fslogixDeployment), not(steps('storage').storageMsix.msixDeployment))]",
-                            "options": {
-                                "text": "The following private DNS zones will be created and linked to the new Azure Virtual Desktop vNet: <br/> Azure Files: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net <br/> - Azure China: privatelink.file.core.chinacloudapi.cn <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net <br/> - Azure China: privatelink.vaultcore.azure.cn",
+                                "text": "The following private DNS zones will be created and linked to the new Azure Virtual Desktop vNet: <br/> AVD Discovery: <br/> - Azure Commercial: privatelink-global.wvd.microsoft.com <br/> - Azure Government: privatelink-global.wvd.azure.us <br/> - Azure China: privatelink-global.wvd.azure.cn <br/> AVD Connection/Feed: <br/> - Azure Commercial: privatelink.wvd.microsoft.com <br/> - Azure Government: privatelink.wvd.azure.us <br/> - Azure China: privatelink.wvd.azure.cn",
                                 "style": "info"
                             }
                         },
                         {
                             "name": "virtualNetworkPrivateDnsZoneSelection",
                             "type": "Microsoft.Common.Section",
-                            "visible": "[and(not(steps('network').virtualNetworkPrivateDnsZone), steps('network').deployPrivateEndpointKeyvaultStorage)]",
+                            "visible": "[and(not(steps('network').virtualNetworkPrivateDnsZone), or(steps('network').deployPrivateEndpointKeyvaultStorage, steps('network').deployAvdPrivateLinkService))]",
                             "elements": [
                                 {
                                     "name": "virtualNetworkPrivateDnsZoneFilesSelector",
                                     "type": "Microsoft.Solutions.ResourceSelector",
-                                    "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageMsix.msixDeployment, true))]",
+                                    "visible": "[and(steps('network').deployPrivateEndpointKeyvaultStorage, not(steps('network').virtualNetworkPrivateDnsZone), or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment, true))]",
                                     "label": "Azure files",
                                     "resourceType": "Microsoft.Network/privateDnsZones",
                                     "constraints": {
@@ -1400,7 +1399,29 @@
                                 {
                                     "name": "virtualNetworkPrivateDnsZoneKeyvaultSelector",
                                     "type": "Microsoft.Solutions.ResourceSelector",
+                                    "visible": "[and(steps('network').deployPrivateEndpointKeyvaultStorage, not(steps('network').virtualNetworkPrivateDnsZone))]",
                                     "label": "Key vault",
+                                    "resourceType": "Microsoft.Network/privateDnsZones",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
+                                {
+                                    "name": "virtualNetworkPrivateDnsZoneAvdDiscoverySelector",
+                                    "type": "Microsoft.Solutions.ResourceSelector",
+                                    "visible": "[and(steps('network').deployAvdPrivateLinkService, not(steps('network').virtualNetworkPrivateDnsZone))]",
+                                    "label": "Azure Virtual Desktop (Discovery)",
+                                    "resourceType": "Microsoft.Network/privateDnsZones",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
+                                {
+                            
+                                    "name": "virtualNetworkPrivateDnsZoneAvdConnectionSelector",
+                                    "type": "Microsoft.Solutions.ResourceSelector",
+                                    "visible": "[and(steps('network').deployAvdPrivateLinkService, not(steps('network').virtualNetworkPrivateDnsZone))]",
+                                    "label": "Azure Virtual Desktop (Connection/Feed)",
                                     "resourceType": "Microsoft.Network/privateDnsZones",
                                     "constraints": {
                                         "required": true
@@ -1409,18 +1430,18 @@
                                 {
                                     "name": "infoAzureDNSzones1",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageMsix.msixDeployment, true))]",
+                                    "visible": "[and(steps('network').deployPrivateEndpointKeyvaultStorage, not(steps('network').virtualNetworkPrivateDnsZone))]",
                                     "options": {
-                                        "text": "Private DNS zone name spaces: <br/> Azure Files: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net <br/> - Azure China: privatelink.file.core.chinacloudapi.cn <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net <br/> - Azure China: privatelink.vaultcore.azure.cn",
+                                        "text": "Private DNS zone name spaces: <br/> Azure Files: <br/> - Azure Commercial: privatelink.file.core.windows.net <br/> - Azure Government: privatelink.file.core.usgovcloudapi.net <br/> - Azure China: privatelink.file.core.chinacloudapi.cn <br/> Key vault: <br/> - Azure Commercial: privatelink.vaultcore.azure.net <br/> - Azure Government: privatelink.vaultcore.usgovcloudapi.net <br/> - Azure China: privatelink.vaultcore.azure.cn",
                                         "style": "info"
                                     }
                                 },
                                 {
                                     "name": "infoAzureDNSzones2",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[and(not(steps('storage').storageFslogix.fslogixDeployment), not(steps('storage').storageMsix.msixDeployment))]",
+                                    "visible": "[and(steps('network').deployAvdPrivateLinkService, not(steps('network').virtualNetworkPrivateDnsZone))]",
                                     "options": {
-                                        "text": "Private DNS zone name spaces: <br/> Azure Files: <br/> - Azure commercial: privatelink.file.core.windows.net <br/> - Azure government: privatelink.file.core.usgovcloudapi.net <br/> - Azure China: privatelink.file.core.chinacloudapi.cn <br/> Key vault: <br/> - Azure commercial: privatelink.vaultcore.azure.net <br/> - Azure government: privatelink.vaultcore.usgovcloudapi.net <br/> - Azure China: privatelink.vaultcore.azure.cn",
+                                        "text": "Private DNS zone name spaces: <br/> AVD Discovery: <br/> - Azure Commercial: privatelink-global.wvd.microsoft.com <br/> - Azure Government: privatelink-global.wvd.azure.us <br/> - Azure China: privatelink-global.wvd.azure.cn <br/> AVD Connection/Feed: <br/> - Azure Commercial: privatelink.wvd.microsoft.com <br/> - Azure Government: privatelink.wvd.azure.us <br/> - Azure China: privatelink.wvd.azure.cn",
                                         "style": "info"
                                     }
                                 }
@@ -2416,9 +2437,12 @@
                 "avdSessionHostsSize": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize, 'Standard_D4ads_v5')]",
                 "deployDDoSNetworkProtection": "[steps('network').deployDDoSNetworkProtection]",
                 "deployPrivateEndpointKeyvaultStorage": "[steps('network').deployPrivateEndpointKeyvaultStorage]",
-                "createPrivateDnsZones": "[if(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), steps('network').virtualNetworkPrivateDnsZone, false)]",
+                "deployAvdPrivateLinkService": "[steps('network').deployAvdPrivateLinkService]",
+                "createPrivateDnsZones": "[steps('network').virtualNetworkPrivateDnsZone]",
                 "avdVnetPrivateDnsZoneFilesId": "[if(and(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneFilesSelector.id, '')]",
                 "avdVnetPrivateDnsZoneKeyvaultId": "[if(and(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneKeyvaultSelector.id, '')]",
+                "avdVnetPrivateDnsZoneDiscoveryResourceId": "[if(and(equals(steps('network').deployAvdPrivateLinkService, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneAvdDiscoverySelector.id, '')]",
+                "avdVnetPrivateDnsZoneConnectionResourceId": "[if(and(equals(steps('network').deployAvdPrivateLinkService, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneAvdConnectionSelector.id, '')]",
                 "createAvdFslogixDeployment": "[steps('storage').storageFslogix.fslogixDeployment]",
                 "fslogixStoragePerformance": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.fslogixStorageAccountSku, 'Premium')]",
                 "fslogixFileShareQuotaSize": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.sessionHostsFslogixFileShareQuota, 1 )]",
