@@ -1069,32 +1069,32 @@ module baselineStorageResourceGroup '../../avm/1.0.0/res/resources/resource-grou
     }
 }
 
-// // Azure Policies for monitoring Diagnostic settings. Performance couunters on new or existing Log Analytics workspace. New workspace if needed.
-// module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bicep' = if (avdDeployMonitoring) {
-//     name: 'Monitoring-${time}'
-//     params: {
-//         location: avdManagementPlaneLocation
-//         deployAlaWorkspace: deployAlaWorkspace
-//         computeObjectsRgName: varComputeObjectsRgName
-//         serviceObjectsRgName: varServiceObjectsRgName
-//         dataCollectionRulesName: varDataCollectionRulesName
-//         storageObjectsRgName: (createAvdFslogixDeployment || createMsixDeployment) ? varStorageObjectsRgName : ''
-//         networkObjectsRgName: (createAvdVnet) ? varNetworkObjectsRgName : ''
-//         monitoringRgName: varMonitoringRgName
-//         deployCustomPolicyMonitoring: deployCustomPolicyMonitoring
-//         alaWorkspaceId: deployAlaWorkspace ? '' : alaExistingWorkspaceResourceId
-//         alaWorkspaceName: deployAlaWorkspace ? varAlaWorkspaceName : ''
-//         alaWorkspaceDataRetention: avdAlaWorkspaceDataRetention
-//         subscriptionId: avdWorkloadSubsId
+// Azure Policies for monitoring Diagnostic settings. Performance couunters on new or existing Log Analytics workspace. New workspace if needed.
+module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bicep' = if (avdDeployMonitoring) {
+    name: 'Monitoring-${time}'
+    params: {
+        location: avdManagementPlaneLocation
+        deployAlaWorkspace: deployAlaWorkspace
+        computeObjectsRgName: varComputeObjectsRgName
+        serviceObjectsRgName: varServiceObjectsRgName
+        dataCollectionRulesName: varDataCollectionRulesName
+        storageObjectsRgName: (createAvdFslogixDeployment || createMsixDeployment) ? varStorageObjectsRgName : ''
+        networkObjectsRgName: (createAvdVnet) ? varNetworkObjectsRgName : ''
+        monitoringRgName: varMonitoringRgName
+        deployCustomPolicyMonitoring: deployCustomPolicyMonitoring
+        alaWorkspaceId: deployAlaWorkspace ? '' : alaExistingWorkspaceResourceId
+        alaWorkspaceName: deployAlaWorkspace ? varAlaWorkspaceName : ''
+        alaWorkspaceDataRetention: avdAlaWorkspaceDataRetention
+        subscriptionId: avdWorkloadSubsId
 
-//         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-//     }
-//     dependsOn: [
-//         baselineNetworkResourceGroup
-//         baselineResourceGroups
-//         baselineStorageResourceGroup
-//     ]
-// }
+        tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+    }
+    dependsOn: [
+        baselineNetworkResourceGroup
+        baselineResourceGroups
+        baselineStorageResourceGroup
+    ]
+}
 
 // // Networking
 // module networking './modules/networking/deploy.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) {
