@@ -1096,51 +1096,51 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
     ]
 }
 
-// // Networking
-// module networking './modules/networking/deploy.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) {
-//     name: 'Networking-${time}'
-//     params: {
-//         createVnet: createAvdVnet
-//         deployAsg: (avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) ? true : false
-//         existingAvdSubnetResourceId: existingVnetAvdSubnetResourceId
-//         createPrivateDnsZones: deployPrivateEndpointKeyvaultStorage ? createPrivateDnsZones : false
-//         applicationSecurityGroupName: varApplicationSecurityGroupName
-//         computeObjectsRgName: varComputeObjectsRgName
-//         networkObjectsRgName: varNetworkObjectsRgName
-//         avdNetworksecurityGroupName: varAvdNetworksecurityGroupName
-//         privateEndpointNetworksecurityGroupName: varPrivateEndpointNetworksecurityGroupName
-//         avdRouteTableName: varAvdRouteTableName
-//         privateEndpointRouteTableName: varPrivateEndpointRouteTableName
-//         vnetAddressPrefixes: avdVnetworkAddressPrefixes
-//         vnetName: varVnetName
-//         vnetPeeringName: varVnetPeeringName
-//         remoteVnetPeeringName: varRemoteVnetPeeringName
-//         vnetAvdSubnetName: varVnetAvdSubnetName
-//         vnetPrivateEndpointSubnetName: varVnetPrivateEndpointSubnetName
-//         createVnetPeering: varCreateVnetPeering
-//         deployDDoSNetworkProtection: deployDDoSNetworkProtection
-//         ddosProtectionPlanName: varDDosProtectionPlanName
-//         deployPrivateEndpointSubnet: (deployPrivateEndpointKeyvaultStorage == true) ? true : false //adding logic that will be used when also including AVD control plane PEs
-//         vNetworkGatewayOnHub: vNetworkGatewayOnHub
-//         existingHubVnetResourceId: existingHubVnetResourceId
-//         sessionHostLocation: avdSessionHostLocation
-//         vnetAvdSubnetAddressPrefix: vNetworkAvdSubnetAddressPrefix
-//         vnetPrivateEndpointSubnetAddressPrefix: vNetworkPrivateEndpointSubnetAddressPrefix
-//         workloadSubsId: avdWorkloadSubsId
-//         dnsServers: varDnsServers
-//         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-//         alaWorkspaceResourceId: avdDeployMonitoring 
-//             ? (deployAlaWorkspace 
-//                     ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId 
-//                     : alaExistingWorkspaceResourceId) 
-//                 : ''
-//     }
-//     dependsOn: [
-//         baselineNetworkResourceGroup
-//         monitoringDiagnosticSettings
-//         baselineResourceGroups
-//     ]
-// }
+// Networking
+module networking './modules/networking/deploy.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) {
+    name: 'Networking-${time}'
+    params: {
+        createVnet: createAvdVnet
+        deployAsg: (avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) ? true : false
+        existingAvdSubnetResourceId: existingVnetAvdSubnetResourceId
+        createPrivateDnsZones: deployPrivateEndpointKeyvaultStorage ? createPrivateDnsZones : false
+        applicationSecurityGroupName: varApplicationSecurityGroupName
+        computeObjectsRgName: varComputeObjectsRgName
+        networkObjectsRgName: varNetworkObjectsRgName
+        avdNetworksecurityGroupName: varAvdNetworksecurityGroupName
+        privateEndpointNetworksecurityGroupName: varPrivateEndpointNetworksecurityGroupName
+        avdRouteTableName: varAvdRouteTableName
+        privateEndpointRouteTableName: varPrivateEndpointRouteTableName
+        vnetAddressPrefixes: avdVnetworkAddressPrefixes
+        vnetName: varVnetName
+        vnetPeeringName: varVnetPeeringName
+        remoteVnetPeeringName: varRemoteVnetPeeringName
+        vnetAvdSubnetName: varVnetAvdSubnetName
+        vnetPrivateEndpointSubnetName: varVnetPrivateEndpointSubnetName
+        createVnetPeering: varCreateVnetPeering
+        deployDDoSNetworkProtection: deployDDoSNetworkProtection
+        ddosProtectionPlanName: varDDosProtectionPlanName
+        deployPrivateEndpointSubnet: (deployPrivateEndpointKeyvaultStorage == true) ? true : false //adding logic that will be used when also including AVD control plane PEs
+        vNetworkGatewayOnHub: vNetworkGatewayOnHub
+        existingHubVnetResourceId: existingHubVnetResourceId
+        sessionHostLocation: avdSessionHostLocation
+        vnetAvdSubnetAddressPrefix: vNetworkAvdSubnetAddressPrefix
+        vnetPrivateEndpointSubnetAddressPrefix: vNetworkPrivateEndpointSubnetAddressPrefix
+        workloadSubsId: avdWorkloadSubsId
+        dnsServers: varDnsServers
+        tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+        alaWorkspaceResourceId: avdDeployMonitoring 
+            ? (deployAlaWorkspace 
+                    ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId 
+                    : alaExistingWorkspaceResourceId) 
+                : ''
+    }
+    dependsOn: [
+        baselineNetworkResourceGroup
+        monitoringDiagnosticSettings
+        baselineResourceGroups
+    ]
+}
 
 // module managementPLane './modules/avdManagementPlane/deploy-arpah.bicep' = {
 //     name: 'AVD-MGMT-Plane-${time}'
