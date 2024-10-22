@@ -102,17 +102,17 @@ module managedIdentityStorage '../../../../avm/1.0.0/res/managed-identity/user-a
   }
 }
 
-// // Start VM on connect role assignments
-// module startVMonConnectRoleAssignCompute '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (enableStartVmOnConnect && !deployScalingPlan && !empty(avdEnterpriseObjectId)) {
-//   name: 'StartOnCon-RolAssign-${computeAndServiceObjectsRg.name}-${time}'
-//   scope: resourceGroup('${subscriptionId}', '${computeAndServiceObjectsRg.rgName}')
-//   params: {
-//     roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnContributorRole.id}'
-//     principalId: avdEnterpriseObjectId
-//     resourceGroupName: computeAndServiceObjectsRg.rgName
-//     principalType: 'ServicePrincipal'
-//   }
-// }]
+// Start VM on connect role assignments
+module startVMonConnectRoleAssignCompute '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (enableStartVmOnConnect && !deployScalingPlan && !empty(avdEnterpriseObjectId)) {
+  name: 'StartOnCon-RolAssign-${computeAndServiceObjectsRg.name}-${time}'
+  scope: resourceGroup('${subscriptionId}', '${computeAndServiceObjectsRg.rgName}')
+  params: {
+    roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnContributorRole.id}'
+    principalId: avdEnterpriseObjectId
+    resourceGroupName: computeAndServiceObjectsRg.rgName
+    principalType: 'ServicePrincipal'
+  }
+}]
 
 // // Scaling plan role assignments
 // module scalingPlanRoleAssignCompute '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (deployScalingPlan && !empty(avdEnterpriseObjectId)) {
