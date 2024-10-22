@@ -282,7 +282,6 @@ param goldenImageId string  = ''
 
 @sys.description('Source custom image ID. (Default: "")')
 param avdImageTemplateDefinitionId string = '/subscriptions/${avdWorkloadSubsId}/resourceGroups/rg-avd-golden-image/providers/Microsoft.Compute/galleries/acgavd/images/${goldenImageId}'
-//param avdImageTemplateDefinitionId string
 
 @sys.description('OU name for Azure Storage Account. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.  (Default: "")')
 param storageOuPath string = ''
@@ -323,7 +322,6 @@ param avdAlaWorkspaceCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvi
 @maxLength(80)
 @sys.description('AVD virtual network subnet custom name. (Default: snet-avd-app1-dev-use2-001)')
 param avdVnetworkSubnetCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-subnet'
-// existing subname: nih-arpa-h-it-vdi-nih-test-sub
 
 @maxLength(80)
 @sys.description('private endpoints virtual network subnet custom name. (Default: snet-pe-app1-dev-use2-001)')
@@ -362,10 +360,6 @@ param avdWorkSpaceCustomFriendlyName string = 'ARPA-H on NIH Network - ${deploym
 param avdHostPoolCustomName string = 'vdpool-app1-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(64)
-@sys.description('AVD remote host pool custom name. (Default: vdpool-app1-dev-use2-001)')
-param avdRemoteHostPoolCustomName string = 'vdpool-remote1-${toLower(deploymentEnvironment)}-use2-001'
-
-@maxLength(64)
 @sys.description('AVD host pool custom friendly (Display) name. (Default: App1 - East US - Dev - 001)')
 param avdHostPoolCustomFriendlyName string = 'ARPA-H on NIH Network - ${deploymentEnvironment}'
 
@@ -376,10 +370,6 @@ param avdScalingPlanCustomName string = 'vdscaling-app1-${toLower(deploymentEnvi
 @maxLength(64)
 @sys.description('AVD desktop application group custom name. (Default: vdag-desktop-app1-dev-use2-001)')
 param avdApplicationGroupCustomName string = 'vdag-desktop-app1-${toLower(deploymentEnvironment)}-use2-001'
-
-@maxLength(64)
-@sys.description('AVD desktop application group custom name. (Default: vdag-desktop-app1-dev-use2-001)')
-param avdRemoteAppApplicationGroupCustomName string = 'vdag-desktop-remote1-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(64)
 @sys.description('AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - Dev - 001)')
@@ -405,10 +395,6 @@ param fslogixFileShareCustomNameRemote string = 'fslogix-pc-remoteapps-${toLower
 
 @sys.description('MSIX file share name. (Default: msix-app1-dev-001)')
 param msixFileShareCustomName string = 'msix-app1-${toLower(deploymentEnvironment)}-use2-001'
-
-//@maxLength(64)
-//@sys.description('AVD fslogix storage account office container file share prefix custom name. (Default: fslogix-oc-app1-dev-001)')
-//param avdFslogixOfficeContainerFileShareCustomName string = 'fslogix-oc-app1-test-001'
 
 @maxLength(6)
 @sys.description('AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv-sec)')
@@ -484,7 +470,6 @@ param ownerTag string = 'workload-owner@arpa-h.gov'
 
 @sys.description('Cost center of owner team. (Default: Contoso-CC)')
 param costCenterTag string = 'ARPA-H-CC'
-//
 
 //@sys.description('Remove resources not needed afdter deployment. (Default: false)')
 //param removePostDeploymentTempResources bool = false
@@ -504,10 +489,6 @@ param storageFilePrivateEndpointStaticIp string
 @sys.description('Storage account private endpoint static ip for the remote apps file share')
 param storageFilePrivateEndpointStaticIpRemote string
 
-@sys.description('Vnet resource group name')
-param vnetResourceGroupName string = 'nih-arpa-h-it-vdi-nih-${toLower(deploymentEnvironment)}-rg-admin-az'
-
-
 // =========== //
 // Variable declaration //
 // =========== //
@@ -524,7 +505,7 @@ var varSessionHostLocationAcronym = varLocations[varSessionHostLocationLowercase
 var varManagementPlaneLocationAcronym = varLocations[varManagementPlaneLocationLowercase].acronym
 var varLocations = loadJsonContent('../variables/locations-arpah.json')
 var varTimeZoneSessionHosts = varLocations[varSessionHostLocationLowercase].timeZone
-var varTimeZoneManagementPlane = varLocations[varManagementPlaneLocationLowercase].timeZone
+//var varTimeZoneManagementPlane = varLocations[varManagementPlaneLocationLowercase].timeZone
 var varManagementPlaneNamingStandard = '${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}'
 var varComputeStorageResourcesNamingStandard = '${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}'
 var varDiskEncryptionSetName = avdUseCustomNaming 
@@ -1161,74 +1142,6 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
     ]
 }
 
-// if existing vnet/subnet
-// JWI:  this code is not working correctly;  it creates the nsg an rt, but updating the subnet fails
-// module updateSubnetNsgAndRouteTable './modules/networking-arpah/deploy.bicep' = if(!createAvdVnet) {
-//     name: 'Networking-UpdateSubnet-${time}'
-//     params: {
-//         vnetResourceGroupName: vnetResourceGroupName
-//         existingAvdSubnetResourceId: existingVnetAvdSubnetResourceId
-//         networkObjectsRgName: varNetworkObjectsRgName
-//         avdNetworksecurityGroupName: varAvdNetworksecurityGroupName
-//         avdRouteTableName: varAvdRouteTableName
-//         workloadSubsId: avdWorkloadSubsId
-//         sessionHostLocation: avdSessionHostLocation
-//         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-//         alaWorkspaceResourceId: avdDeployMonitoring ? (deployAlaWorkspace ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId : alaExistingWorkspaceResourceId) : ''
-//     }
-//     dependsOn: [
-//         baselineNetworkResourceGroup
-//         monitoringDiagnosticSettings
-//         baselineResourceGroups
-//         networking
-//     ]
-// }
-
-// AVD management plane
-// module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
-//     name: 'AVD-MGMT-Plane-${time}'
-//     params: {
-//         applicationGroupName: varApplicationGroupName
-//         applicationGroupFriendlyNameDesktop: varApplicationGroupFriendlyName
-//         workSpaceName: varWorkSpaceName
-//         osImage: avdOsImage
-//         keyVaultResourceId: wrklKeyVault.outputs.resourceId
-//         workSpaceFriendlyName: varWorkSpaceFriendlyName
-//         computeTimeZone: varTimeZoneSessionHosts
-//         hostPoolName: varHostPoolName
-//         hostPoolFriendlyName: varHostFriendlyName
-//         hostPoolRdpProperties: avdHostPoolRdpProperties
-//         hostPoolLoadBalancerType: avdHostPoolLoadBalancerType
-//         hostPoolType: avdHostPoolType
-//         preferredAppGroupType: (hostPoolPreferredAppGroupType == 'RemoteApp') ? 'RailApplications' : 'Desktop'
-//         deployScalingPlan: varDeployScalingPlan
-//         scalingPlanExclusionTag: varScalingPlanExclusionTag
-//         scalingPlanSchedules: (avdHostPoolType == 'Pooled') ? varPooledScalingPlanSchedules : varPersonalScalingPlanSchedules
-//         scalingPlanName: varScalingPlanName
-//         hostPoolMaxSessions: hostPoolMaxSessions
-//         personalAssignType: avdPersonalAssignType
-//         managementPlaneLocation: avdManagementPlaneLocation
-//         serviceObjectsRgName: varServiceObjectsRgName
-//         startVmOnConnect: avdStartVmOnConnect
-//         subscriptionId: avdWorkloadSubsId
-//         identityServiceProvider: avdIdentityServiceProvider
-//         securityPrincipalId: !empty(securityPrincipalId) ? securityPrincipalId : ''
-//         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-//         alaWorkspaceResourceId: avdDeployMonitoring
-//         ? (deployAlaWorkspace
-//             ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
-//             : alaExistingWorkspaceResourceId)
-//         : ''
-//             hostPoolAgentUpdateSchedule: varHostPoolAgentUpdateSchedule
-//         }
-//     dependsOn: [
-//         baselineResourceGroups
-//         identity
-//         monitoringDiagnosticSettings
-//         wrklKeyVault
-//     ]
-// }
-
 module managementPLane './modules/avdManagementPlane/deploy-arpah.bicep' = {
     name: 'AVD-MGMT-Plane-${time}'
     params: {
@@ -1465,59 +1378,6 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
         wrklKeyVault
     ]
 }
-
-// FSLogix storage
-// module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy-arpah.bicep' = if (createAvdFslogixDeployment) {
-//     name: 'Storage-FSLogix-${time}'
-//     params: {
-//         storagePurpose: 'fslogix'
-//         vmLocalUserName: avdVmLocalUserName
-//         fileShareName: varFslogixFileShareName
-//         fileShareMultichannel: (fslogixStoragePerformance == 'Premium') ? true : false
-//         storageSku: varFslogixStorageSku
-//         fileShareQuotaSize: fslogixFileShareQuotaSize
-//         storageAccountFqdn: varFslogixStorageFqdn
-//         storageAccountName: varFslogixStorageName
-//         storageToDomainScript: varStorageToDomainScript
-//         storageToDomainScriptUri: varStorageToDomainScriptUri
-//         identityServiceProvider: avdIdentityServiceProvider
-//         dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
-//         storageCustomOuPath: varStorageCustomOuPath
-//         managementVmName: varManagementVmName
-//         deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
-//         ouStgPath: varOuStgPath
-//         managedIdentityClientId: varCreateStorageDeployment ? identity.outputs.managedIdentityStorageClientId : ''
-//         securityPrincipalName: !empty(securityPrincipalName) ? securityPrincipalName : ''
-//         domainJoinUserName: avdDomainJoinUserName
-//         wrklKvName: varWrklKvName
-//         serviceObjectsRgName: varServiceObjectsRgName
-//         identityDomainName: identityDomainName
-//         identityDomainGuid: identityDomainGuid
-//         sessionHostLocation: avdSessionHostLocation
-//         storageObjectsRgName: varStorageObjectsRgName
-//         privateEndpointSubnetId: createAvdVnet 
-//             ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}' 
-//             : existingVnetPrivateEndpointSubnetResourceId
-//         vnetPrivateDnsZoneFilesId: createPrivateDnsZones 
-//             ? networking.outputs.azureFilesDnsZoneResourceId 
-//             : avdVnetPrivateDnsZoneFilesId
-//         workloadSubsId: avdWorkloadSubsId
-//         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-//         alaWorkspaceResourceId: avdDeployMonitoring 
-//             ? (deployAlaWorkspace 
-//                 ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId 
-//                 : alaExistingWorkspaceResourceId) 
-//             : ''
-//         storageFilePrivateEndpointStaticIp: storageFilePrivateEndpointStaticIp
-//     }
-//     dependsOn: [
-//         baselineStorageResourceGroup
-//         networking
-//         wrklKeyVault
-//         managementVm
-//         monitoringDiagnosticSettings
-//     ]
-// }
 
 module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy-arpah.bicep' = [for storageAccountInfo in fsLogixStorageAccounts: if (createAvdFslogixDeployment) {
     name: 'Storage-FSLogix-${storageAccountInfo.storageAccountName}${time}'
