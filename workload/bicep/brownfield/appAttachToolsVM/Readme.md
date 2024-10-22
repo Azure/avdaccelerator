@@ -25,13 +25,14 @@ The easiest method is to configure the deployment via the provided blue buttons 
 ### PowerShell
 
 ```powershell
+# Set Variables
+$TemplateUri = "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployAppAttachToolsVM.json"
 $Vnet = @{
     "name"             = '<Virtual NetworkName>'
     "id"               = '<Virtual Network Id>'
     "location"         = '<Azure location>'
     "subscriptionName" = '<Subscription Name>'
 }
-
 $TemplateParameterObject = @{
     "Location"        = '<Azure location>'
     "adminUsername"   = '<Local Admin User Name>'
@@ -45,5 +46,42 @@ $TemplateParameterObject = @{
     "vmName"          = '<Name for VM>'
     "VNet"            = $VNet
 }
-New-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateUri 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployAppAttachToolsVM.json' -TemplateParameterObject $TemplateParameterObject -Verbose
+# Deploy Resources
+New-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateUri $TemplateUri -TemplateParameterObject $TemplateParameterObject -Verbose
 ```
+
+### Azure CLI
+```bash
+# Set variables
+templateUri="https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployAppAttachToolsVM.json"
+resourceGroupName="<YourResourceGroupName>"
+location="<AzureLocation>"
+adminUsername="<LocalAdminUserName>"
+adminPassword="<ClearTextPassword>"
+publicIPAllowed="<true_or_false>"
+osOffer="Windows-11"
+osVersion="win11-23h2-ent"
+subnetName="<SubnetName>"
+vmDiskType="<Standard_LRS_StandardSSD_LRS_or_Premium_LRS>"
+vmName="<VMName>"
+vnetName="<VirtualNetworkName>"
+vnetId="<VirtualNetworkId>"
+subscriptionName="<SubscriptionName>"
+
+# Deploy resources
+az group deployment create \
+    --resource-group $resourceGroupName \
+    --template-uri $templateUri \
+    --parameters \
+        Location=$location \
+        adminUsername=$adminUsername \
+        adminPassword=$adminPassword \
+        publicIPAllowed=$publicIPAllowed \
+        OSoffer=$osOffer \
+        OSVersion=$osVersion \
+        SubnetName=$subnetName \
+        vmDiskType=$vmDiskType \
+        vmName=$vmName \
+        VNet="{\"name\": \"$vnetName\", \"id\": \"$vnetId\", \"location\": \"$location\", \"subscriptionName\": \"$subscriptionName\"}"
+```
+
