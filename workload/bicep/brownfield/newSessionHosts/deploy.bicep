@@ -93,7 +93,7 @@ param domainJoinPasswordSecretName string = 'domainJoinUserPassword'
 @sys.description('Enables accelerated Networking on the session hosts. (Default: true)')
 param enableAcceleratedNetworking bool = true
 
-@sys.description('FSLogix storage resource ID. (Default: )')
+@sys.description('FSLogix storage account name. (Default: )')
 param fslogixStorageAccountName string = ''
 
 @sys.description('FSLogix file share name. (Default: )')

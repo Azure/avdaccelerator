@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "7861484256086051414"
+      "templateHash": "5310392775031741401"
     }
   },
   "parameters": {
@@ -199,7 +199,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "FSLogix storage resource ID. (Default: )"
+        "description": "FSLogix storage account name. (Default: )"
       }
     },
     "fslogixFileShareName": {
