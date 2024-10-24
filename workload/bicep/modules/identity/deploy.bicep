@@ -144,17 +144,17 @@ module storageContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/rol
 }]
 
 // Storage File Data SMB Share Contributor
-module storageSmbShareContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (createStorageDeployment && (!empty(securityPrincipalId))) {
-  name: 'Stora-SmbContri-RolAssign${take('${securityPrincipalId}', 6)}-${time}'
-  scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
-  params: {
-    roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varStorageSmbShareContributorRole.id}'
-    principalId: !empty(securityPrincipalId) ? securityPrincipalId: ''
-    resourceGroupName: storageObjectsRgName
-    subscriptionId: subscriptionId
-    principalType: 'Group'
-  }
-}
+// module storageSmbShareContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (createStorageDeployment && (!empty(securityPrincipalId))) {
+//   name: 'Stora-SmbContri-RolAssign${take('${securityPrincipalId}', 6)}-${time}'
+//   scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
+//   params: {
+//     roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varStorageSmbShareContributorRole.id}'
+//     principalId: !empty(securityPrincipalId) ? securityPrincipalId: ''
+//     resourceGroupName: storageObjectsRgName
+//     subscriptionId: subscriptionId
+//     principalType: 'Group'
+//   }
+// }
 
 // // Virtual machine Microsoft Entra ID access roles on the compute resource group
 // module aadIdentityLoginRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (identityServiceProvider == 'EntraID' && !empty(securityPrincipalId)) {
