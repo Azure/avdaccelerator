@@ -115,33 +115,33 @@ module startVMonConnectRoleAssignCompute '../../../../avm/1.0.0/ptn/authorizatio
 }]
 
 // Scaling plan role assignments
-// module scalingPlanRoleAssignCompute '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (deployScalingPlan && !empty(avdEnterpriseObjectId)) {
-//   name: 'ScalingPlan-RolAssign-${computeAndServiceObjectsRg.name}-${time}'
-//   scope: resourceGroup('${subscriptionId}', '${computeAndServiceObjectsRg.rgName}')
-//   params: {
-//     roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnOffContributorRole.id}'
-//     principalId: avdEnterpriseObjectId
-//     resourceGroupName: computeAndServiceObjectsRg.rgName
-//     subscriptionId: subscriptionId
-//     principalType: 'ServicePrincipal'
-//   }
-// }]
-
-// // Storage role assignments
-module storageContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for storageRoleAssignment in storageRoleAssignments: if (createStorageDeployment) {
-  name: 'Stora-RolAssign-${storageRoleAssignment.acronym}-${time}'
-  scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
+module scalingPlanRoleAssignCompute '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (deployScalingPlan && !empty(avdEnterpriseObjectId)) {
+  name: 'ScalingPlan-RolAssign-${computeAndServiceObjectsRg.name}-${time}'
+  scope: resourceGroup('${subscriptionId}', '${computeAndServiceObjectsRg.rgName}')
   params: {
-    roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${storageRoleAssignment.id}'
-    principalId: createStorageDeployment ? managedIdentityStorage.outputs.principalId : ''
-    resourceGroupName: storageObjectsRgName
+    roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnOffContributorRole.id}'
+    principalId: avdEnterpriseObjectId
+    resourceGroupName: computeAndServiceObjectsRg.rgName
     subscriptionId: subscriptionId
     principalType: 'ServicePrincipal'
   }
-  dependsOn: [
-    managedIdentityStorage
-  ]
 }]
+
+// // Storage role assignments
+// module storageContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for storageRoleAssignment in storageRoleAssignments: if (createStorageDeployment) {
+//   name: 'Stora-RolAssign-${storageRoleAssignment.acronym}-${time}'
+//   scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
+//   params: {
+//     roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${storageRoleAssignment.id}'
+//     principalId: createStorageDeployment ? managedIdentityStorage.outputs.principalId : ''
+//     resourceGroupName: storageObjectsRgName
+//     subscriptionId: subscriptionId
+//     principalType: 'ServicePrincipal'
+//   }
+//   dependsOn: [
+//     managedIdentityStorage
+//   ]
+// }]
 
 // // Storage File Data SMB Share Contributor
 // module storageSmbShareContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (createStorageDeployment && (!empty(securityPrincipalId))) {
