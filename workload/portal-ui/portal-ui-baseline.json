@@ -319,7 +319,7 @@
                             ]
                         },
                         {
-                            "name": "identityDefenderOptions",
+                            "name": "identiyEnableDefOptions",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
                             "label": "Select which Microsoft Defender for Cloud solutions you will enable.",
@@ -342,7 +342,22 @@
                                             }
                                         ]
                                     }
+                                },
+                                {
+                                    "name": "emailContactDef",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Microsoft Defender for Cloud Email Contact",
+                                    "toolTip": "Email address to get email notifications from Microsoft Defender for Cloud.",
+                                    "visible": "[equals(steps('identity').enableAsc,'Yes')]",
+                                    "defaultValue": "",
+                                    "constraints": {
+                                        "required": "[equals(steps('identity').enableAsc,'Yes')]",
+                                        "regex": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",
+                                        "validationMessage": "Please provide a valid email address"
+                                    }
                                 }
+
+
                             ]
                         }
                     ]
