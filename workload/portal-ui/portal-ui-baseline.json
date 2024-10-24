@@ -317,6 +317,33 @@
                                     "osPlatform": "Windows"
                                 }
                             ]
+                        },
+                        {
+                            "name": "identityDefenderOptions",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "Select which Microsoft Defender for Cloud solutions you will enable.",
+                            "elements": [
+                                {
+                                    "name": "enableAsc",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "label": "Deploy Microsoft Defender for Cloud and enable security monitoring for your platform and resources",
+                                    "defaultValue": "Yes (recommended)",
+                                    "toolTip": "Selecting 'Yes' will enable the options to configure individual Microsoft Defender for Cloud components, and will enable Microsoft Defender for Cloud plans on all subscriptions in the Azure Landing Zone. If 'Yes' is selected when also adding a subscription for management, ARM will deploy resources and enable them for continuous compliance.",
+                                    "constraints": {
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes (recommended)",
+                                                "value": "Yes"
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": "No"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
                         }
                     ]
                 },
@@ -645,7 +672,7 @@
                                     "scope": {
                                         "location": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]",
                                         "subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]"
-                                    }                              
+                                    }
                                 },
                                 {
                                     "name": "sessionHostSizeInfobox",
@@ -1178,7 +1205,7 @@
                             },
                             "scope": {
                                 "location": "[if(steps('sessionHosts').deploySessionHosts, steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion, steps('basics').resourceScope.location.name)]"
-                            }   
+                            }
                         },
                         {
                             "name": "avdSubnetApi",
