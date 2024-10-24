@@ -52,27 +52,27 @@ var builtInRoleNames = {
 
 var roleDefinitionIdVar = (contains(builtInRoleNames, roleDefinitionIdOrName) ? builtInRoleNames[roleDefinitionIdOrName] : roleDefinitionIdOrName)
 
-// resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-//   name: guid(subscriptionId, resourceGroupName, roleDefinitionIdVar, principalId)
-//   properties: {
-//     roleDefinitionId: roleDefinitionIdVar
-//     principalId: principalId
-//     description: !empty(description) ? description : null
-//     principalType: !empty(principalType) ? any(principalType) : null
-//     delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId) ? delegatedManagedIdentityResourceId : null
-//     conditionVersion: !empty(conditionVersion) && !empty(condition) ? conditionVersion : null
-//     condition: !empty(condition) ? condition : null
-//   }
-// }
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(subscriptionId, resourceGroupName, roleDefinitionIdVar, principalId)
+  properties: {
+    roleDefinitionId: roleDefinitionIdVar
+    principalId: principalId
+    description: !empty(description) ? description : null
+    principalType: !empty(principalType) ? any(principalType) : null
+    delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId) ? delegatedManagedIdentityResourceId : null
+    conditionVersion: !empty(conditionVersion) && !empty(condition) ? conditionVersion : null
+    condition: !empty(condition) ? condition : null
+  }
+}
 
-// @sys.description('The GUID of the Role Assignment.')
-// output name string = roleAssignment.name
+@sys.description('The GUID of the Role Assignment.')
+output name string = roleAssignment.name
 
-// @sys.description('The resource ID of the Role Assignment.')
-// output resourceId string = roleAssignment.id
+@sys.description('The resource ID of the Role Assignment.')
+output resourceId string = roleAssignment.id
 
-// @sys.description('The name of the resource group the role assignment was applied at.')
-// output resourceGroupName string = resourceGroup().name
+@sys.description('The name of the resource group the role assignment was applied at.')
+output resourceGroupName string = resourceGroup().name
 
-// @sys.description('The scope this Role Assignment applies to.')
-// output scope string = resourceGroup().id
+@sys.description('The scope this Role Assignment applies to.')
+output scope string = resourceGroup().id
