@@ -362,7 +362,7 @@
                                     "label": "Enable Microsoft Defender for Cloud for Storage",
                                     "defaultValue": "Yes (recommended)",
                                     "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Storage.<br>Uses the custom initiative <a href=\"https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config.html\">Deploy Microsoft Defender for Cloud configuration</a>.",
-                                    "visible": "[equals(steps('identiy').identiyEnableDefOptions.enableAsc, 'Yes')]",
+                                    "visible": "[equals(steps('identity').identiyEnableDefOptions.enableAsc, 'Yes')]",
                                     "constraints": {
                                         "allowedValues": [
                                             {
