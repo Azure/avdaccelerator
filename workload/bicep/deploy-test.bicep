@@ -1,3 +1,8 @@
+metadata name = 'AVD Accelerator -Test NIH Policy issue'
+metadata description = 'AVD Accelerator -Test NIH Policy issue'
+
+targetScope = 'subscription'
+
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario. (Default: "")')
 param avdWorkloadSubsId string = ''
 
