@@ -357,6 +357,26 @@
                                     }
                                 },
                                 {
+                                    "name": "enableAscForServers",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "label": "Enable Microsoft Defender for Cloud for servers",
+                                    "defaultValue": "Yes (recommended)",
+                                    "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for all servers.<br>Uses the custom initiative <a href=\"https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config.html\">Deploy Microsoft Defender for Cloud configuration</a>.",
+                                    "visible": "[equals(steps('identity').identiyEnableDefOptions.enableAsc,'Yes')]",
+                                    "constraints": {
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes (recommended)",
+                                                "value": "DeployIfNotExists"
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": "Disabled"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
                                     "name": "enableAscForStorage",
                                     "type": "Microsoft.Common.OptionsGroup",
                                     "label": "Enable Microsoft Defender for Cloud for Storage",
@@ -402,6 +422,26 @@
                                     "label": "Enable Microsoft Defender for Cloud for Azure Resource Manager",
                                     "defaultValue": "Yes (recommended)",
                                     "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Resource Manager.<br>Uses the custom initiative <a href=\"https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config.html\">Deploy Microsoft Defender for Cloud configuration</a>.",
+                                    "visible": "[equals(steps('identity').identiyEnableDefOptions.enableAsc,'Yes')]",
+                                    "constraints": {
+                                        "allowedValues": [
+                                            {
+                                                "label": "Yes (recommended)",
+                                                "value": "DeployIfNotExists"
+                                            },
+                                            {
+                                                "label": "No",
+                                                "value": "Disabled"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "name": "enableAscForCspm",
+                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "label": "Enable Microsoft Defender CSPM",
+                                    "defaultValue": "Yes (recommended)",
+                                    "toolTip": "If 'Yes' is selected, Microsoft Defender CSPM will be enabled.<br>Uses the custom initiative <a href=\"https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config.html\">Deploy Microsoft Defender for Cloud configuration</a>.",
                                     "visible": "[equals(steps('identity').identiyEnableDefOptions.enableAsc,'Yes')]",
                                     "constraints": {
                                         "allowedValues": [
