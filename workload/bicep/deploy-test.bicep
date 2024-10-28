@@ -98,14 +98,14 @@ var varDesktopVirtualizationPowerOnOffContributorRole = {
 } 
 
 // Scaling plan role assignments
-module scalingPlanRoleAssignCompute '../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in verResourceGroups: {
-  name: 'ScalingPlan-RolAssign-${computeAndServiceObjectsRg.name}-${time}'
-  scope: resourceGroup('${avdWorkloadSubsId}', '${computeAndServiceObjectsRg.name}')
-  params: {
-    roleDefinitionIdOrName: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnOffContributorRole.id}'
-    principalId: avdEnterpriseAppObjectId
-    resourceGroupName: computeAndServiceObjectsRg.name
-    subscriptionId: avdWorkloadSubsId
-    principalType: 'ServicePrincipal'
-  }
-}]
+// module scalingPlanRoleAssignCompute '../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in verResourceGroups: {
+//   name: 'ScalingPlan-RolAssign-${computeAndServiceObjectsRg.name}-${time}'
+//   scope: resourceGroup('${avdWorkloadSubsId}', '${computeAndServiceObjectsRg.name}')
+//   params: {
+//     roleDefinitionIdOrName: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnOffContributorRole.id}'
+//     principalId: avdEnterpriseAppObjectId
+//     resourceGroupName: computeAndServiceObjectsRg.name
+//     subscriptionId: avdWorkloadSubsId
+//     principalType: 'ServicePrincipal'
+//   }
+// }]
