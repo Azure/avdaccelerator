@@ -98,7 +98,7 @@ var varDesktopVirtualizationPowerOnOffContributorRole = {
 } 
 
 // Scaling plan role assignments
-module scalingPlanRoleAssignCompute '../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (deployScalingPlan && !empty(avdEnterpriseObjectId)) {
+module scalingPlanRoleAssignCompute '../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: {
   name: 'ScalingPlan-RolAssign-${computeAndServiceObjectsRg.name}-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${computeAndServiceObjectsRg.rgName}')
   params: {
