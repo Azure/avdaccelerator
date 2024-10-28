@@ -28,6 +28,9 @@ param avdStorageObjectsRgCustomName string = 'avd-nih-arpah-prod-use2-storage'
 @sys.description('Location where to deploy AVD management plane. (Default: eastus2)')
 param location string = 'eastus2'
 
+@sys.description('Azure Virtual Desktop Enterprise Application object ID. (Default: "")')
+param avdEnterpriseAppObjectId string = ''
+
 var verResourceGroups = [
   {
       purpose: 'Service-Objects'
@@ -77,3 +80,32 @@ module baselineStorageResourceGroup '../../avm/1.0.0/res/resources/resource-grou
       enableTelemetry: false
   }
 }
+
+var computeAndServiceObjectsRgs = [
+  {
+    name: 'ServiceObjects'
+    rgName: avdComputeObjectsRgCustomName
+  }
+  {
+    name: 'Compute'
+    rgName: avdServiceObjectsRgCustomName
+  } 
+]
+
+var varDesktopVirtualizationPowerOnOffContributorRole = {
+  id: '40c5ff49-9181-41f8-ae61-143b0e78555e'
+  name: 'Desktop Virtualization Power On Off Contributor'
+} 
+
+// Scaling plan role assignments
+module scalingPlanRoleAssignCompute '../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (deployScalingPlan && !empty(avdEnterpriseObjectId)) {
+  name: 'ScalingPlan-RolAssign-${computeAndServiceObjectsRg.name}-${time}'
+  scope: resourceGroup('${avdWorkloadSubsId}', '${computeAndServiceObjectsRg.rgName}')
+  params: {
+    roleDefinitionIdOrName: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnOffContributorRole.id}'
+    principalId: avdEnterpriseAppObjectId
+    resourceGroupName: computeAndServiceObjectsRg.rgName
+    subscriptionId: avdWorkloadSubsId
+    principalType: 'ServicePrincipal'
+  }
+}]
