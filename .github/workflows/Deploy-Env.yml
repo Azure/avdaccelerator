@@ -24,6 +24,17 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         enable-AzPSSession: true
 
+    # - name: Deploy Bicep file to ${{ github.event.inputs.environment }} environment
+    #   uses: azure/arm-deploy@v2
+    #   with:
+    #     scope: subscription
+    #     subscriptionId: ${{ secrets.AZURE_SUB_ID }}
+    #     region: eastus
+    #     deploymentMode: 'Validate'
+    #     template: ./workload/bicep/deploy-baseline-arpah.bicep
+    #     parameters: ./workload/bicep/parameters/deploy-baseline-parameters-arpah.json deploymentEnvironment=${{ github.event.inputs.environment }} avdWorkloadSubsId=${{ secrets.AZURE_SUB_ID }} avdVmLocalUserName=${{ secrets.AVD_ADMIN }} avdVmLocalUserPassword=${{ secrets.AVD_ADMINPASS }} avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} existingVnetAvdSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} identityDomainName=${{ secrets.AD_NAME}} avdDomainJoinUserName=${{ secrets.AD_JOIN_USER }} avdDomainJoinUserPassword=${{ secrets.AD_JOIN_PASS }} avdOuPath="${{ secrets.AD_OU }}" storageOuPath="${{ secrets.AD_OU }}" storageFilePrivateEndpointStaticIp="${{ secrets.STORAGEFILEPRIVATEENDPOINTSTATICIP }}" storageFilePrivateEndpointStaticIpRemote="${{ secrets.STORAGEFILEPRIVATEENDPOINTSTATICIPREMOTE }}"
+    #     failOnStdErr: true
+  
     - name: Deploy Bicep file to ${{ github.event.inputs.environment }} environment
       uses: azure/arm-deploy@v2
       with:
@@ -31,8 +42,8 @@ jobs:
         subscriptionId: ${{ secrets.AZURE_SUB_ID }}
         region: eastus
         deploymentMode: 'Validate'
-        template: ./workload/bicep/deploy-baseline-arpah.bicep
-        parameters: ./workload/bicep/parameters/deploy-baseline-parameters-arpah.json deploymentEnvironment=${{ github.event.inputs.environment }} avdWorkloadSubsId=${{ secrets.AZURE_SUB_ID }} avdVmLocalUserName=${{ secrets.AVD_ADMIN }} avdVmLocalUserPassword=${{ secrets.AVD_ADMINPASS }} avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} existingVnetAvdSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} identityDomainName=${{ secrets.AD_NAME}} avdDomainJoinUserName=${{ secrets.AD_JOIN_USER }} avdDomainJoinUserPassword=${{ secrets.AD_JOIN_PASS }} avdOuPath="${{ secrets.AD_OU }}" storageOuPath="${{ secrets.AD_OU }}" storageFilePrivateEndpointStaticIp="${{ secrets.STORAGEFILEPRIVATEENDPOINTSTATICIP }}" storageFilePrivateEndpointStaticIpRemote="${{ secrets.STORAGEFILEPRIVATEENDPOINTSTATICIPREMOTE }}"
+        template: ./workload/bicep/deploy-test.bicep
+        parameters: avdWorkloadSubsId=${{ secrets.AZURE_SUB_ID }}
         failOnStdErr: true
     
     # - name: Update networking in ${{ github.event.inputs.environment }} environment
