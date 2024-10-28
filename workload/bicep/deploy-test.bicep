@@ -46,15 +46,15 @@ var verResourceGroups = [
   }
 ]
 
-// module baselineNetworkResourceGroup '../../avm/1.0.0/res/resources/resource-group/main.bicep' = {
-//   scope: subscription(avdWorkloadSubsId)
-//   name: 'Deploy-Network-RG-${time}'
-//   params: {
-//       name: avdNetworkObjectsRgCustomName
-//       location: location
-//       enableTelemetry: false
-//   }
-// }
+module baselineNetworkResourceGroup '../../avm/1.0.0/res/resources/resource-group/main.bicep' = {
+  scope: subscription(avdWorkloadSubsId)
+  name: 'Deploy-Network-RG-${time}'
+  params: {
+      name: avdNetworkObjectsRgCustomName
+      location: location
+      enableTelemetry: false
+  }
+}
 
 // Compute, service objects
 module baselineResourceGroups '../../avm/1.0.0/res/resources/resource-group/main.bicep' = [
@@ -70,27 +70,27 @@ for resourceGroup in verResourceGroups: {
 }
 ]
 
-// // Storage
-// module baselineStorageResourceGroup '../../avm/1.0.0/res/resources/resource-group/main.bicep' =  {
-//   scope: subscription(avdWorkloadSubsId)
-//   name: 'Storage-RG-${time}'
-//   params: {
-//       name: avdStorageObjectsRgCustomName
-//       location: location
-//       enableTelemetry: false
-//   }
-// }
-
-var computeAndServiceObjectsRgs = [
-  {
-    name: 'ServiceObjects'
-    rgName: avdComputeObjectsRgCustomName
+// Storage
+module baselineStorageResourceGroup '../../avm/1.0.0/res/resources/resource-group/main.bicep' =  {
+  scope: subscription(avdWorkloadSubsId)
+  name: 'Storage-RG-${time}'
+  params: {
+      name: avdStorageObjectsRgCustomName
+      location: location
+      enableTelemetry: false
   }
-  {
-    name: 'Compute'
-    rgName: avdServiceObjectsRgCustomName
-  } 
-]
+}
+
+// var computeAndServiceObjectsRgs = [
+//   {
+//     name: 'ServiceObjects'
+//     rgName: avdComputeObjectsRgCustomName
+//   }
+//   {
+//     name: 'Compute'
+//     rgName: avdServiceObjectsRgCustomName
+//   } 
+// ]
 
 var varDesktopVirtualizationPowerOnOffContributorRole = {
   id: '40c5ff49-9181-41f8-ae61-143b0e78555e'
@@ -98,13 +98,13 @@ var varDesktopVirtualizationPowerOnOffContributorRole = {
 } 
 
 // Scaling plan role assignments
-module scalingPlanRoleAssignCompute '../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: {
+module scalingPlanRoleAssignCompute '../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in verResourceGroups: {
   name: 'ScalingPlan-RolAssign-${computeAndServiceObjectsRg.name}-${time}'
-  scope: resourceGroup('${avdWorkloadSubsId}', '${computeAndServiceObjectsRg.rgName}')
+  scope: resourceGroup('${avdWorkloadSubsId}', '${computeAndServiceObjectsRg.name}')
   params: {
     roleDefinitionIdOrName: '/subscriptions/${avdWorkloadSubsId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnOffContributorRole.id}'
     principalId: avdEnterpriseAppObjectId
-    resourceGroupName: computeAndServiceObjectsRg.rgName
+    resourceGroupName: computeAndServiceObjectsRg.name
     subscriptionId: avdWorkloadSubsId
     principalType: 'ServicePrincipal'
   }
