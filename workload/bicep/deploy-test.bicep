@@ -122,6 +122,17 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' =  
   }
 }
 
+resource roleAssignment2 'Microsoft.Authorization/roleAssignments@2022-04-01' =  {
+  name: 'ScalingPlan-RolAssign-${avdComputeObjectsRgCustomName}-${time}'
+  //scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgCustomName}')
+  properties: {
+    //scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgCustomName}')
+    roleDefinitionId: roleDefinitionIdVar
+    principalId: avdEnterpriseAppObjectId
+    principalType: 'ServicePrincipal'
+  }
+}
+
 // Scaling plan role assignments
 // module scalingPlanRoleAssignCompute '../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in verResourceGroups: {
 //   name: 'ScalingPlan-RolAssign-${computeAndServiceObjectsRg.name}-${time}'
