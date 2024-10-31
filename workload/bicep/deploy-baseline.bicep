@@ -571,7 +571,6 @@ var varApplicationGroupName = avdUseCustomNaming
 var varApplicationGroupFriendlyName = avdUseCustomNaming
   ? avdApplicationGroupCustomFriendlyName
   : '${varHostPoolPreferredAppGroupType} ${deploymentPrefix} ${deploymentEnvironment} ${avdManagementPlaneLocation} 001'
-var varDeployScalingPlan = (varAzureCloudName == 'AzureChinaCloud') ? false : avdDeployScalingPlan
 var varCreateMsixDeployment = (varAzureCloudName == 'AzureChinaCloud') ? false : createMsixDeployment
 var varScalingPlanName = avdUseCustomNaming
   ? avdScalingPlanCustomName
@@ -1121,7 +1120,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     hostPoolLoadBalancerType: avdHostPoolLoadBalancerType
     hostPoolType: avdHostPoolType
     preferredAppGroupType: (hostPoolPreferredAppGroupType == 'RemoteApp') ? 'RailApplications' : 'Desktop'
-    deployScalingPlan: varDeployScalingPlan
+    deployScalingPlan: avdDeployScalingPlan
     scalingPlanExclusionTag: varScalingPlanExclusionTag
     scalingPlanSchedules: (avdHostPoolType == 'Pooled') ? varPooledScalingPlanSchedules : varPersonalScalingPlanSchedules
     scalingPlanName: varScalingPlanName
@@ -1159,7 +1158,7 @@ module identity './modules/identity/deploy.bicep' = {
     serviceObjectsRgName: varServiceObjectsRgName
     storageObjectsRgName: varStorageObjectsRgName
     avdEnterpriseObjectId: !empty(avdEnterpriseAppObjectId) ? avdEnterpriseAppObjectId : ''
-    deployScalingPlan: varDeployScalingPlan
+    deployScalingPlan: avdDeployScalingPlan
     storageManagedIdentityName: varStorageManagedIdentityName
     enableStartVmOnConnect: avdStartVmOnConnect
     identityServiceProvider: avdIdentityServiceProvider

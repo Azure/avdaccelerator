@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "8514367717295350076"
+      "templateHash": "7573234064485737775"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -1343,7 +1343,6 @@
     "varHostPoolPreferredAppGroupType": "[toLower(parameters('hostPoolPreferredAppGroupType'))]",
     "varApplicationGroupName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomName'), format('vdag-{0}-{1}-001', variables('varHostPoolPreferredAppGroupType'), variables('varManagementPlaneNamingStandard')))]",
     "varApplicationGroupFriendlyName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomFriendlyName'), format('{0} {1} {2} {3} 001', variables('varHostPoolPreferredAppGroupType'), parameters('deploymentPrefix'), parameters('deploymentEnvironment'), parameters('avdManagementPlaneLocation')))]",
-    "varDeployScalingPlan": "[if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), false(), parameters('avdDeployScalingPlan'))]",
     "varCreateMsixDeployment": "[if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), false(), parameters('createMsixDeployment'))]",
     "varScalingPlanName": "[if(parameters('avdUseCustomNaming'), parameters('avdScalingPlanCustomName'), format('vdscaling-{0}-001', variables('varManagementPlaneNamingStandard')))]",
     "varScalingPlanExclusionTag": "[format('exclude-{0}', variables('varScalingPlanName'))]",
@@ -7980,7 +7979,7 @@
           },
           "preferredAppGroupType": "[if(equals(parameters('hostPoolPreferredAppGroupType'), 'RemoteApp'), createObject('value', 'RailApplications'), createObject('value', 'Desktop'))]",
           "deployScalingPlan": {
-            "value": "[variables('varDeployScalingPlan')]"
+            "value": "[parameters('avdDeployScalingPlan')]"
           },
           "scalingPlanExclusionTag": {
             "value": "[variables('varScalingPlanExclusionTag')]"
@@ -10342,7 +10341,7 @@
           },
           "avdEnterpriseObjectId": "[if(not(empty(parameters('avdEnterpriseAppObjectId'))), createObject('value', parameters('avdEnterpriseAppObjectId')), createObject('value', ''))]",
           "deployScalingPlan": {
-            "value": "[variables('varDeployScalingPlan')]"
+            "value": "[parameters('avdDeployScalingPlan')]"
           },
           "storageManagedIdentityName": {
             "value": "[variables('varStorageManagedIdentityName')]"
