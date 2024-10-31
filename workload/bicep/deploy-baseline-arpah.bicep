@@ -398,7 +398,7 @@ param msixFileShareCustomName string = 'msix-app1-${toLower(deploymentEnvironmen
 
 @maxLength(6)
 @sys.description('AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv-sec)')
-param avdWrklKvPrefixCustomName string = 'kv-sc3'
+param avdWrklKvPrefixCustomName string = 'kv-sec'
 
 @maxLength(6)
 @sys.description('AVD disk encryption set custom name. (Default: des-zt)')
@@ -673,16 +673,16 @@ var varFslogixStorageSku = zoneRedundantStorage
     ? '${fslogixStoragePerformance}_ZRS' 
     : '${fslogixStoragePerformance}_LRS'
 var varMsixStorageSku = zoneRedundantStorage ? '${msixStoragePerformance}_ZRS' : '${msixStoragePerformance}_LRS'
-// var varMgmtVmSpecs = {
-//     osImage: varMarketPlaceGalleryWindows[managementVmOsImage]
-//     osDiskType: 'Standard_LRS'
-//     mgmtVmSize: 'Standard_B2ms'
-//     enableAcceleratedNetworking: false
-//     ouPath: avdOuPath
-//     subnetId: createAvdVnet 
-//         ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' 
-//         : existingVnetAvdSubnetResourceId
-// }
+var varMgmtVmSpecs = {
+    osImage: varMarketPlaceGalleryWindows[managementVmOsImage]
+    osDiskType: 'Standard_LRS'
+    mgmtVmSize: 'Standard_B2ms'
+    enableAcceleratedNetworking: false
+    ouPath: avdOuPath
+    subnetId: createAvdVnet 
+        ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' 
+        : existingVnetAvdSubnetResourceId
+}
 var varMaxSessionHostsPerTemplate = 10
 var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varMaxSessionHostsPerTemplate
 var varMaxSessionHostsDivisionRemainderValue = avdDeploySessionHostsCount % varMaxSessionHostsPerTemplate
