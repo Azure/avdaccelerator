@@ -1279,7 +1279,7 @@
                         {
                             "name": "hostPoolPrivateEndpointNetworkAccessSelectorWarning1",
                             "type": "Microsoft.Common.InfoBox",
-                            "visible": "[or(equals(steps('network').hostPoolPrivateEndpointNetworkAccessSelector, 'Disabled'),equals(steps('network').workspacePrivateEndpointNetworkAccessSelector, 'Disabled'))]",
+                            "visible": "[or(not(equals(steps('network').hostPoolPrivateEndpointNetworkAccessSelector, 'Enabled')),not(equals(steps('network').workspacePrivateEndpointNetworkAccessSelector, 'EnabledForClientsOnly')),not(equals(steps('network').workspacePrivateEndpointNetworkAccessSelector, 'Enabled')))]",
                             "options": {
                                 "text": "When setting the AVD Private Link service to 'Disabled', all communication to AVD services will be restricted to use private endpoints. If you do not have a VPN or Express route configured in your environment, you will not be able to connect to your AVD instance.",
                                 "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/private-link-overview#configuration-outcomes",
