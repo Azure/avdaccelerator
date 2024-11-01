@@ -1233,7 +1233,7 @@
                             "type": "Microsoft.Common.DropDown",
                             "visible": "[steps('network').deployAvdPrivateLinkService]",
                             "defaultValue": "Enabled For Clients Only",
-                            "toolTip": "Host Pool Private Endpoint: <br/> - <b>Disabled:</b> Blocks public access and requires both clients and session hosts to use the private endpoints. <br/> - Enabled: Allow Clients and session hosts to communicate over the public network. <br/> - Enabled for Clients Only: Allow Clients to access AVD over public network and blocks Session Hosts from accessing AVD services over public network. <br/> - Enabled For Session Hosts Only: Allow Session Hosts to communicate over the public network and blocks clients from accessing AVD over public network.",
+                            "toolTip": "Host Pool Private Endpoint: <br/> <b>- Disabled:</b> Blocks public access and requires both clients and session hosts to use the private endpoints. <br/> <b>- Enabled:</b> Allow Clients and session hosts to communicate over the public network. <br/> <b>- Enabled for Clients Only:</b> Allow Clients to access AVD over public network and blocks Session Hosts from accessing AVD services over public network. <br/> <b>- Enabled For Session Hosts Only:</b> Allow Session Hosts to communicate over the public network and blocks clients from accessing AVD over public network.",
                             "label": "Host Pool Private Endpoint Public Network Access",
                             "constraints": {
                                 "allowedValues": [
@@ -1261,7 +1261,7 @@
                             "type": "Microsoft.Common.DropDown",
                             "visible": "[steps('network').deployAvdPrivateLinkService]",
                             "defaultValue": "Enabled",
-                            "toolTip": "Workspace Private Endpoint: <br/> - Disabled: Workspace feed requests are denied from public routes, but allowed from private routes. <br/> - Enabled: Workspace feed requests are allowed from public and private routes.",
+                            "toolTip": "Workspace Private Endpoint: <br/> <b>- Disabled:</b> Workspace feed requests are denied from public routes, but allowed from private routes. <br/> <b>- Enabled:</b> Workspace feed requests are allowed from public and private routes.",
                             "label": "Workspace Private Endpoint Public Network Access",
                             "constraints": {
                                 "allowedValues": [
