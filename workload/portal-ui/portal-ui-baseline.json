@@ -1229,6 +1229,64 @@
                             "toolTip": "Enables Private Endpoints for AVD Discovery and Connection. It is recommended to use Azure Private Endpoints to keep all traffic to PaaS services on the Azure backbone."
                         },
                         {
+                            "name": "hostPoolPrivateEndpointNetworkAccessSelector",
+                            "type": "Microsoft.Common.DropDown",
+                            "visible": "[steps('network').deployAvdPrivateLinkService]",
+                            "defaultValue": "EnabledForClientsOnly",
+                            "toolTip": "This access level sets which resources are allowed to bypass the private endpoint and access the internet.",
+                            "label": "Host Pool Private Endpoint Public Network Access",
+                            "constraints": {
+                                "allowedValues": [
+                                    {
+                                        "label": "Disabled (Blocks public access and requires both clients and sessino hosts to use the private endpoints)",
+                                        "value": "Disabled"
+                                    },
+                                    {
+                                        "label": "Enabled (Allow Clients and session hosts to communicate over the public network)",
+                                        "value": "Enabled"
+                                    },
+                                    {
+                                        "label": "Enabled For Clients Only (Allow Clients to access AVD over public network)",
+                                        "value": "EnabledForClientsOnly"
+                                    },
+                                    {
+                                        "label": "Enabled For Session Hosts Only (Allow Session Hosts to communicate over the public network)",
+                                        "value": "EnabledForSessionHostsOnly"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "workspacePrivateEndpointNetworkAccessSelector",
+                            "type": "Microsoft.Common.DropDown",
+                            "visible": "[steps('network').deployAvdPrivateLinkService]",
+                            "defaultValue": "",
+                            "toolTip": "This access level sets if a workspace feed is allowed to enforce the usage of the private endpoint or allow public access.",
+                            "label": "Workspace Private Endpoint Public Network Access",
+                            "constraints": {
+                                "allowedValues": [
+                                    {
+                                        "label": "Disabled (Workspace feed requests are denied from public routes but allowed from private routes)",
+                                        "value": "Disabled"
+                                    },
+                                    {
+                                        "label": "Enabled (Workspace feed requests are allowed from both public and private routes)",
+                                        "value": "Enabled"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "name": "hostPoolPrivateEndpointNetworkAccessSelectorWarning1",
+                            "type": "Microsoft.Common.InfoBox",
+                            "visible": "[and(or(equals(steps('network').hostPoolPrivateEndpointNetworkAccessSelector, 'Disabled'),equals(steps('network').workspacePrivateEndpointNetworkAccessSelector, 'Disabled')) equals(steps('network').deployAvdPrivateLinkService, true))]",
+                            "options": {
+                                "text": "When setting the AVD Private Link service to 'Disabled', all communication to AVD services will be restricted to use private endpoints. If you do not have a VPN or Express route configured in your environment, you will not be able to connect to your AVD instance.",
+                                "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/private-link-overview#configuration-outcomes",
+                                "style": "Warning"
+                            }
+                        },
+                        {
                             "name": "virtualNetworkPrivateEndpointSubnetSize",
                             "type": "Microsoft.Common.TextBox",
                             "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), or(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').deployAvdPrivateLinkService, true)))]",
@@ -2438,6 +2496,8 @@
                 "deployDDoSNetworkProtection": "[steps('network').deployDDoSNetworkProtection]",
                 "deployPrivateEndpointKeyvaultStorage": "[steps('network').deployPrivateEndpointKeyvaultStorage]",
                 "deployAvdPrivateLinkService": "[steps('network').deployAvdPrivateLinkService]",
+                "hostPoolPublicNetworkAccess": "[steps('network').hostPoolPrivateEndpointNetworkAccessSelector]",
+                "workspacePublicNetworkAccess": "[steps('network').workspacePrivateEndpointNetworkAccessSelector]",
                 "createPrivateDnsZones": "[steps('network').virtualNetworkPrivateDnsZone]",
                 "avdVnetPrivateDnsZoneFilesId": "[if(and(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneFilesSelector.id, '')]",
                 "avdVnetPrivateDnsZoneKeyvaultId": "[if(and(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneKeyvaultSelector.id, '')]",
