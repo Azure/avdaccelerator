@@ -1233,7 +1233,7 @@
                             "type": "Microsoft.Common.DropDown",
                             "visible": "[steps('network').deployAvdPrivateLinkService]",
                             "defaultValue": "Enabled For Clients Only",
-                            "toolTip": "Host Pool Private Endpoint: <br/> - Disabled: Blocks public access and requires both clients and sessino hosts to use the private endpoints. <br/> - Enabled: Allow Clients and session hosts to communicate over the public network. <br/> - Enabled for Clients Only: Allow Clients to access AVD over public network. <br/> - Enabled For Session Hosts Only: Allow Session Hosts to communicate over the public network.",
+                            "toolTip": "Host Pool Private Endpoint: <br/> - <b>Disabled:</b> Blocks public access and requires both clients and session hosts to use the private endpoints. <br/> - Enabled: Allow Clients and session hosts to communicate over the public network. <br/> - Enabled for Clients Only: Allow Clients to access AVD over public network and blocks Session Hosts from accessing AVD services over public network. <br/> - Enabled For Session Hosts Only: Allow Session Hosts to communicate over the public network and blocks clients from accessing AVD over public network.",
                             "label": "Host Pool Private Endpoint Public Network Access",
                             "constraints": {
                                 "allowedValues": [
