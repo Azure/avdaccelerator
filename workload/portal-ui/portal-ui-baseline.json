@@ -1233,7 +1233,7 @@
                             "type": "Microsoft.Common.DropDown",
                             "visible": "[steps('network').deployAvdPrivateLinkService]",
                             "defaultValue": "Enabled For Clients Only",
-                            "toolTip": "Host Pool Private Endpoint: <br/> <b>- Disabled:</b> Blocks public access and requires both clients and session hosts to use the private endpoints. <br/> <b>- Enabled:</b> Allow Clients and session hosts to communicate over the public network. <br/> <b>- Enabled for Clients Only:</b> Allow Clients to access AVD over public network and blocks Session Hosts from accessing AVD services over public network. <br/> <b>- Enabled For Session Hosts Only:</b> Allow Session Hosts to communicate over the public network and blocks clients from accessing AVD over public network.",
+                            "toolTip": "<b>- Disabled:</b> Blocks public access and requires both clients and session hosts to use the private endpoints. <br/> <b>- Enabled:</b> Allow Clients and session hosts to communicate over the public network. <br/> <b>- Enabled for Clients Only:</b> Allow Clients to access AVD over public network and blocks Session Hosts from accessing AVD services over public network. <br/> <b>- Enabled For Session Hosts Only:</b> Allow Session Hosts to communicate over the public network and blocks clients from accessing AVD over public network.",
                             "label": "Host Pool Private Endpoint Public Network Access",
                             "constraints": {
                                 "allowedValues": [
@@ -1261,7 +1261,7 @@
                             "type": "Microsoft.Common.DropDown",
                             "visible": "[steps('network').deployAvdPrivateLinkService]",
                             "defaultValue": "Enabled",
-                            "toolTip": "Workspace Private Endpoint: <br/> <b>- Disabled:</b> Workspace feed requests are denied from public routes, but allowed from private routes. <br/> <b>- Enabled:</b> Workspace feed requests are allowed from public and private routes.",
+                            "toolTip": "<b>- Disabled:</b> Workspace feed requests are denied from public routes, but allowed from private routes. <br/> <b>- Enabled:</b> Workspace feed requests are allowed from public and private routes.",
                             "label": "Workspace Private Endpoint Public Network Access",
                             "constraints": {
                                 "allowedValues": [
@@ -1279,7 +1279,7 @@
                         {
                             "name": "hostPoolPrivateEndpointNetworkAccessSelectorWarning1",
                             "type": "Microsoft.Common.InfoBox",
-                            "visible": "[and(or(equals(steps('network').hostPoolPrivateEndpointNetworkAccessSelector, 'Disabled'),equals(steps('network').workspacePrivateEndpointNetworkAccessSelector, 'Disabled')) equals(steps('network').deployAvdPrivateLinkService, true))]",
+                            "visible": "[or(equals(steps('network').hostPoolPrivateEndpointNetworkAccessSelector, 'Disabled'),equals(steps('network').workspacePrivateEndpointNetworkAccessSelector, 'Disabled'))]",
                             "options": {
                                 "text": "When setting the AVD Private Link service to 'Disabled', all communication to AVD services will be restricted to use private endpoints. If you do not have a VPN or Express route configured in your environment, you will not be able to connect to your AVD instance.",
                                 "uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/private-link-overview#configuration-outcomes",
