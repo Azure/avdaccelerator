@@ -186,6 +186,9 @@
         "useSharedImage": {
             "value": true
         },
+        "imageGallerySubscriptionId": {
+            "value": "<<subscriptionId>>"
+        },
         "goldenImageId": {
             "value": "GoldenImageAVDArpaH/versions/latest"
         },
