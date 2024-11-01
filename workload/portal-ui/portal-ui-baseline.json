@@ -1226,7 +1226,7 @@
                             "type": "Microsoft.Common.CheckBox",
                             "label": "Private endpoints for AVD (Requires registration of resource provider)",
                             "defaultValue": false,
-                            "toolTip": "Enables Private Endpoints for AVD Discovery and Connection. It is recommended to use Azure Private Endpoints to keep all traffic to PaaS services on the Azure backbone."
+                            "toolTip": "Enables Private Endpoints for AVD Discovery and Connection. It is recommended to use Azure Private Endpoints to keep all traffic to PaaS services on the Azure backbone. <br/> Private Link Resource Provider Registration: <a href='https://learn.microsoft.com/en-us/azure/virtual-desktop/private-link-setup'>https://learn.microsoft.com/en-us/azure/virtual-desktop/private-link-setup</a>"
                         },
                         {
                             "name": "hostPoolPrivateEndpointNetworkAccessSelector",
