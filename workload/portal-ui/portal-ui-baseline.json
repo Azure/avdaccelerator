@@ -1233,24 +1233,23 @@
                             "type": "Microsoft.Common.DropDown",
                             "visible": "[steps('network').deployAvdPrivateLinkService]",
                             "defaultValue": "EnabledForClientsOnly",
-                            "toolTip": "This access level sets which resources are allowed to bypass the private endpoint and access the internet.",
-                            "label": "Host Pool Private Endpoint Public Network Access",
+                            "toolTip": "Host Pool Private Endpoint: <br/> - Disabled: Blocks public access and requires both clients and sessino hosts to use the private endpoints. <br/> - Enabled: Allow Clients and session hosts to communicate over the public network. <br/> - Enabled for Clients Only: Allow Clients to access AVD over public network. <br/> - Enabled For Session Hosts Only: Allow Session Hosts to communicate over the public network.",
                             "constraints": {
                                 "allowedValues": [
                                     {
-                                        "label": "Disabled (Blocks public access and requires both clients and sessino hosts to use the private endpoints)",
+                                        "label": "Disabled",
                                         "value": "Disabled"
                                     },
                                     {
-                                        "label": "Enabled (Allow Clients and session hosts to communicate over the public network)",
+                                        "label": "Enabled",
                                         "value": "Enabled"
                                     },
                                     {
-                                        "label": "Enabled For Clients Only (Allow Clients to access AVD over public network)",
+                                        "label": "Enabled For Clients Only",
                                         "value": "EnabledForClientsOnly"
                                     },
                                     {
-                                        "label": "Enabled For Session Hosts Only (Allow Session Hosts to communicate over the public network)",
+                                        "label": "Enabled For Session Hosts Only",
                                         "value": "EnabledForSessionHostsOnly"
                                     }
                                 ]
@@ -1261,16 +1260,16 @@
                             "type": "Microsoft.Common.DropDown",
                             "visible": "[steps('network').deployAvdPrivateLinkService]",
                             "defaultValue": "",
-                            "toolTip": "This access level sets if a workspace feed is allowed to enforce the usage of the private endpoint or allow public access.",
+                            "toolTip": "Workspace Private Endpoint: <br/> - Disabled: Workspace feed requests are denied from public routes, but allowed from private routes. <br/> - Enabled: Workspace feed requests are allowed from public and private routes.",
                             "label": "Workspace Private Endpoint Public Network Access",
                             "constraints": {
                                 "allowedValues": [
                                     {
-                                        "label": "Disabled (Workspace feed requests are denied from public routes but allowed from private routes)",
+                                        "label": "Disabled",
                                         "value": "Disabled"
                                     },
                                     {
-                                        "label": "Enabled (Workspace feed requests are allowed from both public and private routes)",
+                                        "label": "Enabled",
                                         "value": "Enabled"
                                     }
                                 ]
