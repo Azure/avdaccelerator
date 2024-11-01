@@ -132,7 +132,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 // Provision the storage account and Azure Files.
 module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bicep' = {
     scope: resourceGroup('${workloadSubsId}', '${storageObjectsRgName}')
-    name: 'Storage-${storagePurpose}-${time}'
+    name: 'Storage-${storageAccountName}-${storagePurpose}-${time}'
     params: {
         name: storageAccountName
         location: sessionHostLocation
@@ -201,7 +201,7 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
 module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = {
     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
-    name: 'Add-${storagePurpose}-Storage-Setup-${time}'
+    name: 'Add-${storageAccountName}-${storagePurpose}-Storage-Setup-${time}'
     params: {
         location: sessionHostLocation
         virtualMachineName: managementVmName
