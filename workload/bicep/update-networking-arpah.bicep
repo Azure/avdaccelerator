@@ -21,7 +21,7 @@ param avdSessionHostLocation string = 'eastus2'
 param avdWorkloadSubsId string = ''
 
 @sys.description('Existing Azure log analytics workspace resource ID to connect to. (Default: "")')
-param alaExistingWorkspaceResourceId string = ''
+param alaExistingWorkspaceResourceId string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-log'
 
 @sys.description('Existing virtual network subnet for AVD. (Default: "")')
 param existingVnetAvdSubnetResourceId string = ''
@@ -109,6 +109,13 @@ var varAvdDefaultTags = {
     CreationTimeUTC: time
 }
 
+// get existing log analytics workspace resource ID :  avd-nih-arpah-prod-use2-log
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
+    name: alaExistingWorkspaceResourceId
+    scope: resourceGroup('avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-monitoring')
+    
+}
+
 // Networking
 // if existing vnet/subnet
 // JWI:  this code is not working correctly;  it creates the nsg an rt, but updating the subnet fails
@@ -123,7 +130,7 @@ module updateSubnetNsgAndRouteTable './modules/networking-arpah/deploy.bicep' = 
         workloadSubsId: avdWorkloadSubsId
         sessionHostLocation: avdSessionHostLocation
         tags: union(varCustomResourceTags, varAvdDefaultTags)
-        alaWorkspaceResourceId: alaExistingWorkspaceResourceId
+        alaWorkspaceResourceId: logAnalyticsWorkspace.id
     }
 }
 
