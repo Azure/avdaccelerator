@@ -1538,7 +1538,7 @@ module sessionHosts './modules/avdSessionHosts/deploy-arpah.bicep' = [
         diskType: avdSessionHostDiskType
         customOsDiskSizeGB: customOsDiskSizeGb
         location: avdSessionHostLocation
-        namePrefix: varSessionHostNamePrefix
+        namePrefix: '${varSessionHostNamePrefix}${first(deploymentEnvironment)}'
         vmSize: avdSessionHostsSize
         enableAcceleratedNetworking: enableAcceleratedNetworking
         securityType: securityType == 'Standard' ? '' : securityType
@@ -1611,7 +1611,7 @@ module sessionHostsRemoteApp './modules/avdSessionHosts/deploy-arpah.bicep' = [
         diskType: avdSessionHostDiskType
         customOsDiskSizeGB: customOsDiskSizeGb
         location: avdSessionHostLocation
-        namePrefix: '${varSessionHostNamePrefix}ra'
+        namePrefix: '${varSessionHostNamePrefix}${first(deploymentEnvironment)}ra'
         vmSize: avdSessionHostsSize
         enableAcceleratedNetworking: enableAcceleratedNetworking
         securityType: securityType == 'Standard' ? '' : securityType

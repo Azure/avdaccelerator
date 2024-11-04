@@ -37,9 +37,17 @@ param vnetResourceGroupName string
 // =========== //
 // Variable declaration //
 // =========== //
-var varNetworkSecurityGroupDiagnostic = [
-    'allLogs'
-]
+// var varNetworkSecurityGroupDiagnostic = [
+//     'allLogs'
+// ]
+
+var varDiagnosticSettings = !empty(alaWorkspaceResourceId)
+  ? [
+      {
+        workspaceResourceId: alaWorkspaceResourceId
+      }
+    ]
+  : []
 
 var varCreateAvdStaicRoute = true
 var varExistingAvdVnetName = split(existingAvdSubnetResourceId, '/')[8]
@@ -57,24 +65,7 @@ module networksecurityGroupAvd '../../../../avm/1.0.0/res/network/network-securi
         name: avdNetworksecurityGroupName
         location: sessionHostLocation
         tags: tags
-        diagnosticSettings: [
-            {
-                name: 'diagnosticSetting'
-                logCategoriesAndGroups: [
-                    {
-                        category: 'allLogs'
-                        categoryGroup: null
-                        enabled: true
-                    }
-                ]
-                logAnalyticsDestinationType: 'AzureDiagnostics'
-                workspaceResourceId: alaWorkspaceResourceId
-                storageAccountResourceId: null
-                eventHubAuthorizationRuleResourceId: null
-                eventHubName: null
-                marketplacePartnerResourceId: null
-            }
-        ]
+        diagnosticSettings: varDiagnosticSettings
         securityRules: [
             {
                 name: 'AVDServiceTraffic'
