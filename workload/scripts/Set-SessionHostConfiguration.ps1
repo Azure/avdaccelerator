@@ -86,10 +86,10 @@ try {
         # Download VDOT
         $URL = 'https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/archive/refs/heads/main.zip'
         $ZIP = 'VDOT.zip'
-        Invoke-WebRequest -Uri $URL -OutFile $ZIP
+        Get-WebFile -FileName $ZIP -URL $URL
 
         # Extract VDOT from ZIP archive
-        Expand-Archive -LiteralPath $ZIP -Force
+        Expand-Archive -LiteralPath ".\$ZIP" -Force
 
         # Fix to disable AppX Packages
         # As of 2/8/22, all AppX Packages are enabled by default
