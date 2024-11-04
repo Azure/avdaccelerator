@@ -227,7 +227,7 @@ param msixStoragePerformance string = 'Premium'
 @sys.description('Enables a zero trust configuration on the session host disks. (Default: false)')
 param diskZeroTrust bool = false
 
-@sys.description('Session host VM size. (Default: Standard_D4ads_v5)') // getting OverconstrainedZonalAllocationRequest error on provisioning the session host, so switching to Standard_E4s_v5
+@sys.description('Session host VM size. (Default: Standard_D4ads_v5)') // getting OverconstrainedZonalAllocationRequest error on provisioning the session host, so switching to Standard_E4s_v5, for prod: Standard_E8s_v5
 param avdSessionHostsSize string = 'Standard_E4s_v5'
 
 @sys.description('OS disk type for session host. (Default: Premium_LRS)')
@@ -495,6 +495,11 @@ param storageFilePrivateEndpointStaticIpRemote string
 // =========== //
 // Variable declaration //
 // =========== //
+// vm sku based on environment
+var vmSku = (deploymentEnvironment == 'Prod')
+    ? 'Standard_E8s_v5'
+    : avdSessionHostsSize
+
 // Resource naming
 var varDeploymentPrefixLowercase = toLower(deploymentPrefix)
 var varAzureCloudName = environment().name
@@ -1539,7 +1544,8 @@ module sessionHosts './modules/avdSessionHosts/deploy-arpah.bicep' = [
         customOsDiskSizeGB: customOsDiskSizeGb
         location: avdSessionHostLocation
         namePrefix: '${varSessionHostNamePrefix}${first(toLower(deploymentEnvironment))}'
-        vmSize: avdSessionHostsSize
+        //vmSize: avdSessionHostsSize
+        vmSize: vmSku
         enableAcceleratedNetworking: enableAcceleratedNetworking
         securityType: securityType == 'Standard' ? '' : securityType
         secureBootEnabled: secureBootEnabled
@@ -1612,7 +1618,8 @@ module sessionHostsRemoteApp './modules/avdSessionHosts/deploy-arpah.bicep' = [
         customOsDiskSizeGB: customOsDiskSizeGb
         location: avdSessionHostLocation
         namePrefix: '${varSessionHostNamePrefix}${first(toLower(deploymentEnvironment))}ra'
-        vmSize: avdSessionHostsSize
+        //vmSize: avdSessionHostsSize
+        vmSize: vmSku
         enableAcceleratedNetworking: enableAcceleratedNetworking
         securityType: securityType == 'Standard' ? '' : securityType
         secureBootEnabled: secureBootEnabled
