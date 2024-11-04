@@ -1267,8 +1267,7 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
           ipRules: []
         }
       : {}
-    privateEndpoints: deployPrivateEndpointKeyvaultStorage
-      ? [
+    privateEndpoints: deployPrivateEndpointKeyvaultStorage? [
           {
             name: varWrklKvPrivateEndpointName
             subnetResourceId: createAvdVnet
@@ -1276,13 +1275,12 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
               : existingVnetPrivateEndpointSubnetResourceId
             customNetworkInterfaceName: 'nic-01-${varWrklKvPrivateEndpointName}'
             service: 'vault'
-            privateDnsZoneGroup: {
-              privateDNSResourceIds: [
+            privateDnsZoneGroupName: split(networking.outputs.keyVaultDnsZoneResourceId, '/')[8]
+            privateDnsZoneResourceIds: [
                 createPrivateDnsZones ? networking.outputs.keyVaultDnsZoneResourceId : avdVnetPrivateDnsZoneKeyvaultId
-              ]
-            }
+            ]
           }
-        ]
+      ]
       : []
     secrets: (avdIdentityServiceProvider != 'EntraID')
       ? [
