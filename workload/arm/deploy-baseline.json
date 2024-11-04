@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "3013332418835867885"
+      "templateHash": "13501197543177392435"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -4191,7 +4191,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "11742268930182457765"
+              "templateHash": "7524095918401942648"
             },
             "name": "AVD LZA networking",
             "description": "This module deploys vNet, NSG, ASG, UDR, private DNs zones",
@@ -7965,7 +7965,7 @@
               "condition": "[and(parameters('createPrivateDnsZones'), parameters('deployAvdPrivateLinkService'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('Private-DNS-AVD-Connection{0}', parameters('time'))]",
+              "name": "[format('Private-DNS-AVD-Connection-{0}', parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
               "resourceGroup": "[format('{0}', parameters('networkObjectsRgName'))]",
               "properties": {
@@ -8551,7 +8551,7 @@
             },
             "avdDnsConnectionZoneResourceId": {
               "type": "string",
-              "value": "[if(and(parameters('createPrivateDnsZones'), parameters('deployAvdPrivateLinkService')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-AVD-Connection{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')]"
+              "value": "[if(and(parameters('createPrivateDnsZones'), parameters('deployAvdPrivateLinkService')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Private-DNS-AVD-Connection-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')]"
             },
             "avdDnsDiscoveryZoneResourceId": {
               "type": "string",
@@ -8661,8 +8661,8 @@
             "value": "[parameters('workspacePublicNetworkAccess')]"
           },
           "privateEndpointSubnetResourceId": "[if(parameters('createAvdVnet'), createObject('value', format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetPrivateEndpointSubnetName'))), createObject('value', parameters('existingVnetPrivateEndpointSubnetResourceId')))]",
-          "avdVnetPrivateDnsZoneDiscoveryResourceId": "[if(parameters('createPrivateDnsZones'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.avdDnsDiscoveryZoneResourceId.value), createObject('value', parameters('avdVnetPrivateDnsZoneDiscoveryResourceId')))]",
-          "avdVnetPrivateDnsZoneConnectionResourceId": "[if(parameters('createPrivateDnsZones'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.avdDnsConnectionZoneResourceId.value), createObject('value', parameters('avdVnetPrivateDnsZoneConnectionResourceId')))]",
+          "avdVnetPrivateDnsZoneDiscoveryResourceId": "[if(parameters('deployAvdPrivateLinkService'), if(parameters('createPrivateDnsZones'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.avdDnsDiscoveryZoneResourceId.value), createObject('value', parameters('avdVnetPrivateDnsZoneDiscoveryResourceId'))), createObject('value', ''))]",
+          "avdVnetPrivateDnsZoneConnectionResourceId": "[if(parameters('deployAvdPrivateLinkService'), if(parameters('createPrivateDnsZones'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.avdDnsConnectionZoneResourceId.value), createObject('value', parameters('avdVnetPrivateDnsZoneConnectionResourceId'))), createObject('value', ''))]",
           "privateEndpointConnectionName": {
             "value": "[variables('varPrivateEndPointConnectionName')]"
           },

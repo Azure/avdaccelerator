@@ -620,7 +620,7 @@ module privateDnsZoneKeyVault '../../../../avm/1.0.0/res/network/private-dns-zon
 // Private DNS zones AVD
 module privateDnsZoneAVDConnection '../../../../avm/1.0.0/res/network/private-dns-zone/main.bicep' = if (createPrivateDnsZones && deployAvdPrivateLinkService) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
-    name: 'Private-DNS-AVD-Connection${time}'
+    name: 'Private-DNS-AVD-Connection-${time}'
     params: {
         name: privateDnsZoneNames.AVDFeedConnections
         virtualNetworkLinks: varVirtualNetworkLinks
