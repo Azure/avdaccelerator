@@ -67,6 +67,9 @@ param deployDDoSNetworkProtection bool
 @sys.description('Optional. AVD Accelerator will deploy with private endpoints by default.')
 param deployPrivateEndpointSubnet bool
 
+@sys.description('Optional. Deploys private endpoints for the AVD Private Link Service. (Default: false)')
+param deployAvdPrivateLinkService bool
+
 @sys.description('AVD VNet address prefixes.')
 param vnetAddressPrefixes string
 
@@ -614,10 +617,33 @@ module privateDnsZoneKeyVault '../../../../avm/1.0.0/res/network/private-dns-zon
   }
 }
 
+// Private DNS zones AVD
+module privateDnsZoneAVDConnection '../../../../avm/1.0.0/res/network/private-dns-zone/main.bicep' = if (createPrivateDnsZones && deployAvdPrivateLinkService) {
+    scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
+    name: 'Private-DNS-AVD-Connection${time}'
+    params: {
+        name: privateDnsZoneNames.AVDFeedConnections
+        virtualNetworkLinks: varVirtualNetworkLinks
+        tags: tags
+    }
+}
+
+// Private DNS zones AVD Discovery
+module privateDnsZoneAVDDiscovery '../../../../avm/1.0.0/res/network/private-dns-zone/main.bicep' = if (createPrivateDnsZones && deployAvdPrivateLinkService) {
+    scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
+    name: 'Private-DNS-AVD-Discovery-${time}'
+    params: {
+        name: privateDnsZoneNames.AVDDiscovery
+        virtualNetworkLinks: varVirtualNetworkLinks
+        tags: tags
+    }
+}
 // =========== //
 // Outputs //
 // =========== //
 output applicationSecurityGroupResourceId string = deployAsg ? applicationSecurityGroup.outputs.resourceId : ''
 output virtualNetworkResourceId string = createVnet ? virtualNetwork.outputs.resourceId : ''
 output azureFilesDnsZoneResourceId string = createPrivateDnsZones ? privateDnsZoneAzureFiles.outputs.resourceId : ''
-output KeyVaultDnsZoneResourceId string = createPrivateDnsZones ? privateDnsZoneKeyVault.outputs.resourceId : ''
+output keyVaultDnsZoneResourceId string = createPrivateDnsZones ? privateDnsZoneKeyVault.outputs.resourceId : ''
+output aVDDnsConnectionZoneResourceId string = createPrivateDnsZones ? privateDnsZoneAVDConnection.outputs.resourceId : ''
+output aVDDnsDiscoveryZoneResourceId string = createPrivateDnsZones ? privateDnsZoneAVDDiscovery.outputs.resourceId : ''
