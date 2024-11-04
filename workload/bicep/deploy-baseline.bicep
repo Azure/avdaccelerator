@@ -1254,7 +1254,7 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
   params: {
     name: varWrklKvName
     location: avdSessionHostLocation
-    enableRbacAuthorization: false
+    enableRbacAuthorization: true
     enablePurgeProtection: enableKvPurgeProtection
     sku: varWrklKeyVaultSku
     softDeleteRetentionInDays: 7

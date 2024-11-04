@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "11257705226810060200"
+      "templateHash": "1471421731411469646"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -19911,7 +19911,7 @@
             "value": "[parameters('avdSessionHostLocation')]"
           },
           "enableRbacAuthorization": {
-            "value": false
+            "value": true
           },
           "enablePurgeProtection": {
             "value": "[parameters('enableKvPurgeProtection')]"
