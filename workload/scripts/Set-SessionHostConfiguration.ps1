@@ -112,7 +112,7 @@ try {
         }
 
         # Run VDOT
-        & .\VDOT\Virtual-Desktop-Optimization-Tool-main\Windows_VDOT.ps1 -Optimizations 'AppxPackages', 'Autologgers', 'DefaultUserSettings', 'LocalPolicy', 'ScheduledTasks', 'WindowsMediaPlayer' -AdvancedOptimizations 'Edge', 'RemoveLegacyIE' -AcceptEULA
+        & .\VDOT\Virtual-Desktop-Optimization-Tool-main\Windows_VDOT.ps1 -Optimizations 'AppxPackages', 'Autologgers', 'DefaultUserSettings', 'LocalPolicy', 'NetworkOptimizations', 'ScheduledTasks', 'Services', 'WindowsMediaPlayer' -AdvancedOptimizations 'Edge', 'RemoveLegacyIE' -AcceptEULA
 
         Write-Log -Message 'Optimized the operating system using VDOT' -Type 'INFO'
 
