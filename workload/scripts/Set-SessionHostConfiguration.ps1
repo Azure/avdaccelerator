@@ -99,6 +99,7 @@ try {
                 $Settings = $Content | ConvertFrom-Json
                 $NewSettings = @()
                 foreach ($Setting in $Settings) {
+                        #Adds Exception to keep Windows ScreenSketch
                         If ($Setting.AppxPackage -eq "Microsoft.ScreenSketch") {
                                 $NewSettings += [pscustomobject][ordered]@{
                                         AppxPackage = $Setting.AppxPackage
@@ -107,6 +108,7 @@ try {
                                         Description = $Setting.Description
                                 }
                         }
+                        #Adds Exception to keep Windows Calculator
                         ElseIf ($Setting.AppxPackage -eq "Microsoft.WindowsCalculator") {
                                 $NewSettings += [pscustomobject][ordered]@{
                                         AppxPackage = $Setting.AppxPackage
@@ -115,6 +117,7 @@ try {
                                         Description = $Setting.Description
                                 }
                         }
+                        #Adds Exception to keep Windows Notepad
                         ElseIf ($Setting.AppxPackage -eq "Microsoft.WindowsNotepad") {
                                 $NewSettings += [pscustomobject][ordered]@{
                                         AppxPackage = $Setting.AppxPackage
@@ -123,6 +126,7 @@ try {
                                         Description = $Setting.Description
                                 }
                         }
+                        #Adds Exception to keep Windows Terminal
                         ElseIf ($Setting.AppxPackage -eq "Microsoft.WindowsTerminal") {
                                 $NewSettings += [pscustomobject][ordered]@{
                                         AppxPackage = $Setting.AppxPackage
@@ -131,6 +135,7 @@ try {
                                         Description = $Setting.Description
                                 }
                         }
+                        #Removes all other AppxPackages not listed above
                         Else {
                                 $NewSettings += [pscustomobject][ordered]@{
                                         AppxPackage = $Setting.AppxPackage
