@@ -147,7 +147,7 @@
             "value": 0
         },
         "availabilityZonesCompute": {
-            "value": false
+            "value": true
         },
         "zoneRedundantStorage": {
             "value": false
