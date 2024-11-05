@@ -82,7 +82,7 @@ try {
         ##############################################################
         #  Run the Virtual Desktop Optimization Tool (VDOT)
         ##############################################################
-                # https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool
+        # https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool
                 # Download VDOT
                 $URL = 'https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/archive/refs/heads/main.zip'
                 $ZIP = 'VDOT.zip'
@@ -421,8 +421,8 @@ try {
         if ($IdentityServiceProvider -eq "EntraID" -and $AmdVmSize -eq 'false' -and $NvidiaVmSize -eq 'false') {
                 Start-Process -FilePath 'shutdown' -ArgumentList '/r /t 30'
         }
-}
-catch {
+        }
+        catch {
         Write-Log -Message $_ -Type 'ERROR'
         throw
-}
+        }
