@@ -1544,8 +1544,8 @@ module sessionHosts './modules/avdSessionHosts/deploy-arpah.bicep' = [
         customOsDiskSizeGB: customOsDiskSizeGb
         location: avdSessionHostLocation
         namePrefix: '${varSessionHostNamePrefix}${first(toLower(deploymentEnvironment))}'
-        //vmSize: avdSessionHostsSize
-        vmSize: vmSku
+        vmSize: avdSessionHostsSize
+        //vmSize: vmSku
         enableAcceleratedNetworking: enableAcceleratedNetworking
         securityType: securityType == 'Standard' ? '' : securityType
         secureBootEnabled: secureBootEnabled
@@ -1618,8 +1618,8 @@ module sessionHostsRemoteApp './modules/avdSessionHosts/deploy-arpah.bicep' = [
         customOsDiskSizeGB: customOsDiskSizeGb
         location: avdSessionHostLocation
         namePrefix: '${varSessionHostNamePrefix}${first(toLower(deploymentEnvironment))}ra'
-        //vmSize: avdSessionHostsSize
-        vmSize: vmSku
+        vmSize: avdSessionHostsSize
+        //vmSize: vmSku
         enableAcceleratedNetworking: enableAcceleratedNetworking
         securityType: securityType == 'Standard' ? '' : securityType
         secureBootEnabled: secureBootEnabled
