@@ -83,22 +83,55 @@ try {
         #  Run the Virtual Desktop Optimization Tool (VDOT)
         ##############################################################
         # https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool
-                # Download VDOT
-                $URL = 'https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/archive/refs/heads/main.zip'
-                $ZIP = 'VDOT.zip'
-                Get-WebFile -FileName $ZIP -URL $URL
+        # Download VDOT
+        $URL = 'https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/archive/refs/heads/main.zip'
+        $ZIP = 'VDOT.zip'
+        Get-WebFile -FileName $ZIP -URL $URL
 
-                # Extract VDOT from ZIP archive
-                Expand-Archive -LiteralPath $ZIP -Force
+        # Extract VDOT from ZIP archive
+        Expand-Archive -LiteralPath $ZIP -Force
 
-                # Fix to disable AppX Packages
-                # As of 2/8/22, all AppX Packages are enabled by default
-                $Files = (Get-ChildItem -Path .\VDOT\Virtual-Desktop-Optimization-Tool-main -File -Recurse -Filter "AppxPackages.json").FullName
-                foreach ($File in $Files) {
-                        $Content = Get-Content -Path $File
-                        $Settings = $Content | ConvertFrom-Json
-                        $NewSettings = @()
-                        foreach ($Setting in $Settings) {
+        # Fix to disable AppX Packages
+        # As of 2/8/22, all AppX Packages are enabled by default
+        $Files = (Get-ChildItem -Path .\VDOT\Virtual-Desktop-Optimization-Tool-main -File -Recurse -Filter "AppxPackages.json").FullName
+        foreach ($File in $Files) {
+                $Content = Get-Content -Path $File
+                $Settings = $Content | ConvertFrom-Json
+                $NewSettings = @()
+                foreach ($Setting in $Settings) {
+                        If ($Setting.AppxPackage -eq "Microsoft.ScreenSketch") {
+                                $NewSettings += [pscustomobject][ordered]@{
+                                        AppxPackage = $Setting.AppxPackage
+                                        VDIState    = 'Enabled'
+                                        URL         = $Setting.URL
+                                        Description = $Setting.Description
+                                }
+                        }
+                        ElseIf ($Setting.AppxPackage -eq "Microsoft.WindowsCalculator") {
+                                $NewSettings += [pscustomobject][ordered]@{
+                                        AppxPackage = $Setting.AppxPackage
+                                        VDIState    = 'Enabled'
+                                        URL         = $Setting.URL
+                                        Description = $Setting.Description
+                                }
+                        }
+                        ElseIf ($Setting.AppxPackage -eq "Microsoft.WindowsNotepad") {
+                                $NewSettings += [pscustomobject][ordered]@{
+                                        AppxPackage = $Setting.AppxPackage
+                                        VDIState    = 'Enabled'
+                                        URL         = $Setting.URL
+                                        Description = $Setting.Description
+                                }
+                        }
+                        ElseIf ($Setting.AppxPackage -eq "Microsoft.WindowsTerminal") {
+                                $NewSettings += [pscustomobject][ordered]@{
+                                        AppxPackage = $Setting.AppxPackage
+                                        VDIState    = 'Enabled'
+                                        URL         = $Setting.URL
+                                        Description = $Setting.Description
+                                }
+                        }
+                        Else {
                                 $NewSettings += [pscustomobject][ordered]@{
                                         AppxPackage = $Setting.AppxPackage
                                         VDIState    = 'Disabled'
@@ -106,15 +139,16 @@ try {
                                         Description = $Setting.Description
                                 }
                         }
-
-                        $JSON = $NewSettings | ConvertTo-Json
-                        $JSON | Out-File -FilePath $File -Force
                 }
 
-                # Run VDOT
-                & .\VDOT\Virtual-Desktop-Optimization-Tool-main\Windows_VDOT.ps1 -Optimizations 'All' -AdvancedOptimizations 'Edge', 'RemoveLegacyIE' -AcceptEULA
+                $JSON = $NewSettings | ConvertTo-Json
+                $JSON | Out-File -FilePath $File -Force
+        }
 
-                Write-Log -Message 'Optimized the operating system using VDOT' -Type 'INFO'
+        # Run VDOT
+        & .\VDOT\Virtual-Desktop-Optimization-Tool-main\Windows_VDOT.ps1 -Optimizations 'All' -AdvancedOptimizations 'Edge', 'RemoveLegacyIE' -AcceptEULA
+
+        Write-Log -Message 'Optimized the operating system using VDOT' -Type 'INFO'
 
         ##############################################################
         #  Add Recommended AVD Settings
@@ -421,8 +455,8 @@ try {
         if ($IdentityServiceProvider -eq "EntraID" -and $AmdVmSize -eq 'false' -and $NvidiaVmSize -eq 'false') {
                 Start-Process -FilePath 'shutdown' -ArgumentList '/r /t 30'
         }
-        }
-        catch {
-        Write-Log -Message $_ -Type 'ERROR'
-        throw
-        }
+}
+catch {
+Write-Log -Message $_ -Type 'ERROR'
+throw
+}
