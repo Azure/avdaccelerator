@@ -55,7 +55,7 @@ try
 
     Write-Host 'Virtual Desktop Optimization Tool (VDOT): Completed Prerequisites'
     Write-Host 'Virtual Desktop Optimization Tool (VDOT): Begin Tool Execution'
-    .\Windows_VDOT.ps1 -Optimizations 'AppxPackages','Autologgers','DefaultUserSettings','LGPO','NetworkOptimizations','ScheduledTasks','Services','WindowsMediaPlayer' -AdvancedOptimizations 'Edge','RemoveLegacyIE' -AcceptEULA -Verbose
+    .\Windows_VDOT.ps1 -Optimizations 'AppxPackages','Autologgers','DefaultUserSettings','LocalPolicy','NetworkOptimizations','ScheduledTasks','Services','WindowsMediaPlayer' -AdvancedOptimizations 'Edge','RemoveLegacyIE','RemoveOneDrive' -AcceptEULA -Verbose
     Write-Host 'Virtual Desktop Optimization Tool (VDOT): Completed Tool Execution'  
 }
 catch 
