@@ -102,7 +102,7 @@ try {
                         If ($Setting.AppxPackage -eq "Microsoft.ScreenSketch") {
                                 $NewSettings += [pscustomobject][ordered]@{
                                         AppxPackage = $Setting.AppxPackage
-                                        VDIState    = 'Enabled'
+                                        VDIState    = 'Unchanged'
                                         URL         = $Setting.URL
                                         Description = $Setting.Description
                                 }
@@ -110,7 +110,7 @@ try {
                         ElseIf ($Setting.AppxPackage -eq "Microsoft.WindowsCalculator") {
                                 $NewSettings += [pscustomobject][ordered]@{
                                         AppxPackage = $Setting.AppxPackage
-                                        VDIState    = 'Enabled'
+                                        VDIState    = 'Unchanged'
                                         URL         = $Setting.URL
                                         Description = $Setting.Description
                                 }
@@ -118,7 +118,7 @@ try {
                         ElseIf ($Setting.AppxPackage -eq "Microsoft.WindowsNotepad") {
                                 $NewSettings += [pscustomobject][ordered]@{
                                         AppxPackage = $Setting.AppxPackage
-                                        VDIState    = 'Enabled'
+                                        VDIState    = 'Unchanged'
                                         URL         = $Setting.URL
                                         Description = $Setting.Description
                                 }
@@ -126,7 +126,7 @@ try {
                         ElseIf ($Setting.AppxPackage -eq "Microsoft.WindowsTerminal") {
                                 $NewSettings += [pscustomobject][ordered]@{
                                         AppxPackage = $Setting.AppxPackage
-                                        VDIState    = 'Enabled'
+                                        VDIState    = 'Unchanged'
                                         URL         = $Setting.URL
                                         Description = $Setting.Description
                                 }
@@ -146,7 +146,7 @@ try {
         }
 
         # Run VDOT
-        & .\VDOT\Virtual-Desktop-Optimization-Tool-main\Windows_VDOT.ps1 -Optimizations 'All' -AdvancedOptimizations 'Edge', 'RemoveLegacyIE' -AcceptEULA
+        & .\VDOT\Virtual-Desktop-Optimization-Tool-main\Windows_VDOT.ps1 -Optimizations 'AppxPackages', 'Autologgers', 'DefaultUserSettings', 'LocalPolicy', 'NetworkOptimizations', 'ScheduledTasks', 'Services', 'WindowsMediaPlayer' -AdvancedOptimizations 'Edge', 'RemoveLegacyIE' -AcceptEULA
 
         Write-Log -Message 'Optimized the operating system using VDOT' -Type 'INFO'
 
