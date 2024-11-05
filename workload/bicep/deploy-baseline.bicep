@@ -1275,7 +1275,7 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
               : existingVnetPrivateEndpointSubnetResourceId
             customNetworkInterfaceName: 'nic-01-${varWrklKvPrivateEndpointName}'
             service: 'vault'
-            privateDnsZoneGroupName: split(networking.outputs.keyVaultDnsZoneResourceId, '/')[8]
+            privateDnsZoneGroupName: createPrivateDnsZones ? split(networking.outputs.keyVaultDnsZoneResourceId, '/')[8] : split(avdVnetPrivateDnsZoneKeyvaultId, '/')[8]
             privateDnsZoneResourceIds: [
                 createPrivateDnsZones ? networking.outputs.keyVaultDnsZoneResourceId : avdVnetPrivateDnsZoneKeyvaultId
             ]
