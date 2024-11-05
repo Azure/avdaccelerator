@@ -171,10 +171,10 @@ param deployAvdPrivateLinkService bool = false
 param createPrivateDnsZones bool = true
 
 @sys.description('The ResourceID of the AVD Private DNS Zone for Connection. (privatelink.wvd.azure.com). Only required if createPrivateDNSZones is set to false.')
-param avdVnetPrivateDnsZoneConnectionResourceId string
+param avdVnetPrivateDnsZoneConnectionResourceId string = ''
 
 @sys.description('The ResourceID of the AVD Private DNS Zone for Discovery. (privatelink-global.wvd.azure.com). Only required if createPrivateDNSZones is set to false.')
-param avdVnetPrivateDnsZoneDiscoveryResourceId string
+param avdVnetPrivateDnsZoneDiscoveryResourceId string = ''
 
 @sys.description('Use existing Azure private DNS zone for Azure files privatelink.file.core.windows.net or privatelink.file.core.usgovcloudapi.net. (Default: "")')
 param avdVnetPrivateDnsZoneFilesId string = ''
@@ -1173,8 +1173,8 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     hostPoolPublicNetworkAccess: hostPoolPublicNetworkAccess
     workspacePublicNetworkAccess: workspacePublicNetworkAccess
     privateEndpointSubnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
-    avdVnetPrivateDnsZoneDiscoveryResourceId: createPrivateDnsZones ? networking.outputs.aVDDnsDiscoveryZoneResourceId : avdVnetPrivateDnsZoneDiscoveryResourceId
-    avdVnetPrivateDnsZoneConnectionResourceId: createPrivateDnsZones ? networking.outputs.aVDDnsConnectionZoneResourceId : avdVnetPrivateDnsZoneConnectionResourceId
+    avdVnetPrivateDnsZoneDiscoveryResourceId: deployAvdPrivateLinkService ? (createPrivateDnsZones ? networking.outputs.avdDnsDiscoveryZoneResourceId : avdVnetPrivateDnsZoneDiscoveryResourceId) : ''
+    avdVnetPrivateDnsZoneConnectionResourceId: deployAvdPrivateLinkService ? (createPrivateDnsZones ? networking.outputs.avdDnsConnectionZoneResourceId : avdVnetPrivateDnsZoneConnectionResourceId) : ''
     privateEndpointConnectionName: varPrivateEndPointConnectionName
     privateEndpointDiscoveryName: varPrivateEndPointDiscoveryName
     privateEndpointWorkspaceName: varPrivateEndPointWorkspaceName
@@ -1254,7 +1254,7 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
   params: {
     name: varWrklKvName
     location: avdSessionHostLocation
-    enableRbacAuthorization: false
+    enableRbacAuthorization: true
     enablePurgeProtection: enableKvPurgeProtection
     sku: varWrklKeyVaultSku
     softDeleteRetentionInDays: 7

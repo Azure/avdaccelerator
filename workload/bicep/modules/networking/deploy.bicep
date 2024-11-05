@@ -620,7 +620,7 @@ module privateDnsZoneKeyVault '../../../../avm/1.0.0/res/network/private-dns-zon
 // Private DNS zones AVD
 module privateDnsZoneAVDConnection '../../../../avm/1.0.0/res/network/private-dns-zone/main.bicep' = if (createPrivateDnsZones && deployAvdPrivateLinkService) {
     scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
-    name: 'Private-DNS-AVD-Connection${time}'
+    name: 'Private-DNS-AVD-Connection-${time}'
     params: {
         name: privateDnsZoneNames.AVDFeedConnections
         virtualNetworkLinks: varVirtualNetworkLinks
@@ -645,5 +645,5 @@ output applicationSecurityGroupResourceId string = deployAsg ? applicationSecuri
 output virtualNetworkResourceId string = createVnet ? virtualNetwork.outputs.resourceId : ''
 output azureFilesDnsZoneResourceId string = createPrivateDnsZones ? privateDnsZoneAzureFiles.outputs.resourceId : ''
 output keyVaultDnsZoneResourceId string = createPrivateDnsZones ? privateDnsZoneKeyVault.outputs.resourceId : ''
-output aVDDnsConnectionZoneResourceId string = createPrivateDnsZones ? privateDnsZoneAVDConnection.outputs.resourceId : ''
-output aVDDnsDiscoveryZoneResourceId string = createPrivateDnsZones ? privateDnsZoneAVDDiscovery.outputs.resourceId : ''
+output avdDnsConnectionZoneResourceId string = (createPrivateDnsZones && deployAvdPrivateLinkService) ? privateDnsZoneAVDConnection.outputs.resourceId : ''
+output avdDnsDiscoveryZoneResourceId string = (createPrivateDnsZones && deployAvdPrivateLinkService) ? privateDnsZoneAVDDiscovery.outputs.resourceId : ''
