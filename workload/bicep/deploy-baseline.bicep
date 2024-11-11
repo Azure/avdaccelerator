@@ -1429,7 +1429,7 @@ module strgKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = if ((varC
         }
         roleAssignments: [
           {
-            principalId: identity.outputs.managedIdentityStorageClientId
+            principalId: identity.outputs.managedIdentityStorageResourceId
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
           }
@@ -1462,7 +1462,7 @@ module strgKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = if ((varC
         }
         roleAssignments: [
           {
-            principalId: identity.outputs.managedIdentityStorageClientId
+            principalId: identity.outputs.managedIdentityStorageResourceId
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
           }
@@ -1473,7 +1473,7 @@ module strgKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = if ((varC
         name: varFslogixStorageName
         roleAssignments: [
           {
-            principalId: identity.outputs.managedIdentityStorageClientId
+            principalId: identity.outputs.managedIdentityStorageResourceId
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
           }
