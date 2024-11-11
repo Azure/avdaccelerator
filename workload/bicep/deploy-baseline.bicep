@@ -614,7 +614,7 @@ var varScalingPlanWeekendScheduleName = 'Weekend-${varManagementPlaneNamingStand
 
 var varStrgKvName = avdUseCustomNaming
   ? '${avdStrgKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}'
-  : 'kv-sec-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters
+  : 'kv-str-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters
 var varStrgKvPrivateEndpointName = 'pe-${varStrgKvName}-vault'
 var varStrgKeyVaultSku = (varAzureCloudName == 'AzureCloud' || varAzureCloudName == 'AzureUSGovernment')
   ? 'premium'

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "15522228327117529998"
+      "templateHash": "5441606181894130528"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -1405,7 +1405,7 @@
     "varScalingPlanExclusionTag": "[format('exclude-{0}', variables('varScalingPlanName'))]",
     "varScalingPlanWeekdaysScheduleName": "[format('Weekdays-{0}', variables('varManagementPlaneNamingStandard'))]",
     "varScalingPlanWeekendScheduleName": "[format('Weekend-{0}', variables('varManagementPlaneNamingStandard'))]",
-    "varStrgKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('avdStrgKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')), format('kv-sec-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')))]",
+    "varStrgKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('avdStrgKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')), format('kv-str-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')))]",
     "varStrgKvPrivateEndpointName": "[format('pe-{0}-vault', variables('varStrgKvName'))]",
     "varStrgKeyVaultSku": "[if(or(equals(variables('varAzureCloudName'), 'AzureCloud'), equals(variables('varAzureCloudName'), 'AzureUSGovernment')), 'premium', if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), 'standard', null()))]",
     "varWrklKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('avdWrklKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')), format('kv-sec-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')))]",
