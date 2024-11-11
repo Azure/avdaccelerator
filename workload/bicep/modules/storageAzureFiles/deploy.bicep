@@ -29,6 +29,9 @@ param fileShareName string
 @sys.description('Private endpoint subnet ID.')
 param privateEndpointSubnetId string
 
+@sys.description('Key Vault Name for Storage Accounts.')
+param kvStorageResId string
+
 @sys.description('Location where to deploy resources.')
 param location string
 
@@ -102,6 +105,9 @@ param securityPrincipalName string
 @sys.description('storage account FDQN.')
 param storageAccountFqdn string
 
+@sys.description('Boolean to determine if Zero Trust Storage is required.')
+param zeroTrustStorage bool
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -117,6 +123,10 @@ var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
         logCategoriesAndGroups: [] 
     }
 ]: []
+var customerManagedKey = zeroTrustStorage ? {
+    keyName: storageAccountName
+    keyVaultResourceId: kvStorageResId
+}:{}
 // =========== //
 // Deployments //
 // =========== //
@@ -136,6 +146,7 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
         location: location
         skuName: storageSku
         allowBlobPublicAccess: false
+        customerManagedKey: customerManagedKey
         publicNetworkAccess: deployPrivateEndpoint ? 'Disabled' : 'Enabled'
         kind: ((storageSku == 'Premium_LRS') || (storageSku == 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
         largeFileSharesState: (storageSku == 'Standard_LRS') || (storageSku == 'Standard_ZRS') ? 'Enabled': 'Disabled'

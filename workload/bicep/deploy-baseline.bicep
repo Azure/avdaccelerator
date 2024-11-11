@@ -421,6 +421,10 @@ param msixFileShareCustomName string = 'msix-app1-dev-use2-001'
 //param avdFslogixOfficeContainerFileShareCustomName string = 'fslogix-oc-app1-dev-001'
 
 @maxLength(6)
+@sys.description('AVD keyvault prefix custom name (with Zero Trust to store keys for FSLogix and AppAttach Storage / CMK option). (Default: kv-sec)')
+param avdStrgKvPrefixCustomName string = 'kv-str'
+
+@maxLength(6)
 @sys.description('AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv-sec)')
 param avdWrklKvPrefixCustomName string = 'kv-sec'
 
@@ -607,6 +611,15 @@ var varPrivateEndPointWorkspaceName = 'pe-${varWorkSpaceName}-global'
 var varScalingPlanExclusionTag = 'exclude-${varScalingPlanName}'
 var varScalingPlanWeekdaysScheduleName = 'Weekdays-${varManagementPlaneNamingStandard}'
 var varScalingPlanWeekendScheduleName = 'Weekend-${varManagementPlaneNamingStandard}'
+
+var varStrgKvName = avdUseCustomNaming
+  ? '${avdStrgKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}'
+  : 'kv-sec-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters
+var varStrgKvPrivateEndpointName = 'pe-${varStrgKvName}-vault'
+var varStrgKeyVaultSku = (varAzureCloudName == 'AzureCloud' || varAzureCloudName == 'AzureUSGovernment')
+  ? 'premium'
+  : (varAzureCloudName == 'AzureChinaCloud' ? 'standard' : null)
+
 var varWrklKvName = avdUseCustomNaming
   ? '${avdWrklKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}'
   : 'kv-sec-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters
@@ -970,6 +983,9 @@ var varAvdDefaultTags = {
   Environment: deploymentEnvironment
   ServiceWorkload: 'AVD'
   CreationTimeUTC: time
+}
+var varStorageKeyvaultTag = {
+  Purpose: 'Customer Managed Keys for FSLogix and MSIX storage accounts'
 }
 var varWorkloadKeyvaultTag = {
   Purpose: 'Secrets for local admin and domain join credentials'
@@ -1376,6 +1392,81 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
     wrklKeyVault
   ]
 }
+// Key vault for Storage Account(s)
+module strgKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = if ((varCreateStorageDeployment) && (diskZeroTrust)) {
+  scope: resourceGroup('${avdWorkloadSubsId}', '${varStorageObjectsRgName}')
+  name: 'Storage-KeyVault-${time}'
+  params: {
+    name: varStrgKvName
+    location: avdSessionHostLocation
+    enableRbacAuthorization: true
+    enablePurgeProtection: enableKvPurgeProtection
+    keys: varCreateMsixDeployment ? [
+      {
+        name: varMsixStorageName
+        roleAssignments: [
+          {
+            principalId: identity.outputs.managedIdentityStorageClientId
+            roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
+          }
+        ]
+      }
+      {
+        name: varFslogixStorageName
+        roleAssignments: [
+          {
+            principalId: identity.outputs.managedIdentityStorageClientId
+            roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
+          }
+        ]
+      }
+    ]:[
+      {
+        name: varFslogixStorageName
+        roleAssignments: [
+          {
+            principalId: identity.outputs.managedIdentityStorageClientId
+            roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
+          }
+        ]
+      }
+    ]
+    sku: varStrgKeyVaultSku
+    softDeleteRetentionInDays: 7
+    publicNetworkAccess: deployPrivateEndpointKeyvaultStorage ? 'Disabled' : 'Enabled'
+    networkAcls: deployPrivateEndpointKeyvaultStorage
+      ? {
+          bypass: 'AzureServices'
+          defaultAction: 'Deny'
+          virtualNetworkRules: []
+          ipRules: []
+        }
+      : {}
+    privateEndpoints: deployPrivateEndpointKeyvaultStorage? [
+          {
+            name: varStrgKvPrivateEndpointName
+            subnetResourceId: createAvdVnet
+              ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
+              : existingVnetPrivateEndpointSubnetResourceId
+            customNetworkInterfaceName: 'nic-01-${varStrgKvPrivateEndpointName}'
+            service: 'vault'
+            privateDnsZoneGroupName: createPrivateDnsZones ? split(networking.outputs.keyVaultDnsZoneResourceId, '/')[8] : split(avdVnetPrivateDnsZoneKeyvaultId, '/')[8]
+            privateDnsZoneResourceIds: [
+                createPrivateDnsZones ? networking.outputs.keyVaultDnsZoneResourceId : avdVnetPrivateDnsZoneKeyvaultId
+            ]
+          }
+      ]
+      : []
+    tags: createResourceTags
+      ? union(varCustomResourceTags, varAvdDefaultTags, varStorageKeyvaultTag)
+      : union(varAvdDefaultTags, varStorageKeyvaultTag)
+  }
+  dependsOn: [
+    baselineResourceGroups
+    monitoringDiagnosticSettings
+  ]
+}
+
 
 // FSLogix storage
 module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (createAvdFslogixDeployment) {
@@ -1389,6 +1480,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
     fileShareQuotaSize: fslogixFileShareQuotaSize
     storageAccountFqdn: varFslogixStorageFqdn
     storageAccountName: varFslogixStorageName
+    kvStorageResId: strgKeyVault.outputs.resourceId
     storageToDomainScript: varStorageToDomainScript
     storageToDomainScriptUri: varStorageToDomainScriptUri
     identityServiceProvider: avdIdentityServiceProvider
@@ -1413,6 +1505,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
       ? networking.outputs.azureFilesDnsZoneResourceId
       : avdVnetPrivateDnsZoneFilesId
     workloadSubsId: avdWorkloadSubsId
+    zeroTrustStorage: diskZeroTrust
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     alaWorkspaceResourceId: avdDeployMonitoring
       ? (deployAlaWorkspace
@@ -1426,6 +1519,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
     wrklKeyVault
     managementVm
     monitoringDiagnosticSettings
+    strgKeyVault
   ]
 }
 
@@ -1439,6 +1533,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
     fileShareMultichannel: (msixStoragePerformance == 'Premium') ? true : false
     storageSku: varMsixStorageSku
     fileShareQuotaSize: msixFileShareQuotaSize
+    kvStorageResId: strgKeyVault.outputs.resourceId
     storageAccountFqdn: varMsixStorageFqdn
     storageAccountName: varMsixStorageName
     storageToDomainScript: varStorageToDomainScript
@@ -1465,6 +1560,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
       ? networking.outputs.azureFilesDnsZoneResourceId
       : avdVnetPrivateDnsZoneFilesId
     workloadSubsId: avdWorkloadSubsId
+    zeroTrustStorage: diskZeroTrust
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     alaWorkspaceResourceId: avdDeployMonitoring
       ? (deployAlaWorkspace
@@ -1479,6 +1575,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
     wrklKeyVault
     managementVm
     monitoringDiagnosticSettings
+    strgKeyVault
   ]
 }
 
