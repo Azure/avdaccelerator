@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "5441606181894130528"
+      "templateHash": "9383677794744808689"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -26615,7 +26615,7 @@
           "enablePurgeProtection": {
             "value": "[parameters('enableKvPurgeProtection')]"
           },
-          "keys": "[if(variables('varCreateMsixDeployment'), createObject('value', createArray(createObject('name', variables('varMsixStorageName'), 'roleAssignments', createArray(createObject('principalId', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageClientId.value, 'roleDefinitionIdOrName', 'Key Vault Crypto Service Encryption User'))), createObject('name', variables('varFslogixStorageName'), 'roleAssignments', createArray(createObject('principalId', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageClientId.value, 'roleDefinitionIdOrName', 'Key Vault Crypto Service Encryption User'))))), createObject('value', createArray(createObject('name', variables('varFslogixStorageName'), 'roleAssignments', createArray(createObject('principalId', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageClientId.value, 'roleDefinitionIdOrName', 'Key Vault Crypto Service Encryption User'))))))]",
+          "keys": "[if(variables('varCreateMsixDeployment'), createObject('value', createArray(createObject('name', variables('varMsixStorageName'), 'rotationPolicy', createObject('attributes', createObject('expiryTime', 'P1Y'), 'lifetimeActions', createArray(createObject('action', createObject('type', 'Rotate'), 'trigger', createObject('timeBeforeExpiry', 'P1M')), createObject('action', createObject('type', 'Notify'), 'trigger', createObject('timeBeforeExpiry', 'P1M')))), 'roleAssignments', createArray(createObject('principalId', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageClientId.value, 'roleDefinitionIdOrName', 'Key Vault Crypto Service Encryption User'))), createObject('name', variables('varFslogixStorageName'), 'roleAssignments', createArray(createObject('principalId', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageClientId.value, 'roleDefinitionIdOrName', 'Key Vault Crypto Service Encryption User'))))), createObject('value', createArray(createObject('name', variables('varFslogixStorageName'), 'roleAssignments', createArray(createObject('principalId', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageClientId.value, 'roleDefinitionIdOrName', 'Key Vault Crypto Service Encryption User'))))))]",
           "sku": {
             "value": "[variables('varStrgKeyVaultSku')]"
           },

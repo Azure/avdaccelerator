@@ -1404,6 +1404,29 @@ module strgKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = if ((varC
     keys: varCreateMsixDeployment ? [
       {
         name: varMsixStorageName
+        rotationPolicy: {
+          attributes: {
+            expiryTime: 'P1Y'
+          }
+          lifetimeActions: [
+            {
+              action: {
+                type: 'Rotate'
+              }
+              trigger: {
+                timeBeforeExpiry: 'P1M'
+              }
+            }
+            {
+              action: {
+                type: 'Notify'
+              }
+              trigger: {
+                timeBeforeExpiry: 'P1M'
+              }
+            }
+          ]
+        }
         roleAssignments: [
           {
             principalId: identity.outputs.managedIdentityStorageClientId
