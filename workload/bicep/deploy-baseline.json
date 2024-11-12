@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "12509246907340629499"
+      "templateHash": "1258066910187961030"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -29395,6 +29395,9 @@
           "kvStorageResId": {
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Storage-KeyVault-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]"
           },
+          "managedIdentityStorageResourceId": {
+            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageResourceId.value]"
+          },
           "storageToDomainScript": {
             "value": "[variables('varStorageToDomainScript')]"
           },
@@ -29458,7 +29461,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "2146438400603398014"
+              "templateHash": "16882114007431366273"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -29591,6 +29594,12 @@
                 "description": "Tags to be applied to resources"
               }
             },
+            "managedIdentityStorageResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Managed Identity Resource ID for storage account."
+              }
+            },
             "managementVmName": {
               "type": "string",
               "metadata": {
@@ -29673,7 +29682,7 @@
             "varAdminUserName": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
             "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -AdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12} -SecurityPrincipalName \"{13}\" -StorageAccountFqdn {14} ', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), variables('varAdminUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'), variables('varSecurityPrincipalName'), parameters('storageAccountFqdn'))]",
             "varDiagnosticSettings": "[if(not(empty(parameters('alaWorkspaceResourceId'))), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'), 'logCategoriesAndGroups', createArray())), createArray())]",
-            "customerManagedKey": "[if(parameters('zeroTrustStorage'), createObject('keyName', parameters('storageAccountName'), 'keyVaultResourceId', parameters('kvStorageResId')), createObject())]"
+            "customerManagedKey": "[if(parameters('zeroTrustStorage'), createObject('keyName', parameters('storageAccountName'), 'keyVaultResourceId', parameters('kvStorageResId'), 'userAssignedIdentity', parameters('managedIdentityStorageResourceId')), createObject())]"
           },
           "resources": [
             {
@@ -32360,6 +32369,9 @@
           "kvStorageResId": {
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Storage-KeyVault-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]"
           },
+          "managedIdentityStorageResourceId": {
+            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageResourceId.value]"
+          },
           "storageAccountFqdn": {
             "value": "[variables('varMsixStorageFqdn')]"
           },
@@ -32429,7 +32441,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "2146438400603398014"
+              "templateHash": "16882114007431366273"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -32562,6 +32574,12 @@
                 "description": "Tags to be applied to resources"
               }
             },
+            "managedIdentityStorageResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Managed Identity Resource ID for storage account."
+              }
+            },
             "managementVmName": {
               "type": "string",
               "metadata": {
@@ -32644,7 +32662,7 @@
             "varAdminUserName": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
             "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -AdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12} -SecurityPrincipalName \"{13}\" -StorageAccountFqdn {14} ', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), variables('varAdminUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'), variables('varSecurityPrincipalName'), parameters('storageAccountFqdn'))]",
             "varDiagnosticSettings": "[if(not(empty(parameters('alaWorkspaceResourceId'))), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'), 'logCategoriesAndGroups', createArray())), createArray())]",
-            "customerManagedKey": "[if(parameters('zeroTrustStorage'), createObject('keyName', parameters('storageAccountName'), 'keyVaultResourceId', parameters('kvStorageResId')), createObject())]"
+            "customerManagedKey": "[if(parameters('zeroTrustStorage'), createObject('keyName', parameters('storageAccountName'), 'keyVaultResourceId', parameters('kvStorageResId'), 'userAssignedIdentity', parameters('managedIdentityStorageResourceId')), createObject())]"
           },
           "resources": [
             {

@@ -71,6 +71,9 @@ param storageToDomainScriptUri string
 @sys.description('Tags to be applied to resources')
 param tags object
 
+@sys.description('Managed Identity Resource ID for storage account.')
+param managedIdentityStorageResourceId string
+
 @sys.description('Name for management virtual machine. for tools and to join Azure Files to domain.')
 param managementVmName string
 
@@ -126,6 +129,7 @@ var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
 var customerManagedKey = zeroTrustStorage ? {
     keyName: storageAccountName
     keyVaultResourceId: kvStorageResId
+    userAssignedIdentity: managedIdentityStorageResourceId
 }:{}
 // =========== //
 // Deployments //

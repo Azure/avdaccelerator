@@ -1532,6 +1532,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
     storageAccountFqdn: varFslogixStorageFqdn
     storageAccountName: varFslogixStorageName
     kvStorageResId: strgKeyVault.outputs.resourceId
+    managedIdentityStorageResourceId: identity.outputs.managedIdentityStorageResourceId
     storageToDomainScript: varStorageToDomainScript
     storageToDomainScriptUri: varStorageToDomainScriptUri
     identityServiceProvider: avdIdentityServiceProvider
@@ -1585,6 +1586,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
     storageSku: varMsixStorageSku
     fileShareQuotaSize: msixFileShareQuotaSize
     kvStorageResId: strgKeyVault.outputs.resourceId
+    managedIdentityStorageResourceId: identity.outputs.managedIdentityStorageResourceId
     storageAccountFqdn: varMsixStorageFqdn
     storageAccountName: varMsixStorageName
     storageToDomainScript: varStorageToDomainScript
