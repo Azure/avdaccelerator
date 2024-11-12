@@ -1429,7 +1429,7 @@ module strgKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = if ((varC
         }
         roleAssignments: [
           {
-            principalId: identity.outputs.managedIdentityStorageClientId
+            principalId: identity.outputs.managedIdentityStoragePrincipalId
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
           }
