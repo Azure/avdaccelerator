@@ -437,8 +437,8 @@ param ztDiskEncryptionSetCustomNamePrefix string = 'des-zt'
 param ztManagedIdentityCustomName string = 'id-zt'
 
 @maxLength(6)
-@sys.description('AVD key vault custom name for zero trust and store store disk encryption key (Default: kv-key)')
-param ztKvPrefixCustomName string = 'kv-key'
+@sys.description('AVD key vault custom name for zero trust and store disk encryption keys for VMs (Default: kv-vms)')
+param ztKvPrefixCustomName string = 'kv-vms'
 
 //
 // Resource tagging
