@@ -1410,7 +1410,7 @@ module strgKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = if ((varC
     ]
     keys: varCreateMsixDeployment ? [
       {
-        name: varMsixStorageName
+        name: 'key-${varMsixStorageName}'
         rotationPolicy: {
           attributes: {
             expiryTime: 'P1Y'
@@ -1436,7 +1436,7 @@ module strgKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = if ((varC
         }
       }
       {
-        name: varFslogixStorageName
+        name: 'key-${varFslogixStorageName}'
         rotationPolicy: {
           attributes: {
             expiryTime: 'P1Y'
