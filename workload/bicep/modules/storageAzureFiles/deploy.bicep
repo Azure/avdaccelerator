@@ -129,7 +129,7 @@ var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
 var customerManagedKey = zeroTrustStorage ? {
     keyName: 'key-${storageAccountName}'
     keyVaultResourceId: kvStorageResId
-    userAssignedIdentity: managedIdentityStorageResourceId
+    userAssignedIdentityResourceId: managedIdentityStorageResourceId
 }:{}
 // =========== //
 // Deployments //
