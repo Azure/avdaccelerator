@@ -1411,6 +1411,8 @@ module strgKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = if ((varC
     keys: varCreateMsixDeployment ? [
       {
         name: 'key-${varMsixStorageName}'
+        kty: 'RSA'
+        keySize: 2048
         rotationPolicy: {
           attributes: {
             expiryTime: 'P1Y'

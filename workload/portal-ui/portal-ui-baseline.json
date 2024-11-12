@@ -645,7 +645,7 @@
                                     "scope": {
                                         "location": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]",
                                         "subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]"
-                                    }                              
+                                    }
                                 },
                                 {
                                     "name": "sessionHostSizeInfobox",
