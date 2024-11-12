@@ -151,6 +151,11 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
         skuName: storageSku
         allowBlobPublicAccess: false
         customerManagedKey: customerManagedKey
+        managedIdentities: zeroTrustStorage ? {
+            userAssignedResourceIds: [
+                managedIdentityStorageResourceId
+            ]
+        }:{}
         publicNetworkAccess: deployPrivateEndpoint ? 'Disabled' : 'Enabled'
         kind: ((storageSku == 'Premium_LRS') || (storageSku == 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
         largeFileSharesState: (storageSku == 'Standard_LRS') || (storageSku == 'Standard_ZRS') ? 'Enabled': 'Disabled'

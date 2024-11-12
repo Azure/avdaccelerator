@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "2879280749889613491"
+      "templateHash": "16309258737143192067"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -29493,7 +29493,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "2918054149392396113"
+              "templateHash": "8461138470128611211"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -29744,6 +29744,7 @@
                   "customerManagedKey": {
                     "value": "[variables('customerManagedKey')]"
                   },
+                  "managedIdentities": "[if(parameters('zeroTrustStorage'), createObject('value', createObject('userAssignedResourceIds', createArray(parameters('managedIdentityStorageResourceId')))), createObject('value', createObject()))]",
                   "publicNetworkAccess": "[if(parameters('deployPrivateEndpoint'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "kind": "[if(or(equals(parameters('storageSku'), 'Premium_LRS'), equals(parameters('storageSku'), 'Premium_ZRS')), createObject('value', 'FileStorage'), createObject('value', 'StorageV2'))]",
                   "largeFileSharesState": "[if(or(equals(parameters('storageSku'), 'Standard_LRS'), equals(parameters('storageSku'), 'Standard_ZRS')), createObject('value', 'Enabled'), createObject('value', 'Disabled'))]",
@@ -32473,7 +32474,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "2918054149392396113"
+              "templateHash": "8461138470128611211"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -32724,6 +32725,7 @@
                   "customerManagedKey": {
                     "value": "[variables('customerManagedKey')]"
                   },
+                  "managedIdentities": "[if(parameters('zeroTrustStorage'), createObject('value', createObject('userAssignedResourceIds', createArray(parameters('managedIdentityStorageResourceId')))), createObject('value', createObject()))]",
                   "publicNetworkAccess": "[if(parameters('deployPrivateEndpoint'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "kind": "[if(or(equals(parameters('storageSku'), 'Premium_LRS'), equals(parameters('storageSku'), 'Premium_ZRS')), createObject('value', 'FileStorage'), createObject('value', 'StorageV2'))]",
                   "largeFileSharesState": "[if(or(equals(parameters('storageSku'), 'Standard_LRS'), equals(parameters('storageSku'), 'Standard_ZRS')), createObject('value', 'Enabled'), createObject('value', 'Disabled'))]",
