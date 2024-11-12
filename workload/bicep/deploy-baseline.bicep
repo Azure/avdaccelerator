@@ -1392,7 +1392,7 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
     wrklKeyVault
   ]
 }
-// Key vault for Storage Account(s)
+// Key vault for Storage Account(s) with key for each, 1y expiry and rotation policy for FSLogix and MSIX (CMK)
 module strgKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = if ((varCreateStorageDeployment) && (diskZeroTrust)) {
   scope: resourceGroup('${avdWorkloadSubsId}', '${varStorageObjectsRgName}')
   name: 'Storage-KeyVault-${time}'
@@ -1401,6 +1401,13 @@ module strgKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = if ((varC
     location: avdSessionHostLocation
     enableRbacAuthorization: true
     enablePurgeProtection: enableKvPurgeProtection
+    roleAssignments: [
+      {
+        principalId: identity.outputs.managedIdentityStoragePrincipalId
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
+      }
+    ]
     keys: varCreateMsixDeployment ? [
       {
         name: varMsixStorageName
@@ -1427,13 +1434,6 @@ module strgKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = if ((varC
             }
           ]
         }
-        roleAssignments: [
-          {
-            principalId: identity.outputs.managedIdentityStoragePrincipalId
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
-          }
-        ]
       }
       {
         name: varFslogixStorageName
