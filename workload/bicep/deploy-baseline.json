@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "7353078601495456791"
+      "templateHash": "16526530037941321397"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -1740,7 +1740,30 @@
         "enableDefaultTelemetry": false,
         "tags": "[if(parameters('createResourceTags'), union(variables('varAllComputeStorageTags'), variables('varAvdDefaultTags')), union(variables('varAvdDefaultTags'), variables('varAllComputeStorageTags')))]"
       }
-    ]
+    ],
+    "varZtStorageKeyRotation": {
+      "attributes": {
+        "expiryTime": "P1Y"
+      },
+      "lifetimeActions": [
+        {
+          "action": {
+            "type": "Rotate"
+          },
+          "trigger": {
+            "timeBeforeExpiry": "P1M"
+          }
+        },
+        {
+          "action": {
+            "type": "Notify"
+          },
+          "trigger": {
+            "timeBeforeExpiry": "P1M"
+          }
+        }
+      ]
+    }
   },
   "resources": [
     {
@@ -26628,7 +26651,7 @@
               }
             ]
           },
-          "keys": "[if(variables('varCreateMsixDeployment'), createObject('value', createArray(createObject('name', format('key-{0}', variables('varMsixStorageName')), 'kty', 'RSA', 'keySize', 2048, 'rotationPolicy', createObject('attributes', createObject('expiryTime', 'P1Y'), 'lifetimeActions', createArray(createObject('action', createObject('type', 'Rotate'), 'trigger', createObject('timeBeforeExpiry', 'P1M')), createObject('action', createObject('type', 'Notify'), 'trigger', createObject('timeBeforeExpiry', 'P1M'))))), createObject('name', format('key-{0}', variables('varFslogixStorageName')), 'rotationPolicy', createObject('attributes', createObject('expiryTime', 'P1Y'), 'lifetimeActions', createArray(createObject('action', createObject('type', 'Rotate'), 'trigger', createObject('timeBeforeExpiry', 'P1M')), createObject('action', createObject('type', 'Notify'), 'trigger', createObject('timeBeforeExpiry', 'P1M')))), 'roleAssignments', createArray(createObject('principalId', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageClientId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Key Vault Crypto Service Encryption User'))))), createObject('value', createArray(createObject('name', variables('varFslogixStorageName'), 'roleAssignments', createArray(createObject('principalId', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageClientId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Key Vault Crypto Service Encryption User'))))))]",
+          "keys": "[if(variables('varCreateMsixDeployment'), createObject('value', createArray(createObject('name', format('key-{0}', variables('varMsixStorageName')), 'kty', 'RSA', 'keySize', 2048, 'rotationPolicy', variables('varZtStorageKeyRotation')), createObject('name', format('key-{0}', variables('varFslogixStorageName')), 'kty', 'RSA', 'keySize', 2048, 'rotationPolicy', variables('varZtStorageKeyRotation')))), createObject('value', createArray(createObject('name', format('key-{0}', variables('varFslogixStorageName')), 'kty', 'RSA', 'keySize', 2048, 'rotationPolicy', variables('varZtStorageKeyRotation')))))]",
           "sku": {
             "value": "[variables('varStrgKeyVaultSku')]"
           },

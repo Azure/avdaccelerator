@@ -1015,6 +1015,29 @@ var verResourceGroups = [
       : union(varAvdDefaultTags, varAllComputeStorageTags)
   }
 ]
+var varZtStorageKeyRotation = {
+  attributes: {
+    expiryTime: 'P1Y'
+  }
+  lifetimeActions: [
+    {
+      action: {
+        type: 'Rotate'
+      }
+      trigger: {
+        timeBeforeExpiry: 'P1M'
+      }
+    }
+    {
+      action: {
+        type: 'Notify'
+      }
+      trigger: {
+        timeBeforeExpiry: 'P1M'
+      }
+    }
+  ]
+}
 
 // =========== //
 // Deployments //
@@ -1413,73 +1436,20 @@ module strgKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = if ((varC
         name: 'key-${varMsixStorageName}'
         kty: 'RSA'
         keySize: 2048
-        rotationPolicy: {
-          attributes: {
-            expiryTime: 'P1Y'
-          }
-          lifetimeActions: [
-            {
-              action: {
-                type: 'Rotate'
-              }
-              trigger: {
-                timeBeforeExpiry: 'P1M'
-              }
-            }
-            {
-              action: {
-                type: 'Notify'
-              }
-              trigger: {
-                timeBeforeExpiry: 'P1M'
-              }
-            }
-          ]
-        }
+        rotationPolicy: varZtStorageKeyRotation
       }
       {
         name: 'key-${varFslogixStorageName}'
-        rotationPolicy: {
-          attributes: {
-            expiryTime: 'P1Y'
-          }
-          lifetimeActions: [
-            {
-              action: {
-                type: 'Rotate'
-              }
-              trigger: {
-                timeBeforeExpiry: 'P1M'
-              }
-            }
-            {
-              action: {
-                type: 'Notify'
-              }
-              trigger: {
-                timeBeforeExpiry: 'P1M'
-              }
-            }
-          ]
-        }
-        roleAssignments: [
-          {
-            principalId: identity.outputs.managedIdentityStorageClientId
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
-          }
-        ]
+        kty: 'RSA'
+        keySize: 2048
+        rotationPolicy: varZtStorageKeyRotation
       }
     ]:[
       {
-        name: varFslogixStorageName
-        roleAssignments: [
-          {
-            principalId: identity.outputs.managedIdentityStorageClientId
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
-          }
-        ]
+        name: 'key-${varFslogixStorageName}'
+        kty: 'RSA'
+        keySize: 2048
+        rotationPolicy: varZtStorageKeyRotation
       }
     ]
     sku: varStrgKeyVaultSku
