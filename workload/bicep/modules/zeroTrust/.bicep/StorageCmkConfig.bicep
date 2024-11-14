@@ -27,7 +27,12 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
       keyvaultproperties: {
         keyname: keyName
         keyvaulturi: keyVaultUri
-        keyversion: ''
+      }
+      services: {
+        file: {
+          enabled: true
+          keyType: 'Account'
+        }
       }
     }
   }

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "15263926318959773486"
+      "templateHash": "9745948926719294958"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -35325,7 +35325,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "14326941358952236892"
+              "templateHash": "16805817065312689030"
             }
           },
           "parameters": {
@@ -35370,8 +35370,13 @@
                   "keySource": "Microsoft.Keyvault",
                   "keyvaultproperties": {
                     "keyname": "[variables('keyName')]",
-                    "keyvaulturi": "[parameters('keyVaultUri')]",
-                    "keyversion": ""
+                    "keyvaulturi": "[parameters('keyVaultUri')]"
+                  },
+                  "services": {
+                    "file": {
+                      "enabled": true,
+                      "keyType": "Account"
+                    }
                   }
                 }
               }
@@ -35423,7 +35428,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "14326941358952236892"
+              "templateHash": "16805817065312689030"
             }
           },
           "parameters": {
@@ -35468,8 +35473,13 @@
                   "keySource": "Microsoft.Keyvault",
                   "keyvaultproperties": {
                     "keyname": "[variables('keyName')]",
-                    "keyvaulturi": "[parameters('keyVaultUri')]",
-                    "keyversion": ""
+                    "keyvaulturi": "[parameters('keyVaultUri')]"
+                  },
+                  "services": {
+                    "file": {
+                      "enabled": true,
+                      "keyType": "Account"
+                    }
                   }
                 }
               }
