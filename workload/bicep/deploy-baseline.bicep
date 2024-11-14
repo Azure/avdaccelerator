@@ -1503,7 +1503,6 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
     fileShareQuotaSize: fslogixFileShareQuotaSize
     storageAccountFqdn: varFslogixStorageFqdn
     storageAccountName: varFslogixStorageName
-    managedIdentityStorageResourceId: identity.outputs.managedIdentityStorageResourceId
     storageToDomainScript: varStorageToDomainScript
     storageToDomainScriptUri: varStorageToDomainScriptUri
     identityServiceProvider: avdIdentityServiceProvider
@@ -1528,7 +1527,6 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
       ? networking.outputs.azureFilesDnsZoneResourceId
       : avdVnetPrivateDnsZoneFilesId
     workloadSubsId: avdWorkloadSubsId
-    zeroTrustStorage: diskZeroTrust
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     alaWorkspaceResourceId: avdDeployMonitoring
       ? (deployAlaWorkspace
@@ -1556,7 +1554,6 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
     fileShareMultichannel: (msixStoragePerformance == 'Premium') ? true : false
     storageSku: varMsixStorageSku
     fileShareQuotaSize: msixFileShareQuotaSize
-    managedIdentityStorageResourceId: identity.outputs.managedIdentityStorageResourceId
     storageAccountFqdn: varMsixStorageFqdn
     storageAccountName: varMsixStorageName
     storageToDomainScript: varStorageToDomainScript
@@ -1583,7 +1580,6 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
       ? networking.outputs.azureFilesDnsZoneResourceId
       : avdVnetPrivateDnsZoneFilesId
     workloadSubsId: avdWorkloadSubsId
-    zeroTrustStorage: diskZeroTrust
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     alaWorkspaceResourceId: avdDeployMonitoring
       ? (deployAlaWorkspace
@@ -1612,6 +1608,7 @@ module fslogixCmk './modules/zeroTrust/.bicep/StorageCmkConfig.bicep' = if (disk
   params: {
     storageAccountName: varFslogixStorageName
     location: avdSessionHostLocation
+    managedIdentityStorageResourceId: identity.outputs.managedIdentityStorageResourceId
     keyVaultUri: strgKeyVault.outputs.uri
     storageSkuName: varFslogixStorageSku
     }
@@ -1631,6 +1628,7 @@ module msixCmk './modules/zeroTrust/.bicep/StorageCmkConfig.bicep' = if (diskZer
   params: {
     storageAccountName: varMsixStorageName
     location: avdSessionHostLocation
+    managedIdentityStorageResourceId: identity.outputs.managedIdentityStorageResourceId
     keyVaultUri: strgKeyVault.outputs.uri
     storageSkuName: varMsixStorageSku
     }

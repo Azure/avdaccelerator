@@ -68,9 +68,6 @@ param storageToDomainScriptUri string
 @sys.description('Tags to be applied to resources')
 param tags object
 
-@sys.description('Managed Identity Resource ID for storage account.')
-param managedIdentityStorageResourceId string
-
 @sys.description('Name for management virtual machine. for tools and to join Azure Files to domain.')
 param managementVmName string
 
@@ -104,9 +101,6 @@ param securityPrincipalName string
 
 @sys.description('storage account FDQN.')
 param storageAccountFqdn string
-
-@sys.description('Boolean to determine if Zero Trust Storage is required.')
-param zeroTrustStorage bool
 
 // =========== //
 // Variable declaration //
@@ -143,11 +137,6 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
         location: location
         skuName: storageSku
         allowBlobPublicAccess: false
-        managedIdentities: zeroTrustStorage ? {
-            userAssignedResourceIds: [
-                managedIdentityStorageResourceId
-            ]
-        }:{}
         publicNetworkAccess: deployPrivateEndpoint ? 'Disabled' : 'Enabled'
         kind: ((storageSku == 'Premium_LRS') || (storageSku == 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
         largeFileSharesState: (storageSku == 'Standard_LRS') || (storageSku == 'Standard_ZRS') ? 'Enabled': 'Disabled'

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "10318808372758012125"
+      "templateHash": "15263926318959773486"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -29424,9 +29424,6 @@
           "storageAccountName": {
             "value": "[variables('varFslogixStorageName')]"
           },
-          "managedIdentityStorageResourceId": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageResourceId.value]"
-          },
           "storageToDomainScript": {
             "value": "[variables('varStorageToDomainScript')]"
           },
@@ -29477,9 +29474,6 @@
           "workloadSubsId": {
             "value": "[parameters('avdWorkloadSubsId')]"
           },
-          "zeroTrustStorage": {
-            "value": "[parameters('diskZeroTrust')]"
-          },
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]",
           "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]"
         },
@@ -29490,7 +29484,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "3558792499112523283"
+              "templateHash": "1042647529265924534"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -29617,12 +29611,6 @@
                 "description": "Tags to be applied to resources"
               }
             },
-            "managedIdentityStorageResourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Managed Identity Resource ID for storage account."
-              }
-            },
             "managementVmName": {
               "type": "string",
               "metadata": {
@@ -29689,12 +29677,6 @@
               "metadata": {
                 "description": "storage account FDQN."
               }
-            },
-            "zeroTrustStorage": {
-              "type": "bool",
-              "metadata": {
-                "description": "Boolean to determine if Zero Trust Storage is required."
-              }
             }
           },
           "variables": {
@@ -29731,7 +29713,6 @@
                   "allowBlobPublicAccess": {
                     "value": false
                   },
-                  "managedIdentities": "[if(parameters('zeroTrustStorage'), createObject('value', createObject('userAssignedResourceIds', createArray(parameters('managedIdentityStorageResourceId')))), createObject('value', createObject()))]",
                   "publicNetworkAccess": "[if(parameters('deployPrivateEndpoint'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "kind": "[if(or(equals(parameters('storageSku'), 'Premium_LRS'), equals(parameters('storageSku'), 'Premium_ZRS')), createObject('value', 'FileStorage'), createObject('value', 'StorageV2'))]",
                   "largeFileSharesState": "[if(or(equals(parameters('storageSku'), 'Standard_LRS'), equals(parameters('storageSku'), 'Standard_ZRS')), createObject('value', 'Enabled'), createObject('value', 'Disabled'))]",
@@ -32386,9 +32367,6 @@
           "fileShareQuotaSize": {
             "value": "[parameters('msixFileShareQuotaSize')]"
           },
-          "managedIdentityStorageResourceId": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageResourceId.value]"
-          },
           "storageAccountFqdn": {
             "value": "[variables('varMsixStorageFqdn')]"
           },
@@ -32445,9 +32423,6 @@
           "workloadSubsId": {
             "value": "[parameters('avdWorkloadSubsId')]"
           },
-          "zeroTrustStorage": {
-            "value": "[parameters('diskZeroTrust')]"
-          },
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]",
           "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]"
         },
@@ -32458,7 +32433,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "3558792499112523283"
+              "templateHash": "1042647529265924534"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -32585,12 +32560,6 @@
                 "description": "Tags to be applied to resources"
               }
             },
-            "managedIdentityStorageResourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Managed Identity Resource ID for storage account."
-              }
-            },
             "managementVmName": {
               "type": "string",
               "metadata": {
@@ -32657,12 +32626,6 @@
               "metadata": {
                 "description": "storage account FDQN."
               }
-            },
-            "zeroTrustStorage": {
-              "type": "bool",
-              "metadata": {
-                "description": "Boolean to determine if Zero Trust Storage is required."
-              }
             }
           },
           "variables": {
@@ -32699,7 +32662,6 @@
                   "allowBlobPublicAccess": {
                     "value": false
                   },
-                  "managedIdentities": "[if(parameters('zeroTrustStorage'), createObject('value', createObject('userAssignedResourceIds', createArray(parameters('managedIdentityStorageResourceId')))), createObject('value', createObject()))]",
                   "publicNetworkAccess": "[if(parameters('deployPrivateEndpoint'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "kind": "[if(or(equals(parameters('storageSku'), 'Premium_LRS'), equals(parameters('storageSku'), 'Premium_ZRS')), createObject('value', 'FileStorage'), createObject('value', 'StorageV2'))]",
                   "largeFileSharesState": "[if(or(equals(parameters('storageSku'), 'Standard_LRS'), equals(parameters('storageSku'), 'Standard_ZRS')), createObject('value', 'Enabled'), createObject('value', 'Disabled'))]",
@@ -35346,6 +35308,9 @@
           "location": {
             "value": "[parameters('avdSessionHostLocation')]"
           },
+          "managedIdentityStorageResourceId": {
+            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageResourceId.value]"
+          },
           "keyVaultUri": {
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Storage-KeyVault-{0}', parameters('time'))), '2022-09-01').outputs.uri.value]"
           },
@@ -35360,7 +35325,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "2544639266536041761"
+              "templateHash": "14326941358952236892"
             }
           },
           "parameters": {
@@ -35372,6 +35337,9 @@
               "defaultValue": "[resourceGroup().location]"
             },
             "keyVaultUri": {
+              "type": "string"
+            },
+            "managedIdentityStorageResourceId": {
               "type": "string"
             },
             "storageSkuName": {
@@ -35388,6 +35356,12 @@
               "name": "[parameters('storageAccountName')]",
               "location": "[parameters('location')]",
               "kind": "[if(or(equals(parameters('storageSkuName'), 'Premium_LRS'), equals(parameters('storageSkuName'), 'Premium_ZRS')), 'FileStorage', 'StorageV2')]",
+              "identity": {
+                "type": "userAssigned",
+                "userAssignedIdentities": {
+                  "[format('{0}', parameters('managedIdentityStorageResourceId'))]": {}
+                }
+              },
               "sku": {
                 "name": "[parameters('storageSkuName')]"
               },
@@ -35432,6 +35406,9 @@
           "location": {
             "value": "[parameters('avdSessionHostLocation')]"
           },
+          "managedIdentityStorageResourceId": {
+            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageResourceId.value]"
+          },
           "keyVaultUri": {
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Storage-KeyVault-{0}', parameters('time'))), '2022-09-01').outputs.uri.value]"
           },
@@ -35446,7 +35423,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "2544639266536041761"
+              "templateHash": "14326941358952236892"
             }
           },
           "parameters": {
@@ -35458,6 +35435,9 @@
               "defaultValue": "[resourceGroup().location]"
             },
             "keyVaultUri": {
+              "type": "string"
+            },
+            "managedIdentityStorageResourceId": {
               "type": "string"
             },
             "storageSkuName": {
@@ -35474,6 +35454,12 @@
               "name": "[parameters('storageAccountName')]",
               "location": "[parameters('location')]",
               "kind": "[if(or(equals(parameters('storageSkuName'), 'Premium_LRS'), equals(parameters('storageSkuName'), 'Premium_ZRS')), 'FileStorage', 'StorageV2')]",
+              "identity": {
+                "type": "userAssigned",
+                "userAssignedIdentities": {
+                  "[format('{0}', parameters('managedIdentityStorageResourceId'))]": {}
+                }
+              },
               "sku": {
                 "name": "[parameters('storageSkuName')]"
               },
