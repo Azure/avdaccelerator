@@ -2620,7 +2620,7 @@
                 
                 "enableAsc": "[steps('identity').identiyEnableDefOptions.enableAsc]",
                 "emailContactAsc": "[steps('identity').identiyEnableDefOptions.emailContactAsc]",
-                "enableAscForServers": "[steps('identity').identiyEnableDefOptions).enableAscForServers]",
+                "enableAscForServers": "[steps('identity').identiyEnableDefOptions.enableAscForServers]",
                 "enableAscForStorage": "[steps('identity').identiyEnableDefOptions.enableAscForStorage]",
                 "enableAscForKeyVault": "[steps('identity').identiyEnableDefOptions.enableAscForKeyVault]",
                 "enableAscForArm": "[steps('identity').identiyEnableDefOptions.enableAscForArm]",
