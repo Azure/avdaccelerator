@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "16826185771268859520"
+      "templateHash": "10318808372758012125"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -35331,7 +35331,7 @@
       "condition": "[and(parameters('diskZeroTrust'), parameters('createAvdFslogixDeployment'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('FSLogix-CMK-{0}', parameters('time'))]",
+      "name": "[format('FSLogixStorage-CMK-{0}', parameters('time'))]",
       "subscriptionId": "[format('{0}', parameters('avdWorkloadSubsId'))]",
       "resourceGroup": "[format('{0}', variables('varStorageObjectsRgName'))]",
       "properties": {
@@ -35417,7 +35417,7 @@
       "condition": "[and(parameters('diskZeroTrust'), variables('varCreateMsixDeployment'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('FSLogix-CMK-{0}', parameters('time'))]",
+      "name": "[format('MSIXStorage-CMK-{0}', parameters('time'))]",
       "subscriptionId": "[format('{0}', parameters('avdWorkloadSubsId'))]",
       "resourceGroup": "[format('{0}', variables('varStorageObjectsRgName'))]",
       "properties": {

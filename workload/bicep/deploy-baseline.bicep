@@ -1607,7 +1607,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
 
 // Storage Zero Trust / Configure CMK - FSLogix
 module fslogixCmk './modules/zeroTrust/.bicep/StorageCmkConfig.bicep' = if (diskZeroTrust && createAvdFslogixDeployment) {
-  name: 'FSLogix-CMK-${time}'
+  name: 'FSLogixStorage-CMK-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${varStorageObjectsRgName}')
   params: {
     storageAccountName: varFslogixStorageName
@@ -1626,7 +1626,7 @@ module fslogixCmk './modules/zeroTrust/.bicep/StorageCmkConfig.bicep' = if (disk
 
 // Storage Zero Trust / Configure CMK - MSIX
 module msixCmk './modules/zeroTrust/.bicep/StorageCmkConfig.bicep' = if (diskZeroTrust && varCreateMsixDeployment) {
-  name: 'FSLogix-CMK-${time}'
+  name: 'MSIXStorage-CMK-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${varStorageObjectsRgName}')
   params: {
     storageAccountName: varMsixStorageName
