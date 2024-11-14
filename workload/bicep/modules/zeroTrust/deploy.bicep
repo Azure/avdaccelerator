@@ -240,7 +240,6 @@ module ztKeyVault './.bicep/zeroTrustKeyVault.bicep' = if (diskZeroTrust) {
         enableKvPurgeProtection: enableKvPurgeProtection
     }
     dependsOn: [
-        
     ]
 }
 

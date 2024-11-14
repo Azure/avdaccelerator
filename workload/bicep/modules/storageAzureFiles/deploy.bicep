@@ -29,9 +29,6 @@ param fileShareName string
 @sys.description('Private endpoint subnet ID.')
 param privateEndpointSubnetId string
 
-@sys.description('Key Vault Name for Storage Accounts.')
-param kvStorageResId string
-
 @sys.description('Location where to deploy resources.')
 param location string
 
@@ -123,14 +120,10 @@ var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -Storage
 var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
     {
         workspaceResourceId: alaWorkspaceResourceId
-        logCategoriesAndGroups: [] 
+        logCategoriesAndGroups: []
     }
 ]: []
-var customerManagedKey = zeroTrustStorage ? {
-    keyName: 'key-${storageAccountName}'
-    keyVaultResourceId: kvStorageResId
-    userAssignedIdentityResourceId: managedIdentityStorageResourceId
-}:{}
+
 // =========== //
 // Deployments //
 // =========== //
@@ -150,7 +143,6 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
         location: location
         skuName: storageSku
         allowBlobPublicAccess: false
-        customerManagedKey: customerManagedKey
         managedIdentities: zeroTrustStorage ? {
             userAssignedResourceIds: [
                 managedIdentityStorageResourceId

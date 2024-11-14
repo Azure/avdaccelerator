@@ -1503,7 +1503,6 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
     fileShareQuotaSize: fslogixFileShareQuotaSize
     storageAccountFqdn: varFslogixStorageFqdn
     storageAccountName: varFslogixStorageName
-    kvStorageResId: strgKeyVault.outputs.resourceId
     managedIdentityStorageResourceId: identity.outputs.managedIdentityStorageResourceId
     storageToDomainScript: varStorageToDomainScript
     storageToDomainScriptUri: varStorageToDomainScriptUri
@@ -1557,7 +1556,6 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
     fileShareMultichannel: (msixStoragePerformance == 'Premium') ? true : false
     storageSku: varMsixStorageSku
     fileShareQuotaSize: msixFileShareQuotaSize
-    kvStorageResId: strgKeyVault.outputs.resourceId
     managedIdentityStorageResourceId: identity.outputs.managedIdentityStorageResourceId
     storageAccountFqdn: varMsixStorageFqdn
     storageAccountName: varMsixStorageName
@@ -1600,6 +1598,47 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
     wrklKeyVault
     managementVm
     monitoringDiagnosticSettings
+    strgKeyVault
+  ]
+}
+
+// Coniguring CMK after storage deployment ensures key rotation is automatic
+// https://learn.microsoft.com/en-us/azure/storage/common/customer-managed-keys-configure-existing-account?tabs=azure-portal#configure-encryption-for-automatic-updating-of-key-versions
+
+// Storage Zero Trust / Configure CMK - FSLogix
+module fslogixCmk './modules/zeroTrust/.bicep/StorageCmkConfig.bicep' = if (diskZeroTrust && createAvdFslogixDeployment) {
+  name: 'FSLogix-CMK-${time}'
+  scope: resourceGroup('${avdWorkloadSubsId}', '${varStorageObjectsRgName}')
+  params: {
+    storageAccountName: varFslogixStorageName
+    location: avdSessionHostLocation
+    keyVaultUri: strgKeyVault.outputs.uri
+    storageSkuName: varFslogixStorageSku
+    }
+  dependsOn: [
+    baselineResourceGroups
+    baselineStorageResourceGroup
+    identity
+    fslogixAzureFilesStorage
+    strgKeyVault
+  ]
+}
+
+// Storage Zero Trust / Configure CMK - MSIX
+module msixCmk './modules/zeroTrust/.bicep/StorageCmkConfig.bicep' = if (diskZeroTrust && varCreateMsixDeployment) {
+  name: 'FSLogix-CMK-${time}'
+  scope: resourceGroup('${avdWorkloadSubsId}', '${varStorageObjectsRgName}')
+  params: {
+    storageAccountName: varMsixStorageName
+    location: avdSessionHostLocation
+    keyVaultUri: strgKeyVault.outputs.uri
+    storageSkuName: varMsixStorageSku
+    }
+  dependsOn: [
+    baselineResourceGroups
+    baselineStorageResourceGroup
+    identity
+    msixAzureFilesStorage
     strgKeyVault
   ]
 }

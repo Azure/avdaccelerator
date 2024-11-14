@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "16309258737143192067"
+      "templateHash": "16826185771268859520"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -29424,9 +29424,6 @@
           "storageAccountName": {
             "value": "[variables('varFslogixStorageName')]"
           },
-          "kvStorageResId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Storage-KeyVault-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]"
-          },
           "managedIdentityStorageResourceId": {
             "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageResourceId.value]"
           },
@@ -29493,7 +29490,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "8461138470128611211"
+              "templateHash": "3558792499112523283"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -29540,12 +29537,6 @@
               "type": "string",
               "metadata": {
                 "description": "Private endpoint subnet ID."
-              }
-            },
-            "kvStorageResId": {
-              "type": "string",
-              "metadata": {
-                "description": "Key Vault Name for Storage Accounts."
               }
             },
             "location": {
@@ -29713,8 +29704,7 @@
             "varSecurityPrincipalName": "[if(not(empty(parameters('securityPrincipalName'))), parameters('securityPrincipalName'), 'none')]",
             "varAdminUserName": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
             "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -AdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12} -SecurityPrincipalName \"{13}\" -StorageAccountFqdn {14} ', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), variables('varAdminUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'), variables('varSecurityPrincipalName'), parameters('storageAccountFqdn'))]",
-            "varDiagnosticSettings": "[if(not(empty(parameters('alaWorkspaceResourceId'))), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'), 'logCategoriesAndGroups', createArray())), createArray())]",
-            "customerManagedKey": "[if(parameters('zeroTrustStorage'), createObject('keyName', format('key-{0}', parameters('storageAccountName')), 'keyVaultResourceId', parameters('kvStorageResId'), 'userAssignedIdentityResourceId', parameters('managedIdentityStorageResourceId')), createObject())]"
+            "varDiagnosticSettings": "[if(not(empty(parameters('alaWorkspaceResourceId'))), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'), 'logCategoriesAndGroups', createArray())), createArray())]"
           },
           "resources": [
             {
@@ -29740,9 +29730,6 @@
                   },
                   "allowBlobPublicAccess": {
                     "value": false
-                  },
-                  "customerManagedKey": {
-                    "value": "[variables('customerManagedKey')]"
                   },
                   "managedIdentities": "[if(parameters('zeroTrustStorage'), createObject('value', createObject('userAssignedResourceIds', createArray(parameters('managedIdentityStorageResourceId')))), createObject('value', createObject()))]",
                   "publicNetworkAccess": "[if(parameters('deployPrivateEndpoint'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
@@ -32399,9 +32386,6 @@
           "fileShareQuotaSize": {
             "value": "[parameters('msixFileShareQuotaSize')]"
           },
-          "kvStorageResId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Storage-KeyVault-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]"
-          },
           "managedIdentityStorageResourceId": {
             "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageResourceId.value]"
           },
@@ -32474,7 +32458,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "8461138470128611211"
+              "templateHash": "3558792499112523283"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -32521,12 +32505,6 @@
               "type": "string",
               "metadata": {
                 "description": "Private endpoint subnet ID."
-              }
-            },
-            "kvStorageResId": {
-              "type": "string",
-              "metadata": {
-                "description": "Key Vault Name for Storage Accounts."
               }
             },
             "location": {
@@ -32694,8 +32672,7 @@
             "varSecurityPrincipalName": "[if(not(empty(parameters('securityPrincipalName'))), parameters('securityPrincipalName'), 'none')]",
             "varAdminUserName": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
             "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -AdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12} -SecurityPrincipalName \"{13}\" -StorageAccountFqdn {14} ', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), variables('varAdminUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'), variables('varSecurityPrincipalName'), parameters('storageAccountFqdn'))]",
-            "varDiagnosticSettings": "[if(not(empty(parameters('alaWorkspaceResourceId'))), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'), 'logCategoriesAndGroups', createArray())), createArray())]",
-            "customerManagedKey": "[if(parameters('zeroTrustStorage'), createObject('keyName', format('key-{0}', parameters('storageAccountName')), 'keyVaultResourceId', parameters('kvStorageResId'), 'userAssignedIdentityResourceId', parameters('managedIdentityStorageResourceId')), createObject())]"
+            "varDiagnosticSettings": "[if(not(empty(parameters('alaWorkspaceResourceId'))), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'), 'logCategoriesAndGroups', createArray())), createArray())]"
           },
           "resources": [
             {
@@ -32721,9 +32698,6 @@
                   },
                   "allowBlobPublicAccess": {
                     "value": false
-                  },
-                  "customerManagedKey": {
-                    "value": "[variables('customerManagedKey')]"
                   },
                   "managedIdentities": "[if(parameters('zeroTrustStorage'), createObject('value', createObject('userAssignedResourceIds', createArray(parameters('managedIdentityStorageResourceId')))), createObject('value', createObject()))]",
                   "publicNetworkAccess": "[if(parameters('deployPrivateEndpoint'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
@@ -35351,6 +35325,178 @@
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Storage-KeyVault-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Workload-KeyVault-{0}', parameters('time')))]"
+      ]
+    },
+    {
+      "condition": "[and(parameters('diskZeroTrust'), parameters('createAvdFslogixDeployment'))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('FSLogix-CMK-{0}', parameters('time'))]",
+      "subscriptionId": "[format('{0}', parameters('avdWorkloadSubsId'))]",
+      "resourceGroup": "[format('{0}', variables('varStorageObjectsRgName'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "storageAccountName": {
+            "value": "[variables('varFslogixStorageName')]"
+          },
+          "location": {
+            "value": "[parameters('avdSessionHostLocation')]"
+          },
+          "keyVaultUri": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Storage-KeyVault-{0}', parameters('time'))), '2022-09-01').outputs.uri.value]"
+          },
+          "storageSkuName": {
+            "value": "[variables('varFslogixStorageSku')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.31.34.60546",
+              "templateHash": "2544639266536041761"
+            }
+          },
+          "parameters": {
+            "storageAccountName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]"
+            },
+            "keyVaultUri": {
+              "type": "string"
+            },
+            "storageSkuName": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "keyName": "[format('key-{0}', parameters('storageAccountName'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2021-04-01",
+              "name": "[parameters('storageAccountName')]",
+              "location": "[parameters('location')]",
+              "kind": "[if(or(equals(parameters('storageSkuName'), 'Premium_LRS'), equals(parameters('storageSkuName'), 'Premium_ZRS')), 'FileStorage', 'StorageV2')]",
+              "sku": {
+                "name": "[parameters('storageSkuName')]"
+              },
+              "properties": {
+                "encryption": {
+                  "keySource": "Microsoft.Keyvault",
+                  "keyvaultproperties": {
+                    "keyname": "[variables('keyName')]",
+                    "keyvaulturi": "[parameters('keyVaultUri')]",
+                    "keyversion": ""
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "baselineResourceGroups",
+        "[subscriptionResourceId(parameters('avdWorkloadSubsId'), 'Microsoft.Resources/deployments', format('Storage-RG-{0}', parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-FSLogix-{0}', parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Storage-KeyVault-{0}', parameters('time')))]"
+      ]
+    },
+    {
+      "condition": "[and(parameters('diskZeroTrust'), variables('varCreateMsixDeployment'))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('FSLogix-CMK-{0}', parameters('time'))]",
+      "subscriptionId": "[format('{0}', parameters('avdWorkloadSubsId'))]",
+      "resourceGroup": "[format('{0}', variables('varStorageObjectsRgName'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "storageAccountName": {
+            "value": "[variables('varMsixStorageName')]"
+          },
+          "location": {
+            "value": "[parameters('avdSessionHostLocation')]"
+          },
+          "keyVaultUri": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Storage-KeyVault-{0}', parameters('time'))), '2022-09-01').outputs.uri.value]"
+          },
+          "storageSkuName": {
+            "value": "[variables('varMsixStorageSku')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.31.34.60546",
+              "templateHash": "2544639266536041761"
+            }
+          },
+          "parameters": {
+            "storageAccountName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]"
+            },
+            "keyVaultUri": {
+              "type": "string"
+            },
+            "storageSkuName": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "keyName": "[format('key-{0}', parameters('storageAccountName'))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2021-04-01",
+              "name": "[parameters('storageAccountName')]",
+              "location": "[parameters('location')]",
+              "kind": "[if(or(equals(parameters('storageSkuName'), 'Premium_LRS'), equals(parameters('storageSkuName'), 'Premium_ZRS')), 'FileStorage', 'StorageV2')]",
+              "sku": {
+                "name": "[parameters('storageSkuName')]"
+              },
+              "properties": {
+                "encryption": {
+                  "keySource": "Microsoft.Keyvault",
+                  "keyvaultproperties": {
+                    "keyname": "[variables('keyName')]",
+                    "keyvaulturi": "[parameters('keyVaultUri')]",
+                    "keyversion": ""
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "baselineResourceGroups",
+        "[subscriptionResourceId(parameters('avdWorkloadSubsId'), 'Microsoft.Resources/deployments', format('Storage-RG-{0}', parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-MSIX-{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varStorageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Storage-KeyVault-{0}', parameters('time')))]"
       ]
     },
     {
