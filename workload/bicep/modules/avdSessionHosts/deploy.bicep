@@ -139,6 +139,30 @@ param dataCollectionRuleId string
 @sys.description('Deploys anti malware extension on session hosts.')
 param deployAntiMalwareExt bool
 
+//
+// Parameters for Microsoft Defender
+//
+@sys.description('Enable Microsoft Defender on the subscription. (Default: true)')
+param deployDefender bool = true
+
+@sys.description('Required if MS Defender is enabled. Email contact for Microsoft Defender.')
+param emailContactAsc string = ''
+
+@sys.description('Enable Microsoft Defender for servers. (Default: true)')
+param enableAscForServers bool = true
+
+@sys.description('Enable Microsoft Defender for storage. (Default: true)')
+param enableAscForStorage bool = true
+
+@sys.description('Enable Microsoft Defender for Key Vault. (Default: true)')
+param enableAscForKeyVault bool = true
+
+@sys.description('Enable Microsoft Defender for Azure Resource Manager. (Default: true)')
+param enableAscForArm bool = true
+
+@sys.description('Enable Microsoft Defender for Cloud Security Posture Management. (Default: true)')
+param enableAscForCspm bool = true
+
 // =========== //
 // Variable declaration //
 // =========== //

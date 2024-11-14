@@ -344,7 +344,7 @@
                                     }
                                 },
                                 {
-                                    "name": "emailContactDef",
+                                    "name": "emailContactAsc",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Microsoft Defender for Cloud Email Contact",
                                     "toolTip": "Email address to get email notifications from Microsoft Defender for Cloud.",
@@ -456,8 +456,6 @@
                                         ]
                                     }
                                 }
-
-                                
                             ]
                         }
                     ]
@@ -2618,7 +2616,15 @@
                 "ztDiskEncryptionSetCustomNamePrefix": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsDiskEncryptionSetCustomName]",
                 "ztKvPrefixCustomName ": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsKeyVaultCustomPrefix]",
                 "ztManagedIdentityCustomName": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsManagedIdentityCustomName]",
-                "deployGpuPolicies": "[steps('sessionHosts').sessionHostsSettingsSection.gpuExtensionPolicy]"
+                "deployGpuPolicies": "[steps('sessionHosts').sessionHostsSettingsSection.gpuExtensionPolicy]",
+                
+                "enableAsc": "[steps('identity').identiyEnableDefOptions.enableAsc]",
+                "emailContactAsc": "[steps('identity').identiyEnableDefOptions.emailContactAsc]",
+                "enableAscForServers": "[steps('identity').identiyEnableDefOptions).enableAscForServers]",
+                "enableAscForStorage": "[steps('identity').identiyEnableDefOptions.enableAscForStorage]",
+                "enableAscForKeyVault": "[steps('identity').identiyEnableDefOptions.enableAscForKeyVault]",
+                "enableAscForArm": "[steps('identity').identiyEnableDefOptions.enableAscForArm]",
+                "enableAscForCspm": "[steps('identity').identiyEnableDefOptions.enableAscForCspm]"
             },
             "kind": "Subscription",
             "location": "[steps('basics').resourceScope.location.name]",

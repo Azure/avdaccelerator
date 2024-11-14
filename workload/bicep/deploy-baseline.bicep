@@ -27,10 +27,10 @@ param deploymentEnvironment string = 'Dev'
 param diskEncryptionKeyExpirationInDays int = 60
 
 @sys.description('Required. Location where to deploy compute services.')
-param avdSessionHostLocation string 
+param avdSessionHostLocation string
 
 @sys.description('Required. Location where to deploy AVD management plane.')
-param avdManagementPlaneLocation string 
+param avdManagementPlaneLocation string
 
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario. (Default: "")')
 param avdWorkloadSubsId string = ''
@@ -485,6 +485,27 @@ param enableKvPurgeProtection bool = true
 
 @sys.description('Deploys anti malware extension on session hosts. (Default: true)')
 param deployAntiMalwareExt bool = true
+
+//
+// Parameters for Microsoft Defender
+//
+@sys.description('Enable Microsoft Defender on the subscription. (Default: true)')
+param deployDefender bool = true
+
+@sys.description('Required if MS Defender is enabled. Email contact for Microsoft Defender.')
+param emailContactAsc string = ''
+
+@sys.description('Enable Microsoft Defender for servers. (Default: true)')
+param enableAscForServers bool = true
+
+@sys.description('Enable Microsoft Defender for storage. (Default: true)')
+param enableAscForStorage bool = true
+
+@sys.description('Enable Microsoft Defender for Key Vault. (Default: true)')
+param enableAscForKeyVault bool = true
+
+@sys.description('Enable Microsoft Defender for Azure Resource Manager. (Default: true)')
+param enableAscForArm bool = true
 
 // =========== //
 // Variable declaration //
@@ -1123,7 +1144,9 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     preferredAppGroupType: (hostPoolPreferredAppGroupType == 'RemoteApp') ? 'RailApplications' : 'Desktop'
     deployScalingPlan: varDeployScalingPlan
     scalingPlanExclusionTag: varScalingPlanExclusionTag
-    scalingPlanSchedules: (avdHostPoolType == 'Pooled') ? varPooledScalingPlanSchedules : varPersonalScalingPlanSchedules
+    scalingPlanSchedules: (avdHostPoolType == 'Pooled')
+      ? varPooledScalingPlanSchedules
+      : varPersonalScalingPlanSchedules
     scalingPlanName: varScalingPlanName
     hostPoolMaxSessions: hostPoolMaxSessions
     personalAssignType: avdPersonalAssignType
@@ -1447,7 +1470,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
 }
 
 // VMSS Flex
-module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' =  if (avdDeploySessionHosts && deployVmssFlex) {
+module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' = if (avdDeploySessionHosts && deployVmssFlex) {
   name: 'AVD-VMSS-Flex-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${varComputeObjectsRgName}')
   params: {
@@ -1547,6 +1570,20 @@ module gpuPolicies './modules/azurePolicies/gpuExtensionsSubscriptions.bicep' = 
     computeObjectsRgName: varComputeObjectsRgName
     location: avdSessionHostLocation
     subscriptionId: avdWorkloadSubsId
+  }
+  dependsOn: [
+    sessionHosts
+  ]
+}
+
+module defenderPolicySet './modules/azurePolicies/defenderSubscription.bicep' = if (deployDefender) {
+  scope: subscription('${avdWorkloadSubsId}')
+  name: 'Defender-Policies-${time}'
+  params: {
+    enableAscForServers: enableAscForServers
+    enableAscForStorage: enableAscForStorage
+    enableAscForKeyVault: enableAscForKeyVault
+    enableAscForArm: enableAscForArm
   }
   dependsOn: [
     sessionHosts
