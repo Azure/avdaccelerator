@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "9745948926719294958"
+      "templateHash": "5402881541825068617"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -35325,7 +35325,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "16805817065312689030"
+              "templateHash": "16226101425896038343"
             }
           },
           "parameters": {
@@ -35370,12 +35370,12 @@
                   "keySource": "Microsoft.Keyvault",
                   "keyvaultproperties": {
                     "keyname": "[variables('keyName')]",
-                    "keyvaulturi": "[parameters('keyVaultUri')]"
+                    "keyvaulturi": "[parameters('keyVaultUri')]",
+                    "keyversion": ""
                   },
                   "services": {
                     "file": {
-                      "enabled": true,
-                      "keyType": "Account"
+                      "enabled": true
                     }
                   }
                 }
@@ -35428,7 +35428,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "16805817065312689030"
+              "templateHash": "16226101425896038343"
             }
           },
           "parameters": {
@@ -35473,12 +35473,12 @@
                   "keySource": "Microsoft.Keyvault",
                   "keyvaultproperties": {
                     "keyname": "[variables('keyName')]",
-                    "keyvaulturi": "[parameters('keyVaultUri')]"
+                    "keyvaulturi": "[parameters('keyVaultUri')]",
+                    "keyversion": ""
                   },
                   "services": {
                     "file": {
-                      "enabled": true,
-                      "keyType": "Account"
+                      "enabled": true
                     }
                   }
                 }
