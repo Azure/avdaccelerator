@@ -23,6 +23,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   }
   properties: {
     encryption: {
+      identity: {
+        userAssignedIdentity: managedIdentityStorageResourceId
+      }
       keySource: 'Microsoft.Keyvault'
       keyvaultproperties: {
         keyname: keyName

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "5402881541825068617"
+      "templateHash": "7674372261032011650"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -35325,7 +35325,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "16226101425896038343"
+              "templateHash": "1254407592505695584"
             }
           },
           "parameters": {
@@ -35367,6 +35367,9 @@
               },
               "properties": {
                 "encryption": {
+                  "identity": {
+                    "userAssignedIdentity": "[parameters('managedIdentityStorageResourceId')]"
+                  },
                   "keySource": "Microsoft.Keyvault",
                   "keyvaultproperties": {
                     "keyname": "[variables('keyName')]",
@@ -35428,7 +35431,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.31.34.60546",
-              "templateHash": "16226101425896038343"
+              "templateHash": "1254407592505695584"
             }
           },
           "parameters": {
@@ -35470,6 +35473,9 @@
               },
               "properties": {
                 "encryption": {
+                  "identity": {
+                    "userAssignedIdentity": "[parameters('managedIdentityStorageResourceId')]"
+                  },
                   "keySource": "Microsoft.Keyvault",
                   "keyvaultproperties": {
                     "keyname": "[variables('keyName')]",
