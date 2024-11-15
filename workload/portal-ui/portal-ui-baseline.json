@@ -362,43 +362,19 @@
                                 },
                                 {
                                     "name": "enableAscForKeyVault",
-                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "type": "Microsoft.Common.TextBox",
                                     "label": "Enable Microsoft Defender for Cloud for Key Vault",
                                     "defaultValue": true,
                                     "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Key Vault.<br>Uses the custom initiative <a href=\"https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config.html\">Deploy Microsoft Defender for Cloud configuration</a>.",
-                                    "visible": "[equals(steps('identity').identiyEnableDefOptions.enableAsc,true)]",
-                                    "constraints": {
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes (recommended)",
-                                                "value": true
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": false
-                                            }
-                                        ]
-                                    }
+                                    "visible": "[steps('identity').identiyEnableDefOptions.enableAsc]"
                                 },
                                 {
                                     "name": "enableAscForArm",
-                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "type": "Microsoft.Common.CheckBox",
                                     "label": "Enable Microsoft Defender for Cloud for Azure Resource Manager",
-                                    "defaultValue": "Yes (recommended)",
+                                    "defaultValue": true,
                                     "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Resource Manager.<br>Uses the custom initiative <a href=\"https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config.html\">Deploy Microsoft Defender for Cloud configuration</a>.",
-                                    "visible": "[equals(steps('identity').identiyEnableDefOptions.enableAsc)]",
-                                    "constraints": {
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes (recommended)",
-                                                "value": true
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": false
-                                            }
-                                        ]
-                                    }
+                                    "visible": "[steps('identity').identiyEnableDefOptions.enableAsc]"
                                 }
                             ]
                         }
