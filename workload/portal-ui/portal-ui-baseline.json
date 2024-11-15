@@ -938,9 +938,9 @@
                                 {
                                     "name": "storageZeroTrust",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "label": "Zero trust disk configuration",
+                                    "label": "Zero trust storage configuration",
                                     "defaultValue": false,
-                                    "toolTip": "Enables and configures CMK for storage account(s)"
+                                    "toolTip": "Enables and configures Customer Managed Keys (CMK) for storage account(s)"
                                 },
                                 {
                                     "name": "storageZeroTrustInfo",
