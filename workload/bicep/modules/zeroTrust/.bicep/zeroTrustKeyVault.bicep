@@ -59,7 +59,7 @@ param enableKvPurgeProtection bool = true
 // Deployments //
 // =========== //
 
-// Key vault for Zero Trust.
+// Key vault for Zero Trust - Session Host Encryption Keys.
 module ztKeyVault '../../../../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
     scope: resourceGroup('${subscriptionId}', '${rgName}')
     name: 'ZT-KeyVault-${time}'
@@ -95,7 +95,7 @@ module ztKeyVault '../../../../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
     dependsOn: []
 }
 
-// Disk Encryption Key for Zero Trust.
+// Session Host Disk Encryption Key for Zero Trust.
 module ztKeyVaultKey '../../../../../avm/1.0.0/res/key-vault/vault/key/main.bicep' = {
     scope: resourceGroup('${subscriptionId}', '${rgName}')
     name: 'ZT-KeyVaultKey-${time}'
@@ -149,6 +149,7 @@ module ztDiskEncryptionSet '../../../../../avm/1.0.0/res/compute/disk-encryption
         tags: tags
     }
 }
+
 
 // =========== //
 // Outputs //

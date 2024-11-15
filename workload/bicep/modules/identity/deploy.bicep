@@ -187,3 +187,4 @@ module aadIdentityLoginAccessServiceObjects '../../../../avm/1.0.0/ptn/authoriza
 // =========== //
 output managedIdentityStorageResourceId string = (createStorageDeployment) ? managedIdentityStorage.outputs.resourceId : ''
 output managedIdentityStorageClientId string = (createStorageDeployment) ? managedIdentityStorage.outputs.clientId : ''
+output managedIdentityStoragePrincipalId string = (createStorageDeployment) ? managedIdentityStorage.outputs.principalId : ''

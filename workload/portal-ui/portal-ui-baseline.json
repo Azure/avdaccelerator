@@ -1,5 +1,5 @@
 {
-    "$schema": "<relative path to createFormUI.schema.json>",
+    "$schema": "https://schema.management.azure.com/schemas/2021-09-09/uiFormDefinition.schema.json",
     "view": {
         "kind": "Form",
         "properties": {
@@ -359,7 +359,7 @@
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": true,
                                     "options": {
-                                        "icon": "Warning",
+                                        "style": "Warning",
                                         "text": "Host pool type can not be changed after deployment.",
                                         "uri": "https://docs.microsoft.com/azure/virtual-desktop/environment-setup"
                                     }
@@ -645,7 +645,7 @@
                                     "scope": {
                                         "location": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]",
                                         "subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]"
-                                    }                              
+                                    }
                                 },
                                 {
                                     "name": "sessionHostSizeInfobox",
@@ -934,6 +934,23 @@
                                         "required": true,
                                         "allowedValues": "[if(not(empty(filter(filter(first(map(filter(steps('storage').storageGeneralSettings.storageApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'storageAccounts')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => equals(toLower(replace(item.location, ' ', '')), if(steps('sessionHosts').deploySessionHosts, steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion, steps('basics').resourceScope.location.name))))), parse('[{\"label\":\"Locally Redundant Storage\",\"value\":\"false\"},{\"label\":\"Zone-Redundant Storage\",\"value\":\"true\"}]'), parse('[{\"label\":\"Locally Redundant Storage\",\"value\":\"false\"}]'))]"
                                     }
+                                },
+                                {
+                                    "name": "storageZeroTrust",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "label": "Zero trust storage configuration",
+                                    "defaultValue": false,
+                                    "toolTip": "Enables and configures Customer Managed Keys (CMK) for storage account(s)"
+                                },
+                                {
+                                    "name": "storageZeroTrustInfo",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[steps('storage').storageGeneralSettings.storageZeroTrust]",
+                                    "options": {
+                                        "text": "This option will configure the Storage Account(s) to utilize Customer Managed Keys and include an additional Key Vault deployment.",
+                                        "uri": "https://learn.microsoft.com/en-us/azure/storage/common/customer-managed-keys-overview",
+                                        "style": "Info"
+                                    }
                                 }
                             ]
                         },
@@ -1178,7 +1195,7 @@
                             },
                             "scope": {
                                 "location": "[if(steps('sessionHosts').deploySessionHosts, steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion, steps('basics').resourceScope.location.name)]"
-                            }   
+                            }
                         },
                         {
                             "name": "avdSubnetApi",
@@ -1475,7 +1492,6 @@
                                     }
                                 },
                                 {
-                            
                                     "name": "virtualNetworkPrivateDnsZoneAvdConnectionSelector",
                                     "type": "Microsoft.Solutions.ResourceSelector",
                                     "visible": "[and(steps('network').deployAvdPrivateLinkService, not(steps('network').virtualNetworkPrivateDnsZone))]",
@@ -2165,7 +2181,7 @@
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,6}$",
-                                        "validationMessage": "Value must be 1-90 characters."
+                                        "validationMessage": "Value must be 1-6 characters."
                                     }
                                 },
                                 {
@@ -2178,7 +2194,20 @@
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,6}$",
-                                        "validationMessage": "Value must be 1-90 characters."
+                                        "validationMessage": "Value must be 1-6 characters."
+                                    }
+                                },
+                                {
+                                    "name": "zeroTrustObjectsStorageKeyVaultCustomPrefix",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Key vault prefix for Storage Accounts",
+                                    "visible": "[and(steps('resourceNaming').resourceNamingSelection, steps('storage').storageGeneralSettings.storageZeroTrust)]",
+                                    "toolTip": "Key Vault that stores the encryption key for storage account(s).",
+                                    "placeholder": "Example: kv-str",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,6}$",
+                                        "validationMessage": "Value must be 1-6 characters."
                                     }
                                 },
                                 {
@@ -2191,7 +2220,7 @@
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,5}$",
-                                        "validationMessage": "Value must be 1-90 characters."
+                                        "validationMessage": "Value must be 1-5 characters."
                                     }
                                 }
                             ]
@@ -2504,6 +2533,7 @@
                 "avdVnetPrivateDnsZoneDiscoveryResourceId": "[if(and(equals(steps('network').deployAvdPrivateLinkService, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneAvdDiscoverySelector.id, '')]",
                 "avdVnetPrivateDnsZoneConnectionResourceId": "[if(and(equals(steps('network').deployAvdPrivateLinkService, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.virtualNetworkPrivateDnsZoneAvdConnectionSelector.id, '')]",
                 "createAvdFslogixDeployment": "[steps('storage').storageFslogix.fslogixDeployment]",
+                "storageZeroTrust": "[steps('storage').storageGeneralSettings.storageZeroTrust]",
                 "fslogixStoragePerformance": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.fslogixStorageAccountSku, 'Premium')]",
                 "fslogixFileShareQuotaSize": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.sessionHostsFslogixFileShareQuota, 1 )]",
                 "createMsixDeployment": "[if(equals(steps('storage').storageMsix.msixDeployment, true), if(contains(steps('basics').resourceScope.location.name, 'china'), false, steps('storage').storageMsix.msixDeployment), false)]",
@@ -2559,6 +2589,7 @@
                 "avdAlaWorkspaceCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingMonitoring.monitoringLogAnalyticsWorkspaceName, 'no')]",
                 "ztDiskEncryptionSetCustomNamePrefix": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsDiskEncryptionSetCustomName]",
                 "ztKvPrefixCustomName ": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsKeyVaultCustomPrefix]",
+                "ztKvStrPrefixCustomName": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsStorageKeyVaultCustomPrefix]",
                 "ztManagedIdentityCustomName": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsManagedIdentityCustomName]",
                 "deployGpuPolicies": "[steps('sessionHosts').sessionHostsSettingsSection.gpuExtensionPolicy]"
             },
