@@ -348,10 +348,10 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Microsoft Defender for Cloud Email Contact",
                                     "toolTip": "Email address to get email notifications from Microsoft Defender for Cloud.",
-                                    "visible": "[equals(steps('identity').identiyEnableDefOptions.enableAsc)]",
+                                    "visible": "[equals(steps('identity').identiyEnableDefOptions.enableAsc, 'true')]",
                                     "defaultValue": "",
                                     "constraints": {
-                                        "required": "[equals(steps('identity').identiyEnableDefOptions.enableAsc)]",
+                                        "required": "[equals(steps('identity').identiyEnableDefOptions.enableAsc, 'true')]",
                                         "regex": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",
                                         "validationMessage": "Please provide a valid email address"
                                     }
@@ -362,7 +362,7 @@
                                     "label": "Enable Microsoft Defender for Cloud for servers",
                                     "defaultValue": "Yes (recommended)",
                                     "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for all servers.<br>Uses the custom initiative <a href=\"https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config.html\">Deploy Microsoft Defender for Cloud configuration</a>.",
-                                    "visible": "[equals(steps('identity').identiyEnableDefOptions.enableAsc)]",
+                                    "visible": "[equals(steps('identity').identiyEnableDefOptions.enableAsc, 'true')]",
                                     "constraints": {
                                         "allowedValues": [
                                             {
@@ -382,7 +382,7 @@
                                     "label": "Enable Microsoft Defender for Cloud for Storage",
                                     "defaultValue": true,
                                     "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Storage.<br>Uses the custom initiative <a href=\"https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config.html\">Deploy Microsoft Defender for Cloud configuration</a>.",
-                                    "visible": "[equals(steps('identity').identiyEnableDefOptions.enableAsc,true)]",
+                                    "visible": "[equals(steps('identity').identiyEnableDefOptions.enableAsc, 'true')]",
                                     "constraints": {
                                         "allowedValues": [
                                             {
