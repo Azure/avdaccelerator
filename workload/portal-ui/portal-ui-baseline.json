@@ -326,75 +326,39 @@
                             "elements": [
                                 {
                                     "name": "enableAsc",
-                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "type": "Microsoft.Common.CheckBox",
                                     "label": "Deploy Microsoft Defender for Cloud and enable security monitoring for your platform and resources",
                                     "defaultValue": true,
-                                    "toolTip": "Selecting 'Yes' will enable the options to configure individual Microsoft Defender for Cloud components, and will enable Microsoft Defender for Cloud plans on all subscriptions in the Azure Landing Zone. If 'Yes' is selected when also adding a subscription for management, ARM will deploy resources and enable them for continuous compliance.",
-                                    "constraints": {
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes (recommended)",
-                                                "value": true
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": false
-                                            }
-                                        ]
-                                    }
+                                    "toolTip": "Selecting 'Yes' will enable the options to configure individual Microsoft Defender for Cloud components, and will enable Microsoft Defender for Cloud plans on all subscriptions in the Azure Landing Zone. If 'Yes' is selected when also adding a subscription for management, ARM will deploy resources and enable them for continuous compliance."
                                 },
                                 {
                                     "name": "emailContactAsc",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Microsoft Defender for Cloud Email Contact",
                                     "toolTip": "Email address to get email notifications from Microsoft Defender for Cloud.",
-                                    "visible": "[equals(steps('identity').identiyEnableDefOptions.enableAsc, 'true')]",
+                                    "visible": "[steps('identity').identiyEnableDefOptions.enableAsc]",
                                     "defaultValue": "",
                                     "constraints": {
-                                        "required": "[equals(steps('identity').identiyEnableDefOptions.enableAsc, 'true')]",
+                                        "required": "[steps('identity').identiyEnableDefOptions.enableAsc]",
                                         "regex": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",
                                         "validationMessage": "Please provide a valid email address"
                                     }
                                 },
                                 {
                                     "name": "enableAscForServers",
-                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "type": "Microsoft.Common.CheckBox",
                                     "label": "Enable Microsoft Defender for Cloud for servers",
-                                    "defaultValue": "Yes (recommended)",
+                                    "defaultValue": true,
                                     "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for all servers.<br>Uses the custom initiative <a href=\"https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config.html\">Deploy Microsoft Defender for Cloud configuration</a>.",
-                                    "visible": "[equals(steps('identity').identiyEnableDefOptions.enableAsc, 'true')]",
-                                    "constraints": {
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes (recommended)",
-                                                "value": true
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": false
-                                            }
-                                        ]
-                                    }
+                                    "visible": "[steps('identity').identiyEnableDefOptions.enableAsc]"
                                 },
                                 {
                                     "name": "enableAscForStorage",
-                                    "type": "Microsoft.Common.OptionsGroup",
+                                    "type": "Microsoft.Common.CheckBox",
                                     "label": "Enable Microsoft Defender for Cloud for Storage",
                                     "defaultValue": true,
                                     "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Storage.<br>Uses the custom initiative <a href=\"https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config.html\">Deploy Microsoft Defender for Cloud configuration</a>.",
-                                    "visible": "[equals(steps('identity').identiyEnableDefOptions.enableAsc, 'true')]",
-                                    "constraints": {
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes (recommended)",
-                                                "value": true
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": false
-                                            }
-                                        ]
-                                    }
+                                    "visible": "[steps('identity').identiyEnableDefOptions.enableAsc]"
                                 },
                                 {
                                     "name": "enableAscForKeyVault",
