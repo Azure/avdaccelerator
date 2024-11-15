@@ -1486,7 +1486,6 @@ module strgKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = if ((varC
       : union(varAvdDefaultTags, varStorageKeyvaultTag)
   }
   dependsOn: [
-    identity
     baselineResourceGroups
     baselineStorageResourceGroup
     monitoringDiagnosticSettings
