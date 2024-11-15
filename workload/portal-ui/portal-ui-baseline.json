@@ -334,11 +334,11 @@
                                         "allowedValues": [
                                             {
                                                 "label": "Yes (recommended)",
-                                                "value": "Yes"
+                                                "value": true
                                             },
                                             {
                                                 "label": "No",
-                                                "value": "No"
+                                                "value": false
                                             }
                                         ]
                                     }
@@ -367,11 +367,11 @@
                                         "allowedValues": [
                                             {
                                                 "label": "Yes (recommended)",
-                                                "value": "DeployIfNotExists"
+                                                "value": true
                                             },
                                             {
                                                 "label": "No",
-                                                "value": "Disabled"
+                                                "value": false
                                             }
                                         ]
                                     }
@@ -387,11 +387,11 @@
                                         "allowedValues": [
                                             {
                                                 "label": "Yes (recommended)",
-                                                "value": "DeployIfNotExists"
+                                                "value": true
                                             },
                                             {
                                                 "label": "No",
-                                                "value": "Disabled"
+                                                "value": false
                                             }
                                         ]
                                     }
@@ -407,11 +407,11 @@
                                         "allowedValues": [
                                             {
                                                 "label": "Yes (recommended)",
-                                                "value": "DeployIfNotExists"
+                                                "value": true
                                             },
                                             {
                                                 "label": "No",
-                                                "value": "Disabled"
+                                                "value": false
                                             }
                                         ]
                                     }
@@ -427,31 +427,11 @@
                                         "allowedValues": [
                                             {
                                                 "label": "Yes (recommended)",
-                                                "value": "DeployIfNotExists"
+                                                "value": true
                                             },
                                             {
                                                 "label": "No",
-                                                "value": "Disabled"
-                                            }
-                                        ]
-                                    }
-                                },
-                                {
-                                    "name": "enableAscForCspm",
-                                    "type": "Microsoft.Common.OptionsGroup",
-                                    "label": "Enable Microsoft Defender CSPM",
-                                    "defaultValue": "Yes (recommended)",
-                                    "toolTip": "If 'Yes' is selected, Microsoft Defender CSPM will be enabled.<br>Uses the custom initiative <a href=\"https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config.html\">Deploy Microsoft Defender for Cloud configuration</a>.",
-                                    "visible": "[equals(steps('identity').identiyEnableDefOptions.enableAsc,'Yes')]",
-                                    "constraints": {
-                                        "allowedValues": [
-                                            {
-                                                "label": "Yes (recommended)",
-                                                "value": "DeployIfNotExists"
-                                            },
-                                            {
-                                                "label": "No",
-                                                "value": "Disabled"
+                                                "value": false
                                             }
                                         ]
                                     }
@@ -2623,8 +2603,7 @@
                 "enableAscForServers": "[steps('identity').identiyEnableDefOptions.enableAscForServers]",
                 "enableAscForStorage": "[steps('identity').identiyEnableDefOptions.enableAscForStorage]",
                 "enableAscForKeyVault": "[steps('identity').identiyEnableDefOptions.enableAscForKeyVault]",
-                "enableAscForArm": "[steps('identity').identiyEnableDefOptions.enableAscForArm]",
-                "enableAscForCspm": "[steps('identity').identiyEnableDefOptions.enableAscForCspm]"
+                "enableAscForArm": "[steps('identity').identiyEnableDefOptions.enableAscForArm]"
             },
             "kind": "Subscription",
             "location": "[steps('basics').resourceScope.location.name]",
