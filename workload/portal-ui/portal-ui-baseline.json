@@ -362,7 +362,7 @@
                                 },
                                 {
                                     "name": "enableAscForKeyVault",
-                                    "type": "Microsoft.Common.TextBox",
+                                    "type": "Microsoft.Common.CheckBox",
                                     "label": "Enable Microsoft Defender for Cloud for Key Vault",
                                     "defaultValue": true,
                                     "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Key Vault.<br>Uses the custom initiative <a href=\"https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config.html\">Deploy Microsoft Defender for Cloud configuration</a>.",
