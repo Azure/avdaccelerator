@@ -185,6 +185,9 @@ param avdVnetPrivateDnsZoneKeyvaultId string = ''
 @sys.description('Does the hub contains a virtual network gateway. (Default: false)')
 param vNetworkGatewayOnHub bool = false
 
+@sys.description('This option will configure the Storage Account(s) to utilize Customer Managed Keys and include an additional Key Vault deployment. (Default: false)')
+param storageZeroTrust bool = false
+
 @sys.description('Deploy Fslogix setup. (Default: true)')
 param createAvdFslogixDeployment bool = true
 
@@ -1602,7 +1605,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
 // https://learn.microsoft.com/en-us/azure/storage/common/customer-managed-keys-configure-existing-account?tabs=azure-portal#configure-encryption-for-automatic-updating-of-key-versions
 
 // Storage Zero Trust / Configure CMK - FSLogix
-module fslogixCmk './modules/zeroTrust/.bicep/StorageCmkConfig.bicep' = if (diskZeroTrust && createAvdFslogixDeployment) {
+module fslogixCmk './modules/zeroTrust/.bicep/StorageCmkConfig.bicep' = if (storageZeroTrust && createAvdFslogixDeployment) {
   name: 'FSLogixStorage-CMK-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${varStorageObjectsRgName}')
   params: {
@@ -1622,7 +1625,7 @@ module fslogixCmk './modules/zeroTrust/.bicep/StorageCmkConfig.bicep' = if (disk
 }
 
 // Storage Zero Trust / Configure CMK - MSIX
-module msixCmk './modules/zeroTrust/.bicep/StorageCmkConfig.bicep' = if (diskZeroTrust && varCreateMsixDeployment) {
+module msixCmk './modules/zeroTrust/.bicep/StorageCmkConfig.bicep' = if (storageZeroTrust && varCreateMsixDeployment) {
   name: 'MSIXStorage-CMK-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${varStorageObjectsRgName}')
   params: {

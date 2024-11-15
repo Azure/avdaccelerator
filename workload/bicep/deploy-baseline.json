@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "7674372261032011650"
+      "templateHash": "18208720460620420775"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -361,6 +361,13 @@
       "defaultValue": false,
       "metadata": {
         "description": "Does the hub contains a virtual network gateway. (Default: false)"
+      }
+    },
+    "storageZeroTrust": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "This option will configure the Storage Account(s) to utilize Customer Managed Keys and include an additional Key Vault deployment. (Default: false)"
       }
     },
     "createAvdFslogixDeployment": {
@@ -35290,7 +35297,7 @@
       ]
     },
     {
-      "condition": "[and(parameters('diskZeroTrust'), parameters('createAvdFslogixDeployment'))]",
+      "condition": "[and(parameters('storageZeroTrust'), parameters('createAvdFslogixDeployment'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('FSLogixStorage-CMK-{0}', parameters('time'))]",
@@ -35396,7 +35403,7 @@
       ]
     },
     {
-      "condition": "[and(parameters('diskZeroTrust'), variables('varCreateMsixDeployment'))]",
+      "condition": "[and(parameters('storageZeroTrust'), variables('varCreateMsixDeployment'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('MSIXStorage-CMK-{0}', parameters('time'))]",
