@@ -425,7 +425,7 @@ param msixFileShareCustomName string = 'msix-app1-dev-use2-001'
 
 @maxLength(6)
 @sys.description('AVD keyvault prefix custom name (with Zero Trust to store keys for FSLogix and AppAttach Storage / CMK option). (Default: kv-sec)')
-param avdStrgKvPrefixCustomName string = 'kv-str'
+param ztKvStrPrefixCustomName string = 'kv-str'
 
 @maxLength(6)
 @sys.description('AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv-sec)')
@@ -614,15 +614,13 @@ var varPrivateEndPointWorkspaceName = 'pe-${varWorkSpaceName}-global'
 var varScalingPlanExclusionTag = 'exclude-${varScalingPlanName}'
 var varScalingPlanWeekdaysScheduleName = 'Weekdays-${varManagementPlaneNamingStandard}'
 var varScalingPlanWeekendScheduleName = 'Weekend-${varManagementPlaneNamingStandard}'
-
 var varStrgKvName = avdUseCustomNaming
-  ? '${avdStrgKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}'
+  ? '${ztKvStrPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}'
   : 'kv-str-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters
 var varStrgKvPrivateEndpointName = 'pe-${varStrgKvName}-vault'
 var varStrgKeyVaultSku = (varAzureCloudName == 'AzureCloud' || varAzureCloudName == 'AzureUSGovernment')
   ? 'premium'
   : (varAzureCloudName == 'AzureChinaCloud' ? 'standard' : null)
-
 var varWrklKvName = avdUseCustomNaming
   ? '${avdWrklKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}'
   : 'kv-sec-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters

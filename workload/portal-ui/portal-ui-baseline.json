@@ -2181,7 +2181,7 @@
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,6}$",
-                                        "validationMessage": "Value must be 1-90 characters."
+                                        "validationMessage": "Value must be 1-6 characters."
                                     }
                                 },
                                 {
@@ -2194,7 +2194,20 @@
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,6}$",
-                                        "validationMessage": "Value must be 1-90 characters."
+                                        "validationMessage": "Value must be 1-6 characters."
+                                    }
+                                },
+                                {
+                                    "name": "zeroTrustObjectsStorageKeyVaultCustomPrefix",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Key vault prefix for Storage Accounts",
+                                    "visible": "[and(steps('resourceNaming').resourceNamingSelection, steps('storage').storageGeneralSettings.storageZeroTrust)]",
+                                    "toolTip": "Key Vault that stores the encryption key for storage account(s).",
+                                    "placeholder": "Example: kv-str",
+                                    "constraints": {
+                                        "required": true,
+                                        "regex": "^[a-z0-9A-Z-]{1,6}$",
+                                        "validationMessage": "Value must be 1-6 characters."
                                     }
                                 },
                                 {
@@ -2207,7 +2220,7 @@
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,5}$",
-                                        "validationMessage": "Value must be 1-90 characters."
+                                        "validationMessage": "Value must be 1-5 characters."
                                     }
                                 }
                             ]
@@ -2576,6 +2589,7 @@
                 "avdAlaWorkspaceCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingMonitoring.monitoringLogAnalyticsWorkspaceName, 'no')]",
                 "ztDiskEncryptionSetCustomNamePrefix": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsDiskEncryptionSetCustomName]",
                 "ztKvPrefixCustomName ": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsKeyVaultCustomPrefix]",
+                "ztKvStrPrefixCustomName": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsStorageKeyVaultCustomPrefix]",
                 "ztManagedIdentityCustomName": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsManagedIdentityCustomName]",
                 "deployGpuPolicies": "[steps('sessionHosts').sessionHostsSettingsSection.gpuExtensionPolicy]"
             },

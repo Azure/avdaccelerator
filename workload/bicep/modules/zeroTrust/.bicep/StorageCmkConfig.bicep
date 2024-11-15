@@ -9,7 +9,7 @@ param storageSkuName string
 
 var keyName = 'key-${storageAccountName}'
 
-/* resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   name: storageAccountName
   location: location
   kind: ((storageSkuName == 'Premium_LRS') || (storageSkuName == 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
@@ -41,9 +41,9 @@ var keyName = 'key-${storageAccountName}'
     }
   }
 }
- */
 
-module storageAccountAVM '../../../../../avm/1.0.0/res/storage/storage-account/main.bicep' = {
+// Using AVM - the key rotation is not enabled on the Storage Account.
+/* module storageAccountAVM '../../../../../avm/1.0.0/res/storage/storage-account/main.bicep' = {
   name: 'storageAccountAVM'
   params: {
     name:storageAccountName
@@ -62,4 +62,4 @@ module storageAccountAVM '../../../../../avm/1.0.0/res/storage/storage-account/m
       keyVersion: ''
     }
   }
-}
+} */
