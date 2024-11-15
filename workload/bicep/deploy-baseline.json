@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.31.34.60546",
-      "templateHash": "9121813628569754715"
+      "templateHash": "9384301259839648600"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -26625,7 +26625,7 @@
       ]
     },
     {
-      "condition": "[and(variables('varCreateStorageDeployment'), parameters('diskZeroTrust'))]",
+      "condition": "[and(variables('varCreateStorageDeployment'), parameters('storageZeroTrust'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('Storage-KeyVault-{0}', parameters('time'))]",

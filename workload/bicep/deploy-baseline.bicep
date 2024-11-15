@@ -1419,7 +1419,7 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
   ]
 }
 // Key vault for Storage Account(s) with key for each, 1y expiry and rotation policy for FSLogix and MSIX (CMK)
-module strgKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = if ((varCreateStorageDeployment) && (diskZeroTrust)) {
+module strgKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = if ((varCreateStorageDeployment) && (storageZeroTrust)) {
   scope: resourceGroup('${avdWorkloadSubsId}', '${varStorageObjectsRgName}')
   name: 'Storage-KeyVault-${time}'
   params: {
