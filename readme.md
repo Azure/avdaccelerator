@@ -52,6 +52,7 @@ The brownfield section contains templates to deploy additional features for Azur
 - [Migrate monitoring agent from MMA to AMA](./workload/scripts/Monitoring/readme.md)
 - [Scaling Tool](./workload/bicep/brownfield/scalingTool/readme.md)
 - [Start VM On Connect](./workload/bicep/brownfield/startVmOnConnect/readme.md)
+- [AVD Client (Remote Desktop) Kiosk](https://github.com/shawntmeyer/AVDClientKiosk)
 
 ### Monitoring workbooks
 
