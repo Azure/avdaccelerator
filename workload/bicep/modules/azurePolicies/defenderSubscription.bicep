@@ -13,7 +13,7 @@ param initiativeDisplayName string = 'Custom - Deploy Microsoft Defender for Clo
 param initiativeDescription string = 'This initiative deploys Microsoft Defender for Cloud Security for AVD.'
 
 @description('Category of the initiative.')
-param initiativeCategory string = 'Custom Initiatives'
+param initiativeCategory string = 'Security Center'
 
 @description('Effect for the policy.')
 @allowed([
@@ -76,77 +76,101 @@ resource initiative 'Microsoft.Authorization/policySetDefinitions@2023-04-01' = 
   properties: {
     displayName: initiativeDisplayName
     description: initiativeDescription
+    version: '1.0.0'
     metadata: {
       category: initiativeCategory
+      version: '1.0.0'
     }
-    policyDefinitions: [
-      {
-        policyDefinitionReferenceId: 'DefenderForServers'
-        policyDefinitionId: tenantResourceId(
-          'Microsoft.Authorization/policyDefinitions',
-          '8e86a5b6-b9bd-49d1-8e21-4bb8a0862222'
-        )
-        parameters: {
-          effect: {
-            value: effect
+    policyDefinitions: concat(
+      [
+        {
+          policyDefinitionReferenceId: 'EnsureContactEmail'
+          policyDefinitionId: tenantResourceId('Microsoft.Authorization/policyDefinitions', '4f4f78b8-e367-4b10-a341-d9a4ad5cf1c7')
+          parameters: {
+            effect: {
+              value: 'AuditIfNotExists'
+            }
           }
         }
-      }
-      {
-        policyDefinitionReferenceId: 'DefenderForStorage'
-        policyDefinitionId: tenantResourceId(
-          'Microsoft.Authorization/policyDefinitions',
-          'cfdc5972-75b3-4418-8ae1-7f5c36839390'
-        )
-        parameters: {
-          effect: {
-            value: effect
+      ],
+      enableAscForServers
+        ? [
+            {
+              policyDefinitionReferenceId: 'DefenderForServers'
+              policyDefinitionId: tenantResourceId(
+                'Microsoft.Authorization/policyDefinitions',
+                '8e86a5b6-b9bd-49d1-8e21-4bb8a0862222'
+              )
+              parameters: {
+                effect: {
+                  value: effect
+                }
+              }
+            }
+          ]
+        : [],
+      enableAscForStorage
+        ? [
+            {
+              policyDefinitionReferenceId: 'DefenderForStorage'
+              policyDefinitionId: tenantResourceId(
+                'Microsoft.Authorization/policyDefinitions',
+                'cfdc5972-75b3-4418-8ae1-7f5c36839390'
+              )
+              parameters: {
+                effect: {
+                  value: effect
+                }
+                isOnUploadMalwareScanningEnabled: {
+                  value: isOnUploadMalwareScanningEnabled
+                }
+                capGBPerMonthPerStorageAccount: {
+                  value: capGBPerMonthPerStorageAccount
+                }
+                isSensitiveDataDiscoveryEnabled: {
+                  value: isSensitiveDataDiscoveryEnabled
+                }
+              }
+            }
+          ]
+        : [],
+      enableAscForKeyVault
+        ? [
+            {
+              policyDefinitionReferenceId: 'DefenderForKeyVault'
+              policyDefinitionId: tenantResourceId(
+                'Microsoft.Authorization/policyDefinitions',
+                'b7021b2b-08fd-4dc0-9de7-3c6ece09faf9'
+              )
+              parameters: {
+                effect: {
+                  value: effect
+                }
+                subPlan: {
+                  value: subPlan
+                }
+              }
+            }
+          ]
+        : [],
+        enableAscForArm ? [
+          {
+            policyDefinitionReferenceId: 'DefenderForARM'
+            policyDefinitionId: tenantResourceId(
+              'Microsoft.Authorization/policyDefinitions',
+              'b7021b2b-08fd-4dc0-9de7-3c6ece09faf9'
+            )
+            parameters: {
+              effect: {
+                value: effect
+              }
+              subPlan: {
+                value: resourceManagerSubPlan
+              }
+            }
           }
-          isOnUploadMalwareScanningEnabled: {
-            value: isOnUploadMalwareScanningEnabled
-          }
-          capGBPerMonthPerStorageAccount: {
-            value: capGBPerMonthPerStorageAccount
-          }
-          isSensitiveDataDiscoveryEnabled: {
-            value: isSensitiveDataDiscoveryEnabled
-          }
-        }
-      }
-      {
-        policyDefinitionReferenceId: 'DefenderForKeyVault'
-        policyDefinitionId: tenantResourceId(
-          'Microsoft.Authorization/policyDefinitions',
-          '1f725891-01c0-420a-9059-4fa46cb770b7'
-        )
-        parameters: {
-          effect: {
-            value: effect
-          }
-          subPlan: {
-            value: subPlan
-          }
-        }
-      }
-      {
-        policyDefinitionReferenceId: 'DefenderForARM'
-        policyDefinitionId: tenantResourceId(
-          'Microsoft.Authorization/policyDefinitions',
-          'b7021b2b-08fd-4dc0-9de7-3c6ece09faf9'
-        )
-        parameters: {
-          effect: {
-            value: effect
-          }
-          subPlan: {
-            value: resourceManagerSubPlan
-          }
-        }
-      }
-      // {
-      //   policyDefinitionReferenceId: 'PolicyRef5'
-      //   policyDefinitionId: subscriptionResourceId('Microsoft.Authorization/policyDefinitions', '72f8cee7-2937-403d-84a1-a4e3e57f3c21')
-      // }
-    ]
+        ]:[]
+    )
+    
   }
 }

@@ -332,19 +332,6 @@
                                     "toolTip": "Selecting 'Yes' will enable the options to configure individual Microsoft Defender for Cloud components, and will enable Microsoft Defender for Cloud plans on all subscriptions in the Azure Landing Zone. If 'Yes' is selected when also adding a subscription for management, ARM will deploy resources and enable them for continuous compliance."
                                 },
                                 {
-                                    "name": "emailContactAsc",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Microsoft Defender for Cloud Email Contact",
-                                    "toolTip": "Email address to get email notifications from Microsoft Defender for Cloud.",
-                                    "visible": "[steps('identity').identiyEnableDefOptions.enableAsc]",
-                                    "defaultValue": "",
-                                    "constraints": {
-                                        "required": "[steps('identity').identiyEnableDefOptions.enableAsc]",
-                                        "regex": "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$",
-                                        "validationMessage": "Please provide a valid email address"
-                                    }
-                                },
-                                {
                                     "name": "enableAscForServers",
                                     "type": "Microsoft.Common.CheckBox",
                                     "label": "Enable Microsoft Defender for Cloud for servers",
@@ -2623,7 +2610,6 @@
                 "deployGpuPolicies": "[steps('sessionHosts').sessionHostsSettingsSection.gpuExtensionPolicy]",
                 
                 "enableAsc": "[steps('identity').identiyEnableDefOptions.enableAsc]",
-                "emailContactAsc": "[steps('identity').identiyEnableDefOptions.emailContactAsc]",
                 "enableAscForServers": "[steps('identity').identiyEnableDefOptions.enableAscForServers]",
                 "enableAscForStorage": "[steps('identity').identiyEnableDefOptions.enableAscForStorage]",
                 "enableAscForKeyVault": "[steps('identity').identiyEnableDefOptions.enableAscForKeyVault]",
