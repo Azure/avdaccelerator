@@ -158,7 +158,7 @@ var varNetworkObjectsRgName = w365UseCustomNaming
   : 'rg-w365-${varResourcesNamingStandard}-network' // max length limit 90 characters
 var varServiceObjectsRgName = w365UseCustomNaming
   ? w365ServiceObjectsRgCustomName
-  : 'rg-avd-${varResourcesNamingStandard}-service-objects' // max length limit 90 characters
+  : 'rg-w365-${varResourcesNamingStandard}-service-objects' // max length limit 90 characters
 var varComputeObjectsRgName = w365UseCustomNaming
   ? w365ComputeObjectsRgCustomName
   : 'rg-w365-${varResourcesNamingStandard}-pool-compute' // max length limit 90 characters

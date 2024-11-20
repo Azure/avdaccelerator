@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "18221192668583201575"
+      "templateHash": "14754462865472050536"
     },
     "name": "W365 Accelerator - Baseline Deployment",
     "description": "W365 Accelerator - Deployment Baseline",
@@ -141,14 +141,6 @@
       "maxLength": 80,
       "metadata": {
         "description": "W365 network security group custom name. (Default: nsg-w365-app1-dev-use2-001)"
-      }
-    },
-    "privateEndpointNetworksecurityGroupCustomName": {
-      "type": "string",
-      "defaultValue": "nsg-pe-app1-dev-use2-001",
-      "maxLength": 80,
-      "metadata": {
-        "description": "Private endpoint network security group custom name. (Default: nsg-pe-app1-dev-use2-001)"
       }
     },
     "w365RouteTableCustomName": {
@@ -576,7 +568,7 @@
     "varResourcesNamingStandard": "[format('{0}-{1}-{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varW365LocationAcronym'))]",
     "varSessionHostLocationLowercase": "[toLower(replace(parameters('w365Location'), ' ', ''))]",
     "varNetworkObjectsRgName": "[if(parameters('w365UseCustomNaming'), parameters('w365NetworkObjectsRgCustomName'), format('rg-w365-{0}-network', variables('varResourcesNamingStandard')))]",
-    "varServiceObjectsRgName": "[if(parameters('w365UseCustomNaming'), parameters('w365ServiceObjectsRgCustomName'), format('rg-avd-{0}-service-objects', variables('varResourcesNamingStandard')))]",
+    "varServiceObjectsRgName": "[if(parameters('w365UseCustomNaming'), parameters('w365ServiceObjectsRgCustomName'), format('rg-w365-{0}-service-objects', variables('varResourcesNamingStandard')))]",
     "varComputeObjectsRgName": "[if(parameters('w365UseCustomNaming'), parameters('w365ComputeObjectsRgCustomName'), format('rg-w365-{0}-pool-compute', variables('varResourcesNamingStandard')))]",
     "varVnetName": "[if(parameters('w365UseCustomNaming'), parameters('w365VnetworkCustomName'), format('vnet-{0}-001', variables('varResourcesNamingStandard')))]",
     "varHubVnetName": "[if(not(empty(parameters('existingHubVnetResourceId'))), split(parameters('existingHubVnetResourceId'), '/')[8], '')]",
