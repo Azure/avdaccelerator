@@ -17,7 +17,6 @@ param w365ComputeObjectsRgCustomName = 'rg-w365-app1-dev-use2-pool-compute'
 param w365VnetworkCustomName = 'vnet-app1-dev-use2-001'
 param w365VnetworkSubnetCustomName = 'snet-w365-app1-dev-use2-001'
 param w365NetworksecurityGroupCustomName = 'nsg-w365-app1-dev-use2-001'
-param privateEndpointNetworksecurityGroupCustomName = 'nsg-pe-app1-dev-use2-001'
 param w365RouteTableCustomName = 'route-w365-app1-dev-use2-001'
 param w365ApplicationSecurityGroupCustomName = 'asg-app1-dev-use2-001'
 param createResourceTags = false

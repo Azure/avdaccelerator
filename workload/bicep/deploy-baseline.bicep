@@ -74,10 +74,6 @@ param w365VnetworkSubnetCustomName string = 'snet-w365-app1-dev-use2-001'
 param w365NetworksecurityGroupCustomName string = 'nsg-w365-app1-dev-use2-001'
 
 @maxLength(80)
-@sys.description('Private endpoint network security group custom name. (Default: nsg-pe-app1-dev-use2-001)')
-param privateEndpointNetworksecurityGroupCustomName string = 'nsg-pe-app1-dev-use2-001'
-
-@maxLength(80)
 @sys.description('W365 route table custom name. (Default: route-w365-app1-dev-use2-001)')
 param w365RouteTableCustomName string = 'route-w365-app1-dev-use2-001'
 
