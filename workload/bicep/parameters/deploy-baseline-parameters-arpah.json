@@ -141,7 +141,7 @@
             "value": true
         },
         "avdDeploySessionHostsCount": {
-            "value": 1
+            "value": 3
         },
         "avdSessionHostCountIndex": {
             "value": 0
