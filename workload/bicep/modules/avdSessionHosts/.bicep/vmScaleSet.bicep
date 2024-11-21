@@ -38,7 +38,7 @@ resource vmssFlex 'Microsoft.Compute/virtualMachineScaleSets@2024-03-01' = [for 
     zones: useAvailabilityZones ? [
         '1'
         '2'
-        // '3'
+        '3'
     ]: null
     properties: {
         orchestrationMode: 'Flexible'
