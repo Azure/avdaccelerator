@@ -465,7 +465,6 @@
                                 {
                                     "name": "scalingPlan",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "visible": "[not(contains(steps('basics').resourceScope.location.name, 'china'))]",
                                     "label": "Scaling plan",
                                     "defaultValue": true,
                                     "toolTip": "Will automatically manage session host power state based on usage and schedules (weekdays and weekend schedules will be created)."
@@ -513,16 +512,6 @@
                                         "text": "Session hosts can be excluded from the scaling plan by assigning the tag name exclude-'Scaling-PLan-Name'. When not using custom resource naming, the default exclusion tag name will be exclude-vdscaling-'DeploymentPrefix'-'Environment'-'DeploymentLocation'-001 <br/> - Example: exclude-vdscaling-app1-dev-use2-001",
                                         "uri": "https://docs.microsoft.com/azure/virtual-desktop/autoscale-scenarios#scenario-4-how-do-exclusion-tags-work",
                                         "style": "Info"
-                                    }
-                                },
-                                {
-                                    "name": "scalingPlanInfo2",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[contains(steps('basics').resourceScope.location.name, 'china')]",
-                                    "options": {
-                                        "text": "Scaling Plan is NOT SUPPORTED in Azure China Cloud",
-                                        "uri": "https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/?products=all&regions=china-non-regional%2Cchina-east%2Cchina-east-2%2Cchina-east-3%2Cchina-north%2Cchina-north-2%2Cchina-north-3&rar=true",
-                                        "style": "Warning"
                                     }
                                 }
                             ]
@@ -2398,7 +2387,7 @@
                 "existingVnetPrivateEndpointSubnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, false), steps('network').virtualNetworkPrivateEndpointSubnetSelectorName, 'no')]",
                 "avdDeploySessionHosts": "[steps('sessionHosts').deploySessionHosts]",
                 "avdStartVmOnConnect": "[steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect]",
-                "avdDeployScalingPlan": "[if(contains(steps('basics').resourceScope.location.name, 'china'), false, steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan)]",
+                "avdDeployScalingPlan": "[steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan]",
                 "avdEnterpriseAppObjectId": "[first(map(steps('managementPlane').managementPlaneHostPoolScaling.avdEnterpriseApplication.value, (item) => item.id))]",
                 "availabilityZonesCompute": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, false)]",
                 "deployVmssFlex": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettingsVmss, false)]",
