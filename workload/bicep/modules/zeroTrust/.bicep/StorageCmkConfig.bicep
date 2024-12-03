@@ -1,13 +1,37 @@
 // Called from deploy-baseline.bicep as storage needs to be created first.
 
+targetScope = 'resourceGroup'
+
+// ========== //
+// Parameters //
+// ========== //
+@sys.description('Name of storage account.')
 param storageAccountName string
+
+@sys.description('Location where to deploy compute services.')
 param location string = resourceGroup().location
+
+@sys.description('Key Vault URI associated with Storage Account.')
 param keyVaultUri string
-param keyVaultResId string
+
+// @sys.description('Key Vault Resource ID associated with Storage Acccount.')
+// param keyVaultResId string
+
+@sys.description('Managed Identity Resource ID associated with Storage Account and used for Zero Trust.')
 param managedIdentityStorageResourceId string
+
+@sys.description('Specifies the SKU for the Storage Account.')
 param storageSkuName string
 
+// =========== //
+// Variable declaration //
+// =========== //
+
 var keyName = 'key-${storageAccountName}'
+
+// =========== //
+// Deployments //
+// =========== //
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   name: storageAccountName

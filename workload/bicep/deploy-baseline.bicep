@@ -424,8 +424,8 @@ param msixFileShareCustomName string = 'msix-app1-dev-use2-001'
 //param avdFslogixOfficeContainerFileShareCustomName string = 'fslogix-oc-app1-dev-001'
 
 @maxLength(6)
-@sys.description('AVD keyvault prefix custom name (with Zero Trust to store keys for FSLogix and AppAttach Storage / CMK option). (Default: kv-sec)')
-param ztKvStrPrefixCustomName string = 'kv-str'
+@sys.description('AVD keyvault prefix custom name (with Zero Trust to store keys for FSLogix and AppAttach Storage / CMK option). (Default: kv-st)')
+param ztKvStPrefixCustomName string = 'kv-st'
 
 @maxLength(6)
 @sys.description('AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv-sec)')
@@ -615,7 +615,7 @@ var varScalingPlanExclusionTag = 'exclude-${varScalingPlanName}'
 var varScalingPlanWeekdaysScheduleName = 'Weekdays-${varManagementPlaneNamingStandard}'
 var varScalingPlanWeekendScheduleName = 'Weekend-${varManagementPlaneNamingStandard}'
 var varStrgKvName = avdUseCustomNaming
-  ? '${ztKvStrPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}'
+  ? '${ztKvStPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}'
   : 'kv-str-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters
 var varStrgKvPrivateEndpointName = 'pe-${varStrgKvName}-vault'
 var varStrgKeyVaultSku = (varAzureCloudName == 'AzureCloud' || varAzureCloudName == 'AzureUSGovernment')
@@ -1604,7 +1604,7 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
 // https://learn.microsoft.com/en-us/azure/storage/common/customer-managed-keys-configure-existing-account?tabs=azure-portal#configure-encryption-for-automatic-updating-of-key-versions
 
 // Storage Zero Trust / Configure CMK - FSLogix
-module fslogixCmk './modules/zeroTrust/.bicep/StorageCmkConfig.bicep' = if (storageZeroTrust && createAvdFslogixDeployment) {
+module fslogixCmk './modules/zeroTrust/.bicep/storageCmkConfig.bicep' = if (storageZeroTrust && createAvdFslogixDeployment) {
   name: 'FSLogixStorage-CMK-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${varStorageObjectsRgName}')
   params: {
@@ -1612,7 +1612,7 @@ module fslogixCmk './modules/zeroTrust/.bicep/StorageCmkConfig.bicep' = if (stor
     location: avdSessionHostLocation
     managedIdentityStorageResourceId: identity.outputs.managedIdentityStorageResourceId
     keyVaultUri: strgKeyVault.outputs.uri
-    keyVaultResId: strgKeyVault.outputs.resourceId
+    // keyVaultResId: strgKeyVault.outputs.resourceId
     storageSkuName: varFslogixStorageSku
     }
   dependsOn: [
@@ -1625,7 +1625,7 @@ module fslogixCmk './modules/zeroTrust/.bicep/StorageCmkConfig.bicep' = if (stor
 }
 
 // Storage Zero Trust / Configure CMK - MSIX
-module msixCmk './modules/zeroTrust/.bicep/StorageCmkConfig.bicep' = if (storageZeroTrust && varCreateMsixDeployment) {
+module msixCmk './modules/zeroTrust/.bicep/storageCmkConfig.bicep' = if (storageZeroTrust && varCreateMsixDeployment) {
   name: 'MSIXStorage-CMK-${time}'
   scope: resourceGroup('${avdWorkloadSubsId}', '${varStorageObjectsRgName}')
   params: {
@@ -1633,7 +1633,7 @@ module msixCmk './modules/zeroTrust/.bicep/StorageCmkConfig.bicep' = if (storage
     location: avdSessionHostLocation
     managedIdentityStorageResourceId: identity.outputs.managedIdentityStorageResourceId
     keyVaultUri: strgKeyVault.outputs.uri
-    keyVaultResId: strgKeyVault.outputs.resourceId
+    // keyVaultResId: strgKeyVault.outputs.resourceId
     storageSkuName: varMsixStorageSku
     }
   dependsOn: [
