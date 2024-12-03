@@ -185,6 +185,9 @@ param avdVnetPrivateDnsZoneKeyvaultId string = ''
 @sys.description('Does the hub contains a virtual network gateway. (Default: false)')
 param vNetworkGatewayOnHub bool = false
 
+@sys.description('This option will configure the Storage Account(s) to utilize Customer Managed Keys and include an additional Key Vault deployment. (Default: false)')
+param storageZeroTrust bool = false
+
 @sys.description('Deploy Fslogix setup. (Default: true)')
 param createAvdFslogixDeployment bool = true
 
@@ -421,6 +424,10 @@ param msixFileShareCustomName string = 'msix-app1-dev-use2-001'
 //param avdFslogixOfficeContainerFileShareCustomName string = 'fslogix-oc-app1-dev-001'
 
 @maxLength(6)
+@sys.description('AVD keyvault prefix custom name (with Zero Trust to store keys for FSLogix and AppAttach Storage / CMK option). (Default: kv-st)')
+param ztKvStPrefixCustomName string = 'kv-st'
+
+@maxLength(6)
 @sys.description('AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv-sec)')
 param avdWrklKvPrefixCustomName string = 'kv-sec'
 
@@ -433,8 +440,8 @@ param ztDiskEncryptionSetCustomNamePrefix string = 'des-zt'
 param ztManagedIdentityCustomName string = 'id-zt'
 
 @maxLength(6)
-@sys.description('AVD key vault custom name for zero trust and store store disk encryption key (Default: kv-key)')
-param ztKvPrefixCustomName string = 'kv-key'
+@sys.description('AVD key vault custom name for zero trust and store disk encryption keys for VMs (Default: kv-vms)')
+param ztKvPrefixCustomName string = 'kv-vms'
 
 //
 // Resource tagging
@@ -607,6 +614,13 @@ var varPrivateEndPointWorkspaceName = 'pe-${varWorkSpaceName}-global'
 var varScalingPlanExclusionTag = 'exclude-${varScalingPlanName}'
 var varScalingPlanWeekdaysScheduleName = 'Weekdays-${varManagementPlaneNamingStandard}'
 var varScalingPlanWeekendScheduleName = 'Weekend-${varManagementPlaneNamingStandard}'
+var varStrgKvName = avdUseCustomNaming
+  ? '${ztKvStPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}'
+  : 'kv-str-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters
+var varStrgKvPrivateEndpointName = 'pe-${varStrgKvName}-vault'
+var varStrgKeyVaultSku = (varAzureCloudName == 'AzureCloud' || varAzureCloudName == 'AzureUSGovernment')
+  ? 'premium'
+  : (varAzureCloudName == 'AzureChinaCloud' ? 'standard' : null)
 var varWrklKvName = avdUseCustomNaming
   ? '${avdWrklKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}'
   : 'kv-sec-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters
@@ -971,6 +985,9 @@ var varAvdDefaultTags = {
   ServiceWorkload: 'AVD'
   CreationTimeUTC: time
 }
+var varStorageKeyvaultTag = {
+  Purpose: 'Customer Managed Keys for FSLogix and MSIX storage accounts'
+}
 var varWorkloadKeyvaultTag = {
   Purpose: 'Secrets for local admin and domain join credentials'
 }
@@ -999,6 +1016,29 @@ var verResourceGroups = [
       : union(varAvdDefaultTags, varAllComputeStorageTags)
   }
 ]
+var varZtStorageKeyRotation = {
+  attributes: {
+    expiryTime: 'P1Y'
+  }
+  lifetimeActions: [
+    {
+      action: {
+        type: 'Rotate'
+      }
+      trigger: {
+        timeBeforeExpiry: 'P1M'
+      }
+    }
+    {
+      action: {
+        type: 'Notify'
+      }
+      trigger: {
+        timeBeforeExpiry: 'P1M'
+      }
+    }
+  ]
+}
 
 // =========== //
 // Deployments //
@@ -1376,6 +1416,82 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
     wrklKeyVault
   ]
 }
+// Key vault for Storage Account(s) with key for each, 1y expiry and rotation policy for FSLogix and MSIX (CMK)
+module strgKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = if ((varCreateStorageDeployment) && (storageZeroTrust)) {
+  scope: resourceGroup('${avdWorkloadSubsId}', '${varStorageObjectsRgName}')
+  name: 'Storage-KeyVault-${time}'
+  params: {
+    name: varStrgKvName
+    location: avdSessionHostLocation
+    enableRbacAuthorization: true
+    enablePurgeProtection: enableKvPurgeProtection
+    roleAssignments: [
+      {
+        principalId: identity.outputs.managedIdentityStoragePrincipalId
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Key Vault Crypto Service Encryption User'
+      }
+    ]
+    keys: varCreateMsixDeployment ? [
+      {
+        name: 'key-${varMsixStorageName}'
+        kty: 'RSA'
+        keySize: 2048
+        rotationPolicy: varZtStorageKeyRotation
+      }
+      {
+        name: 'key-${varFslogixStorageName}'
+        kty: 'RSA'
+        keySize: 2048
+        rotationPolicy: varZtStorageKeyRotation
+      }
+    ]:[
+      {
+        name: 'key-${varFslogixStorageName}'
+        kty: 'RSA'
+        keySize: 2048
+        rotationPolicy: varZtStorageKeyRotation
+      }
+    ]
+    sku: varStrgKeyVaultSku
+    softDeleteRetentionInDays: 7
+    publicNetworkAccess: deployPrivateEndpointKeyvaultStorage ? 'Disabled' : 'Enabled'
+    networkAcls: deployPrivateEndpointKeyvaultStorage
+      ? {
+          bypass: 'AzureServices'
+          defaultAction: 'Deny'
+          virtualNetworkRules: []
+          ipRules: []
+        }
+      : {}
+    privateEndpoints: deployPrivateEndpointKeyvaultStorage? [
+          {
+            name: varStrgKvPrivateEndpointName
+            subnetResourceId: createAvdVnet
+              ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
+              : existingVnetPrivateEndpointSubnetResourceId
+            customNetworkInterfaceName: 'nic-01-${varStrgKvPrivateEndpointName}'
+            service: 'vault'
+            privateDnsZoneGroupName: createPrivateDnsZones ? split(networking.outputs.keyVaultDnsZoneResourceId, '/')[8] : split(avdVnetPrivateDnsZoneKeyvaultId, '/')[8]
+            privateDnsZoneResourceIds: [
+                createPrivateDnsZones ? networking.outputs.keyVaultDnsZoneResourceId : avdVnetPrivateDnsZoneKeyvaultId
+            ]
+          }
+      ]
+      : []
+    tags: createResourceTags
+      ? union(varCustomResourceTags, varAvdDefaultTags, varStorageKeyvaultTag)
+      : union(varAvdDefaultTags, varStorageKeyvaultTag)
+  }
+  dependsOn: [
+    identity
+    networking
+    managementVm
+    baselineResourceGroups
+    monitoringDiagnosticSettings
+  ]
+}
+
 
 // FSLogix storage
 module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (createAvdFslogixDeployment) {
@@ -1426,6 +1542,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
     wrklKeyVault
     managementVm
     monitoringDiagnosticSettings
+    strgKeyVault
   ]
 }
 
@@ -1479,6 +1596,50 @@ module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (va
     wrklKeyVault
     managementVm
     monitoringDiagnosticSettings
+    strgKeyVault
+  ]
+}
+
+// Coniguring CMK after storage deployment ensures key rotation is automatic
+// https://learn.microsoft.com/en-us/azure/storage/common/customer-managed-keys-configure-existing-account?tabs=azure-portal#configure-encryption-for-automatic-updating-of-key-versions
+
+// Storage Zero Trust / Configure CMK - FSLogix
+module fslogixCmk './modules/zeroTrust/.bicep/storageCmkConfig.bicep' = if (storageZeroTrust && createAvdFslogixDeployment) {
+  name: 'FSLogixStorage-CMK-${time}'
+  scope: resourceGroup('${avdWorkloadSubsId}', '${varStorageObjectsRgName}')
+  params: {
+    storageAccountName: varFslogixStorageName
+    location: avdSessionHostLocation
+    managedIdentityStorageResourceId: identity.outputs.managedIdentityStorageResourceId
+    keyVaultUri: strgKeyVault.outputs.uri
+    storageSkuName: varFslogixStorageSku
+    }
+  dependsOn: [
+    baselineResourceGroups
+    baselineStorageResourceGroup
+    identity
+    fslogixAzureFilesStorage
+    strgKeyVault
+  ]
+}
+
+// Storage Zero Trust / Configure CMK - MSIX
+module msixCmk './modules/zeroTrust/.bicep/storageCmkConfig.bicep' = if (storageZeroTrust && varCreateMsixDeployment) {
+  name: 'MSIXStorage-CMK-${time}'
+  scope: resourceGroup('${avdWorkloadSubsId}', '${varStorageObjectsRgName}')
+  params: {
+    storageAccountName: varMsixStorageName
+    location: avdSessionHostLocation
+    managedIdentityStorageResourceId: identity.outputs.managedIdentityStorageResourceId
+    keyVaultUri: strgKeyVault.outputs.uri
+    storageSkuName: varMsixStorageSku
+    }
+  dependsOn: [
+    baselineResourceGroups
+    baselineStorageResourceGroup
+    identity
+    msixAzureFilesStorage
+    strgKeyVault
   ]
 }
 
