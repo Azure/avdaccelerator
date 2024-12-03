@@ -14,9 +14,6 @@ param location string = resourceGroup().location
 @sys.description('Key Vault URI associated with Storage Account.')
 param keyVaultUri string
 
-// @sys.description('Key Vault Resource ID associated with Storage Acccount.')
-// param keyVaultResId string
-
 @sys.description('Managed Identity Resource ID associated with Storage Account and used for Zero Trust.')
 param managedIdentityStorageResourceId string
 
@@ -32,7 +29,7 @@ var keyName = 'key-${storageAccountName}'
 // =========== //
 // Deployments //
 // =========== //
-
+// Using AVM - the key rotation is not enabled on the Storage Account.
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   name: storageAccountName
   location: location
@@ -66,24 +63,4 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
   }
 }
 
-// Using AVM - the key rotation is not enabled on the Storage Account.
-/* module storageAccountAVM '../../../../../avm/1.0.0/res/storage/storage-account/main.bicep' = {
-  name: 'storageAccountAVM'
-  params: {
-    name:storageAccountName
-    location:location
-    kind:((storageSkuName == 'Premium_LRS') || (storageSkuName == 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
-    skuName:storageSkuName
-    managedIdentities: {
-      userAssignedResourceIds: [
-        managedIdentityStorageResourceId
-      ]
-    }
-    customerManagedKey: {
-      userAssignedIdentityResourceId: managedIdentityStorageResourceId
-      keyName: keyName
-      keyVaultResourceId: keyVaultResId
-      keyVersion: ''
-    }
-  }
-} */
+

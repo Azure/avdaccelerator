@@ -1612,7 +1612,6 @@ module fslogixCmk './modules/zeroTrust/.bicep/storageCmkConfig.bicep' = if (stor
     location: avdSessionHostLocation
     managedIdentityStorageResourceId: identity.outputs.managedIdentityStorageResourceId
     keyVaultUri: strgKeyVault.outputs.uri
-    // keyVaultResId: strgKeyVault.outputs.resourceId
     storageSkuName: varFslogixStorageSku
     }
   dependsOn: [
@@ -1633,7 +1632,6 @@ module msixCmk './modules/zeroTrust/.bicep/storageCmkConfig.bicep' = if (storage
     location: avdSessionHostLocation
     managedIdentityStorageResourceId: identity.outputs.managedIdentityStorageResourceId
     keyVaultUri: strgKeyVault.outputs.uri
-    // keyVaultResId: strgKeyVault.outputs.resourceId
     storageSkuName: varMsixStorageSku
     }
   dependsOn: [
