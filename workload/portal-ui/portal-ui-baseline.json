@@ -2589,7 +2589,7 @@
                 "avdAlaWorkspaceCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingMonitoring.monitoringLogAnalyticsWorkspaceName, 'no')]",
                 "ztDiskEncryptionSetCustomNamePrefix": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsDiskEncryptionSetCustomName]",
                 "ztKvPrefixCustomName ": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsKeyVaultCustomPrefix]",
-                "ztKvStrPrefixCustomName": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsStorageKeyVaultCustomPrefix]",
+                "ztKvStPrefixCustomName": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsStorageKeyVaultCustomPrefix]",
                 "ztManagedIdentityCustomName": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsManagedIdentityCustomName]",
                 "deployGpuPolicies": "[steps('sessionHosts').sessionHostsSettingsSection.gpuExtensionPolicy]"
             },
