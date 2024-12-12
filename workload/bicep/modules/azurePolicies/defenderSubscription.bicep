@@ -44,7 +44,7 @@ param isSensitiveDataDiscoveryEnabled string = 'true'
   'PerTransaction'
   'PerKeyVault'
 ])
-param subPlan string = 'PerTransaction'
+param keyVaultSubPlan string = 'PerTransaction'
 
 @description('Select a Defender for Resource Manager plan.')
 @allowed([
@@ -140,14 +140,14 @@ resource initiative 'Microsoft.Authorization/policySetDefinitions@2023-04-01' = 
               policyDefinitionReferenceId: 'DefenderForKeyVault'
               policyDefinitionId: tenantResourceId(
                 'Microsoft.Authorization/policyDefinitions',
-                'b7021b2b-08fd-4dc0-9de7-3c6ece09faf9'
+                '1f725891-01c0-420a-9059-4fa46cb770b7'
               )
               parameters: {
                 effect: {
                   value: effect
                 }
                 subPlan: {
-                  value: subPlan
+                  value: keyVaultSubPlan
                 }
               }
             }
