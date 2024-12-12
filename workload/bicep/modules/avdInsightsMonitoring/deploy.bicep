@@ -1,4 +1,3 @@
-
 metadata name = 'AVD LZA insights monitoring'
 metadata description = 'This module deploys Log analytics workspace, DCR and policies'
 metadata owner = 'Azure/avdaccelerator'
@@ -57,19 +56,21 @@ param time string = utcNow()
 // Variable declaration //
 // =========== //
 
+var varAlaWorkspaceIdSplitId = split(alaWorkspaceId, '/')
+
 // =========== //
 // Deployments //
 // =========== //
 
 // Resource group if new Log Analytics space is required
-module baselineMonitoringResourceGroup '../../../../avm/1.0.0/res/resources/resource-group/main.bicep' = if (deployAlaWorkspace) {
+module baselineMonitoringResourceGroup '../../../../avm/1.0.0/res/resources/resource-group/main.bicep' = if (deployAlaWorkspace || (!deployAlaWorkspace && !empty(alaWorkspaceId))) {
   scope: subscription(subscriptionId)
   name: 'Monitoing-RG-${time}'
   params: {
-      name: monitoringRgName
-      location: location
-      enableTelemetry: false
-      tags: tags
+    name: monitoringRgName
+    location: location
+    enableTelemetry: false
+    tags: tags
   }
 }
 
@@ -87,7 +88,7 @@ module alaWorkspace '../../../../avm/1.0.0/res/operational-insights/workspace/ma
     }
     tags: tags
   }
-  dependsOn:[
+  dependsOn: [
     baselineMonitoringResourceGroup
   ]
 }
@@ -111,20 +112,26 @@ module deployDiagnosticsAzurePolicyForAvd '../azurePolicies/avdMonitoring.bicep'
   ]
 }
 
+// Get existing LAW
+resource existingAlaw 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!deployAlaWorkspace && !empty(alaWorkspaceId)) {
+  scope: resourceGroup(varAlaWorkspaceIdSplitId[2], varAlaWorkspaceIdSplitId[4])
+  name: varAlaWorkspaceIdSplitId[8]
+}
+
 // data collection rules
 module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
-  scope: resourceGroup('${subscriptionId}', (deployAlaWorkspace ? '${monitoringRgName}': '${serviceObjectsRgName}'))
-  name: 'DCR-${time}'
+  scope: resourceGroup('${subscriptionId}', '${monitoringRgName}')
+  name: 'Mon-DCR-${time}'
   params: {
-      location: location
-      name: dataCollectionRulesName
-      alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
-      tags: {
-        name: 'test'
-      }  //tags
+    location: deployAlaWorkspace ? alaWorkspace.outputs.location : existingAlaw.location
+    name: dataCollectionRulesName
+    alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
+    tags: tags
   }
   dependsOn: [
     alaWorkspace
+    existingAlaw
+    baselineMonitoringResourceGroup
   ]
 }
 

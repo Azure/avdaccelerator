@@ -1,6 +1,5 @@
 targetScope = 'subscription'
 
-
 // ========== //
 // Parameters //
 // ========== //
@@ -34,6 +33,9 @@ param subscriptionId string
 
 @sys.description('Quantity of session hosts to deploy.')
 param count int
+
+@sys.description('Associate VMs with VMSS Flex group.')
+param useVmssFlex bool
 
 @sys.description('Max VMs per availability set.')
 param maxVmssFlexMembersCount int
@@ -125,7 +127,7 @@ param tags object
 @sys.description('Log analytics workspace for diagnostic logs.')
 param alaWorkspaceResourceId string
 
-@sys.description('Deploy AVD monitoring resources and setings. (Default: true)')
+@sys.description('Deploy AVD monitoring resources and setings.')
 param deployMonitoring bool
 
 @sys.description('Do not modify, used to set unique value for resource deployment.')
@@ -134,8 +136,8 @@ param time string = utcNow()
 @sys.description('Data collection rule ID.')
 param dataCollectionRuleId string
 
-@sys.description('Host pool name for registration token.  The host pool name is the secret name for the host pool registration token.')
-param hostPoolName string
+@sys.description('Deploys anti malware extension on session hosts.')
+param deployAntiMalwareExt bool
 
 // =========== //
 // Variable declaration //
@@ -164,7 +166,7 @@ var varCustomOsDiskProperties = {
 // =========== //
 
 // call on the keyvault
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (identityServiceProvider != 'EntraID') {
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
     name: wrklKvName
     scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
 }
@@ -177,13 +179,12 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         location: location
         timeZone: timeZone
-        zone: useAvailabilityZones ? (i % 3 + 1) : 0 // JWI: Temp comment out and set to 0;  having zone issues in east us 2
-        //zone: 0
+        zone: useAvailabilityZones ? (i % 3 + 1) : 0
         managedIdentities: (identityServiceProvider == 'EntraID' || deployMonitoring) ? {
             systemAssigned: true
         }: null
         encryptionAtHost: encryptionAtHost
-        virtualMachineScaleSetResourceId: '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/virtualMachineScaleSets/${vmssFlexNamePrefix}-${padLeft(((1 + (i + countIndex) / maxVmssFlexMembersCount)), 3, '0')}'
+        virtualMachineScaleSetResourceId: useVmssFlex ? '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/virtualMachineScaleSets/${vmssFlexNamePrefix}-${padLeft(((1 + (i + countIndex) / maxVmssFlexMembersCount)), 3, '0')}': ''
         osType: 'Windows'
         licenseType: 'Windows_Client'
         vmSize: vmSize
@@ -245,38 +246,38 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
 }]
 
 // Add antimalware extension to session host.
-// module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): {
-//     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-//     name: 'SH-Antimal-${batchId}-${i - 1}-${time}'
-//     params: {
-//         location: location
-//         virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-//         name: 'MicrosoftAntiMalware'
-//         publisher: 'Microsoft.Azure.Security'
-//         type: 'IaaSAntimalware'
-//         typeHandlerVersion: '1.3'
-//         autoUpgradeMinorVersion: true
-//         enableAutomaticUpgrade: false
-//         settings: {
-//             AntimalwareEnabled: true
-//             RealtimeProtectionEnabled: 'true'
-//             ScheduledScanSettings: {
-//                 isEnabled: 'true'
-//                 day: '7' // Day of the week for scheduled scan (1-Sunday, 2-Monday, ..., 7-Saturday)
-//                 time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
-//                 scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
-//             }
-//             Exclusions: createAvdFslogixDeployment ? {
-//                 Extensions: '*.vhd;*.vhdx'
-//                 Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${fslogixSharePath}\\*\\*.VHD;${fslogixSharePath}\\*\\*.VHDX'
-//                 Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
-//             } : {}
-//         }
-//     }
-//     dependsOn: [
-//         sessionHosts
-//     ]
-// }]
+module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployAntiMalwareExt) {
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+    name: 'SH-Antimal-${batchId}-${i - 1}-${time}'
+    params: {
+        location: location
+        virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+        name: 'MicrosoftAntiMalware'
+        publisher: 'Microsoft.Azure.Security'
+        type: 'IaaSAntimalware'
+        typeHandlerVersion: '1.3'
+        autoUpgradeMinorVersion: true
+        enableAutomaticUpgrade: false
+        settings: {
+            AntimalwareEnabled: true
+            RealtimeProtectionEnabled: 'true'
+            ScheduledScanSettings: {
+                isEnabled: 'true'
+                day: '7' // Day of the week for scheduled scan (1-Sunday, 2-Monday, ..., 7-Saturday)
+                time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
+                scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
+            }
+            Exclusions: createAvdFslogixDeployment ? {
+                Extensions: '*.vhd;*.vhdx'
+                Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${fslogixSharePath}\\*\\*.VHD;${fslogixSharePath}\\*\\*.VHDX'
+                Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
+            } : {}
+        }
+    }
+    dependsOn: [
+        sessionHosts
+    ]
+}]
 
 // Call to the ALA workspace
 resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!empty(alaWorkspaceResourceId) && deployMonitoring) {
@@ -305,8 +306,7 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
         }
     }
     dependsOn: [
-        //sessionHostsAntimalwareExtension
-        sessionHosts // jwi added when sessionHostAntimalwareExtension was commented out
+        sessionHostsAntimalwareExtension
         alaWorkspace
     ]
 }]
@@ -321,7 +321,7 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
     }
     dependsOn: [
         monitoring
-        //sessionHostsAntimalwareExtension
+        sessionHostsAntimalwareExtension
         alaWorkspace
     ]
 }]
@@ -333,8 +333,7 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in 
     params: {
         location: location
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        //hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
-        hostPoolToken: keyVault.getSecret(hostPoolName)
+        hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
         baseScriptUri: sessionHostConfigurationScriptUri
         scriptName: sessionHostConfigurationScript
         fslogix: createAvdFslogixDeployment

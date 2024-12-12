@@ -177,7 +177,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "visible": "[not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
                                     "label": "Domain join principal name",
-                                    "placeholder": "Example: avdadmin@contoso.com",
+                                    "placeholder": "Example: 'avdadmin@contoso.com'",
                                     "defaultValue": "",
                                     "toolTip": "Provide username with permissions to join session host to the domain.",
                                     "constraints": {
@@ -209,7 +209,7 @@
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "VM local admin username",
                                     "toolTip": "Provide username for session host local admin account. Administrator can't be used as username, it is reserved by the system.",
-                                    "placeholder": "Example: avdadmin",
+                                    "placeholder": "Example: 'localadmin'",
                                     "defaultValue": "",
                                     "constraints": {
                                         "regex": "^(?!.*[aA]dministrator).*$",
@@ -320,6 +320,7 @@
                                     "label": "Select VMSS Flex",
                                     "visible": true,
                                     "resourceType": "Microsoft.Compute/virtualMachineScaleSets",
+                                    "toolTip": "Deploy and associate session hosts with a Virtual Machine Scale Set (VMSS) with Flex orchestration to distribute session hosts across fault domains.",
                                     "constraints": {
                                         "required": false
                                     },
@@ -499,7 +500,7 @@
                                     "visible": "[not(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource)]",
                                     "label": "OS version",
                                     "filter": true,
-                                    "defaultValue": "Windows 11 23H2 (Gen2)",
+                                    "defaultValue": "Windows 11 23H2",
                                     "toolTip": "Select the operating system version of the session hosts.",
                                     "constraints": {
                                         "required": true,
@@ -513,20 +514,28 @@
                                                 "value": "win10_22h2_office_g2"
                                             },
                                             {
-                                                "label": "Windows 11 22H2 (Gen2)",
+                                                "label": "Windows 11 22H2",
                                                 "value": "win11_22h2"
                                             },
                                             {
-                                                "label": "Windows 11 22H2 - Office 365 (Gen2)",
+                                                "label": "Windows 11 22H2 - Office 365",
                                                 "value": "win11_22h2_office"
                                             },
                                             {
-                                                "label": "Windows 11 23H2 (Gen2)",
+                                                "label": "Windows 11 23H2",
                                                 "value": "win11_23h2"
                                             },
                                             {
-                                                "label": "Windows 11 23H2 - Office 365 (Gen2)",
+                                                "label": "Windows 11 23H2 - Office 365",
                                                 "value": "win11_23h2_office"
+                                            },
+                                            {
+                                                "label": "Windows 11 24H2",
+                                                "value": "win11_24h2"
+                                            },
+                                            {
+                                                "label": "Windows 11 24H2 - Office 365",
+                                                "value": "win11_24h2_office"
                                             }
                                         ]
                                     }
@@ -605,6 +614,14 @@
                                     "label": "Enable vTPM",
                                     "defaultValue": true,
                                     "toolTip": "Virtual Trusted Platform Module (vTPM) is TPM2.0 compliant and validates your VM boot integrity apart from securely storing keys and secrets."
+                                },
+                                {
+                                    "name": "enableAntiMalwareExt",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "visible": true,
+                                    "label": "Enable Antimalware extension",
+                                    "defaultValue": true,
+                                    "toolTip": "Enables Azure VM antimalware extension on session hosts."
                                 }
                             ]
                         }
@@ -796,10 +813,19 @@
                                     }
                                 },
                                 {
+                                    "name": "monitoringDataCollectionRuleSelection",
+                                    "type": "Microsoft.Solutions.ResourceSelector",
+                                    "label": "Data Collection Rule",
+                                    "resourceType": "Microsoft.Insights/dataCollectionRules",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
+                                {
                                     "name": "deployMonitoringInfo1",
                                     "type": "Microsoft.Common.InfoBox",
                                     "options": {
-                                        "text": "Azure Virtual Desktop monitoring requires an existing Azure Log Analytics Workspace or the creation of a new one.",
+                                        "text": "Azure Virtual Desktop monitoring requires an existing Azure Log Analytics Workspace and Data Collection Rules.",
                                         "uri": "https://docs.microsoft.com/azure/virtual-desktop/azure-monitor",
                                         "style": "Info"
                                     }
@@ -1148,13 +1174,15 @@
                 "securityType": "[steps('sessionHosts').sessionHostsSecuritySection.securityType]",
                 "secureBootEnabled": "[steps('sessionHosts').sessionHostsSecuritySection.secureBootEnabled]",
                 "vTpmEnabled": "[steps('sessionHosts').sessionHostsSecuritySection.vTpmEnabled]",
+                "deployAntiMalwareExt": "[steps('sessionHosts').sessionHostsSecuritySection.enableAntiMalwareExt]",
                 "configureFslogix": "[steps('storage').fslogixConfiguration]",
-                "fslogixStorageAccountName": "[if(steps('storage').fslogixConfiguration, steps('storage').storageFslogix.fslogixStorageAccountSelector.id, '')]",
+                "fslogixStorageAccountName": "[if(steps('storage').fslogixConfiguration, steps('storage').storageFslogix.fslogixStorageAccountSelector.name, '')]",
                 "fslogixFileShareName": "[if(steps('storage').fslogixConfiguration, steps('storage').storageFslogix.fslogixStorageAccountFileShare, '')]",
                 "subnetResourceId": "[steps('network').networkSettings.virtualNetworkSubnetSelectorName]",
                 "asgResourceId": "[if(steps('network').networkSettings.applicationSecurityGroup, steps('network').networkSettings.applicationSecurityGroupSelectorId.id, '')]",
                 "deployMonitoring": "[steps('monitoring').configureMonitoring]",
                 "alaWorkspaceResourceId": "[if(steps('monitoring').configureMonitoring, steps('monitoring').motoringSettings.monitoringWorkspaceSelection.id, '')]",
+                "dataCollectionRuleId": "[if(steps('monitoring').configureMonitoring, steps('monitoring').motoringSettings.monitoringDataCollectionRuleSelection.id, '')]",
                 "customNaming": "[steps('resourceNaming').resourceNamingSelection]",
                 "sessionHostCustomNamePrefix": "[if(steps('resourceNaming').resourceNamingSelection, steps('resourceNaming').resourceNamingCompute.sessionHostCustomNamePrefix, '')]",
                 "createResourceTags": "[steps('resourceTagging').resourceTaggingSelection]",

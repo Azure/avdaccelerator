@@ -16,7 +16,7 @@ param namePrefix string
 @sys.description('Platform Fault Domain count.')
 param platformFaultDomainCount int
 
-@sys.description('Availablity Set count.')
+@sys.description('VMSS Flex count.')
 param count int
 
 @sys.description('Use availability zones.')
@@ -44,6 +44,20 @@ resource vmssFlex 'Microsoft.Compute/virtualMachineScaleSets@2024-03-01' = [for 
         orchestrationMode: 'Flexible'
         zoneBalance: useAvailabilityZones ? true: false
         platformFaultDomainCount: useAvailabilityZones ? 1: platformFaultDomainCount
+        singlePlacementGroup: false
+        // virtualMachineProfile: {
+        //     osProfile: {
+        //         windowsConfiguration: {
+        //             enableAutomaticUpdates: true
+        //             // enableVMAgentPlatformUpdates: true
+        //             // patchSettings : {
+        //             //     patchMode: 'AutomaticByPlatform'
+        //             // }
+        //             provisionVMAgent: true
+        //         }
+        //     }
+        //     disk
+        // }
     }
     tags: tags
 }]

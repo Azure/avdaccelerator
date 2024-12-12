@@ -112,6 +112,9 @@ module ztPolicyAssignmentServiceObjects '../../../../avm/1.0.0/ptn/authorization
             }
         ]
     }
+    dependsOn: [
+        ztPolicyDefinitions
+    ]
 }]
 
 // Policy Remediation Task for Zero Trust.
@@ -122,6 +125,9 @@ module ztPolicyServBojRemediationTask '../../../../avm/1.0.0/ptn/policy-insights
         name: '${customPolicyDefinition.deploymentName}-${i}'
         policyAssignmentId: ztPolicyAssignmentServiceObjects[i].outputs.resourceId
     }
+    dependsOn: [
+        ztPolicyAssignmentServiceObjects
+    ]
 }]
 
 // Policy Assignment for Managed Disk Network Access.
@@ -149,6 +155,10 @@ module ztPolicyAssignmentCompute '../../../../avm/1.0.0/ptn/authorization/policy
             }
         ]
     }
+    dependsOn: [
+        ztPolicyDefinitions
+        ztPolicyServBojRemediationTask
+    ]
 }]
 
 // Policy Remediation Task for Zero Trust.
@@ -159,6 +169,9 @@ module ztPolicyComputeRemediationTask '../../../../avm/1.0.0/ptn/policy-insights
         name: '${customPolicyDefinition.deploymentName}-${i}'
         policyAssignmentId: ztPolicyAssignmentCompute[i].outputs.resourceId
     }
+    dependsOn: [
+        ztPolicyAssignmentCompute
+    ]
 }]
 
 // Role Assignment for Zero Trust.
@@ -170,6 +183,10 @@ module ztRoleAssignmentCompute '../../../../avm/1.0.0/ptn/authorization/role-ass
         roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/60fc6e62-5479-42d4-8bf4-67625fcc2840'
         principalType: ''
     }
+    dependsOn: [
+        ztPolicyAssignmentCompute
+        ztPolicyComputeRemediationTask
+    ]
 }]
 
 // Role Assignment for Zero Trust.
@@ -181,6 +198,10 @@ module ztRoleAssignmentServObj '../../../../avm/1.0.0/ptn/authorization/role-ass
         roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/60fc6e62-5479-42d4-8bf4-67625fcc2840'
         principalType: ''
     }
+    dependsOn: [
+        ztPolicyAssignmentServiceObjects
+        ztPolicyServBojRemediationTask
+    ]
 }]
 
 // Role Assignment for Zero Trust.
@@ -192,6 +213,9 @@ module ztRoleAssignment '../../../../avm/1.0.0/ptn/authorization/role-assignment
         roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/e147488a-f6f5-4113-8e2d-b22465e65bf6' //'Key Vault Crypto Service Encryption User'
         principalType: ''
     }
+    dependsOn: [
+        ztKeyVault
+    ]
 }
 
 // Zero trust key vault.
@@ -215,6 +239,9 @@ module ztKeyVault './.bicep/zeroTrustKeyVault.bicep' = if (diskZeroTrust) {
         tags: union(tags, kvTags)
         enableKvPurgeProtection: enableKvPurgeProtection
     }
+    dependsOn: [
+        
+    ]
 }
 
 // =========== //

@@ -51,4 +51,6 @@ param workloadCriticalityCustomValueTag = 'Contoso-Critical'
 param workloadSlaTag = 'Contoso-SLA'
 param opsTeamTag = 'workload-admins@Contoso.com'
 param ownerTag = 'workload-owner@Contoso.com'
+param deployAntiMalwareExt = true
+
 

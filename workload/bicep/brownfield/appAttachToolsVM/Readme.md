@@ -20,40 +20,68 @@ The easiest method is to configure the deployment via the provided blue buttons 
 
 ### Azure Portal UI
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployAppAttachToolsVM.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAppAttachToolsVM.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployAppAttachToolsVM.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAppAttachToolsVM.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployAppAttachToolsVM.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAppAttachToolsVM.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/?feature.deployapiver=2022-12-01#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployAppAttachToolsVM.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAppAttachToolsVM.json)
 
 ### PowerShell
 
 ```powershell
-New-AzDeployment `
-    -Location '<Azure location>' `
-    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployAppAttachToolsVM.json' `
-    -adminUsername '<Local Admin User Name>' `
-    -adminPassUseKv false `
-    -adminPassword '<Password for Local Admin Account>' `
-    -publicIPAllowed '<true or false (Determines if NIC will have a Public IP Address)>' `
-    -OSoffer 'WindowsDesktop' `
-    -SubnetName '<Name of Subnet where VM will be attached.>' `
-    -vmDiskType '<Standard_LRS, StandardSSD_LRS or Premium_LRS>' `
-    -vmName '<Name for VM>' `
-    -VNet '<Object value surrounded by {} with comma seperated key pairs for desired VNet name, id, location and subscriptionName>' `
-    -Verbose
+# Set Variables
+$TemplateUri = "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployAppAttachToolsVM.json"
+$Vnet = @{
+    "name"             = '<Virtual NetworkName>'
+    "id"               = '<Virtual Network Id>'
+    "location"         = '<Azure location>'
+    "subscriptionName" = '<Subscription Name>'
+}
+$TemplateParameterObject = @{
+    "Location"        = '<Azure location>'
+    "adminUsername"   = '<Local Admin User Name>'
+    "adminPassUseKv"  = $false
+    "adminPassword"   = <Clear Text Password>
+    "publicIPAllowed" = '<$true or $false (Determines if NIC will have a Public IP Address)>'
+    "OSoffer"         = 'Windows-11'
+    "OSVersion"       = 'win11-23h2-ent'
+    "SubnetName"      = '<Name of Subnet where VM will be attached.>'
+    "vmDiskType"      = '<Standard_LRS, StandardSSD_LRS or Premium_LRS>'
+    "vmName"          = '<Name for VM>'
+    "VNet"            = $VNet
+}
+# Deploy Resources
+New-AzResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateUri $TemplateUri -TemplateParameterObject $TemplateParameterObject -Verbose
 ```
 
 ### Azure CLI
+```bash
+# Set variables
+templateUri="https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployAppAttachToolsVM.json"
+resourceGroupName="<YourResourceGroupName>"
+location="<AzureLocation>"
+adminUsername="<LocalAdminUserName>"
+adminPassword="<ClearTextPassword>"
+publicIPAllowed="<true_or_false>"
+osOffer="Windows-11"
+osVersion="win11-23h2-ent"
+subnetName="<SubnetName>"
+vmDiskType="<Standard_LRS_StandardSSD_LRS_or_Premium_LRS>"
+vmName="<VMName>"
+vnetName="<VirtualNetworkName>"
+vnetId="<VirtualNetworkId>"
+subscriptionName="<SubscriptionName>"
 
-```azurecli
-az deployment sub create \
-    --location '<Azure location>' \
-    --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployAppAttachToolsVM.json' \
+# Deploy resources
+az group deployment create \
+    --resource-group $resourceGroupName \
+    --template-uri $templateUri \
     --parameters \
-    -adminUsername '<Local Admin User Name>' \
-    -adminPassUseKv false \
-    -adminPassword '<Password for Local Admin Account>' \
-    -publicIPAllowed '<true or false (Determines if NIC will have a Public IP Address)>' \
-    -OSoffer 'WindowsDesktop' \
-    -SubnetName '<Name of Subnet where VM will be attached.>' \
-    -vmDiskType '<Standard_LRS, StandardSSD_LRS or Premium_LRS>' \
-    -vmName '<Name for VM>' \
-    -VNet '<Object value surrounded by {} with comma seperated key pairs for desired VNet name, id, location and subscriptionName>'
+        Location=$location \
+        adminUsername=$adminUsername \
+        adminPassword=$adminPassword \
+        publicIPAllowed=$publicIPAllowed \
+        OSoffer=$osOffer \
+        OSVersion=$osVersion \
+        SubnetName=$subnetName \
+        vmDiskType=$vmDiskType \
+        vmName=$vmName \
+        VNet="{\"name\": \"$vnetName\", \"id\": \"$vnetId\", \"location\": \"$location\", \"subscriptionName\": \"$subscriptionName\"}"
 ```
+
